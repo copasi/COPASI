@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:42:13 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Tue Feb 5 10:30:38 2008
+ ** Created: Fri Jun 27 11:44:08 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -49,21 +49,16 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
   if (!name)
     setName("CQTSSAResultSubWidget");
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
-  CQTSSAResultSubWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQTSSAResultSubWidgetLayout");
+  CQTSSAResultSubWidgetLayout = new QVBoxLayout(this, 11, 6, "CQTSSAResultSubWidgetLayout");
 
-  toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
+  layout15 = new QHBoxLayout(0, 0, 6, "layout15");
 
   comboBox = new QComboBox(FALSE, this, "comboBox");
   comboBox->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, comboBox->sizePolicy().hasHeightForWidth()));
-  toplayout->addWidget(comboBox);
-  spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  toplayout->addItem(spacer);
-
-  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
-  toplayout->addWidget(ButtonSaveData);
-
-  CQTSSAResultSubWidgetLayout->addLayout(toplayout, 0, 0);
+  layout15->addWidget(comboBox);
+  spacer = new QSpacerItem(346, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout15->addItem(spacer);
+  CQTSSAResultSubWidgetLayout->addLayout(layout15);
 
   tabWidget2 = new QTabWidget(this, "tabWidget2");
   tabWidget2->setMargin(1);
@@ -179,14 +174,26 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
 
   TabPageLayout->addWidget(mLabel6, 0, 6);
   tabWidget2->insertTab(TabPage, QString::fromLatin1(""));
+  CQTSSAResultSubWidgetLayout->addWidget(tabWidget2);
 
-  CQTSSAResultSubWidgetLayout->addWidget(tabWidget2, 1, 0);
+  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
+  spacer11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout14->addItem(spacer11);
+
+  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
+  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
+  layout14->addWidget(ButtonSaveData);
+
+  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
+  layout14->addWidget(mpBtnPrintAsImage);
+  CQTSSAResultSubWidgetLayout->addLayout(layout14);
   languageChange();
   resize(QSize(600, 382).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
+  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printAsImage()));
   init();
 }
 
@@ -204,11 +211,10 @@ CQTSSAResultSubWidget::~CQTSSAResultSubWidget()
  */
 void CQTSSAResultSubWidget::languageChange()
 {
-  setCaption(tr("Form1"));
+  setCaption(tr("TSSA Result Window"));
   comboBox->clear();
   comboBox->insertItem(tr("Concentrations"));
   comboBox->insertItem(tr("Particle Numbers"));
-  ButtonSaveData->setText(tr("Save data to file"));
   tabWidget2->changeTab(tab, tr("OptimizationResult"));
   tabWidget2->changeTab(tab_2, tr("TimeSeries"));
   mTabWidget->changeTab(tab_3, tr("Metabolites"));
@@ -225,4 +231,6 @@ void CQTSSAResultSubWidget::languageChange()
   mLabel5->setText(tr("of"));
   mLabel6->setText(tr("0"));
   tabWidget2->changeTab(TabPage, tr("ILDM"));
+  ButtonSaveData->setText(tr("Save data to file"));
+  mpBtnPrintAsImage->setText(tr("Print as image"));
 }

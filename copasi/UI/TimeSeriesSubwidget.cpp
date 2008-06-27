@@ -1,19 +1,20 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/31 18:21:38 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Wed Nov 7 14:03:40 2007
+ ** Created: Fri Jun 27 10:20:01 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -46,38 +47,41 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
   TimeSeriesSubWidgetLayout = new QVBoxLayout(this, 11, 6, "TimeSeriesSubWidgetLayout");
 
-  toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
-  spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  toplayout->addItem(spacer);
-
-  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
-  toplayout->addWidget(ButtonSaveData);
-  TimeSeriesSubWidgetLayout->addLayout(toplayout);
-
   tabWidget2 = new QTabWidget(this, "tabWidget2");
 
   tab = new QWidget(tabWidget2, "tab");
-  tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
 
   optimizationResultText = new QTextEdit(tab, "optimizationResultText");
+  optimizationResultText->setGeometry(QRect(11, 11, 552, 278));
   optimizationResultText->setReadOnly(TRUE);
-  tabLayout->addWidget(optimizationResultText);
   tabWidget2->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(tabWidget2, "tab_2");
-  tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
+  tabLayout = new QVBoxLayout(tab_2, 11, 6, "tabLayout");
 
   dataTable = new CTimeSeriesTable(tab_2, "dataTable");
-  tabLayout_2->addWidget(dataTable);
+  tabLayout->addWidget(dataTable);
   tabWidget2->insertTab(tab_2, QString::fromLatin1(""));
   TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
+
+  layout16 = new QHBoxLayout(0, 0, 6, "layout16");
+  spacer = new QSpacerItem(300, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout16->addItem(spacer);
+
+  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
+  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
+  layout16->addWidget(ButtonSaveData);
+
+  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
+  layout16->addWidget(mpBtnPrintAsImage);
+  TimeSeriesSubWidgetLayout->addLayout(layout16);
   languageChange();
   resize(QSize(600, 382).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
+  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printTableAsImage()));
   init();
 }
 
@@ -95,8 +99,9 @@ TimeSeriesSubWidget::~TimeSeriesSubWidget()
  */
 void TimeSeriesSubWidget::languageChange()
 {
-  setCaption(tr("Form1"));
-  ButtonSaveData->setText(tr("Save data to file"));
+  setCaption(tr("TimeSeries Result Window"));
   tabWidget2->changeTab(tab, tr("OptimizationResult"));
   tabWidget2->changeTab(tab_2, tr("TimeSeries"));
+  ButtonSaveData->setText(tr("Save data to file"));
+  mpBtnPrintAsImage->setText(tr("Print as image"));
 }

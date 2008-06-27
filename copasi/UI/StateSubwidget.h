@@ -1,20 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Author: pwilly $
+//   $Date: 2008/06/27 11:54:43 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Wed Dec 5 13:31:55 2007
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.17 2007/12/05 20:16:26 shoops Exp $)
+ ** Created: Fri Jun 27 10:54:04 2008
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.18 2008/06/27 11:54:43 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,7 +37,8 @@ class QTabWidget;
 class QWidget;
 class QTextEdit;
 class QTable;
-class QSplitter;
+class QFrame;
+class QPushButton;
 class CModel;
 class CSteadyStateTask;
 
@@ -61,27 +63,28 @@ class StateSubwidget : public CopasiWidget
     QWidget* mpReactionsPage;
     QTable* mpTblReactions;
     QWidget* mpJacobianPage;
-    QSplitter* splitter3;
     CQArrayAnnotationsWidget* mpJacobianAnnotationWidget;
     QLabel* textLabelJacobian;
+    QFrame* line1;
     QTable* tableEigenValues;
     QLabel* textLabelEigenvalues;
     QWidget* mpReducedJacobianPage;
-    QSplitter* splitter3_2;
     CQArrayAnnotationsWidget* mpJacobianXAnnotationWidget;
     QLabel* textLabelJacobianX;
+    QFrame* line2;
     QTable* tableEigenValuesX;
     QLabel* textLabelEigenvaluesX;
     QWidget* mpStabilityPage;
     QTextEdit* stabilityTextEdit;
     QWidget* mpProtocolPage;
     QTextEdit* protocolTextEdit;
+    QPushButton* mpBtnPrintAsImage;
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual void setFramework(int framework);
     void displayOptimizationTab(bool displayOptTab);
     virtual bool loadAll(const CSteadyStateTask * pTask);
     void clear();
+    virtual void setFramework(int framework);
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   protected:
     const CSteadyStateTask * mpTask;
@@ -101,7 +104,7 @@ class StateSubwidget : public CopasiWidget
     QVBoxLayout* mpCompartmentsPageLayout;
     QHBoxLayout* mpModelQuantitiesPageLayout;
     QVBoxLayout* mpReactionsPageLayout;
-    QGridLayout* mpJacobianPageLayout;
+    QVBoxLayout* mpJacobianPageLayout;
     QGridLayout* layoutJacobian;
     QSpacerItem* spacer3;
     QGridLayout* layoutEigenvalues;
@@ -113,9 +116,13 @@ class StateSubwidget : public CopasiWidget
     QSpacerItem* spacer4_2;
     QVBoxLayout* mpStabilityPageLayout;
     QGridLayout* mpProtocolPageLayout;
+    QHBoxLayout* layout24;
+    QSpacerItem* spacer20;
 
   protected slots:
     virtual void languageChange();
+
+    void printAsImage();
 
   private:
     QPixmap image0;

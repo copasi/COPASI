@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/15 17:42:13 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Jan 25 10:52:35 2008
+ ** Created: Fri Jun 27 11:44:03 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -35,11 +35,11 @@ class QSpacerItem;
 class CTimeSeriesTable;
 class CQArrayAnnotationsWidget;
 class QComboBox;
-class QPushButton;
 class QTabWidget;
 class QTextEdit;
 class QSlider;
 class QLabel;
+class QPushButton;
 
 class CQTSSAResultSubWidget : public QWidget
   {
@@ -50,7 +50,6 @@ class CQTSSAResultSubWidget : public QWidget
     ~CQTSSAResultSubWidget();
 
     QComboBox* comboBox;
-    QPushButton* ButtonSaveData;
     QTabWidget* tabWidget2;
     QWidget* tab;
     QTextEdit* optimizationResultText;
@@ -74,6 +73,8 @@ class CQTSSAResultSubWidget : public QWidget
     QLabel* mLabel4;
     QLabel* mLabel5;
     QLabel* mLabel6;
+    QPushButton* ButtonSaveData;
+    QPushButton* mpBtnPrintAsImage;
 
     void displayOptimizationTab(bool displayOptTab);
     void setStepNumber();
@@ -88,8 +89,8 @@ class CQTSSAResultSubWidget : public QWidget
     void hideButtons();
 
   protected:
-    QGridLayout* CQTSSAResultSubWidgetLayout;
-    QHBoxLayout* toplayout;
+    QVBoxLayout* CQTSSAResultSubWidgetLayout;
+    QHBoxLayout* layout15;
     QSpacerItem* spacer;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
@@ -99,6 +100,8 @@ class CQTSSAResultSubWidget : public QWidget
     QGridLayout* tabLayout_4;
     QGridLayout* TabPageLayout_2;
     QGridLayout* TabPageLayout_3;
+    QHBoxLayout* layout14;
+    QSpacerItem* spacer11;
 
   protected slots:
     virtual void languageChange();
@@ -106,9 +109,11 @@ class CQTSSAResultSubWidget : public QWidget
     void saveDataToFile();
     void toggleView();
     virtual void init();
+    void printAsImage();
 
   private:
     QPixmap image0;
+    QPixmap image1;
   };
 
 #endif // CQTSSARESULTSUBWIDGET_H

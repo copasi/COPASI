@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:08 $
+//   $Author: pwilly $
+//   $Date: 2008/06/27 11:50:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,6 +48,7 @@ class PlotWindow : public QMainWindow, public COutputInterface
 
     QToolButton * zoomButton;
     QToolButton * printButton;
+    QToolButton * print2Button;
     QToolButton * saveButton;
 
     ~PlotWindow();
@@ -67,7 +73,7 @@ class PlotWindow : public QMainWindow, public COutputInterface
     virtual void separate(const Activity & activity);
 
     /**
-     * Finsh the output
+     * Finish the output
      */
     virtual void finish();
 
@@ -82,10 +88,15 @@ class PlotWindow : public QMainWindow, public COutputInterface
 
     //void mouseReleased(const QMouseEvent &e);
 
-    // prints the plot (to printer or file)
+    // Print the plot to printer
     void printPlot();
 
+    // Print the plot as an image
+    void printAsImage();
+
+    /// Save data into a file
     void slotSaveData();
 
+    /// Zoom out
     void slotZoomOut();
   };

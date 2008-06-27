@@ -1,20 +1,21 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CMCAResultSubwidget.cpp,v $
-//   $Revision: 1.8.2.1 $
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/16 14:39:19 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Mon Apr 16 10:28:14 2007
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.8.2.1 2007/04/16 14:39:19 shoops Exp $)
+ ** Created: Fri Jun 27 10:54:34 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -51,19 +52,16 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mComboScale = new QComboBox(FALSE, this, "mComboScale");
   mComboScale->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, mComboScale->sizePolicy().hasHeightForWidth()));
   layout3->addWidget(mComboScale);
-
-  mSaveButton = new QPushButton(this, "mSaveButton");
-  mSaveButton->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, mSaveButton->sizePolicy().hasHeightForWidth()));
-  layout3->addWidget(mSaveButton);
   CMCAResultSubwidgetLayout->addLayout(layout3);
 
   mTabWidget = new QTabWidget(this, "mTabWidget");
 
   tab = new QWidget(mTabWidget, "tab");
-  tabLayout = new QHBoxLayout(tab, 0, 6, "tabLayout");
+  tabLayout = new QGridLayout(tab, 1, 1, 0, 6, "tabLayout");
 
   mpArrayElasticities = new CQArrayAnnotationsWidget(tab, "mpArrayElasticities");
-  tabLayout->addWidget(mpArrayElasticities);
+
+  tabLayout->addWidget(mpArrayElasticities, 0, 0);
   mTabWidget->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(mTabWidget, "tab_2");
@@ -82,6 +80,17 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   TabPageLayout->addWidget(mpArrayCCC, 0, 0);
   mTabWidget->insertTab(TabPage, QString::fromLatin1(""));
   CMCAResultSubwidgetLayout->addWidget(mTabWidget);
+
+  layout13 = new QHBoxLayout(0, 0, 6, "layout13");
+  spacer10 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout13->addItem(spacer10);
+
+  mSaveButton = new QPushButton(this, "mSaveButton");
+  layout13->addWidget(mSaveButton);
+
+  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
+  layout13->addWidget(mpBtnPrintAsImage);
+  CMCAResultSubwidgetLayout->addLayout(layout13);
   languageChange();
   resize(QSize(580, 422).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
@@ -89,6 +98,7 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   // signals and slots connections
   connect(mComboScale, SIGNAL(activated(int)), this, SLOT(slotScaled()));
   connect(mSaveButton, SIGNAL(clicked()), this, SLOT(slotSave()));
+  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printAsImage()));
   init();
 }
 
@@ -106,13 +116,14 @@ CMCAResultSubwidget::~CMCAResultSubwidget()
  */
 void CMCAResultSubwidget::languageChange()
 {
-  setCaption(tr("Form1"));
+  setCaption(tr("MCA Result Window"));
   mTopLabel->setText(QString::null);
   mComboScale->clear();
   mComboScale->insertItem(tr("scaled"));
   mComboScale->insertItem(tr("unscaled"));
-  mSaveButton->setText(tr("Save data to file"));
   mTabWidget->changeTab(tab, tr("Elasticities"));
   mTabWidget->changeTab(tab_2, tr("Flux Control Coefficients"));
   mTabWidget->changeTab(TabPage, tr("Concentration Control Coefficients"));
+  mSaveButton->setText(tr("Save data to file"));
+  mpBtnPrintAsImage->setText(tr("Print as image"));
 }

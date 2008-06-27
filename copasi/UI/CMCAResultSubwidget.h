@@ -1,20 +1,21 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CMCAResultSubwidget.h,v $
-//   $Revision: 1.9.2.1 $
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/16 14:39:19 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Fri Apr 13 12:53:44 2007
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.9.2.1 2007/04/16 14:39:19 shoops Exp $)
+ ** Created: Fri Jun 27 10:54:27 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -33,8 +34,8 @@ class QSpacerItem;
 class CQArrayAnnotationsWidget;
 class QLabel;
 class QComboBox;
-class QPushButton;
 class QTabWidget;
+class QPushButton;
 class CMCAMethod;
 
 class CMCAResultSubwidget : public QWidget
@@ -47,7 +48,6 @@ class CMCAResultSubwidget : public QWidget
 
     QLabel* mTopLabel;
     QComboBox* mComboScale;
-    QPushButton* mSaveButton;
     QTabWidget* mTabWidget;
     QWidget* tab;
     CQArrayAnnotationsWidget* mpArrayElasticities;
@@ -55,6 +55,8 @@ class CMCAResultSubwidget : public QWidget
     CQArrayAnnotationsWidget* mpArrayFCC;
     QWidget* TabPage;
     CQArrayAnnotationsWidget* mpArrayCCC;
+    QPushButton* mSaveButton;
+    QPushButton* mpBtnPrintAsImage;
 
     virtual void loadAll(const CMCAMethod * mcaMethod);
     virtual void loadElasticities(const CMCAMethod * mcaMethod);
@@ -67,15 +69,18 @@ class CMCAResultSubwidget : public QWidget
 
     QVBoxLayout* CMCAResultSubwidgetLayout;
     QHBoxLayout* layout3;
-    QHBoxLayout* tabLayout;
+    QGridLayout* tabLayout;
     QGridLayout* tabLayout_2;
     QGridLayout* TabPageLayout;
+    QHBoxLayout* layout13;
+    QSpacerItem* spacer10;
 
   protected slots:
     virtual void languageChange();
 
     virtual void slotSave();
     virtual void slotScaled();
+    void printAsImage();
 
   private:
     const CMCAMethod * mMCAMethod;

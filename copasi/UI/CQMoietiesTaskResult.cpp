@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.cpp,v $
-//   $Revision: 1.1.2.1 $
-//   $Name: Build-25 $
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.9 $
+//   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/20 20:25:40 $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMoietiesTaskResult.ui'
  **
- ** Created: Wed Feb 20 14:48:50 2008
- **      by: The User Interface Compiler ($Id: CQMoietiesTaskResult.cpp,v 1.1.2.1 2008/02/20 20:25:40 shoops Exp $)
+ ** Created: Fri Jun 27 13:46:44 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,9 +23,9 @@
 #include "CQMoietiesTaskResult.h"
 
 #include <qvariant.h>
+#include <qlabel.h>
 #include <qtabwidget.h>
 #include <qtable.h>
-#include <qlabel.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -41,7 +41,10 @@ CQMoietiesTaskResult::CQMoietiesTaskResult(QWidget* parent, const char* name)
 {
   if (!name)
     setName("CQMoietiesTaskResult");
-  CQMoietiesTaskResultLayout = new QGridLayout(this, 1, 1, 11, 6, "CQMoietiesTaskResultLayout");
+  CQMoietiesTaskResultLayout = new QVBoxLayout(this, 11, 6, "CQMoietiesTaskResultLayout");
+
+  mpLblResult = new QLabel(this, "mpLblResult");
+  CQMoietiesTaskResultLayout->addWidget(mpLblResult);
 
   mpTabWidget = new QTabWidget(this, "mpTabWidget");
   mpTabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)5, 0, 0, mpTabWidget->sizePolicy().hasHeightForWidth()));
@@ -58,23 +61,25 @@ CQMoietiesTaskResult::CQMoietiesTaskResult(QWidget* parent, const char* name)
 
   mpReducedStoichiometry = new CQArrayAnnotationsWidget(mpTabWidget, "mpReducedStoichiometry");
   mpTabWidget->insertTab(mpReducedStoichiometry, QString::fromLatin1(""));
+  CQMoietiesTaskResultLayout->addWidget(mpTabWidget);
 
-  CQMoietiesTaskResultLayout->addMultiCellWidget(mpTabWidget, 1, 1, 0, 1);
-
-  mpLblResult = new QLabel(this, "mpLblResult");
-  mpLblResult->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpLblResult->sizePolicy().hasHeightForWidth()));
-
-  CQMoietiesTaskResultLayout->addWidget(mpLblResult, 0, 0);
+  layout3 = new QHBoxLayout(0, 0, 6, "layout3");
+  spacer3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout3->addItem(spacer3);
 
   mpBtnSave = new QPushButton(this, "mpBtnSave");
+  layout3->addWidget(mpBtnSave);
 
-  CQMoietiesTaskResultLayout->addWidget(mpBtnSave, 0, 1);
+  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
+  layout3->addWidget(mpBtnPrintAsImage);
+  CQMoietiesTaskResultLayout->addLayout(layout3);
   languageChange();
-  resize(QSize(337, 237).expandedTo(minimumSizeHint()));
+  resize(QSize(433, 265).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(mpBtnSave, SIGNAL(clicked()), this, SLOT(slotSave()));
+  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printAsImage()));
   init();
 }
 
@@ -93,10 +98,11 @@ CQMoietiesTaskResult::~CQMoietiesTaskResult()
 void CQMoietiesTaskResult::languageChange()
 {
   setCaption(tr("Moieties Result"));
+  mpLblResult->setText(tr("<h2>Moieties Result</h2>"));
   mpTabWidget->changeTab(mpMoieties, tr("Moieties"));
   mpTabWidget->changeTab(mpStoichiometry, tr("Stoichiometry"));
   mpTabWidget->changeTab(mpLinkMatrix, tr("Link Matrix"));
   mpTabWidget->changeTab(mpReducedStoichiometry, tr("Reduced Stoichiometry"));
-  mpLblResult->setText(tr("<h2>Moieties Result</h2>"));
-  mpBtnSave->setText(tr("save data"));
+  mpBtnSave->setText(tr("Save data to file"));
+  mpBtnPrintAsImage->setText(tr("Print as image"));
 }

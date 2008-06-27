@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/26 12:24:00 $
+//   $Author: pwilly $
+//   $Date: 2008/06/27 11:56:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,15 @@
  ** destructor.
  *****************************************************************************/
 
-#include "UI/qtUtilities.h"
-#include "UI/CopasiFileDialog.h"
+#include <qfileinfo.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
+#include <qpainter.h>
+#include <qpicture.h>
+
+#include "qtUtilities.h"
+#include "CopasiFileDialog.h"
+#include "CQPrintAsDialog.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -241,4 +248,37 @@ void CQTSSAResultSubWidget::setStepSelectionDisabled(bool set)
 void CQTSSAResultSubWidget::activateTab(int tab)
 {
   tabWidget2->setCurrentPage(tab);
+}
+
+void CQTSSAResultSubWidget::printAsImage()
+{
+  CQPrintAsDialog *pDialog = new CQPrintAsDialog();
+
+  if (pDialog->exec() == QDialog::Accepted)
+    {
+      QString sFileName = pDialog->mpEditFileName->text();
+      QFileInfo fileInfo(sFileName);
+      QString sName = fileInfo.baseName();
+
+      QPixmap pixmap = QPixmap::grabWidget(tabWidget2->currentPage());
+
+      if (pDialog->mpCBPNG->isChecked()) // true
+        {
+          QString sNamePNG = sName + ".png";
+          pixmap.save(sNamePNG, "PNG");
+        }
+
+      if (pDialog->mpCBSVG->isChecked()) // true
+        {
+          QString sNameSVG = sName + ".svg";
+
+          QPicture pict;
+          QPainter paint;
+          paint.begin(&pict);
+          paint.drawPixmap(0, 0, pixmap);
+          paint.end();
+
+          pict.save(sNameSVG, "SVG");
+        }
+    }
 }

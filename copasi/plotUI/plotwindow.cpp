@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:36:33 $
+//   $Author: pwilly $
+//   $Date: 2008/06/27 11:50:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,13 @@
 
 #include <qtoolbar.h>
 #include <qprinter.h>
+#include <qpixmap.h>
+#include <qpicture.h>
 #include <qfiledialog.h>
 #include <qcursor.h>
 #include <qregexp.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
 
 #include "plotwindow.h"
 #include "CopasiPlot.h"
@@ -30,6 +34,7 @@
 
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+#include "UI/CQPrintAsDialog.h"
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -60,11 +65,15 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
 
   printButton = new QToolButton(plotTools, "print plot");
   printButton -> setTextLabel("Print plot");
-  printButton -> setText("Print...");
+  printButton -> setText("Print");
+
+  print2Button = new QToolButton(plotTools, "print image");
+  print2Button -> setTextLabel("Print image");
+  print2Button -> setText("Print As Image");
 
   saveButton = new QToolButton(plotTools, "save data");
   saveButton -> setTextLabel("Save data...");
-  saveButton -> setText("Save data...");
+  saveButton -> setText("Save data");
 
   zoomButton = new QToolButton(plotTools, "zoom");
   zoomButton->setText("Zoom out");
@@ -80,6 +89,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
 
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
+  connect(print2Button, SIGNAL(clicked()), this, SLOT(printAsImage()));
   connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
   //connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
 }
@@ -109,6 +119,48 @@ bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 }*/
 
 //-----------------------------------------------------------------------------
+
+void PlotWindow::printAsImage()
+{
+  QPainter painter;
+  QRect rect;
+  rect.setSize(mpPlot->sizeHint());
+
+  CQPrintAsDialog *pDialog = new CQPrintAsDialog();
+
+  if (pDialog->exec() == QDialog::Accepted)
+    {
+      QString sFileName = pDialog->mpEditFileName->text();
+      QFileInfo fileInfo(sFileName);
+      QString sName = fileInfo.baseName();
+
+      if (pDialog->mpCBPNG->isChecked()) // true
+        {
+          QString sNamePNG = sName + ".png";
+
+          QPixmap pixmap(rect.width(), rect.height());
+          pixmap.fill();
+
+          painter.begin(&pixmap);
+          mpPlot->print(&painter, rect, PrintFilter());
+          painter.end();
+
+          pixmap.save(sNamePNG, "PNG");
+        }
+
+      if (pDialog->mpCBSVG->isChecked()) // true
+        {
+          QString sNameSVG = sName + ".svg";
+
+          QPicture pict;
+          painter.begin(&pict);
+          mpPlot->print(&painter, rect, PrintFilter());
+          painter.end();
+
+          pict.save(sNameSVG, "SVG");
+        }
+    }
+}
 
 void PlotWindow::printPlot()
 {
