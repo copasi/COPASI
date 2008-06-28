@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:53:48 $
+//   $Author: gauges $
+//   $Date: 2008/06/28 18:22:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -585,7 +585,7 @@ bool CNormalLogical::operator==(const CNormalLogical& rhs) const
             CNormalLogical::SetOfSetsSorter<CNormalChoiceLogical> comp;
             while (it != endit)
               {
-                if (comp.isEqual(*it, *it2) == false)
+                if (comp.isEqual((*it), (*it2)) == false)
                   {
                     result = false;
                     break;
@@ -597,7 +597,7 @@ bool CNormalLogical::operator==(const CNormalLogical& rhs) const
             CNormalLogical::SetOfSetsSorter<CNormalLogicalItem> comp2;
             while (it3 != endit3 && result == true)
               {
-                if (comp2.isEqual(*it3, *it4) == false)
+                if (comp2.isEqual((*it3), (*it4)) == false)
                   {
                     result = false;
                     break;
@@ -633,7 +633,7 @@ bool CNormalLogical::operator<(const CNormalLogical& rhs) const
             CNormalLogical::SetOfSetsSorter<CNormalChoiceLogical> comp;
             while (it != endit)
               {
-                if (comp(*it, *it2) == false)
+                if (comp((*it), (*it2)) == false)
                   {
                     result = false;
                     break;
@@ -653,7 +653,7 @@ bool CNormalLogical::operator<(const CNormalLogical& rhs) const
                     CNormalLogical::SetOfSetsSorter<CNormalLogicalItem> comp2;
                     while (it3 != endit3)
                       {
-                        if (comp2(*it3, *it4) == false)
+                        if (comp2((*it3), (*it4)) == false)
                           {
                             result = false;
                             break;

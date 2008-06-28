@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:53:48 $
+//   $Author: gauges $
+//   $Date: 2008/06/28 18:22:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,9 @@ class CNormalLogical : public CNormalBase
           }
       };
 
+  template<typename TYPE> class TemplateSet:
+      public std::set< std::pair< TYPE *, bool >, SetSorter< TYPE > > {};
+
     template<typename TYPE>
     class SetOfSetsSorter
       {
@@ -78,7 +81,7 @@ class CNormalLogical : public CNormalBase
          * This routine compares a set of sets and returns true if the first
          * argument is smaller than the second.
          */
-        bool operator()(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs, const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const
+        bool operator()(const std::pair<TemplateSet<TYPE>, bool>& lhs, const std::pair<TemplateSet<TYPE>, bool>& rhs) const
           {
             bool result = false;
             if (lhs.second == rhs.second)
@@ -110,8 +113,8 @@ class CNormalLogical : public CNormalBase
          * This routine compares a set of sets and returns true if the first
          * argument is smaller than the second.
          */
-        bool isEqual(const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& lhs,
-                     const std::pair<std::set<std::pair<TYPE*, bool>, SetSorter<TYPE> >, bool>& rhs) const
+        bool isEqual(const std::pair<TemplateSet<TYPE>, bool>& lhs,
+                     const std::pair<TemplateSet<TYPE>, bool>& rhs) const
           {
             bool result = true;
             if (lhs.second == rhs.second)
@@ -143,9 +146,6 @@ class CNormalLogical : public CNormalBase
             return result;
           }
       };
-
-  template<typename TYPE> class TemplateSet:
-      public std::set< std::pair< TYPE *, bool >, SetSorter< TYPE > > {};
 
   template<typename TYPE> class TemplateSetOfSets:
       public std::set< std::pair< TemplateSet< TYPE >, bool >, SetOfSetsSorter< TYPE > > {};
