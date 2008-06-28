@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/23 11:30:37 $
+//   $Date: 2008/06/28 18:10:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,14 @@
 #include "compareExpressions/CNormalChoiceLogical.h"
 #include "compareExpressions/CNormalLogical.h"
 #include "compareExpressions/CNormalLogicalItem.h"
+
+#ifdef __SUNPRO_CC
+typedef std::set<CNormalProduct*, compareProducts>::iterator ProductIterator;
+typedef std::set<CNormalItemPower*, compareItemPowers>::iterator ItemPowerIterator;
+#else
+typedef std::set<CNormalProduct*, compareProducts>::const_iterator ProductIterator;
+typedef std::set<CNormalItemPower*, compareItemPowers>::const_iterator ItemPowerIterator;
+#endif // __SUNPRO_CC
 
 void test_normalform::setUp()
 {
@@ -177,7 +185,7 @@ void test_normalform::test_sum_numbers()
   const CNormalSum& numerator = pFraction->getNumerator();
   CPPUNIT_ASSERT(numerator.getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts >& products = numerator.getProducts();
-  std::set<CNormalProduct*, compareProducts >::iterator it = products.begin();
+  ProductIterator it = products.begin();
   CPPUNIT_ASSERT(products.size() == 1);
   const CNormalProduct* pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -199,7 +207,7 @@ void test_normalform::test_sum_variables()
   CPPUNIT_ASSERT(numerator.getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts >& products = numerator.getProducts();
   CPPUNIT_ASSERT(products.size() == 2);
-  std::set<CNormalProduct*, compareProducts >::iterator it = products.begin();
+  ProductIterator it = products.begin();
   const CNormalProduct* pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
@@ -241,7 +249,7 @@ void test_normalform::test_sum_constants()
   CPPUNIT_ASSERT(numerator.getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts >& products = numerator.getProducts();
   CPPUNIT_ASSERT(products.size() == 2);
-  std::set<CNormalProduct*, compareProducts >::iterator it = products.begin();
+  ProductIterator it = products.begin();
   const CNormalProduct* pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
@@ -2065,7 +2073,7 @@ void test_normalform::test_generalpower_mixed_1()
   CPPUNIT_ASSERT(numerator2.getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts >& products2 = numerator2.getProducts();
   CPPUNIT_ASSERT(products2.size() == 2);
-  std::set<CNormalProduct*, compareProducts>::const_iterator it = products2.begin();
+  ProductIterator it = products2.begin();
   pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
@@ -2375,7 +2383,7 @@ void test_normalform::test_generalmodulus_mixed_1()
   CPPUNIT_ASSERT(numerator2.getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts >& products2 = numerator2.getProducts();
   CPPUNIT_ASSERT(products2.size() == 2);
-  std::set<CNormalProduct*, compareProducts>::const_iterator it = products2.begin();
+  ProductIterator it = products2.begin();
   pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
@@ -4459,7 +4467,7 @@ bool test_normalform::check_LogicalItemA(const CNormalLogicalItem* pLogicalItem)
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LT) return false;
 
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* pNumerator = &pFraction->getNumerator();
@@ -4508,7 +4516,7 @@ bool test_normalform::check_LogicalItemB(const CNormalLogicalItem* pLogicalItem)
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
 
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* pNumerator = &pFraction->getNumerator();
@@ -4548,7 +4556,7 @@ bool test_normalform::check_LogicalItemC(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4588,7 +4596,7 @@ bool test_normalform::check_LogicalItemD(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4636,7 +4644,7 @@ bool test_normalform::check_LogicalItemE(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LT) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
   if (numerator->getFractions().size() != 0) return false;
@@ -4660,7 +4668,7 @@ bool test_normalform::check_LogicalItemE(const CNormalLogicalItem* pLogicalItem)
   if (numerator->getFractions().size() != 0) return false;
   products = &numerator->getProducts();
   if (products->size() != 1) return false;
-  std::set<CNormalProduct*, compareProducts>::const_iterator productsIt = products->begin();
+  ProductIterator productsIt = products->begin();
   pProduct = *(productsIt);
   if (pProduct == NULL) return false;
   if (pProduct->getFactor() != 1.0) return false;
@@ -4711,7 +4719,7 @@ bool test_normalform::check_LogicalItemF(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() == false) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4788,7 +4796,7 @@ bool test_normalform::check_LogicalItemNotA(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LE) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
 
@@ -4839,7 +4847,7 @@ bool test_normalform::check_LogicalItemNotB(const CNormalLogicalItem* pLogicalIt
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
 
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* pNumerator = &pFraction->getNumerator();
@@ -4879,7 +4887,7 @@ bool test_normalform::check_LogicalItemNotC(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4919,7 +4927,7 @@ bool test_normalform::check_LogicalItemNotD(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4968,7 +4976,7 @@ bool test_normalform::check_LogicalItemNotE(const CNormalLogicalItem* pLogicalIt
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LE) return false;
 
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
   if (numerator->getFractions().size() != 0) return false;
@@ -5011,7 +5019,7 @@ bool test_normalform::check_LogicalItemNotE(const CNormalLogicalItem* pLogicalIt
   if (numerator->getFractions().size() != 0) return false;
   products = &numerator->getProducts();
   if (products->size() != 1) return false;
-  std::set<CNormalProduct*, compareProducts>::const_iterator productsIt = products->begin();
+  ProductIterator productsIt = products->begin();
   pProduct = *(productsIt);
   if (pProduct == NULL) return false;
   if (pProduct->getFactor() != 1.0) return false;
@@ -5043,7 +5051,7 @@ bool test_normalform::check_LogicalItemNotF(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
-  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
+  pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -7736,14 +7744,14 @@ void test_normalform::test_sum_with_nested_fractions_1()
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts>* pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 3);
-  std::set<CNormalProduct*, compareProducts>::const_iterator productIt = pProducts->begin();
+  ProductIterator productIt = pProducts->begin();
   // first product A*D
   const CNormalProduct* pProduct = (*productIt);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(fabs((pProduct->getFactor() - 1.0) / 1.0) < 1e-12);
   const std::set<CNormalItemPower*, compareItemPowers>* pItemPowers = &pProduct->getItemPowers();
   CPPUNIT_ASSERT(pItemPowers->size() == 2);
-  std::set<CNormalItemPower*>::const_iterator itemPowerIt = pItemPowers->begin();
+  ItemPowerIterator itemPowerIt = pItemPowers->begin();
   // first item A
   const CNormalItemPower* pItemPower = (*itemPowerIt);
   CPPUNIT_ASSERT(pItemPower != NULL);
@@ -7910,7 +7918,7 @@ void test_normalform::test_product_of_sums_1()
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts>* pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 4);
-  std::set<CNormalProduct*, compareProducts>::const_iterator productsIt;
+  ProductIterator productsIt;
   // first product A*C*E
   productsIt = pProducts->begin();
   const CNormalProduct* pProduct = (*productsIt);
@@ -8081,7 +8089,7 @@ void test_normalform::test_product_of_sums_2()
   CPPUNIT_ASSERT(pNumerator->getFractions().size() == 0);
   const std::set<CNormalProduct*, compareProducts>* pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 4);
-  std::set<CNormalProduct*, compareProducts>::const_iterator productsIt;
+  ProductIterator productsIt;
   // first product A*C*E
   productsIt = pProducts->begin();
   const CNormalProduct* pProduct = (*productsIt);

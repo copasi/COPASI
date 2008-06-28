@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.hpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/21 16:36:47 $
+//   $Date: 2008/06/28 18:10:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,7 +118,7 @@ class test_normalform : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE_END();
 
   protected:
-    CNormalFraction* pFraction;
+    const CNormalFraction* pFraction;
 
   public:
     void setUp();
