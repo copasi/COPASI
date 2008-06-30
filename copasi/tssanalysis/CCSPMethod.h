@@ -1,24 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/03/04 16:54:18 $
+//   $Date: 2008/06/30 11:42:18 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CCSPMethod
 #define COPASI_CCSPMethod
-
-#define CSP_DEBUG
 
 #include <sstream>
 #include "utilities/CVector.h"
@@ -38,105 +36,13 @@ class CCSPMethod : public CTSSAMethod
                                   CTSSAProblem * pProblem);
 
   public:
-    struct Data
-      {
-        C_INT dim;
-        CCSPMethod * pMethod;
-      };
-
-    // Attributes
-  private:
-    /**
-     *  A pointer to the current state in complete model view.
-     */
-    CState * mpState;
-
-    /**
-     * mData.dim is the dimension of the ODE system.
-     */
-    Data mData;
-
-    /**
-     *  Pointer to the array with left hand side values.
-     */
-    C_FLOAT64 * mY;
-
-    /**
-     * Vector containig the derivatives after calling eval
-     */
-    CVector< C_FLOAT64 > mYdot;
-
-    /**
-     *  Current time.
-     */
-    C_FLOAT64 mTime;
-
-    /**
-     *  Jacobian matrix
-     */
-    CMatrix <C_FLOAT64> mJacobian;
-
-    /**
-     *  LSODA state.
-     */
-    C_INT mLsodaStatus;
-
-    /**
-     * Whether to use the reduced model
-     */
-    bool mReducedModel;
-
-    /**
-     * Relative tolerance.
-     */
-    C_FLOAT64 mRtol;
-
-    /**
-     * A vector of absolute tolerances.
-     */
-    CVector< C_FLOAT64 > mAtol;
-
-    /**
-     * Stream to capture LSODA error messages
-     */
-    std::ostringstream mErrorMsg;
-
-    /**
-     * The LSODA integrator
-     */
-    CLSODA mLSODA;
-
-    /**
-     * The state of the integrator
-     */
-    C_INT mState;
-
-    /**
-     * LSODA C_FLOAT64 work area
-     */
-    CVector< C_FLOAT64 > mDWork;
-
-    /**
-     * LSODA C_INT work area
-     */
-    CVector< C_INT > mIWork;
-
-    /**
-     * The way LSODA calculates the jacobian
-     */
-    C_INT mJType;
-
-    /**
-     * A pointer to the model
-     */
-    CModel * mpModel;
 
     /**
      *  CSP related staff
      */
 
     /**
-     * Unit matrix 
+     * Unit matrix
      */
     CMatrix<C_FLOAT64> mI;
 
@@ -144,6 +50,11 @@ class CCSPMethod : public CTSSAMethod
      *  A value related to a mesure of the time scale separation of the fast and slow modes
      */
     C_FLOAT64 mEps;
+
+    /**
+     *  An alternative  value related to a mesure of the time scale separation of the fast and slow modes
+     */
+    C_FLOAT64 mTsc;
 
     /**
      *  A maximux relative error
@@ -156,6 +67,11 @@ class CCSPMethod : public CTSSAMethod
     C_FLOAT64 mAerror;
 
     /**
+     *  Number of the refinement iterations
+     */
+    C_INT nIter;
+
+    /**
      *  A vector of the current right hand side
      */
     CVector<C_FLOAT64> mG;
@@ -164,6 +80,45 @@ class CCSPMethod : public CTSSAMethod
      *  An error vector build on the basis of the solution vector
      */
     CVector<C_FLOAT64> mYerror;
+
+    /**
+     * CSP Output
+     */
+
+    C_INT mSetVectors;
+
+    /**
+     *  Amplitudes of  reaction modes (column vector);
+     **/
+
+    CVector<C_FLOAT64> mAmplitude;
+
+    /**
+     *  Radical Pointer: whenever is not a small number, species k is said to be CSP radical
+     **/
+
+    CMatrix<C_FLOAT64> mRadicalPointer;
+
+    /**
+    *  Fast Reaction Pointer of the m-th reaction mode : whenever is not a small number,
+    *  the r-th reaction is said to be a fast reaction
+    **/
+
+    CMatrix<C_FLOAT64> mFastReactionPointer;
+
+    /**
+     * Participation Index : is a mesure of participation of the r-th elementary reaction
+     * to the balancing act of the i-th mode (matrix)
+     **/
+
+    CMatrix<C_FLOAT64> mParticipationIndex;
+
+    /**
+     * Importance Index: is a mesure of relative importance of the contribution of r-th elementary
+     * reaction to the current reaction rate of i-th spiecies
+     **/
+
+    CMatrix<C_FLOAT64> mImportanceIndex;
 
     // Operations
   private:
@@ -241,30 +196,57 @@ class CCSPMethod : public CTSSAMethod
      *   Inverse  submatrix
      */
 
-    void sminverse(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
-
-
-    /**
-    * the CSP refinement procedure, step 1 :
-    * refine the row  vectors B ,
-    *  colume vectors A  are known
-    */
-
-    void bRefinement(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & TAU0, CMatrix< C_FLOAT64 > & B0, CMatrix< C_FLOAT64 > & J, CMatrix< C_FLOAT64 > & B);
+    void sminverse(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
-     * the CSP refinement procedure, step 2 :
-     * refine the columen vectors A
-     *  as the row vectors B  use the refined in step 1
-     */
+     * compute amplitudes of fast and slow modes
+     **/
 
-    void aRefinement(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B, CMatrix<C_FLOAT64 > & J, CMatrix< C_FLOAT64 > & A);
+    void modesAmplitude(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
 
     /**
-     * Build the fast subspace projection matrix
-    */
+     * compute CSP radical pointer and  fast reaction pointers
+     **/
 
-    void fastSubspaceProjectionMatrix(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & Q);
+    void CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+
+    /**
+     * compute CSP Participation Index
+     **/
+
+    void CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLOAT64 > & B0);
+
+    /**
+     * compute CSP Importance Index
+     **/
+
+    void CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLOAT64 > & Q);
+
+    /**
+     *  correct for the contribution of the fast time-scales  to y
+     **/
+    void yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMatrix< C_FLOAT64 > & TAUM, CMatrix< C_FLOAT64 > & F, CMatrix< C_FLOAT64 > & A);
+
+    /**
+     * Refinement Procedre :
+     *  Lamm, Combustion Science and Technoligy, 1993.
+     **/
+    void basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, CMatrix< C_FLOAT64 > & TAU, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
+
+    /**
+     * evaluate Jacobian for the current y
+     **/
+    void calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
+
+    /**
+     * find  the new number of fast  according to the time-scale separation ratio
+     **/
+    void findTimeScaleSeparation(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & tsc, C_INT & info);
+
+    /**
+     * enforce the criterion to classify
+     **/
+    void classifyModes(C_INT & N, C_INT & M, C_INT & exhausted, C_FLOAT64 & tauM, C_FLOAT64 & tauM1 , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
 
     /**
      *  Start procedure of the CSP algorithm.
@@ -274,23 +256,90 @@ class CCSPMethod : public CTSSAMethod
     void cspstep(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
-     *  correct for the contribution of the fast time-scales  to y
+     * CSP output
      **/
-    void yCorrection(C_INT & n, C_INT & m, CVector< C_FLOAT64 > & y, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & J, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+
+    void CSPOutput(C_INT & N, C_INT & M, C_INT & R);
 
     /**
-     * evaluate Jacobian for the current y
+     * CSP output : empty
      **/
-    void calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
+
+    void emptyOutputData(C_INT & N, C_INT & M, C_INT & R);
 
     /**
-     * enforce the criterion to declare a mode exhausted
+     *vectors contain whole data for all calculation steps
      **/
-    void exhaustedFastModesDetection(C_INT & n, C_INT & m, C_INT & tot, C_FLOAT64 & tisc , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+    std::vector< CMatrix<C_FLOAT64> > mVec_mAmplitude;
+    std::vector< CMatrix<C_FLOAT64> > mVec_mRadicalPointer;
+    std::vector< CMatrix<C_FLOAT64> > mVec_mFastReactionPointer;
+    std::vector< CMatrix<C_FLOAT64> > mVec_mParticipationIndex;
+    std::vector< CMatrix<C_FLOAT64> > mVec_mImportanceIndex;
 
     /**
-     * find the new number of  dead modes  according to the time-scale separation ratio 
+     *CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
      **/
-    void findNewNumberOfDeadModes(C_INT & n, C_INT & m, C_INT & k, CVector< C_FLOAT64 > & tsc);
+    CArrayAnnotation* pAmplitudeAnn;
+    CArrayAnnotation* pRadicalPointerAnn;
+    CArrayAnnotation* pFastReactionPointerAnn;
+    CArrayAnnotation* pParticipationIndexAnn;
+    CArrayAnnotation* pImportanceIndexAnn;
+
+    /**
+    *required for creation of above listed CArrayAnnotation
+    **/
+    CArrayAnnotation* pTmp1;
+    CArrayAnnotation* pTmp2;
+    CArrayAnnotation* pTmp3;
+    CArrayAnnotation* pTmp4;
+    CArrayAnnotation* pTmp5;
+
+    /**
+    *input for every CArraAnnotations
+    *contain data for single stepcalculation
+    **/
+    CMatrix<C_FLOAT64> mAmplitudeTab;
+    CMatrix<C_FLOAT64> mRadicalPointerTab;
+    CMatrix<C_FLOAT64> mFastReactionPointerTab;
+    CMatrix<C_FLOAT64> mParticipationIndexTab;
+    CMatrix<C_FLOAT64> mImportanceIndexTab;
+
+    /**
+    * return CArrayAnnotation for visualization in ILDM-tab
+    * in the CQTSSAResultSubWidget
+    **/
+    const CArrayAnnotation* getAmplitudeAnn() const
+      {return pAmplitudeAnn;}
+    const CArrayAnnotation* getRadicalPointerAnn() const
+      {return pRadicalPointerAnn;}
+    const CArrayAnnotation* getFastReactionPointerAnn() const
+      {return pFastReactionPointerAnn;}
+    const CArrayAnnotation* getParticipationIndexAnn() const
+      {return pParticipationIndexAnn;}
+    const CArrayAnnotation* getImportanceIndexAnn() const
+      {return pImportanceIndexAnn;}
+
+    /**
+     * upgrade all vectors with values from actually calculalion for current step
+     **/
+    void setVectors();
+
+    /**
+    * empty every vector to be able to fill them with new values for a
+    * new calculation also nullify the step counter
+    **/
+    void emptyVectors();
+
+    /**
+     * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+     * input for each CArraAnnotations is a seperate CMatrix
+     **/
+    void createAnnotationsM();
+
+    /**
+    * set the every CArrayAnnotation for the requested step
+    * set the desription of CArayAnnotation for both dimensions
+    **/
+    void setAnnotationM(int step);
   };
 #endif // COPASI_CCSPMethod

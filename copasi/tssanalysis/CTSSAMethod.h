@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/03/04 16:54:18 $
+//   $Date: 2008/06/30 11:42:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,7 @@ class CTSSAMethod : public CCopasiMethod
      */
     virtual void initializeParameter();
 
-  /************ The following concerns the both ILDM Methods *******************************/
+    /************ The following concerns the both ILDM Methods *******************************/
 
   protected:
 
@@ -431,56 +431,19 @@ class CTSSAMethod : public CCopasiMethod
        **/
     double orthog(C_INT & number1, C_INT & number2);
 
-    /**
-     *vectors contain whole data for all calculationsteps
-     **/
-    std::vector< CMatrix<C_FLOAT64> > mVec_mVslow;
-    std::vector< CMatrix<C_FLOAT64> > mVec_mVslowMetab;
-    std::vector< CVector<C_FLOAT64> > mVec_mVslowSpace;
-    std::vector< CVector<C_FLOAT64> > mVec_mVfastSpace;
-    std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
-    std::vector< int > mVec_SlowModes;
-    std::vector< C_FLOAT64 > mCurrentTime;
-
-    /**
-     *CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
-     **/
-    CArrayAnnotation* pVslowPrintAnn;
-    CArrayAnnotation* pVslowMetabPrintAnn;
-    CArrayAnnotation* pVslowSpacePrintAnn;
-    CArrayAnnotation* pVfastSpacePrintAnn;
-
-    /**
-    *required for creation of above listed CArrayAnnotation
-    **/
-    CArrayAnnotation* pTmp1;
-    CArrayAnnotation* pTmp2;
-    CArrayAnnotation* pTmp3;
-    CArrayAnnotation* pTmp4;
-
-    /**
-    *input for every CArraAnnotations
-    *contain data for single stepcalculation
-    **/
-    CMatrix<C_FLOAT64> mVslowPrint;
-    CMatrix<C_FLOAT64> mVslowSpacePrint;
-    CMatrix<C_FLOAT64> mVfastSpacePrint;
-    CMatrix<C_FLOAT64> mVslowMetabPrint;
-
   public:
 
     /**
-    * return CArrayAnnotation for visualization in ILDM-tab
-    * in the CQTSSAResultSubWidget
+      *vectors contain whole data for all calculationsteps
+      **/
+    std::vector< int > mVec_SlowModes;
+    std::vector< C_FLOAT64 > mCurrentTime;
+    std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
+
+    /**
+    * stepcounter
     **/
-    const CArrayAnnotation* getVslowPrintAnn() const
-      {return pVslowPrintAnn;}
-    const CArrayAnnotation* getVslowSpacePrintAnn() const
-      {return pVslowSpacePrintAnn;}
-    const CArrayAnnotation* getVfastSpacePrintAnn() const
-      {return pVfastSpacePrintAnn;}
-    const CArrayAnnotation* getVslowMetabPrintAnn() const
-      {return pVslowMetabPrintAnn;}
+    int mCurrentStep;
 
     /**
     * return mVec_TimeScale for visualization in ILDM-tab
@@ -489,19 +452,25 @@ class CTSSAMethod : public CCopasiMethod
     CVector< C_FLOAT64> getVec_TimeScale(int step);
 
     /**
-    * upgrade all vectors with values from actually calculalion for current step
-    **/
-    void setVectors(int slowMode);
-
-    /**
     *return required time-value from timevector
     **/
     C_FLOAT64 returnCurrentTime(int step){return mCurrentTime[step];};
 
     /**
-    * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
-    * input for each CArraAnnotations is a seperate CMatrix
+    * upgrade all vectors with values from actually calculalion for current step
     **/
+    void setVectors(int slowMode);
+
+    /**
+    * empty every vector to be able to fill them with new values for a
+    * new calculation also nullify the step counter
+    **/
+    void emptyVectors();
+
+    /**
+     * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+     * input for each CArraAnnotations is a seperate CMatrix
+     **/
     void createAnnotationsM();
 
     /**
@@ -509,17 +478,6 @@ class CTSSAMethod : public CCopasiMethod
     * set the desription of CArayAnnotation for both dimensions
     **/
     void setAnnotationM(int step);
-
-    /**
-    * empty every vector to be able to fill them with new values for a new calculation
-      * also nullify the step counter
-      **/
-    void emptyVectors();
-
-    /**
-      * stepcounter
-      **/
-    int mCurrentStep;
   };
 
 #endif // COPASI_CTSSAMethod

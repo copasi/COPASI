@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/24 16:24:38 $
+//   $Author: nsimus $
+//   $Date: 2008/06/30 11:42:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,11 @@ class CTSSAProblem : public CCopasiProblem
      *
      */
     unsigned C_INT32 * mpStepNumber;
+
+    /**
+     *
+     */
+    C_FLOAT64 * mpDeufelhardTol;
 
     /**
      *

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/03/04 16:54:18 $
+//   $Date: 2008/06/30 11:42:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,6 @@ void CTSSAMethod::initializeIntegrationsParameter()
       setValue("Absolute Tolerance", NewValue);
       removeParameter("Use Default Absolute Tolerance");
     }
-
 }
 
 bool CTSSAMethod::elevateChildren()
@@ -724,7 +723,33 @@ void CTSSAMethod::schur(C_INT &info)
           C_INT first;
           C_INT second;
 
-          if (index[count + 1] < index[count])
+          bool diagorder = false;
+
+          CCopasiMethod::SubType subType;
+
+          subType = mData.pMethod->getSubType();
+
+          switch (subType)
+            {
+            case tssILDM:
+              diagorder = (index[count + 1] < index[count]);
+              break;
+
+            case tssILDMModified:
+              diagorder = (index[count + 1] < index[count]);
+              break;
+
+            case tssCSP:
+              diagorder = (index[count + 1] > index[count]);
+              break;
+
+            default:
+              fatalError();
+            }
+
+          //ILDM : if (index[count + 1] < index[count])
+          //CSP:  if (index[count + 1] > index[count])
+          if (diagorder)
             {
               changed = true;
               first = count + 2;
@@ -1403,53 +1428,33 @@ void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * yd
 //  flag_orthog =0 to print the matrices proved the orthogonality of transformation
 
 /**
+ * return mVec_TimeScale for visualization in ILDM-tab
+ * in the CQTSSAResultSubWidget
+ **/
+CVector< C_FLOAT64> CTSSAMethod::getVec_TimeScale(int step)
+{
+  return mVec_TimeScale[step - 1];
+}
+
+/**
+ * Empty every vector to be able to fill them with new values for a new calculation.
+ * Also nullify the step counter.
+ **/
+void CTSSAMethod::emptyVectors()
+{}
+
+/**
+ *upgrade all vectors with values from actually calculalion for current step
+ **/
+void CTSSAMethod::setVectors(int slowMode)
+{}
+
+/**
  * Create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget.
  * Input for each CArraAnnotations is a seperate CMatrix.
  **/
 void CTSSAMethod::createAnnotationsM()
-{
-  CArrayAnnotation *
-  pTmp1 = new CArrayAnnotation("Unscaled elasticities", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint));
-  pTmp1->setMode(0, pTmp1->STRINGS);
-  pTmp1->setMode(1, pTmp1->VECTOR);
-  pTmp1->setDescription("mVslowPrintAnn matrix");
-  //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
-  pTmp1->setDimensionDescription(0, "contribution to  mode (TS - corresponding timescale)");
-  pTmp1->setDimensionDescription(1, "metabolites");
-  pVslowPrintAnn = pTmp1;
-
-  CArrayAnnotation *
-  pTmp2 = new CArrayAnnotation("mVslowMetabPrint", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint));
-  pTmp2->setMode(1, pTmp2->STRINGS);
-  pTmp2->setMode(0, pTmp2->VECTOR);
-  pTmp2->setDescription("mVslowMetabPrint matrix");
-  pTmp2->setDimensionDescription(0, "mode distribution for each metabolite");
-  //pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
-  pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
-  pVslowMetabPrintAnn = pTmp2;
-
-  CArrayAnnotation *
-  pTmp3 = new CArrayAnnotation("mVslowSpacePrint", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint));
-  pTmp3->setMode(1, pTmp3->STRINGS);
-  pTmp3->setMode(0, pTmp3->VECTOR);
-  pTmp3->setDescription("mVslowSpacePrint matrix");
-  pTmp3->setDimensionDescription(0, "metabolites");
-  pTmp3->setDimensionDescription(1, "contribution to slow space");
-  pVslowSpacePrintAnn = pTmp3;
-
-  CArrayAnnotation *
-  pTmp4 = new CArrayAnnotation("mVfastSpacePrint", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint));
-  pTmp4->setMode(1, pTmp4->STRINGS);
-  pTmp4->setMode(0, pTmp4->VECTOR);
-  pTmp4->setDescription("mVfastSpacePrint matrix");
-  pTmp4->setDimensionDescription(0, "metabolites");
-  pTmp4->setDimensionDescription(1, "contribution to fast space");
-  pVfastSpacePrintAnn = pTmp4;
-}
+{}
 /**
  * Set the every CArrayAnnotation for the requested step.
  * Set also the desription of CArayAnnotation for both dimensions:
@@ -1458,132 +1463,4 @@ void CTSSAMethod::createAnnotationsM()
  *    - dimension description could consists of arrays of CommonNames
  **/
 void CTSSAMethod::setAnnotationM(int step)
-{
-  if (!step) return;
-  step -= 1;
-  double timeScale;
-  std::string str;
-  std::stringstream sstr;
-  sstr.str("");
-  sstr.clear();
-  int i;
-
-  mVslowPrint.resize(mData.dim, mData.dim);
-  mVslowPrint = mVec_mVslow[step];
-  pVslowPrintAnn->resize();
-  pVslowPrintAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
-  for (i = 0; i < mData.dim; i++)
-    {
-      timeScale = mVec_TimeScale[step][i];
-      if (i < mVec_SlowModes[step])
-        sstr << "Slow: ";
-      else
-        sstr << "Fast: ";
-      sstr << timeScale;
-      str = sstr.str();
-      pVslowPrintAnn->setAnnotationString(0, i, str);
-      sstr.str("");
-      sstr.clear();
-    }
-
-  mVslowMetabPrint.resize(mData.dim, mData.dim);
-  mVslowMetabPrint = mVec_mVslowMetab[step];
-  pVslowMetabPrintAnn->resize();
-  pVslowMetabPrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  for (i = 0; i < mData.dim; i++)
-    {
-      timeScale = mVec_TimeScale[step][i];
-      if (i < mVec_SlowModes[step])
-        sstr << "Slow: ";
-      else
-        sstr << "Fast: ";
-      sstr << timeScale;
-      str = sstr.str();
-      pVslowMetabPrintAnn->setAnnotationString(1, i, str);
-      sstr.str("");
-      sstr.clear();
-    }
-
-  sstr << mVec_SlowModes[step];
-  // if (mVec_SlowModes[step] > 1)
-  // sstr << " slow modes";
-  //else
-  // sstr << " slow mode";
-  sstr << " slow; ";
-
-  C_INT dim = mData.dim;
-  sstr << dim - mVec_SlowModes[step];
-  sstr << " fast";
-
-  str = sstr.str();
-  mVslowSpacePrint.resize(mData.dim, 1);
-  for (i = 0; i < mData.dim; i++)
-    mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
-  pVslowSpacePrintAnn->resize();
-  pVslowSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  pVslowSpacePrintAnn->setAnnotationString(1, 0, str);
-
-  mVfastSpacePrint.resize(mData.dim, 1);
-  for (i = 0; i < mData.dim; i++)
-    mVfastSpacePrint(i, 0) = mVec_mVfastSpace[step][i];
-  pVfastSpacePrintAnn->resize();
-  pVfastSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
-  pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
-}
-
-/**
- * Empty every vector to be able to fill them with new values for a new calculation.
- * Also nullify the step counter.
- **/
-void CTSSAMethod::emptyVectors()
-{
-  mCurrentStep = 0;
-  mVec_mVslow.erase(mVec_mVslow.begin(), mVec_mVslow.end());
-  mVec_TimeScale.erase(mVec_TimeScale.begin(), mVec_TimeScale.end());
-  mVec_mVslowMetab.erase(mVec_mVslowMetab.begin(), mVec_mVslowMetab.end());
-  mVec_mVslowSpace.erase(mVec_mVslowSpace.begin(), mVec_mVslowSpace.end());
-  mVec_SlowModes.erase(mVec_SlowModes.begin(), mVec_SlowModes.end());
-}
-
-/**
- *upgrade all vectors with values from actually calculalion for current step
- **/
-void CTSSAMethod::setVectors(int slowMode)
-{
-  mVec_mVslow.push_back(mCurrentStep);
-  mVec_mVslow[mCurrentStep].resize(mData.dim, mData.dim);
-  mVec_mVslow[mCurrentStep] = mVslow;
-
-  mVec_TimeScale.push_back(mCurrentStep);
-  mVec_TimeScale[mCurrentStep].resize(mData.dim);
-  int i;
-  for (i = 0; i < mData.dim; i++)
-    mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
-
-  mVec_mVslowMetab.push_back(mCurrentStep);
-  mVec_mVslowMetab[mCurrentStep].resize(mData.dim, mData.dim);
-  mVec_mVslowMetab[mCurrentStep] = mVslow_metab;
-
-  mVec_mVslowSpace.push_back(mCurrentStep);
-  mVec_mVslowSpace[mCurrentStep].resize(mData.dim);
-  mVec_mVslowSpace[mCurrentStep] = mVslow_space;
-
-  mVec_mVfastSpace.push_back(mCurrentStep);
-  mVec_mVfastSpace[mCurrentStep].resize(mData.dim);
-  mVec_mVfastSpace[mCurrentStep] = mVfast_space;
-
-  mVec_SlowModes.push_back(mCurrentStep);
-  mVec_SlowModes[mCurrentStep] = slowMode;
-
-  mCurrentTime.push_back(mCurrentStep);
-  mCurrentTime[mCurrentStep] = mTime;
-}
-
-/**
- * return mVec_TimeScale for visualization in ILDM-tab
- * in the CQTSSAResultSubWidget
- **/
-CVector< C_FLOAT64> CTSSAMethod::getVec_TimeScale(int step)
-{
-  return mVec_TimeScale[step - 1];
-}
+{}
