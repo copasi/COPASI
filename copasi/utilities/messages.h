@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.119 $
+//   $Revision: 1.120 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/11 12:59:53 $
+//   $Author: pwilly $
+//   $Date: 2008/06/30 08:35:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,7 @@ const MESSAGES Messages[] =
      "found for name '%s' and type '%s'."},
     {MCCopasiMethod + 2, "CCopasiMethod (2): Problem is not set."},
     {MCCopasiMethod + 3, "CCopasiMethod (3): Model is not set in problem."},
+    {MCCopasiMethod + 4, "CCopasiMethod (4): Event exists. Current task '%s' is not suitable with the event."},
 
     // CReaction
     {MCReaction + 1, "CReaction (1): Function '%s' not found."},
