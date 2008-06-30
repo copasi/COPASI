@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:49:55 $
+//   $Author: pwilly $
+//   $Date: 2008/06/30 08:37:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include "CCopasiMethod.h"
 #include "CCopasiMessage.h"
 #include "CCopasiProblem.h"
+#include "model/CModel.h"
 
 const std::string CCopasiMethod::SubTypeName[] =
   {
@@ -199,6 +200,39 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
       //no model
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiMethod + 3);
       return false;
+    }
+
+  if (pProblem->getModel()->getEvents().size())
+    {
+      if (mType == CCopasiTask::steadyState)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCCopasiMethod + 4, "Steady-State");
+          return false;
+        }
+
+      if (mType == CCopasiTask::timeCourse && mSubType == CCopasiMethod::deterministic)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Course with deterministic method (LSODA)");
+          return false;
+        }
+
+      if (mType == CCopasiTask::mca)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCCopasiMethod + 4, "Metabolic Control Analysis");
+          return false;
+        }
+
+      if (mType == CCopasiTask::lyap)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Lyapunov Exponents");
+          return false;
+        }
+
+      if (mType == CCopasiTask::tssAnalysis)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
+          return false;
+        }
     }
 
   return true;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:49:55 $
+//   $Author: pwilly $
+//   $Date: 2008/06/30 08:37:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
