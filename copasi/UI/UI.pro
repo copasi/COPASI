@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.171 $ 
+#   $Revision: 1.172 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/04/18 08:57:46 $ 
+#   $Date: 2008/06/30 08:56:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.171 $ $Author: pwilly $ $Date: 2008/04/18 08:57:46 $  
+# $Revision: 1.172 $ $Author: pwilly $ $Date: 2008/06/30 08:56:46 $  
 ######################################################################
 
 LIB = UI
@@ -52,7 +52,7 @@ HEADERS	+= \
 	CQBarChart.h \
 	CQDateTimeEditTableItem.h \
 	CQEventsWidget.h \
-	CQEventWidget1.h \
+#	CQEventWidget1.h \
 	CQExpressionWidget.h \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
@@ -117,7 +117,7 @@ SOURCES	+= \
 	CQBarChart.cpp \
 	CQDateTimeEditTableItem.cpp \
 	CQEventsWidget.cpp \
-	CQEventWidget1.cpp \
+#	CQEventWidget1.cpp \
 	CQExpressionWidget.cpp \
 	CQLyapResultWidget.cpp \
 	CQMathMatrixWidget.cpp \
@@ -220,6 +220,8 @@ SOURCES	+= \
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += objectdebug.ui
 # FORMS += CQExpressionMmlWidget.ui
+# FORMS += CQEventWidget1.ui
+# FORMS += CQPrintAsDialog.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -230,6 +232,8 @@ HEADERS += \
            CQDifferentialEquations.h \
            CQEFMWidget.h \
            CQEFMWidget.ui.h \
+           CQEventWidget1.h \
+           CQEventWidget1.ui.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
@@ -263,6 +267,8 @@ HEADERS += \
            CQOptimizationWidget.ui.h \
            CQPreferenceDialog.h \
            CQPreferenceDialog.ui.h \
+           CQPrintAsDialog.h \
+           CQPrintAsDialog.ui.h \
            CQProgressDialog.h \
            CQProgressDialog.ui.h \
            CQProgressItem.h \
@@ -313,6 +319,7 @@ SOURCES += \
            CQCompartment.cpp \
            CQDifferentialEquations.cpp \
            CQEFMWidget.cpp \
+           CQEventWidget1.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
 	   CQExpressionMmlWidget.cpp \
@@ -329,6 +336,7 @@ SOURCES += \
            CQMoietiesTaskResult.cpp \
            CQMoietiesTaskWidget.cpp \
            CQOptimizationWidget.cpp \
+           CQPrintAsDialog.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
