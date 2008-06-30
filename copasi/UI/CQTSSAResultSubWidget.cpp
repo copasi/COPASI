@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Jun 27 11:44:08 2008
+ ** Created: Thu May 29 10:23:56 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -49,16 +49,21 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
   if (!name)
     setName("CQTSSAResultSubWidget");
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
-  CQTSSAResultSubWidgetLayout = new QVBoxLayout(this, 11, 6, "CQTSSAResultSubWidgetLayout");
+  CQTSSAResultSubWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQTSSAResultSubWidgetLayout");
 
-  layout15 = new QHBoxLayout(0, 0, 6, "layout15");
+  toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
 
   comboBox = new QComboBox(FALSE, this, "comboBox");
   comboBox->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, comboBox->sizePolicy().hasHeightForWidth()));
-  layout15->addWidget(comboBox);
-  spacer = new QSpacerItem(346, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout15->addItem(spacer);
-  CQTSSAResultSubWidgetLayout->addLayout(layout15);
+  toplayout->addWidget(comboBox);
+  spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  toplayout->addItem(spacer);
+
+  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
+  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
+  toplayout->addWidget(ButtonSaveData);
+
+  CQTSSAResultSubWidgetLayout->addLayout(toplayout, 0, 0);
 
   tabWidget2 = new QTabWidget(this, "tabWidget2");
   tabWidget2->setMargin(1);
@@ -174,26 +179,114 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
 
   TabPageLayout->addWidget(mLabel6, 0, 6);
   tabWidget2->insertTab(TabPage, QString::fromLatin1(""));
-  CQTSSAResultSubWidgetLayout->addWidget(tabWidget2);
 
-  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
-  spacer11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout14->addItem(spacer11);
+  TabPage_4 = new QWidget(tabWidget2, "TabPage_4");
+  TabPageLayout_4 = new QGridLayout(TabPage_4, 1, 1, 11, 6, "TabPageLayout_4");
 
-  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
-  layout14->addWidget(ButtonSaveData);
+  mTabWidget_3 = new QTabWidget(TabPage_4, "mTabWidget_3");
+  mTabWidget_3->setMargin(0);
 
-  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
-  layout14->addWidget(mpBtnPrintAsImage);
-  CQTSSAResultSubWidgetLayout->addLayout(layout14);
+  tab_5 = new QWidget(mTabWidget_3, "tab_5");
+  tabLayout_5 = new QGridLayout(tab_5, 1, 1, 11, 6, "tabLayout_5");
+
+  pArrayWidget_3 = new CQArrayAnnotationsWidget(tab_5, "pArrayWidget_3");
+
+  tabLayout_5->addWidget(pArrayWidget_3, 0, 0);
+  mTabWidget_3->insertTab(tab_5, QString::fromLatin1(""));
+
+  tab_6 = new QWidget(mTabWidget_3, "tab_6");
+  tabLayout_6 = new QGridLayout(tab_6, 1, 1, 11, 6, "tabLayout_6");
+
+  pArrayWidget2_3 = new CQArrayAnnotationsWidget(tab_6, "pArrayWidget2_3");
+
+  tabLayout_6->addWidget(pArrayWidget2_3, 0, 0);
+  mTabWidget_3->insertTab(tab_6, QString::fromLatin1(""));
+
+  TabPage_5 = new QWidget(mTabWidget_3, "TabPage_5");
+  TabPageLayout_5 = new QGridLayout(TabPage_5, 1, 1, 11, 6, "TabPageLayout_5");
+
+  pArrayWidget3_3 = new CQArrayAnnotationsWidget(TabPage_5, "pArrayWidget3_3");
+
+  TabPageLayout_5->addWidget(pArrayWidget3_3, 0, 0);
+  mTabWidget_3->insertTab(TabPage_5, QString::fromLatin1(""));
+
+  TabPage_6 = new QWidget(mTabWidget_3, "TabPage_6");
+  TabPageLayout_6 = new QGridLayout(TabPage_6, 1, 1, 11, 6, "TabPageLayout_6");
+
+  pArrayWidget4_3 = new CQArrayAnnotationsWidget(TabPage_6, "pArrayWidget4_3");
+
+  TabPageLayout_6->addWidget(pArrayWidget4_3, 0, 0);
+  mTabWidget_3->insertTab(TabPage_6, QString::fromLatin1(""));
+
+  TabPage_7 = new QWidget(mTabWidget_3, "TabPage_7");
+  TabPageLayout_7 = new QGridLayout(TabPage_7, 1, 1, 11, 6, "TabPageLayout_7");
+
+  pArrayWidget4_3_2 = new CQArrayAnnotationsWidget(TabPage_7, "pArrayWidget4_3_2");
+
+  TabPageLayout_7->addWidget(pArrayWidget4_3_2, 0, 0);
+  mTabWidget_3->insertTab(TabPage_7, QString::fromLatin1(""));
+
+  TabPageLayout_4->addMultiCellWidget(mTabWidget_3, 2, 2, 0, 6);
+
+  pLabel1_3 = new QLabel(TabPage_4, "pLabel1_3");
+  pLabel1_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pLabel1_3->sizePolicy().hasHeightForWidth()));
+
+  TabPageLayout_4->addWidget(pLabel1_3, 0, 0);
+
+  mLabel2_3 = new QLabel(TabPage_4, "mLabel2_3");
+  mLabel2_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mLabel2_3->sizePolicy().hasHeightForWidth()));
+  QFont mLabel2_3_font(mLabel2_3->font());
+  mLabel2_3_font.setBold(TRUE);
+  mLabel2_3->setFont(mLabel2_3_font);
+
+  TabPageLayout_4->addWidget(mLabel2_3, 0, 1);
+
+  mLabel3_3 = new QLabel(TabPage_4, "mLabel3_3");
+  mLabel3_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, mLabel3_3->sizePolicy().hasHeightForWidth()));
+
+  TabPageLayout_4->addWidget(mLabel3_3, 0, 2);
+
+  mLabel4_3 = new QLabel(TabPage_4, "mLabel4_3");
+  mLabel4_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mLabel4_3->sizePolicy().hasHeightForWidth()));
+  QFont mLabel4_3_font(mLabel4_3->font());
+  mLabel4_3_font.setBold(TRUE);
+  mLabel4_3->setFont(mLabel4_3_font);
+
+  TabPageLayout_4->addWidget(mLabel4_3, 0, 3);
+
+  mLabel5_3 = new QLabel(TabPage_4, "mLabel5_3");
+  mLabel5_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, mLabel5_3->sizePolicy().hasHeightForWidth()));
+
+  TabPageLayout_4->addWidget(mLabel5_3, 0, 4);
+
+  mLabel6_3 = new QLabel(TabPage_4, "mLabel6_3");
+  mLabel6_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, mLabel6_3->sizePolicy().hasHeightForWidth()));
+
+  TabPageLayout_4->addWidget(mLabel6_3, 0, 5);
+  mSpacer_3 = new QSpacerItem(181, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  TabPageLayout_4->addItem(mSpacer_3, 0, 6);
+
+  mSlider_3 = new QSlider(TabPage_4, "mSlider_3");
+  mSlider_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)1, 0, 0, mSlider_3->sizePolicy().hasHeightForWidth()));
+  mSlider_3->setMouseTracking(TRUE);
+  mSlider_3->setAcceptDrops(TRUE);
+  mSlider_3->setMaxValue(0);
+  mSlider_3->setPageStep(1);
+  mSlider_3->setTracking(TRUE);
+  mSlider_3->setOrientation(QSlider::Horizontal);
+  mSlider_3->setTickmarks(QSlider::NoMarks);
+  mSlider_3->setTickInterval(1);
+
+  TabPageLayout_4->addMultiCellWidget(mSlider_3, 1, 1, 0, 6);
+  tabWidget2->insertTab(TabPage_4, QString::fromLatin1(""));
+
+  CQTSSAResultSubWidgetLayout->addWidget(tabWidget2, 1, 0);
   languageChange();
-  resize(QSize(600, 382).expandedTo(minimumSizeHint()));
+  resize(QSize(725, 411).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
-  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printAsImage()));
   init();
 }
 
@@ -211,10 +304,11 @@ CQTSSAResultSubWidget::~CQTSSAResultSubWidget()
  */
 void CQTSSAResultSubWidget::languageChange()
 {
-  setCaption(tr("TSSA Result Window"));
+  setCaption(tr("Form1"));
   comboBox->clear();
   comboBox->insertItem(tr("Concentrations"));
   comboBox->insertItem(tr("Particle Numbers"));
+  ButtonSaveData->setText(tr("Save data to file"));
   tabWidget2->changeTab(tab, tr("OptimizationResult"));
   tabWidget2->changeTab(tab_2, tr("TimeSeries"));
   mTabWidget->changeTab(tab_3, tr("Metabolites"));
@@ -231,6 +325,18 @@ void CQTSSAResultSubWidget::languageChange()
   mLabel5->setText(tr("of"));
   mLabel6->setText(tr("0"));
   tabWidget2->changeTab(TabPage, tr("ILDM"));
-  ButtonSaveData->setText(tr("Save data to file"));
-  mpBtnPrintAsImage->setText(tr("Print as image"));
+  mTabWidget_3->changeTab(tab_5, tr("Amplitude"));
+  mTabWidget_3->changeTab(tab_6, tr("Radical Pointer"));
+  mTabWidget_3->changeTab(TabPage_5, tr("Fast Reaction Pointer"));
+  mTabWidget_3->changeTab(TabPage_6, tr("Participation Index"));
+  mTabWidget_3->changeTab(TabPage_7, tr("Importance Index"));
+  pLabel1_3->setText(tr("CSP operation behavior at timepoint:"));
+  mLabel2_3->setText(tr("0"));
+  mLabel3_3->setText(tr("or step:"));
+  mLabel4_3->setText(tr("0"));
+  mLabel5_3->setText(tr("of"));
+  mLabel6_3->setText(tr("0"));
+  QToolTip::add(mSlider_3, tr("move mouse-cursor over slider and use scrollwheel to adjust required step accurately"));
+  QWhatsThis::add(mSlider_3, tr("use slider to adjust required step"));
+  tabWidget2->changeTab(TabPage_4, tr("CSP"));
 }

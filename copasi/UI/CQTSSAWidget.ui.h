@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Author: nsimus $
+//   $Date: 2008/06/30 11:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include <qtable.h>
 #include <qcombobox.h>
 #include <qheader.h>
+#include <qtabwidget.h>
 
 #include "UI/CQTSSAResultSubWidget.h"
 #include "UI/CQTSSAResultWidget.h"
@@ -48,17 +49,24 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
-#include "tssanalysis/CTSSAMethod.h"
+#include "tssanalysis/CCSPMethod.h"
+#include "tssanalysis/CILDMMethod.h"
+#include "tssanalysis/CILDMModifiedMethod.h"
 #include "CQTSSAResultSubWidget.h"
 #include "CQTSSAResultWidget.h"
 
 #define TSSAMAX 10000000
 
 CTSSAMethod* pTSSMethod;
+
+CILDMMethod *pILDM_Method;
+CILDMModifiedMethod *pILDMModiMethod;
+
 CQTSSAResultSubWidget* pTSSResultSubWidget;
 CTSSATask * pCTSSATask;
 
 class mpTSSResultSubWidget;
+class QTabWidget;
 
 void CQTSSAWidget::init()
 {
@@ -78,6 +86,8 @@ void CQTSSAWidget::init()
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
   mpValidatorIntervalSize->setRange(0, DBL_MAX);
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
+
+  connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(disableDeuflhard(int)));
 }
 
 void CQTSSAWidget::destroy()
@@ -241,8 +251,10 @@ bool CQTSSAWidget::runTask()
   pCTSSATask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
   if (!pCTSSATask) return false;
+
   pTSSMethod = dynamic_cast<CTSSAMethod*>(pCTSSATask->getMethod());
-  pTSSMethod->emptyVectors();
+  if (!pTSSMethod)
+    pTSSMethod->emptyVectors();
 
   checkTimeSeries();
   if (!commonBeforeRunTask()) return false;
@@ -265,13 +277,33 @@ bool CQTSSAWidget::runTask()
   pTSSResultSubWidget = pResult->getSubWidget();
   if (!pTSSResultSubWidget)
     return false;
-
-  pTSSResultSubWidget->activateTab(1);
   pTSSResultSubWidget->discardOldResults();
-  pTSSResultSubWidget->setStepNumber();
+
+  pILDM_Method = dynamic_cast<CILDMMethod*>(pCTSSATask->getMethod());
+  if (pILDM_Method)
+    {
+      pTSSResultSubWidget->changeToILDM();
+    }
+  else
+    {
+      pILDMModiMethod = dynamic_cast<CILDMModifiedMethod*>(pCTSSATask->getMethod());
+      if (pILDMModiMethod)
+        {
+          pTSSResultSubWidget->changeToILDMModified();
+        }
+      else
+        {
+          pTSSResultSubWidget->changeToCSP();
+        }
+    }
 
   if (success)
-    mpListView->switchToOtherWidget(271, ""); //change to the results window
+    {
+
+      pTSSResultSubWidget->setStepNumber();
+
+      mpListView->switchToOtherWidget(271, ""); //change to the results window
+    }
 
   return success;
 }
@@ -286,5 +318,19 @@ void CQTSSAWidget::checkTimeSeries()
   else
     {
       mpCheckSave->setEnabled(true);
+    }
+}
+
+void CQTSSAWidget::disableDeuflhard(int i)
+{
+  if ((i == 2) || (i == 1))
+    {
+      mpEditDeufelTol->setDisabled(true);
+      mpLbDeuflTol->setDisabled(true);
+    }
+  else
+    {
+      mpEditDeufelTol->setDisabled(false);
+      mpLbDeuflTol->setDisabled(false);
     }
 }

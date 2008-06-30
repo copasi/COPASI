@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/24 16:19:15 $
+//   $Author: nsimus $
+//   $Date: 2008/06/30 11:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAWidget.ui'
  **
- ** Created: Sun Feb 24 16:58:48 2008
- **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.5 2008/02/24 16:19:15 akoenig Exp $)
+ ** Created: Fri Mar 7 13:03:41 2008
+ **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.6 2008/06/30 11:41:02 nsimus Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

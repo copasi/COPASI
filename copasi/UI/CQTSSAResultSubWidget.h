@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Jun 27 11:44:03 2008
+ ** Created: Tue May 27 12:42:54 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -35,11 +35,11 @@ class QSpacerItem;
 class CTimeSeriesTable;
 class CQArrayAnnotationsWidget;
 class QComboBox;
+class QPushButton;
 class QTabWidget;
 class QTextEdit;
 class QSlider;
 class QLabel;
-class QPushButton;
 
 class CQTSSAResultSubWidget : public QWidget
   {
@@ -50,6 +50,7 @@ class CQTSSAResultSubWidget : public QWidget
     ~CQTSSAResultSubWidget();
 
     QComboBox* comboBox;
+    QPushButton* ButtonSaveData;
     QTabWidget* tabWidget2;
     QWidget* tab;
     QTextEdit* optimizationResultText;
@@ -73,24 +74,44 @@ class CQTSSAResultSubWidget : public QWidget
     QLabel* mLabel4;
     QLabel* mLabel5;
     QLabel* mLabel6;
-    QPushButton* ButtonSaveData;
-    QPushButton* mpBtnPrintAsImage;
+    QWidget* TabPage_4;
+    QTabWidget* mTabWidget_3;
+    QWidget* tab_5;
+    CQArrayAnnotationsWidget* pArrayWidget_3;
+    QWidget* tab_6;
+    CQArrayAnnotationsWidget* pArrayWidget2_3;
+    QWidget* TabPage_5;
+    CQArrayAnnotationsWidget* pArrayWidget3_3;
+    QWidget* TabPage_6;
+    CQArrayAnnotationsWidget* pArrayWidget4_3;
+    QWidget* TabPage_7;
+    CQArrayAnnotationsWidget* pArrayWidget4_3_2;
+    QLabel* pLabel1_3;
+    QLabel* mLabel2_3;
+    QLabel* mLabel3_3;
+    QLabel* mLabel4_3;
+    QLabel* mLabel5_3;
+    QLabel* mLabel6_3;
+    QSlider* mSlider_3;
 
     void displayOptimizationTab(bool displayOptTab);
     void setStepNumber();
     void discardOldResults();
     void setStepSelectionDisabled(bool set);
     void activateTab(int tab);
-    bool clear();
+    void changeToCSP();
+    void changeToILDM();
 
   public slots:
     virtual CTimeSeriesTable * table();
-    void changeInterval();
+    void changeILDMInterval();
+    void changeCSPInterval();
     void hideButtons();
+    void changeToILDMModified();
 
   protected:
-    QVBoxLayout* CQTSSAResultSubWidgetLayout;
-    QHBoxLayout* layout15;
+    QGridLayout* CQTSSAResultSubWidgetLayout;
+    QHBoxLayout* toplayout;
     QSpacerItem* spacer;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
@@ -100,8 +121,13 @@ class CQTSSAResultSubWidget : public QWidget
     QGridLayout* tabLayout_4;
     QGridLayout* TabPageLayout_2;
     QGridLayout* TabPageLayout_3;
-    QHBoxLayout* layout14;
-    QSpacerItem* spacer11;
+    QGridLayout* TabPageLayout_4;
+    QSpacerItem* mSpacer_3;
+    QGridLayout* tabLayout_5;
+    QGridLayout* tabLayout_6;
+    QGridLayout* TabPageLayout_5;
+    QGridLayout* TabPageLayout_6;
+    QGridLayout* TabPageLayout_7;
 
   protected slots:
     virtual void languageChange();
@@ -109,11 +135,9 @@ class CQTSSAResultSubWidget : public QWidget
     void saveDataToFile();
     void toggleView();
     virtual void init();
-    void printAsImage();
 
   private:
     QPixmap image0;
-    QPixmap image1;
   };
 
 #endif // CQTSSARESULTSUBWIDGET_H
