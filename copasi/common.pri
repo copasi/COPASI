@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.78 $ 
+#   $Revision: 1.79 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/03/28 14:01:20 $ 
+#   $Date: 2008/07/01 15:40:53 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.78 $ $Author: shoops $ $Date: 2008/03/28 14:01:20 $  
+# $Revision: 1.79 $ $Author: shoops $ $Date: 2008/07/01 15:40:53 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -54,8 +54,8 @@ debug {
   DEFINES += COPASI_DEBUG
     
   isEmpty(COPASI_SRC_PACKAGE) {
-    #DEFINES += COPASI_TSS
-    DEFINES += COPASI_TSSA
+    # DEFINES += COPASI_TSS
+    # DEFINES += COPASI_TSSA
     # DEFINES += WITH_LAYOUT
   }
 }
