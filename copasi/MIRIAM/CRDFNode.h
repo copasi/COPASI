@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/07/01 15:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,39 +107,31 @@ class CRDFNode
     /**
      * Retrieve the string representation of the property predicate
      * @param const CRDFPredicate::ePredicateType & predicate
-     * @param const CRDFPredicate::Path & nodePath
-     * @param const CRDFGraph::CTriplet & parentTriplet
-     * @return const std::string & fieldValue
+    * @return const std::string & fieldValue
      */
-    const std::string & getFieldValue(const CRDFPredicate::ePredicateType & predicate,
-                                      const CRDFPredicate::Path & nodePath,
-                                      const CRDFTriplet & parentTriplet) const;
+    const std::string & getFieldValue(const CRDFPredicate::ePredicateType & predicate) const;
 
     /**
      * Set the field value for the property predicate
      * @param const CMIRIAMResource & value
      * @param const CRDFPredicate::ePredicateType & predicate
      * @param const CRDFPredicate::Path & nodePath
-     * @param const CRDFTriplet & parentTriplet
      * @return bool success
      */
     bool setFieldValue(const CMIRIAMResource & value,
                        const CRDFPredicate::ePredicateType & predicate,
-                       const CRDFPredicate::Path & nodePath,
-                       const CRDFTriplet & parentTriplet);
+                       const CRDFPredicate::Path & nodePath);
 
     /**
      * Set the field value for the property predicate
      * @param const std::string & value
      * @param const CRDFPredicate::ePredicateType & predicate
      * @param const CRDFPredicate::Path & nodePath
-     * @param const CRDFTriplet & parentTriplet
      * @return bool success
      */
     bool setFieldValue(const std::string & value,
                        const CRDFPredicate::ePredicateType & predicate,
-                       const CRDFPredicate::Path & nodePath,
-                       const CRDFTriplet & parentTriplet);
+                       const CRDFPredicate::Path & nodePath);
 
     /**
      * Add a property edge to the node.
@@ -225,13 +217,10 @@ class CRDFNode
 
     CRDFNode * createMissingAncestors(const CRDFPredicate::Path & nodePath,
                                       const CRDFPredicate::ePredicateType & predicate,
-                                      CRDFPredicate::sAllowedLocation const *& pLocation,
-                                      const CRDFTriplet & parentTriplet);
+                                      CRDFPredicate::sAllowedLocation const *& pLocation);
 
     CRDFNode * createMissingAncestors(const CRDFPredicate::Path & predicatePath,
-                                      const unsigned int & level,
-                                      const CRDFPredicate::Path & nodePath,
-                                      const CRDFTriplet & parentTriplet);
+                                      const unsigned int & level);
 
     // Attributes
   private:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/07/01 15:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,21 +107,21 @@ const std::string & CReference::getDOI() const
   {return mDOI.getId();}
 
 const std::string & CReference::getDescription() const
-  {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_description, mNodePath, mTriplet);}
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_description);}
 
 void CReference::setPubmedId(const std::string & pubmedId)
 {
   mPubMed.setId(pubmedId);
-  mTriplet.pObject->setFieldValue(mPubMed, CRDFPredicate::copasi_isDescribedBy, mNodePath, mTriplet);
+  mTriplet.pObject->setFieldValue(mPubMed, CRDFPredicate::copasi_isDescribedBy, mNodePath);
 }
 
 void CReference::setDOI(const std::string & DOI)
 {
   mDOI.setId(DOI);
-  mTriplet.pObject->setFieldValue(mDOI, CRDFPredicate::copasi_isDescribedBy, mNodePath, mTriplet);
+  mTriplet.pObject->setFieldValue(mDOI, CRDFPredicate::copasi_isDescribedBy, mNodePath);
 }
 
 void CReference::setDescription(const std::string & description)
 {
-  mTriplet.pObject->setFieldValue(description, CRDFPredicate::dcterms_description, mNodePath, mTriplet);
+  mTriplet.pObject->setFieldValue(description, CRDFPredicate::dcterms_description, mNodePath);
 }

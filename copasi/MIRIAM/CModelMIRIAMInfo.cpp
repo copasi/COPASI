@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/07/01 15:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ const std::string CMIRIAMInfo::getCreatedDT() const
     if (!mCreated)
       return "";
 
-    return mCreated.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath(), mCreated);
+    return mCreated.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF);
   }
 
 void CMIRIAMInfo::setCreatedDT(const std::string& dt)
@@ -239,7 +239,7 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
       assert(!mCreated == false);
     }
 
-  mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath(), mCreated);
+  mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath());
 }
 
 CCopasiVector <CModification> & CMIRIAMInfo::getModifications()

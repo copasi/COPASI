@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModified.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/07/01 15:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ const std::string & CModification::getKey() const
   {return mKey;}
 
 void CModification::setDate(const std::string & date)
-{mTriplet.pObject->setFieldValue(date, CRDFPredicate::dcterms_W3CDTF, mNodePath, mTriplet);}
+{mTriplet.pObject->setFieldValue(date, CRDFPredicate::dcterms_W3CDTF, mNodePath);}
 
 const std::string & CModification::getDate() const
-  {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF, mNodePath, mTriplet);}
+  {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF);}

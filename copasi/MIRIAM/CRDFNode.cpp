@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 13:56:50 $
+//   $Date: 2008/07/01 15:41:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,9 +105,7 @@ const CRDFObject & CRDFNode::getObject() const
 CRDFPredicate::Path CRDFNode::getPath() const
 {return mGraph.getPredicatePath(this);}
 
-const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType & predicate,
-    const CRDFPredicate::Path & nodePath,
-    const CRDFTriplet & parentTriplet) const
+const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType & predicate) const
   {
     static std::string Empty = "";
 
@@ -138,12 +136,11 @@ const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType 
 
 bool CRDFNode::setFieldValue(const CMIRIAMResource & value,
                              const CRDFPredicate::ePredicateType & predicate,
-                             const CRDFPredicate::Path & nodePath,
-                             const CRDFTriplet & parentTriplet)
+                             const CRDFPredicate::Path & nodePath)
 {
   // If a node is associated with the resource we can just set the field value
   if (value.getNode() != NULL)
-    return value.getNode()->setFieldValue(value.getURI(), predicate, nodePath, parentTriplet);
+    return value.getNode()->setFieldValue(value.getURI(), predicate, nodePath);
 
   // We have no node and the value is invalid, i.e., nothing to do.
   if (!value.isValid())
@@ -153,7 +150,7 @@ bool CRDFNode::setFieldValue(const CMIRIAMResource & value,
 
   // We build each missing ancestor as a blank node.
   CRDFPredicate::sAllowedLocation const * pLocation = NULL;
-  CRDFNode * pParent = createMissingAncestors(nodePath, predicate, pLocation, parentTriplet);
+  CRDFNode * pParent = createMissingAncestors(nodePath, predicate, pLocation);
   if (pParent == NULL) return false;
 
   // Create the missing object
@@ -171,8 +168,7 @@ bool CRDFNode::setFieldValue(const CMIRIAMResource & value,
 
 bool CRDFNode::setFieldValue(const std::string & value,
                              const CRDFPredicate::ePredicateType & predicate,
-                             const CRDFPredicate::Path & nodePath,
-                             const CRDFTriplet & parentTriplet)
+                             const CRDFPredicate::Path & nodePath)
 {
   std::set< CRDFTriplet > Triplets =
     getDescendantsWithPredicate(predicate);
@@ -189,7 +185,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
         {
           // We build each missing ancestor as a blank node.
           CRDFPredicate::sAllowedLocation const * pLocation = NULL;
-          CRDFNode * pParent = createMissingAncestors(nodePath, predicate, pLocation, parentTriplet);
+          CRDFNode * pParent = createMissingAncestors(nodePath, predicate, pLocation);
           if (pParent == NULL) return false;
 
           // Create the missing object
@@ -239,8 +235,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
 
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath,
     const CRDFPredicate::ePredicateType & predicate,
-    CRDFPredicate::sAllowedLocation const *& pLocation,
-    const CRDFTriplet & parentTriplet)
+    CRDFPredicate::sAllowedLocation const *& pLocation)
 {
   pLocation = NULL;
 
@@ -267,7 +262,7 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
     return NULL;
 
   // Now we build each missing ancestor as a blank node.
-  CRDFNode * pParent = createMissingAncestors(Locations[i].Location, SubPathIndex, nodePath, parentTriplet);
+  CRDFNode * pParent = createMissingAncestors(Locations[i].Location, SubPathIndex);
 
   if (pParent != NULL)
     pLocation = &Locations[i];
@@ -276,9 +271,7 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & nodePath
 }
 
 CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicatePath,
-    const unsigned int & level,
-    const CRDFPredicate::Path & nodePath,
-    const CRDFTriplet & parentTriplet)
+    const unsigned int & level)
 {
   CRDFNode * pNode = this;
 
