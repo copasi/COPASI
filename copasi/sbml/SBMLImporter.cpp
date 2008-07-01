@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.204 $
+//   $Revision: 1.205 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/13 12:59:30 $
+//   $Date: 2008/07/01 10:58:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,7 +132,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                 {
                   // the unit could not be handled, give an error message and
                   // set the units to mole
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
                   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
                 }
               else
@@ -147,7 +147,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                 {
                   // the unit could not be handled, give an error message and
                   // set the units to second
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
                   this->mpCopasiModel->setTimeUnit(CModel::s);
                 }
               else
@@ -162,7 +162,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                 {
                   // the unit could not be handled, give an error message and
                   // set the units to litre
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
                   this->mpCopasiModel->setVolumeUnit(CModel::l);
                 }
               else
@@ -1098,7 +1098,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
       if (kLawMath == NULL || kLawMath->getType() == AST_UNKNOWN)
         {
           copasiReaction->setFunction(NULL);
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 56, sbmlReaction->getId().c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 56, sbmlReaction->getId().c_str());
         }
       else
         {
@@ -2096,7 +2096,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                           result = true;
                           break;
                         default:
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
                           break;
                         }
                     }
@@ -2105,17 +2105,17 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
             }
         }
       else
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
         }
     }
   else
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
     }
   return std::make_pair(vUnit, result);
 }
@@ -3814,7 +3814,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
         {
           // if it is an assignment rule we do nothing, if it is an ode rule,
           // we need to issue a warning or an error
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
         }
     }
   pME->setStatus(status);
@@ -4070,7 +4070,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*compartmentIt)->getStatus() == CModelValue::FIXED || (*compartmentIt)->getStatus() == CModelValue::ODE) && (*compartmentIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
 
               (*compartmentIt)->setInitialValue(1.0);
               changedObjects.insert((*compartmentIt)->getInitialValueReference());
@@ -4114,7 +4114,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*metabIt)->getStatus() == CModelValue::FIXED || (*metabIt)->getStatus() == CModelValue::REACTIONS || (*metabIt)->getStatus() == CModelValue::ODE) && (*metabIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
 
               (*metabIt)->setInitialConcentration(1.0);
               changedObjects.insert((*metabIt)->getInitialConcentrationReference());
@@ -4148,7 +4148,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*mvIt)->getStatus() == CModelValue::FIXED || (*mvIt)->getStatus() == CModelValue::ODE) && (*mvIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
 
               (*mvIt)->setInitialValue(1.0);
               changedObjects.insert((*mvIt)->getInitialValueReference());
@@ -4218,14 +4218,14 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           if (pCompartment->getSpatialDimensions() == 0)
             {
               // MCSBML + 23, ERROR, compartment id
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 23, pCompartment->getId().c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 23, pCompartment->getId().c_str());
             }
           else
             {
               // this can not have a dimension we know in copasi
               // warn the user
               // MCSBML + 22, compartment id
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 22, pCompartment->getId().c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 22, pCompartment->getId().c_str());
             }
           lastUnit = "volume";
         }
@@ -4238,7 +4238,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (pUdef1 == NULL)
                 {
                   // error message
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
                 }
               if (unitId != "volume" && !areSBMLUnitDefinitionsIdentical(pVolumeUnits, pUdef1))
                 {
@@ -4299,7 +4299,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           ++errorIt;
         }
       std::string s = os.str();
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
     }
   inconsistentUnits = false;
   lastUnit = "";
@@ -4319,11 +4319,11 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (pTmpUdef2 == NULL)
                 {
                   // error message
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, spatialSizeUnits.c_str(), "spatialSizeUnits", "species", pSpecies->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, spatialSizeUnits.c_str(), "spatialSizeUnits", "species", pSpecies->getId().c_str());
                 }
               if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
               delete pTmpUdef2;
             }
@@ -4335,7 +4335,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           if (pUdef1 == NULL)
             {
               // error message
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "species", pSpecies->getId().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "species", pSpecies->getId().c_str());
             }
           if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
             {
@@ -4380,7 +4380,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (pUdef1 == NULL)
                 {
                   // error message
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
                 }
               if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
                 {
@@ -4414,7 +4414,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (pUdef1 == NULL)
                 {
                   // error message
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
                 }
               if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
                 {
@@ -4473,7 +4473,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           ++errorIt;
         }
       std::string s = os.str();
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25 , s.substr(0, s.size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25 , s.substr(0, s.size() - 2).c_str());
       os.str("");
       errorIt = nonDefaultKineticSubstance.begin(), errorEndit = nonDefaultKineticSubstance.end();
       while (errorIt != errorEndit)
@@ -4482,7 +4482,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           ++errorIt;
         }
       s = os.str();
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44 , s.substr(0, s.size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44 , s.substr(0, s.size() - 2).c_str());
     }
   if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
     {
@@ -4513,7 +4513,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           ++errorIt;
         }
       std::string s = os.str();
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
     }
   // delete the units we created
   delete pSubstanceUnits;
@@ -4533,7 +4533,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           if (pUdef1 == NULL)
             {
               // error message
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
             }
           if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
             {
@@ -4593,7 +4593,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           ++errorIt;
         }
       std::string s = os.str();
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, s.substr(0, s.size() - 2).c_str());
     }
   // delete the units we created
   delete pTimeUnits;
@@ -5114,7 +5114,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
           // create an error message that some stoichiometric expression
           // could not be evaluated that the value for the stoichiometry has
           // been set to 1.0
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 65, id.c_str(), pR->getSBMLId().c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 65, id.c_str(), pR->getSBMLId().c_str());
         }
       else
         {
@@ -5138,7 +5138,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
               // converted into a constant
               if (!warningDone && !this->mStoichiometricExpressionMap.empty())
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 64);
                   warningDone = true;
                 }
             }
@@ -5467,14 +5467,14 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       if (pos == id2copasiMap.end())
         {
           //  issue an error message and ignore the assignment
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, "Eventassignment", variable.c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, "Eventassignment", variable.c_str());
           continue;
         }
       CCopasiObject* pObject = pos->second;
       if (pObject->getObjectType() != "Compartment" && pObject->getObjectType() != "Metabolite" && pObject->getObjectType() != "ModelValue")
         {
           // issue an error and ignore the assignment
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 72, "Eventassignment", variable.c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 72, "Eventassignment", variable.c_str());
           continue;
         }
       if (!pEventAssignment->isSetMath())

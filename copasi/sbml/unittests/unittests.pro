@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/06/12 08:16:55 $ 
+#   $Date: 2008/07/01 10:58:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -15,7 +15,7 @@ TEMPLATE = app
 
 CONFIG -= qt
 
-LIBS += -lCOPASISE -L../../lib/ 
+LIBS += -L../../lib/ -lCOPASISE 
 
 include(../../common.pri)
 
@@ -42,13 +42,18 @@ contains(BUILD_OS, Linux) {
 }
 
 contains(BUILD_OS, SunOS) {
-#  QMAKE_LFLAGS += -z rescan
+  QMAKE_LFLAGS += -z rescan
 
-#  LIBS = -L../lib \
-#         $$join(COPASI_LIBS, " -l", -l) \
-#         $${LIBS}
+!isEmpty(CPPUNIT_PATH) {
+  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
+  INCLUDEPATH += $${CPPUNIT_PATH}/include
 
-#  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+         $${LIBS}
+   
+   PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+
+
 }  
 
 contains(BUILD_OS, Darwin){

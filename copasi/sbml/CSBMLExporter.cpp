@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/13 11:37:22 $
+//   $Date: 2008/07/01 10:58:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,7 +297,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       compartment.setSBMLId(sbmlId);
       pSBMLCompartment->setId(sbmlId);
     }
-  this->mIdMap.insert(std::make_pair(sbmlId, pSBMLCompartment));
+  this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLCompartment));
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
   double value = compartment.getInitialValue();
@@ -400,7 +400,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       metab.setSBMLId(sbmlId);
       pSBMLSpecies->setId(sbmlId);
     }
-  this->mIdMap.insert(std::make_pair(sbmlId, pSBMLSpecies));
+  this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLSpecies));
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
   pSBMLSpecies->setName(metab.getObjectName().c_str());
 
@@ -530,7 +530,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
       modelValue.setSBMLId(sbmlId);
       pParameter->setId(sbmlId);
     }
-  this->mIdMap.insert(std::make_pair(sbmlId, pParameter));
+  this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pParameter));
   this->mHandledSBMLObjects.insert(pParameter);
   pParameter->setName(modelValue.getObjectName());
   double value = modelValue.getInitialValue();
@@ -630,7 +630,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
       reaction.setSBMLId(sbmlId);
       pSBMLReaction->setId(sbmlId);
     }
-  this->mIdMap.insert(std::make_pair(sbmlId, pSBMLReaction));
+  this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLReaction));
   this->mHandledSBMLObjects.insert(pSBMLReaction);
   pSBMLReaction->setName(reaction.getObjectName().c_str());
   pSBMLReaction->setReversible(reaction.isReversible());
@@ -724,7 +724,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
           // maybe only abort if incomplete export is not wanted
           if (this->mIncompleteExport != true)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, reaction.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 8, reaction.getObjectName().c_str());
             }
           else
             {
@@ -799,7 +799,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       const CEvaluationNode* pOrigNode = modelEntity.getInitialExpressionPtr()->getRoot();
       if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
@@ -832,7 +832,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
             }
           else
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
             }
         }
     }
@@ -844,7 +844,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
         }
       else
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
     }
 }
@@ -978,7 +978,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
                   // check if the compartment is fixed
                   if (pMetab->getCompartment()->getStatus() != CModelEntity::FIXED)
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
+                      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
                     }
                 }
               pOldRule = this->mpSBMLDocument->getModel()->createRateRule();
@@ -994,7 +994,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       const CEvaluationNode* pOrigNode = modelEntity.getExpressionPtr()->getRoot();
       if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
@@ -1051,7 +1051,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
         {
           if (this->mIncompleteExport != true)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
             }
         }
     }
@@ -1063,7 +1063,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
         }
       else
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
     }
 }
@@ -1076,47 +1076,47 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
   unsigned int i, iMax;
   if (sbmlModel.isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getId(), &sbmlModel));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getId(), &sbmlModel));
     }
   if (sbmlModel.getListOfFunctionDefinitions()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfFunctionDefinitions()->getId(), sbmlModel.getListOfFunctionDefinitions()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfFunctionDefinitions()->getId(), sbmlModel.getListOfFunctionDefinitions()));
     }
   iMax = sbmlModel.getNumFunctionDefinitions();
   for (i = 0; i < iMax;++i)
     {
-      idMap.insert(std::make_pair(sbmlModel.getFunctionDefinition(i)->getId(), sbmlModel.getFunctionDefinition(i)));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getFunctionDefinition(i)->getId(), sbmlModel.getFunctionDefinition(i)));
     }
   if (sbmlModel.getListOfCompartments()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfCompartments()->getId(), sbmlModel.getListOfCompartments()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfCompartments()->getId(), sbmlModel.getListOfCompartments()));
     }
   iMax = sbmlModel.getNumCompartments();
   for (i = 0; i < iMax;++i)
     {
-      idMap.insert(std::make_pair(sbmlModel.getCompartment(i)->getId(), sbmlModel.getCompartment(i)));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getCompartment(i)->getId(), sbmlModel.getCompartment(i)));
     }
   if (sbmlModel.getListOfSpecies()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfSpecies()->getId(), sbmlModel.getListOfSpecies()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfSpecies()->getId(), sbmlModel.getListOfSpecies()));
     }
   iMax = sbmlModel.getNumSpecies();
   for (i = 0; i < iMax;++i)
     {
-      idMap.insert(std::make_pair(sbmlModel.getSpecies(i)->getId(), sbmlModel.getSpecies(i)));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getSpecies(i)->getId(), sbmlModel.getSpecies(i)));
     }
   if (sbmlModel.getListOfParameters()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfParameters()->getId(), sbmlModel.getListOfParameters()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfParameters()->getId(), sbmlModel.getListOfParameters()));
     }
   iMax = sbmlModel.getNumParameters();
   for (i = 0; i < iMax;++i)
     {
-      idMap.insert(std::make_pair(sbmlModel.getParameter(i)->getId(), sbmlModel.getParameter(i)));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getParameter(i)->getId(), sbmlModel.getParameter(i)));
     }
   if (sbmlModel.getListOfReactions()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfReactions()->getId(), sbmlModel.getListOfReactions()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfReactions()->getId(), sbmlModel.getListOfReactions()));
     }
   iMax = sbmlModel.getNumReactions();
   for (i = 0; i < iMax;++i)
@@ -1124,10 +1124,10 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
       const Reaction* pReaction = sbmlModel.getReaction(i);
       if (pReaction != NULL)
         {
-          idMap.insert(std::make_pair(pReaction->getId(), pReaction));
+          idMap.insert(std::pair<const std::string, const SBase*>(pReaction->getId(), pReaction));
           if (pReaction->getListOfReactants()->isSetId())
             {
-              idMap.insert(std::make_pair(pReaction->getListOfReactants()->getId(), pReaction->getListOfReactants()));
+              idMap.insert(std::pair<const std::string, const SBase*>(pReaction->getListOfReactants()->getId(), pReaction->getListOfReactants()));
             }
           unsigned int j, jMax = pReaction->getNumReactants();
           const SpeciesReference* pSRef = NULL;
@@ -1136,12 +1136,12 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
               pSRef = pReaction->getReactant(j);
               if (pSRef->isSetId())
                 {
-                  idMap.insert(std::make_pair(pSRef->getId(), pSRef));
+                  idMap.insert(std::pair<const std::string, const SBase*>(pSRef->getId(), pSRef));
                 }
             }
           if (pReaction->getListOfProducts()->isSetId())
             {
-              idMap.insert(std::make_pair(pReaction->getListOfProducts()->getId(), pReaction->getListOfProducts()));
+              idMap.insert(std::pair<const std::string, const SBase*>(pReaction->getListOfProducts()->getId(), pReaction->getListOfProducts()));
             }
           jMax = pReaction->getNumProducts();
           for (j = 0;j < jMax;++j)
@@ -1149,12 +1149,12 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
               pSRef = pReaction->getProduct(j);
               if (pSRef->isSetId())
                 {
-                  idMap.insert(std::make_pair(pSRef->getId(), pSRef));
+                  idMap.insert(std::pair<const std::string, const SBase*>(pSRef->getId(), pSRef));
                 }
             }
           if (pReaction->getListOfModifiers()->isSetId())
             {
-              idMap.insert(std::make_pair(pReaction->getListOfModifiers()->getId(), pReaction->getListOfModifiers()));
+              idMap.insert(std::pair<const std::string, const SBase*>(pReaction->getListOfModifiers()->getId(), pReaction->getListOfModifiers()));
             }
           jMax = pReaction->getNumModifiers();
           const ModifierSpeciesReference* pModSRef;
@@ -1163,25 +1163,25 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
               pModSRef = pReaction->getModifier(j);
               if (pModSRef->isSetId())
                 {
-                  idMap.insert(std::make_pair(pModSRef->getId(), pModSRef));
+                  idMap.insert(std::pair<const std::string, const SBase*>(pModSRef->getId(), pModSRef));
                 }
             }
         }
     }
   if (sbmlModel.getListOfEvents()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfEvents()->getId(), sbmlModel.getListOfEvents()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfEvents()->getId(), sbmlModel.getListOfEvents()));
     }
   iMax = sbmlModel.getNumEvents();
   for (i = 0; i < iMax;++i)
     {
-      idMap.insert(std::make_pair(sbmlModel.getEvent(i)->getId(), sbmlModel.getEvent(i)));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getEvent(i)->getId(), sbmlModel.getEvent(i)));
     }
   // if COPASI is compiled with layout, we have to add those ids as well
 #ifdef WITH_LAYOUT
   if (sbmlModel.getListOfLayouts()->isSetId())
     {
-      idMap.insert(std::make_pair(sbmlModel.getListOfLayouts()->getId(), sbmlModel.getListOfLayouts()));
+      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfLayouts()->getId(), sbmlModel.getListOfLayouts()));
     }
   iMax = sbmlModel.getListOfLayouts()->size();
   for (i = 0;i < iMax;++i)
@@ -1191,7 +1191,7 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
         {
           if (pLayout->isSetId())
             {
-              idMap.insert(std::make_pair(pLayout->getId(), pLayout));
+              idMap.insert(std::pair<const std::string, const SBase*>(pLayout->getId(), pLayout));
             }
         }
     }
@@ -1737,7 +1737,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
               id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
             }
         }
-      this->mIdMap.insert(std::make_pair(id, pFunDef));
+      this->mIdMap.insert(std::pair<const std::string, const SBase*>(id, pFunDef));
       pFunDef->setId(id);
       function.setSBMLId(id);
       this->mCOPASI2SBMLMap[&function] = pFunDef;
@@ -1774,7 +1774,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
       else
         {
           this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, function.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, function.getObjectName().c_str());
         }
     }
   CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
@@ -1824,7 +1824,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
       this->mpSBMLDocument->createModel(id);
-      this->mIdMap.insert(std::make_pair(id, this->mpSBMLDocument->getModel()));
+      this->mIdMap.insert(std::pair<const std::string, const SBase*>(id, this->mpSBMLDocument->getModel()));
     }
   else
     {
@@ -1906,9 +1906,9 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
           os << "Please export to SBML Level " << incompat.minSBMLLevel();
           os << " Version " << incompat.minSBMLVersion() << " or higher.";
         }
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, os.str().c_str());
+      CCopasiMessage(CCopasiMessage::RAW, os.str().c_str());
     }
-  if (iMax > 0) CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
+  if (iMax > 0) CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
 }
 
 const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupportedFunctionTypeSet(unsigned int sbmlLevel)
@@ -2212,7 +2212,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   if (!pSBMLEvent->isSetId())
     {
       std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "event_");
-      this->mIdMap.insert(std::make_pair(sbmlId, pSBMLEvent));
+      this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLEvent));
       pSBMLEvent->setId(sbmlId);
       event.setSBMLId(sbmlId);
     }
@@ -2253,13 +2253,13 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
         }
       else
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger expression", "event", event.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger expression", "event", event.getObjectName().c_str());
         }
     }
   const CEvaluationNode* pOrigNode = pExpression->getRoot();
   if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "trigger", "event", event.getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "trigger", "event", event.getObjectName().c_str());
     }
   // the next few lines replace references to species depending on whether
   // it is a reference to an amount or a reference to a concentration.
@@ -2280,7 +2280,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
     {
       if (this->mIncompleteExport != true)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger", "event", event.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger", "event", event.getObjectName().c_str());
         }
     }
 
@@ -2317,13 +2317,13 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
             }
           else
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay expression", "event", event.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay expression", "event", event.getObjectName().c_str());
             }
         }
       pOrigNode = pExpression->getRoot();
       if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "delay", "event", event.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "delay", "event", event.getObjectName().c_str());
         }
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
@@ -2344,7 +2344,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
         {
           if (this->mIncompleteExport != true)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay", "event", event.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay", "event", event.getObjectName().c_str());
             }
         }
     }
@@ -2402,14 +2402,14 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
         {
           // create an error message that only compartment, species and
           // global parameters can be used in an event assignment
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 32, std::string("event assignment for event called \"" + event.getObjectName() + "\"").c_str(), pObject->getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 32, std::string("event assignment for event called \"" + event.getObjectName() + "\"").c_str(), pObject->getObjectName().c_str());
         }
       std::map<const CCopasiObject*, SBase*>::const_iterator pos = this->mCOPASI2SBMLMap.find(pObject);
       if (pos == this->mCOPASI2SBMLMap.end())
         {
           // create a general error message that the export of an event
           // assignment failed and continue
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 73, std::string("event assignment for object called \"" + pObject->getObjectName() + "\" in evend named \"" + event.getObjectName() + "\"").c_str(), "event assignment");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 73, std::string("event assignment for object called \"" + pObject->getObjectName() + "\" in evend named \"" + event.getObjectName() + "\"").c_str(), "event assignment");
           continue;
         }
       //  iii) for each assignment, check if the object that variable points to has been exported
@@ -2420,7 +2420,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           // create an error message that the event assignment is for an object
           // that is no longer part of the model
           // ignore it and continue
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, std::string("event assignment in event called \"" + event.getObjectName() + "\"").c_str(), pSBase->getId().c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, std::string("event assignment in event called \"" + event.getObjectName() + "\"").c_str(), pSBase->getId().c_str());
           continue;
         }
       std::string sbmlId = pSBase->getId();
@@ -2471,13 +2471,13 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
                 }
             }
           const CEvaluationNode* pOrigNode = pExpression->getRoot();
           if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::INVALID)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
             }
           // the next few lines replace references to species depending on whether
           // it is a reference to an amount or a reference to a concentration.
@@ -2536,7 +2536,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
             {
               if (this->mIncompleteExport != true)
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
                 }
             }
         }
@@ -2544,7 +2544,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
         {
           // create an error message that the event assignment could not be
           // created and continue
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 73, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event assignment");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 73, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event assignment");
           continue;
         }
     }
@@ -2580,7 +2580,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
       std::map<std::string, const SBase*>::iterator pos = this->mIdMap.find(it->second->getId());
       if (pos != this->mIdMap.end())
         {
-          this->mCOPASI2SBMLMap.insert(std::make_pair(it->first, const_cast<SBase*>(pos->second)));
+          this->mCOPASI2SBMLMap.insert(std::pair<const CCopasiObject* const, SBase*>(it->first, const_cast<SBase*>(pos->second)));
         }
       ++it;
     }
@@ -2967,7 +2967,7 @@ const std::vector<CFunction*> CSBMLExporter::findUsedFunctions(std::set<CFunctio
   // loop
   if (!functionDependencyMap.empty())
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "Dependency loop found in function definitions.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Dependency loop found in function definitions.");
     }
   return functionVector;
 }
@@ -2985,7 +2985,7 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
           pFun = dynamic_cast<CFunction*>(pFunDB->findFunction(*it));
           if (pFun == NULL)
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 15, (*it).c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 15, (*it).c_str());
             }
           else
             {
@@ -3416,12 +3416,12 @@ ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const Model
       delete pExpanded;
       if (pReplaced == NULL)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 62, message.c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 62, message.c_str());
         }
     }
   else
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 61, message.c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 61, message.c_str());
     }
   return pExpanded;
 }
@@ -3660,7 +3660,14 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
     {
       if (finishedElements.find(*it) == finishedElements.end())
         {
+#ifdef __SUNPRO_CC
+          // replaced count call with  "old" count call
+          // to compile on Sun Compiler
+          unsigned int num = 0;
+          std::count(arguments[1].begin(), arguments[1].end(), *it, num);
+#else
           unsigned int num = std::count(arguments[1].begin(), arguments[1].end(), *it);
+#endif  // __SUNPRO_CC
           assert(num != 0);
           finishedElements.insert(*it);
           pObject = GlobalKeys.get(*it);
@@ -3847,7 +3854,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
                           pSBMLAvogadro->setId(sbmlId);
                           const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
-                          this->mIdMap.insert(std::make_pair(sbmlId, pSBMLAvogadro));
+                          this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
                           pSBMLAvogadro->setConstant(true);
                           pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
                           this->mHandledSBMLObjects.insert(pSBMLAvogadro);
@@ -4127,7 +4134,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       else
         {
           CSBMLExporter::createUniqueId(metaIds, "metaid");
-          metaIds.insert(std::make_pair(metaId, pSBMLObject));
+          metaIds.insert(std::pair<const std::string,const SBase*>(metaId, pSBMLObject));
           pSBMLObject->setMetaId(metaId);
         }
       // now we have to replace the metaid
@@ -4147,7 +4154,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       if (this->mMIRIAMWarning == false)
         {
           this->mMIRIAMWarning = true;
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 69);
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 69);
         }
     }
   /*  !!! DISABLED !!!
@@ -4208,11 +4215,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
           id = pModel->getId();
           if (ids.find(id) == ids.end())
             {
-              ids.insert(std::make_pair(id, pModel));
+              ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
             }
           else
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
             }
         }
       if (pModel->isSetMetaId())
@@ -4220,11 +4227,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
           id = pModel->getMetaId();
           if (metaIds.find(id) == metaIds.end())
             {
-              metaIds.insert(std::make_pair(id, pModel));
+              metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
             }
           else
             {
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
             }
         }
       // ListOfFunctionDefinitions
@@ -4236,11 +4243,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4248,11 +4255,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all FunctionDefinitions
@@ -4265,11 +4272,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pSBase));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4277,11 +4284,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4295,11 +4302,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all UnitDefinitions
@@ -4317,11 +4324,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pUDef->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pUDef));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pUDef));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
               ListOf* pList = pUDef->getListOfUnits();
@@ -4332,11 +4339,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pList->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pList));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pList));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned j, jMax = pList->size();
@@ -4349,11 +4356,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pSBase));
+                              metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -4369,11 +4376,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4381,11 +4388,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each compartment type
@@ -4399,11 +4406,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pSBase));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4411,11 +4418,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4429,11 +4436,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4441,11 +4448,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each species type
@@ -4459,11 +4466,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pSBase));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4471,11 +4478,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4489,11 +4496,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4501,11 +4508,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all compartments
@@ -4519,11 +4526,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pSBase));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4531,11 +4538,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4549,11 +4556,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4561,11 +4568,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all species
@@ -4579,11 +4586,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pSBase));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4591,11 +4598,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4609,11 +4616,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4621,11 +4628,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each parameter
@@ -4639,11 +4646,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pSBase));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pSBase->isSetMetaId())
@@ -4651,11 +4658,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4669,11 +4676,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4681,11 +4688,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each initial assignment
@@ -4700,11 +4707,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4718,11 +4725,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4730,11 +4737,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each rule
@@ -4749,11 +4756,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4767,11 +4774,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4779,11 +4786,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each constraint
@@ -4798,11 +4805,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pSBase->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pSBase));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
             }
@@ -4816,11 +4823,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -4828,11 +4835,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // all reactions
@@ -4846,11 +4853,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pReaction->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pReaction));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pReaction));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pReaction->isSetMetaId())
@@ -4858,11 +4865,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pReaction->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pReaction));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pReaction));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
               // for each reaction: ListOfSubstrates, each substrate, ListOfProducts, each
@@ -4876,11 +4883,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pSBase->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pSBase));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pReaction->getListOfReactants()->size();
@@ -4894,11 +4901,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getId();
                           if (ids.find(id) == ids.end())
                             {
-                              ids.insert(std::make_pair(id, pSBase));
+                              ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                             }
                         }
                       if (pSBase->isSetMetaId())
@@ -4906,11 +4913,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pSBase));
+                              metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -4923,11 +4930,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pSBase->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pSBase));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pReaction->getListOfProducts()->size();
@@ -4941,11 +4948,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getId();
                           if (ids.find(id) == ids.end())
                             {
-                              ids.insert(std::make_pair(id, pSBase));
+                              ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                             }
                         }
                       if (pSBase->isSetMetaId())
@@ -4953,11 +4960,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pSBase));
+                              metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -4970,11 +4977,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pSBase->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pSBase));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pReaction->getListOfModifiers()->size();
@@ -4988,11 +4995,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getId();
                           if (ids.find(id) == ids.end())
                             {
-                              ids.insert(std::make_pair(id, pSBase));
+                              ids.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                             }
                         }
                       if (pSBase->isSetMetaId())
@@ -5000,11 +5007,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pSBase));
+                              metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -5017,11 +5024,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pKLaw->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pKLaw));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pKLaw));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   pSBase = pKLaw->getListOfParameters();
@@ -5032,11 +5039,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pSBase));
+                              metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                       unsigned int j, jMax = pKLaw->getListOfParameters()->size();
@@ -5051,11 +5058,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                               id = pSBase->getMetaId();
                               if (metaIds.find(id) == metaIds.end())
                                 {
-                                  metaIds.insert(std::make_pair(id, pSBase));
+                                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                                 }
                               else
                                 {
-                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                                 }
                             }
                         }
@@ -5072,11 +5079,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getId();
               if (ids.find(id) == ids.end())
                 {
-                  ids.insert(std::make_pair(id, pModel));
+                  ids.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                 }
             }
           if (pSBase->isSetMetaId())
@@ -5084,11 +5091,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
               id = pSBase->getMetaId();
               if (metaIds.find(id) == metaIds.end())
                 {
-                  metaIds.insert(std::make_pair(id, pModel));
+                  metaIds.insert(std::pair<const std::string, const SBase*>(id, pModel));
                 }
               else
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                 }
             }
           // each event
@@ -5102,11 +5109,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pEvent->getId();
                   if (ids.find(id) == ids.end())
                     {
-                      ids.insert(std::make_pair(id, pEvent));
+                      ids.insert(std::pair<const std::string, const SBase*>(id, pEvent));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 68, id.c_str());
                     }
                 }
               if (pEvent->isSetMetaId())
@@ -5114,11 +5121,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                   id = pEvent->getMetaId();
                   if (metaIds.find(id) == metaIds.end())
                     {
-                      metaIds.insert(std::make_pair(id, pEvent));
+                      metaIds.insert(std::pair<const std::string, const SBase*>(id, pEvent));
                     }
                   else
                     {
-                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                     }
                 }
               // in each event Trigger,Delay,ListOfEventAssignments, each event assignment
@@ -5131,11 +5138,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pSBase->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pSBase));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                 }
@@ -5148,11 +5155,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pSBase->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pSBase));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                 }
@@ -5164,11 +5171,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                       id = pSBase->getMetaId();
                       if (metaIds.find(id) == metaIds.end())
                         {
-                          metaIds.insert(std::make_pair(id, pSBase));
+                          metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                         }
                       else
                         {
-                          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                         }
                     }
                   unsigned int j, jMax = pEvent->getListOfEventAssignments()->size();
@@ -5181,11 +5188,11 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           id = pSBase->getMetaId();
                           if (metaIds.find(id) == metaIds.end())
                             {
-                              metaIds.insert(std::make_pair(id, pSBase));
+                              metaIds.insert(std::pair<const std::string, const SBase*>(id, pSBase));
                             }
                           else
                             {
-                              CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
+                              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 67, id.c_str());
                             }
                         }
                     }
@@ -5285,7 +5292,7 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
               nonUniqueObjectKeys.insert(key);
               const CCopasiObject* pObject = GlobalKeys.get(key);
               assert(pObject != NULL);
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event called \"" + pEvent->getObjectName() + "\" has several assignments to the same object called \"" + pObject->getObjectName() + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event called \"" + pEvent->getObjectName() + "\" has several assignments to the same object called \"" + pObject->getObjectName() + "\".").c_str());
             }
         }
       CSBMLExporter::isEventAssignmentSBMLCompatible(key, pEvent->getAssignmentExpressionPtr(i), dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result);
@@ -5321,7 +5328,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
               // constant
               // This is a raw message since I do expect COPASI to have the same
               // restriction as SBML, so this should never happen
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
           // make sure there is no assignment rule for the variable
           else if (pME->getStatus() == CModelEntity::ASSIGNMENT)
@@ -5330,7 +5337,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
               // determined by an assignment
               // This is a raw message since I do expect COPASI to have the same
               // restriction as SBML, so this should never happen
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
             }
           // check if the expression only references allowed model entities
           if (pExpression != NULL && CEvaluationNode::type(pExpression->getRoot()->getType()) != CEvaluationNode::INVALID)
@@ -5344,7 +5351,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
             {
               // This is a raw message since I do expect COPASI to always have
               // an assignment expression
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
         }
     }
