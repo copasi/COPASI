@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/22 11:06:48 $
+//   $Date: 2008/07/01 07:18:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,8 @@ class CNormalGeneralPower: public CNormalBase
     void setRight(const CNormalFraction& right);
     Type getType() const;
     void setType(Type type);
+    bool checkIsOne() const;
+    void multiply(const CNormalGeneralPower& generalPower);
   };
 
 std::ostream& operator<<(std::ostream& os, const CNormalGeneralPower& pow);

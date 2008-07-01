@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/23 14:02:25 $
+//   $Date: 2008/07/01 07:18:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,10 @@
 #include "CNormalFraction.h"
 #include "CNormalSum.h"
 #include "CNormalGeneralPower.h"
+
+#include "copasi/utilities/CCopasiMessage.h"
+
+// TODO the changes in this file cause one of the logical tests to fail
 
 bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2)
 {
@@ -303,6 +307,7 @@ bool CNormalSum::divide(const CNormalItemPower& itemPower)
 
 C_FLOAT64 CNormalSum::checkFactor(const CNormalItemPower& itemPower) const //sum does not contain fractions!!
   {
+    // TODO incorporate the denominator of the product if it is not 1
     C_FLOAT64 exp = itemPower.getExp();
     std::set<CNormalProduct*, compareProducts >::const_iterator it;
     std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = mProducts.end();
@@ -514,22 +519,24 @@ void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
 bool CNormalSum::simplify()
 {
   bool result = true;
+  // TODO go through all products and check the denominators
+  // TODO if the denominator is not NULL, transform the product to a fraction
+  // TODO the fraction has the found denominator as its denominator and the
+  // TODO numerator is the product of all items
+  // TODO before creating the product, the denominators of all general items in
+  // TODO the product have to set to 1 by calling setDenominatorsOne on the product
+  // TODO What will happen to such a fraction later on?
   std::set<CNormalProduct*, compareProducts>::iterator it = this->mProducts.begin(), endit = this->mProducts.end();
+  // add code to find general power items with exponent 1 where the parent
+  // power item also has exponent 1
+  // if the base of those has a denominator of 1, we add the products of
+  // the numerator to this sum, otherwise, we have to add the whole base
+  // to the fractions of this sum
+  // afterwards, we have to simplify all products and all fractions again
+  std::vector<CNormalBase*> newProducts;
   while (it != endit)
     {
       (*it)->simplify();
-      ++it;
-    }
-  it = this->mProducts.begin(), endit = this->mProducts.end();
-  // TODO add code to find general power items with exponent 1 where the parent
-  // TODO power item also has exponent 1
-  // TODO if the base of those has a denominator of 1, we add the products of
-  // TODO the numerator to this sum, otherwise, we have to add the whole base
-  // TODO to the fractions of this sum
-  // TODO afterwards, we have to simplify all products and all fractions again
-  std::vector<CNormalProduct*> remainingProducts;
-  while (it != endit)
-    {
       if ((*it)->getItemPowers().size() == 1 &&
           fabs(((*(*it)->getItemPowers().begin())->getExp() - 1.0) / 1.0) < 1e-12 &&
           (*(*it)->getItemPowers().begin())->getItemType() == CNormalItemPower::POWER &&
@@ -539,27 +546,97 @@ bool CNormalSum::simplify()
         {
           if (((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().checkDenominatorOne())
             {
-              this->add(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().getNumerator());
+              newProducts.push_back(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().getNumerator().copy());
             }
           else
             {
-              this->add(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft());
+              newProducts.push_back(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().copy());
             }
           delete (*it);
         }
       else
         {
-          remainingProducts.push_back((*it));
+          newProducts.push_back((*it));
         }
       ++it;
     }
   this->mProducts.clear();
-  this->mProducts.insert(remainingProducts.begin(), remainingProducts.end());
-  std::set<CNormalFraction*>::iterator it2 = this->mFractions.begin(), endit2 = this->mFractions.end();
+  std::vector<CNormalBase*>::const_iterator it2 = newProducts.begin(), endit2 = newProducts.end();
+  const CNormalFraction* pFrac = NULL;
+  const CNormalSum* pSum = NULL;
+  const CNormalProduct* pProd = NULL;
   while (it2 != endit2)
     {
-      (*it2)->simplify();
+      pProd = dynamic_cast<const CNormalProduct*>(*it2);
+      if (pProd != NULL)
+        {
+          this->add(*pProd);
+        }
+      else
+        {
+          pFrac = dynamic_cast<const CNormalFraction*>(*it2);
+          if (pFrac != NULL)
+            {
+              this->add(*pFrac);
+            }
+          else
+            {
+              pSum = dynamic_cast<const CNormalSum*>(*it2);
+              if (pSum != NULL)
+                {
+                  this->add(*pSum);
+                }
+              else
+                {
+                  // this can never happen
+                  fatalError();
+                }
+            }
+        }
+      delete *it2;
       ++it2;
+    }
+  std::set<CNormalFraction*>::iterator it3 = this->mFractions.begin(), endit3 = this->mFractions.end();
+  while (it3 != endit3)
+    {
+      (*it3)->simplify();
+      ++it3;
     }
   return result;
 }
+
+bool CNormalSum::checkIsOne() const
+  {
+    bool result = false;
+    if ((mProducts.size() == 1))
+      {
+
+        CNormalGeneralPower* pTmpPow = (*mProducts.begin())->getDenominator();
+        if ((mFractions.size() == 0)
+            && ((*mProducts.begin())->getItemPowers().size() == 0)
+            && (fabs((*mProducts.begin())->getFactor() - 1.0) < 1.E-100)
+            && ((pTmpPow == NULL) || (pTmpPow->checkIsOne()))
+)
+          // TODO maybe we should not use checkIsOne on the whole general power but
+          // TODO check the items (left, right, numerator, denominator) separately
+          {
+            result = true;
+          }
+        if (pTmpPow != NULL) delete pTmpPow;
+      }
+    return result;
+  }
+
+bool CNormalSum::checkIsZero() const
+  {
+    // fractions must be zero and products must be either 0 or 1 with a
+    // factor of 0.0
+    if (mFractions.size() == 0 &&
+        (mProducts.size() == 0
+         || (mProducts.size() == 1 && ((*mProducts.begin())->getItemPowers().size() == 0) && (fabs((*mProducts.begin())->getFactor() - 0.0) < 1.E-100)))
+)
+      {
+        return true;
+      }
+    return false;
+  }

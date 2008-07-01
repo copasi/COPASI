@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/23 14:02:25 $
+//   $Date: 2008/07/01 07:18:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,15 +102,7 @@ bool CNormalFraction::setDenominator(const CNormalSum& denominator)
  */
 bool CNormalFraction::checkNumeratorOne() const
   {
-    if ((mpNumerator->getProducts().size() == 1)
-        && (mpNumerator->getFractions().size() == 0)
-        && ((*mpNumerator->getProducts().begin())->getItemPowers().size() == 0)
-        && (fabs((*mpNumerator->getProducts().begin())->getFactor() - 1.0) < 1.E-100)
-)
-      {
-        return true;
-      }
-    return false;
+    return this->mpNumerator->checkIsOne();
   }
 
 /**
@@ -119,15 +111,7 @@ bool CNormalFraction::checkNumeratorOne() const
  */
 bool CNormalFraction::checkDenominatorOne() const
   {
-    if ((mpDenominator->getProducts().size() == 1)
-        && (mpDenominator->getFractions().size() == 0)
-        && ((*mpDenominator->getProducts().begin())->getItemPowers().size() == 0)
-        && (fabs((*mpDenominator->getProducts().begin())->getFactor() - 1.0) < 1.E-100)
-)
-      {
-        return true;
-      }
-    return false;
+    return this->mpDenominator->checkIsOne();
   }
 
 /**
@@ -498,3 +482,15 @@ std::set<const CNormalLogical*> CNormalFraction::findLogicals() const
     return set;
 }
  */
+
+bool CNormalFraction::checkIsOne() const
+  {
+    // the fraction is one if numerator and denominator are equal
+    return ((*mpNumerator) == (*mpDenominator));
+  }
+
+bool CNormalFraction::checkIsZero() const
+  {
+    // the fraction is 0.0 if the numerator is 0.0
+    return this->mpNumerator->checkIsZero();
+  }

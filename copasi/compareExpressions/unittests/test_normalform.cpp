@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/30 09:45:32 $
+//   $Date: 2008/07/01 07:18:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3442,6 +3442,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
   pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
+  std::cout << pFraction->toString() << std::endl;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
 

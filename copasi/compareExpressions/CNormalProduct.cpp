@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 07:18:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,6 +36,7 @@
 #include "CNormalFunction.h"
 #include "CNormalGeneralPower.h"
 #include "CNormalChoice.h"
+#include "CNormalFraction.h"
 
 bool compareItemPowers::operator()(const CNormalItemPower* itemPower1, const CNormalItemPower* itemPower2)
 {
@@ -487,4 +493,72 @@ bool CNormalProduct::simplify()
       ++it;
     }
   return result;
+}
+
+CNormalGeneralPower* CNormalProduct::getDenominator() const
+  {
+    // go though all items that are general powers and check for general items
+    // of type power that have denominators in their base that differ from 1
+    // from all those denominators create a common denoninator and return it
+
+    // first we generate a general power that is 1
+    CNormalGeneralPower* pResult = new CNormalGeneralPower();
+    pResult->setType(CNormalGeneralPower::POWER);
+    CNormalSum* pTmpSum = new CNormalSum();
+    CNormalFraction* pTmpFrac = new CNormalFraction();
+    CNormalProduct* pTmpProduct = new CNormalProduct();
+    pTmpSum->add(*pTmpProduct);
+    delete pTmpProduct;
+    pTmpFrac->setNumerator(*pTmpSum);
+    pTmpFrac->setDenominator(*pTmpSum);
+    pResult->setLeft(*pTmpFrac);
+    pResult->setRight(*pTmpFrac);
+    delete pTmpFrac;
+    std::set<CNormalItemPower*, compareItemPowers>::iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
+    while (it != endit)
+      {
+        if ((*it)->getItemType() == CNormalItemPower::POWER)
+          {
+            CNormalGeneralPower* pTmpPow = dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem());
+            assert(pTmpPow != NULL);
+            // only set the denominator to 1 if it is a power item and the
+            // denominator is not 1
+            if (pTmpPow->getType() == CNormalGeneralPower::POWER && !pTmpPow->getLeft().checkDenominatorOne())
+              {
+                // set the numerator to 1
+                pTmpPow->getLeft().setNumerator(*pTmpSum);
+                pResult->multiply(*pTmpPow);
+              }
+            delete pTmpPow;
+          }
+        ++it;
+      }
+    delete pTmpSum;
+    return pResult;
+  }
+
+void CNormalProduct::setDenominatorsOne()
+{
+  // goes through all items and sets the denominators of the bases of all
+  // general power items of type power to one
+  CNormalSum* pTmpSum = new CNormalSum();
+  CNormalProduct* pTmpProduct = new CNormalProduct();
+  pTmpSum->add(*pTmpProduct);
+  delete pTmpProduct;
+  std::set<CNormalItemPower*, compareItemPowers>::iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
+  while (it != endit)
+    {
+      if ((*it)->getItemType() == CNormalItemPower::POWER)
+        {
+          CNormalGeneralPower* pGenPow = dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem());
+          assert(pGenPow != NULL);
+          // only set the denominator to 1 if it is a power item
+          if (pGenPow->getType() == CNormalGeneralPower::POWER)
+            {
+              pGenPow->getLeft().setDenominator(*pTmpSum);
+            }
+        }
+      ++it;
+    }
+  delete pTmpSum;
 }
