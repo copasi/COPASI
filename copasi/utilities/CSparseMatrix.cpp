@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:19 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 10:58:04 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -598,7 +603,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
   CMatrix< C_FLOAT64 > M(size - 3, size);
   CSparseMatrix S(size - 3, size);
   CMatrix< C_FLOAT64 > MM(size, size + 3);
-  CSparseMatrix SS(size, size + 3);
+  CSparseMatrix Ss(size, size + 3);
   C_FLOAT64 tmp;
 
   for (i = 0; i < size - 3; i++)
@@ -612,14 +617,14 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
     for (j = 0; j < size + 3; j++)
       {
         if (pRandom->getRandomCC() < Sparseness)
-          SS(i, j) = (pRandom->getRandomCC() - 0.5) * 100.0;
+          Ss(i, j) = (pRandom->getRandomCC() - 0.5) * 100.0;
       }
 
   M = S;
-  MM = SS;
+  MM = Ss;
 
   CCompressedColumnFormat C(S);
-  CCompressedColumnFormat CC(SS);
+  CCompressedColumnFormat CC(Ss);
 
   std::cout << "Memory requirements for sparseness:\t" << Sparseness << std::endl;
 
@@ -725,7 +730,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
       WALL.start();
       for (l = 0; l < loop; l++)
         {
-          CSparseMatrix SR(S.numRows(), SS.numCols());
+          CSparseMatrix SR(S.numRows(), Ss.numCols());
           C_FLOAT64 Tmp;
           std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itRow;
           std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endRow;
@@ -740,7 +745,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
             {
               endRowElement = itRow->end();
 
-              for (itCol = SS.getColumns().begin(), endCol = SS.getColumns().end(); itCol != endCol; ++itCol)
+              for (itCol = Ss.getColumns().begin(), endCol = Ss.getColumns().end(); itCol != endCol; ++itCol)
                 {
                   Tmp = 0;
                   itRowElement = itRow->begin();
