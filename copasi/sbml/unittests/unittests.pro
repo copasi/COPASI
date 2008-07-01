@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/07/01 10:58:40 $ 
+#   $Date: 2008/07/01 11:57:59 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -52,7 +52,7 @@ contains(BUILD_OS, SunOS) {
          $${LIBS}
    
    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
-
+}
 
 }  
 
