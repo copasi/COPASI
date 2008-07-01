@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/01 07:45:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -529,7 +529,6 @@ CNormalGeneralPower* CNormalProduct::getDenominator() const
                 pTmpPow->getLeft().setNumerator(*pTmpSum);
                 pResult->multiply(*pTmpPow);
               }
-            delete pTmpPow;
           }
         ++it;
       }
