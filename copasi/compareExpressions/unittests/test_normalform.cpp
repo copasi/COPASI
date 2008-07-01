@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/01 14:43:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3442,7 +3442,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
   pFraction = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
   delete pTree;
-  std::cout << pFraction->toString() << std::endl;
+  //std::cout << pFraction->toString() << std::endl;
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne() == true);
 
@@ -4547,7 +4547,7 @@ bool test_normalform::check_LogicalItemA(const CNormalLogicalItem* pLogicalItem)
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LT) return false;
 
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* pNumerator = &pFraction->getNumerator();
@@ -4596,7 +4596,7 @@ bool test_normalform::check_LogicalItemB(const CNormalLogicalItem* pLogicalItem)
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
 
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* pNumerator = &pFraction->getNumerator();
@@ -4636,7 +4636,7 @@ bool test_normalform::check_LogicalItemC(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4676,7 +4676,7 @@ bool test_normalform::check_LogicalItemD(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4724,7 +4724,7 @@ bool test_normalform::check_LogicalItemE(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LT) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
   if (numerator->getFractions().size() != 0) return false;
@@ -4799,7 +4799,7 @@ bool test_normalform::check_LogicalItemF(const CNormalLogicalItem* pLogicalItem)
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() == false) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -4876,7 +4876,7 @@ bool test_normalform::check_LogicalItemNotA(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LE) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
 
@@ -4927,7 +4927,7 @@ bool test_normalform::check_LogicalItemNotB(const CNormalLogicalItem* pLogicalIt
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
 
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* pNumerator = &pFraction->getNumerator();
@@ -4967,7 +4967,7 @@ bool test_normalform::check_LogicalItemNotC(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -5007,7 +5007,7 @@ bool test_normalform::check_LogicalItemNotD(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
@@ -5056,7 +5056,7 @@ bool test_normalform::check_LogicalItemNotE(const CNormalLogicalItem* pLogicalIt
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::LE) return false;
 
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
   if (numerator->getFractions().size() != 0) return false;
@@ -5131,7 +5131,7 @@ bool test_normalform::check_LogicalItemNotF(const CNormalLogicalItem* pLogicalIt
   bool result = true;
   if (pLogicalItem == NULL) return false;
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
-  pFraction = &pLogicalItem->getLeft();
+  const CNormalFraction* pFraction = &pLogicalItem->getLeft();
   if (pFraction == NULL) return false;
   if (pFraction->checkDenominatorOne() != true) return false;
   const CNormalSum* numerator = &pFraction->getNumerator();
