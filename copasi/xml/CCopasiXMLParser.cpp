@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.180 $
+//   $Revision: 1.181 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/16 14:06:57 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 10:57:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2273,7 +2273,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                     // Old file format support
+    case MathML:                                      // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2371,7 +2371,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                     // Old file format support
+    case MathML:                                      // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -8797,7 +8797,7 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
         {
           mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
-      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::make_pair(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
+      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, unsigned C_INT32>(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
       mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Header;
       break;
@@ -8920,7 +8920,7 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
         {
           mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
-      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::make_pair(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
+      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, unsigned C_INT32>(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
       mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Body;
       break;
@@ -9043,7 +9043,7 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
         {
           mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, unsigned C_INT32> >();
         }
-      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::make_pair(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
+      mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, unsigned C_INT32>(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
       mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(""));
       mCurrentElement = Footer;
       break;

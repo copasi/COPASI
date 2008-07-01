@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CFixLocalReactionParameters.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:34:41 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 10:57:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,11 +68,11 @@ void CFixLocalReactionParameters::checkModel()
             {
               if ((*ppEntity)->getExpression().find(CN) != std::string::npos)
                 mChanges.insert
-                (std::pair< CCopasiParameter *, CExpression * >(*itParameter, (*ppEntity)->getExpressionPtr()));
+                (std::pair< CCopasiParameter * const, CExpression * >(*itParameter, (*ppEntity)->getExpressionPtr()));
 
               if ((*ppEntity)->getInitialExpression().find(CN) != std::string::npos)
                 mChanges.insert
-                (std::pair< CCopasiParameter *, CExpression * >(*itParameter, (*ppEntity)->getInitialExpressionPtr()));
+                (std::pair< CCopasiParameter * const, CExpression * >(*itParameter, (*ppEntity)->getInitialExpressionPtr()));
             }
         }
     }
