@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 11:03:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,9 +226,9 @@ bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
 
   if (Insert.second)
     {
-      mSubject2Triplet.insert(std::pair< CRDFNode *, CRDFTriplet >(triplet.pSubject, triplet));
-      mObject2Triplet.insert(std::pair< CRDFNode *, CRDFTriplet >(triplet.pObject, triplet));
-      mPredicate2Triplet.insert(std::pair< CRDFPredicate, CRDFTriplet >(triplet.Predicate, triplet));
+      mSubject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pSubject, triplet));
+      mObject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pObject, triplet));
+      mPredicate2Triplet.insert(std::pair< const CRDFPredicate , CRDFTriplet >(triplet.Predicate, triplet));
     }
 
   return true;
@@ -296,7 +296,7 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
 {
   CRDFPredicate::Path Path;
   CRDFNode * pCurrent = const_cast< CRDFNode * >(pNode);
-  Node2TripletConstRange Range = mObject2Triplet.equal_range(pCurrent);
+  Node2TripletRange Range = mObject2Triplet.equal_range(pCurrent);
   std::set< const CRDFNode * > Visited;
 
   while (Range.first != Range.second)
