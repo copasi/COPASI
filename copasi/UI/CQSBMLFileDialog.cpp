@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 11:08:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,10 +24,10 @@ CQSBMLFileDialog::CQSBMLFileDialog(QWidget * parent ,
                                    bool modal)
     : CopasiFileDialog(parent , name , modal)
 {
-  this->mSBMLVersions.push_back(std::make_pair(2, 3));
-  this->mSBMLVersions.push_back(std::make_pair(2, 2));
-  this->mSBMLVersions.push_back(std::make_pair(2, 1));
-  this->mSBMLVersions.push_back(std::make_pair(1, 2));
+  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 3));
+  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 2));
+  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 1));
+  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(1, 2));
   this->mpSBMLVersionBox = new QComboBox(this);
   this->mpSBMLVersionBox->setEditable(false);
   std::vector<std::pair<unsigned C_INT32, unsigned C_INT32> >::const_iterator it = this->mSBMLVersions.begin();

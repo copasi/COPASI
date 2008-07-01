@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/25 07:34:45 $
+//   $Author: gauges $
+//   $Date: 2008/07/01 11:08:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -612,7 +612,7 @@ bool CQEventWidget1::loadFromEvent()
           std::cout << "Global Quantities: " << sName << std::endl;
         }
 
-      mObjectKeyDisplayName.push_back(std::make_pair(it->first, sName.latin1()));
+      mObjectKeyDisplayName.push_back(std::pair<std::string, std::string>(it->first, sName.latin1()));
     }
 
   std::vector<std::pair<std::string, std::string> >::iterator itA = mObjectKeyDisplayName.begin();
