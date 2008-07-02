@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:33:30 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 07:59:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,9 +62,6 @@ class CCopasiTask : public CCopasiContainer
       tss,
 #endif // COPASI_TSS
       sens,
-#ifdef COPASI_SSA
-      ssa,
-#endif // COPASI_SSA
       moieties,
       unset
     };

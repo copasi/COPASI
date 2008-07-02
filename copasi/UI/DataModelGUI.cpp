@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/05/07 20:37:18 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 07:59:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,9 +75,6 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Elementary Flux Modes"]->getKey());
   mTree.findNodeFromId(222)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
   mTree.findNodeFromId(2221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
-#ifdef COPASI_SSA
-  mTree.findNodeFromId(223)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Stoichiometric Stability Analysis"]->getKey());
-#endif // COPASI_SSA
   mTree.findNodeFromId(23)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
   mTree.findNodeFromId(24)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
 

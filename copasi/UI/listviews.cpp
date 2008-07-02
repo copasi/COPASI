@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.244 $
+//   $Revision: 1.245 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/24 19:14:41 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 07:59:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,9 +54,6 @@
 #include "CQEFMWidget.h"
 #include "CQMoietiesTaskResult.h"
 #include "CQMoietiesTaskWidget.h"
-#ifdef COPASI_SSA
-#include "SSAWidget.h"
-#endif
 #include "ParametersWidget.h"
 #include "ReactionsWidget.h"
 #include "ReactionsWidget1.h"
@@ -267,9 +264,6 @@ ListViews::ListViews(QWidget *parent, const char *name):
 #ifdef COPASI_DEBUG
     mpUpdatesWidget(NULL),
 #endif
-#ifdef COPASI_SSA
-    mSSAWidget(NULL),
-#endif
 #ifdef WITH_LAYOUT
     mpCopasiLayoutWidget(NULL),
 #endif
@@ -417,11 +411,6 @@ void ListViews::ConstructNodeWidgets()
   if (!mpMoietiesTaskWidget)
     mpMoietiesTaskWidget = new CQMoietiesTaskWidget(this);
   mpMoietiesTaskWidget->hide();
-
-#ifdef COPASI_SSA
-  if (!mSSAWidget) mSSAWidget = new SSAWidget(this);
-  mSSAWidget->hide();
-#endif // COPASI_SSA
 
   if (!parametersWidget) parametersWidget = new ParametersWidget(this);
   parametersWidget->hide();
@@ -633,11 +622,6 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 2221:
         return mpMoietiesTaskResult;
         break;
-#ifdef COPASI_SSA
-      case 223:
-        return mSSAWidget;
-        break;
-#endif // COPASI_SSA
       case 23:
         return trajectoryWidget;
         break;

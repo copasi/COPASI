@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.181 $
+//   $Revision: 1.182 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 10:57:06 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 07:59:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,9 +42,6 @@
 #include "utilities/CSlider.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
-#ifdef COPASI_SSA
-#include "ssa/CSSATask.h"
-#endif
 #ifdef COPASI_TSS
 #include "tss/CTSSTask.h"
 #endif
@@ -2273,7 +2270,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                      // Old file format support
+    case MathML:                                       // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2371,7 +2368,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                      // Old file format support
+    case MathML:                                       // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -7382,11 +7379,6 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
         case CCopasiTask::sens:
           mCommon.pCurrentTask = new CSensTask(mCommon.pTaskList);
           break;
-#ifdef COPASI_SSA
-        case CCopasiTask::ssa:
-          mCommon.pCurrentTask = new CSSATask(mCommon.pTaskList);
-          break;
-#endif // COPASI_SSA
 #ifdef COPASI_TSS
         case CCopasiTask::tss:
           mCommon.pCurrentTask = new CTSSTask(mCommon.pTaskList);

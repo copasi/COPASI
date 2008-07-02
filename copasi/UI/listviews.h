@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.143 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/03 13:20:58 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 07:59:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,9 +89,6 @@ class CQLyapWidget;
 class CQLyapResultWidget;
 class CQModelValue;
 class CQMathMatrixWidget;
-#ifdef COPASI_SSA
-class SSAWidget;
-#endif
 
 #ifdef WITH_LAYOUT
 class CQCopasiLayoutWidget;
@@ -250,9 +247,6 @@ class ListViews : public QSplitter
 #ifdef COPASI_DEBUG
     CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
-#ifdef COPASI_SSA
-    SSAWidget * mSSAWidget;
-#endif // COPASI_SSA
 #ifdef WITH_LAYOUT
     CQCopasiLayoutWidget * mpCopasiLayoutWidget;
 #endif
