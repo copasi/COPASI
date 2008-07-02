@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.20 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
+  $Revision: 1.21 $
+  $Name:  $
+  $Author: tjohann $
+  $Date: 2008/07/02 08:06:12 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -141,9 +146,16 @@ bool CEFMAlgorithm::initialize()
 
 bool CEFMAlgorithm::calculate()
 {
-  bool Continue = true;
-
   if (!initialize()) return false;
+
+  calculateFluxModes();
+
+  return true;
+}
+
+void CEFMAlgorithm::calculateFluxModes()
+{
+  bool Continue = true;
 
   if (mStoi.size())
     {
@@ -172,8 +184,6 @@ bool CEFMAlgorithm::calculate()
 
   if (mpCallBack)
     Continue &= mpCallBack->finish(mhSteps);
-
-  return true;
 }
 
 void CEFMAlgorithm::calculateNextTableau()

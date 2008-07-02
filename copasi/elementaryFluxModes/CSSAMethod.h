@@ -1,13 +1,13 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ssa/Attic/CSSAMethod.h,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
-   End CVS Header */
-
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.h,v $
+//   $Revision: 1.1 $
+//   $Name:  $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 08:06:12 $
+// End CVS Header
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 #ifndef COPASI_SSAMethod
@@ -15,89 +15,41 @@
 
 #include <string>
 
-#include "utilities/CCopasiMethod.h"
+#include "elementaryFluxModes/CEFMAlgorithm.h"
 //#include "utilities/CMatrix.h"
 
 #include "utilities/CAnnotatedMatrix.h"
+#include "utilities/CCopasiVector.h"
 
 class CSSAProblem;
 class CFluxMode;
-#include "utilities/CCopasiException.h"
 
-class CSSAMethod : public CCopasiMethod
+class CSSAMethod : public CEFMAlgorithm
   {
-  protected:
-    /**
-     *  A pointer to the SSA problem.
-     */
-    const CSSAProblem * mpProblem;
-
-    /**
-     * A pointer to the progress bar handler
-     */
-    //CProcessReport * mpProgressHandler;
-
-    // Operations
-  private:
-    /**
-     * Default constructor.
-     */
-    CSSAMethod();
-
-  protected:
-    /**
-     * Specific constructor.
-     * @param CCopasiMethod::SubType subType
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    explicit CSSAMethod(CCopasiMethod::SubType subType,
-                        const CCopasiContainer * pParent = NULL);
+    friend CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType);
 
   public:
-    /**
-     * Create a trajectory method.
-     * Note: the returned object has to be released after use with delete
-     */
-    static CSSAMethod *
-    createSSAMethod(CCopasiMethod::SubType subType
-                    = CCopasiMethod::ssaMethod);
-
-    /**
-     * Copy constructor.
-     * @param "const CTSSMethod &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
     CSSAMethod(const CSSAMethod & src,
                const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Destructor.
-     */
-    ~CSSAMethod();
+    CSSAMethod(const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Set a pointer to the problem.
-     *  This method is used by CSteadyState
-     *  @param "CSteadyStateProblem *" problem
-     */
-    //void setProblem(CSteadyStateProblem * problem);
-
-    /**
-     */
     bool process(CProcessReport * handler);
 
-    bool initialize(CSSAProblem* problem);
-
     bool calculate();
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+    bool initialize();
+
+    bool isReactionReversed(int index) const;
+
+    TriLogic isMixingStable(int indexEC);
 
   protected:
 
     // attributes
+
+    //
+    CCopasiVectorNS< CReaction > mReactions;
 
     // the Stoichiometric Matrix in which we will have only irreversible reactions
     CMatrix<C_FLOAT64> mStoichiometry;
@@ -112,7 +64,7 @@ class CSSAMethod : public CCopasiMethod
     C_INT32 mNumReactions;
 
     // the rate constants corresponding to the reactions represented by the columns of mStoichiometry:
-    std::vector< std::string > mRateConstants;
+    // std::vector< std::string > mRateConstants;
 
     CMatrix<C_FLOAT64> mTransposedKineticMatrix;
 
@@ -121,13 +73,14 @@ class CSSAMethod : public CCopasiMethod
     std::vector< CVector<C_FLOAT64> > mExtremeCurrents;
 
     // vector holding the index of non-mixing stable ECs in mExtremeCurrents:
-    std::vector< C_INT32 > mNonMixingStableECs;
-
-    CSSATask * mpTask;
-    CModel * mpModel;
+    // three states:
+    //    -1 for "Not mixing stable"
+    //     0 for "Unknown"
+    //     1 for "Mixing stable"
+    std::vector< TriLogic > mIsMixingStable;
 
     // gets the reactions to be duplicated in the matrix rows/columns
-    void buildBackwardReactionVector();
+    //void buildBackwardReactionVector();
 
     // retrieves the jacobian from input:
     bool buildJacobian();
@@ -147,8 +100,6 @@ class CSSAMethod : public CCopasiMethod
     //        false otherwise.
     bool testForMixingStability();
 
-    bool isMixingStable(CVector< C_FLOAT64 > &);
-
     // build diagonal square matrices from vectors:
     template <class CType> CMatrix<CType> diag(CVector<CType> vector)
     {
@@ -157,7 +108,7 @@ class CSSAMethod : public CCopasiMethod
       matrix.resize(vector.size(), vector.size());
       memset(matrix.array(), 0, matrix.size()*sizeof(CType));
 
-      for (uint i = 0; i < vector.size(); ++i)
+      for (unsigned int i = 0; i < vector.size(); ++i)
         matrix(i, i) = vector[i];
 
       return matrix;

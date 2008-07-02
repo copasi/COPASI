@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/13 18:20:09 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
+  $Revision: 1.5 $
+  $Name:  $
+  $Author: tjohann $
+  $Date: 2008/07/02 08:06:12 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001-2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,8 +31,8 @@
 
 #include "CEFMAlgorithm.h"
 
-#ifdef COPASI_EXTREMECURRENTS
-# include "CExtremeCurrentCalculator.h"
+#ifdef COPASI_SSA
+# include "CSSAMethod.h"
 #endif
 
 CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
@@ -39,9 +44,9 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
     case EFMAlgorithm:
       pMethod = new CEFMAlgorithm();
       break;
-#ifdef COPASI_EXTREMECURRENTS
-    case extremeCurrents:
-      pMethod = new CExtremeCurrentCalculator();
+#ifdef COPASI_SSA
+    case stoichiometricStabilityAnalysis:
+      pMethod = new CSSAMethod();
       break;
 #endif
     default:

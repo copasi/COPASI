@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:31:52 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 08:06:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,6 +124,13 @@ class CEFMTask : public CCopasiTask
 
     std::string getReactionEquation(unsigned C_INT32 index1,
                                     unsigned C_INT32 index2) const;
+
+#ifdef COPASI_SSA
+    std::string getReactionEquationForward(unsigned C_INT32 index1,
+                                           unsigned C_INT32 index2) const;
+    std::string getReactionEquationBackward(unsigned C_INT32 index1,
+                                            unsigned C_INT32 index2) const;
+#endif // COPASI_SSA
   };
 
 #endif // COPASI_CEFMTask

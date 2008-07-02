@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:31:52 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 08:06:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,16 +28,21 @@
 #include "CEFMMethod.h"
 #include "CEFMProblem.h"
 
+#ifdef COPASI_SSA
+#include "CSSAMethod.h"
+#endif
+
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
 #include "utilities/CCopasiProblem.h"
 
 const unsigned C_INT32 CEFMTask::ValidMethods[] =
   {
-    CCopasiMethod::EFMAlgorithm
-#ifdef COPASI_EXTREMECURRENTS
-    , CCopasiMethod::extremeCurrents
+    CCopasiMethod::EFMAlgorithm,
+#ifdef COPASI_SSA
+    CCopasiMethod::stoichiometricStabilityAnalysis,
 #endif
+    0
   };
 
 CEFMTask::CEFMTask(const CCopasiContainer * pParent):
@@ -119,15 +124,25 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
     unsigned C_INT32 j, jmax = FluxModes[index].size();
     const CCopasiVectorNS< CReaction > & Reactions = mpProblem->getModel()->getReactions();
 
-#ifdef COPASI_EXTREMECURRENTS
-    if (mpMethod->getSubType() == CCopasiMethod::extremeCurrents)
+#ifdef COPASI_SSA
+    if (mpMethod->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis)
       {
+        CSSAMethod * method = dynamic_cast<CSSAMethod *>(mpMethod);
+
         for (j = 0; j < jmax; j++)
           {
             if (j) tmp << "\n";
+            std::string addstrng = "";
             if (Reactions[Index[FluxModes[index].getReactionIndex(j)]]->isReversible())
-              tmp << FluxModes[index].getMultiplier(j) << " * "
-              << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName();
+              {
+                addstrng = " (Forward)";
+                if (method->isReactionReversed(FluxModes[index].getReactionIndex(j)))
+                  addstrng = " (Backward)";
+              }
+
+            tmp << FluxModes[index].getMultiplier(j) << " * "
+            << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName()
+            << addstrng;
           }
       }
     else
@@ -151,8 +166,66 @@ unsigned C_INT32 CEFMTask::getFluxModeSize(unsigned C_INT32 index) const
 std::string CEFMTask::getReactionEquation(unsigned C_INT32 index1, unsigned C_INT32 index2) const
   {
     const CCopasiVectorNS < CReaction > & Reactions = mpProblem->getModel()->getReactions();
+    CReaction Reaction = *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]];
 
-    return CChemEqInterface::getChemEqString(mpProblem->getModel(),
-        *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]],
-        false);
+#ifdef COPASI_SSA
+    if (mpMethod->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis)
+      {
+        CSSAMethod * method = dynamic_cast<CSSAMethod *>(mpMethod);
+
+        std::string retstring = getReactionEquationForward(index1, index2);
+
+        if (Reaction.isReversible())
+          {
+            if (method->isReactionReversed(static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)))
+              retstring = getReactionEquationBackward(index1, index2);
+          }
+
+        return retstring;
+      }
+    else
+#endif //COPASI_SSA
+      return CChemEqInterface::getChemEqString(mpProblem->getModel(),
+          *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]],
+          false);
   }
+
+#ifdef COPASI_SSA
+std::string CEFMTask::getReactionEquationForward(unsigned C_INT32 index1, unsigned C_INT32 index2) const
+  {
+    const CCopasiVectorNS < CReaction > & Reactions = mpProblem->getModel()->getReactions();
+    CReaction Reaction = *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]];
+
+    std::string equation = CChemEqInterface::getChemEqString(mpProblem->getModel(),
+                           Reaction,
+                           false);
+
+    if (Reaction.isReversible())
+      {
+        int i = equation.find("=", 0);
+        equation.replace(i, 1, "->");
+      }
+
+    return equation;
+  }
+
+std::string CEFMTask::getReactionEquationBackward(unsigned C_INT32 index1, unsigned C_INT32 index2) const
+  {
+    const CCopasiVectorNS < CReaction > & Reactions = mpProblem->getModel()->getReactions();
+    CReaction Reaction = *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]];
+
+    std::string equation = CChemEqInterface::getChemEqString(mpProblem->getModel(),
+                           Reaction,
+                           false);
+
+    if (Reaction.isReversible())
+      {
+        int i = equation.find("=", 0);
+        std::string lhs = equation.substr(0, i - 1);
+        std::string rhs = equation.substr(i + 2 , equation.size() - i - 1);
+        equation = rhs + " -> " + lhs;
+      }
+
+    return equation;
+  }
+#endif // COPASI_SSA

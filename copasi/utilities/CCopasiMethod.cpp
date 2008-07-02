@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/30 08:37:16 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 08:06:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,11 +69,8 @@ const std::string CCopasiMethod::SubTypeName[] =
 #endif // COPASI_TSS
     "Sensitivities Method",
 #ifdef COPASI_SSA
-    "Stoichiometric Stability Analysis Method",
+    "Stoichiometric Stability Analysis",
 #endif // COPASI_SSA
-#ifdef COPASI_EXTREMECURRENTS
-    "Extreme Current Calculator",
-#endif // COPAISI_EXTREMECURRENTS
     "EFM Algorithm",
     "Householder Reduction",
     ""
@@ -118,11 +115,8 @@ const char* CCopasiMethod::XMLSubType[] =
 #endif // COPASI_TSS
     "SensitivitiesMethod",
 #ifdef COPASI_SSA
-    "SSAMethod",
+    "StoichiometricStabilityAnalysis",
 #endif // COPASI_SSA
-#ifdef COPASI_EXTREMECURRENTS
-    "ExtremeCurrentCalculator",
-#endif // COPASI_EXTREMECURRENTS
     "EFMAlgorithm",
     "Householder",
     NULL

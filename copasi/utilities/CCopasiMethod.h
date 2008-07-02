@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/30 08:37:20 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 08:06:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,11 +79,8 @@ class CCopasiMethod : public CCopasiParameterGroup
 #endif // COPASI_TSS
       sensMethod,
 #ifdef COPASI_SSA
-      ssaMethod,
+      stoichiometricStabilityAnalysis,
 #endif // COPASI_SSA
-#ifdef COPASI_EXTREMECURRENTS
-      extremeCurrents,
-#endif
       EFMAlgorithm,
       Householder
     };

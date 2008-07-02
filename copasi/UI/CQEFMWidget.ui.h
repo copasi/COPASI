@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/23 13:58:04 $
+//   $Author: tjohann $
+//   $Date: 2008/07/02 08:06:11 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,6 +28,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CEFMTask.h"
+#include "elementaryFluxModes/CSSAMethod.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
 
@@ -30,6 +36,10 @@ void CQEFMWidget::init()
 {
   mpHeaderWidget->setTaskName("Elementary Flux Modes");
   mpHeaderWidget->mpUpdateModel->hide();
+
+#ifdef COPASI_SSA
+  addMethodSelectionBox(CEFMTask::ValidMethods, 0);
+#endif
 
   CQEFMWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQEFMWidgetLayout->addWidget(mpBtnWidget);
@@ -52,17 +62,51 @@ void CQEFMWidget::loadFluxModes()
       unsigned C_INT32 const noOfModesRows = pTask->getFluxModeSize();
       mpEditFluxModes->setText(QString::number(noOfModesRows));
 
+      mpListView->setColumnText(0, "Reversibility");
+#ifdef COPASI_SSA
+      bool ssatask = pTask->getMethod()->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis;
+      if (ssatask)
+        mpListView->setColumnText(0, "Stability");
+#endif
       unsigned C_INT32 j;
       for (j = 0; j < noOfModesRows; j++)
         {
-          if (pTask->isFluxModeReversible(j) == true)
+#ifdef COPASI_SSA
+          if (ssatask)
             {
-              item = new QListViewItem(mpListView, "Reversible");
+              item = new QListViewItem(mpListView, "");
+
+              std::string title;
+              switch (dynamic_cast<CSSAMethod *>(pTask->getMethod())->isMixingStable(j))
+                {
+                case TriTrue:
+                  title = "Mixing stable";
+                  break;
+
+                case TriFalse:
+                  title = "Not mixing stable";
+                  break;
+
+                default:
+                  title = "Unknown";
+                }
+
+              item->setText(0, title);
             }
           else
             {
-              item = new QListViewItem(mpListView, "Irreversible");
+#endif // COPASI_SSA
+              if (pTask->isFluxModeReversible(j) == true)
+                {
+                  item = new QListViewItem(mpListView, "Reversible");
+                }
+              else
+                {
+                  item = new QListViewItem(mpListView, "Irreversible");
+                }
+#ifdef COPASI_SSA
             }
+#endif // COPASI_SSA
           item->setMultiLinesEnabled(true);
 
           item->setText(1, FROM_UTF8(pTask->getFluxModeDescription(j)));
@@ -118,5 +162,6 @@ bool CQEFMWidget::loadTask()
 
 CCopasiMethod * CQEFMWidget::createMethod(const CCopasiMethod::SubType & type)
 {
-  return CEFMMethod::createMethod(type);
+  mpTask->setMethodType(type);
+  return mpTask->getMethod();
 }
