@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLcm.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/02 08:18:25 $
+//   $Date: 2008/07/02 09:46:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,15 +194,16 @@ bool CNormalLcm::remove(const CNormalSum& sum)   //sum must not contain fraction
   bool result = true;
   std::set <CNormalItemPower*, compareItemPowers >::const_iterator it, itEnd;
   std::vector<CNormalSum*>::iterator it2, itEnd2;
+  const CNormalProduct* pProduct = NULL;
   switch (sum.getProducts().size())
     {
     case 0:
       result = false;
       break;
     case 1:
-      const CNormalProduct* product = *sum.getProducts().begin();
-      itEnd = product->getItemPowers().end();
-      for (it = product->getItemPowers().begin(); it != itEnd && result == true; ++it)
+      pProduct = *sum.getProducts().begin();
+      itEnd = pProduct->getItemPowers().end();
+      for (it = pProduct->getItemPowers().begin(); it != itEnd && result == true; ++it)
         {
           if (remove(**it) == false)
             {
