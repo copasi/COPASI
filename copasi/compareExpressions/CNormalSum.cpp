@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/02 08:18:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,6 @@
 #include "CNormalGeneralPower.h"
 
 #include "copasi/utilities/CCopasiMessage.h"
-
-// TODO the changes in this file cause one of the logical tests to fail
 
 bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2)
 {
@@ -265,6 +263,7 @@ bool CNormalSum::multiply(const CNormalSum& sum)
  */
 bool CNormalSum::multiply(const CNormalLcm& lcm)
 {
+  std::string s = lcm.toString();
   std::set<CNormalProduct*, compareProducts > tmpProducts = mProducts;
   mProducts.clear();
   std::set<CNormalProduct*, compareProducts >::const_iterator it2;
@@ -282,6 +281,7 @@ bool CNormalSum::multiply(const CNormalLcm& lcm)
   for (it = mFractions.begin(); it != itEnd; ++it)
     {
       const CNormalSum* summand2 = (*it)->multiply(lcm);
+      std::string s2 = (*it)->toString();
       assert(summand2 != NULL);
       add(*summand2);
       delete summand2;
@@ -519,13 +519,6 @@ void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
 bool CNormalSum::simplify()
 {
   bool result = true;
-  // TODO go through all products and check the denominators
-  // TODO if the denominator is not NULL, transform the product to a fraction
-  // TODO the fraction has the found denominator as its denominator and the
-  // TODO numerator is the product of all items
-  // TODO before creating the product, the denominators of all general items in
-  // TODO the product have to set to 1 by calling setDenominatorsOne on the product
-  // TODO What will happen to such a fraction later on?
   std::set<CNormalProduct*, compareProducts>::iterator it = this->mProducts.begin(), endit = this->mProducts.end();
   // add code to find general power items with exponent 1 where the parent
   // power item also has exponent 1
@@ -534,6 +527,7 @@ bool CNormalSum::simplify()
   // to the fractions of this sum
   // afterwards, we have to simplify all products and all fractions again
   std::vector<CNormalBase*> newProducts;
+  // go through all products and check the denominators
   while (it != endit)
     {
       (*it)->simplify();
@@ -556,7 +550,49 @@ bool CNormalSum::simplify()
         }
       else
         {
-          newProducts.push_back((*it));
+          // if the denominator is not NULL, transform the product to a fraction
+          CNormalGeneralPower* pDenom = (*it)->getDenominator();
+          if (pDenom == NULL || pDenom->checkIsOne())
+            {
+              newProducts.push_back((*it));
+            }
+          else
+            {
+              // before creating the product, the denominators of all general items in
+              // the product have to set to 1 by calling setDenominatorsOne on the product
+              (*it)->setDenominatorsOne();
+              CNormalFraction* pFraction = NULL;
+              if (pDenom->getRight().checkIsOne())
+                {
+                  // the denominator is the left side of pDenom
+                  pFraction = new CNormalFraction(pDenom->getLeft());
+                  // now we set the numerator
+                  CNormalSum* pSum = new CNormalSum();
+                  pSum->add(**it);
+                  pFraction->setNumerator(*pSum);
+                  delete pSum;
+                }
+              else
+                {
+                  // the fraction has the found denominator as its denominator and the
+                  // numerator is the product of all items
+                  pFraction = new CNormalFraction();
+                  CNormalSum* pSum = new CNormalSum();
+                  pSum->add(**it);
+                  pFraction->setNumerator(*pSum);
+                  delete pSum;
+                  // now we have to set the denominator to pDenom
+                  pSum = new CNormalSum();
+                  CNormalProduct* pTmpProduct = new CNormalProduct();
+                  pTmpProduct->multiply(*pDenom);
+                  pSum->add(*pTmpProduct);
+                  delete pTmpProduct;
+                  pFraction->setDenominator(*pSum);
+                }
+              delete (*it);
+              newProducts.push_back(pFraction);
+            }
+          delete pDenom;
         }
       ++it;
     }
@@ -617,8 +653,6 @@ bool CNormalSum::checkIsOne() const
             && (fabs((*mProducts.begin())->getFactor() - 1.0) < 1.E-100)
             && ((pTmpPow == NULL) || (pTmpPow->checkIsOne()))
 )
-          // TODO maybe we should not use checkIsOne on the whole general power but
-          // TODO check the items (left, right, numerator, denominator) separately
           {
             result = true;
           }
