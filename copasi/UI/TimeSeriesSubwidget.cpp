@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Fri Jun 27 10:20:01 2008
+ ** Created: Wed Jul 2 13:56:59 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -47,41 +47,38 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
   TimeSeriesSubWidgetLayout = new QVBoxLayout(this, 11, 6, "TimeSeriesSubWidgetLayout");
 
-  tabWidget2 = new QTabWidget(this, "tabWidget2");
-
-  tab = new QWidget(tabWidget2, "tab");
-
-  optimizationResultText = new QTextEdit(tab, "optimizationResultText");
-  optimizationResultText->setGeometry(QRect(11, 11, 552, 278));
-  optimizationResultText->setReadOnly(TRUE);
-  tabWidget2->insertTab(tab, QString::fromLatin1(""));
-
-  tab_2 = new QWidget(tabWidget2, "tab_2");
-  tabLayout = new QVBoxLayout(tab_2, 11, 6, "tabLayout");
-
-  dataTable = new CTimeSeriesTable(tab_2, "dataTable");
-  tabLayout->addWidget(dataTable);
-  tabWidget2->insertTab(tab_2, QString::fromLatin1(""));
-  TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
-
-  layout16 = new QHBoxLayout(0, 0, 6, "layout16");
-  spacer = new QSpacerItem(300, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout16->addItem(spacer);
+  toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
+  spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  toplayout->addItem(spacer);
 
   ButtonSaveData = new QPushButton(this, "ButtonSaveData");
   ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
-  layout16->addWidget(ButtonSaveData);
+  toplayout->addWidget(ButtonSaveData);
+  TimeSeriesSubWidgetLayout->addLayout(toplayout);
 
-  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
-  layout16->addWidget(mpBtnPrintAsImage);
-  TimeSeriesSubWidgetLayout->addLayout(layout16);
+  tabWidget2 = new QTabWidget(this, "tabWidget2");
+
+  tab = new QWidget(tabWidget2, "tab");
+  tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
+
+  optimizationResultText = new QTextEdit(tab, "optimizationResultText");
+  optimizationResultText->setReadOnly(TRUE);
+  tabLayout->addWidget(optimizationResultText);
+  tabWidget2->insertTab(tab, QString::fromLatin1(""));
+
+  tab_2 = new QWidget(tabWidget2, "tab_2");
+  tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
+
+  dataTable = new CTimeSeriesTable(tab_2, "dataTable");
+  tabLayout_2->addWidget(dataTable);
+  tabWidget2->insertTab(tab_2, QString::fromLatin1(""));
+  TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
   languageChange();
   resize(QSize(600, 382).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
-  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printTableAsImage()));
   init();
 }
 
@@ -99,9 +96,8 @@ TimeSeriesSubWidget::~TimeSeriesSubWidget()
  */
 void TimeSeriesSubWidget::languageChange()
 {
-  setCaption(tr("TimeSeries Result Window"));
+  setCaption(tr("Form1"));
+  ButtonSaveData->setText(tr("Save data to file"));
   tabWidget2->changeTab(tab, tr("OptimizationResult"));
   tabWidget2->changeTab(tab_2, tr("TimeSeries"));
-  ButtonSaveData->setText(tr("Save data to file"));
-  mpBtnPrintAsImage->setText(tr("Print as image"));
 }

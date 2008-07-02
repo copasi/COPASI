@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.11 $ </comment>
+<comment>   $Revision: 1.12 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2008/06/27 11:53:34 $ </comment>
+<comment>   $Date: 2008/07/02 12:04:02 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,8 +12,11 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>TimeSeriesSubWidget</class>
+<comment> Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
+
+<class>TimeSeriesSubWidget</class>
 <widget class="QWidget">
     <property name="name">
         <cstring>TimeSeriesSubWidget</cstring>
@@ -35,66 +38,25 @@
         </sizepolicy>
     </property>
     <property name="caption">
-        <string>TimeSeries Result Window</string>
+        <string>Form1</string>
     </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QTabWidget">
-            <property name="name">
-                <cstring>tabWidget2</cstring>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>OptimizationResult</string>
-                </attribute>
-                <widget class="QTextEdit">
-                    <property name="name">
-                        <cstring>optimizationResultText</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>11</x>
-                            <y>11</y>
-                            <width>552</width>
-                            <height>278</height>
-                        </rect>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>TimeSeries</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="CTimeSeriesTable">
-                        <property name="name">
-                            <cstring>dataTable</cstring>
-                        </property>
-                    </widget>
-                </vbox>
-            </widget>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout16</cstring>
+                <cstring>toplayout</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>1</number>
+                </property>
+                <property name="spacing">
+                    <number>1</number>
                 </property>
                 <spacer>
                     <property name="name">
@@ -108,7 +70,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>300</width>
+                            <width>170</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -129,15 +91,51 @@
                         <string>Save data to file</string>
                     </property>
                 </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnPrintAsImage</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Print as image</string>
-                    </property>
-                </widget>
             </hbox>
+        </widget>
+        <widget class="QTabWidget">
+            <property name="name">
+                <cstring>tabWidget2</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>OptimizationResult</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit">
+                        <property name="name">
+                            <cstring>optimizationResultText</cstring>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>TimeSeries</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="CTimeSeriesTable">
+                        <property name="name">
+                            <cstring>dataTable</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
         </widget>
     </vbox>
 </widget>
@@ -161,7 +159,7 @@
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="870">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032d49444154388db59531681c4714863f892dde8004b320c32e3870020b74458a6b0f5458e581c016a809a8496b42208454098604d2c4904a6954a410511ae752085b858c1208dc35221244b00119f60ac12ee860062c980719708a95a248f129459cd7cceeccf0edb76fff61a706830197d5ed765ff3166a30184c4d5d829fed3c7bdd5e6ce3bda71a5738ef301802e1d6d179477152303c1842bc822797a64fbf7b4a9a43be00ada817cb0e12011c2611205ccd73755f9c087c6b19bef0d7c100f5b8267d07caf10fe8ab9210156320fc01be16aa5a11043307f30b20a21041019985f48ef2f7fa0becc68e80475fd584e831b396f210f67795c3831a4940a3228925bb27f4d652ba4b01a199b73342f3981be0ca57745042ac30c632d853b6373d44b056c8ef0922508d94d14be59b2f4aeaf58cd5751069e06f3436890114332b9487d0bf80f61e64dc5f813c3790045453f67703fd4d4f7f6b4496b5597e689044af194f5f5e841800210478bee3d1a8f41e64acbe0f69ae6852e1cf0ccf7f74f4d652defbc042226c6f55e8f89f91bb6e9c387c9d521c9558db988a3416fe3c67e32b4779ec7167f0e8939ce19ea7fc5d298a80c875f03563930855ed2081bc05e91d5014ef53363eaf288e3d6285ee520a338e76c7a251a94e41e30470d3631004a262672e3eca59cec6978ef2b889979d11f2bb904af3be92081a416e28dfe831983920b1142345d5b0ff2234a6334276d7321ad53c795c511ca654a5a251996f19b83d158ef602b45a423d52f67703abeb29ee4ce9de4fc93378f218462f6b3efdb042cf3d59666977a0aa6fe9310888d25b13342afd4dcffeaee3d147399da540ab13f8f8b39c2cb3f8710d11ba2b96f9c57fcd7180287497a03ecde86f8dd8fe1a867b9ef6bb1612a84a871f6bd35b94e217a53832589970f2dcd85d9c7d4580d57521cbdaf4bfaf288e95e268d4ec8e60e72ccb0f2dbffea454e71e8d29f57882717152509482a48d8924b0bc12e82ee51445a03a6da079cbd0eec0fc22142b06620e89a3fc8d3783870743d814d2bc8994aa6ff286472e764902e5a96f72bbd3b4c37b280e95aa9e604c84e1cf978b37c74935797d7ae2ca7fac6968fe51ff0bf86dc30783c1d49f0baa9bb819e612310000000049454e44ae426082</data>
+        <data format="PNG" length="892">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000034349444154388dad9331681c4714863f8929de8004b320c32e3870020b74458a43e0e24085550a04b6408d418d5b130221a44a3024902686544aa3228588d238e7c26015329722480742170922d8800c7b85601774b00316cc832c28c55ea29c122b8d1e0ccbcc2cfffbf8df3f13fd833e54808185fb0b97dc42f5f7fb13137bfb7b88113a2f3b97cdf926de7bf2614ee94b2c9640b8f15bfa92f434a577d8ab014765c4080bf7172e5ffcf0822881640e1a958eae4b300294582340b83ae76a9f9e0a7cefe8bdf157c23a12298605d107900d7f42df65844ab116c21fe00b212f1441b033303b07220a152820d310dd51fe59468cd40cc3928047df1584ca63a71dd911747794a3c30231a09522c611df1396d722da8b01a13e775342dde61a71ee735a28a1cab1d6b1bfab6c6f7aa8c03921b92788403e50066f95efbeca28d66356d741a416ff4f626b2ca0d869213b82ce4874f961cc831548120b26a01ad1dd0974363d9dad0171dc64e991458c8e114ffed5295401104280d7af3c5a29cb0f63569f4094286a72fcb9e5f5cb92e5b588c71f3930c2f6568e0eff1db9716253e28b88f438c3b99a54a46eec2f1236be29c94e3ce5393cfd2ca1b7ebc97e57d23420322e3c466c8d90172518481a10dd0145f13e62e3cb9cf4c4234e682f463055d26c39b452f233d0ea9af0b8c72008548a9b1a0de53c61e3eb92eca48e979b1292bb100960408ca015c835e46b1e839d018c231d28aa96ee9b50934e09f15dc76050f0fc594e7a1491678a56ca6cc3c2cda92869ce41a3211403a5bb13585d8f28cf95f683882486e7cf60f0b6e0f38f73f4c213c78e660bf2e2068f414094e535412ba5b3e9e9ee943cfd24a1b51868b4029f7e9110c70e3f2ca082f68a6376fe7f731ca012da8b509cc574b6066c7f0bbd5d4ff3430706f2acc40fb5f61625fd45498f2d4edef3f2ca61397afb8a00abeb421c37e9fc98939e28e9f1000cf500671c4b8f1cbffeace4171ead228ae17b88d3d394341324aa49c4c0d24aa0bd9890a681fcac164d1a96660b66e7215db15025604ab2dfc63dfe9bb877d8834d214aea48a9fa3a6f78c4d43f8b81ecccd7b97d55dbe13da4474a5e8c13d33fe8035cdef69abc3ecddbaa4931427fbf3f71ebc25a2918d8dbdfbb35f1fe417fe24f1259cbaa19404a4f0000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -170,12 +168,6 @@
         <signal>clicked()</signal>
         <receiver>TimeSeriesSubWidget</receiver>
         <slot>saveDataToFile()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnPrintAsImage</sender>
-        <signal>clicked()</signal>
-        <receiver>TimeSeriesSubWidget</receiver>
-        <slot>printTableAsImage()</slot>
     </connection>
 </connections>
 <includes>
@@ -192,7 +184,6 @@
     <slot access="protected" specifier="non virtual">saveDataToFile()</slot>
     <slot access="protected">init()</slot>
     <slot returnType="CTimeSeriesTable *">table()</slot>
-    <slot access="protected" specifier="non virtual">printTableAsImage()</slot>
 </slots>
 <functions>
     <function specifier="non virtual">displayOptimizationTab( bool displayOptTab )</function>
