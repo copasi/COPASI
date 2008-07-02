@@ -1,10 +1,11 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: tjohann $
-//   $Date: 2008/07/02 08:06:12 $
+//   $Date: 2008/07/02 08:51:35 $
 // End CVS Header
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -73,10 +74,8 @@ class CSSAMethod : public CEFMAlgorithm
     std::vector< CVector<C_FLOAT64> > mExtremeCurrents;
 
     // vector holding the index of non-mixing stable ECs in mExtremeCurrents:
-    // three states:
-    //    -1 for "Not mixing stable"
-    //     0 for "Unknown"
-    //     1 for "Mixing stable"
+    //  using TriUnspecified for unknown stability type if EC contains complex
+    //  kinetics.
     std::vector< TriLogic > mIsMixingStable;
 
     // gets the reactions to be duplicated in the matrix rows/columns

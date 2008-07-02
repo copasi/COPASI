@@ -1,10 +1,11 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: tjohann $
-//   $Date: 2008/07/02 08:06:12 $
+//   $Date: 2008/07/02 08:51:35 $
 // End CVS Header
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
@@ -21,7 +22,6 @@
 #include "clapackwrap.h"
 
 #include "elementaryFluxModes/CSSAMethod.h"
-#include "elementaryFluxModes/CExtremeCurrentCalculator.h"
 #include "elementaryFluxModes/CEFMTask.h"
 #include "utilities/CCopasiProblem.h"
 #include "elementaryFluxModes/CEFMMethod.h"
@@ -249,7 +249,7 @@ CSSAMethod::testForMixingStability()
               std::cout << "Reaction type: " << type << std::endl;
 
               if (type.find("Mass action") == std::string::npos &&
-                   type.find("Constant flux") == std::string::npos)
+                  type.find("Constant flux") == std::string::npos)
                 {
                   state = TriUnspecified;
                   break;

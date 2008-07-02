@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.79 $ 
+#   $Revision: 1.80 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/07/01 15:40:53 $ 
+#   $Author: tjohann $ 
+#   $Date: 2008/07/02 08:51:35 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.79 $ $Author: shoops $ $Date: 2008/07/01 15:40:53 $  
+# $Revision: 1.80 $ $Author: tjohann $ $Date: 2008/07/02 08:51:35 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -57,6 +57,9 @@ debug {
     # DEFINES += COPASI_TSS
     # DEFINES += COPASI_TSSA
     # DEFINES += WITH_LAYOUT
+
+    #  stoichiometric stability analysis:
+    # DEFINES += COPASI_SSA
   }
 }
 
