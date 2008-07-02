@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Fri Jun 27 10:19:46 2008
+ ** Created: Wed Jul 2 13:56:47 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -33,9 +33,9 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CTimeSeriesTable;
+class QPushButton;
 class QTabWidget;
 class QTextEdit;
-class QPushButton;
 
 class TimeSeriesSubWidget : public QWidget
   {
@@ -45,13 +45,12 @@ class TimeSeriesSubWidget : public QWidget
     TimeSeriesSubWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TimeSeriesSubWidget();
 
+    QPushButton* ButtonSaveData;
     QTabWidget* tabWidget2;
     QWidget* tab;
     QTextEdit* optimizationResultText;
     QWidget* tab_2;
     CTimeSeriesTable* dataTable;
-    QPushButton* ButtonSaveData;
-    QPushButton* mpBtnPrintAsImage;
 
     void displayOptimizationTab(bool displayOptTab);
     void setFramework(const int & framework);
@@ -61,16 +60,16 @@ class TimeSeriesSubWidget : public QWidget
 
   protected:
     QVBoxLayout* TimeSeriesSubWidgetLayout;
-    QVBoxLayout* tabLayout;
-    QHBoxLayout* layout16;
+    QHBoxLayout* toplayout;
     QSpacerItem* spacer;
+    QVBoxLayout* tabLayout;
+    QVBoxLayout* tabLayout_2;
 
   protected slots:
     virtual void languageChange();
 
     void saveDataToFile();
     virtual void init();
-    void printTableAsImage();
 
   private:
     int mFramework;

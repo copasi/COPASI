@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 18:46:47 $
+//   $Date: 2008/07/02 12:10:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,6 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 #include "CopasiFileDialog.h"
-#include "CQPrintAsDialog.h"
 
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
@@ -118,41 +117,5 @@ void TimeSeriesSubWidget::setFramework(const int & framework)
     case 1:
       dataTable->showConcentrations(false);
       break;
-    }
-}
-
-void TimeSeriesSubWidget::printTableAsImage()
-{
-  CQPrintAsDialog *pDialog = new CQPrintAsDialog();
-
-  if (pDialog->exec() == QDialog::Accepted)
-    {
-      /*
-            QString sFileName = pDialog->mpEditFileName->text();
-            QFileInfo fileInfo(sFileName);
-            QString sName = fileInfo.baseName();
-      */
-      QString sName = pDialog->mpEditFileName->text();
-
-      QPixmap pixmap = QPixmap::grabWidget(tabWidget2->currentPage());
-
-      if (pDialog->mpCBPNG->isChecked()) // true
-        {
-          QString sNamePNG = sName + ".png";
-          pixmap.save(sNamePNG, "PNG");
-        }
-
-      if (pDialog->mpCBSVG->isChecked()) // true
-        {
-          QString sNameSVG = sName + ".svg";
-
-          QPicture pict;
-          QPainter paint;
-          paint.begin(&pict);
-          paint.drawPixmap(0, 0, pixmap);
-          paint.end();
-
-          pict.save(sNameSVG, "SVG");
-        }
     }
 }
