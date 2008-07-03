@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:52 $
+//   $Author: pwilly $
+//   $Date: 2008/07/03 09:44:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -96,6 +101,7 @@ class CopasiUI3Window : public QMainWindow
     void slotApplyInitialState();
     void slotUpdateInitialState();
     void slotFrameworkChanged(int index);
+    void slotCapture();
 
     /**
      * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
@@ -132,6 +138,7 @@ class CopasiUI3Window : public QMainWindow
     QAction* mpaCheckModel;
     QAction* mpaApplyInitialState;
     QAction* mpaUpdateInitialState;
+    QAction *mpaCapture;
 
     void CleanUp();
 
