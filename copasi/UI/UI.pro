@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.172 $ 
+#   $Revision: 1.173 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/06/30 08:56:46 $ 
+#   $Date: 2008/07/03 10:13:31 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.172 $ $Author: pwilly $ $Date: 2008/06/30 08:56:46 $  
+# $Revision: 1.173 $ $Author: pwilly $ $Date: 2008/07/03 10:13:31 $  
 ######################################################################
 
 LIB = UI
@@ -221,7 +221,6 @@ SOURCES	+= \
 # FORMS += objectdebug.ui
 # FORMS += CQExpressionMmlWidget.ui
 # FORMS += CQEventWidget1.ui
-# FORMS += CQPrintAsDialog.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -267,8 +266,6 @@ HEADERS += \
            CQOptimizationWidget.ui.h \
            CQPreferenceDialog.h \
            CQPreferenceDialog.ui.h \
-           CQPrintAsDialog.h \
-           CQPrintAsDialog.ui.h \
            CQProgressDialog.h \
            CQProgressDialog.ui.h \
            CQProgressItem.h \
@@ -336,7 +333,6 @@ SOURCES += \
            CQMoietiesTaskResult.cpp \
            CQMoietiesTaskWidget.cpp \
            CQOptimizationWidget.cpp \
-           CQPrintAsDialog.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
