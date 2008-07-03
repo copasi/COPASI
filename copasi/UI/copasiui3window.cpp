@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.221 $
+//   $Revision: 1.222 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/04/07 08:56:23 $
+//   $Date: 2008/07/03 09:54:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@ extern const char * CopasiLicense;
 #include "CQMessageBox.h"
 #include "CQPreferenceDialog.h"
 #include "CQSBMLFileDialog.h"
+#include "SteadyStateWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -73,6 +74,7 @@ extern const char * CopasiLicense;
 #include "./icons/checkModel.xpm"
 #include "./icons/istos.xpm"
 #include "./icons/stois.xpm"
+#include "./icons/photo.xpm"
 
 #define AutoSaveInterval 10*60*1000
 
@@ -321,6 +323,9 @@ void CopasiUI3Window::createActions()
   mpaUpdateInitialState = new QAction(QPixmap(stois_xpm), "Update initial state from current state", 0, this, "updateinitialstate");
   connect(mpaUpdateInitialState, SIGNAL(activated()), this, SLOT(slotUpdateInitialState()));
 
+  mpaCapture = new QAction(QPixmap(photo), "Capture the main window", 0, this, "capture");
+  connect(mpaCapture, SIGNAL(activated()), this, SLOT(slotCapture()));
+
   //     QAction* mpaObjectBrowser;
 }
 
@@ -339,6 +344,9 @@ void CopasiUI3Window::createToolBar()
   //save
   //   QWhatsThis::add(msave_button, "<p>Click this button to save the file you are editing. You will be prompted for a file name.\nYou can also select the <b>Save</b> command from the <b>File</b> menu.</p>");
   mpaSave->addTo(tbMain);
+
+  // capture
+  mpaCapture->addTo(tbMain);
 
   // add a toobar toggle button to display/hide slider dialog
   //   QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
@@ -438,8 +446,14 @@ void CopasiUI3Window::createMenuBar()
 
   //tools->insertSeparator();
   tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
-  tools->insertSeparator();
   //tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
+
+  tools->insertSeparator();
+
+  mpaCapture->addTo(tools);
+
+  tools->insertSeparator();
+
   mpaObjectBrowser->addTo(tools);
 
   mpaSliders->addTo(tools);
@@ -1574,6 +1588,47 @@ void CopasiUI3Window::slotUpdateInitialState()
 
 void CopasiUI3Window::slotFrameworkChanged(int index)
 {ListViews::setFramework(index);}
+
+void CopasiUI3Window::slotCapture()
+{
+  QPixmap pixmap = QPixmap::grabWidget(listViews->getCurrentWidget());
+
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName, extensionName = "";
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                 QString::null, "PNG Files (*.png);;", "Save to");
+
+      std::cout << "fileName: " << fileName << std::endl;
+
+      if (fileName.isEmpty()) return;
+
+      QFileInfo fileInfo(fileName);
+      extensionName = fileInfo.extension();
+
+      if (extensionName != "png")
+        fileName.replace("." + extensionName, ".png");
+
+      fileInfo.setFile(fileName);
+      extensionName = fileInfo.extension();
+
+      if (extensionName == "")
+        fileName += ".png";
+
+      std::cout << "fileName = " << fileName << std::endl;
+
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  //  if (extensionName == "png")
+  //  {
+  pixmap.save(fileName, "PNG");
+  //}
+}
 
 #ifdef COPASI_LICENSE_COM
 
