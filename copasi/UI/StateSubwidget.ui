@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.14 $ </comment>
+<comment>   $Revision: 1.15 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2008/06/27 11:54:34 $ </comment>
+<comment>   $Date: 2008/07/03 09:11:36 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -568,41 +568,6 @@
                 </grid>
             </widget>
         </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout24</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer20</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>40</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtnPrintAsImage</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Print as image</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
     </vbox>
 </widget>
 <customwidgets>
@@ -625,17 +590,9 @@
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="1124">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000042b49444154388db5954b6c545518c77fe7dcdb3b773aa5ed38cc3080a5a5f252439005b22062b4b030b1a475a12e015db09218372e0c4997188289cb828f10c194950136f210632091c4341529d8016a2999e9433ad3de3b8fce9d7bcf71310f9c4451177ec9977b4f72f33bfff37de7fe3fa1b5a61e4208091880094840d4f249a16ba9001f08b4d64ad4c1434343edbdbdbd871cc73998c96436bbaefb0fbc6a388ec3c4c4c4bdd1d1d1339ee77d062c0065b3aef4d4a95387126b5a8ec6bb4bf46c2d52098a082110124c13a4acbea3a1714a21089462ea376b833e691cb9719530f02990336b1b1b8ee31c8c779798cd5d22ebdec50f4a84c28aa062339f31c83e2a83b6786a650b6bd69789b4f9542a1a84c06c8378d200780b38dd500c98994c66f3faad45b2ee5d2adac10e8799bcd5c2950b79eefc5c028ab54f23f46cb2d93bb8829d2f1b285d000d765802ac03a27f562c5dd7c50b8af841013b1ce6c65518199e0324911526bd1b13484b3033ed31952a71e26881d9e9186fecb7d09451aa7109c28055078b5aad098561f296c9c8f02ca0e8eb5fc59e7e83684260da01cbc50eae5ff41819fe9df35fcfb02ad9cb9e411b290b75b001d5763c064b082a3697cfb9804fdfeb09de7cb785ce6401d376c8cddb5c395f64ef402bfb0fc701936fce3cc25d901846e3560a40d415570b6dc27cda20f54b99f6f676f6ec33517211d33070173bf8e2789edb635916e63cde793fceb58b1152e34ba4ee44319a48d59fe0f1420a1616ca2896e97ec6261a1798a6416129caf05197db6359622b5bd9f9d20a221dcb6cd9d60ac0ccc30a4236a168da470810ca0214d2521876406e3eca979fe4b933e6028a50c86475570ba65dc4a8b54869136934839b5702a2710144483fac502eb572fd3b8fdb63593a3b5b49263bc9a41739f65186fb6351d2f7979148d6aeb39042fdbd62ad606d8f4ff786300fee15b9f6adc7beb7232c2d447971571bc9b5218e1df1c94c2d32f4de345eb140472cc473db3533e96670b362ad89b405bc36d006c0d913f35cbfb4cc81c33176bc1ad0fbc2121f0cf5104b74925fcce1f93e7d0331ba36fa687413aab9974250a9c0cedd06998751ce8da4f9fcf80cd72e47d8f2bc8d6109d293b3b8590f6acdfae98702a9fe0466cb5f374f3b8e43a014088d2ff20c1eb049acdec885b373a46e2e91ba99a3ea8c9268cca66fe0697efcdec52d7a7865457ea9510a0de806786262e2ded494b5c1681328240a9fbe01c98edd49eefeea3137add0485677593cbb5dd3b549f14aff2a2a65304d97f1d132400608002db4d60821c296657db87d9771249e340885253a10084361488951b34d290d8450b57a2a4c539277607c749947b33ef333fe69e0243059f7d616aacef431f080c753e1df661af80a1804b601f1ba6249d595a240acf60c5333149e1cba76fc1290a33a41728dd12484308110d05a835afcb799e7d5e045a02cfeaf61fa0719e5ce0f0dd1466a0000000049454e44ae426082</data>
+        <data format="PNG" length="1002">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003b149444154388dad94514c5b5518c77fe7dc4b7b4b6150bb96324418ca32358bee6192609c51d883892ce083f1718b3ebb185f8dc91e972cf39d2d6a78d0b027b3cd07d9e68c81c625a6c139408a4384f416100aed6d4b7bdb7b8e0fc0921a70c6ed7b3ae7e43bbff3fffedfc927e2f138bbd1dbdbab7902118fc785d8058f8d8de9aeae2e72b91cb66de338ce7f82e47239666767492412b8aefbf0dcdc553a323242f4501d918e2d3a8f15a9784584100809a609526eafd1a0f54e6142e029c5c21f3ef41583bb77a805efbe1ce9d86279e32619678eaab7853fa0f02a16abb64166ad0cdac75307eb3874b84cb0a14aa5a24108cc0688c48c9a4a1e826ddbe6f0b12219678e8ace610502ccdfafe3f68d3c33bf6c01c59dcc209d472c4e0d35d2f3ba81d205d06005e4de60c77170bd2255af80150870f70e8c0eaf009260a349577714e913a4175d16925b5cbe50607931cc3b677c68ca28a5f7066f5b26f00760febec9e8f032a0e81b68a17fc0201415989647a9d8c4c498cbe8f05f5cff3a4d4bac8bfe210b290b35e01afd428257b1b875cd01aaf4bd1de5dd0fea688e1530ad1c1bab16b7af17393558cf997311c0e49bafd670d6258621f6576c9ab09a3248fe5ae6c08103f49f36517213d33070369bf8e2529ee9c90ceb2b2eef7f14617c2c48722a4b7226845143fa87622905ebeb6514253a9eb5084504a66950c88618bee0303d99217cb09e9ed71a09369538fa523d00e9a50a42eed3bc6d8f41281fa0903e8561796cac86f8f2b33c33930ea0f0fb4d5adbeb30ad22866ffbbad226d2a805d7ee0484220208925aaa50deaa67e27b97e9c90ccdcdf5c462cdd8a94d2e7e62f3603244ea410989a4ed191f52a8fd156b056d9d553a9e0bf0e7ef45c6bf7339fd5e90ec7a88575e6d20d6e6e7e2a755ec854dce7fb8885b2cd014f6f3c2714d3a550bae55ac35c1068fb7061b00b87a7995899b25ce9e0b73e24d8fae97b37c7cbe9370b499fce6066eb54adf6098f6ee2a9a7ff9c70841a5023d270deca510d746537c7e29cdf8ad20475fb4307c82d4fc324ec6859d66fdfc6381e44014b36e9fe6e572393ca54068aa22cfd0598b686b3737aeae90bc9725796f0350802414b6e81b7c9a9f7e70708a2e6e5991cfeee3f1ecec2c0b0b3e8c068142a2a8d23728397132c6dc6f2e2b8b0a8da4b5ddc7f3c735ed47146f0cb4502983693a4c25ca7b83138904fa8a412466e00f48b4271086c2901263676c4a6990b615b6ade15b85694af239984a94585bf6f606bbae5b334f1f37e4a3531e031c8fc7c5a312ff17f849c3e3f1b8f81b8be6900a474810660000000049454e44ae426082</data>
     </image>
 </images>
-<connections>
-    <connection>
-        <sender>mpBtnPrintAsImage</sender>
-        <signal>clicked()</signal>
-        <receiver>StateSubwidget</receiver>
-        <slot>printAsImage()</slot>
-    </connection>
-</connections>
 <includes>
     <include location="local" impldecl="in declaration">copasiWidget.h</include>
     <include location="local" impldecl="in implementation">StateSubwidget.ui.h</include>
@@ -648,9 +605,6 @@
     <variable>const CSteadyStateTask * mpTask;</variable>
     <variable>CModel * mpModel;</variable>
 </variables>
-<slots>
-    <slot access="protected" specifier="non virtual">printAsImage()</slot>
-</slots>
 <functions>
     <function access="protected">init()</function>
     <function specifier="non virtual">displayOptimizationTab( bool displayOptTab )</function>

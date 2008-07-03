@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 11:54:43 $
+//   $Date: 2008/07/03 09:11:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Fri Jun 27 10:54:04 2008
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.18 2008/06/27 11:54:43 pwilly Exp $)
+ ** Created: Thu Jul 3 11:06:28 2008
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.19 2008/07/03 09:11:46 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -38,7 +38,6 @@ class QWidget;
 class QTextEdit;
 class QTable;
 class QFrame;
-class QPushButton;
 class CModel;
 class CSteadyStateTask;
 
@@ -78,7 +77,6 @@ class StateSubwidget : public CopasiWidget
     QTextEdit* stabilityTextEdit;
     QWidget* mpProtocolPage;
     QTextEdit* protocolTextEdit;
-    QPushButton* mpBtnPrintAsImage;
 
     void displayOptimizationTab(bool displayOptTab);
     virtual bool loadAll(const CSteadyStateTask * pTask);
@@ -116,13 +114,9 @@ class StateSubwidget : public CopasiWidget
     QSpacerItem* spacer4_2;
     QVBoxLayout* mpStabilityPageLayout;
     QGridLayout* mpProtocolPageLayout;
-    QHBoxLayout* layout24;
-    QSpacerItem* spacer20;
 
   protected slots:
     virtual void languageChange();
-
-    void printAsImage();
 
   private:
     QPixmap image0;

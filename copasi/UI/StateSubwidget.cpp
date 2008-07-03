@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 11:54:39 $
+//   $Date: 2008/07/03 09:11:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Fri Jun 27 10:54:09 2008
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.19 2008/06/27 11:54:39 pwilly Exp $)
+ ** Created: Thu Jul 3 11:06:32 2008
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.20 2008/07/03 09:11:43 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -238,20 +238,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name)
   mpProtocolPageLayout->addWidget(protocolTextEdit, 0, 0);
   mpTabWidget->insertTab(mpProtocolPage, QString::fromLatin1(""));
   StateSubwidgetLayout->addWidget(mpTabWidget);
-
-  layout24 = new QHBoxLayout(0, 0, 6, "layout24");
-  spacer20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout24->addItem(spacer20);
-
-  mpBtnPrintAsImage = new QPushButton(this, "mpBtnPrintAsImage");
-  layout24->addWidget(mpBtnPrintAsImage);
-  StateSubwidgetLayout->addLayout(layout24);
   languageChange();
   resize(QSize(733, 625).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
-
-  // signals and slots connections
-  connect(mpBtnPrintAsImage, SIGNAL(clicked()), this, SLOT(printAsImage()));
   init();
 }
 
@@ -304,5 +293,4 @@ void StateSubwidget::languageChange()
   mpTabWidget->changeTab(mpReducedJacobianPage, tr("Jacobian (Reduced)"));
   mpTabWidget->changeTab(mpStabilityPage, tr("Stability"));
   mpTabWidget->changeTab(mpProtocolPage, tr("Protocol"));
-  mpBtnPrintAsImage->setText(tr("Print as image"));
 }
