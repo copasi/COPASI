@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/07/03 12:33:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,16 +87,12 @@ void CBiologicalDescription::setPredicate(const std::string & predicate)
 
 void CBiologicalDescription::setResource(const std::string & resource)
 {
-  CMIRIAMResource NewResource(resource, mResource.getId());
-  if (!NewResource.isValid())
-    return;
-
-  mResource = NewResource;
-  mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+  if (mResource.setDisplayName(resource))
+    mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
 }
 
 void CBiologicalDescription::setId(const std::string & id)
 {
-  mResource.setId(id);
-  mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+  if (mResource.setId(id))
+    mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
 }

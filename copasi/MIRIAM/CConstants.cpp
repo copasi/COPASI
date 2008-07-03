@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/07/03 12:33:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -574,13 +574,7 @@ CMIRIAMResource::CMIRIAMResource(const std::string & displayName, const std::str
       createURIMap();
     }
 
-  // Check if the display name is a know resource
-  std::map< std::string, unsigned C_INT32>::const_iterator it =
-    DisplayName2Resource.find(displayName.c_str());
-  if (it == DisplayName2Resource.end())
-    return;
-
-  mResource = it->second;
+  setDisplayName(displayName);
   mId = id;
 }
 
@@ -629,6 +623,24 @@ bool CMIRIAMResource::setNode(CRDFNode * pNode)
 
 CRDFNode * CMIRIAMResource::getNode() const
 {return mpNode;}
+
+bool CMIRIAMResource::setDisplayName(const std::string & displayName)
+{
+  // Check if the display name is a know resource
+  std::map< std::string, unsigned C_INT32>::const_iterator it =
+    DisplayName2Resource.find(displayName.c_str());
+
+  // If we did not find the resource we set it to unknown
+  if (it == DisplayName2Resource.end())
+    {
+      // unknown is indicated by an invalid index.
+      mResource = C_INVALID_INDEX;
+      return false;
+    }
+
+  mResource = it->second;
+  return isValid();
+}
 
 std::string CMIRIAMResource::getDisplayName() const
   {

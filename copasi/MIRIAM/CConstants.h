@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:20:02 $
+//   $Date: 2008/07/03 12:33:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,8 @@ class CMIRIAMResource
     bool setNode(CRDFNode * pNode);
 
     CRDFNode * getNode() const;
+
+    bool setDisplayName(const std::string & displayName);
 
     std::string getDisplayName() const;
 
