@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 18:47:04 $
+//   $Date: 2008/07/03 07:51:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,6 @@
 #include "copasi.h"
 
 #include "qtUtilities.h"
-#include "CQPrintAsDialog.h"
 #include "model/CModel.h"
 #include "steadystate/CMCAMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
@@ -273,40 +272,4 @@ void CMCAResultSubwidget::clear()
   mpArrayCCC->setArrayAnnotation(NULL);
 
   return;
-}
-
-void CMCAResultSubwidget::printAsImage()
-{
-  CQPrintAsDialog *pDialog = new CQPrintAsDialog();
-
-  if (pDialog->exec() == QDialog::Accepted)
-    {
-      /*
-            QString sFileName = pDialog->mpEditFileName->text();
-            QFileInfo fileInfo(sFileName);
-            QString sName = fileInfo.baseName();
-      */
-      QString sName = pDialog->mpEditFileName->text();
-
-      QPixmap pixmap = QPixmap::grabWidget(mTabWidget->currentPage());
-
-      if (pDialog->mpCBPNG->isChecked()) // true
-        {
-          QString sNamePNG = sName + ".png";
-          pixmap.save(sNamePNG, "PNG");
-        }
-
-      if (pDialog->mpCBSVG->isChecked()) // true
-        {
-          QString sNameSVG = sName + ".svg";
-
-          QPicture pict;
-          QPainter paint;
-          paint.begin(&pict);
-          paint.drawPixmap(0, 0, pixmap);
-          paint.end();
-
-          pict.save(sNameSVG, "SVG");
-        }
-    }
 }

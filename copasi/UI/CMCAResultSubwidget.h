@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Fri Jun 27 10:54:27 2008
+ ** Created: Thu Jul 3 09:29:53 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -34,8 +34,8 @@ class QSpacerItem;
 class CQArrayAnnotationsWidget;
 class QLabel;
 class QComboBox;
-class QTabWidget;
 class QPushButton;
+class QTabWidget;
 class CMCAMethod;
 
 class CMCAResultSubwidget : public QWidget
@@ -48,6 +48,7 @@ class CMCAResultSubwidget : public QWidget
 
     QLabel* mTopLabel;
     QComboBox* mComboScale;
+    QPushButton* mSaveButton;
     QTabWidget* mTabWidget;
     QWidget* tab;
     CQArrayAnnotationsWidget* mpArrayElasticities;
@@ -55,8 +56,6 @@ class CMCAResultSubwidget : public QWidget
     CQArrayAnnotationsWidget* mpArrayFCC;
     QWidget* TabPage;
     CQArrayAnnotationsWidget* mpArrayCCC;
-    QPushButton* mSaveButton;
-    QPushButton* mpBtnPrintAsImage;
 
     virtual void loadAll(const CMCAMethod * mcaMethod);
     virtual void loadElasticities(const CMCAMethod * mcaMethod);
@@ -69,18 +68,15 @@ class CMCAResultSubwidget : public QWidget
 
     QVBoxLayout* CMCAResultSubwidgetLayout;
     QHBoxLayout* layout3;
-    QGridLayout* tabLayout;
+    QHBoxLayout* tabLayout;
     QGridLayout* tabLayout_2;
     QGridLayout* TabPageLayout;
-    QHBoxLayout* layout13;
-    QSpacerItem* spacer10;
 
   protected slots:
     virtual void languageChange();
 
     virtual void slotSave();
     virtual void slotScaled();
-    void printAsImage();
 
   private:
     const CMCAMethod * mMCAMethod;
