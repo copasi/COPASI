@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMoietiesTaskResult.ui'
  **
- ** Created: Fri Jun 27 13:46:42 2008
+ ** Created: Thu Jul 3 09:07:55 2008
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -31,10 +31,10 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QLabel;
 class QTabWidget;
 class QTable;
 class CQArrayAnnotationsWidget;
+class QLabel;
 class QPushButton;
 class QSignalMapper;
 class CMoietiesTask;
@@ -47,31 +47,25 @@ class CQMoietiesTaskResult : public CopasiWidget
     CQMoietiesTaskResult(QWidget* parent = 0, const char* name = 0);
     ~CQMoietiesTaskResult();
 
-    QLabel* mpLblResult;
     QTabWidget* mpTabWidget;
     QTable* mpMoieties;
     CQArrayAnnotationsWidget* mpStoichiometry;
     CQArrayAnnotationsWidget* mpLinkMatrix;
     CQArrayAnnotationsWidget* mpReducedStoichiometry;
+    QLabel* mpLblResult;
     QPushButton* mpBtnSave;
-    QPushButton* mpBtnPrintAsImage;
 
     virtual bool leave();
     virtual bool enter(const std::string &);
     void load();
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
-  public slots:
-    virtual void printAsImage();
-
   protected:
     QPixmap mToolBtn;
     QSignalMapper * mpToolBtnMap;
     CMoietiesTask * mpMoietiesTask;
 
-    QVBoxLayout* CQMoietiesTaskResultLayout;
-    QHBoxLayout* layout3;
-    QSpacerItem* spacer3;
+    QGridLayout* CQMoietiesTaskResultLayout;
 
   protected slots:
     virtual void languageChange();
