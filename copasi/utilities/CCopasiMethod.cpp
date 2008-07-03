@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 08:06:13 $
+//   $Author: shoops $
+//   $Date: 2008/07/03 12:46:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,11 +222,13 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
 
+#ifdef COPASI_TSSA
       if (mType == CCopasiTask::tssAnalysis)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
           return false;
         }
+#endif // COPASI_TSSA
     }
 
   return true;

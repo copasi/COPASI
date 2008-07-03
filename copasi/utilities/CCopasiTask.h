@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:06 $
+//   $Author: shoops $
+//   $Date: 2008/07/03 12:46:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,9 +55,9 @@ class CCopasiTask : public CCopasiContainer
       parameterFitting,
       mca,
       lyap,
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
       tssAnalysis,
-#endif // COPASI_DEBUG
+#endif // COPASI_TSSA
 #ifdef COPASI_TSS
       tss,
 #endif // COPASI_TSS
