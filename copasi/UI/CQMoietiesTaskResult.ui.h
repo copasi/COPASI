@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/27 18:46:10 $
+//   $Date: 2008/07/03 09:18:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,6 @@
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
-#include "CQPrintAsDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
@@ -248,40 +247,4 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(int row)
 
   pMV->setInitialExpression(pMoiety->getExpression());
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
-}
-
-void CQMoietiesTaskResult::printAsImage()
-{
-  CQPrintAsDialog *pDialog = new CQPrintAsDialog();
-
-  if (pDialog->exec() == QDialog::Accepted)
-    {
-      /*
-            QString sFileName = pDialog->mpEditFileName->text();
-            QFileInfo fileInfo(sFileName);
-            QString sName = fileInfo.baseName();
-      */
-      QString sName = pDialog->mpEditFileName->text();
-
-      QPixmap pixmap = QPixmap::grabWidget(mpTabWidget->currentPage());
-
-      if (pDialog->mpCBPNG->isChecked()) // true
-        {
-          QString sNamePNG = sName + ".png";
-          pixmap.save(sNamePNG, "PNG");
-        }
-
-      if (pDialog->mpCBSVG->isChecked()) // true
-        {
-          QString sNameSVG = sName + ".svg";
-
-          QPicture pict;
-          QPainter paint;
-          paint.begin(&pict);
-          paint.drawPixmap(0, 0, pixmap);
-          paint.end();
-
-          pict.save(sNameSVG, "SVG");
-        }
-    }
 }
