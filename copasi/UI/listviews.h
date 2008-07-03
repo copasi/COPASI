@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:05 $
+//   $Author: pwilly $
+//   $Date: 2008/07/03 09:40:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,6 +141,9 @@ class ListViews : public QSplitter
     static void storeCurrentItemInAllListViews();
     static void restoreCurrentItemInAllListViews();
     CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
+
+    // return current widget - added 02.07.08
+    CopasiWidget* getCurrentWidget();
 
   private:
     CMathModel *mpMathModel;

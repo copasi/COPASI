@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.245 $
+//   $Revision: 1.246 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:05 $
+//   $Author: pwilly $
+//   $Date: 2008/07/03 09:40:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1143,6 +1143,9 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
 
   return success;
 }
+
+CopasiWidget* ListViews::getCurrentWidget()
+{return this->currentWidget;}
 
 //static
 bool ListViews::commit()
