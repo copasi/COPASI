@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:04 $
+//   $Author: shoops $
+//   $Date: 2008/07/07 16:00:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,6 @@
 #include "sbml/SBMLIncompatibility.h"
 #include "scan/CScanTask.h"
 #include "elementaryFluxModes/CEFMTask.h"
-//#include "steadystate/CMCAMethod.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -47,7 +46,7 @@
 #ifdef COPASI_TSS
 # include "tss/CTSSTask.h"
 #endif
-#include "sensitivities/CSensTask.h"S
+#include "sensitivities/CSensTask.h"
 #ifdef COPASI_TSSA
 #include "tssanalysis/CTSSATask.h"
 #endif // COPASI_TSSA
