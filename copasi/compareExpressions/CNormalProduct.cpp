@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:45:48 $
+//   $Date: 2008/07/07 13:23:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -487,10 +487,67 @@ bool CNormalProduct::simplify()
 {
   bool result = true;
   std::set<CNormalItemPower*, compareItemPowers>::iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
+
   while (it != endit && result == true)
     {
       result = (*it)->simplify();
       ++it;
+    }
+  // we should combine all general power items of type power into
+  // one large general power item which is again simplified
+  // this we only do if the CNormalItemPower parent has an exponent of 1
+  it = this->mItemPowers.begin();
+  std::vector<CNormalItemPower*> tmpV;
+  // create a unit CNormalItemPower with one unit CNormalGeneralPower
+  // and an exponent of 1
+  CNormalProduct* pTmpProduct = new CNormalProduct();
+  CNormalSum* pTmpSum = new CNormalSum();
+  pTmpSum->add(*pTmpProduct);
+  delete pTmpProduct;
+  CNormalFraction* pTmpFraction = new CNormalFraction();
+  pTmpFraction->setNumerator(*pTmpSum);
+  pTmpFraction->setDenominator(*pTmpSum);
+  delete pTmpSum;
+  CNormalGeneralPower* pGeneralPower = new CNormalGeneralPower();
+  pGeneralPower->setType(CNormalGeneralPower::POWER);
+  pGeneralPower->setLeft(*pTmpFraction);
+  pGeneralPower->setRight(*pTmpFraction);
+  delete pTmpFraction;
+  while (it != endit)
+    {
+      if ((*it)->getExp() == 1.0 && (*it)->getItemType() == CNormalItemPower::POWER &&
+          dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem())->getType() == CNormalGeneralPower::POWER
+          &&
+          dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem())->getRight().checkIsOne()
+)
+        {
+          pGeneralPower->multiply(*static_cast<CNormalGeneralPower*>(&(*it)->getItem()));
+          delete *it;
+        }
+      else
+        {
+          tmpV.push_back(*it);
+        }
+      ++ it;
+    }
+  pGeneralPower->simplify();
+  if (!pGeneralPower->getLeft().checkIsOne())
+    {
+      CNormalItemPower* pTmpItemPower = new CNormalItemPower();
+      pTmpItemPower->setExp(1.0);
+      pTmpItemPower->setItem(*pGeneralPower);
+      tmpV.push_back(pTmpItemPower);
+    }
+  delete pGeneralPower;
+  // clear the current set of items and add all the item in tmpV
+  this->mItemPowers.clear();
+  std::vector<CNormalItemPower*>::iterator vIt = tmpV.begin();
+  std::vector<CNormalItemPower*>::iterator vEndIt = tmpV.begin();
+  while (vIt != vEndIt)
+    {
+      this->multiply(**it);
+      delete *it;
+      ++vIt;
     }
   return result;
 }
@@ -521,13 +578,15 @@ CNormalGeneralPower* CNormalProduct::getDenominator() const
           {
             CNormalGeneralPower* pTmpPow = dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem());
             assert(pTmpPow != NULL);
-            // only set the denominator to 1 if it is a power item and the
+            // only set the numerator to 1 if it is a power item and the
             // denominator is not 1
             if (pTmpPow->getType() == CNormalGeneralPower::POWER && !pTmpPow->getLeft().checkDenominatorOne())
               {
                 // set the numerator to 1
+                pTmpPow = new CNormalGeneralPower(*pTmpPow);
                 pTmpPow->getLeft().setNumerator(*pTmpSum);
                 pResult->multiply(*pTmpPow);
+                delete pTmpPow;
               }
           }
         ++it;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/02 08:18:25 $
+//   $Date: 2008/07/07 13:23:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -559,7 +559,7 @@ bool CNormalSum::simplify()
           else
             {
               // before creating the product, the denominators of all general items in
-              // the product have to set to 1 by calling setDenominatorsOne on the product
+              // the product have to be set to 1 by calling setDenominatorsOne on the product
               (*it)->setDenominatorsOne();
               CNormalFraction* pFraction = NULL;
               if (pDenom->getRight().checkIsOne())
