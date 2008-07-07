@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.80 $ 
+#   $Revision: 1.81 $ 
 #   $Name:  $ 
-#   $Author: tjohann $ 
-#   $Date: 2008/07/02 08:51:35 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/07/07 16:01:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.80 $ $Author: tjohann $ $Date: 2008/07/02 08:51:35 $  
+# $Revision: 1.81 $ $Author: shoops $ $Date: 2008/07/07 16:01:46 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -329,51 +329,103 @@ contains(BUILD_OS, Linux) {
     }
   }
 
-  contains(STATIC_LINKAGE, yes) {
+  contains(STATIC_LINKAGE, yes) && contains(PACKAGE, no) {
     QMAKE_LFLAGS += -static
   }
 
   !isEmpty(SBML_PATH){
-    LIBS+=  -L$${SBML_PATH}/lib
-    INCLUDEPATH += $${SBML_PATH}/include
-    INCLUDEPATH += $${SBML_PATH}/include/sbml
+    INCLUDEPATH *= $${SBML_PATH}/include
+    INCLUDEPATH *= $${SBML_PATH}/include/sbml
+
+    contains(PACKAGE, yes) {
+      LIBS *= $${SBML_PATH}/lib/libsbml.a
+    }
+    else {
+      LIBS *=  -L$${SBML_PATH}/lib
+      LIBS *= -lsbml
+    }
   }
-  LIBS += -lsbml
+  else { 
+    contains(PACKAGE, yes) {
+      error("SBML_PATH must be given.")
+    }
+    else {
+      LIBS *= -lsbml
+    }
+  }
 
   !isEmpty(EXPAT_PATH){
-    LIBS+=  -L$${EXPAT_PATH}/lib
     INCLUDEPATH += $${EXPAT_PATH}/include
+
+    contains(PACKAGE, yes) {
+      LIBS *= $${EXPAT_PATH}/lib/libexpat.a
+    }
+    else {
+      LIBS *= -L$${EXPAT_PATH}/lib
+      LIBS *= -lexpat
+    }
   }
-  LIBS += -lexpat
+  else { 
+    contains(PACKAGE, yes) {
+      error("EXPAT_PATH must be given.")
+    }
+    else {
+      LIBS *= -lexpat
+    }
+  }
 
 # The raptor library
-  LIBS += -lraptor
   !isEmpty(RAPTOR_PATH){
-      LIBS+=  -L$${RAPTOR_PATH}/lib
+      LIBS +=  -L$${RAPTOR_PATH}/lib
       INCLUDEPATH += $${RAPTOR_PATH}/include
+
+    contains(PACKAGE, yes) {
+      LIBS *= $${RAPTOR_PATH}/lib/libraptor.a
+    }
+    else {
+      LIBS *= -L$${RAPTOR_PATH}/lib
+      LIBS *= -lraptor
+    }
+  }
+  else { 
+    contains(PACKAGE, yes) {
+      error("RAPTOR_PATH must be given.")
+    }
+    else {
+      LIBS *= -lraptor
+    }
   }
   
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    INCLUDEPATH += $${MKL_PATH}/include
+    INCLUDEPATH *= $${MKL_PATH}/include
 #    LIBS += -lmkl_lapack -lmkl_ia32 -lg2c -lpthread
-    LIBS += -lmkl_lapack -lmkl_ia32 -lguide -lpthread
-    LIBS +=  -L$${MKL_PATH}/lib/32
+    LIBS *= -lmkl_lapack -lmkl_ia32 -lguide -lpthread
+    LIBS  *=  -L$${MKL_PATH}/lib/32
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
-      INCLUDEPATH += $${CLAPACK_PATH}/include
-      INCLUDEPATH += /usr/include/qt3
+      INCLUDEPATH *= $${CLAPACK_PATH}/include
 #      LIBS += -llapack -lblas -lF77 -lfl
-      LIBS += -llapack -lblas -lF77
-      LIBS += -L$${CLAPACK_PATH}/lib 
+      LIBS *= -llapack -lblas -lF77
+      LIBS *= -L$${CLAPACK_PATH}/lib 
     } else {
       !isEmpty(LAPACK_PATH) {
         message("Using lapack.")
         DEFINES += USE_LAPACK
-        INCLUDEPATH += $${LAPACK_PATH}/include
-        LIBS += -llapack -lblas  -lg2c
-        LIBS += -L$${LAPACK_PATH}/lib
+        INCLUDEPATH *= $${LAPACK_PATH}/include
+
+        contains(PACKAGE, yes) {
+          LIBS *= $${LAPACK_PATH}/lib/liblapack.a 
+          LIBS *= $${LAPACK_PATH}/lib/libblas.a
+          LIBS *= $$system(locate libg2c.a)
+        }
+        else {
+          LIBS *= -L$${LAPACK_PATH}/lib
+          LIBS *= -llapack 
+          LIBS *= -lblas
+          LIBS *= -lg2c
+        }
       } else {
         error( "Either MKL_PATH, CLAPACK_PATH, or LAPACK_PATH must be specified" )
       }
@@ -382,11 +434,12 @@ contains(BUILD_OS, Linux) {
 
   contains(CONFIG, qt) {
     !isEmpty(QWT_PATH){
-       LIBS+=  -L$${QWT_PATH}/lib
+       LIBS +=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
     }
     LIBS += -lqwt
   }
+
 }
 
 DEP1.target   = depend
