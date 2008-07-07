@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 18:26:49 $
+//   $Date: 2008/07/07 19:43:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -518,7 +518,7 @@ bool CNormalProduct::simplify()
         }
       ++ it;
     }
-  pGeneralPower->simplify();
+  //pGeneralPower->simplify();
   if (!pGeneralPower->getLeft().checkIsOne())
     {
       CNormalItemPower* pTmpItemPower = new CNormalItemPower();
