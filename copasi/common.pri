@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.81 $ 
+#   $Revision: 1.82 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/07/07 16:01:46 $ 
+#   $Date: 2008/07/07 18:44:09 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.81 $ $Author: shoops $ $Date: 2008/07/07 16:01:46 $  
+# $Revision: 1.82 $ $Author: shoops $ $Date: 2008/07/07 18:44:09 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -329,8 +329,16 @@ contains(BUILD_OS, Linux) {
     }
   }
 
-  contains(STATIC_LINKAGE, yes) && contains(PACKAGE, no) {
-    QMAKE_LFLAGS += -static
+  contains(PACKAGE, yes) {
+    QMAKE_LFLAGS -= -static
+  }
+  else {
+    contains(STATIC_LINKAGE, yes) {
+      QMAKE_LFLAGS += -static
+    }
+    else {
+      QMAKE_LFLAGS -= -static
+    }
   }
 
   !isEmpty(SBML_PATH){
@@ -341,7 +349,7 @@ contains(BUILD_OS, Linux) {
       LIBS *= $${SBML_PATH}/lib/libsbml.a
     }
     else {
-      LIBS *=  -L$${SBML_PATH}/lib
+      LIBS *= -L$${SBML_PATH}/lib
       LIBS *= -lsbml
     }
   }
@@ -355,7 +363,7 @@ contains(BUILD_OS, Linux) {
   }
 
   !isEmpty(EXPAT_PATH){
-    INCLUDEPATH += $${EXPAT_PATH}/include
+    INCLUDEPATH *= $${EXPAT_PATH}/include
 
     contains(PACKAGE, yes) {
       LIBS *= $${EXPAT_PATH}/lib/libexpat.a
@@ -376,8 +384,8 @@ contains(BUILD_OS, Linux) {
 
 # The raptor library
   !isEmpty(RAPTOR_PATH){
-      LIBS +=  -L$${RAPTOR_PATH}/lib
-      INCLUDEPATH += $${RAPTOR_PATH}/include
+      LIBS *=  -L$${RAPTOR_PATH}/lib
+      INCLUDEPATH *= $${RAPTOR_PATH}/include
 
     contains(PACKAGE, yes) {
       LIBS *= $${RAPTOR_PATH}/lib/libraptor.a
@@ -434,10 +442,10 @@ contains(BUILD_OS, Linux) {
 
   contains(CONFIG, qt) {
     !isEmpty(QWT_PATH){
-       LIBS +=  -L$${QWT_PATH}/lib
-       INCLUDEPATH += $${QWT_PATH}/include
+       LIBS *=  -L$${QWT_PATH}/lib
+       INCLUDEPATH *= $${QWT_PATH}/include
     }
-    LIBS += -lqwt
+    LIBS *= -lqwt
   }
 
 }
