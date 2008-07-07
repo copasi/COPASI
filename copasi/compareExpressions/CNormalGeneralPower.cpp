@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,8 +227,8 @@ void CNormalGeneralPower::multiply(const CNormalGeneralPower& generalPower)
   this->mpRight = pNewExponent;
   delete this->mpLeft;
   this->mpLeft = pNewBase;
-  this->mpLeft->simplify();
-  this->mpRight->simplify();
+  //this->mpLeft->simplify();
+  //this->mpRight->simplify();
 }
 
 bool CNormalGeneralPower::checkIsOne() const
@@ -238,3 +238,13 @@ bool CNormalGeneralPower::checkIsOne() const
     return (this->mpLeft->checkIsOne() ||
             this->mpRight->checkIsZero());
   }
+
+CNormalGeneralPower* CNormalGeneralPower::createUnitGeneralPower()
+{
+  CNormalGeneralPower* pGeneralPower = new CNormalGeneralPower();
+  delete pGeneralPower->mpLeft;
+  delete pGeneralPower->mpRight;
+  pGeneralPower->mpLeft = CNormalFraction::createUnitFraction();
+  pGeneralPower->mpRight = CNormalFraction::createUnitFraction();
+  return pGeneralPower;
+}

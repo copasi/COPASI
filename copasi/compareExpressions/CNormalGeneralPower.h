@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,13 @@ class CNormalGeneralPower: public CNormalBase
     void setType(Type type);
     bool checkIsOne() const;
     void multiply(const CNormalGeneralPower& generalPower);
+
+    /**
+     * Returns a general power that is (1/1)^(1/1).
+     * It creates a new general power of type power and sets the left and right
+     * side to a unit fraction.
+     */
+    static CNormalGeneralPower* createUnitGeneralPower();
   };
 
 std::ostream& operator<<(std::ostream& os, const CNormalGeneralPower& pow);

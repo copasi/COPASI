@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/02 08:18:25 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -496,3 +496,13 @@ bool CNormalFraction::checkIsZero() const
     // the fraction is 0.0 if the numerator is 0.0
     return this->mpNumerator->checkIsZero();
   }
+
+CNormalFraction* CNormalFraction::createUnitFraction()
+{
+  CNormalFraction* pFraction = new CNormalFraction();
+  delete pFraction->mpNumerator;
+  delete pFraction->mpDenominator;
+  pFraction->mpNumerator = CNormalSum::createUnitSum();
+  pFraction->mpDenominator = CNormalSum::createUnitSum();
+  return pFraction;
+}

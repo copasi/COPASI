@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,6 +179,13 @@ class CNormalFraction : public CNormalBase
     bool checkIsOne() const;
 
     bool checkIsZero() const;
+
+    /**
+     * Returns a fraction that is 1/1.
+     * It creates a new fraction and sets the numerator and the denominator to
+     * a unit sum.
+     */
+    static CNormalFraction* createUnitFraction();
   };
 
 std::ostream & operator<< (std::ostream &os, const CNormalFraction & d);

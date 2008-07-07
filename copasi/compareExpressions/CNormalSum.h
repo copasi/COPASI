@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,6 +174,13 @@ class CNormalSum : public CNormalBase
     bool checkIsOne() const;
 
     bool checkIsZero() const;
+
+    /**
+     * Returns a sum that is 1.
+     * In this case it only creates a new sum sum and adds a unit product to
+     *the sum.
+     */
+    static CNormalSum* createUnitSum();
 
     friend std::ostream & operator<< (std::ostream &os, const CNormalSum & d);
   };

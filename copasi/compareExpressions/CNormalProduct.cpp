@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 13:23:57 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -500,19 +500,7 @@ bool CNormalProduct::simplify()
   std::vector<CNormalItemPower*> tmpV;
   // create a unit CNormalItemPower with one unit CNormalGeneralPower
   // and an exponent of 1
-  CNormalProduct* pTmpProduct = new CNormalProduct();
-  CNormalSum* pTmpSum = new CNormalSum();
-  pTmpSum->add(*pTmpProduct);
-  delete pTmpProduct;
-  CNormalFraction* pTmpFraction = new CNormalFraction();
-  pTmpFraction->setNumerator(*pTmpSum);
-  pTmpFraction->setDenominator(*pTmpSum);
-  delete pTmpSum;
-  CNormalGeneralPower* pGeneralPower = new CNormalGeneralPower();
-  pGeneralPower->setType(CNormalGeneralPower::POWER);
-  pGeneralPower->setLeft(*pTmpFraction);
-  pGeneralPower->setRight(*pTmpFraction);
-  delete pTmpFraction;
+  CNormalGeneralPower* pGeneralPower = CNormalGeneralPower::createUnitGeneralPower();
   while (it != endit)
     {
       if ((*it)->getExp() == 1.0 && (*it)->getItemType() == CNormalItemPower::POWER &&
@@ -619,4 +607,9 @@ void CNormalProduct::setDenominatorsOne()
       ++it;
     }
   delete pTmpSum;
+}
+
+CNormalProduct* CNormalProduct::createUnitProduct()
+{
+  return new CNormalProduct();
 }

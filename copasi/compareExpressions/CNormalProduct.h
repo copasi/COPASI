@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 07:18:19 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,6 +185,12 @@ class CNormalProduct : public CNormalBase
     CNormalGeneralPower* getDenominator() const;
 
     void setDenominatorsOne();
+
+    /**
+     * Returns a product that is 1.
+     * In this case it only creates a new product instance with new.
+     */
+    static CNormalProduct* createUnitProduct();
 
     friend std::ostream & operator<< (std::ostream &os,
                                       const CNormalProduct & d);

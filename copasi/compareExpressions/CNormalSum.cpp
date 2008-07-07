@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 13:23:57 $
+//   $Date: 2008/07/07 18:26:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -674,3 +674,12 @@ bool CNormalSum::checkIsZero() const
       }
     return false;
   }
+
+CNormalSum* CNormalSum::createUnitSum()
+{
+  CNormalSum* pSum = new CNormalSum();
+  CNormalProduct* pTmpProduct = CNormalProduct::createUnitProduct();
+  pSum->add(*pTmpProduct);
+  delete pTmpProduct;
+  return pSum;
+}
