@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-  $Revision: 1.12 $
-  $Name:  $
-  $Author: gauges $
-  $Date: 2008/04/22 11:06:47 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
+ $Revision: 1.13 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/07/07 20:50:37 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -72,10 +72,11 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
 
   do
     {
+      is.clear();
       is.getline(buffer, 256, cell.mSeparator);
       cell.mName += buffer;
     }
-  while (strlen(buffer) == 255 && !is.fail());
+  while (strlen(buffer) == 255 && !is.eof());
 
   /* Trim leading and trailing whitespaces from the string */
   std::string::size_type begin = cell.mName.find_first_not_of("\x20\x09\x0d\x0a");
