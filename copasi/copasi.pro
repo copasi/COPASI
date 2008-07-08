@@ -1,22 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.49 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/03/12 01:55:11 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
+#   $Revision: 1.50 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:26 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.49 $ $Author: shoops $ $Date: 2008/03/12 01:55:11 $  
+# $Revision: 1.50 $ $Author: shoops $ $Date: 2008/07/08 16:06:26 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -71,7 +71,7 @@ COPASIUI_DIRS += MIRIAMUI
 COPASIUI_DIRS += plotUI
 COPASIUI_DIRS += UI
 COPASIUI_DIRS += wizard
-  
+
 contains(DEFINES, HAVE_MML) {
   COPASIUI_DIRS += mml
 }
@@ -88,7 +88,7 @@ SUBDIRS += $${COPASISE_DIRS}
 
 # Now build the libs
 SUBDIRS += libs
-sub-libs.depends = $$join(COPASISE_DIRS, " sub-", "sub-") 
+sub-libs.depends = $$join(COPASISE_DIRS, " sub-", "sub-")
 sub-libs.depends += $$join(COPASIUI_DIRS, " sub-", "sub-")
 QMAKE_EXTRA_UNIX_TARGETS += sub-libs
 
@@ -109,27 +109,27 @@ isEmpty(COPASI_SRC_PACKAGE) {
   # The bindings
   SUBDIRS += bindings
 
-  # unit tests  
+  # unit tests
   !isEmpty(CPPUNIT_PATH) {
     SUBDIRS += compareExpressions/unittests
     SUBDIRS += sbml/unittests
   }
 }
-  
+
 
 DISTDIRS = $${SUBDIRS}
 DISTDIRS -= mml
 
 DISTFILES += \
-        1_configure.dsp \
+        1_configure.vcproj \
         FlexLexer.h \
         LicenseUS.txt.h \
         LicenseDE.txt.h \
         blas.h \
         blaswrap.h \
         clapackwrap.h \
-        copasi.dsp \
-        copasi.dsw \
+        copasi.vcproj \
+        copasi.sln \
         copasi.h \
         copasilicense.h \
         copasiversion.h \

@@ -1,17 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/model.pro,v $ 
-#   $Revision: 1.25 $ 
-#   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/10/30 14:40:51 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/model.pro,v $
+#   $Revision: 1.26 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:33 $
+# End CVS Header
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.25 $ $Author: ssahle $ $Date: 2007/10/30 14:40:51 $  
+# $Revision: 1.26 $ $Author: shoops $ $Date: 2008/07/08 16:06:33 $
 ######################################################################
 
 LIB = model
@@ -39,7 +44,7 @@ HEADERS += CChemEq.h \
            CReaction.h \
            CReactionInterface.h \
            CState.h
-           
+
 SOURCES += CChemEq.cpp \
            CChemEqElement.cpp \
            CChemEqInterface.cpp \
@@ -66,11 +71,11 @@ contains(BUILD_PARSER, yes) {
   YACCSOURCES += CChemEqParser.ypp
   SOURCES -= CChemEqParser_yacc.cpp
 
-  LEXSOURCES += CChemEqParser.lpp  
+  LEXSOURCES += CChemEqParser.lpp
   SOURCES -= CChemEqParser_lex.cpp
 }
 
 
-DISTFILES += model.dsp \
+DISTFILES += model.vcproj \
              CChemEqParser_lex.cpp \
              CChemEqParser_yacc.cpp

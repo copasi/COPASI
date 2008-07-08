@@ -1,22 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $ 
-#   $Revision: 1.141 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/07/07 16:01:47 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
+#   $Revision: 1.142 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:24 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.141 $ $Author: shoops $ $Date: 2008/07/07 16:01:47 $  
+# $Revision: 1.142 $ $Author: shoops $ $Date: 2008/07/08 16:06:24 $
 ######################################################################
 
 TEMPLATE = app
@@ -25,7 +25,7 @@ SRC_TARGET = CopasiUI
 
 include(../common.pri)
 
-DEPENDPATH += .. 
+DEPENDPATH += ..
 INCLUDEPATH += ..
 
 COPASI_LIBS += COPASIUI
@@ -33,7 +33,7 @@ COPASI_LIBS += COPASISE
 
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
-  
+
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -41,12 +41,12 @@ contains(BUILD_OS, WIN32) {
   release {
     distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
-} 
+}
 
 contains(BUILD_OS, Linux) {
   contains(DEFINES, WITH_LAYOUT) {
     CONFIG += opengl
-    LIBS += -lfreetype 
+    LIBS += -lfreetype
   }
 
   LIBS = -L../lib \
@@ -65,20 +65,20 @@ contains(BUILD_OS, Linux) {
     dynamic_LFLAGS = $${QMAKE_LFLAGS}
     dynamic_LFLAGS -= -static
 
-    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic 
+    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic
     dynamic_LIBS -= -Wl,-lqt-mt
     dynamic_LIBS -= -Wl,-lXcursor
     dynamic_LIBS -= -Wl,-lXft
     dynamic_LIBS -= -Wl,-lfontconfig
     dynamic_LIBS -= -Wl,-lpthread
- 
+
     dynamic.target   = CopasiUI-dynamic
     dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
     dynamic.commands = \
       $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
               -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
               -Wl,--start-group \
-              -lqt-mt -lXrender -lXrandr -lXcursor -lXinerama -lXft \ 
+              -lqt-mt -lXrender -lXrandr -lXcursor -lXinerama -lXft \
               -lfreetype -lfontconfig -lSM -lICE -lXext -lX11 -lm \
               -Wl,--end-group \
               -ldl -lpthread && \
@@ -106,23 +106,23 @@ contains(BUILD_OS, SunOS) {
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
   }
-}  
+}
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
 
   contains(DEFINES, WITH_QWT3D) {
     CONFIG += opengl
-  }  
+  }
 
   contains(DEFINES, WITH_LAYOUT) {
     CONFIG += opengl
   }
-  
+
 
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS
-  
+
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
   release {
@@ -131,7 +131,7 @@ contains(BUILD_OS, Darwin){
 }
 
 # Input
-HEADERS += resource.h 
+HEADERS += resource.h
 
 SOURCES += main.cpp
 
@@ -142,6 +142,6 @@ release {
   INSTALLS += distribution
 }
 
-DISTFILES += CopasiUI.dsp \
+DISTFILES += CopasiUI.vcproj \
              CopasiUI.rc
 

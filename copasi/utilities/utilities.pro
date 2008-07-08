@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utilities.pro,v $ 
+#   $Revision: 1.24 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2008/07/08 16:06:25 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.23 $ $Author: shoops $ $Date: 2006/10/30 21:12:09 $  
+# $Revision: 1.24 $ $Author: shoops $ $Date: 2008/07/08 16:06:25 $
 ######################################################################
 
 LIB = utilities
@@ -63,4 +76,4 @@ SOURCES += CAnnotatedMatrix.cpp \
            utility.cpp
 
 
-DISTFILES += utilities.dsp
+DISTFILES += utilities.vcproj

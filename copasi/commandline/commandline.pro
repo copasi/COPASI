@@ -1,18 +1,18 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $ 
-#   $Revision: 1.12 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/03/11 22:47:57 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $
+#   $Revision: 1.13 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:27 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2008/03/11 22:47:57 $  
+# $Revision: 1.13 $ $Author: shoops $ $Date: 2008/07/08 16:06:27 $
 ######################################################################
 
 LIB = commandline
@@ -44,5 +44,5 @@ contains(BUILD_PARSER, yes) {
 
 
 DISTFILES += \
-             commandline.dsp \
+             commandline.vcproj \
              COptionParser.xml

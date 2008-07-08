@@ -1,22 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compareExpressions.pro,v $ 
-#   $Revision: 1.8 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/06/04 13:20:10 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compareExpressions.pro,v $
+#   $Revision: 1.9 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:34 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.8 $ $Author: gauges $ $Date: 2008/06/04 13:20:10 $  
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2008/07/08 16:06:34 $
 ######################################################################
 
 LIB = compareExpressions
@@ -49,7 +49,7 @@ HEADERS +=  CNormalItem.h \
             compare_utilities.h
 
 
-	    
+
 SOURCES +=  CNormalItem.cpp \
             CNormalItemPower.cpp \
             CNormalProduct.cpp \
@@ -65,7 +65,8 @@ SOURCES +=  CNormalItem.cpp \
             CNormalGeneralPower.cpp \
             CNormalTranslation.cpp \
             CNormalBase.cpp \
-            ConvertToCEvaluationNode.cpp \ 
+            ConvertToCEvaluationNode.cpp \
             CEvaluationNodeNormalizer.cpp \
             compare_utilities.cpp
 
+DISTFILES += compareExpressions.vcproj

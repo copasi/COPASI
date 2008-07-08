@@ -1,17 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $ 
-#   $Revision: 1.26 $ 
-#   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2007/10/26 13:09:59 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $
+#   $Revision: 1.27 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:35 $
+# End CVS Header
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.26 $ $Author: ssahle $ $Date: 2007/10/26 13:09:59 $  
+# $Revision: 1.27 $ $Author: shoops $ $Date: 2008/07/08 16:06:35 $
 ######################################################################
 
 LIB = function
@@ -48,7 +53,7 @@ HEADERS += \
            CFunctionParameters.h \
            CKinFunction.h \
            CMassAction.h \
-           CNodeK.h 
+           CNodeK.h
 
 SOURCES += \
            CCallParameters.cpp \
@@ -77,18 +82,18 @@ SOURCES += \
            CFunctionParameters.cpp \
            CKinFunction.cpp \
            CMassAction.cpp \
-           CNodeK.cpp 
+           CNodeK.cpp
 
 
 contains(BUILD_PARSER, yes) {
   YACCSOURCES += CEvaluationParser.ypp
   SOURCES -= CEvaluationParser_yacc.cpp
 
-  LEXSOURCES += CEvaluationLexer.lpp  
+  LEXSOURCES += CEvaluationLexer.lpp
   SOURCES -= CEvaluationLexer_lex.cpp
 }
 
 
-DISTFILES += function.dsp \
+DISTFILES += function.vcproj \
              CEvaluationParser.ypp \
              CEvaluationLexer.lpp

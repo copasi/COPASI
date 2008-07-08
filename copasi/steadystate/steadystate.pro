@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/steadystate.pro,v $ 
+#   $Revision: 1.10 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2008/07/08 16:06:29 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2006/10/30 21:12:12 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2008/07/08 16:06:29 $
 ######################################################################
 
 LIB = steadystate
@@ -27,4 +40,4 @@ SOURCES += CEigen.cpp \
            CSteadyStateTask.cpp
 
 
-DISTFILES +=steadystate.dsp
+DISTFILES +=steadystate.vcproj

@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/parameterFitting.pro,v $ 
+#   $Revision: 1.7 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2008/07/08 16:06:31 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2006/10/30 21:12:15 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2008/07/08 16:06:31 $
 ######################################################################
 
 LIB = fitting
@@ -17,7 +30,7 @@ HEADERS += CExperiment.h \
            CFitMethod.h \
            CFitProblem.h \
            CFitTask.h
-           
+
 SOURCES += CExperiment.cpp \
            CExperimentSet.cpp  \
            CExperimentObjectMap.cpp \
@@ -28,4 +41,4 @@ SOURCES += CExperiment.cpp \
            CFitTask.cpp
 
 
-DISTFILES += fitting.dsp
+DISTFILES += fitting.vcproj

@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/report.pro,v $ 
+#   $Revision: 1.17 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2008/07/08 16:06:31 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2006/10/30 21:12:14 $  
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2008/07/08 16:06:31 $
 ######################################################################
 
 LIB = report
@@ -15,11 +28,11 @@ HEADERS += CCopasiContainer.h \
            CCopasiStaticString.h \
            CCopasiTimer.h \
            CKeyFactory.h \
-           COutputAssistant.h \  
+           COutputAssistant.h \
            CRenameHandler.h \
            CReportDefinition.h \
            CReportDefinitionVector.h \
-           CReport.h 
+           CReport.h
 
 SOURCES += CCopasiContainer.cpp \
            CCopasiObject.cpp \
@@ -27,10 +40,10 @@ SOURCES += CCopasiContainer.cpp \
            CCopasiStaticString.cpp \
            CCopasiTimer.cpp \
            CKeyFactory.cpp \
-           COutputAssistant.cpp \  
+           COutputAssistant.cpp \
            CReportDefinition.cpp \
            CReportDefinitionVector.cpp \
-           CReport.cpp 
+           CReport.cpp
 
 
-DISTFILES += report.dsp
+DISTFILES += report.vcproj

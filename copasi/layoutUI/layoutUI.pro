@@ -1,19 +1,19 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $ 
-#   $Revision: 1.20 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/05/29 13:02:21 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
+#   $Revision: 1.21 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:25 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 LIB = layoutUI
 
@@ -32,7 +32,7 @@ HEADERS = CQGLNetworkPainter.h \
           CVisParameters.h \
           CQCopasiLayoutWidget.h \
           CQCurrentValueTable.h \
-          BezierCurve.h \ 
+          BezierCurve.h \
           RGTextureSpec.h \
           CLabel.h
 
@@ -60,3 +60,5 @@ FORMS = ParaPanel.ui \
        # CQCopasiLayoutWidget.ui
 
 INCLUDEPATH += $${QWT_PATH}/include
+
+DISTFILES += layoutUI.vcproj

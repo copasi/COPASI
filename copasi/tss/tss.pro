@@ -1,17 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/tss.pro,v $ 
-#   $Revision: 1.9 $ 
-#   $Name:  $ 
-#   $Author: nsimus $ 
-#   $Date: 2007/01/18 12:14:06 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/tss.pro,v $
+#   $Revision: 1.10 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:26 $
+# End CVS Header
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.9 $ $Author: nsimus $ $Date: 2007/01/18 12:14:06 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2008/07/08 16:06:26 $
 ######################################################################
 
 LIB = tss
@@ -41,4 +46,4 @@ SOURCES += CODEExporterBM.cpp
 SOURCES += CODEExporterXPPAUT.cpp
 
 
-DISTFILES += tss.dsp
+DISTFILES += tss.vcproj

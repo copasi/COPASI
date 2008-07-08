@@ -1,15 +1,15 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/elementaryFluxModes.pro,v $ 
-#   $Revision: 1.9 $ 
-#   $Name:  $ 
-#   $Author: tjohann $ 
-#   $Date: 2008/07/02 08:06:12 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/elementaryFluxModes.pro,v $
+#   $Revision: 1.10 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:29 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
 ######################################################################
 # Created by Stefan Hoops <shoops@vt.edu> Sat May 17 20:42:30 2003
@@ -33,7 +33,7 @@ HEADERS += CEFMAlgorithm.h \
 contains(DEFINES, COPASI_SSA) {
    HEADERS += CSSAMethod.h
 }
-           
+
 SOURCES += CEFMAlgorithm.cpp \
            CEFMMethod.cpp \
            CEFMProblem.cpp \
@@ -41,10 +41,10 @@ SOURCES += CEFMAlgorithm.cpp \
            CFluxMode.cpp \
            CFluxScore.cpp \
            CTableauLine.cpp \
-           CTableauMatrix.cpp 
+           CTableauMatrix.cpp
 
 contains(DEFINES, COPASI_SSA) {
    SOURCES += CSSAMethod.cpp
 }
 
-DISTFILES += elementaryFluxModes.dsp
+DISTFILES += elementaryFluxModes.vcproj

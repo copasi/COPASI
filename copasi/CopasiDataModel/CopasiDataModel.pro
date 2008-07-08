@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CopasiDataModel.pro,v $ 
+#   $Revision: 1.5 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2008/07/08 16:06:31 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2006/10/30 21:12:19 $  
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2008/07/08 16:06:31 $
 ######################################################################
 
 LIB = copasiDM
@@ -14,4 +27,4 @@ HEADERS += CCopasiDataModel.h
 SOURCES += CCopasiDataModel.cpp
 
 
-DISTFILES += CopasiDataModel.dsp
+DISTFILES += CopasiDataModel.vcproj

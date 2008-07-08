@@ -1,10 +1,10 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/tssanalysis.pro,v $ 
-#   $Revision: 1.6 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/11 15:12:28 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/tssanalysis.pro,v $
+#   $Revision: 1.7 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:30 $
+# End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2008/01/11 15:12:28 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2008/07/08 16:06:30 $
 ######################################################################
 
 LIB = tssanalysis
@@ -40,4 +40,4 @@ SOURCES += CILDMMethod.cpp \
            CTSSATask.cpp
 
 
-DISTFILES += tssanalysis.dsp
+DISTFILES += tssanalysis.vcproj

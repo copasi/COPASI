@@ -1,15 +1,15 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $ 
-#   $Revision: 1.7 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/06/03 13:21:21 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
+#   $Revision: 1.8 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:27 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
 LIB = MIRIAMUI
 
@@ -24,8 +24,8 @@ HEADERS += \
     CModifiedWidget.h \
     CReferencesWidget.h \
 		CRDFListView.h \
-		CRDFListViewItem.h 
-		
+		CRDFListViewItem.h
+
 
 SOURCES += \
 		CBiologicalDescriptionsWidget.cpp \
@@ -37,3 +37,5 @@ SOURCES += \
 
 FORMS    = CQRDFListViewWidget.ui
 FORMS   += CQMiriamWidget.ui
+
+DISTFILES += MIRIAMUI.vcproj

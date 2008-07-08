@@ -1,22 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $ 
-#   $Revision: 1.173 $ 
-#   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/07/03 10:13:31 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
+#   $Revision: 1.174 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:32 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.173 $ $Author: pwilly $ $Date: 2008/07/03 10:13:31 $  
+# $Revision: 1.174 $ $Author: shoops $ $Date: 2008/07/08 16:06:32 $
 ######################################################################
 
 LIB = UI
@@ -26,7 +26,7 @@ include(../common.pri)
 
 CONFIG	+= qt
 
-DEPENDPATH += .. 
+DEPENDPATH += ..
 INCLUDEPATH	+= ..
 
 
@@ -215,14 +215,14 @@ SOURCES	+= \
 # FORMS += CScanWidgetTask.ui
 # FORMS += CUpDownSubwidget.ui
 # FORMS += DefaultplotDialog.ui
-# FORMS += SliderSettingsDialog.ui 
+# FORMS += SliderSettingsDialog.ui
 # FORMS += StateSubwidget.ui
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += objectdebug.ui
 # FORMS += CQExpressionMmlWidget.ui
 # FORMS += CQEventWidget1.ui
 
-# headers generated from .ui files   
+# headers generated from .ui files
 HEADERS += \
            CMCAResultSubwidget.h \
            CMCAResultSubwidget.ui.h \
@@ -295,8 +295,8 @@ HEADERS += \
            CScanWidgetRepeat.ui.h \
            CScanWidgetScan.h \
            CScanWidgetScan.ui.h \
-           CScanWidgetTask.h  \ 
-           CScanWidgetTask.ui.h  \ 
+           CScanWidgetTask.h  \
+           CScanWidgetTask.ui.h  \
            CUpDownSubwidget.h \
            CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
@@ -310,7 +310,7 @@ HEADERS += \
            objectdebug.h \
            objectdebug.ui.h
 
-# sources generated from .ui files   
+# sources generated from .ui files
 SOURCES += \
            CMCAResultSubwidget.cpp \
            CQCompartment.cpp \
@@ -349,7 +349,7 @@ SOURCES += \
            CScanWidgetRandom.cpp \
            CScanWidgetRepeat.cpp \
            CScanWidgetScan.cpp \
-           CScanWidgetTask.cpp \  
+           CScanWidgetTask.cpp \
            DefaultplotDialog.cpp \
            objectdebug.cpp \
            SliderSettingsDialog.cpp \
@@ -364,7 +364,7 @@ SOURCES += \
 contains(DEFINES, COPASI_TSSA) {
   HEADERS += CQTSSAResultWidget.h
   SOURCES += CQTSSAResultWidget.cpp
-	  
+
 # FORMS += CQTSSAWidget.ui
 # FORMS += CQTSSAResultSubWidget.ui
 
@@ -373,7 +373,7 @@ contains(DEFINES, COPASI_TSSA) {
              CQTSSAResultSubWidget.h \
              CQTSSAResultSubWidget.ui.h \
              CQTSSATimeScaleWidget.h
-             
+
   SOURCES += CQTSSAWidget.cpp \
              CQTSSAResultSubWidget.cpp \
              CQTSSATimeScaleWidget.cpp
@@ -390,7 +390,7 @@ HEADERS += CQRegistrationDialog.h \
 }
 #endif // COPAS_LICENSE_COM
 
-DISTFILES += UI.dsp \
+DISTFILES += UI.vcproj \
              icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \
@@ -416,6 +416,6 @@ DISTFILES += UI.dsp \
              icons/stois.xpm \
              icons/substrate.xpm \
              icons/unlocked.xpm \
-             
-             
+
+
 

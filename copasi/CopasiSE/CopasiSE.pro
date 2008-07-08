@@ -1,17 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $ 
-#   $Revision: 1.35 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/02/15 17:08:54 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
+#   $Revision: 1.36 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:28 $
+# End CVS Header
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.35 $ $Author: shoops $ $Date: 2007/02/15 17:08:54 $  
+# $Revision: 1.36 $ $Author: shoops $ $Date: 2008/07/08 16:06:28 $
 ######################################################################
 
 TEMPLATE = app
@@ -22,7 +27,7 @@ CONFIG -= qt
 
 include(../common.pri)
 
-DEPENDPATH += .. 
+DEPENDPATH += ..
 INCLUDEPATH += ..
 
 COPASI_LIBS += COPASISE
@@ -46,7 +51,7 @@ contains(BUILD_OS, Linux) {
     dynamic_LFLAGS = $${QMAKE_LFLAGS}
     dynamic_LFLAGS -= -static
 
-    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic 
+    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic
     dynamic.target   = CopasiSE-dynamic
     dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
     dynamic.commands = \
@@ -70,11 +75,11 @@ contains(BUILD_OS, SunOS) {
          $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-}  
+}
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
-  
+
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $${LIBS}
 
@@ -83,7 +88,7 @@ contains(BUILD_OS, Darwin){
 
 
 # Input
-HEADERS += 
+HEADERS +=
 
 SOURCES += CopasiSE.cpp
 
@@ -94,4 +99,4 @@ release {
   INSTALLS += distribution
 }
 
-DISTFILES += CopasiSE.dsp
+DISTFILES += CopasiSE.vcproj

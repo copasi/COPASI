@@ -1,18 +1,18 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/03/28 23:47:02 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
+#   $Revision: 1.4 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:32 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.3 $ $Author: pwilly $ $Date: 2008/03/28 23:47:02 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2008/07/08 16:06:32 $
 ######################################################################
 
 LIB = plotUI
@@ -47,5 +47,5 @@ HEADERS +=  HistoWidget.ui.h
 INCLUDEPATH += $${QWT_PATH}/include
 #INCLUDEPATH += $${QWT_PATH}/include/qwt-qt3
 
-DISTFILES += plotUI.dsp
+DISTFILES += plotUI.vcproj
 DISTFILES += QwtLicense

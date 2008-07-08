@@ -1,17 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $ 
-#   $Revision: 1.31 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2007/12/11 21:46:07 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $
+#   $Revision: 1.32 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:32 $
+# End CVS Header
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.31 $ $Author: shoops $ $Date: 2007/12/11 21:46:07 $  
+# $Revision: 1.32 $ $Author: shoops $ $Date: 2008/07/08 16:06:32 $
 ######################################################################
 
 LIB = optimization
@@ -41,7 +46,7 @@ HEADERS += COptItem.h \
            CRandomSearch.h \
            CTruncatedNewton.h \
            FminBrent.h
-           
+
 SOURCES += COptItem.cpp \
            COptMethod.cpp \
            COptMethodEP.cpp \
@@ -64,4 +69,4 @@ SOURCES += COptItem.cpp \
            CTruncatedNewton.cpp \
            FminBrent.cpp
 
-DISTFILES += optimization.dsp
+DISTFILES += optimization.vcproj

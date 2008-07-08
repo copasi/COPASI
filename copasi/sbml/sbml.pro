@@ -1,10 +1,10 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $ 
-#   $Revision: 1.19 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/05/05 08:20:50 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $
+#   $Revision: 1.20 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:25 $
+# End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,10 +34,10 @@ HEADERS += StdException.h \
            SBMLReference.h \
            SBMLUtils.h \
            UnitConversionFactory.hpp \
-           incompatibilities.h 
-           
-           
-           
+           incompatibilities.h
+
+
+
 SOURCES += StdException.cpp \
            CSBMLExporter.cpp \
            ConverterASTNode.cpp \
@@ -45,8 +45,8 @@ SOURCES += StdException.cpp \
            SBMLIncompatibility.cpp \
            SBMLReference.cpp \
            SBMLUtils.cpp \
-           UnitConversionFactory.cpp 
+           UnitConversionFactory.cpp
 
 
-DISTFILES += sbml.dsp
+DISTFILES += sbml.vcproj
 

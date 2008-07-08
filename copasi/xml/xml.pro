@@ -1,18 +1,18 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/xml.pro,v $ 
-#   $Revision: 1.10 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/03/12 00:34:41 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/xml.pro,v $
+#   $Revision: 1.11 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:25 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2008/03/12 00:34:41 $  
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2008/07/08 16:06:25 $
 ######################################################################
 
 LIB = xml
@@ -39,4 +39,4 @@ SOURCES += CCopasiXML.cpp \
 
 
 DISTFILES += copasi.xsd \
-             copasiXML.dsp
+             copasiXML.vcproj

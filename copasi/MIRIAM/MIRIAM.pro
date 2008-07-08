@@ -1,19 +1,19 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $ 
-#   $Revision: 1.12 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/06/10 20:31:11 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $
+#   $Revision: 1.13 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/07/08 16:06:24 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 LIB = MIRIAM
 
@@ -22,7 +22,7 @@ include(../common.pri)
 
 CONFIG -= qt
 
-DEPENDPATH += .. 
+DEPENDPATH += ..
 INCLUDEPATH += ..
 
 # Input
@@ -46,12 +46,12 @@ HEADERS += CRDFTriplet.h
 HEADERS += CRDFUtilities.h
 HEADERS += CRDFWriter.h
 
-SOURCES += CBiologicalDescription.cpp 
-SOURCES += CCreator.cpp 
-SOURCES += CConstants.cpp 
+SOURCES += CBiologicalDescription.cpp
+SOURCES += CCreator.cpp
+SOURCES += CConstants.cpp
 SOURCES += CModelMIRIAMInfo.cpp
-SOURCES += CModified.cpp 
-SOURCES += CReference.cpp 
+SOURCES += CModified.cpp
+SOURCES += CReference.cpp
 SOURCES += CRaptorInit.cpp
 // SOURCES += CRDFEdge.cpp
 SOURCES += CRDFGraph.cpp
@@ -65,3 +65,5 @@ SOURCES += CRDFSubject.cpp
 SOURCES += CRDFTriplet.cpp
 SOURCES += CRDFUtilities.cpp
 SOURCES += CRDFWriter.cpp
+
+DISTFILES += MIRIAM.vcproj
