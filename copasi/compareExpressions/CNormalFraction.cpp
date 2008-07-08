@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 18:26:49 $
+//   $Date: 2008/07/08 13:40:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,24 +351,10 @@ bool CNormalFraction::simplify()
     {
       result = this->mpDenominator->simplify();
     }
-  std::string s1 = this->mpNumerator->toString();
-  std::string s2 = this->mpDenominator->toString();
   if (result == true)
     {
       if (mpNumerator->getFractions().size() + mpDenominator->getFractions().size() > 0)
         {
-          std::set<CNormalFraction*>::const_iterator it;
-          std::set<CNormalFraction*>::const_iterator itEnd = mpNumerator->getFractions().end();
-          for (it = mpNumerator->getFractions().begin(); it != itEnd; ++it)
-            {
-              (*it)->simplify();
-            }
-          std::set<CNormalFraction*>::const_iterator it2;
-          std::set<CNormalFraction*>::const_iterator it2End = mpDenominator->getFractions().end();
-          for (it2 = mpDenominator->getFractions().begin(); it2 != it2End; ++it2)
-            {
-              (*it2)->simplify();
-            }
           // TODO  the following code does not work if there are fractions left.
           const CNormalLcm* lcm = findLcm();
           assert(expand(*lcm) == true);

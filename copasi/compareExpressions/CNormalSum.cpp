@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 18:26:49 $
+//   $Date: 2008/07/08 13:40:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -519,6 +519,12 @@ void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
 bool CNormalSum::simplify()
 {
   bool result = true;
+  std::set<CNormalFraction*>::iterator it3 = this->mFractions.begin(), endit3 = this->mFractions.end();
+  while (it3 != endit3)
+    {
+      (*it3)->simplify();
+      ++it3;
+    }
   std::set<CNormalProduct*, compareProducts>::iterator it = this->mProducts.begin(), endit = this->mProducts.end();
   // add code to find general power items with exponent 1 where the parent
   // power item also has exponent 1
@@ -592,7 +598,7 @@ bool CNormalSum::simplify()
               delete (*it);
               newProducts.push_back(pFraction);
             }
-          delete pDenom;
+          if (pDenom != NULL) delete pDenom;
         }
       ++it;
     }
@@ -631,12 +637,6 @@ bool CNormalSum::simplify()
         }
       delete *it2;
       ++it2;
-    }
-  std::set<CNormalFraction*>::iterator it3 = this->mFractions.begin(), endit3 = this->mFractions.end();
-  while (it3 != endit3)
-    {
-      (*it3)->simplify();
-      ++it3;
     }
   return result;
 }

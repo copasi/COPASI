@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 18:26:49 $
+//   $Date: 2008/07/08 13:40:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,70 +165,74 @@ CNormalBase * CNormalGeneralPower::copy() const
 
 void CNormalGeneralPower::multiply(const CNormalGeneralPower& generalPower)
 {
-  // (A/B)^(C/D)*(E/F)^(G/H) -> // (A^(C/D)*E^(G/H))/(B^(C/D)*F^(G/H))
-  // new exponent is 1
-  CNormalFraction* pNewExponent = new CNormalFraction();
-  CNormalSum* pTmpSum = new CNormalSum();
-  CNormalProduct* pTmpProduct = new CNormalProduct();
-  pTmpSum->add(*pTmpProduct);
-  delete pTmpProduct;
-  pNewExponent->setNumerator(*pTmpSum);
-  pNewExponent->setDenominator(*pTmpSum);
-  // initialize the new base with 1
-  CNormalFraction* pNewBase = new CNormalFraction(*pNewExponent);
-  // the numerator of the new base is (A^(C/D)*E^(G/H))
-  pTmpProduct = (*pNewBase->getNumerator().getProducts().begin());
-  assert(pTmpProduct != NULL);
-  // A^(C/D)
-  CNormalGeneralPower* pTmpPower = new CNormalGeneralPower();
-  pTmpPower->setType(CNormalGeneralPower::POWER);
-  CNormalFraction* pTmpFraction = new CNormalFraction(*pNewExponent);
-  pTmpFraction->setNumerator(this->mpLeft->getNumerator());
-  pTmpPower->setLeft(*pTmpFraction);
-  delete pTmpFraction;
-  pTmpPower->setRight(*this->mpRight);
-  pTmpProduct->multiply(*pTmpPower);
-  delete pTmpPower;
-  // E^(G/H)
-  pTmpPower = new CNormalGeneralPower();
-  pTmpPower->setType(CNormalGeneralPower::POWER);
-  pTmpFraction = new CNormalFraction(*pNewExponent);
-  pTmpFraction->setNumerator(generalPower.mpLeft->getNumerator());
-  pTmpPower->setLeft(*pTmpFraction);
-  delete pTmpFraction;
-  pTmpPower->setRight(*generalPower.mpRight);
-  pTmpProduct->multiply(*pTmpPower);
-  delete pTmpPower;
-  // the denominator of the new base is (B^(C/D)*F^(G/H))
-  pTmpProduct = (*pNewBase->getDenominator().getProducts().begin());
-  assert(pTmpProduct != NULL);
-  // B^(C/D)
-  pTmpPower = new CNormalGeneralPower();
-  pTmpPower->setType(CNormalGeneralPower::POWER);
-  pTmpFraction = new CNormalFraction(*pNewExponent);
-  pTmpFraction->setNumerator(this->mpLeft->getDenominator());
-  pTmpPower->setLeft(*pTmpFraction);
-  delete pTmpFraction;
-  pTmpPower->setRight(*this->mpRight);
-  pTmpProduct->multiply(*pTmpPower);
-  delete pTmpPower;
-  // F^(G/H)
-  pTmpPower = new CNormalGeneralPower();
-  pTmpPower->setType(CNormalGeneralPower::POWER);
-  pTmpFraction = new CNormalFraction(*pNewExponent);
-  pTmpFraction->setNumerator(generalPower.mpLeft->getDenominator());
-  pTmpPower->setLeft(*pTmpFraction);
-  delete pTmpFraction;
-  pTmpPower->setRight(*generalPower.mpRight);
-  pTmpProduct->multiply(*pTmpPower);
-  delete pTmpPower;
-  delete pTmpSum;
-  delete this->mpRight;
-  this->mpRight = pNewExponent;
-  delete this->mpLeft;
-  this->mpLeft = pNewBase;
-  //this->mpLeft->simplify();
-  //this->mpRight->simplify();
+  // make sure we don't multiply with a general power that is 1
+  // this would make the simplification process more complicated.
+  if (generalPower.checkIsOne()) return;
+  if (this->checkIsOne())
+    {
+      delete this->mpLeft;
+      delete this->mpRight;
+      this->mpLeft = new CNormalFraction(*generalPower.mpLeft);
+      this->mpRight = new CNormalFraction(*generalPower.mpRight);
+    }
+  else
+    {
+      // (A/B)^(C/D)*(E/F)^(G/H) -> // (A^(C/D)*E^(G/H))/(B^(C/D)*F^(G/H))
+      // new exponent is 1
+      CNormalFraction* pNewExponent = CNormalFraction::createUnitFraction();
+      // initialize the new base with 1
+      CNormalFraction* pNewBase = CNormalFraction::createUnitFraction();
+      // the numerator of the new base is (A^(C/D)*E^(G/H))
+      CNormalProduct* pTmpProduct = (*pNewBase->getNumerator().getProducts().begin());
+      assert(pTmpProduct != NULL);
+      // A^(C/D)
+      CNormalGeneralPower* pTmpPower = new CNormalGeneralPower();
+      pTmpPower->setType(CNormalGeneralPower::POWER);
+      CNormalFraction* pTmpFraction = new CNormalFraction(*pNewExponent);
+      pTmpFraction->setNumerator(this->mpLeft->getNumerator());
+      pTmpPower->setLeft(*pTmpFraction);
+      delete pTmpFraction;
+      pTmpPower->setRight(*this->mpRight);
+      pTmpProduct->multiply(*pTmpPower);
+      delete pTmpPower;
+      // E^(G/H)
+      pTmpPower = new CNormalGeneralPower();
+      pTmpPower->setType(CNormalGeneralPower::POWER);
+      pTmpFraction = new CNormalFraction(*pNewExponent);
+      pTmpFraction->setNumerator(generalPower.mpLeft->getNumerator());
+      pTmpPower->setLeft(*pTmpFraction);
+      delete pTmpFraction;
+      pTmpPower->setRight(*generalPower.mpRight);
+      pTmpProduct->multiply(*pTmpPower);
+      delete pTmpPower;
+      // the denominator of the new base is (B^(C/D)*F^(G/H))
+      pTmpProduct = (*pNewBase->getDenominator().getProducts().begin());
+      assert(pTmpProduct != NULL);
+      // B^(C/D)
+      pTmpPower = new CNormalGeneralPower();
+      pTmpPower->setType(CNormalGeneralPower::POWER);
+      pTmpFraction = new CNormalFraction(*pNewExponent);
+      pTmpFraction->setNumerator(this->mpLeft->getDenominator());
+      pTmpPower->setLeft(*pTmpFraction);
+      delete pTmpFraction;
+      pTmpPower->setRight(*this->mpRight);
+      pTmpProduct->multiply(*pTmpPower);
+      delete pTmpPower;
+      // F^(G/H)
+      pTmpPower = new CNormalGeneralPower();
+      pTmpPower->setType(CNormalGeneralPower::POWER);
+      pTmpFraction = new CNormalFraction(*pNewExponent);
+      pTmpFraction->setNumerator(generalPower.mpLeft->getDenominator());
+      pTmpPower->setLeft(*pTmpFraction);
+      delete pTmpFraction;
+      pTmpPower->setRight(*generalPower.mpRight);
+      pTmpProduct->multiply(*pTmpPower);
+      delete pTmpPower;
+      delete this->mpRight;
+      this->mpRight = pNewExponent;
+      delete this->mpLeft;
+      this->mpLeft = pNewBase;
+    }
 }
 
 bool CNormalGeneralPower::checkIsOne() const
@@ -242,6 +246,7 @@ bool CNormalGeneralPower::checkIsOne() const
 CNormalGeneralPower* CNormalGeneralPower::createUnitGeneralPower()
 {
   CNormalGeneralPower* pGeneralPower = new CNormalGeneralPower();
+  pGeneralPower->setType(CNormalGeneralPower::POWER);
   delete pGeneralPower->mpLeft;
   delete pGeneralPower->mpRight;
   pGeneralPower->mpLeft = CNormalFraction::createUnitFraction();

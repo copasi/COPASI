@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 19:43:22 $
+//   $Date: 2008/07/08 13:40:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -514,12 +514,21 @@ bool CNormalProduct::simplify()
         }
       else
         {
-          tmpV.push_back(*it);
+          if ((*it)->getItemType() == CNormalItemPower::POWER &&
+              dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem())->getType() == CNormalGeneralPower::POWER &&
+              dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem())->getLeft().checkIsOne()
+)
+            {
+              delete *it;
+            }
+          else
+            {
+              tmpV.push_back(*it);
+            }
         }
       ++ it;
     }
-  //pGeneralPower->simplify();
-  if (!pGeneralPower->getLeft().checkIsOne())
+  if (!pGeneralPower->checkIsOne())
     {
       CNormalItemPower* pTmpItemPower = new CNormalItemPower();
       pTmpItemPower->setExp(1.0);
@@ -530,11 +539,11 @@ bool CNormalProduct::simplify()
   // clear the current set of items and add all the item in tmpV
   this->mItemPowers.clear();
   std::vector<CNormalItemPower*>::iterator vIt = tmpV.begin();
-  std::vector<CNormalItemPower*>::iterator vEndIt = tmpV.begin();
+  std::vector<CNormalItemPower*>::iterator vEndIt = tmpV.end();
   while (vIt != vEndIt)
     {
-      this->multiply(**it);
-      delete *it;
+      this->multiply(**vIt);
+      delete *vIt;
       ++vIt;
     }
   return result;
