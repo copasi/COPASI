@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/08 13:40:04 $
+//   $Date: 2008/07/08 16:30:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -572,11 +572,12 @@ bool CNormalSum::simplify()
                 {
                   // the denominator is the left side of pDenom
                   pFraction = new CNormalFraction(pDenom->getLeft());
-                  // now we set the numerator
-                  CNormalSum* pSum = new CNormalSum();
-                  pSum->add(**it);
-                  pFraction->setNumerator(*pSum);
-                  delete pSum;
+                  //pFraction = new CNormalFraction(pDenom->getLeft());
+                  //// now we set the numerator
+                  //CNormalSum* pSum = new CNormalSum();
+                  //pSum->add(**it);
+                  //pFraction->setNumerator(*pSum);
+                  //delete pSum;
                 }
               else
                 {
@@ -587,13 +588,24 @@ bool CNormalSum::simplify()
                   pSum->add(**it);
                   pFraction->setNumerator(*pSum);
                   delete pSum;
-                  // now we have to set the denominator to pDenom
-                  pSum = new CNormalSum();
-                  CNormalProduct* pTmpProduct = new CNormalProduct();
-                  pTmpProduct->multiply(*pDenom);
-                  pSum->add(*pTmpProduct);
-                  delete pTmpProduct;
-                  pFraction->setDenominator(*pSum);
+                  // now we have to invert the general fraction that is the
+                  // denominator
+                  CNormalFraction* pTmpFraction = CNormalFraction::createUnitFraction();
+                  CNormalSum* pTmpSum = new CNormalSum(pDenom->getLeft().getDenominator());
+                  pTmpFraction->setNumerator(*pTmpSum);
+                  delete pTmpSum;
+                  pDenom->setLeft(*pTmpFraction);
+                  delete pTmpFraction;
+                  CNormalProduct* pTmpProduct = CNormalProduct::createUnitProduct();
+                  CNormalItemPower* pTmpItemPower = new CNormalItemPower();
+                  pTmpItemPower->setExp(1.0);
+                  pTmpItemPower->setItem(*pDenom);
+                  pTmpProduct->multiply(*pTmpItemPower);
+                  delete pTmpItemPower;
+                  pTmpSum = new CNormalSum();
+                  pTmpSum->add(*pTmpProduct);
+                  pFraction->setDenominator(*pTmpSum);
+                  delete pTmpSum;
                 }
               delete (*it);
               newProducts.push_back(pFraction);
