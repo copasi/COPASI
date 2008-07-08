@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/08 13:40:04 $
+//   $Author: shoops $
+//   $Date: 2008/07/08 18:10:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -568,7 +568,7 @@ CNormalGeneralPower* CNormalProduct::getDenominator() const
     pResult->setLeft(*pTmpFrac);
     pResult->setRight(*pTmpFrac);
     delete pTmpFrac;
-    std::set<CNormalItemPower*, compareItemPowers>::iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
+    std::set<CNormalItemPower*, compareItemPowers>::const_iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
     while (it != endit)
       {
         if ((*it)->getItemType() == CNormalItemPower::POWER)
