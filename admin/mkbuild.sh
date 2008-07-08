@@ -1,4 +1,7 @@
 #!/bin/bash
+
+PATH=$PATH:/bin:/usr/bin:/usr/local/bin
+
 pushd ../..
 
 AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer 6.4"
