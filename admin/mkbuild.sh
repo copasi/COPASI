@@ -1,7 +1,8 @@
 #!/bin/bash
 pushd ../..
 
-AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
+AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer 6.4"
+VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
 if [ x"$#" = x1 ]; then
   major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
@@ -38,11 +39,17 @@ if [ x"$#" = x1 ]; then
     cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
     chmod 644 copasi/LICENSE.txt
 
-    cp ../copasi/CopasiUI/CopasiUI.exe  copasi/bin
-    chmod 755 copasi/bin/CopasiUI.exe
+    cp ../copasi/CopasiUI/CopasiUI.exe*  copasi/bin
+    "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+      -manifest copasi\\bin\\CopasiUI.exe.manifest \
+      -outputresource:copasi\\bin\\CopasiUI.exe\;1
 
-    cp ../copasi/CopasiSE/CopasiSE.exe  copasi/bin
-    chmod 755 copasi/bin/CopasiSE.exe
+    cp ../copasi/CopasiSE/CopasiSE.exe*  copasi/bin
+    "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+      -manifest copasi\\bin\\CopasiSE.exe.manifest \
+      -outputresource:copasi\\bin\\CopasiSE.exe\;1
+
+    cp ~/environment/distribution/* copasi/bin
 
     if [ x"$license" = xUS ]; then
       scp copasi/bin/CopasiSE.exe \
@@ -84,7 +91,7 @@ if [ x"$#" = x1 ]; then
 
 #   run Advanced Installer to create msi package
     "$AdvancedInstallerPath/AdvancedInstaller" /build tmp.aip
-    rm tmp.aip
+#    rm tmp.aip
 
 #   restore defaults
     mv -- \

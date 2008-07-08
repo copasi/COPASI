@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT type="Advanced Installer" version="3.9" modules="freeware" RootPath="." Language="en">
+<DOCUMENT type="Advanced Installer" CreateVersion="3.9" version="6.4" modules="freeware" RootPath="." Language="en">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="ALLUSERS" Value="2"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install COPASI." ValueLocId="*"/>
@@ -7,8 +7,8 @@
     <ROW Property="ARPHELPLINK" Value="mailto:support@copasi.org"/>
     <ROW Property="ARPPRODUCTICON" Value="controlPanelIcon.exe"/>
     <ROW Property="ARPURLINFOABOUT" Value="www.copasi.org"/>
-    <ROW Property="BannerBitmap" Value="default_banner.bmp"/>
-    <ROW Property="DialogBitmap" Value="default_dialog.bmp"/>
+    <ROW Property="BannerBitmap" Value="default_banner.bmp" Type="1"/>
+    <ROW Property="DialogBitmap" Value="default_dialog.bmp" Type="1"/>
     <ROW Property="Manufacturer" Value="copasi.org" ValueLocId="*"/>
     <ROW Property="ProductCode" Value="1033:{181D78B1-FD19-4394-B459-32DDC6BEE41C} "/>
     <ROW Property="ProductLanguage" Value="1033"/>
@@ -18,7 +18,7 @@
     <ROW Property="UpgradeCode" Value="{17299245-A8D4-4648-B164-383A65DD6F76}"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
-    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR" IsPseudoRoot="1"/>
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="bin_DIR" Directory_Parent="APPDIR" DefaultDir="bin"/>
@@ -31,25 +31,31 @@
     <ROW Directory="share_DIR" Directory_Parent="APPDIR" DefaultDir="share"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="COPASI.document" ComponentId="{5726E275-1378-4279-9C08-3100DE4E455C}" Directory_="APPDIR" Attributes="4" KeyPath="__1" FullKeyPath="HK_CR\COPASI.document"/>
-    <ROW Component="Content_Type_1" ComponentId="{A9E97BA0-7F2F-4A90-8974-B52295DBA363}" Directory_="APPDIR" Attributes="4" KeyPath="Content_Type_1" FullKeyPath="HK_CR\.cps\Content Type"/>
-    <ROW Component="Copasi.ico" ComponentId="{E37635C7-A3FD-444F-AAF6-444770EFEB7D}" Directory_="icons_DIR" Attributes="0" KeyPath="Copasi.ico" FullKeyPath="APPDIR\share\copasi\icons"/>
-    <ROW Component="CopasiSE.exe" ComponentId="{101CD7DD-A216-4E32-A410-5617737AD08D}" Directory_="bin_DIR" Attributes="0" KeyPath="CopasiSE.exe" FullKeyPath="APPDIR\bin\CopasiSE.exe"/>
-    <ROW Component="CopasiUI.exe" ComponentId="{45944BA8-B4F7-4312-9B14-22214E4AFFB5}" Directory_="bin_DIR" Attributes="0" KeyPath="CopasiUI.exe" FullKeyPath="APPDIR\bin\CopasiUI.exe"/>
-    <ROW Component="DefaultIcon" ComponentId="{D2E06D5F-858D-42E1-83BB-013676FB8A0D}" Directory_="APPDIR" Attributes="4" KeyPath="__5" FullKeyPath="HK_CR\COPASI.document\DefaultIcon"/>
-    <ROW Component="DefaultPlotAdded.jpg" ComponentId="{86F18583-AF22-4C15-8483-4FA2E943766C}" Directory_="figures_DIR" Attributes="0" KeyPath="TimeCourseDialog.png" FullKeyPath="APPDIR\share\copasi\doc\html\figures"/>
-    <ROW Component="LICENSE.txt" ComponentId="{87B4EA4F-8063-4F76-BDF7-99350150AEE3}" Directory_="APPDIR" Attributes="0" KeyPath="LICENSE.txt" FullKeyPath="APPDIR"/>
-    <ROW Component="PerceivedType_1" ComponentId="{DF030F8B-A766-45B8-A8AE-D3AB00BEC798}" Directory_="APPDIR" Attributes="4" KeyPath="PerceivedType_1" FullKeyPath="HK_CR\.cps\PerceivedType"/>
-    <ROW Component="README.txt" ComponentId="{4F9D3A12-77E9-41D2-AC58-E4684E63A4EE}" Directory_="APPDIR" Attributes="0" KeyPath="README.txt" FullKeyPath="APPDIR\README.txt"/>
-    <ROW Component="TutWiz_Step1.html" ComponentId="{D9A58644-F85B-4FC5-A53E-B849BF79FE00}" Directory_="html_DIR" Attributes="0" KeyPath="TutWiz_Step1.html" FullKeyPath="APPDIR\share\copasi\doc\html"/>
-    <ROW Component="brusselator.cps" ComponentId="{D7ED136C-BB0F-4739-9B7B-89F12B8627EE}" Directory_="examples_DIR" Attributes="0" KeyPath="brusselator.cps" FullKeyPath="APPDIR\share\copasi\examples"/>
-    <ROW Component="command" ComponentId="{5A07C51A-1D21-4DF6-A6DA-050E5C32BAB2}" Directory_="APPDIR" Attributes="4" KeyPath="__4" FullKeyPath="HK_CR\COPASI.document\shell\open\command"/>
-    <ROW Component="cps" ComponentId="{E62377FB-AC3C-4FBC-ACD8-FA8B1813731D}" Directory_="APPDIR" Attributes="4" KeyPath="_" FullKeyPath="HK_CR\.cps"/>
-    <ROW Component="open" ComponentId="{102D3063-DEA3-4E69-AF32-24D6ED680EF2}" Directory_="APPDIR" Attributes="4" KeyPath="__3" FullKeyPath="HK_CR\COPASI.document\shell\open"/>
-    <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2" FullKeyPath="HK_CR\COPASI.document\shell"/>
+    <ROW Component="COPASI.document" ComponentId="{5726E275-1378-4279-9C08-3100DE4E455C}" Directory_="APPDIR" Attributes="4" KeyPath="__1"/>
+    <ROW Component="Content_Type_1" ComponentId="{A9E97BA0-7F2F-4A90-8974-B52295DBA363}" Directory_="APPDIR" Attributes="4" KeyPath="Content_Type_1"/>
+    <ROW Component="Copasi.ico" ComponentId="{E37635C7-A3FD-444F-AAF6-444770EFEB7D}" Directory_="icons_DIR" Attributes="0" KeyPath="Copasi.ico" Type="0"/>
+    <ROW Component="CopasiSE.exe" ComponentId="{101CD7DD-A216-4E32-A410-5617737AD08D}" Directory_="bin_DIR" Attributes="0" KeyPath="CopasiSE.exe" Type="0"/>
+    <ROW Component="CopasiUI.exe" ComponentId="{45944BA8-B4F7-4312-9B14-22214E4AFFB5}" Directory_="bin_DIR" Attributes="0" KeyPath="CopasiUI.exe" Type="0"/>
+    <ROW Component="DefaultIcon" ComponentId="{D2E06D5F-858D-42E1-83BB-013676FB8A0D}" Directory_="APPDIR" Attributes="4" KeyPath="__5"/>
+    <ROW Component="DefaultPlotAdded.jpg" ComponentId="{86F18583-AF22-4C15-8483-4FA2E943766C}" Directory_="figures_DIR" Attributes="0" KeyPath="TimeCourseDialog.png" Type="0"/>
+    <ROW Component="LICENSE.txt" ComponentId="{87B4EA4F-8063-4F76-BDF7-99350150AEE3}" Directory_="APPDIR" Attributes="0" KeyPath="LICENSE.txt" Type="0"/>
+    <ROW Component="PerceivedType_1" ComponentId="{DF030F8B-A766-45B8-A8AE-D3AB00BEC798}" Directory_="APPDIR" Attributes="4" KeyPath="PerceivedType_1"/>
+    <ROW Component="README.txt" ComponentId="{4F9D3A12-77E9-41D2-AC58-E4684E63A4EE}" Directory_="APPDIR" Attributes="0" KeyPath="README.txt" Type="0"/>
+    <ROW Component="TutWiz_Step1.html" ComponentId="{D9A58644-F85B-4FC5-A53E-B849BF79FE00}" Directory_="html_DIR" Attributes="0" KeyPath="TutWiz_Step1.html" Type="0"/>
+    <ROW Component="brusselator.cps" ComponentId="{D7ED136C-BB0F-4739-9B7B-89F12B8627EE}" Directory_="examples_DIR" Attributes="0" KeyPath="brusselator.cps" Type="0"/>
+    <ROW Component="command" ComponentId="{5A07C51A-1D21-4DF6-A6DA-050E5C32BAB2}" Directory_="APPDIR" Attributes="4" KeyPath="__4"/>
+    <ROW Component="cps" ComponentId="{E62377FB-AC3C-4FBC-ACD8-FA8B1813731D}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
+    <ROW Component="libexpat.dll" ComponentId="{C35188AC-8CAE-46A3-8FDB-44071789162A}" Directory_="bin_DIR" Attributes="0" KeyPath="libexpat.dll"/>
+    <ROW Component="libsbml.dll" ComponentId="{FEB36D87-6B6A-4009-9DF8-39D80C13E613}" Directory_="bin_DIR" Attributes="0" KeyPath="libsbml.dll"/>
+    <ROW Component="msvcp80.dll" ComponentId="{D90539F4-91B0-4FEB-8AD5-EC48DA1ADD90}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcp80.dll"/>
+    <ROW Component="msvcr80.dll" ComponentId="{36A7810B-0ACF-44FE-93D4-CC43FD82003C}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcr80.dll"/>
+    <ROW Component="open" ComponentId="{102D3063-DEA3-4E69-AF32-24D6ED680EF2}" Directory_="APPDIR" Attributes="4" KeyPath="__3"/>
+    <ROW Component="qt_mt338.dll" ComponentId="{9A8F5271-4227-4FE3-BDAE-03F709181D56}" Directory_="bin_DIR" Attributes="0" KeyPath="qt_mt338.dll"/>
+    <ROW Component="raptor.dll" ComponentId="{084FE1E7-715B-4328-B8CD-53409CFC02FE}" Directory_="bin_DIR" Attributes="0" KeyPath="raptor.dll"/>
+    <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon raptor.dll libexpat.dll libsbml.dll msvcp80.dll msvcr80.dll qt_mt338.dll"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -86,19 +92,33 @@
     <ROW File="TutWiz_Step6.html" Component_="TutWiz_Step1.html" FileName="TutWiz~6.htm|TutWiz-Step6.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step6.html" SelfReg="false" Sequence="9"/>
     <ROW File="YeastGlycolysis.gps" Component_="brusselator.cps" FileName="YeastG~1.gps|YeastGlycolysis.gps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\YeastGlycolysis.gps" SelfReg="false" Sequence="14"/>
     <ROW File="brusselator.cps" Component_="brusselator.cps" FileName="brusse~1.cps|brusselator.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\brusselator.cps" SelfReg="false" Sequence="10"/>
+    <ROW File="libexpat.dll" Component_="libexpat.dll" FileName="libexpat.dll" Attributes="0" SourcePath="..\setup\copasi\bin\libexpat.dll" SelfReg="false" Sequence="35"/>
+    <ROW File="libsbml.dll" Component_="libsbml.dll" FileName="libsbml.dll" Attributes="0" SourcePath="..\setup\copasi\bin\libsbml.dll" SelfReg="false" Sequence="36"/>
+    <ROW File="msvcp80.dll" Component_="msvcp80.dll" FileName="msvcp80.dll" Attributes="0" SourcePath="..\setup\copasi\bin\msvcp80.dll" SelfReg="false" Sequence="37"/>
+    <ROW File="msvcr80.dll" Component_="msvcr80.dll" FileName="msvcr80.dll" Attributes="0" SourcePath="..\setup\copasi\bin\msvcr80.dll" SelfReg="false" Sequence="38"/>
+    <ROW File="qt_mt338.dll" Component_="qt_mt338.dll" FileName="qt-mt338.dll" Attributes="0" SourcePath="..\setup\copasi\bin\qt-mt338.dll" SelfReg="false" Sequence="39"/>
+    <ROW File="raptor.dll" Component_="raptor.dll" FileName="raptor.dll" Attributes="0" SourcePath="..\setup\copasi\bin\raptor.dll" SelfReg="false" Sequence="34"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageName="..\Copasi-26-WIN32" Languages="en" InstallationType="4"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
-    <ROW Path="&lt;ui.ail&gt;"/>
-    <ROW Path="&lt;ui_en.ail&gt;"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
-    <ROW Fragment="FolderDlg.aip" Path="&lt;FolderDlg.aip&gt;"/>
-    <ROW Fragment="UI.aip" Path="&lt;UI.aip&gt;"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_FRAGS&gt;FolderDlg.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_FRAGS&gt;UI.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
-    <ROW Name="default_banner.bmp" SourcePath="&lt;default-banner.bmp&gt;"/>
-    <ROW Name="default_dialog.bmp" SourcePath="&lt;default-dialog.bmp&gt;"/>
-    <ROW Name="launcher.dll" SourcePath="&lt;launcher.dll&gt;"/>
+    <ROW Name="AI_CUSTACTS_aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="default_banner.bmp" SourcePath="&lt;AI_RES&gt;default-banner.bmp"/>
+    <ROW Name="default_dialog.bmp" SourcePath="&lt;AI_RES&gt;default-dialog.bmp"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ATTRIBUTE name="FixedSizeBitmaps" value="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
     <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
@@ -112,10 +132,10 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
-    <ROW Action="AI_PREPARE_UPGRADE" Type="1" Source="launcher.dll" Target="PrepareUpgrade"/>
-    <ROW Action="AI_RESTORE_LOCATION" Type="1" Source="launcher.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="AI_CUSTACTS_aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="AI_CUSTACTS_aicustact.dll" Target="RestoreLocation"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
-    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][ProductName]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
   </COMPONENT>
@@ -126,7 +146,7 @@
     <ROW Environment="PATH_1" Name="=-PATH" Value="[~];[bin_DIR]" Component_="CopasiSE.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="SystemFolder_msiexec.exe" SourcePath="&lt;uninstall.ico&gt;" Index="0"/>
+    <ROW Name="SystemFolder_msiexec.exe" SourcePath="&lt;AI_RES&gt;uninstall.ico" Index="0"/>
     <ROW Name="controlPanelIcon.exe" SourcePath="..\setup\copasi\share\copasi\icons\Copasi.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
@@ -137,16 +157,6 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="740"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiMediaComponent">
-    <ATTRIBUTE name="Compress" value="1"/>
-    <ATTRIBUTE name="FirstMediaSize" value="0"/>
-    <ATTRIBUTE name="FirstMediaSizeUnit" value="0"/>
-    <ATTRIBUTE name="InstallationType" value="0"/>
-    <ATTRIBUTE name="MediaSize" value="0"/>
-    <ATTRIBUTE name="MediaSizeUnit" value="0"/>
-    <ATTRIBUTE name="Package" value="1"/>
-    <ATTRIBUTE name="PackageName" value="..\Copasi-17-WIN32"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="Content_Type_1" Root="0" Key=".cps" Name="Content Type" Value="text/xml" Component_="Content_Type_1"/>
@@ -165,7 +175,7 @@
     <ROW Shortcut="Uninstall" Directory_="SHORTCUTDIR" Name="Uninst~1|Uninstall" Component_="CopasiSE.exe" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
-    <ROW UpgradeCode="UpgradeCode" VersionMax="ProductVersion" Attributes="1025"/>
-    <ROW UpgradeCode="UpgradeCode" VersionMin="ProductVersion" Attributes="2"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
 </DOCUMENT>
