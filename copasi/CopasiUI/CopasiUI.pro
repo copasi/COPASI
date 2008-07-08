@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.142 $
+#   $Revision: 1.143 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:24 $
+#   $Date: 2008/07/08 22:51:00 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.142 $ $Author: shoops $ $Date: 2008/07/08 16:06:24 $
+# $Revision: 1.143 $ $Author: shoops $ $Date: 2008/07/08 22:51:00 $
 ######################################################################
 
 TEMPLATE = app
@@ -39,7 +39,7 @@ contains(BUILD_OS, WIN32) {
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   release {
-    distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
+    distribution.extra = C:\cygwin\bin\bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
 }
 
