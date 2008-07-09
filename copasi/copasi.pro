@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.50 $
+#   $Revision: 1.51 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/07/08 16:06:26 $
+#   $Author: gauges $
+#   $Date: 2008/07/09 07:36:14 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.50 $ $Author: shoops $ $Date: 2008/07/08 16:06:26 $
+# $Revision: 1.51 $ $Author: gauges $ $Date: 2008/07/09 07:36:14 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -89,7 +89,9 @@ SUBDIRS += $${COPASISE_DIRS}
 # Now build the libs
 SUBDIRS += libs
 sub-libs.depends = $$join(COPASISE_DIRS, " sub-", "sub-")
-sub-libs.depends += $$join(COPASIUI_DIRS, " sub-", "sub-")
+!contains(BUILD_GUI, no) {
+  sub-libs.depends += $$join(COPASIUI_DIRS, " sub-", "sub-")
+}
 QMAKE_EXTRA_UNIX_TARGETS += sub-libs
 
 # Now the excecutables
