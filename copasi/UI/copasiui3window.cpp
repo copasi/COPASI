@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.222 $
+//   $Revision: 1.223 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/03 09:54:01 $
+//   $Author: shoops $
+//   $Date: 2008/07/09 17:13:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1600,8 +1600,6 @@ void CopasiUI3Window::slotCapture()
     {
       fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                  QString::null, "PNG Files (*.png);;", "Save to");
-
-      std::cout << "fileName: " << fileName << std::endl;
 
       if (fileName.isEmpty()) return;
 
