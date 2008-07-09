@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/06 10:28:29 $
+//   $Author: shoops $
+//   $Date: 2008/07/09 21:22:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,7 @@ const char* AboutDialog::text =
   "<li>QWT 5.0.2</li>"
   "<li>Expat 2.0.1 XML parser</li>"
   "<li>libsbml 3.1.1</li>"
+  "<li>raptor 1.4.18</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
   "<li>LSODA from ODEPACK</li>"
   "<li>Mersenne Twister random number generator, "
