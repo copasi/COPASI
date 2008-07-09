@@ -57,6 +57,12 @@ if [ x"$#" = x1 ]; then
     if [ x"$license" = xUS ]; then
       scp copasi/bin/CopasiSE.exe \
         copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build.exe
+      scp ~/environment/distribution/libexpat.dll \
+          ~/environment/distribution/libsbml.dll \
+          ~/environment/distribution/msvcp80.dll \
+          ~/environment/distribution/msvcr80.dll \
+          ~/environment/distribution/raptor.dll \
+        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/
     fi
     
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
