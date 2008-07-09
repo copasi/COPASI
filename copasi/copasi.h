@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/11 15:12:29 $
+//   $Author: gauges $
+//   $Date: 2008/07/09 09:31:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,11 @@
 #ifdef max
 #undef max
 #endif
+#if (defined __SUNPRO_CC && defined Linux)
+#ifndef LLONG_MAX
+#define  LLONG_MAX _RWSTD_LLONG_MAX
+#endif
+#endif // Sun C++ Compiler under Linux
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin)
 # define C_INT64 long long int
