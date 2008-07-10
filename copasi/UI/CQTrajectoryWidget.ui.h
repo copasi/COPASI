@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/07/10 18:51:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,6 +101,7 @@ void CQTrajectoryWidget::slotDuration()
   mpValidatorIntervals->revalidate();
 
   checkTimeSeries();
+  updateIntervals();
 }
 
 void CQTrajectoryWidget::slotIntervalSize()
@@ -125,6 +126,7 @@ void CQTrajectoryWidget::slotIntervalSize()
   mpValidatorIntervals->revalidate();
 
   checkTimeSeries();
+  updateIntervals();
 }
 
 void CQTrajectoryWidget::slotIntervals()
@@ -146,11 +148,13 @@ void CQTrajectoryWidget::slotIntervals()
   mpValidatorIntervalSize->revalidate();
 
   checkTimeSeries();
+  updateIntervals();
 }
 
 void CQTrajectoryWidget::slotOutputDelay(bool checked)
 {
   mpEditDelay->setEnabled(checked);
+  updateIntervals();
 }
 
 bool CQTrajectoryWidget::saveTask()
@@ -250,13 +254,13 @@ bool CQTrajectoryWidget::loadTask()
   mpEditIntervals->setText(QString::number(trajectoryproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(trajectoryproblem->getDuration()));
 
+  C_FLOAT64 InitialTime = CCopasiDataModel::Global->getModel()->getInitialTime();
+
   bool Delayed;
   if (trajectoryproblem->getStepSize() > 0.0)
-    Delayed =
-      (trajectoryproblem->getOutputStartTime() - CCopasiDataModel::Global->getModel()->getInitialTime()) > DBL_MIN;
+    Delayed = (trajectoryproblem->getOutputStartTime() - InitialTime) > DBL_MIN;
   else
-    Delayed =
-      (CCopasiDataModel::Global->getModel()->getInitialTime() - trajectoryproblem->getOutputStartTime()) > DBL_MIN;
+    Delayed = (InitialTime - trajectoryproblem->getOutputStartTime()) > DBL_MIN;
 
   mpCheckDelay->setChecked(Delayed);
   mpEditDelay->setEnabled(Delayed);
@@ -265,7 +269,10 @@ bool CQTrajectoryWidget::loadTask()
 
   //store time series checkbox
   mpCheckSave->setChecked(trajectoryproblem->timeSeriesRequested());
+
   checkTimeSeries();
+
+  updateIntervals();
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -312,5 +319,56 @@ void CQTrajectoryWidget::checkTimeSeries()
   else
     {
       mpCheckSave->setEnabled(true);
+    }
+}
+
+void CQTrajectoryWidget::updateIntervals()
+{
+  C_FLOAT64 InitialTime = CCopasiDataModel::Global->getModel()->getInitialTime();
+  C_FLOAT64 Duration = mpEditDuration->text().toDouble();
+  C_FLOAT64 OutputStartTime = InitialTime;
+
+  if (mpCheckDelay->isChecked())
+    OutputStartTime = mpEditDelay->text().toDouble();
+
+  mpEditIntegrationInterval->setText(QString::number(InitialTime) +
+                                     " to " +
+                                     QString::number(InitialTime + Duration));
+
+  if (Duration > 0.0)
+    {
+      if (std::max(InitialTime, OutputStartTime) > InitialTime + Duration)
+        mpEditOutputInterval->setText("empty");
+      else if (InitialTime < OutputStartTime)
+        {
+          C_FLOAT64 StepSize = mpEditIntervalSize->text().toDouble();
+          OutputStartTime = InitialTime + (ceil((OutputStartTime - InitialTime) / StepSize)) * StepSize;
+          mpEditOutputInterval->setText(QString::number(OutputStartTime) +
+                                        " to " +
+                                        QString::number(InitialTime + Duration));
+        }
+      else
+        {
+          mpEditOutputInterval->setText(QString::number(InitialTime) +
+                                        " to " +
+                                        QString::number(InitialTime + Duration));
+        }
+    }
+  else
+    {
+      if (std::min(InitialTime, OutputStartTime) < InitialTime + Duration)
+        mpEditOutputInterval->setText("empty");
+      else if (InitialTime > OutputStartTime)
+        {
+          C_FLOAT64 StepSize = mpEditIntervalSize->text().toDouble();
+          OutputStartTime = InitialTime + (ceil((OutputStartTime - InitialTime) / StepSize)) * StepSize;
+          mpEditOutputInterval->setText(QString::number(OutputStartTime) +
+                                        " to " +
+                                        QString::number(InitialTime + Duration));
+        }
+      else
+        mpEditOutputInterval->setText(QString::number(InitialTime) +
+                                      " to " +
+                                      QString::number(InitialTime + Duration));
     }
 }
