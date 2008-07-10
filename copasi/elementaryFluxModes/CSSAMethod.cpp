@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 08:51:35 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 19:58:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,8 +111,6 @@ bool CSSAMethod::initialize()
         }
       else
         Insert = InsertIrreversible--;
-
-      std::cout << std::endl;
 
       mIndex[Insert] = row;
       mIsBackwardReaction[Insert] = false;
@@ -246,7 +244,7 @@ CSSAMethod::testForMixingStability()
               //  this method is not valid and we can say nothing definite
               //  about the stability of this EC.
               std::string type = Reaction[mIndex[j]]->getFunction()->getObjectName();
-              std::cout << "Reaction type: " << type << std::endl;
+              // std::cout << "Reaction type: " << type << std::endl;
 
               if (type.find("Mass action") == std::string::npos &&
                   type.find("Constant flux") == std::string::npos)

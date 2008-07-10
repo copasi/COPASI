@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/03 12:13:21 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 19:58:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,8 +132,6 @@ void PlotWindow::printAsImage()
       fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
                  QString::null, "PNG Files (*.png);;SVG Files (*.svg);;", "Save to");
 
-      std::cout << "fileName: " << fileName << " - selected filter: " << filter << std::endl;
-
       if (fileName.isEmpty()) return;
 
       QFileInfo fileInfo(fileName);
@@ -161,8 +159,6 @@ void PlotWindow::printAsImage()
           if (extensionName == "")
             fileName += ".svg";
         }
-
-      std::cout << "fileName = " << fileName << std::endl;
 
       fileInfo.setFile(fileName);
       extensionName = fileInfo.extension();
@@ -232,7 +228,6 @@ void PlotWindow::slotSaveData()
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog", QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
 
-      //std::cout << "fileName: " << fileName << std::endl;
       if (fileName == NULL) return;
 
       if (!fileName.endsWith(".txt") &&

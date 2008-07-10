@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:16:51 $
+//   $Date: 2008/07/10 19:59:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -706,19 +706,13 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       //      Attributes.add("delay", "");
 
-      std::cout << "events number = " << imax << std::endl;
       for (i = 0; i < imax; i++)
         {
-          std::cout << "i = " << i << std::endl;
           CEvent * pEvent = mpModel->getEvents()[i];
 
           Attributes.setValue(0, pEvent->getKey());
           Attributes.setValue(1, pEvent->getObjectName());
-          //          Attributes.setValue(2, pEvent->getDelay());
-          //          std::cout << pEvent->getKey() << " - " << pEvent->getObjectName() << " - " << pEvent->getDelay() << std::endl;
-          /*          CModelEntity::Status SimulationType = pMV->getStatus();
-                    Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
-          */
+
           startSaveElement("Event", Attributes);
           /*
                     if (pEvent->getMiriamAnnotation() != "")
@@ -743,7 +737,6 @@ bool CCopasiXML::saveModel()
             }
 
           CXMLAttributeList Attr;
-          std::cout << "CCXML::saveModel - mAssigns.size() = " << pEvent->getNumAssignments() << std::endl;
           if (pEvent->getNumAssignments())
             //          if (pEvent->getExpressionEA() != "")
             {

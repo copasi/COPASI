@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:05:41 $
+//   $Date: 2008/07/10 19:57:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,9 @@ class CReactionInterface
     bool isLocked(unsigned C_INT32 index) const;
     bool isLocked(CFunctionParameter::Role usage) const;
 
+#ifdef COPASI_DEBUG
     void printDebug() const;
+#endif // COPASI_DEBUG
 
   private:
 

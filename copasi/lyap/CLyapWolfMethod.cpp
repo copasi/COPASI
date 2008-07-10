@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:04 $
+//   $Date: 2008/07/10 19:58:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -352,7 +357,7 @@ bool CLyapWolfMethod::calculate()
 
           /* Currently this is correct since no events are processed. */
           //CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
-          std::cout << "needed several steps for transient" << std::endl;
+          // std::cout << "needed several steps for transient" << std::endl;
         }
       while (true);
 

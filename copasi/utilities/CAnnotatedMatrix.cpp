@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:52:47 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 19:59:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,7 +331,6 @@ void CArrayAnnotation::printRecursively(std::ostream & ostream, C_INT32 level,
         unsigned C_INT32 i, imax = size()[level];
         for (i = 0; i < imax; ++i)
           {
-            //std::cout << "*" << i << std::endl;
             ostream << SPC(indent) << getDimensionDescription(level) << ": " << display[level][i] << "\n";
             index[level] = i;
             printRecursively(ostream, level - 1, index, display);

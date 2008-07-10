@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:05:41 $
+//   $Date: 2008/07/10 19:57:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -789,6 +789,7 @@ bool CReactionInterface::isValid() const
     return true;
   }
 
+#ifdef COPASI_DEBUG
 void CReactionInterface::printDebug() const
   {
     std::cout << "Reaction interface   " << std::endl;
@@ -809,3 +810,4 @@ void CReactionInterface::printDebug() const
       }
     std::cout << std::endl;
   }
+#endif // COPASI_DEBUG

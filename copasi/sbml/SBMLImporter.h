@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/10 08:46:16 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 19:58:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -458,8 +458,9 @@ class SBMLImporter
 );
 
     //CModel* parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
-
+#ifdef COPASI_DEBUG
     static void printMap(const std::map<CCopasiObject*, SBase*>& map);
+#endif // COPASI_DEBUG
 
     void restoreFunctionDB();
 

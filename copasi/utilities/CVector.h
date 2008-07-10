@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:49:55 $
+//   $Date: 2008/07/10 19:59:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,6 @@ template <class CType> class CVector
     {
       if (this == &rhs)
         {
-          //std::cout << "===" << std::endl;
           return * this;
         }
       if (mSize != rhs.mSize) resize(rhs.mSize);

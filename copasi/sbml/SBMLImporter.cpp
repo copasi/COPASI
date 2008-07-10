@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.205 $
+//   $Revision: 1.206 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 10:58:39 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 19:58:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2271,6 +2271,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
   return success;
 }
 
+#ifdef COPASI_DEBUG
 void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*> & copasi2sbml)
 {
   std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbml.begin();
@@ -2283,6 +2284,7 @@ void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*> & copasi2sbml
     }
   std::cout << std::endl;
 }
+#endif // COPASI_DEBUG
 
 void SBMLImporter::restoreFunctionDB()
 {

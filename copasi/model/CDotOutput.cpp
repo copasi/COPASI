@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:26 $
+//   $Date: 2008/07/10 19:57:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -221,7 +226,7 @@ CDotOutput::ObjectData * CDotOutput::getObjectDataFromRefresh(const Refresh* ref
       if (it->first->getRefresh() == ref) return &it->second;
     }
 
-  std::cout << "Object for Refresh method not found!" << std::endl;
+  // std::cout << "Object for Refresh method not found!" << std::endl;
   return NULL;
 }
 

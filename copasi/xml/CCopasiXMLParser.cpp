@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.182 $
+//   $Revision: 1.183 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:05 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 19:59:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -354,8 +354,6 @@ CCopasiXMLParser::UnknownElement::~UnknownElement()
 void CCopasiXMLParser::UnknownElement::start(const XML_Char * /*pszName*/ ,
     const XML_Char ** /* papszAttrs */)
 {
-  //std::cout << "XMLParser STA : UNKNOWN" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   /* We count the level of subelements of the Unknown Elelement */
   mCurrentElement++;
   if (!mCurrentElement) mLineNumber = mParser.getCurrentLineNumber();
@@ -364,8 +362,6 @@ void CCopasiXMLParser::UnknownElement::start(const XML_Char * /*pszName*/ ,
 
 void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : UNKNOWN" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case Unknown:
@@ -2270,7 +2266,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                       // Old file format support
+    case MathML:                                        // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2368,7 +2364,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                       // Old file format support
+    case MathML:                                        // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -2464,19 +2460,6 @@ void CCopasiXMLParser::ListOfEventsElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Event"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "Event", mParser.getCurrentLineNumber());
-      /*
-        unsigned C_INT32 Size = CCopasiMessage::size();
-
-         std::cout << "L" << __LINE__ << " - CCopasiMessage::size() = " << CCopasiMessage::size() << " - Size = " << Size << std::endl;
-
-              while (CCopasiMessage::size() > Size)
-        {
-                CCopasiMessage msg = CCopasiMessage::getLastMessage();
-          std::cout << "msg.getText() = " << msg.getText() << std::endl;
-        }
-
-          {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
-      */
 
       mCurrentElement = ListOfEvents;
       break;
@@ -2538,12 +2521,10 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
       break;
 
     case ListOfAssignments:
-      std::cout << "CCXMLP::EE - ListOfAssignments ... START - pszName = " << pszName << std::endl;
       if (!strcmp(pszName, "ListOfAssignments"))
         {
           if (!mpCurrentHandler)
             {
-              std::cout << "in Expression" << std::endl;
               mpCurrentHandler = new ListOfAssignmentsElement(mParser, mCommon);
 
               mCommon.mAssignments.reserve(100);
@@ -2599,12 +2580,9 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 
         // Remove error messages created by setExpression as this may fail
         // due to incomplete model specification at this time.
-        std::cout << "L" << __LINE__ << " - CCopasiMessage::size() = " << CCopasiMessage::size() << " - Size = " << Size << std::endl;
-
         while (CCopasiMessage::size() > Size)
           {
             CCopasiMessage msg = CCopasiMessage::getLastMessage();
-            std::cout << "msg.getText() = " << msg.getText() << std::endl;
           }
 
         //        while (CCopasiMessage::size() > Size)
@@ -2625,12 +2603,9 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 
         // Remove error messages created by setExpression as this may fail
         // due to incomplete model specification at this time.
-        std::cout << "L" << __LINE__ << " - CCopasiMessage::size() = " << CCopasiMessage::size() << " - Size = " << Size << std::endl;
-
         while (CCopasiMessage::size() > Size)
           {
             CCopasiMessage msg = CCopasiMessage::getLastMessage();
-            std::cout << "msg.getText() = " << msg.getText() << std::endl;
           }
 
         //        while (CCopasiMessage::size() > Size)
@@ -2641,68 +2616,42 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
       break;
 
     case ListOfAssignments:
-      std::cout << "CCXMLP::EE - ListOfAssignments ... END" << std::endl;
       if (strcmp(pszName, "ListOfAssignments"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "ListOfAssignments", mParser.getCurrentLineNumber());
 
-      //   std::vector<std::pair<std::string, std::string> >::iterator it = mCommon.mAssignments.begin();
-
-      //   for (; it != mCommon.mAssignments.end(); ++it)
-      //     std::cout << "Key = " << it->first << " - Expression = " << it->second << std::endl;
-
-      std::cout << "mCommon.mAssignments.size() = " << mCommon.mAssignments.size() << std::endl;
-
       {
         unsigned C_INT32 Size = CCopasiMessage::size();
 
-        std::cout << "L" << __LINE__ << " - CCopasiMessage::size() = " << CCopasiMessage::size() << " - Size = " << Size << std::endl;
-
         CCopasiMessage msg = CCopasiMessage::getLastMessage();
-        std::cout << "msg.getText() = " << msg.getText() << std::endl;
 
         while (CCopasiMessage::size() > Size)
           {
             msg = CCopasiMessage::getLastMessage();
-            std::cout << "> case - msg.getText() = " << msg.getText() << std::endl;
-            //    {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
           }
       }
-
-      //   {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
 
       mpEvent->clearAssignment();
 
       unsigned C_INT32 idx;
       for (idx = 0; idx < mCommon.mAssignments.size(); idx++)
         {
-          std::cout << "Key = " << mCommon.mAssignments[idx].first << " - Expression = " << mCommon.mAssignments[idx].second << std::endl;
-
           CCopasiMessage msg = CCopasiMessage::getLastMessage();
-          std::cout << "msg.getText() = " << msg.getText() << std::endl;
-          //  {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
 
           mpEvent->addAssignment(mCommon.mAssignments[idx].first, mCommon.mAssignments[idx].second);
 
           msg = CCopasiMessage::getLastMessage();
-          std::cout << "msg.getText() = " << msg.getText() << std::endl;
-          //  {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
         }
 
       //   mpEvent->addAssignment(mCommon.mAssignmentPair.first, mCommon.mAssignmentPair.second);
       {
         unsigned C_INT32 Size = CCopasiMessage::size();
 
-        std::cout << "L" << __LINE__ << " - CCopasiMessage::size() = " << CCopasiMessage::size() << " - Size = " << Size << std::endl;
-
         CCopasiMessage msg = CCopasiMessage::getLastMessage();
-        std::cout << "msg.getText() = " << msg.getText() << std::endl;
 
         while (CCopasiMessage::size() > Size)
           {
             msg = CCopasiMessage::getLastMessage();
-            std::cout << "> case - msg.getText() = " << msg.getText() << std::endl;
-            //    {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
           }
       }
 
@@ -2717,8 +2666,6 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
          }
       */
       mCurrentElement = Event;
-
-      //   {int y; std::cout << "CCXMLP L" << __LINE__ << std::endl; std::cin >> y;}
 
       /*
             if (strcmp(pszName, "ListOfAssignments"))
@@ -2753,9 +2700,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 CCopasiXMLParser::ListOfAssignmentsElement::ListOfAssignmentsElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
-{
-  std::cout << "CCXMLP::LoEA - Constructor" << std::endl;
-}
+{}
 
 CCopasiXMLParser::ListOfAssignmentsElement::~ListOfAssignmentsElement()
 {}
@@ -2774,7 +2719,6 @@ void CCopasiXMLParser::ListOfAssignmentsElement::start(const XML_Char *pszName,
       break;
 
     case Assignment:
-      std::cout << "CCXMLP::LoEA - Assignment ... START - pszName = " << pszName << std::endl;
       if (strcmp(pszName, "Assignment"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "Assignment", mParser.getCurrentLineNumber());
@@ -2782,7 +2726,6 @@ void CCopasiXMLParser::ListOfAssignmentsElement::start(const XML_Char *pszName,
       /* If we do not have a function element handler we create one. */
       if (!mpCurrentHandler)
         {
-          std::cout << "in Expression" << std::endl;
           mpCurrentHandler = new AssignmentElement(mParser, mCommon);
         }
 
@@ -2818,7 +2761,6 @@ void CCopasiXMLParser::ListOfAssignmentsElement::end(const XML_Char *pszName)
       break;
 
     case Assignment:
-      std::cout << "CCXMLP::LoEA - Assignment ... END" << std::endl;
       if (strcmp(pszName, "Assignment"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "Assignment", mParser.getCurrentLineNumber());
@@ -2842,9 +2784,7 @@ void CCopasiXMLParser::ListOfAssignmentsElement::end(const XML_Char *pszName)
 CCopasiXMLParser::AssignmentElement::AssignmentElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
-{
-  std::cout << "CCXMLP::EAE - Constructor" << std::endl;
-}
+{}
 
 CCopasiXMLParser::AssignmentElement::~AssignmentElement()
 {}
@@ -2867,22 +2807,12 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
       pME = dynamic_cast<const CModelEntity*>(mCommon.KeyMap.get(mKey));
       if (pME == NULL) fatalError();
       mAssignmentPair.first = pME->getKey();
-      //std::cout << "mKey = " << mKey << std::endl;
 
-      /*
-            mpMV = new CModelValue();
-            mCommon.KeyMap.addFix(mKey, mpMV);
-            mpMV->setObjectName(Name);
-            mpMV->setStatus(SimulationType);
-
-            mCommon.pModel->getModelValues().add(mpMV, true);
-      */      return;
+      return;
 
     case Expression:
-      std::cout << "CCXMLP::EAE - Expression ... START - pszName = " << pszName << std::endl;
       if (!strcmp(pszName, "Expression"))
         {
-          std::cout << "in Expression" << std::endl;
           mpCurrentHandler = &mParser.mCharacterDataElement;
         }
       break;
@@ -2924,18 +2854,13 @@ void CCopasiXMLParser::AssignmentElement::end(const XML_Char *pszName)
       break;
 
     case Expression:
-      std::cout << "CCXMLP::EAE - Expression ... END - pszName = " << pszName << std::endl;
       if (strcmp(pszName, "Expression"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "Expression", mParser.getCurrentLineNumber());
       {
-        std::cout << "H E R E" << std::endl;
         unsigned C_INT32 Size = CCopasiMessage::size();
 
         mAssignmentPair.second = mCommon.CharacterData;
-        std::cout << "expression = " << mCommon.CharacterData << std::endl;
-
-        //  std::cout << "key = " << mCommon.mAssignmentPair.first << " - expression = " << mCommon.mAssignmentPair.second << std::endl;
 
         mCommon.mAssignments.push_back(mAssignmentPair);
 
@@ -2943,14 +2868,9 @@ void CCopasiXMLParser::AssignmentElement::end(const XML_Char *pszName)
 
         CCopasiMessage msg = CCopasiMessage::getLastMessage();
 
-        std::cout << "L" << __LINE__ << " - CCopasiMessage::size() = " << CCopasiMessage::size() << " - Size = " << Size << std::endl;
-
-        std::cout << "msg.getText() = " << msg.getText() << std::endl;
-
         while (CCopasiMessage::size() > Size)
           {
             msg = CCopasiMessage::getLastMessage();
-            std::cout << "> case - msg.getText() = " << msg.getText() << std::endl;
           }
 
         // Remove error messages created by setExpression as this may fail
@@ -4636,11 +4556,7 @@ void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
       if (strcmp(pszName, "PlotItem"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "PlotItem", mParser.getCurrentLineNumber());
-      /*std::cout << "Number of Channels in current plot item: " << mCommon.pCurrentPlotItem->getChannels().size() << std::endl;
-      unsigned int counter;
-      for(counter=0; counter <  mCommon.pCurrentPlotItem->getChannels().size(); counter++){
-        std::cout << "Channel " << counter << ": " << mCommon.pCurrentPlotItem->getChannels()[counter] << std::endl;
-      }*/
+
       mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
       mCurrentElement = ListOfPlotItems;
       break;
@@ -4720,7 +4636,7 @@ void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "ChannelSpec", mParser.getCurrentLineNumber());
       mCommon.pCurrentPlotItem->getChannels().push_back(*(mCommon.pCurrentChannelSpec));
-      //std::cout << "Adding new Channel to PlotItem: " << mCommon.pCurrentChannelSpec << std::endl;
+
       delete mCommon.pCurrentChannelSpec;
       mCommon.pCurrentChannelSpec = NULL;
       mCurrentElement = ListOfChannels;
@@ -4850,7 +4766,7 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
                        pszName, "ChannelSpec", mParser.getCurrentLineNumber());
       // create a new CPlotSpecification element depending on the type
       name = mParser.getAttributeValue("cn", papszAttrs);
-      //std::cout << "Creating new DataChannelSpec with name: " << name << std::endl;
+
       mCommon.pCurrentChannelSpec = new CPlotDataChannelSpec(name);
       sMin = mParser.getAttributeValue("min", papszAttrs, false);
       if (sMin == NULL)
@@ -4941,7 +4857,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
       mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, (CPlotItem::Type) toEnum(sType.c_str(), CPlotItem::XMLType));
-      //std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
+
       return;
       break;
 
@@ -5364,8 +5280,6 @@ CCopasiXMLParser::CurveElement::~CurveElement()
 
 void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : Curve" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   //  mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -5468,8 +5382,6 @@ void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Ch
 
 void CCopasiXMLParser::CurveElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : Curve" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "Curve"))
     {
       mParser.popElementHandler();
@@ -5518,8 +5430,6 @@ CCopasiXMLParser::CompartmentGlyphElement::~CompartmentGlyphElement()
 
 void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : CompartmentGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -5604,8 +5514,6 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
 
 void CCopasiXMLParser::CompartmentGlyphElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : CompartmentGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "CompartmentGlyph"))
     {
       mParser.popElementHandler();
@@ -5657,8 +5565,6 @@ CCopasiXMLParser::ListOfCompartmentGlyphsElement::~ListOfCompartmentGlyphsElemen
 void CCopasiXMLParser::ListOfCompartmentGlyphsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfCompartmentGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -5697,8 +5603,6 @@ void CCopasiXMLParser::ListOfCompartmentGlyphsElement::start(const XML_Char * ps
 
 void CCopasiXMLParser::ListOfCompartmentGlyphsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfCompartmentGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfCompartmentGlyphs:
@@ -5747,8 +5651,6 @@ CCopasiXMLParser::MetaboliteGlyphElement::~MetaboliteGlyphElement()
 
 void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : MetaboliteGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -5832,8 +5734,6 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
 
 void CCopasiXMLParser::MetaboliteGlyphElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : MetaboliteGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "MetaboliteGlyph"))
     {
       mParser.popElementHandler();
@@ -5885,8 +5785,6 @@ CCopasiXMLParser::ListOfMetabGlyphsElement::~ListOfMetabGlyphsElement()
 void CCopasiXMLParser::ListOfMetabGlyphsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfMetabGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -5925,8 +5823,6 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::start(const XML_Char * pszName,
 
 void CCopasiXMLParser::ListOfMetabGlyphsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfMetabGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfMetabGlyphs:
@@ -5976,8 +5872,6 @@ CCopasiXMLParser::MetaboliteReferenceGlyphElement::~MetaboliteReferenceGlyphElem
 
 void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : MetaboliteReferenceGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -6085,8 +5979,6 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
 
 void CCopasiXMLParser::MetaboliteReferenceGlyphElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : MetaboliteReferenceGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "MetaboliteReferenceGlyph"))
     {
       mParser.popElementHandler();
@@ -6141,8 +6033,6 @@ CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::~ListOfMetaboliteRefer
 void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfMetaboliteReferenceGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -6181,8 +6071,6 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::start(const XML_C
 
 void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfMetaboliteReferenceGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfMetaboliteReferenceGlyphs:
@@ -6231,8 +6119,6 @@ CCopasiXMLParser::ReactionGlyphElement::~ReactionGlyphElement()
 
 void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ReactionGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -6334,8 +6220,6 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
 
 void CCopasiXMLParser::ReactionGlyphElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : ReactionGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "ReactionGlyph"))
     {
       mParser.popElementHandler();
@@ -6393,8 +6277,6 @@ CCopasiXMLParser::ListOfReactionGlyphsElement::~ListOfReactionGlyphsElement()
 void CCopasiXMLParser::ListOfReactionGlyphsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfReactionGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -6433,8 +6315,6 @@ void CCopasiXMLParser::ListOfReactionGlyphsElement::start(const XML_Char * pszNa
 
 void CCopasiXMLParser::ListOfReactionGlyphsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfReactionGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfReactionGlyphs:
@@ -6483,8 +6363,6 @@ CCopasiXMLParser::TextGlyphElement::~TextGlyphElement()
 
 void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : TextGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -6588,8 +6466,6 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
 
 void CCopasiXMLParser::TextGlyphElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : TextGlyph" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "TextGlyph"))
     {
       mParser.popElementHandler();
@@ -6641,8 +6517,6 @@ CCopasiXMLParser::ListOfTextGlyphsElement::~ListOfTextGlyphsElement()
 void CCopasiXMLParser::ListOfTextGlyphsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfTextGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -6681,8 +6555,6 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::start(const XML_Char * pszName,
 
 void CCopasiXMLParser::ListOfTextGlyphsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfTextGlyphs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfTextGlyphs:
@@ -6731,8 +6603,6 @@ CCopasiXMLParser::AdditionalGOElement::~AdditionalGOElement()
 
 void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : AdditionalGO" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -6810,8 +6680,6 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
 
 void CCopasiXMLParser::AdditionalGOElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : AdditionalGO" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "AdditionalGraphicalObject"))
     {
       mParser.popElementHandler();
@@ -6863,8 +6731,6 @@ CCopasiXMLParser::ListOfAdditionalGOsElement::~ListOfAdditionalGOsElement()
 void CCopasiXMLParser::ListOfAdditionalGOsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfAdditionalGOs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -6903,8 +6769,6 @@ void CCopasiXMLParser::ListOfAdditionalGOsElement::start(const XML_Char * pszNam
 
 void CCopasiXMLParser::ListOfAdditionalGOsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfAdditionalGOs" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfAdditionalGOs:
@@ -6953,8 +6817,6 @@ CCopasiXMLParser::LayoutElement::~LayoutElement()
 
 void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
-  //std::cout << "XMLParser STA : Layout" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
   mLineNumber = (unsigned int) - 1;
@@ -7037,8 +6899,6 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
 
 void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
 {
-  //std::cout << "XMLParser END : Layout" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   if (!strcmp(pszName, "Layout"))
     {
       mParser.popElementHandler();
@@ -7132,8 +6992,6 @@ CCopasiXMLParser::ListOfLayoutsElement::~ListOfLayoutsElement()
 void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  //std::cout << "XMLParser STA : ListOfLayouts" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -7178,8 +7036,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
 
 void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
 {
-  //std::cout << "XMLParser END : ListOfLayouts" << " (" << pszName << ")" << mCurrentElement << std::endl; //DEBUG
-
   switch (mCurrentElement)
     {
     case ListOfLayouts:

@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/17 14:11:46 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
+  $Revision: 1.6 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/07/10 19:59:30 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -180,13 +185,6 @@ CDimension CDimension::compare(const CDimension & rhs) const
     return result;
   }
 
-/*std::string CDimension::getDebugString() const
-{
-  if (mUnknown) std::cout << "Dim: unknown" << std::endl;
-  if (mContradiction) std::cout << "Dim: conctradiction" << std::endl;
-  std::cout << "Dim: " << mD1 << " " << mD2 << " " << mD3 << std::endl;
-}*/
-
 std::ostream & operator<<(std::ostream &os, const CDimension & d)
 {
   if (d.mUnknown) os << "Dim: unknown";
@@ -338,7 +336,6 @@ void CFindDimensions::findDimensionsMassAction()
 {
   if (mM1 < 0) return;
 
-  //std::cout << "findDimensionsMassAction" << std::endl;
   CDimension conc; conc.setDimension(1.0, -1.0, 0.0);
 
   if (mDimensions[0].isUnknown())
@@ -365,7 +362,6 @@ void CFindDimensions::findDimension(unsigned C_INT32 index)
   std::vector<const CEvaluationNode*> nodes;
   const std::vector< CEvaluationNode * > & allnodes = mpFunction->getNodeList();
   std::vector< CEvaluationNode * >::const_iterator it, itEnd = allnodes.end();
-  //std::cout << "nodes: " << allnodes.size() << ": " <<  std::endl;
   for (it = allnodes.begin(); it != itEnd; ++it)
     {
       if ((*it)->getType() == CEvaluationNode::VARIABLE)
@@ -374,17 +370,14 @@ void CFindDimensions::findDimension(unsigned C_INT32 index)
             nodes.push_back(*it);
           }
     }
-  //std::cout << std::endl;
 
   //find dimension for all nodes and compare results
   std::vector<const CEvaluationNode * >::const_iterator it2, it2End = nodes.end();
   for (it2 = nodes.begin(); it2 != it2End; ++it2)
     {
       result = result.compare(findDimension(*it2));
-      //std::cout << " " << result;
     }
 
-  //std::cout << std::endl;
   mDimensions[index] = result;
 }
 
@@ -543,6 +536,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
   return result;
 }
 
+#ifdef COPASI_DEBUG
 void CFindDimensions::printDebugOutput() const
   {
     std::cout << "mDimensions " << mDimensions.size() << std::endl;
@@ -550,3 +544,4 @@ void CFindDimensions::printDebugOutput() const
     for (i = 0; i < imax; ++i)
       std::cout << i << ": " << mDimensions[i] << std::endl;
   }
+#endif // COPASI_DEBUG

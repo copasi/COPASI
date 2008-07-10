@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/17 14:11:46 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
+  $Revision: 1.6 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/07/10 19:59:30 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -119,7 +124,9 @@ class CFindDimensions
     const std::vector<CDimension> & getDimensions() const;
 
     //print the content of mDimensions to cout
+#ifdef COPASI_DEBUG
     void printDebugOutput() const;
+#endif // COPASI_DEBUG
 
     void setUseHeuristics(bool flag);
 

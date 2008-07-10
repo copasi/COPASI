@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:34:30 $
+//   $Date: 2008/07/10 19:58:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,8 +131,8 @@ void CODEExporter::exportObjectNodesFromModel(const CModel * model)
 
       CCopasiObject * obj = findObjectFromRefresh(tmp, model->getListOfSimulatedRefreshes()[i]);
       if (obj) exportSimulatedObject(obj);
-      else
-        std::cout << "Object for Refresh method is not found!" << std::endl;
+      // else
+      // std::cout << "Object for Refresh method is not found!" << std::endl;
     }
 }
 
