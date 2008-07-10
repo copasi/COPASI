@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:31:45 $
+//   $Date: 2008/07/10 16:30:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -343,7 +343,7 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
 CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentValue)
 {
   C_INT info = 0;
-  char T = 'T'; /* difference between fortran's and c's matrix storrage */
+  char T = 'T'; /* difference between fortran's and c's matrix storage */
   C_INT one = 1;
 
   memcpy(mXold.array(), mpX, mDimension * sizeof(C_FLOAT64));
@@ -484,10 +484,10 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
   // copy values of increment to h
   mH = mdxdt;
 
-  //repeat till the new max rate is smaller than the old and all concentrations are positive.
+  //repeat till the new max rate is smaller than the old.
   //max 32 times
   unsigned C_INT32 i;
-  for (i = 0; (i < 32) && !((newValue < currentValue) && (mAcceptNegative || allPositive())); i++)
+  for (i = 0; (i < 32) && !((newValue < currentValue)); i++)
     {
       C_FLOAT64 * pXit = mpX;
       C_FLOAT64 * pXoldIt = mXold.array();
@@ -530,6 +530,14 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       //         ReturnCode = CNewtonMethod::dampingLimitExceeded;
 
       //if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+    }
+
+  if (!(mAcceptNegative || allPositive()))
+    {
+      if (mKeepProtocol)
+        mMethodLog << "    Newton step failed. Negative volume or concentration found.\n\n";
+
+      return CNewtonMethod::negativeValueFound;
     }
 
   currentValue = newValue; //return the new target value
@@ -577,6 +585,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 
         if (singularJacobian == result) break;
         if (dampingLimitExceeded == result) break;
+        if (negativeValueFound == result) break;
       }
   }
 
@@ -617,6 +626,12 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
             }
 
           if (CNewtonMethod::dampingLimitExceeded == result)
+            {
+              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              result = CNewtonMethod::found;
+            }
+
+          if (CNewtonMethod::negativeValueFound == result)
             {
               if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
               result = CNewtonMethod::found;
