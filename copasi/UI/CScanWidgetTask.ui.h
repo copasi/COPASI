@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
-  $Revision: 1.13 $
-  $Name:  $
-  $Author: ssahle $
-  $Date: 2008/03/13 10:32:44 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
+ $Revision: 1.14 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/07/10 20:40:09 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -74,7 +74,6 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
       n = 6;
       break;
     default :
-      //std::cout << "unknown subtask in scan. Should not happen." << std::endl;
       n = 0;
     }
   comboType->setCurrentItem(n);
@@ -114,7 +113,6 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
         pg->setSubtask(CCopasiTask::sens);
         break;
       default :
-        //std::cout << "unknown subtask in scan. Should not happen." << std::endl;
         pg->setSubtask(CCopasiTask::steadyState);
       }
 

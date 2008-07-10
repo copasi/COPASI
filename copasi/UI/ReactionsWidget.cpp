@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,7 +109,6 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
       //first check if the string is a valid equation
       if (!CChemEqInterface::isValidEq((const char *)equation.utf8()))
         {
-          //std::cout << "Not a valid equation!\n\n";
           return;
         }
       else
@@ -163,7 +162,6 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  //std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
   return pRea;
 }
 

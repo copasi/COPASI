@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 18:54:21 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,9 +128,6 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
       nname += (const char *)QString::number(i).utf8();
     }
 
-  //pPl->createDefaultPlot(CCopasiDataModel::Global->getModel());
-
-  //std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
   return pPl;
 }
 

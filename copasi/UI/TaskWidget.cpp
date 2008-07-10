@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,12 +223,7 @@ void TaskWidget::assistantBtnClicked()
   pDlg->setTask(mpTask);
   if (pDlg->exec() == QDialog::Accepted)
     {
-      //std::cout << "plot created" << std::endl;
       protectedNotify(ListViews::PLOT, ListViews::ADD, "");
-    }
-  else
-    {
-      //std::cout << "no plot created" << std::endl;
     }
 
   if (pDlg)delete pDlg;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -390,8 +390,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
 void ParameterTable::handleCurrentCell(int row, int col)
 {
-  //std::cout << row << " " << col << std::endl;
-
   bool changed = false;
 
   int i, imax = mIndex2Line.size();
@@ -415,8 +413,6 @@ if (col > 3) {changed = true; col = 3;}
 
 void ParameterTable::slotCellChanged(int row, int col)
 {
-  //std::cout << "table: cell changed" << std::endl;
-
   // find the index of the parameter
   C_INT32 i, imax = mIndex2Line.size();
   for (i = imax - 1; i >= 0; --i)
@@ -453,7 +449,6 @@ ComboItem::ComboItem(QTable *t, EditType et, QColor c, const QStringList & sl)
 
 QWidget *ComboItem::createEditor() const
   {
-    //std::cout << "createEditor(combo)" << std::endl;
     // create an editor - a combobox in our case
     ((ComboItem*)this)->cb = new QComboBox(false, table()->viewport());
     QObject::connect(cb, SIGNAL(activated(int)), table(), SLOT(doValueChanged()));
@@ -464,7 +459,6 @@ QWidget *ComboItem::createEditor() const
 
 void ComboItem::setContentFromEditor(QWidget *w)
 {
-  //std::cout << "setContentFromEditor(combo)" << std::endl;
   // the user changed the value of the combobox, so synchronize the
   // value of the item (its text), with the value of the combobox
   if (w->inherits("QComboBox"))

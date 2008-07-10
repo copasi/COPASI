@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/24 09:40:45 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -57,11 +62,6 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   CCopasiObject* obj = (CCopasiObject*)ptr;
   QListViewItem * element;
 
-  /*if(obj->getObjectType()=="Function")
-   {
-    std::cout << " xxxx" << std::endl;
-   }*/
-
   std::string cn = obj->getCN();
   CCopasiObject* testObj = CCopasiContainer::ObjectFromName(cn);
 
@@ -102,8 +102,6 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
                                       value,
                                       FROM_UTF8(obj->getObjectDisplayName()),
                                       FROM_UTF8(obj->getCN()));
-
-  //std::cout << obj->getName()<< "   " << obj->getObjectType() << std::endl;
 
   if (obj->isContainer())
     {
@@ -168,19 +166,6 @@ void ObjectDebug::init()
   ListOfObjects->addColumn("Unique name", -1);
   ListOfObjects->setAllColumnsShowFocus(true);
 }
-
-// void ObjectDebug::action(QListViewItem * item, const QPoint & C_UNUSED(pnt), int C_UNUSED(col))
-// {
-//   //CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
-//   CCopasiObject* testObj = ((MyListViewItemWithPtr*)item)->mpObject;
-//
-//   if (!testObj) return;
-//
-//   std::cout << testObj->getObjectDisplayName() << std::endl;
-//   //std::cout << *testObj << std::endl;
-//   testObj->print(&std::cout);
-//   std::cout << std::endl;
-//}
 
 #include "model/CDotOutput.h"
 

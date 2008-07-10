@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/16 14:06:58 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,7 +152,6 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
 
   CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
 
-  //std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
   return pFunc;
 }
 

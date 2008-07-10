@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.246 $
+//   $Revision: 1.247 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/03 09:40:40 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -864,8 +864,6 @@ void ListViews::restoreCurrentItemInAllListViews()
 bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     Action action, const std::string & C_UNUSED(key)) //static
 {
-  //std::cout << "ListViews::updateDataModelAndListviews " << std::endl;
-
   bool success = true;
 
   //maintain the "changed" flag
@@ -1110,7 +1108,6 @@ bool ListViews::detach()
 
 bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
 {
-  //std::cout << "notify: " << objectType << "  " << action << " " << key << std::endl;
   if (objectType != MODEL && action != ADD)
     CCopasiDataModel::Global->changed();
 

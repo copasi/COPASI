@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/03 09:18:54 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,7 +205,6 @@ void CQMoietiesTaskResult::slotSave(void)
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
 
-      //std::cout << "fileName: " << fileName << std::endl;
       if (fileName.isEmpty()) return;
 
       if (!fileName.endsWith(".txt") &&

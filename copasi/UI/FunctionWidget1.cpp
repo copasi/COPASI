@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.155 $
+//   $Revision: 1.156 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 06:41:07 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,9 +87,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
     objKey(""),
     mpFunction(NULL)
 {
-  //  std::cout << "FunctionWidget1" << std::endl;
-  //  {int y; std::cin >> y;}
-
   if (!name)
     setName("FunctionWidget1");
   setCaption(trUtf8("FunctionWidget1"));
@@ -786,7 +783,7 @@ bool FunctionWidget1::saveToFunction()
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
   if (flagRO) return;
-  //std::cout << "*:" << (const char *)textBrowser->text().utf8() << ":*" << std::endl;
+
   flagChanged = true;
 
   try
@@ -833,7 +830,6 @@ void FunctionWidget1::slotFcnDescriptionChanged()
 //! Slot for changing the table value
 void FunctionWidget1::slotTableValueChanged(int row, int col)
 {
-  //std::cout << "table changed " << row << " " << col << std::endl;
   flagChanged = true;
 
   CFunctionParameters &functParam = mpFunction->getVariables();
@@ -1358,22 +1354,6 @@ bool FunctionWidget1::enter(const std::string & key)
 {
   objKey = key;
   CFunction* func = dynamic_cast<CFunction*>(GlobalKeys.get(key));
-
-  //debug
-  //func->writeMathML(std::cout);
-  //CFindDimensions ddd(func);
-  //std::cout << "Before: ";
-  //ddd.printDebugOutput();
-  //CDimension dim; dim.setDimension(1, -1, -1); // conc/time
-  //ddd.findDimensions(dim);
-  //std::cout << "After: ";
-  //ddd.printDebugOutput();
-
-  //ddd.setUseHeuristics(true);
-  //ddd.findDimensions(dim);
-  //std::cout << "After2: ";
-  //ddd.printDebugOutput();
-  //ddd.findDimensionsBoth();
 
   if (func)
     return loadFromFunction(func);

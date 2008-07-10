@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 18:54:21 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -355,19 +355,16 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
 void CopasiTableWidget::slotTableSelectionChanged()
 {
-  //std::cout << "Table..selectionChanged " << std::endl;
   if (!table->hasFocus()) table->setFocus();
 }
 
 void CopasiTableWidget::slotCurrentChanged(int C_UNUSED(row), int C_UNUSED(col))
-{
-  //std::cout << "Table..currentChanged " << row << "  " << col << std::endl;
-}
+{}
 
 void CopasiTableWidget::slotValueChanged(int row, int col)
 {
   if (mRO) return;
-  //std::cout << "Table..valueChanged " << row << "  " << col << std::endl;
+
   emit setEnableOKAndCancel(true);
   if (mShowButtons)
     {
@@ -405,7 +402,6 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
 
 void CopasiTableWidget::slotTableDelKey()
 {
-  //std::cout << "**del**" << std::endl;
   //pressing del does exactly the same thing as hitting the delete button
   if (!mRO && mShowButtons)
     slotBtnDeleteClicked();
@@ -492,8 +488,6 @@ void CopasiTableWidget::slotBtnClearClicked()
 
 void CopasiTableWidget::slotBtnDeleteClicked()
 {
-  //std::cout << "slotBtnDeleteClicked()" << std::endl;
-
   bool flagFirstFound = false;
   bool flagNewDelState;
 

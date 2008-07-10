@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/17 10:03:12 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,13 +79,10 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
   */
 QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
   {
-    //    std::cout << "CQVE::validate(__) " << (const char *) input.utf8() << std::endl;
-
     if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()) &&
         const_cast< CExpression * >(&mExpression)->compile())
       {
         QString Input = mpLineEdit->text();
-        //     std::cout << mpLineEdit->text() << std::endl;
         return CQValidator< QTextEdit >::validate(Input, pos);
       }
 
@@ -158,18 +155,10 @@ void CQExpressionWidget::slotSelectionChanged()
       return;
     }
 
-  //debug output
-  //   std::cout << "sc:  " << par1 << ", "
-  //                        << pos1 << ", "
-  //                        << par2 << ", "
-  //                        << pos2 << ", " << std::endl;
-
   //make sure a selection contains an object completely or not at all
   //TODO
   bool iio1 = isInObject(par1, pos1);
   bool iio2 = isInObject(par2, pos2);
-
-  //   std::cout << iio1 << " " << iio2 << std::endl;
 
   //if both borders are outside do nothing.
 
@@ -189,7 +178,6 @@ void CQExpressionWidget::slotSelectionChanged()
   */
 void CQExpressionWidget::slotTextChanged()
 {
-  //  std::cout << "CQEW::slotTextChanged()" << std::endl;
   int pos = 0;
   QString Expression = FROM_UTF8(getExpression());
   emit valid(mpValidator->validate(Expression, pos) == QValidator::Acceptable);
@@ -197,9 +185,6 @@ void CQExpressionWidget::slotTextChanged()
 
 void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
 {
-  //debug output
-  //std::cout << "cpc: " << para << ", " << pos << " . " << isInObject() << std::endl;
-
   //check if we are inside an object
   if (isInObject(para, pos))
     {
@@ -248,7 +233,6 @@ bool CQExpressionWidget::isInObject(int par, int pos)
   bool result = false;
 
   QString tmp = text(par);
-  //std::cout << "iio? " << par << " " << pos << std::endl;
 
   //first look to the left
   int lo, lc;
@@ -256,7 +240,6 @@ bool CQExpressionWidget::isInObject(int par, int pos)
   lc = tmp.findRev('>', pos - 1);
   while (lc > 0 && tmp[lc - 1] == '\\')
     lc = tmp.findRev('>', lc - 1);
-  //std::cout << "left:"  << lo << " " << lc  << std::endl;
 
   if ((lo == -1) && (lc == -1))
     result = false;
@@ -264,7 +247,6 @@ bool CQExpressionWidget::isInObject(int par, int pos)
     result = true;
   else if (lo == -1)
     {
-      //std::cout << "inconsistent expression!" << std::endl;
       result = false;
     }
   else if (lo < lc)
@@ -300,12 +282,10 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
       if (pos == 0) return;
       if (text(para)[pos - 1] == '>')
         {
-          //std::cout << "Backspace into object." << std::endl;
           QString tmp = text(para);
           int left = tmp.findRev('<', pos);
           setSelection(para, left, para, pos);
           removeSelectedText();
-          //std::cout << pos << " " << left << std::endl;
         }
       else
         QTextEdit::doKeyboardAction(action);
@@ -315,12 +295,10 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
       if ((unsigned int) pos == text().length()) return;
       if (text(para)[pos] == '<')
         {
-          //std::cout << "Delete into object." << std::endl;
           QString tmp = text(para);
           int right = tmp.find('>', pos);
           setSelection(para, pos, para, right + 1);
           removeSelectedText();
-          //std::cout << pos << " " << right << std::endl;
         }
       else
         QTextEdit::doKeyboardAction(action);

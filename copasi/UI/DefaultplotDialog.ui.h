@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
+  $Revision: 1.9 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/07/10 20:40:09 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,7 +66,6 @@ void DefaultPlotDialog::setTask(CCopasiTask * t)
 void DefaultPlotDialog::slotSelect()
 {
   if (!mpTask) return;
-  //std::cout << listBox->currentItem() << std::endl;
 
   C_INT32 i = listBox->currentItem();
   mIndex = mList[i];

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.194 $
+//   $Revision: 1.195 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,6 @@ bool ReactionsWidget1::saveToReaction()
   if (!LineEdit2->isValid()) return false;
   LineEdit2->slotForceUpdate();
 
-  //std::cout << "SaveToReaction " << std::endl;
   if (!mpRi->isValid()) return false;
 
   //first check if new metabolites need to be created
@@ -338,8 +337,6 @@ void ReactionsWidget1::slotLineEditChanged()
   //first check if the string is a valid equation
   if (!CChemEqInterface::isValidEq(eq))
     {
-      //debugging
-      //std::cout << "Not a valid equation!\n\n";
       return;  // abort further processing
     }
 
@@ -536,7 +533,6 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
-  //std::cout << "FillWidget " << std::endl;
   LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
 
   LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
@@ -587,8 +583,6 @@ void ReactionsWidget1::FillWidgetFromRI()
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
-  //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
-
   // setValue
   if (mpRi->getUsage(index) == CFunctionParameter::PARAMETER)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPrintAsDialog.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/27 18:42:35 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,6 @@ void CQPrintAsDialog::openFileDialog()
       fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                  QString::null, "PNG Files (*.png);;SVG Files (*.svg);;", "Save to");
 
-      std::cout << "fileName: " << fileName << std::endl;
       if (fileName.isEmpty()) return;
       /*
           if (!fileName.endsWith(".txt") &&

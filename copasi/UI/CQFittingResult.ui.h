@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -343,7 +348,6 @@ void CQFittingResult::slotSave(void)
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
 
-      //std::cout << "fileName: " << fileName << std::endl;
       if (fileName.isEmpty()) return;
 
       if (!fileName.endsWith(".txt") &&

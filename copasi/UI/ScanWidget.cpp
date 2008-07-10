@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.203 $
+//   $Revision: 1.204 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 15:47:17 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -114,241 +119,8 @@ bool ScanWidget::runTask()
 
   if (!commonAfterRunTask()) success = false;
 
-  //   StateWidget *pResult = dynamic_cast< StateWidget * >(pListView->findWidgetFromId(211));
-  //   if (pResult) pResult->loadFromBackend();
-  //
-  //   if (success && isShown()) pListView->switchToOtherWidget(211, ""); //change to the results window
-
-  //TODO: is this necessary?
-  //scanTask->restore();
-
   return success;
 }
-
-// void ScanWidget::runScanTask()
-// {
-//   CScanTask* scanTask =
-//     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-//   if (!scanTask) return;
-//
-//   //******** this is from commonBeforeRunTask() ************
-//
-//   // save the state of the widget
-//   if (!saveScan()) //+++
-//     {
-//       CQMessageBox::critical(this, "Simulation Error",
-//                              CCopasiMessage::getAllMessageText().c_str(),
-//                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//       return ;//false;
-//}
-//
-//   if (!scanTask) return;// false; //+++
-//
-//   //set mouse cursor
-//   setCursor(Qt::WaitCursor);
-//
-//   //handle autosave feature
-//   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
-//   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
-//
-//   //create progress bar
-//   CProgressBar * tmpBar = new CProgressBar();
-//   scanTask->setCallBack(tmpBar);
-//
-//   CCopasiMessage::clearDeque();
-//   //return true;
-//
-//   //********** this is from commonRunTask() **************
-//
-//   bool success = true;
-//
-//   // Initialize the task
-//   try
-//     {
-//       if (!scanTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
-//         throw CCopasiException(CCopasiMessage::peekLastMessage());
-//}
-//
-//   catch (CCopasiException Exception)
-//     {
-//       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-//         {
-//           tmpBar->finish();
-//           CQMessageBox::critical(this, "Initialization Error",
-//                                  CCopasiMessage::getAllMessageText().c_str(),
-//                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//
-//           success = false;
-//           goto finish;
-//}
-//}
-//
-//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::ERROR)
-//     {
-//       tmpBar->finish();
-//       CQMessageBox::critical(this, "Initialization Error",
-//                              CCopasiMessage::getAllMessageText().c_str(),
-//                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//
-//       success = false;
-//       goto finish;
-//}
-//
-//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-//     {
-//       C_INT Result =
-//         CQMessageBox::question(this, "Initialization Warning",
-//                                CCopasiMessage::getAllMessageText().c_str(),
-//                                QMessageBox::Ignore | QMessageBox::Default,
-//                                QMessageBox::Abort | QMessageBox::Escape);
-//
-//       if (Result == QMessageBox::Abort)
-//         {
-//           success = false;
-//           goto finish;
-//}
-//}
-//
-//   CCopasiMessage::clearDeque();
-//
-//   // Execute the task
-//   try
-//     {
-//       if (!scanTask->process(true))
-//         throw CCopasiException(CCopasiMessage::peekLastMessage());
-//}
-//
-//   catch (CCopasiException Exception)
-//     {
-//       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-//         {
-//           tmpBar->finish();
-//           CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
-//                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//}
-//
-//       success = false;
-//       goto finish;
-//}
-//
-//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-//     {
-//       CQMessageBox::information(this, "Calculation Warning",
-//                                 CCopasiMessage::getAllMessageText().c_str(),
-//                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//}
-//
-// finish:
-//
-//   CCopasiMessage::clearDeque();
-//
-//   try {scanTask->restore();}
-//
-//   catch (CCopasiException Exception)
-//     {
-//       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-//         {
-//           tmpBar->finish();
-//           CQMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(),
-//                                  QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//           CCopasiMessage::clearDeque();
-//}
-//}
-//
-//   catch (...) {}
-//
-//   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-//     {
-//       C_INT Result =
-//         CQMessageBox::information(this, "Calculation Warning",
-//                                   CCopasiMessage::getAllMessageText().c_str(),
-//                                   QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-//}
-//
-//   CCopasiMessage::clearDeque();
-//
-//   //return success;
-//
-//   // this is from commonAfterRunTask()
-//
-//   if (!scanTask) return;// false;
-//
-//   if (tmpBar)
-//     {
-//       tmpBar->finish();
-//       pdelete(tmpBar);
-//}
-//   scanTask->setCallBack(NULL);
-//
-//   CCopasiMessage::clearDeque();
-//
-//   CCopasiDataModel::Global->finish();
-//   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
-//   unsetCursor();
-//   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
-//
-//   //return
-//   loadScan();
-//
-//
-//}
-
-#ifdef XXXX
-
-void ScanWidget::runScanTask()
-{
-  CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  if (!scanTask) return;
-
-  //((CScanProblem*)(scanTask->getProblem()))->createDebugScan(dataModel->getModel());
-
-  // save the state of the widget
-  saveScan();
-
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
-
-  scanTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-
-  setCursor(Qt::WaitCursor);
-  CProgressBar * tmpBar = new CProgressBar();
-  scanTask->setCallBack(tmpBar);
-
-  CCopasiTimeVariable time = CCopasiTimeVariable::getCurrentWallTime();
-
-  try
-    {
-      scanTask->process(true);
-    }
-  catch (CCopasiException Exception)
-    {
-      //std::cout << std::endl << "exception in scan task" << std::endl;
-      //TODO: message box
-    }
-
-  //std::cout << "*************** The scan took "
-  //<< (CCopasiTimeVariable::getCurrentWallTime() - time).isoFormat()
-  //<< " ***************" << std::endl;
-
-  //should be renamed?
-  scanTask->restore();
-
-  tmpBar->finish(); pdelete(tmpBar);
-  CCopasiDataModel::Global->finish();
-
-  CCopasiMessage::clearDeque();
-  CCopasiDataModel::Global->finish();
-  protectedNotify(ListViews::STATE, ListViews::CHANGE,
-                  CCopasiDataModel::Global->getModel()->getKey());
-
-  unsetCursor();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
-
-  return;
-}
-
-#endif
 
 bool ScanWidget::loadTask()
 {

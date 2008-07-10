@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 09:13:06 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,6 @@ bool CQOptimizationWidget::loadTask()
   // expression
   //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(pProblem->getObjectiveFunction());
   mpExpressionEMW->mpExpressionWidget->setExpression(pProblem->getObjectiveFunction());
-  std::cout << ">> " << pProblem->getObjectiveFunction() << std::endl;
   /*  if (pProblem->getObjectiveFunction().empty())
       {
         // empty

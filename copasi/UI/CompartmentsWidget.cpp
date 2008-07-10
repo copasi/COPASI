@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  //std::cout << " *** created Compartment: " << nname << " : " << pCom->getKey() << std::endl;
+
   return pCom;
 }
 

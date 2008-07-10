@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
+  $Revision: 1.7 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/07/10 20:40:09 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -135,7 +140,6 @@ void CScanContainerWidget::insertWidget(QWidget* widget, int row)
 
 void CScanContainerWidget::slotUp(int index)
 {
-  //std::cout << "***up*** " << index << std::endl;
   if (index <= 0) return; //do nothing
 
   swapCells(index, 1, index - 1, 1);
@@ -146,7 +150,6 @@ void CScanContainerWidget::slotUp(int index)
 
 void CScanContainerWidget::slotDown(int index)
 {
-  //std::cout << "***down*** " << index << std::endl;
   if (index >= numRows() - 1) return; //do nothing
 
   swapCells(index, 1, index + 1, 1);
@@ -157,7 +160,6 @@ void CScanContainerWidget::slotDown(int index)
 
 void CScanContainerWidget::slotDel(int index)
 {
-  //std::cout << "***del*** " << index << std::endl;
   removeRow(index);
   updateIndices();
 

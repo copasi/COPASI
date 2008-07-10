@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/06 12:02:39 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,6 @@
 
 void CQExpressionMmlWidget::slotGoExpressionWidget()
 {
-  std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = "
-  << mpExpressionWidget->text() << std::endl;
   mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
   /*  std::ostringstream mml;
     std::vector<std::vector<std::string> > params;
@@ -45,7 +43,6 @@ void CQExpressionMmlWidget::slotGoExpressionWidget()
 
 void CQExpressionMmlWidget::slotGoMmlWidget()
 {
-  std::cout << "CQEMW::slotGoMmlWidget()" << std::endl;
   mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
 }
 

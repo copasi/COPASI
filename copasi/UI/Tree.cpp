@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
+  $Revision: 1.6 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/07/10 20:40:09 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,7 +31,7 @@ IndexedNode::IndexedNode(int id, const QString & name, const std::string & key)
   mChildren.clear();
   mSortKey.setNum(id);
   mSortKey += "_" + name;
-  //std::cout << "    IndexedNode::Constructor " << mSortKey << std::endl;
+
   CONSTRUCTOR_TRACE;
 };
 
@@ -37,8 +42,6 @@ IndexedNode::IndexedNode(const IndexedNode & src):
     mName(src.mName),
     mObjectKey(src.mObjectKey)
 {
-  //std::cout << "     IndexedNode::CopyConstr " << mSortKey << std::endl;
-
   mChildren.clear();
   std::vector<IndexedNode*>::const_iterator it, itEnd = src.mChildren.end();
   for (it = src.mChildren.begin(); it != itEnd; ++it)
@@ -77,7 +80,6 @@ void IndexedNode::setName(const QString & name)
   mName = name;
   mSortKey.setNum(mId);
   mSortKey += "_" + name;
-  //std::cout << "     IndexedNode::setName " << mSortKey << std::endl;
 };
 
 const std::string & IndexedNode::getObjectKey() const {return mObjectKey;};
@@ -86,7 +88,6 @@ void IndexedNode::setObjectKey(const std::string & key) {mObjectKey = key;};
 
 const QString & IndexedNode::getSortKey() const
   {
-    //std::cout << "        IndexedNode::getSortKey " << mSortKey << std::endl;
     return mSortKey;
   };
 

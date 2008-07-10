@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -343,8 +343,6 @@ bool ParametersWidget::saveToModel()
 {
   if (listView->isRenaming())
     {
-      //std::cout << "renaming" << std::endl;
-
       //the following is a hack to force termination of an active editor
       QListViewItem* tmp = listView->currentItem();
       listView->setCurrentItem(listView->firstChild());
@@ -371,7 +369,6 @@ bool ParametersWidget::saveToModel()
   child = (CParameterListItem *)mMetabItem->firstChild();
   while (child)
     {
-      //std::cout << child->getObject()->getObjectName() << std::endl;
       if (child->isChanged())
         {
           changed = true;
@@ -395,7 +392,6 @@ bool ParametersWidget::saveToModel()
   child = (CParameterListItem *)mCompItem->firstChild();
   while (child)
     {
-      //std::cout << child->getObject()->getObjectName() << std::endl;
       if (child->isChanged())
         {
           changed = true;
@@ -413,7 +409,6 @@ bool ParametersWidget::saveToModel()
       child2 = (CParameterListItem *)child->firstChild();
       while (child2)
         {
-          //std::cout << child2->getObject()->getObjectName() << std::endl;
           if (child2->isChanged())
             {
               changed = true;
@@ -430,7 +425,6 @@ bool ParametersWidget::saveToModel()
   child = (CParameterListItem *)mParamItem->firstChild();
   while (child)
     {
-      //std::cout << child->getObject()->getObjectName() << std::endl;
       if (child->isChanged())
         {
           changed = true;

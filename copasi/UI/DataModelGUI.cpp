@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:05 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,9 +269,6 @@ void DataModelGUI::updatePlots()
 {
   IndexedNode * parent = mTree.findNodeFromId(42);
 
-  //if (parent.children().size())
-  // {std::cout << " updatePlots() " << parent.children()[0]->getSortKey() << std::endl;
-  //  std::cout << " updatePlots() " << parent.children()[0]->getName() << std::endl;}
   parent->removeChildren();
 
   //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;

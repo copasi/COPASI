@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/05/09 13:23:33 $
+//   $Author: shoops $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -411,12 +411,6 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       mpSelectionTable->adjustColumn(0);
       mpSelectionTable->adjustColumn(1);
 
-      //std::cout << "width: " << mpSelectionTable->width()<< " height: " <<mpSelectionTable->height() << std::endl;
-      //std::cout << "cwidth: " << mpSelectionTable->contentsWidth()<< " cheight: " <<mpSelectionTable->contentsHeight() << std::endl;
-      //std::cout << "minH: " << mpSelectionTable->minimumHeight() << " maxH: " << mpSelectionTable->maximumHeight() << std::endl;
-      //std::cout << "size hint: " << mpSelectionTable->sizeHint().height() << std::endl << std::endl;
-      //mpSelectionTable->resize(5, 5);
-
       fillTable(0, 1, index);
     }
   else
@@ -521,8 +515,6 @@ void CQArrayAnnotationsWidget::setCurrentItem(C_INT32 row, C_INT32 index)
 //slot
 void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
 {
-  //std::cout << row << " " << col << std::endl;
-
   if (col != 1) return;
 
   C_INT32 newValue = currentItem(row);

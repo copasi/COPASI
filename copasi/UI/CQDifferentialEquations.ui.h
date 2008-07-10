@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Date: 2008/07/10 20:40:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,7 +137,6 @@ void CQDifferentialEquations::slotUpdateWidget()
 
   mpMMLWidget->setContent(FROM_UTF8(mml.str()));
   mpScrollView->resizeContents(mpMMLWidget->sizeHint().width(), mpMMLWidget->sizeHint().height());
-  //std::cout << mml.str() << std::endl;
 
   if (tmp) tmp->unsetCursor();
 
