@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:58:57 $
+//   $Date: 2008/07/11 16:05:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1422,7 +1422,7 @@ void CODEExporter::modifyTreeForMassAction(CFunction* tmpfunc)
               CEvaluationNode* child1 = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
               CEvaluationNode* child2 = dynamic_cast<CEvaluationNode*>((treeIt->getChild())->getSibling());
 
-              CEvaluationNode* newNode;
+              CEvaluationNode* newNode = NULL;
               CEvaluationNode* newNode1 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR
                                           | CEvaluationNodeOperator::MULTIPLY), "*");
 

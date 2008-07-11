@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/07/11 16:05:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ class CCreator : public CCopasiContainer
     CRDFPredicate::Path mNodePath;
 
     /**
-     * The key of the object needed for the copasi tables.
+     * The key of the object needed for the COPASI tables.
      */
     std::string mKey;
 
@@ -68,7 +68,7 @@ class CCreator : public CCopasiContainer
 
     /**
      * Copy constructor
-     * @param "const CCreator &" src
+     * @param const CCreator & src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CCreator(const CCreator & src,

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/06/02 09:07:49 $
+//   $Author: shoops $
+//   $Date: 2008/07/11 16:05:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1575,7 +1575,7 @@ void CQGLNetworkPainter::triggerAnimationStep()
 
 CDataEntity* CQGLNetworkPainter::getDataSetAt(C_INT32 stepNumber)
 {
-  CDataEntity* pDataSet;
+  CDataEntity* pDataSet = NULL;
   if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < dataSets.size()))
     {
       std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
@@ -2301,7 +2301,7 @@ std::string CQGLNetworkPainter::getNameForNodeKey(std::string key)
 
 std::string CQGLNetworkPainter::getNodeNameEntry(int i)
 {
-  if (i < viewerNodes.size())
+  if (i < static_cast< int >(viewerNodes.size()))
     return viewerNodes[i];
   else
     return "";

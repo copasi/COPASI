@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/07/11 16:05:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,14 +81,14 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
 {
   bool success = true;
 
-  char * XML;  /* destination for string */
+  void * XML;     /* destination for string */
   size_t Length;  /* length of constructed string */
 
   initNamespaces(pGraph);
 
   raptor_uri * pURI = raptor_new_uri((const unsigned char *) "");
 
-  if (raptor_serialize_start_to_string(mpWriter, pURI, (void **) & XML, & Length))
+  if (raptor_serialize_start_to_string(mpWriter, pURI, & XML, & Length))
     fatalError();
 
   // We need to add all triplets
@@ -177,5 +177,5 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
   if (raptor_serialize_end(mpWriter))
     fatalError();
 
-  return XML;
+  return static_cast< char * >(XML);
 }

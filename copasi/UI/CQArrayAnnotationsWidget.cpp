@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -562,7 +562,7 @@ finish:
   //call fillTable()
   {
     CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
-    C_INT32 rowindex, colindex;
+    C_INT32 rowindex = 0, colindex = 0;
     C_INT32 i, imax = mpArray->dimensionality();
     for (i = 0; i < imax; ++i)
       {

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Date: 2008/07/11 16:05:17 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -180,7 +185,7 @@ void CIndexedPriorityQueue::updateAux(const C_INT32 pos)
     {
       C_INT32 left = leftChild(pos);
       C_INT32 right = rightChild(pos);
-      C_FLOAT64 min;
+      C_FLOAT64 min = 0.0;
       C_INT32 min_pos = 0;
       if (static_cast<unsigned int>(left) < mHeap.size())
         {

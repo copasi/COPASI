@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.47 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
+  $Revision: 1.48 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/07/11 16:05:18 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -141,7 +146,8 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
   std::string tmp = str;
   std::ostringstream xml;
 
-  void (*encode)(const char & chr, std::ostringstream & xml);
+  void (*encode)(const char & chr, std::ostringstream & xml) = encodeNONE;
+
   std::string::const_iterator it = str.begin();
   std::string::const_iterator end = str.end();
 

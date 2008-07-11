@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/02/04 19:21:01 $
+//   $Date: 2008/07/11 16:05:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,7 +213,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
     const std::map<std::string, std::string> & layoutmap)
 {
   //the corresponding CLTextGlyph should already exist. Let's find it...
-  CLTextGlyph * pTg;
+  CLTextGlyph * pTg = NULL;
   if (sbml.getId() != "")
     {
       std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getId());

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/15 17:51:25 $
+//   $Date: 2008/07/11 16:05:19 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -410,8 +415,9 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
 
 bool CExperiment::calculateStatistics()
 {
-  C_FLOAT64 * pTime;
-  C_FLOAT64 SavedTime;
+  C_FLOAT64 * pTime = NULL;
+  C_FLOAT64 SavedTime = 0.0;
+
   if (*mpTaskType == CCopasiTask::timeCourse)
     {
       pTime = const_cast<C_FLOAT64 *>(&CCopasiDataModel::Global->getModel()->getTime());

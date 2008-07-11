@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 16:30:55 $
+//   $Date: 2008/07/11 16:05:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,7 +198,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
                                           & MaxSteps);
 
   //setup trajectory
-  CTrajectoryProblem * pTrajectoryProblem;
+  CTrajectoryProblem * pTrajectoryProblem = NULL;
+
   if (mpTrajectory)
     {
       pTrajectoryProblem =

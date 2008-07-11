@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:54 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1580,12 +1580,12 @@ L15:
   //  C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
-  C_FLOAT64 beta;
+  C_FLOAT64 beta = 0.0;
   C_FLOAT64 qold, qnew;
   C_INT i__, k;
   C_FLOAT64 alpha, delta;
   C_INT first;
-  C_FLOAT64 rzold, qtest, pr;
+  C_FLOAT64 rzold = 0.0, qtest, pr;
   C_FLOAT64 rz;
   C_FLOAT64 rhsnrm, tol, vgv;
 
@@ -2176,9 +2176,9 @@ L20:
   C_INT i__1;
 
   /* Local variables */
-  C_FLOAT64 ghyk, ghyr, yksr;
+  C_FLOAT64 ghyk, ghyr, yksr = 0.0;
   C_INT i__;
-  C_FLOAT64 ykhyk, ykhyr, yrhyr, rdiagb;
+  C_FLOAT64 ykhyk = 0.0, ykhyr = 0.0, yrhyr = 0.0, rdiagb;
   C_FLOAT64 one, gsr;
 
   /* THIS ROUTINE ACTS AS A PRECONDITIONING STEP FOR THE */

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -144,15 +149,18 @@ bool SteadyStateWidget::loadTask()
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
-  assert(mSteadyStateTask);
+  if (mSteadyStateTask == NULL)
+    return false;
 
   CSteadyStateProblem* steadystateproblem =
     dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
-  assert(steadystateproblem);
+  if (steadystateproblem == NULL)
+    return false;
 
   CSteadyStateMethod* steadystatemethod =
     dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
-  assert(steadystatemethod);
+  if (steadystatemethod == NULL)
+    return false;
 
   bool bJacobian = steadystateproblem->isJacobianRequested();
   bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();
@@ -173,15 +181,18 @@ bool SteadyStateWidget::saveTask()
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
-  assert(mSteadyStateTask);
+  if (mSteadyStateTask == NULL)
+    return false;
 
   CSteadyStateProblem* steadystateproblem =
     dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
-  assert(steadystateproblem);
+  if (steadystateproblem == NULL)
+    return false;
 
   CSteadyStateMethod* steadystatemethod =
     dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
-  assert(steadystatemethod);
+  if (steadystatemethod == NULL)
+    return false;
 
   bool bJacobian = taskJacobian->isChecked();
   bool bStatistics = taskStability->isChecked();

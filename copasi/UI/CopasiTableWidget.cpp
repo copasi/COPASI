@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -489,7 +489,7 @@ void CopasiTableWidget::slotBtnClearClicked()
 void CopasiTableWidget::slotBtnDeleteClicked()
 {
   bool flagFirstFound = false;
-  bool flagNewDelState;
+  bool flagNewDelState = false;
 
   C_INT32 i, imax = table->numRows() - 1;
   for (i = 0; i < imax; i++)

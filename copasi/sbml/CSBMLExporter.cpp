@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 10:58:39 $
+//   $Author: shoops $
+//   $Date: 2008/07/11 16:05:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1469,8 +1469,6 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dat
   // check all metabolites,parameters and compartments
   // make sure the list of assignments and initial assignments is filled
   // before this function is called
-  const CModel* pModel = dataModel.getModel();
-  assert(pModel);
   unsigned int i, iMax = mAssignmentVector.size();
   const CModelEntity* pME = NULL;
   for (i = 0;i < iMax;++i)

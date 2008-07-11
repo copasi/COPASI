@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 15:47:17 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -236,7 +241,7 @@ void CQReportDefinition::btnUpClicked()
 void CQReportDefinition::btnDownClicked()
 {
   QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
-  unsigned C_INT32 i, imax, multipleSelection, before;
+  unsigned C_INT32 i, imax, multipleSelection, before = C_INVALID_INDEX;
 
   QListBoxItem * pMove;
 

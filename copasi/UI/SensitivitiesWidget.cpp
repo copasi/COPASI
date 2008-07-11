@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,15 +337,18 @@ bool SensitivitiesWidget::saveTask()
 
   CSensTask* sensTask =
     dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
-  assert(sensTask);
+  if (sensTask == NULL)
+    return false;
 
   CSensProblem* problem =
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
-  assert(problem);
+  if (problem == NULL)
+    return false;
 
   CSensMethod* method =
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
-  assert(method);
+  if (method == NULL)
+    return false;
 
   // subtask
   problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentItem());

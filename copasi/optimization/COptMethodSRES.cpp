@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:54 $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -193,7 +193,7 @@ bool COptMethodSRES::mutate()
 
           COptItem & OptItem = *(*mpOptItem)[j];
 
-          unsigned C_INT32 l;
+          unsigned C_INT32 l = C_INVALID_INDEX;
 
           try
             {

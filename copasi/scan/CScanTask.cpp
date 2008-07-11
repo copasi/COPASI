@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/13 10:31:22 $
+//   $Author: shoops $
+//   $Date: 2008/07/11 16:05:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,13 +81,7 @@ bool CScanTask::initialize(const OutputFlag & of,
 }
 
 void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
-{
-  CScanProblem* pProblem =
-    dynamic_cast<CScanProblem *>(mpProblem);
-  assert(pProblem);
-
-  //pProblem->load(configBuffer);
-}
+{}
 
 bool CScanTask::process(const bool & /* useInitialValues */)
 {

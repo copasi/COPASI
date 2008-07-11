@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/04/22 11:06:48 $
+//   $Author: shoops $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -412,8 +412,7 @@ void SliderDialog::fillSliderBox()
       unsigned int i, j, maxSliders, maxWidgets;
       maxWidgets = v.size();
       maxSliders = pVector->size();
-      SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
-      assert(pGUI);
+
       // add CopasiSlider for all CSliders that don't have one.
       bool issueWarning = false;
       for (i = 0; i < maxSliders;++i)

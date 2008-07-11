@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 06:00:43 $
+//   $Author: shoops $
+//   $Date: 2008/07/11 16:05:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -627,7 +627,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
     {
       changed = true;
 
-      COptItem * pItem;
+      COptItem * pItem = NULL;
 
       switch (mItemType)
         {
@@ -922,7 +922,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
   unsigned C_INT32 i, imax =
     static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->getExperimentCount();
 
-  CFitItem * pItem, * pTemplate;
+  CFitItem * pItem = NULL, * pTemplate = NULL;
 
   // We must not trigger slotSelectionChanged!
   disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));

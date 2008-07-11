@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:57 $
+//   $Date: 2008/07/11 16:05:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ class CBiologicalDescription : public CCopasiContainer
     CRDFTriplet mTriplet;
 
     /**
-     * The key of the object needed for the copasi tables.
+     * The key of the object needed for the COPASI tables.
      */
     std::string mKey;
 

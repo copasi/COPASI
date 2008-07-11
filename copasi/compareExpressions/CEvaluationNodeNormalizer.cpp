@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 13:28:06 $
+//   $Date: 2008/07/11 16:05:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -534,7 +534,8 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeVector(const
 
 CEvaluationNode* CEvaluationNodeNormalizer::normalizePowerNode(const CEvaluationNodeOperator* pNode)
 {
-  CEvaluationNode* pResult;
+  CEvaluationNode* pResult = NULL;
+
   if (pNode != NULL)
     {
       CEvaluationNode* pChild1 = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
