@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 20:29:12 $
+//   $Date: 2008/07/11 18:13:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -279,6 +284,14 @@ bool ModelWidget::saveToModel()
       pos = Richtext.find_last_not_of("\x0a\x0d\t ");
       if (pos < Richtext.length())
         Richtext = Richtext.substr(0, pos + 1);
+
+      // Fix <hr> to <hr /> to have proper xhtml.
+      pos = 0;
+      while ((pos = Richtext.find("<hr>", pos)) != std::string::npos)
+        {
+          pos += 3;
+          Richtext.insert(pos, " /");
+        }
 
       std::ostringstream xhtml;
 
