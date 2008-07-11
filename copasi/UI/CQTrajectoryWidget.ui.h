@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 18:51:35 $
+//   $Date: 2008/07/11 19:32:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,9 @@ void CQTrajectoryWidget::destroy()
 
 void CQTrajectoryWidget::slotDuration()
 {
+  if (!mpEditDuration->hasAcceptableInput())
+    return;
+
   try
     {
       mpTrajectoryProblem->setDuration(mpEditDuration->text().toDouble());
@@ -106,6 +109,9 @@ void CQTrajectoryWidget::slotDuration()
 
 void CQTrajectoryWidget::slotIntervalSize()
 {
+  if (!mpEditIntervalSize->hasAcceptableInput())
+    return;
+
   try
     {
       mpTrajectoryProblem->setStepSize(mpEditIntervalSize->text().toDouble());
@@ -131,6 +137,9 @@ void CQTrajectoryWidget::slotIntervalSize()
 
 void CQTrajectoryWidget::slotIntervals()
 {
+  if (!mpEditIntervals->hasAcceptableInput())
+    return;
+
   try
     {
       mpTrajectoryProblem->setStepNumber(mpEditIntervals->text().toULong());
@@ -171,18 +180,21 @@ bool CQTrajectoryWidget::saveTask()
   assert(trajectoryproblem);
 
   //numbers
-  if (trajectoryproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
+  if (mpEditIntervalSize->hasAcceptableInput() &&
+      trajectoryproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
     {
       trajectoryproblem->setStepSize(mpEditIntervalSize->text().toDouble());
       mChanged = true;
     }
-  else if (trajectoryproblem->getStepNumber() != mpEditIntervals->text().toULong())
+  else if (mpEditIntervals->hasAcceptableInput() &&
+           trajectoryproblem->getStepNumber() != mpEditIntervals->text().toULong())
     {
       trajectoryproblem->setStepNumber(mpEditIntervals->text().toLong());
       mChanged = true;
     }
 
-  if (trajectoryproblem->getDuration() != mpEditDuration->text().toDouble())
+  if (mpEditDuration->hasAcceptableInput() &&
+      trajectoryproblem->getDuration() != mpEditDuration->text().toDouble())
     {
       trajectoryproblem->setDuration(mpEditDuration->text().toDouble());
       mChanged = true;
@@ -192,7 +204,8 @@ bool CQTrajectoryWidget::saveTask()
 
   if (mpCheckDelay->isChecked())
     {
-      if (StartTime != trajectoryproblem->getOutputStartTime())
+      if (mpEditDelay->hasAcceptableInput() &&
+          StartTime != trajectoryproblem->getOutputStartTime())
         {
           trajectoryproblem->setOutputStartTime(StartTime);
           mChanged = true;
@@ -329,7 +342,12 @@ void CQTrajectoryWidget::updateIntervals()
   C_FLOAT64 OutputStartTime = InitialTime;
 
   if (mpCheckDelay->isChecked())
-    OutputStartTime = mpEditDelay->text().toDouble();
+    {
+      if (!mpEditIntervalSize->hasAcceptableInput())
+        return;
+
+      OutputStartTime = mpEditDelay->text().toDouble();
+    }
 
   mpEditIntegrationInterval->setText(QString::number(InitialTime) +
                                      " to " +
