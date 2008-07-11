@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/07/11 18:50:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,9 @@ bool CQMoietiesTaskWidget::runTask()
   bool success = commonRunTask();
 
   commonAfterRunTask();
+
+  if (success && isShown())
+    mpListView->switchToOtherWidget(2221, ""); //change to the results window
 
   return success;
 }
