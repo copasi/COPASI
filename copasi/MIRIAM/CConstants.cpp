@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/03 12:33:39 $
+//   $Date: 2008/07/11 21:11:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -558,6 +558,13 @@ CMIRIAMResource::CMIRIAMResource(CRDFNode * pNode):
     mId(),
     mpNode(pNode)
 {
+  if (!Initialized)
+    {
+      Initialized = true;
+      createDisplayNameMap();
+      createURIMap();
+    }
+
   if (mpNode != NULL)
     setURI(mpNode->getObject().getResource());
 }
