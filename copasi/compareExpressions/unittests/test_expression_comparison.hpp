@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.hpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 13:23:58 $
+//   $Date: 2008/07/14 18:13:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,14 +28,14 @@
 class test_expression_comparison : public CppUnit::TestFixture
   {
     CPPUNIT_TEST_SUITE(test_expression_comparison);
-    //CPPUNIT_TEST(test_fraction_to_a_power);
+    CPPUNIT_TEST(test_fraction_to_a_power);
     CPPUNIT_TEST(test_allosteric_inhibition);
-    //CPPUNIT_TEST(test_hyperbolic_modifier);
+    CPPUNIT_TEST(test_hyperbolic_modifier);
     //CPPUNIT_TEST(test_substrate_activation);
     //CPPUNIT_TEST(test_specific_activation_reversible);
     //CPPUNIT_TEST(test_ordered_bi_bi);
     //CPPUNIT_TEST(test_reversible_hill);
-    //CPPUNIT_TEST(test_reversible_hill_one_modifier);
+    CPPUNIT_TEST(test_reversible_hill_one_modifier);
     //CPPUNIT_TEST(test_reversible_hill_two_modifiers);
     CPPUNIT_TEST_SUITE_END();
 

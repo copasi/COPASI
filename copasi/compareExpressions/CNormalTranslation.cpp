@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/14 13:51:28 $
+//   $Date: 2008/07/14 18:13:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2505,15 +2505,16 @@ CEvaluationNode* CNormalTranslation::expandProducts(const CEvaluationNode* pOrig
         {
           if (pResult == NULL)
             {
-              pResult = multiplications[i]->copyBranch();
+              pResult = CNormalTranslation::expandProducts(multiplications[i]);
             }
           else
             {
-              pTmpResult = CNormalTranslation::multiply(pResult, multiplications[i]);
+              CEvaluationNode* pTmpNode = CNormalTranslation::expandProducts(multiplications[i]);
+              pTmpResult = CNormalTranslation::multiply(pResult, pTmpNode);
               delete pResult;
+              delete pTmpNode;
               pResult = pTmpResult;
             }
-          //delete multiplications[i];
         }
       if (!divisions.empty())
         {
@@ -2523,12 +2524,14 @@ CEvaluationNode* CNormalTranslation::expandProducts(const CEvaluationNode* pOrig
             {
               if (pDenominator == NULL)
                 {
-                  pDenominator = divisions[i]->copyBranch();
+                  pDenominator = CNormalTranslation::expandProducts(divisions[i]);
                 }
               else
                 {
-                  pTmpResult = CNormalTranslation::multiply(pDenominator, divisions[i]);
+                  CEvaluationNode* pTmpNode = CNormalTranslation::expandProducts(divisions[i]);
+                  pTmpResult = CNormalTranslation::multiply(pDenominator, pTmpNode);
                   delete pDenominator;
+                  delete pTmpNode;
                   pDenominator = pTmpResult;
                 }
               //delete divisions[i];
