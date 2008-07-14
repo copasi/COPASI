@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/08 18:10:21 $
+//   $Author: gauges $
+//   $Date: 2008/07/14 13:51:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -500,7 +500,7 @@ bool CNormalProduct::simplify()
   std::vector<CNormalItemPower*> tmpV;
   // create a unit CNormalItemPower with one unit CNormalGeneralPower
   // and an exponent of 1
-  CNormalGeneralPower* pGeneralPower = CNormalGeneralPower::createUnitGeneralPower();
+  CNormalGeneralPower* pGeneralPower = NULL; //CNormalGeneralPower::createUnitGeneralPower();
   while (it != endit)
     {
       if ((*it)->getExp() == 1.0 && (*it)->getItemType() == CNormalItemPower::POWER &&
@@ -509,8 +509,15 @@ bool CNormalProduct::simplify()
           dynamic_cast<CNormalGeneralPower*>(&(*it)->getItem())->getRight().checkIsOne()
 )
         {
-          pGeneralPower->multiply(*static_cast<CNormalGeneralPower*>(&(*it)->getItem()));
-          delete *it;
+          if (pGeneralPower)
+            {
+              pGeneralPower->multiply(*static_cast<CNormalGeneralPower*>(&(*it)->getItem()));
+              delete *it;
+            }
+          else
+            {
+              pGeneralPower = static_cast<CNormalGeneralPower*>(&(*it)->getItem());
+            }
         }
       else
         {
@@ -528,7 +535,7 @@ bool CNormalProduct::simplify()
         }
       ++ it;
     }
-  if (!pGeneralPower->checkIsOne())
+  if (pGeneralPower && !pGeneralPower->checkIsOne())
     {
       CNormalItemPower* pTmpItemPower = new CNormalItemPower();
       pTmpItemPower->setExp(1.0);

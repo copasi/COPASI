@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/03 14:01:56 $
+//   $Date: 2008/07/14 13:51:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,8 +196,8 @@ CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationNod
   CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(base0);
   assert(pFraction != NULL);
 
-  //if (pTmpNode->getInfix() != root0->getInfix())
-  if ((pFraction->getNumerator().getFractions().size() != 0) || (pFraction->getDenominator().getFractions().size() != 0))
+  if (pTmpNode->getInfix() != root0->getInfix())
+    //if ((pFraction->getNumerator().getFractions().size() != 0) || (pFraction->getDenominator().getFractions().size() != 0))
     {
       CNormalFraction * base1 = normAndSimplifyReptdly(pTmpNode);
       delete pTmpNode;
@@ -2062,21 +2062,40 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
           unsigned int i, iMax = additions.size();
           for (i = 0;i < iMax;++i)
             {
-              CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
-              pTmpNode->addChild(children[0]->copyBranch());
-              // don't copy additions element since this has been created in
-              // splitSum
-              pTmpNode->addChild(additions[i]);
+              CEvaluationNode* pTmpNode = NULL;
+              if (CEvaluationNode::type(additions[i]->getType()) == CEvaluationNode::NUMBER && fabs(static_cast<const CEvaluationNodeNumber*>(additions[i])->value() - 1.0)<1e-12)
+                {
+                  delete additions[i];
+                  pTmpNode = children[0]->copyBranch();
+                }
+              else
+                {
+                  pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+                  pTmpNode->addChild(children[0]->copyBranch());
+                  // don't copy additions element since this has been created in
+                  // splitSum
+                  pTmpNode->addChild(additions[i]);
+                  additions[i] = pTmpNode;
+                }
               additions[i] = pTmpNode;
             }
           iMax = subtractions.size();
           for (i = 0;i < iMax;++i)
             {
-              CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
-              pTmpNode->addChild(children[0]->copyBranch());
-              // don't copy subtractions element since this has been created in
-              // splitSum
-              pTmpNode->addChild(subtractions[i]);
+              CEvaluationNode* pTmpNode = NULL;
+              if (CEvaluationNode::type(subtractions[i]->getType()) == CEvaluationNode::NUMBER && fabs(static_cast<const CEvaluationNodeNumber*>(subtractions[i])->value() - 1.0)<1e-12)
+                {
+                  pTmpNode = children[0]->copyBranch();
+                  delete subtractions[i];
+                }
+              else
+                {
+                  pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+                  pTmpNode->addChild(children[0]->copyBranch());
+                  // don't copy subtractions element since this has been created in
+                  // splitSum
+                  pTmpNode->addChild(subtractions[i]);
+                }
               subtractions[i] = pTmpNode;
             }
           pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", additions);
@@ -2473,25 +2492,75 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
 CEvaluationNode* CNormalTranslation::expandProducts(const CEvaluationNode* pOrig)
 {
   CEvaluationNode* pResult = NULL;
-  std::vector<CEvaluationNode*> children;
-  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
-  while (pChild != NULL)
+  // we have to create operation chains and do the mutliplication
+  // on the numerator and the denominator chain if the node is a multiplication
+  // or a division
+  if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()) == CEvaluationNodeOperator::MULTIPLY || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()) == CEvaluationNodeOperator::DIVIDE))
     {
-      children.push_back(CNormalTranslation::expandProducts(pChild));
-      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+      std::vector<const CEvaluationNode*> multiplications, divisions;
+      CNormalTranslation::splitProduct(pOrig, multiplications, divisions, false);
+      unsigned int i, iMax = multiplications.size();
+      CEvaluationNode* pTmpResult;
+      for (i = 0;i < iMax;++i)
+        {
+          if (pResult == NULL)
+            {
+              pResult = multiplications[i]->copyBranch();
+            }
+          else
+            {
+              pTmpResult = CNormalTranslation::multiply(pResult, multiplications[i]);
+              delete pResult;
+              pResult = pTmpResult;
+            }
+          //delete multiplications[i];
+        }
+      if (!divisions.empty())
+        {
+          CEvaluationNode* pDenominator = NULL;
+          iMax = divisions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              if (pDenominator == NULL)
+                {
+                  pDenominator = divisions[i]->copyBranch();
+                }
+              else
+                {
+                  pTmpResult = CNormalTranslation::multiply(pDenominator, divisions[i]);
+                  delete pDenominator;
+                  pDenominator = pTmpResult;
+                }
+              //delete divisions[i];
+            }
+          pTmpResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          pTmpResult->addChild(pResult);
+          pTmpResult->addChild(pDenominator);
+          pResult = pTmpResult;
+        }
     }
-  if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR &&
-      ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType())) == CEvaluationNodeOperator::MULTIPLY)
+  else
     {
-      assert(children.size() == 2);
-      pResult = CNormalTranslation::multiply(children[0], children[1]);
-      // delete the children
-      delete children[0];
-      delete children[1];
-    }
-  if (pResult == NULL)
-    {
-      pResult = pOrig->copyNode(children);
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
+      std::vector<CEvaluationNode*> children;
+      while (pChild != NULL)
+        {
+          children.push_back(CNormalTranslation::expandProducts(pChild));
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR &&
+          ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType())) == CEvaluationNodeOperator::MULTIPLY)
+        {
+          assert(children.size() == 2);
+          pResult = CNormalTranslation::multiply(children[0], children[1]);
+          // delete the children
+          delete children[0];
+          delete children[1];
+        }
+      if (pResult == NULL)
+        {
+          pResult = pOrig->copyNode(children);
+        }
     }
   return pResult;
 }
@@ -2713,14 +2782,14 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           for (i = 0;i < iMax;++i)
             {
               CEvaluationNode* pChild = CNormalTranslation::cancel(multiplications[i]);
-              delete multiplications[i];
+              //delete multiplications[i];
               multiplications[i] = pChild;
             }
           iMax = divisions.size();
           for (i = 0;i < iMax;++i)
             {
               CEvaluationNode* pChild = CNormalTranslation::cancel(divisions[i]);
-              delete divisions[i];
+              //delete divisions[i];
               divisions[i] = pChild;
             }
           // find identical nodes in multiplications and divisions

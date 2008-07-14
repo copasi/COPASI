@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/08 16:30:02 $
+//   $Date: 2008/07/14 13:51:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -572,6 +572,7 @@ bool CNormalSum::simplify()
                 {
                   // the denominator is the left side of pDenom
                   pFraction = new CNormalFraction(pDenom->getLeft());
+                  //
                   //pFraction = new CNormalFraction(pDenom->getLeft());
                   //// now we set the numerator
                   //CNormalSum* pSum = new CNormalSum();
@@ -619,6 +620,7 @@ bool CNormalSum::simplify()
   const CNormalFraction* pFrac = NULL;
   const CNormalSum* pSum = NULL;
   const CNormalProduct* pProd = NULL;
+  std::set<CNormalSum*> multipliers;
   while (it2 != endit2)
     {
       pProd = dynamic_cast<const CNormalProduct*>(*it2);
@@ -639,6 +641,45 @@ bool CNormalSum::simplify()
               if (pSum != NULL)
                 {
                   this->add(*pSum);
+                  /*
+                  // check if the sum contains more then one product
+                  // we have to multiply the sum with that other sum in the end
+                  if(pSum->getProducts().size()>1)
+                  {
+                    multipliers.insert(static_cast<CNormalSum*>(pSum->copy()));
+                  }
+                  else
+                  {
+                    if(pSum->getProducts().size()==1 && (*pSum->getProducts().begin())->getItemPowers.size()==1)
+                    {
+                        // check if the one item power is a general power with
+                        // an exponent of one and a denominator of one.
+                        const CNormalItemPower* pPower=(*(*pSum->getProducts().begin())->getItemPowers().begin());
+                        if(fabs(pPow->getExp()-1.0/1.0)<1e-12 && pPower->getItemType()==CNormalItemPower::POWER)
+                        {
+                            // check if it is a power operator and not modulo,
+                            // check if the exponent is one and the denominator
+                            // is one
+                            const CNormalGeneralPower* pGenPow=static_cast<const CNormalGeneralPower*>(pPower->getItem());
+                            if(pGenPow->getType()==CNormalGeneralPower::POWER && pGenPower->getRight().checkIsOne() && pGenPower->getLeft().checkDenominatorOne())
+                            {
+                                // check if there are more then one product in
+                            }
+                            else
+                            {
+                                this->add(*pSum);
+                            }
+                        }
+                        else
+                        {
+                            this->add(*pSum);
+                        }
+                    }
+                    else
+                    {
+                      this->add(*pSum);
+                    }
+                  }*/
                 }
               else
                 {
@@ -649,6 +690,13 @@ bool CNormalSum::simplify()
         }
       delete *it2;
       ++it2;
+    }
+  std::set<CNormalSum*>::iterator it4 = multipliers.begin(), endit4 = multipliers.end();
+  while (it4 != endit4)
+    {
+      this->multiply(**it4);
+      delete *it4;
+      ++it4;
     }
   return result;
 }

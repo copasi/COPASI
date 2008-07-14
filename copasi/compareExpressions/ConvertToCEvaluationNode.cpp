@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/20 13:41:17 $
+//   $Date: 2008/07/14 13:51:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,7 +121,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalItem& item)
 CEvaluationNode* convertToCEvaluationNode(const CNormalItemPower& itemPower)
 {
   CEvaluationNode* pResult = NULL;
-  if (itemPower.getExp() == 1.0)
+  if (fabs(itemPower.getExp() - 1.0) < 1e-12)
     {
       pResult = convertToCEvaluationNode(itemPower.getItem());
     }
@@ -1071,10 +1071,18 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalGeneralPower& pow)
     }
   if (pResult != NULL)
     {
-      CEvaluationNode* pChild = convertToCEvaluationNode(pow.getLeft());
-      pResult->addChild(pChild);
-      pChild = convertToCEvaluationNode(pow.getRight());
-      pResult->addChild(pChild);
+      if (pow.getRight().checkIsOne())
+        {
+          delete pResult;
+          pResult = convertToCEvaluationNode(pow.getLeft());
+        }
+      else
+        {
+          CEvaluationNode* pChild = convertToCEvaluationNode(pow.getLeft());
+          pResult->addChild(pChild);
+          pChild = convertToCEvaluationNode(pow.getRight());
+          pResult->addChild(pChild);
+        }
     }
   return pResult;
 }
