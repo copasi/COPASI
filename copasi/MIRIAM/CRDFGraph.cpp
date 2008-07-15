@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.36.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 11:03:52 $
+//   $Author: shoops $
+//   $Date: 2008/07/15 22:04:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -471,7 +471,7 @@ bool CRDFGraph::removeEmptyNodes()
                                         itTriplet->pObject);
     }
 
-  return ToBeRemoved.size();
+  return ToBeRemoved.size() > 0;
 }
 
 void CRDFGraph::updateNamespaces()
