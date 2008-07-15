@@ -14,6 +14,8 @@ if [ x"$#" = x1 ]; then
 
   license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} $0 ~ "USE_LICENSE=COM" {license = "COM"} END {print license} ' copasi/Makefile`
 
+  rm Copasi-$build-$1*.*
+
   case x"$1" in 
   xWIN32)
     productcode=${build}{$minor}${major}32DDC6BEE41C
