@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/14 13:51:28 $
+//   $Date: 2008/07/15 15:27:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -454,7 +454,7 @@ bool CNormalProduct::operator<(const CNormalProduct& rhs) const
                   {
                     result = true;
                   }
-                if ((**it) == (**it2))
+                if (comp(*it2, *it))
                   {
                     break;
                   }
