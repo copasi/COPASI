@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 18:51:16 $
+//   $Date: 2008/07/16 12:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,19 @@ class CNormalTranslation
      * all the nodes. The chain contains the original nodes and not copies.
      */
     static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes);
+
+    /**
+     * Given a vector of nodes, this method creates a multiplication chain of
+     * all the nodes. The chain contains the original nodes and not copies.
+     */
+    static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes);
+
+    /**
+     * Given a root node, this method traverses the tree and expands produtcs in
+     * power bases to multiplications of power items.
+     * It is the responsibility of the caller to delete the returned node.
+     */
+    static CEvaluationNode* expandPowerBases(const CEvaluationNode* pRoot);
 
     /**
      * Given a root node, this method traverses the tree and expands sums in
@@ -207,6 +220,17 @@ class CNormalTranslation
      * This methods converts a product of fractions into a fraction of products.
      */
     static CEvaluationNode* product2fraction(const CEvaluationNode* pOrig);
+
+    /**
+     * This method takes two vectors. One with a list of nodes that are added
+     * and one with nodes that are subtracted.
+     * It tries to find common factors and divisors in those nodes and returns
+     * two result nodes. The first is the multiplication of all common factors and
+     * divisors, the other is the sum of the remaining additions and subtractions after
+     * removing the common factors and divisors.
+     * e.g. (A*B*D+A*C*D) -> returns (A*D) and (B+C)
+     */
+    static std::pair<CEvaluationNode*, CEvaluationNode*> factorize(const std::vector<CEvaluationNode*>& additions, const std::vector<CEvaluationNode*>& subtractions);
   };
 
 #endif // COPASI_CNormalTranslation_H__

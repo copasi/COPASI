@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/14 18:13:06 $
+//   $Date: 2008/07/16 12:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,7 +296,7 @@ CEvaluationNode* CNormalTranslation::expandPowerExponents(const CEvaluationNode*
   return pResult;
 }
 
-CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes)
+CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes)
 {
   CEvaluationNode* pResult = NULL;
   if (nodes.size() == 0)
@@ -310,7 +310,7 @@ CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator
   else
     {
       // start from the back to create the deepest nodes first
-      std::vector<CEvaluationNode*>::const_reverse_iterator it = nodes.rbegin(), endit = nodes.rend();
+      std::vector<const CEvaluationNode*>::const_reverse_iterator it = nodes.rbegin(), endit = nodes.rend();
       CEvaluationNode* pOperator = new CEvaluationNodeOperator(type, data);
       CEvaluationNode* pChild2 = (*it)->copyBranch();
       ++it;
@@ -482,17 +482,21 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
       // this method combines identical multiplicants and summands
       pResult = CNormalTranslation::cancel(pTmp);
       delete pTmp;
+      // now expand products in bases to power operators
+      pTmp = CNormalTranslation::expandPowerBases(pResult);
+      delete pResult;
       // now expand the exponents in the power nodes and multiply products
       // expansions can lead to new cancelations being possible so we might
       // need to rerun the whole loop
-      pTmp = CNormalTranslation::expandPowerNodes(pResult);
-      delete pResult;
-      pResult = CNormalTranslation::expandProducts(pTmp);
+      pResult = CNormalTranslation::expandPowerNodes(pTmp);
       delete pTmp;
+      pTmp = CNormalTranslation::expandProducts(pResult);
+      delete pResult;
       // check if we are done
       // we are done, once the infix has not changed during one loop run
       //base = createNormalRepresentation(pResult);
       //assert(base != NULL);
+      pResult = pTmp;
       if (/*base->toString()*/pResult->getInfix() == infix)
         {
           finished = true;
@@ -3141,4 +3145,363 @@ CEvaluationNode* CNormalTranslation::product2fraction(const CEvaluationNode* pOr
       pResult = pOrig->copyNode(children);
     }
   return pResult;
+}
+
+/**
+ * Given a root node, this method traverses the tree and expands produtcs in
+ * power bases to multiplications of power items.
+ * It is the responsibility of the caller to delete the returned node.
+ */
+CEvaluationNode* CNormalTranslation::expandPowerBases(const CEvaluationNode* pRoot)
+{
+  CEvaluationNode* pResult = NULL;
+  CEvaluationNode::Type type = pRoot->getType();
+  if (CEvaluationNode::type(type) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::POWER)
+    {
+      const CEvaluationNode* pBase = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
+      const CEvaluationNode* pExp = dynamic_cast<const CEvaluationNode*>(pBase->getSibling());
+      type = pBase->getType();
+      if (CEvaluationNode::type(type) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::MULTIPLY || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::DIVIDE))
+        {
+          std::vector<const CEvaluationNode*> multiplications, divisions;
+          std::vector<CEvaluationNode*> numeratorNodes, denominatorNodes;
+          CNormalTranslation::splitProduct(pBase, multiplications, divisions, false);
+          std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
+          CEvaluationNode* pPower = NULL;
+          while (it != endit)
+            {
+              pPower = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+              pPower->addChild(CNormalTranslation::expandPowerBases(*it));
+              pPower->addChild(pExp->copyBranch());
+              numeratorNodes.push_back(pPower);
+              ++it;
+            }
+          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", numeratorNodes);
+          std::vector<CEvaluationNode*>::iterator vit = numeratorNodes.begin(), vendit = numeratorNodes.end();
+          while (vit != vendit)
+            {
+              delete (*vit);
+              ++vit;
+            }
+          if (!divisions.empty())
+            {
+              it = divisions.begin(), endit = divisions.end();
+              while (it != endit)
+                {
+                  pPower = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+                  pPower->addChild(CNormalTranslation::expandPowerBases(*it));
+                  pPower->addChild(pExp->copyBranch());
+                  denominatorNodes.push_back(pPower);
+                  ++it;
+                }
+              CEvaluationNode* pTmpResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              pTmpResult->addChild(pResult);
+              pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", denominatorNodes);
+              pTmpResult->addChild(pResult);
+              pResult = pTmpResult;
+              vit = denominatorNodes.begin(), vendit = denominatorNodes.end();
+              while (vit != vendit)
+                {
+                  delete (*vit);
+                  ++vit;
+                }
+            }
+        }
+      else if (CEvaluationNode::type(type) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::PLUS || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::MINUS))
+        {
+          std::vector<CEvaluationNode*> additions, subtractions;
+          CNormalTranslation::splitSum(pBase, additions, subtractions, false);
+          std::pair<CEvaluationNode*, CEvaluationNode*> resultPair = CNormalTranslation::factorize(additions, subtractions);
+          if (resultPair.first != NULL)
+            {
+              pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+              CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+              pTmpNode->addChild(resultPair.first);
+              pTmpNode->addChild(pExp->copyBranch());
+              pResult->addChild(pTmpNode);
+              pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+              pTmpNode->addChild(resultPair.second);
+              pTmpNode->addChild(pExp->copyBranch());
+              pResult->addChild(pTmpNode);
+            }
+          else
+            {
+              // there are no common factors
+              std::vector<CEvaluationNode*> children;
+              const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
+              while (pChild != NULL)
+                {
+                  children.push_back(CNormalTranslation::expandPowerBases(pChild));
+                  pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+                }
+              pResult = pRoot->copyNode(children);
+            }
+        }
+      else
+        {
+          std::vector<CEvaluationNode*> children;
+          const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
+          while (pChild != NULL)
+            {
+              children.push_back(CNormalTranslation::expandPowerBases(pChild));
+              pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+            }
+          pResult = pRoot->copyNode(children);
+        }
+    }
+  else
+    {
+      std::vector<CEvaluationNode*> children;
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
+      while (pChild != NULL)
+        {
+          children.push_back(CNormalTranslation::expandPowerBases(pChild));
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+      pResult = pRoot->copyNode(children);
+    }
+  return pResult;
+}
+
+/**
+ * This method takes two vectors and checks if the elements in the two vectors
+ * can be split into multiplications and divisions and if there a common factors in all resulting subgroups.
+ */
+std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(const std::vector<CEvaluationNode*>& additions, const std::vector<CEvaluationNode*>& subtractions)
+{
+  std::vector<const CEvaluationNode*> commonMultiplications;
+  std::vector<const CEvaluationNode*> commonDivisions;
+  // additions must have at least one entry
+  assert(additions.size() > 0);
+  // get all multipllications and divisions from the first entry in additions
+  std::vector<const CEvaluationNode*> multiplications, divisions;
+  unsigned int i, iMax = additions.size();
+  unsigned int iiMax = iMax + subtractions.size();
+  std::vector<std::vector<const CEvaluationNode*> > multiplicationVectors, divisionVectors;
+  for (i = 0;i < iiMax;++i)
+    {
+      const CEvaluationNode* pTmpNode = (i < iMax) ? additions[i] : subtractions[i - iMax];
+      CEvaluationNode::Type type = pTmpNode->getType();
+      if (CEvaluationNode::type(type) == CEvaluationNode::OPERATOR)
+        {
+          CEvaluationNodeOperator::SubType subType = (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type);
+          if (subType == CEvaluationNodeOperator::MULTIPLY || subType == CEvaluationNodeOperator::DIVIDE)
+            {
+              CNormalTranslation::splitProduct(pTmpNode, multiplications, divisions, false);
+            }
+          else
+            {
+              multiplications.push_back(pTmpNode);
+            }
+        }
+      else
+        {
+          multiplications.push_back(pTmpNode);
+        }
+      multiplicationVectors.push_back(multiplications);
+      divisionVectors.push_back(divisions);
+      multiplications.clear();
+      divisions.clear();
+    }
+  // now we first search for common multiplications
+  multiplications = multiplicationVectors[0];
+  std::vector<const CEvaluationNode*>::const_iterator it = multiplications.begin(), endit = multiplications.end();
+  while (it != endit)
+    {
+      bool everywhere = true;
+      std::vector<std::vector<const CEvaluationNode*> >::iterator innerIt = multiplicationVectors.begin(), innerEndit = multiplicationVectors.end();
+      // we can leav out the first one since the item comes from there anyway,
+      // so we know it is in that vector
+      std::string infix = (*it)->getInfix();
+      ++innerIt;
+      while (innerIt != innerEndit)
+        {
+          bool found = false;
+          std::vector<const CEvaluationNode*>::iterator innerIt2 = (*innerIt).begin(), innerEndit2 = (*innerIt).end();
+          while (innerIt2 != innerEndit2)
+            {
+              if ((*innerIt2)->getInfix() == infix)
+                {
+                  found = true;
+                  break;
+                }
+              ++innerIt2;
+            }
+          if (!found)
+            {
+              everywhere = false;
+              break;
+            }
+          ++innerIt;
+        }
+      // if the item was found as a factor in all other additions and
+      // subtractions, we know it is a common factor, we add it to the
+      // commonFactors and update the additions and subtractions
+      if (everywhere)
+        {
+          commonMultiplications.push_back(*it);
+          std::vector<std::vector<const CEvaluationNode*> >::iterator innerIt = multiplicationVectors.begin();
+          std::vector<std::vector<const CEvaluationNode*> >::iterator innerEndit = multiplicationVectors.end();
+          while (innerIt != innerEndit)
+            {
+              std::vector<const CEvaluationNode*>::iterator innerIt2 = (*innerIt).begin();
+              std::vector<const CEvaluationNode*>::iterator innerEndit2 = (*innerIt).end();
+              while (innerIt2 != innerEndit2)
+                {
+                  if ((*innerIt2)->getInfix() == infix)
+                    {
+                      innerIt->erase(innerIt2);
+                      break;
+                    }
+                  ++innerIt2;
+                }
+              ++innerIt;
+            }
+        }
+      ++it;
+    }
+  // now we search for common divisions
+  divisions = divisionVectors[0];
+  if (!divisions.empty())
+    {
+      it = divisions.begin(), endit = divisions.end();
+      while (it != endit)
+        {
+          bool everywhere = true;
+          std::vector<std::vector<const CEvaluationNode*> >::iterator innerIt = divisionVectors.begin(), innerEndit = divisionVectors.end();
+          // we can leav out the first one since the item comes from there anyway,
+          // so we know it is in that vector
+          std::string infix = (*it)->getInfix();
+          ++innerIt;
+          while (innerIt != innerEndit)
+            {
+              bool found = false;
+              std::vector<const CEvaluationNode*>::iterator innerIt2 = (*innerIt).begin(), innerEndit2 = (*innerIt).end();
+              while (innerIt2 != innerEndit2)
+                {
+                  if ((*innerIt2)->getInfix() == infix)
+                    {
+                      found = true;
+                      break;
+                    }
+                  ++innerIt2;
+                }
+              if (!found)
+                {
+                  everywhere = false;
+                  break;
+                }
+              ++innerIt;
+            }
+          // if the item was found as a factor in all other additions and
+          // subtractions, we know it is a common factor, we add it to the
+          // commonFactors and update the additions and subtractions
+          if (everywhere)
+            {
+              commonDivisions.push_back(*it);
+              innerIt = divisionVectors.begin();
+              innerEndit = divisionVectors.end();
+              while (innerIt != innerEndit)
+                {
+                  std::vector<const CEvaluationNode*>::iterator innerIt2 = (*innerIt).begin();
+                  std::vector<const CEvaluationNode*>::iterator innerEndit2 = (*innerIt).end();
+                  while (innerIt2 != innerEndit2)
+                    {
+                      if ((*innerIt2)->getInfix() == infix)
+                        {
+                          innerIt->erase(innerIt2);
+                          break;
+                        }
+                      ++innerIt2;
+                    }
+                  ++innerIt;
+                }
+            }
+          ++it;
+        }
+    }
+  // create the two resulting nodes
+  // first we have to create new additions and subtraction vectors which we
+  // then combine into a subtraction
+  // then we combine all commonMultiplications and commonDivisions into a
+  // division
+  // those two nodes are then returned in a pair
+  CEvaluationNode* pFirstNode = NULL;
+  CEvaluationNode* pSecondNode = NULL;
+  if (!(commonMultiplications.empty() && commonDivisions.empty()))
+    {
+      unsigned int i, iMax = additions.size();
+      unsigned int iiMax = iMax + subtractions.size();
+      std::vector<CEvaluationNode*> newAdditions, newSubtractions;
+      for (i = 0;i < iiMax;++i)
+        {
+          // since the createOperatorChain automatically returns 1 as the result
+          // if an empty vector is given, we don't have to worry about havinf
+          // removed all items from the vectors above.
+          CEvaluationNode* pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", multiplicationVectors[i]);
+          if (!divisionVectors[i].empty())
+            {
+              CEvaluationNode* pTmpNode2 = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+              pTmpNode2->addChild(pTmpNode);
+              pTmpNode2->addChild(CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", divisionVectors[i]));
+              pTmpNode = pTmpNode2;
+            }
+          if (i < iMax)
+            {
+              newAdditions.push_back(pTmpNode);
+            }
+          else
+            {
+              newSubtractions.push_back(pTmpNode);
+            }
+        }
+      pSecondNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", newAdditions);
+      // delete the newAdditions
+      std::vector<CEvaluationNode*>::iterator it = newAdditions.begin(), endit = newAdditions.end();
+      while (it != endit)
+        {
+          delete *it;
+          ++it;
+        }
+      if (!newSubtractions.empty())
+        {
+          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+          pTmpNode->addChild(pSecondNode);
+          pTmpNode->addChild(CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", newSubtractions));
+          pSecondNode = pTmpNode;
+          // delete the new subtractions
+          it = newAdditions.begin();
+          endit = newAdditions.end();
+          while (it != endit)
+            {
+              delete *it;
+              ++it;
+            }
+        }
+      pFirstNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", commonMultiplications);
+      if (!commonDivisions.empty())
+        {
+          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          pTmpNode->addChild(pFirstNode);
+          pTmpNode->addChild(CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", commonDivisions));
+          pFirstNode = pTmpNode;
+        }
+    }
+  return std::pair<CEvaluationNode*, CEvaluationNode*>(pFirstNode, pSecondNode);
+}
+
+/**
+ * Given a vector of nodes, this method creates a multiplication chain of
+ * all the nodes. The chain contains the original nodes and not copies.
+ */
+CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes)
+{
+  std::vector<const CEvaluationNode*> tmpV;
+  std::vector<CEvaluationNode*>::iterator it = nodes.begin(), endit = nodes.end();
+  while (it != endit)
+    {
+      tmpV.push_back(*it);
+      ++it;
+    }
+  return CNormalTranslation::createOperatorChain(type, data, tmpV);
 }
