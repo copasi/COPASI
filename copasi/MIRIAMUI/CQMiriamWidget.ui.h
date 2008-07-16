@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/07/16 13:16:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,8 @@ bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action 
   bool success = true;
   mpMIRIAMInfo->load(key);
 
-  mpDTCreated->setDateTime(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate));
+  if (mpMIRIAMInfo->getCreatedDT() != "")
+    mpDTCreated->setDateTime(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate));
 
   std::vector< CopasiTableWidget * >::const_iterator it = mWidgets.begin();
   std::vector< CopasiTableWidget * >::const_iterator end = mWidgets.end();
@@ -176,7 +177,10 @@ bool CQMiriamWidget::enter(const std::string & key)
   bool success = true;
   mpMIRIAMInfo->load(key);
 
-  QDateTime DTCreated = QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate);
+  QDateTime DTCreated;
+  if (mpMIRIAMInfo->getCreatedDT() != "")
+    DTCreated = QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate);
+
   if (DTCreated.isValid())
     mpDTCreated->setDateTime(DTCreated);
   else
