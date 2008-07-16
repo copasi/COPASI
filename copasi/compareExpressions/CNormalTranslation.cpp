@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/16 13:04:53 $
+//   $Date: 2008/07/16 13:09:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3503,7 +3503,7 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
 CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes)
 {
   std::vector<const CEvaluationNode*> tmpV;
-  std::vector<CEvaluationNode*>::iterator it = nodes.begin(), endit = nodes.end();
+  std::vector<CEvaluationNode*>::const_iterator it = nodes.begin(), endit = nodes.end();
   while (it != endit)
     {
       tmpV.push_back(*it);
