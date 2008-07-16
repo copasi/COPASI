@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/16 12:14:24 $
+//   $Date: 2008/07/16 13:04:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@
 #include "function/CEvaluationNodeConstant.h"
 
 const double CNormalTranslation::ZERO = 1e-100;
+const unsigned int CNormalTranslation::RECURSION_LIMIT = 20;
 
 /**
  * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
@@ -140,8 +141,9 @@ CNormalFraction* CNormalTranslation::normAndSimplify(const CEvaluationNode* root
  * Translate and simplify a tree by calling normAndSimplify repeatedly until it cannot be simplified further
  * @return CNormalFraction*
  */
-CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationTree* tree0)
+CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationTree* tree0, unsigned int depth)
 {
+  if (depth > RECURSION_LIMIT) throw;
   //std::cout << "<p>normAndSimplifyReptdly called.</p>" << std::endl;
   const CEvaluationNode* root0 = tree0->getRoot();
 
@@ -160,7 +162,7 @@ CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationTre
   //std::cout << "</math></p>" << std::endl;
   if (tree1->getInfix() != tree0->getInfix())
     {
-      CNormalFraction * base1 = normAndSimplifyReptdly(tree1);
+      CNormalFraction * base1 = normAndSimplifyReptdly(tree1, ++depth);
       delete tree1;
       delete base0;
       return base1;
@@ -176,8 +178,9 @@ CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationTre
  * Translate and simplify a tree by calling normAndSimplify repeatedly until it cannot be simplified further
  * @return CNormalFraction*
  */
-CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationNode* root0)
+CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationNode* root0, unsigned int depth)
 {
+  if (depth > RECURSION_LIMIT) throw;
   //std::cout << "<p>normAndSimplifyReptdly called.</p>" << std::endl;
   //const CEvaluationNode* root0=tree0->getRoot();
   CNormalFraction * base0 = normAndSimplify(root0);
@@ -199,7 +202,7 @@ CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationNod
   if (pTmpNode->getInfix() != root0->getInfix())
     //if ((pFraction->getNumerator().getFractions().size() != 0) || (pFraction->getDenominator().getFractions().size() != 0))
     {
-      CNormalFraction * base1 = normAndSimplifyReptdly(pTmpNode);
+      CNormalFraction * base1 = normAndSimplifyReptdly(pTmpNode, ++depth);
       delete pTmpNode;
       delete base0;
       return base1;
@@ -441,8 +444,11 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
   //delete base;
   //base = NULL;
   CEvaluationNode* pTmp = pOrig->copyBranch();
+  unsigned int counter = 0;
   while (!finished)
     {
+      ++counter;
+      if (counter > RECURSION_LIMIT) throw;
       pResult = CNormalTranslation::eliminate(pTmp);
       delete pTmp;
       /*

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/16 12:14:24 $
+//   $Date: 2008/07/16 13:04:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,15 +52,17 @@ class CNormalTranslation
 
     /**
      * Translate and simplify a tree by calling normAndSimplify repeatedly until it cannot be simplified further
+     * The second parameter is a depth value that is used to track the
+     * recursion. If a given limit (currently 20) is reached, the algorithm throws an exception.
      * @return CNormalFraction*
      */
-    static CNormalFraction* normAndSimplifyReptdly(const CEvaluationTree* tree0);
+    static CNormalFraction* normAndSimplifyReptdly(const CEvaluationTree* tree0, unsigned int depth = 0);
 
     /**
      * Translate and simplify a tree by calling normAndSimplify repeatedly until it cannot be simplified further
      * @return CNormalFraction*
      */
-    static CNormalFraction* normAndSimplifyReptdly(const CEvaluationNode* tree0);
+    static CNormalFraction* normAndSimplifyReptdly(const CEvaluationNode* tree0, unsigned int depth = 0);
 
     /**
      * Given a vector of nodes, this method creates a multiplication chain of
@@ -204,6 +206,7 @@ class CNormalTranslation
     static CEvaluationNode* eliminate(const CEvaluationNode* pOrig);
 
     static const double ZERO;
+    static const unsigned int RECURSION_LIMIT;
 
     /**
      * This method eliminates directly nested fractions. ((a/b)/(c/d)) -> (a*d)/(b*c)
