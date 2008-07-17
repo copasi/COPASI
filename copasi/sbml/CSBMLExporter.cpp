@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.31.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:18 $
+//   $Author: gauges $
+//   $Date: 2008/07/17 08:48:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -838,12 +838,10 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
     }
   else
     {
-      if (this->mIncompleteExport)
+      this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+      if (!this->mIncompleteExport)
         {
-          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
-        }
-      else
-        {
+          this->outputIncompatibilities();
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
     }
@@ -1057,12 +1055,10 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
     }
   else
     {
-      if (this->mIncompleteExport)
+      this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+      if (!this->mIncompleteExport)
         {
-          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
-        }
-      else
-        {
+          this->outputIncompatibilities();
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
     }
@@ -1892,21 +1888,12 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       this->mCOPASI2SBMLMap.erase(pos);
       dataModel.getModel()->removeModelValue(this->mpAvogadro->getKey(), true);
     }
-  unsigned int i, iMax = this->mIncompatibilities.size();
-  for (i = 0;i < iMax;++i)
+  this->outputIncompatibilities();
+  // if the model is incompatible with SBML export, throw an exception
+  if (!this->mIncompatibilities.empty() && !this->mIncompleteExport)
     {
-      SBMLIncompatibility& incompat = this->mIncompatibilities[i];
-      std::ostringstream os;
-      os << incompat.getMessage() << "\n";
-      os << incompat.getDetails() << "\n";
-      if (incompat.minSBMLLevel() != 0 && incompat.minSBMLVersion() != 0)
-        {
-          os << "Please export to SBML Level " << incompat.minSBMLLevel();
-          os << " Version " << incompat.minSBMLVersion() << " or higher.";
-        }
-      CCopasiMessage(CCopasiMessage::RAW, os.str().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
     }
-  if (iMax > 0) CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
 }
 
 const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupportedFunctionTypeSet(unsigned int sbmlLevel)
@@ -2245,12 +2232,10 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
     }
   else
     {
-      if (this->mIncompleteExport)
+      this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+      if (!this->mIncompleteExport)
         {
-          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
-        }
-      else
-        {
+          this->outputIncompatibilities();
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "trigger expression", "event", event.getObjectName().c_str());
         }
     }
@@ -2309,12 +2294,10 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
         }
       else
         {
-          if (this->mIncompleteExport)
+          this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+          if (!this->mIncompleteExport)
             {
-              this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
-            }
-          else
-            {
+              this->outputIncompatibilities();
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "delay expression", "event", event.getObjectName().c_str());
             }
         }
@@ -2463,12 +2446,10 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
             }
           else
             {
-              if (this->mIncompleteExport)
+              this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
+              if (!this->mIncompleteExport)
                 {
-                  this->mIncompatibilities.insert(this->mIncompatibilities.end(), result.begin(), result.end());
-                }
-              else
-                {
+                  this->outputIncompatibilities();
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
                 }
             }
@@ -5243,6 +5224,24 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
       pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
     }
 }
+
+void CSBMLExporter::outputIncompatibilities() const
+  {
+    unsigned int i, iMax = this->mIncompatibilities.size();
+    for (i = 0;i < iMax;++i)
+      {
+        const SBMLIncompatibility* pIncompat = &this->mIncompatibilities[i];
+        std::ostringstream os;
+        os << pIncompat->getMessage() << "\n";
+        os << pIncompat->getDetails() << "\n";
+        if (pIncompat->minSBMLLevel() != 0 && pIncompat->minSBMLVersion() != 0)
+          {
+            os << "Please export to SBML Level " << pIncompat->minSBMLLevel();
+            os << " Version " << pIncompat->minSBMLVersion() << " or higher.";
+          }
+        CCopasiMessage(CCopasiMessage::RAW, os.str().c_str());
+      }
+  }
 
 #ifdef COPASI_DEBUG
 void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)

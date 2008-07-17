@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/11 12:42:37 $
+//   $Date: 2008/07/17 08:48:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -539,6 +539,12 @@ class CSBMLExporter
      * functions that are used in function calls in the tree.
      */
     void setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiDataModel& dataModel);
+
+    /**
+     * Creates error messages from the list of incompatibilities and thows an
+     * exception.
+     */
+    void outputIncompatibilities() const;
   };
 
 #endif // CSBLExporter_H__

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000049.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/12 08:49:05 $
+//   $Date: 2008/07/17 08:48:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,17 +59,25 @@ void test000049::test_bug894()
     {
       // check if the correct error message has been created
       CPPUNIT_ASSERT(pDataModel->getCurrentSBMLDocument() == NULL);
-      CPPUNIT_ASSERT(CCopasiMessage::size() == 2);
-      // last message is general imcompatibility error
+      // last message should be an exception
       CCopasiMessage message = CCopasiMessage::getLastMessage();
       CPPUNIT_ASSERT(message.getType() == CCopasiMessage::EXCEPTION);
-      std::string s = message.getText();
-      CPPUNIT_ASSERT(s.find(std::string("Model incompatible with chosen version and/or level of SBML")) != std::string::npos);
-      // second message is specific warning about the incompatibility
-      message = CCopasiMessage::getLastMessage();
-      CPPUNIT_ASSERT(message.getType() == CCopasiMessage::RAW);
-      s = message.getText();
-      CPPUNIT_ASSERT(s.find(std::string("Call to function \"normal\" used in mathematical expression for initial expression for object named \"K\" which can not be exported to SBML")) != std::string::npos);
+      // see if the incompatibility message is there
+      bool found = false;
+      while (CCopasiMessage::size() > 0)
+        {
+          message = CCopasiMessage::getLastMessage();
+          if (message.getType() == CCopasiMessage::RAW)
+            {
+              std::string s = message.getText();
+              if (s.find(std::string("Call to function \"normal\" used in mathematical expression for initial expression for object named \"K\" which can not be exported to SBML")) != std::string::npos)
+                {
+                  found = true;
+                  break;
+                }
+            }
+        }
+      CPPUNIT_ASSERT_MESSAGE("Error message not found.", found == true);
       return;
     }
   // we should not get this far
