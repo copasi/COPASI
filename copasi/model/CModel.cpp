@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.343 $
+//   $Revision: 1.343.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/17 09:55:07 $
+//   $Author: shoops $
+//   $Date: 2008/07/18 16:21:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,7 +114,8 @@ CModel::CModel():
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
-    mReorderNeeded(false)
+    mReorderNeeded(false),
+    mIsAutonomous(false)
 {
   initObjects();
 
@@ -176,7 +177,8 @@ CModel::CModel(const CModel & src):
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
-    mReorderNeeded(false)
+    mReorderNeeded(false),
+    mIsAutonomous(false)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -411,9 +413,13 @@ bool CModel::compile()
   updateMatrixAnnotations();
 
   if (!success)
-    return false;
+    {
+      mIsAutonomous = false;
+      return false;
+    }
 
   mCompileIsNecessary = false;
+  determineIsAutonomous();
 
   //writeDependenciesToDotFile();
 
@@ -1567,6 +1573,9 @@ const CState & CModel::getState() const
 void CModel::setInitialState(const CState & state)
 {
   mInitialState = state;
+
+  if (mIsAutonomous)
+    mInitialState.setTime(0.0);
 
   return;
 }
@@ -3242,17 +3251,20 @@ void CModel::buildLinkZero()
   return;
 }
 
-bool CModel::isAutonomous() const
-  {
-    std::set< const CCopasiObject * > TimeDependent;
+const bool & CModel::isAutonomous() const
+{return mIsAutonomous;}
 
-    appendDependentReactions(getDeletedObjects(), TimeDependent);
-    appendDependentMetabolites(getDeletedObjects(), TimeDependent);
-    appendDependentCompartments(getDeletedObjects(), TimeDependent);
-    appendDependentModelValues(getDeletedObjects(), TimeDependent);
+void CModel::determineIsAutonomous()
+{
+  std::set< const CCopasiObject * > TimeDependent;
 
-    return (TimeDependent.begin() == TimeDependent.end());
-  }
+  appendDependentReactions(getDeletedObjects(), TimeDependent);
+  appendDependentMetabolites(getDeletedObjects(), TimeDependent);
+  appendDependentCompartments(getDeletedObjects(), TimeDependent);
+  appendDependentModelValues(getDeletedObjects(), TimeDependent);
+
+  mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
+}
 
 const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
   {return mInitialRefreshes;}
