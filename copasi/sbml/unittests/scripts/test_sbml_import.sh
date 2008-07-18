@@ -1,12 +1,25 @@
 #!/bin/bash
 
-VALGRIND_NUMCALLERS=30
-GREP=/bin/grep
-VALGRIND=/usr/bin/valgrind
-UNAME=/bin/uname
-TPUT=/usr/bin/tput
+if [ -x /bin/uname ];then
+  UNAME=/bin/uname
+else
+  UNAME=/usr/bin/uname
+fi
 
 SYSTEM=`${UNAME} -s`
+
+
+VALGRIND_NUMCALLERS=30
+
+if [ "${SYSTEM}" == "Darwin" ];then
+  GREP=/usr/bin/grep
+else
+  GREP=/bin/grep
+fi  
+
+VALGRIND=/usr/bin/valgrind
+TPUT=/usr/bin/tput
+
 
 if [ -z $TMP_DIR ];then
   TMP_DIR=/tmp/

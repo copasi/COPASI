@@ -10,7 +10,6 @@ fi
 SYSTEM=`${UNAME} -s`
 
 VALGRIND_NUMCALLERS=30
-#GREP=/bin/grep
 VALGRIND=/usr/bin/valgrind
 TPUT=/usr/bin/tput
 HEAD=/usr/bin/head
@@ -19,8 +18,10 @@ PYTHON=/usr/bin/python
 DATE=/bin/date
 
 if [ ${SYSTEM} == "Darwin" ];then
+  #GREP=/usr/bin/grep
   SED=/usr/bin/sed
 else
+  #GREP=/bin/grep
   SED=/bin/sed
 fi
 

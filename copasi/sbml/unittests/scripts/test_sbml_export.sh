@@ -1,12 +1,24 @@
 #!/bin/bash
 
-VALGRIND_NUMCALLERS=30
-GREP=/bin/grep
-VALGRIND=/usr/bin/valgrind
-UNAME=/bin/uname
-TPUT=/usr/bin/tput
+if [ -x /bin/uname ];then
+  UNAME=/bin/uname
+else
+  UNAME=/usr/bin/uname
+fi
 
 SYSTEM=`${UNAME} -s`
+
+
+VALGRIND_NUMCALLERS=30
+if [ "${SYSTEM}" == "Darwin" ];then
+  GREP=/usr/bin/grep
+else
+  GREP=/bin/grep
+fi  
+
+VALGRIND=/usr/bin/valgrind
+TPUT=/usr/bin/tput
+
 
 if [ -z $TMP_DIR ];then
   TMP_DIR=/tmp/
@@ -47,7 +59,7 @@ function test_export_single_file
     fi
     CPS_FILE=$1
     OUTPUT_DIR=$2
-    NAME=${SBML_FILE##*/};
+    NAME=${CPS_FILE##*/};
     NAME=${NAME%%.cps};
     SBML_FILE=${NAME}.xml
     OUTPUT_FILE=${NAME}.export.out
@@ -57,7 +69,6 @@ function test_export_single_file
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
-    RESULT="PASSED"
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0
     if [ ! -s ${OUTPUT_DIR}/${SBML_FILE} ];then
