@@ -1,19 +1,19 @@
 #!/bin/bash 
 
 
-TESTSDIR=./tests
+TESTSDIR=./dsmts23-20080307
 
 HEAD=/usr/bin/head
 CUT=/usr/bin/cut
-SED=/bin/sed
+SED=//usr/bin/sed
 
 #HEAD=/sw/bin/head
 #CUT=/sw/bin/cut
 #SED=/sw/bin/sed
 
-WRAPPER=./stochastic-testsuite
+#WRAPPER=./stochastic-testsuite
 
-#WRAPPER=`pwd`/stochastic-testsuite.app/Contents/MacOS/stochastic-testsuite
+WRAPPER=`pwd`/stochastic-testsuite.app/Contents/MacOS/stochastic-testsuite
 
 # go over all models in tests/model-list
 #MODELS=`cat tests/model-list`
@@ -31,7 +31,7 @@ MODELS=`cat $MODELFILE`
 
 function getSpecies()
 {
-    $HEAD -n1 $1 | $CUT -d ',' -f 2- --output-delimiter=" " | $SED 's/[ \t\r\n]*$//';
+    $HEAD -n1 $1 | $CUT -d ',' -f 2- | $SED -e ' s/,/ /g; s/[ \t\r\n]*$//';
 }
 
 
@@ -49,7 +49,7 @@ for MODEL in $MODELS;do
   SD_REFERENCE_FILE=${TESTSDIR}/${MODEL}-sd.csv
   # run simulation 
   if [ -e $INFILE ] ; then
-    #echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
+    echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
     rm -f $OUTFILE
     $WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST || RESULT="failed" ;
     if [ "e$RESULT" == "efailed" ] ; then
