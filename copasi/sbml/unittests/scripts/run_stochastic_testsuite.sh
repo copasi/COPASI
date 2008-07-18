@@ -1,21 +1,33 @@
 #!/bin/bash
 
-VALGRIND_NUMCALLERS=30
-#GREP=/bin/grep
-VALGRIND=/usr/bin/valgrind
-UNAME=/bin/uname
-TPUT=/usr/bin/tput
-HEAD=/usr/bin/head
-CUT=/usr/bin/cut
-SED=/bin/sed
-PYTHON=/usr/bin/python
-DATE=/bin/date
 
-if [ -z ${NUM_ITERATIONS} ];then
-  NUM_ITERATIONS=100
+if [ -x /bin/uname ];then
+  UNAME=/bin/uname
+else
+  UNAME=/usr/bin/uname
 fi
 
 SYSTEM=`${UNAME} -s`
+
+VALGRIND_NUMCALLERS=30
+#GREP=/bin/grep
+VALGRIND=/usr/bin/valgrind
+TPUT=/usr/bin/tput
+HEAD=/usr/bin/head
+CUT=/usr/bin/cut
+PYTHON=/usr/bin/python
+DATE=/bin/date
+
+if [ ${SYSTEM} == "Darwin" ];then
+  SED=/usr/bin/sed
+else
+  SED=/bin/sed
+fi
+
+if [ -z ${NUM_ITERATIONS} ];then
+  NUM_ITERATIONS=10000
+fi
+
 
 if [ -z $TMP_DIR ];then
   TMP_DIR=/tmp/
@@ -59,9 +71,6 @@ function analyse_testrun
         echo "Error. analyse_testrun expects exactly three arguments.";
         return 1;
     fi
-    if [ ! -s ${OUTPUT_DIR}/${OUTPUT_FILE} ];then
-        return 1;
-    fi
     MODEL=$1
     OUTPUT_DIR=$2
     STEPNUMBER=$3
@@ -72,29 +81,35 @@ function analyse_testrun
     SD_OUTFILE=${MODEL}-sd.stochastic.RESULT
     MEAN_REFERENCE_FILE=${MODEL}-mean.csv
     SD_REFERENCE_FILE=${MODEL}-sd.csv
+    CALCULATION_OUTPUT=${MODEL}-calc.out
+    SD_COMPARE_OUTPUT=${MODEL}-sd-compare.out
+    MEAN_COMPARE_OUTPUT=${MODEL}-mean-compare.out
     # check if the result file is there
-    if [ ! -f ${RESULT_FILE} ];then
-      return 2;
+    if [ ! -f ${OUTPUT_DIR}/${RESULT_FILE} ];then
+      echo "Error. Could not find result file at \"${OUTPUT_DIR}/${RESULT_FILE}\""
+      return 1;
     fi
     # get a summary from the result file
-    ${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/calculate_statistics.py ${OUTPUT_DIR}/${RESULT_FILE} ${OUTPUT_DIR}/${MEAN_OUTFILE} ${OUTPUT_DIR}/${SD_OUTFILE} ${STEPNUMBER} ${NUM_ITERATIONS} || return 3;
-    
+    ${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/calculate_statistics.py ${OUTPUT_DIR}/${RESULT_FILE} ${OUTPUT_DIR}/${MEAN_OUTFILE} ${OUTPUT_DIR}/${SD_OUTFILE} ${STEPNUMBER} ${NUM_ITERATIONS} &> ${OUTPUT_DIR}/${CALCULATION_OUTPUT} || return 3;
+   
     if [ -f ${OUTPUT_DIR}/${MEAN_OUTFILE} ] ; then
       if [ -f ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ] ; then 
         if [ -f ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE} ] ; then
-           ${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/compare_mean.py ${OUTPUT_DIR}/${MEAN_OUTFILE} ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE} ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${MODEL}-mean-compare.RESULT || return 4; 
-           ${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/compare_sd.py ${OUTPUT_DIR}/${SD_OUTFILE} ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${MODEL}-sd-compare.RESULT || return 5;
+           ${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/compare_mean.py ${OUTPUT_DIR}/${MEAN_OUTFILE} ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE} ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${MODEL}-mean-compare.RESULT &> ${OUTPUT_DIR}/${MEAN_COMPARE_OUTPUT}|| return 4; 
+           #${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/compare_mean.py ${OUTPUT_DIR}/${MEAN_OUTFILE} ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE} ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${MODEL}-mean-compare.RESULT || return 4; 
+           ${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/compare_sd.py ${OUTPUT_DIR}/${SD_OUTFILE} ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${MODEL}-sd-compare.RESULT &> ${OUTPUT_DIR}/${SD_COMPARE_OUTPUT} || return 5;
+           #${PYTHON} ${ANALYSIS_SCRIPTS_DIR}/compare_sd.py ${OUTPUT_DIR}/${SD_OUTFILE} ${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${MODEL}-sd-compare.RESULT || return 5;
         else
           echo "Error. Could not find file \"${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE}\"";
-          return 3;
+          return 6;
         fi     
       else
         echo "Error. Could not find file \"${STOCHASTIC_TESTSUITE_DIR}/${SD_REFERENCE_FILE}\"";
-        return 3;
+        return 6;
       fi
     else
       echo "Error. Could not find file \"${OUTPUT_DIR}/${MEAN_OUTFILE}\"";
-      return 3;
+      return 6;
     fi  
 
     if [ "$USE_VALGRIND" == "yes" ];then
@@ -106,7 +121,7 @@ function analyse_testrun
 
 function getSpecies
 {
-    $HEAD -n1 $1 | $CUT -d ',' -f 2- --output-delimiter=" " | $SED 's/[ \t\r\n]*$//';
+    $HEAD -n1 $1 | $CUT -d ',' -f 2- | $SED -e 's/[ \t\r\n]*$//; s/,/ /g';
 }
 
 
@@ -130,11 +145,11 @@ function run-single-stochastic-test
     VALGRIND_LOG=${MODEL}.stochastic.log
     # create the species list from the reference mean result
     if [ ! -f ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE} ];then
-      echo "Error. Could not file \"${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENE_FILE}\"."
+      echo "Error. Could not find file \"${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENE_FILE}\"."
       return 1;
     fi
     SPECIESLIST=`getSpecies ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE}`
-    if [ -z ${SPECIESLIST} ];then
+    if [ -z "${SPECIESLIST}" ];then
       echo "Error. Specieslist created from \"${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE}\" is empty.";
       return 1;
     fi
@@ -173,6 +188,30 @@ function run-stochastic-testsuite
           ${TPUT} sgr0;
           echo ".";
           ;;
+      3 )
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -n -e '\E[31;47mFAILED';
+          ${TPUT} sgr0;
+          echo ". Calculation of mean values and standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-calc.out";
+          ;;
+      4 )
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -n -e '\E[31;47mFAILED';
+          ${TPUT} sgr0;
+          echo ". Comparison of mean values failed. See ${OUTPUT_DIR}/${MODEL}-mean-compare.out";
+          ;;
+      5 )
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -n -e '\E[31;47mFAILED';
+          ${TPUT} sgr0;
+          echo ". Comparison of standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-sd-compare.out";
+          ;;
+      6 )
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -n -e '\E[31;47mFAILED';
+          ${TPUT} sgr0;
+          echo ". Some result file was missing";
+          ;;
       102 ) 
           echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[33;47mSUCCEDED';
@@ -192,9 +231,11 @@ function run-stochastic-testsuite
           echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
           ;;
       * )
-          echo "An unknown error code was reported from run-single-stochastic-test.";
+          echo "An unknown error code \"$?\" was reported from run-single-stochastic-test.";
           ;;
       esac
+      shift
+      MODEL=$1
     done
 }
 
