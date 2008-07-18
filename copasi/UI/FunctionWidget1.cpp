@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.156 $
+//   $Revision: 1.156.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/07/18 18:24:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,7 +174,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   RadioButton2->setText(trUtf8("irreversible"));
 
   RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
-  RadioButton3->setText(trUtf8("General"));
+  RadioButton3->setText(trUtf8("unrestricted"));
 
   FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
 
@@ -422,43 +422,47 @@ bool FunctionWidget1::loadParameterTable()
 bool FunctionWidget1::loadUsageTable()
 {
   std::vector<std::string> stringlist;
+  bool checkSubstrates = false;
   bool checkProducts = false;
 
   if (RadioButton1->isChecked() == true)
     {
       stringlist.push_back("Only reversible reactions");
+      checkSubstrates = true;
       checkProducts = true;
     }
   else if (RadioButton2->isChecked() == true)
     {
       stringlist.push_back("Only irreversible reactions");
+      checkSubstrates = true;
     }
-  else
-  {}
 
   //substrates
-  if (mpFunction->getVariables().isVector(CFunctionParameter::SUBSTRATE))
+  if (checkSubstrates)
     {
-      stringlist.push_back("At least one substrate");
-    }
-  else if (mpFunction->getObjectName() != "Constant flux (irreversible)" &&
-           mpFunction->getObjectName() != "Constant flux (reversible)")
-    {
-      std::stringstream ss;
+      if (mpFunction->getVariables().isVector(CFunctionParameter::SUBSTRATE))
+        {
+          stringlist.push_back("At least one substrate");
+        }
+      else if (mpFunction->getObjectName() != "Constant flux (irreversible)" &&
+               mpFunction->getObjectName() != "Constant flux (reversible)")
+        {
+          std::stringstream ss;
 
-      if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) == 0)
-        {
-          ss << "No substrate";
+          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) == 0)
+            {
+              ss << "No substrate";
+            }
+          else
+            {
+              ss << "Exactly "
+              << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
+              << " substrate";
+              if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) > 1)
+                ss << "s"; //plural
+            }
+          stringlist.push_back(ss.str());
         }
-      else
-        {
-          ss << "Exactly "
-          << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
-          << " substrate";
-          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) > 1)
-            ss << "s"; //plural
-        }
-      stringlist.push_back(ss.str());
     }
 
   //products
