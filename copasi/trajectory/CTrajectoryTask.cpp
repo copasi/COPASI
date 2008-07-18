@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.92.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Date: 2008/07/18 17:32:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,7 +312,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
 
 bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
 {
-  C_FLOAT64 CompareTime = nextTime - 100 * fabs(nextTime) * DBL_EPSILON;
+  C_FLOAT64 CompareTime = nextTime - 100 * (fabs(nextTime) * DBL_EPSILON + DBL_MIN);
 
   if (*mpCurrentTime <= CompareTime)
     {
@@ -335,7 +335,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       return true;
     }
 
-  CompareTime = nextTime + 100 * fabs(nextTime) * DBL_EPSILON;
+  CompareTime = nextTime + 100 * (fabs(nextTime) * DBL_EPSILON + DBL_MIN);
   if (*mpCurrentTime >= CompareTime)
     {
       do
