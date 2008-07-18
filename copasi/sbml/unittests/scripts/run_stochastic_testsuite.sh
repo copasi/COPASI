@@ -4,14 +4,15 @@ VALGRIND_NUMCALLERS=30
 #GREP=/bin/grep
 VALGRIND=/usr/bin/valgrind
 UNAME=/bin/uname
-#TPUT=/usr/bin/tput
+TPUT=/usr/bin/tput
 HEAD=/usr/bin/head
 CUT=/usr/bin/cut
 SED=/bin/sed
 PYTHON=/usr/bin/python
+DATE=/bin/date
 
 if [ -z ${NUM_ITERATIONS} ];then
-  NUM_ITERATIONS=10000
+  NUM_ITERATIONS=100
 fi
 
 SYSTEM=`${UNAME} -s`
@@ -37,7 +38,7 @@ if [ -z $STOCHASTIC_TESTSUITE_WRAPPER ];then
 fi
 
 if [ -z ${STOCHASTIC_TESTSUITE_DIR} ];then
- STOCHASTIC_TESTSUITE_DIR=../../../../stochastic-testsuite/dmsmt23-20080307
+ STOCHASTIC_TESTSUITE_DIR=../../../../stochastic-testsuite/dsmts23-20080307
 fi
 
 if [ -z ${ANALYSIS_SCRIPTS_DIR} ];then
@@ -132,13 +133,13 @@ function run-single-stochastic-test
       echo "Error. Could not file \"${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENE_FILE}\"."
       return 1;
     fi
-    SPECIESLIST=`getSpecies `
+    SPECIESLIST=`getSpecies ${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE}`
     if [ -z ${SPECIESLIST} ];then
       echo "Error. Specieslist created from \"${STOCHASTIC_TESTSUITE_DIR}/${MEAN_REFERENCE_FILE}\" is empty.";
       return 1;
     fi
     # run the test
-    COMMAND="${STOCHASTIC_TESTSUITE_WRAPPER} ${INFILE} ${ENDTIME} ${STEPNUMBER} ${NUM_ITERATIONS} ${RESULT_FILE} ${SPECIESLIST}" || return 1;
+    COMMAND="${STOCHASTIC_TESTSUITE_WRAPPER} ${INFILE} ${ENDTIME} ${STEPNUMBER} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${RESULT_FILE} ${SPECIESLIST}" || return 1;
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
@@ -157,7 +158,43 @@ function run-stochastic-testsuite
     shift
     MODEL=$1
     while [ -n "$MODEL" ];do
+      echo "Simulating ${MODEL} stochastically ${NUM_ITERATIONS} times ...";
       run-single-stochastic-test ${MODEL} ${TMP_DIR}
+      case $? in
+      0 )
+          echo -n "Import of ${MODEL} ";
+          echo -n -e '\E[32;47mOK';
+          ${TPUT} sgr0;
+          echo ".";
+          ;;
+      1 )
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -n -e '\E[31;47mFAILED';
+          ${TPUT} sgr0;
+          echo ".";
+          ;;
+      102 ) 
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -n -e '\E[33;47mSUCCEDED';
+          ${TPUT} sgr0;
+          echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
+          ;;
+      103 ) 
+          echo -n "Stochastic simulation of ${MODEL}";
+          echo -n -e '\E[33;47mSUCCEDED';
+          ${TPUT} sgr0;
+          echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log.";
+          ;;
+      104 ) 
+          echo -n "Stochastic simulation of ${MODEL} ";
+          echo -e -n '\E[33;47mSUCCEDED';
+          ${TPUT} sgr0;
+          echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
+          ;;
+      * )
+          echo "An unknown error code was reported from run-single-stochastic-test.";
+          ;;
+      esac
     done
 }
 
@@ -185,7 +222,7 @@ check_executable $SED || exit 1;
 check_executable $PYTHON || exit 1;
 
 # check if the testsuite wrapper is there
-check_executable ${SBML_SEMANTIC_TESTSUITE_WRAPPER} || exit 1;
+check_executable ${STOCHASTIC_TESTSUITE_WRAPPER} || exit 1;
 
 # check if TMP_DIR is present, a directory and writable
 if [ -d $TMP_DIR ];then
@@ -202,14 +239,14 @@ else
 fi
 
 # check if the testuite directory is there
-if [! -d ${STOCHASTIC_TESTSUITE_DIR} ];then
+if [ ! -d ${STOCHASTIC_TESTSUITE_DIR} ];then
     echo "Error. Stochastic testsuite directory not found at ${STOCHASTIC_TESTSUITE_DIR}.";
     return 1;
 fi
 # check if the testlist is there and readable
 if [ -f ${STOCHASTIC_TESTSUITE_LIST} ];then
-    if[ -r ${STOCHASTIC_TESTSUITE_LIST} ];then
-        if [! -s ${STOCHASTIC_TESTSUITE_LIST} ];then
+    if [ -r ${STOCHASTIC_TESTSUITE_LIST} ];then
+        if [ ! -s ${STOCHASTIC_TESTSUITE_LIST} ];then
             echo "Error. Stochastic testlist at ${STOCHASTIC_TESTSUITE_LIST} is empty.";
             return 1;
         fi
@@ -243,9 +280,19 @@ else
 fi
 
 MODELS=`cat ${STOCHASTIC_TESTSUITE_LIST}`
-if [ -z $MODELS ];then
+if [ -z "$MODELS" ];then
   echo "Error. The model list cointains no models.";
   exit 1;
 fi
-run-stochastic-testsuite
-return $?
+
+check_executable $DATE
+if [ $? -eq 0 ];then
+  date=`${DATE}`
+fi
+echo -n "Running stochastic testsuite ";
+if [ -n "$date" ];then
+  echo "(${date})"
+fi
+
+run-stochastic-testsuite $MODELS
+exit $?
