@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.51.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 13:48:30 $
+//   $Date: 2008/07/18 20:37:27 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -564,13 +569,15 @@ void CHybridMethod::fireReaction(C_INT32 rIndex)
   // metabolite. Finally, update the metabolite.
 
   unsigned C_INT32 i;
-  C_FLOAT64 number, newNumber;
-
+  C_FLOAT64 newNumber;
+  CMetab * pMetab;
   for (i = 0; i < mLocalBalances[rIndex].size(); i++)
     {
-      number = mLocalBalances[rIndex][i].mpMetabolite->getValue();
-      newNumber = number + mLocalBalances[rIndex][i].mMultiplicity;
-      mLocalBalances[rIndex][i].mpMetabolite->setValue(newNumber);
+      pMetab = mLocalBalances[rIndex][i].mpMetabolite;
+      newNumber = pMetab->getValue() + mLocalBalances[rIndex][i].mMultiplicity;
+
+      pMetab->setValue(newNumber);
+      pMetab->refreshConcentration();
     }
 
   // insert all dependent reactions into the mUpdateSet
@@ -620,6 +627,8 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
 
 C_FLOAT64 CHybridMethod::generateReactionTime(C_INT32 rIndex)
 {
+  if (mAmu[rIndex] == 0) return 2.0 * DBL_MAX;
+
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[rIndex];
 }
