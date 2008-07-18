@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Date: 2008/07/18 18:45:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,8 +48,8 @@ class CCopasiSimpleSelectionTree: public QListView
   public:
     enum SelectionFlag {
       NUMERIC = BASE_DOUBLE | BASE_INTEGER,
-      INITIAL_VALUE = BASE_DOUBLE | BASE_INITIAL,
-      TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT,
+      INITIAL_VALUE = BASE_DOUBLE | BASE_INITIAL | BASE_MODEL,
+      TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
       INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL,
       TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL,
       OBJECTIVE_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION,

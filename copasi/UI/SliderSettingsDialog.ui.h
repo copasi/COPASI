@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.31.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 15:47:17 $
+//   $Date: 2008/07/18 18:45:26 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -325,7 +330,7 @@ void SliderSettingsDialog::init()
 void SliderSettingsDialog::browseButtonPressed()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC);
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
 
   if (pObject)
     {
