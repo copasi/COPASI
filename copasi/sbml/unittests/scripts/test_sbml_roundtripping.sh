@@ -36,7 +36,7 @@ VALGRIND_OPTIONS="--num-callers=${VALGRIND_NUMCALLERS} ${VALGRIND_OPTIONS}"
 
 source ./utilities.sh
 
-function test_export_single_file
+function test_roundtrip_single_file
 {
     # we pass all the commands as parameters so we don't have to check
     # for their existence in each call. Thoses checks have to be done by the
@@ -45,25 +45,25 @@ function test_export_single_file
         echo "Error. test_import_single_file expects exactly two arguments.";
         return 1;
     fi
-    CPS_FILE=$1
+    SBML_FILE=$1
     OUTPUT_DIR=$2
     NAME=${SBML_FILE##*/};
-    NAME=${NAME%%.cps};
-    SBML_FILE=${NAME}.xml
-    OUTPUT_FILE=${NAME}.export.out
-    ERROR_FILE=${NAME}.export.err
-    VALGRIND_LOG=${NAME}.export.log
-    COMMAND="${COPASISE} ${COPASISE_OPTIONS} --exportSBML ${OUTPUT_DIR}/${SBML_FILE} ${CPS_FILE}"
+    NAME=${NAME%%.xml};
+    SBML_OUT_FILE=${NAME}-reexport.xml
+    OUTPUT_FILE=${NAME}.roundtrip.out
+    ERROR_FILE=${NAME}.roundtrip.err
+    VALGRIND_LOG=${NAME}.roundtrip.log
+    COMMAND="${COPASISE} ${COPASISE_OPTIONS} --importSBML ${SBML_FILE} --exportSBML ${OUTPUT_DIR}/${SBML_OUT_FILE}"
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
     RESULT="PASSED"
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0
-    if [ ! -s ${OUTPUT_DIR}/${SBML_FILE} ];then
+    if [ ! -s ${OUTPUT_DIR}/${SBML_OUT_FILE} ];then
         return 1;
     fi
-    # check if the output file has a size different from 0
+    # check if the error file has a size different from 0
     if [ -s ${OUTPUT_DIR}/$ERROR_FILE ];then
         if [ "$USE_VALGRIND" == "yes" ];then
           # additional valgrind checks
@@ -81,9 +81,8 @@ function test_export_single_file
     return 0
 }
 
-function test_export_files
+function test_roundtrip_files
 {
-    # create a direcory in TMP_DIR that holds all result files
     OUTPUT_DIR=$TMP_DIR
     FILENAME=$1
     while [ -n "$FILENAME" ];do
@@ -91,49 +90,49 @@ function test_export_files
       if [ ! -r $FILENAME ];then
           echo "$FILENAME does not exist, is not a regular file or is not readable."
       else
-        echo "Exporting $FILENAME ...";
+        echo "Roundtripping $FILENAME ...";
         NAME=${FILENAME##*/};
-        NAME=${NAME%%.cps};
-        test_export_single_file ${FILENAME} ${OUTPUT_DIR}
+        NAME=${NAME%%.xml};
+        test_roundtrip_single_file ${FILENAME} ${OUTPUT_DIR}
         case $? in
         0 )
-            echo -n "Export of $FILENAME ";
+            echo -n "Roundtripping of $FILENAME ";
             echo -n -e '\E[32;47mOK';
             ${TPUT} sgr0;
             echo ".";
             ;;
         1 )
-            echo -n "Export of $FILENAME ";
+            echo -n "Roundtripping of $FILENAME ";
             echo -n -e '\E[31;47mFAILED';
             ${TPUT} sgr0;
             echo ".";
             ;;
         2 )
-            echo -n "Export of $FILENAME ";
+            echo -n "Roundtripping of $FILENAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but there was additional output from COPASI.\nCheck ${OUTPUT_DIR}/${NAME}.export.err for details.";
+            echo -e " but there was additional output from COPASI.\nCheck ${OUTPUT_DIR}/${NAME}.roundtrip.err for details.";
             ;;
         102 ) 
-            echo -n "Export of $FILENAME ";
+            echo -n "Roundtripping of $FILENAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${NAME}.export.log for details.";
+            echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${NAME}.roundtrip.log for details.";
             ;;
         103 ) 
-            echo -n "Export of $FILENAME";
+            echo -n "Roundtripping of $FILENAME";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.export.log.";
+            echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.roundtrip.log.";
             ;;
         104 ) 
-            echo -n "Export of $FILENAME ";
+            echo -n "Roundtripping of $FILENAME ";
             echo -e -n '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.export.log for details.";
+            echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.roundtrip.log for details.";
             ;;
         * )
-            echo "An unknown error code was reported from test_export_single_file.";
+            echo "An unknown error code was reported from test_roundtrip_single_file.";
             ;;
         esac
       fi
@@ -176,5 +175,5 @@ else
     exit 1;
 fi
 
-test_export_files $*
+test_roundtrip_files $*
 

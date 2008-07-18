@@ -22,9 +22,9 @@ fi
 
 if [ -z $COPASISE ];then
   if [ "$SYSTEM" == "Darwin" ];then
-    COPASISE=../../CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE
+    COPASISE=../../../CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE
   else
-    COPASISE=../../CopasiSE/CopasiSE
+    COPASISE=../../../CopasiSE/CopasiSE
   fi
 fi
 
@@ -50,21 +50,22 @@ function test_import_single_file
     NAME=${SBML_FILE##*/};
     NAME=${NAME%%.xml};
     CPS_FILE=${NAME}.cps
-    OUTPUT_FILE=${NAME}.import.output
+    OUTPUT_FILE=${NAME}.import.out
+    ERROR_FILE=${NAME}.import.err
     VALGRIND_LOG=${NAME}.import.log
     COMMAND="${COPASISE} ${COPASISE_OPTIONS} --importSBML ${SBML_FILE} -s ${OUTPUT_DIR}/${CPS_FILE}"
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
     RESULT="PASSED"
-    $COMMAND &> ${OUTPUT_DIR}/${OUTPUT_FILE} || return 1;
+    $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0
     if [ ! -s ${OUTPUT_DIR}/${CPS_FILE} ];then
         return 1;
     fi
     # check if the output file has a size different from 0
-    if [ -s ${OUTPUT_DIR}/$OUTPUT_FILE ];then
-        if [ "$USE_VALGRIND" == "yes" ];then
+    if [ -s ${OUTPUT_DIR}/${ERROR_FILE} ];then
+        if [ "${USE_VALGRIND}" == "yes" ];then
           # additional valgrind checks
           check_valgrind_errors ${OUTPUT_DIR}/${VALGRIND_LOG}
           return $?
@@ -111,25 +112,25 @@ function test_import_files
             echo -n "Import of $FILENAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but there was additional output from COPASI.\nCheck ${OUTPUT_DIR}/${NAME}.import.output for details.";
+            echo -e " but there was additional output from COPASI.\nCheck ${OUTPUT_DIR}/${NAME}.import.err for details.";
             ;;
-        3 ) 
+        102 ) 
             echo -n "Import of $FILENAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${NAME}.import.log for details.";
             ;;
-        4 ) 
-            echo -n "Import of $FILENAME ";
-            echo -e -n '\E[33;47mSUCCEDED';
-            ${TPUT} sgr0;
-            echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.import.log for details.";
-            ;;
-        5 ) 
+        103 ) 
             echo -n "Import of $FILENAME";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.import.log.";
+            ;;
+        104 ) 
+            echo -n "Import of $FILENAME ";
+            echo -e -n '\E[33;47mSUCCEDED';
+            ${TPUT} sgr0;
+            echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.import.log for details.";
             ;;
         * )
             echo "An unknown error code was reported from test_import_file.";

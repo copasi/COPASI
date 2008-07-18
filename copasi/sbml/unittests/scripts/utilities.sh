@@ -34,15 +34,15 @@ function check_valgrind_errors
         if [ "$DO_LEAKCHECK" == "yes" ];then
           RESULT=`$GREP "definitely lost: 0" $LOGFILE`
           if [ -z "$RESULT" ];then
-            return 5;
+            return 103;
           fi
         fi
-        return 3;
+        return 102;
     else
         if [ "$DO_LEAKCHECK" == "yes" ];then
           RESULT=`$GREP "definitely lost: 0" $LOGFILE`
           if [ -z "$RESULT" ];then
-            return 4;
+            return 104;
           fi
         fi
     fi
