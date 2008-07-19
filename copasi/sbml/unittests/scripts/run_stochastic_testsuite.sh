@@ -174,65 +174,57 @@ function run-stochastic-testsuite
     shift
     MODEL=$1
     while [ -n "$MODEL" ];do
-      echo "Simulating ${MODEL} stochastically ${NUM_ITERATIONS} times ...";
+      echo -n "Simulating ${MODEL} stochastically ${NUM_ITERATIONS} times ... ";
       run-single-stochastic-test ${MODEL} ${TMP_DIR}
       case $? in
       0 )
-          echo -n "Import of ${MODEL} ";
           echo -n -e '\E[32;47mOK';
           ${TPUT} sgr0;
-          echo ".";
+          echo -n -e "\n";
           ;;
       1 )
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
-          echo ".";
+          echo -n -e "\n";
           ;;
       3 )
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
-          echo ". Calculation of mean values and standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-calc.out";
+          echo -e "\nCalculation of mean values and standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-calc.out";
           ;;
       4 )
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
-          echo ". Comparison of mean values failed. See ${OUTPUT_DIR}/${MODEL}-mean-compare.out";
+          echo -e "\nComparison of mean values failed. See ${OUTPUT_DIR}/${MODEL}-mean-compare.out";
           ;;
       5 )
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
-          echo ". Comparison of standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-sd-compare.out";
+          echo -e "\nComparison of standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-sd-compare.out";
           ;;
       6 )
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
-          echo ". Some result file was missing";
+          echo -e "\nSome result file was missing";
           ;;
       102 ) 
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -n -e '\E[33;47mSUCCEDED';
           ${TPUT} sgr0;
-          echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
+          echo -e -n "\nValgrind reported errors. Check ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
           ;;
       103 ) 
-          echo -n "Stochastic simulation of ${MODEL}";
           echo -n -e '\E[33;47mSUCCEDED';
           ${TPUT} sgr0;
-          echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log.";
+          echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${MODEL}.stochastic.log.";
           ;;
       104 ) 
-          echo -n "Stochastic simulation of ${MODEL} ";
           echo -e -n '\E[33;47mSUCCEDED';
           ${TPUT} sgr0;
-          echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
+          echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
           ;;
       * )
-          echo "An unknown error code \"$?\" was reported from run-single-stochastic-test.";
+          echo -n -e '\E[31;47mFAILED';
+          echo -e "\nAn unknown error code \"$?\" was reported from run-single-stochastic-test.";
           ;;
       esac
       shift

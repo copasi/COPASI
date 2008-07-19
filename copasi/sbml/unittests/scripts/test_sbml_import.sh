@@ -21,19 +21,19 @@ VALGRIND=/usr/bin/valgrind
 TPUT=/usr/bin/tput
 
 
-if [ -z $TMP_DIR ];then
+if [ -z "$TMP_DIR" ];then
   TMP_DIR=/tmp/
 fi
 
-if [ -z $USE_VALGRIND ];then
+if [ -z "$USE_VALGRIND" ];then
   USE_VALGRIND=no
 fi
 
-if [ -z $DO_LEAKCHECK ];then
+if [ -z "$DO_LEAKCHECK" ];then
   DO_LEAKCHECK=no
 fi
 
-if [ -z $COPASISE ];then
+if [ -z "$COPASISE" ];then
   if [ "$SYSTEM" == "Darwin" ];then
     COPASISE=../../../CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE
   else
@@ -41,7 +41,7 @@ if [ -z $COPASISE ];then
   fi
 fi
 
-if [ -z $COPASISE_OPTIONS ];then
+if [ -z "$COPASISE_OPTIONS" ];then
   COPASISE_OPTIONS="--nologo --verbose"
 fi
 
@@ -104,49 +104,45 @@ function test_import_files
       if [ ! -r $FILENAME ];then
           echo "$FILENAME does not exist, is not a regular file or is not readable."
       else
-        echo "Importing $FILENAME ...";
+        echo -n "Importing $FILENAME ... ";
         NAME=${FILENAME##*/};
         NAME=${NAME%%.xml};
         test_import_single_file ${FILENAME} ${OUTPUT_DIR}
         case $? in
         0 )
-            echo -n "Import of $FILENAME ";
             echo -n -e '\E[32;47mOK';
             ${TPUT} sgr0;
-            echo ".";
+            echo -n -e "\n";
             ;;
         1 )
-            echo -n "Import of $FILENAME ";
             echo -n -e '\E[31;47mFAILED';
             ${TPUT} sgr0;
-            echo ".";
+            echo -n -e "\n";
             ;;
         2 )
-            echo -n "Import of $FILENAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but there was additional output from COPASI.\nCheck ${OUTPUT_DIR}/${NAME}.import.err for details.";
+            echo -e "\nThere was additional output from COPASI. Check ${OUTPUT_DIR}/${NAME}.import.err for details.";
             ;;
         102 ) 
-            echo -n "Import of $FILENAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${NAME}.import.log for details.";
+            echo -e "\nValgrind reported errors. Check ${OUTPUT_DIR}/${NAME}.import.log for details.";
             ;;
         103 ) 
-            echo -n "Import of $FILENAME";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.import.log.";
+            echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${NAME}.import.log.";
             ;;
         104 ) 
-            echo -n "Import of $FILENAME ";
             echo -e -n '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${NAME}.import.log for details.";
+            echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${NAME}.import.log for details.";
             ;;
         * )
-            echo "An unknown error code was reported from test_import_file.";
+            echo -n -e '\E[31;47mFAILED';
+            ${TPUT} sgr0;
+            echo -e ".\nAn unknown error code was reported from test_import_file.";
             ;;
         esac
       fi
