@@ -33,7 +33,7 @@ fi
 COPASISE_OPTIONS=${COPASISE_OPTIONS:="--nologo --verbose"}
 
 # parameters for import test
-BIOMODELS_DIR=${HOME}/Downloads/biomodels_25September2007_sbmls
+BIOMODELS_DIR=${BIOMODELS_DIR:=${HOME}/Downloads/biomodels_25September2007_sbmls}
 
 # parameters for export test
 CPS_DIR=${CPS_DIR:=""}

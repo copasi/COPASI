@@ -12,8 +12,10 @@ SYSTEM=`${UNAME} -s`
 VALGRIND_NUMCALLERS=30
 
 if [ "${SYSTEM}" == "Darwin" ];then
+  SED=/usr/bin/sed
   GREP=/usr/bin/grep
 else
+  SED=/bin/sed
   GREP=/bin/grep
 fi  
 
@@ -32,6 +34,9 @@ fi
 if [ -z "$DO_LEAKCHECK" ];then
   DO_LEAKCHECK=no
 fi
+
+FILTER_SBML_INPUT_WARNINGS=${FILTER_SBML_IMPORT_WARNINGS:="yes"}
+FILTER_RDF_MESSAGES=${FILTER_RDF_MESSAGES:="yes"}
 
 if [ -z "$COPASISE" ];then
   if [ "$SYSTEM" == "Darwin" ];then
@@ -70,11 +75,16 @@ function test_import_single_file
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
-    RESULT="PASSED"
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0
     if [ ! -s ${OUTPUT_DIR}/${CPS_FILE} ];then
         return 1;
+    fi
+    # check if filtering of warnings has been enabled and if yes,
+    # do the filtering
+    if [ "${FILTER_SBML_IMPORT_WARNINGS}" == "yes" ];then
+      mv ${OUTPUT_DIR}/${ERROR_FILE} ${OUTPUT_DIR}/${ERROR_FILE}.unfiltered;
+      ${SED} -e '/>.*(filtered)/,/^ *\. *$/d' ${OUTPUT_DIR}/${ERROR_FILE}.unfiltered > ${OUTPUT_DIR}/${ERROR_FILE}
     fi
     # check if the output file has a size different from 0
     if [ -s ${OUTPUT_DIR}/${ERROR_FILE} ];then
@@ -167,6 +177,9 @@ check_executable $TPUT || exit 1;
 
 # check if grep is there
 check_executable $GREP || exit 1;
+
+# check if sed is there
+check_executable $SED || exit 1;
 
 # check if CopasiSE is there
 check_executable $COPASISE || exit 1;
