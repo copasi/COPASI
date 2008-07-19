@@ -224,6 +224,7 @@ function run-stochastic-testsuite
           ;;
       * )
           echo -n -e '\E[31;47mFAILED';
+          ${TPUT} sgr0;
           echo -e "\nAn unknown error code \"$?\" was reported from run-single-stochastic-test.";
           ;;
       esac

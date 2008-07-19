@@ -198,48 +198,44 @@ function run_testlist
         NAME=${NAME%%.test}
         ERROR_FILE=${NAME}.testsuite.err
         VALGRIND_LOG=${NAME}.testsuite.log
-        echo "Running test $TESTNAME"
+        echo -n "Running test ${TESTNAME} ... "
         run-single-test $TESTNAME $OUTPUT_DIR
         # generate output according to result from run-single-test
         case $? in
         0 )
-            echo -n "$TESTNAME ";
             echo -n -e '\E[32;47mOK';
             ${TPUT} sgr0;
-            echo ".";
+            echo -n -e "\n";
             ;;
         1 )
-            echo -n "$TESTNAME ";
             echo -n -e '\E[31;47mFAILED';
             ${TPUT} sgr0;
-            echo ".";
+            echo -n -e  "\n";
             ;;
         2 )
-            echo -n "$TESTNAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but there was additional output from the test.\nCheck ${OUTPUT_DIR}/${ERROR_FILE} for details.";
+            echo -e "\nThere was additional output from the test. Check ${OUTPUT_DIR}/${ERROR_FILE} for details.";
             ;;
         102 ) 
-            echo -n "$TESTNAME ";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported errors.\nCheck ${OUTPUT_DIR}/${VALGRIND_LOG} for details.";
+            echo -e "\nValgrind reported errors. Check ${OUTPUT_DIR}/${VALGRIND_LOG} for details.";
             ;;
         103 ) 
-            echo -n "$TESTNAME";
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported errors and memory leaks.\nCheck ${OUTPUT_DIR}/${VALGRIND_LOG}.";
+            echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${VALGRIND_LOG}.";
             ;;
         104 ) 
-            echo -n "$TESTNAME ";
             echo -e -n '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e " but valgrind reported memory leaks.\nCheck ${OUTPUT_DIR}/${VALGRIND_LOG} for details.";
+            echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${VALGRIND_LOG} for details.";
             ;;
         * )
-            echo "An unknown error code was reported from run-single-test.";
+            echo -n -e '\E[31;47mFAILED';
+            ${TPUT} sgr0;
+            echo -e "\nAn unknown error code was reported from run-single-test.";
             ;;
         esac
 
@@ -312,7 +308,13 @@ else
   exit 1
 fi
 # extend the path to include the scripts directory
-PATH=$PATH:${SBML_SEMANTIC_TESTSUITE_DIR}/AUTOMATION
+# the path needs to be an absolute path
+if [ ${SBML_SEMANTIC_TESTSUITE_DIR:0:1} != "/" ];then
+  PATH=$PATH:`pwd`/${SBML_SEMANTIC_TESTSUITE_DIR}/AUTOMATION
+else
+  PATH=$PATH:${SBML_SEMANTIC_TESTSUITE_DIR}/AUTOMATION
+fi
+echo "PATH: $PATH"
 
 run_testlist ${SBML_SEMANTIC_TESTSUITE_LIST} ${TMP_DIR}
 exit $?

@@ -106,7 +106,7 @@ if [ ! -d ${BIOMODELS_DIR}/curated ];then
 fi
 ${MKDIR} ${RESULT_DIR}/import/
 ${MKDIR} ${RESULT_DIR}/import/curated
-#COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/import/curated ./test_sbml_import.sh ${BIOMODELS_DIR}/curated/*.xml
+COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/import/curated ./test_sbml_import.sh ${BIOMODELS_DIR}/curated/*.xml
 if [ "${DO_NONCURATED}" == "yes" ];then
   echo -e "\nImporting noncurated models ..."
   # check if ${BIOMODELS_DIR}/noncurated exists
@@ -115,7 +115,7 @@ if [ "${DO_NONCURATED}" == "yes" ];then
     exit 1;
   fi
   ${MKDIR} ${RESULT_DIR}/import/noncurated
-#  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/import/noncurated ./test_sbml_import.sh ${BIOMODELS_DIR}/noncurated/*.xml
+  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/import/noncurated ./test_sbml_import.sh ${BIOMODELS_DIR}/noncurated/*.xml
 fi
 echo -e "\n\n"
 
@@ -132,7 +132,7 @@ if [ ! -z "${CPS_DIR}" ];then
     echo "Error. \"${CPS_DIR}\" does not exist or is not a directory."
     exit 1;
   fi
-#  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/export ./test_sbml_export.sh ${CPS_DIR}/*.cps
+  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/export ./test_sbml_export.sh ${CPS_DIR}/*.cps
 
 else
   echo -e "\nExporting models created from curated biomodel files ..."
@@ -143,7 +143,7 @@ else
     echo "Error. \"${RESULT_DIR}/import/curated\" does not exist or is not a directory."
     exit 1;
   fi
-#  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/export/curated ./test_sbml_export.sh ${CPS_DIR}/*.cps
+  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/export/curated ./test_sbml_export.sh ${CPS_DIR}/*.cps
 
   if [ "${DO_NONCURATED}" == "yes" ];then
     echo -e "\nExporting models created from noncurated biomodel files ..."
@@ -153,7 +153,7 @@ else
       echo "Error. \"${RESULT_DIR}/import/noncurated\" does not exist or is not a directory."
       exit 1;
     fi
-#    COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/export/noncurated ./test_sbml_export.sh ${CPS_DIR}/*.cps
+    COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/export/noncurated ./test_sbml_export.sh ${CPS_DIR}/*.cps
   fi
 fi
 echo -e "\n\n"
@@ -170,7 +170,7 @@ if [ ! -d ${BIOMODELS_DIR}/curated ];then
 fi
 ${MKDIR} ${RESULT_DIR}/roundtripping
 ${MKDIR} ${RESULT_DIR}/roundtripping/curated
-#COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/roundtripping/curated ./test_sbml_roundtripping.sh ${BIOMODELS_DIR}/curated/*.xml
+COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/roundtripping/curated ./test_sbml_roundtripping.sh ${BIOMODELS_DIR}/curated/*.xml
 
 if [ "${DO_NONCURATED}" == "yes" ];then
   echo -e "\nRoundtripping noncurated models ..."
@@ -180,7 +180,7 @@ if [ "${DO_NONCURATED}" == "yes" ];then
     exit 1;
   fi
   ${MKDIR} ${RESULT_DIR}/roundtripping/noncurated
-#  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/roundtripping/noncurated ./test_sbml_roundtripping.sh ${BIOMODELS_DIR}/noncurated/*.xml
+  COPASISE=${COPASISE} COPASISE_OPTIONS=${COPASISE_OPTIONS} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/roundtripping/noncurated ./test_sbml_roundtripping.sh ${BIOMODELS_DIR}/noncurated/*.xml
 fi
 echo -e "\n\n"
 
@@ -197,7 +197,7 @@ echo -e "\n\n"
 # run the stochastic testsuite
 echo "Running stochastic testsuite ..."
 ${MKDIR} ${RESULT_DIR}/stochastic-testsuite
-#ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR} STOCHASTIC_TESTSUITE_WRAPPER=${STOCHASTIC_TESTSUITE_WRAPPER} STOCHASTIC_TESTSUITE_DIR=${STOCHASTIC_TESTSUITE_DIR} STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/stochastic-testsuite ./run_stochastic_testsuite.sh
+ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR} STOCHASTIC_TESTSUITE_WRAPPER=${STOCHASTIC_TESTSUITE_WRAPPER} STOCHASTIC_TESTSUITE_DIR=${STOCHASTIC_TESTSUITE_DIR} STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST} USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/stochastic-testsuite ./run_stochastic_testsuite.sh
 echo -e "\n\n"
 
 
