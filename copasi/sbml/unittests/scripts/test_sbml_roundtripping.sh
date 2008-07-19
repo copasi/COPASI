@@ -12,7 +12,9 @@ SYSTEM=`${UNAME} -s`
 VALGRIND_NUMCALLERS=30
 if [ "${SYSTEM}" == "Darwin" ];then
   GREP=/usr/bin/grep
+  SED=/usr/bin/sed
 else
+  SED=/bin/sed
   GREP=/bin/grep
 fi  
 
@@ -172,6 +174,9 @@ check_executable $TPUT || exit 1;
 
 # check if grep is there
 check_executable $GREP || exit 1;
+
+# check if sed is there
+check_executable $SED || exit 1;
 
 # check if CopasiSE is there
 check_executable $COPASISE || exit 1;
