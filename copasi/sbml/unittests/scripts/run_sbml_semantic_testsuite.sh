@@ -88,7 +88,7 @@ function analyse_single_test
         return 1;
     fi
     # check if the error file is empty
-    if [ ! -s ${OUTPUT_DIR}/${ERROR_FILE} ];then
+    if [ -s ${OUTPUT_DIR}/${ERROR_FILE} ];then
         return 2;
     fi
     
@@ -194,13 +194,13 @@ function run_testlist
     $CAT ${TESTLIST} | while read LINE; do
       if [ "${LINE:0:5}" == "TEST " ];then
         TESTNAME=${LINE:5}
-        echo "Running test $TESTNAME"
-        run-single-test $TESTNAME $OUTPUT_DIR
-        # todo generate output according to result from run-single-test
         NAME=${TESTNAME##*/}
         NAME=${NAME%%.test}
         ERROR_FILE=${NAME}.testsuite.err
         VALGRIND_LOG=${NAME}.testsuite.log
+        echo "Running test $TESTNAME"
+        run-single-test $TESTNAME $OUTPUT_DIR
+        # generate output according to result from run-single-test
         case $? in
         0 )
             echo -n "$TESTNAME ";
