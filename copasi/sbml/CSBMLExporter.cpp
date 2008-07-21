@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/17 08:54:20 $
+//   $Date: 2008/07/21 11:20:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1812,8 +1812,6 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       this->mpSBMLDocument = dynamic_cast<SBMLDocument*>(pOldSBMLDocument->clone());
     }
   if (this->mpSBMLDocument == NULL) fatalError();
-  // update the copasi2sbmlmap
-  updateCOPASI2SBMLMap(dataModel);
   if (this->mpSBMLDocument->getModel() == NULL)
     {
       std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
@@ -1824,6 +1822,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       CSBMLExporter::collectIds(this->mpSBMLDocument->getModel(), this->mIdMap, this->mMetaIdMap);
     }
+  // update the copasi2sbmlmap
+  updateCOPASI2SBMLMap(dataModel);
   // update the comments on the model
   const CModel* pModel = dataModel.getModel();
   assert(pModel != NULL);
