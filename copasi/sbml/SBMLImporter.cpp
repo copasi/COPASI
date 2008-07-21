@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.206 $
+//   $Revision: 1.207 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:58:56 $
+//   $Author: gauges $
+//   $Date: 2008/07/21 14:20:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1256,8 +1256,28 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
                           delete pTmpTree2;
                           if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
                             {
-                              pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
-                              this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
+                              // in order to get around the const_casts, I
+                              // have to find the function in the
+                              // functiondb
+                              CFunction* pNonconstFun = NULL;
+                              CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                              while (it != endit)
+                                {
+                                  if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
+                                    {
+                                      pNonconstFun = dynamic_cast<CFunction*>(*it);
+                                      break;
+                                    }
+                                  ++it;
+                                }
+                              assert(pNonconstFun != NULL);
+                              // code to fix Bug 1015
+                              if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
+                                {
+                                  pNonconstFun->setReversible(TriUnspecified);
+                                }
+                              pTmpFunctionDB->add(pNonconstFun, false);
+                              this->mUsedFunctions.insert(pNonconstFun->getObjectName());
                             }
                         }
                     }
@@ -1309,7 +1329,27 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
                         {
                           if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
                             {
-                              pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
+                              // in order to get around the const_casts, I
+                              // have to find the function in the
+                              // functiondb
+                              CFunction* pNonconstFun = NULL;
+                              CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                              while (it != endit)
+                                {
+                                  if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
+                                    {
+                                      pNonconstFun = dynamic_cast<CFunction*>(*it);
+                                      break;
+                                    }
+                                  ++it;
+                                }
+                              assert(pNonconstFun != NULL);
+                              // code to fix Bug 1015
+                              if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
+                                {
+                                  pNonconstFun->setReversible(TriUnspecified);
+                                }
+                              pTmpFunctionDB->add(pNonconstFun, false);
                               this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
                             }
                         }
