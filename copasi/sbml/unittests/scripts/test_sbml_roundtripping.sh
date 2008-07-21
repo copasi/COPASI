@@ -72,7 +72,7 @@ function test_roundtrip_single_file
     VALGRIND_LOG=${NAME}.roundtrip.log
     COMMAND="${COPASISE} ${COPASISE_OPTIONS} --importSBML ${SBML_FILE} --exportSBML ${OUTPUT_DIR}/${SBML_OUT_FILE}"
     if [ "$USE_VALGRIND" == "yes" ];then
-       COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
+       COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0

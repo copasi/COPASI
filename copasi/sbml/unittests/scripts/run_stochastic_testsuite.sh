@@ -18,10 +18,10 @@ PYTHON=/usr/bin/python
 DATE=/bin/date
 
 if [ ${SYSTEM} == "Darwin" ];then
-  #GREP=/usr/bin/grep
+  GREP=/usr/bin/grep
   SED=/usr/bin/sed
 else
-  #GREP=/bin/grep
+  GREP=/bin/grep
   SED=/bin/sed
 fi
 
@@ -157,7 +157,7 @@ function run-single-stochastic-test
     # run the test
     COMMAND="${STOCHASTIC_TESTSUITE_WRAPPER} ${INFILE} ${ENDTIME} ${STEPNUMBER} ${NUM_ITERATIONS} ${OUTPUT_DIR}/${RESULT_FILE} ${SPECIESLIST}" || return 1;
     if [ "$USE_VALGRIND" == "yes" ];then
-       COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
+       COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE}
     analyse_testrun ${MODEL} ${OUTPUT_DIR} ${STEPNUMBER};

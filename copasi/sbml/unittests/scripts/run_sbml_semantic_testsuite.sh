@@ -133,12 +133,24 @@ function run-single-test
     ERROR_FILE=${NAME}.testsuite.err
     VALGRIND_LOG=${NAME}.testsuite.log
     if [ "$USE_VALGRIND" == "yes" ];then
-       SBML_SEMANTIC_TESTSUITE_WRAPPER="${VALGRIND} ${VALGRIND_OPTIONS} --log-file=${OUTPUT_DIR}/${VALGRIND_LOG} ${SBML_SEMANTIC_TESTSUITE_WRAPPER}"
+       # since test.bsh expects a single argument for the wrapper, passing al
+       # the valgrind stuff directly does not work. We have to have a script
+       # that does this
+       OLD_PWD=`pwd`
+       VALGRIND_WRAPPER_SCRIPT=${OLD_PWD}/run_sbml_testsuite_wrapper_in_valgrind.sh
+       export VALGRIND=${VALGRIND}
+       if [ ${OUTPUT_DIR} == "/" ];then
+         export VALGRIND_ALL_OPTIONS="${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG}"
+       else
+         export VALGRIND_ALL_OPTIONS="${VALGRIND_OPTIONS} --log-file-exactly=${OLD_PWD}/${OUTPUT_DIR}/${VALGRIND_LOG}"
+       fi
+       export REAL_WRAPPER=$SBML_SEMANTIC_TESTSUITE_WRAPPER
+       COMMAND="test.bsh ${VALGRIND_WRAPPER_SCRIPT} ${TESTFILE}"
+    else   
+       COMMAND="test.bsh "${SBML_SEMANTIC_TESTSUITE_WRAPPER}" ${TESTFILE}"
     fi
     # run the test
-    OLD_PWD=`pwd`
     cd ${SBML_SEMANTIC_TESTSUITE_DIR}
-    COMMAND="test.bsh "${SBML_SEMANTIC_TESTSUITE_WRAPPER}" ${TESTFILE}"
     if [ ${OUTPUT_DIR:0:1} == "/" ];then
       $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE}
       if [ $? -ne 0 ];then
@@ -285,7 +297,7 @@ fi
 # check if the testuite directory is there
 if [ ! -d ${SBML_SEMANTIC_TESTSUITE_DIR} ];then
     echo "Error. Testsuite directory not found at ${SBML_SEMANTIC_TESTSUITE_DIR}.";
-    return 1;
+    exit 1;
 fi
 # check if it contains the directory with the scripts
 if [ ! -d ${SBML_SEMANTIC_TESTSUITE_DIR}/AUTOMATION ];then
