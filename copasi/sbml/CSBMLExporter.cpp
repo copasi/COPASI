@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/22 13:39:05 $
+//   $Date: 2008/07/22 14:15:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2413,6 +2413,8 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           pAssignment = dynamic_cast<EventAssignment*>(pos2->second);
           assert(pAssignment != NULL);
           pSBMLEvent->getListOfEventAssignments()->appendAndOwn(pAssignment);
+          // remove the entry from the event assigment map
+          assignmentMap.erase(pos2);
         }
       if (pAssignment == NULL)
         {
