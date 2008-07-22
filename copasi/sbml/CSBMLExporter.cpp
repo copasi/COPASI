@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/21 11:20:54 $
+//   $Date: 2008/07/22 12:47:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3880,8 +3880,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
   else if (CEvaluationNodeObject::type(pOrigNode->getType()) == CEvaluationNodeObject::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType())) == CEvaluationNodeOperator::DIVIDE)
     {
       // check if one of the child nodes is a reference to a species
-      const CEvaluationNode* pLeft = dynamic_cast<const CEvaluationNodeOperator*>(pOrigNode)->getLeft();
-      const CEvaluationNode* pRight = dynamic_cast<const CEvaluationNodeOperator*>(pOrigNode)->getRight();
+
+      const CEvaluationNode* pLeft = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
+      const CEvaluationNode* pRight = dynamic_cast<const CEvaluationNode*>(pLeft->getSibling());
+      assert(pLeft != NULL);
+      assert(pRight != NULL);
       if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
         {
           std::vector<CCopasiContainer*> containers;
