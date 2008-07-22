@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/22 12:47:59 $
+//   $Date: 2008/07/22 13:39:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1456,7 +1456,7 @@ void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr, cons
  * that can not be expressed in SBML like the random distribution
  * functions.
  */
-void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& dataModel,
+void CSBMLExporter::checkForUnsupportedFunctionCalls(const CCopasiDataModel& /*dataModel*/,
     unsigned int sbmlLevel, unsigned int /*sbmlVersion*/, std::vector<SBMLIncompatibility>& result)
 {
   // Fill the set of unsupported functions depending on the level and
@@ -2410,7 +2410,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
       EventAssignment* pAssignment = NULL;
       if (pos2 != assignmentMap.end())
         {
-          pAssignment = dynamic_cast<EventAssignment*>(pos->second);
+          pAssignment = dynamic_cast<EventAssignment*>(pos2->second);
           assert(pAssignment != NULL);
           pSBMLEvent->getListOfEventAssignments()->appendAndOwn(pAssignment);
         }
