@@ -71,10 +71,12 @@ function test_import_single_file
     OUTPUT_FILE=${NAME}.import.out
     ERROR_FILE=${NAME}.import.err
     VALGRIND_LOG=${NAME}.import.log
+    COMMAND_FILE=${NAME}.import.sh
     COMMAND="${COPASISE} ${COPASISE_OPTIONS} --importSBML ${SBML_FILE} -s ${OUTPUT_DIR}/${CPS_FILE}"
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
+    echo "$COMMAND" > ${OUTPUT_DIR}/${COMMAND_FILE}
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0
     if [ ! -s ${OUTPUT_DIR}/${CPS_FILE} ];then

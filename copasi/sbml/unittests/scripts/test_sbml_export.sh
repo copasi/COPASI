@@ -65,10 +65,12 @@ function test_export_single_file
     OUTPUT_FILE=${NAME}.export.out
     ERROR_FILE=${NAME}.export.err
     VALGRIND_LOG=${NAME}.export.log
+    COMMAND_FILE=${NAME}.export.sh
     COMMAND="${COPASISE} ${COPASISE_OPTIONS} --exportSBML ${OUTPUT_DIR}/${SBML_FILE} ${CPS_FILE}"
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
+    echo "$COMMAND" > ${OUTPUT_DIR}/${COMMAND_FILE}
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE} || return 1;
     # check if the CPS file has been generated and has a size different from 0
     if [ ! -s ${OUTPUT_DIR}/${SBML_FILE} ];then
