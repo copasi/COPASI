@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.207 $
+//   $Revision: 1.208 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/21 14:20:33 $
+//   $Date: 2008/07/22 11:36:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5429,6 +5429,7 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
 void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (pEvent == NULL) return;
+  /* Check if the name of the reaction is unique. */
   std::string eventName = "Event";
   if (pEvent->isSetName())
     {
@@ -5438,7 +5439,18 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
     {
       eventName = pEvent->getId();
     }
-  CEvent* pCOPASIEvent = pCopasiModel->createEvent(eventName);
+  std::string appendix = "";
+  unsigned int counter = 2;
+  std::ostringstream numberStream;
+  while (pCopasiModel->getEvents().getIndex(eventName + appendix) != C_INVALID_INDEX)
+    {
+      numberStream.str("");
+      numberStream << "_" << counter;
+      counter++;
+      appendix = numberStream.str();
+    }
+  CEvent* pCOPASIEvent = pCopasiModel->createEvent(eventName + appendix);
+  assert(pCOPASIEvent != NULL);
   if (pEvent->isSetId())
     {
       pCOPASIEvent->setSBMLId(pEvent->getId());
