@@ -129,14 +129,15 @@ function run-single-test
     fi
     NAME=${TESTFILE##*/}
     NAME=${NAME%%.test}
+    DIR=${TESTFILE%/*}
     OUTPUT_FILE=${NAME}.testsuite.out
     ERROR_FILE=${NAME}.testsuite.err
     VALGRIND_LOG=${NAME}.testsuite.log
+    OLD_PWD=`pwd`
     if [ "$USE_VALGRIND" == "yes" ];then
        # since test.bsh expects a single argument for the wrapper, passing al
        # the valgrind stuff directly does not work. We have to have a script
        # that does this
-       OLD_PWD=`pwd`
        VALGRIND_WRAPPER_SCRIPT=${OLD_PWD}/run_sbml_testsuite_wrapper_in_valgrind.sh
        export VALGRIND=${VALGRIND}
        if [ ${OUTPUT_DIR} == "/" ];then
@@ -151,6 +152,8 @@ function run-single-test
     fi
     # run the test
     cd ${SBML_SEMANTIC_TESTSUITE_DIR}
+    # remove an existing result file 
+    rm -rf ${DIR}/testout.csv
     if [ ${OUTPUT_DIR:0:1} == "/" ];then
       $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE}
       if [ $? -ne 0 ];then
@@ -172,7 +175,7 @@ function run-single-test
 function run-sbml-semantic-testsuite
 {
     if [ $# != 1 ];then
-        echo "Error. test_import_single_file expects exactly one argument.";
+        echo "Error. run-sbml-semantic-testsuite expects exactly one argument.";
         return 1;
     fi
     OUTPUT_DIR=$1
@@ -304,6 +307,9 @@ if [ ! -d ${SBML_SEMANTIC_TESTSUITE_DIR}/AUTOMATION ];then
     echo "Error. Testsuite scripts directory not found at ${SBML_SEMANTIC_TESTSUITE_DIR}/AUTOMATION.";
     exit 1;
 fi
+# delete the temp dir in case the last run was interupted
+rm -rf ${SBML_SEMANTIC_TESTSUITE_DIR}/temp
+
 # check if the testlist is there and readable
 if [ -f ${SBML_SEMANTIC_TESTSUITE_LIST} ];then
     if [ -r ${SBML_SEMANTIC_TESTSUITE_LIST} ];then
