@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.206.2.1 $
+//   $Revision: 1.206.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/21 14:36:04 $
+//   $Date: 2008/07/22 12:49:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5438,7 +5438,18 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
     {
       eventName = pEvent->getId();
     }
-  CEvent* pCOPASIEvent = pCopasiModel->createEvent(eventName);
+  std::string appendix = "";
+  unsigned int counter = 2;
+  std::ostringstream numberStream;
+  while (pCopasiModel->getEvents().getIndex(eventName + appendix) != C_INVALID_INDEX)
+    {
+      numberStream.str("");
+      numberStream << "_" << counter;
+      counter++;
+      appendix = numberStream.str();
+    }
+  CEvent* pCOPASIEvent = pCopasiModel->createEvent(eventName + appendix);
+  assert(pCOPASIEvent != NULL);
   if (pEvent->isSetId())
     {
       pCOPASIEvent->setSBMLId(pEvent->getId());
