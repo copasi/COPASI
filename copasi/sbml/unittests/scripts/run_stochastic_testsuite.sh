@@ -138,6 +138,7 @@ function run-single-stochastic-test
     STEPNUMBER=50
     INFILE=${STOCHASTIC_TESTSUITE_DIR}/${MODEL}.xml
     OUTPUT_FILE=${MODEL}.stochastic.out
+    COMMAND_FILE=${MODEL}.stochastic.sh
     ERROR_FILE=${MODEL}.stochastic.err
     RESULT_FILE=${MODEL}.stochastic.RESULT
     MEAN_REFERENCE_FILE=${MODEL}-mean.csv
@@ -159,6 +160,7 @@ function run-single-stochastic-test
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
+    echo "${COMMAND}" > ${POUTPUT_DIR}/${COMMAND_FILE}
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE}
     analyse_testrun ${MODEL} ${OUTPUT_DIR} ${STEPNUMBER};
     return $?
@@ -173,64 +175,80 @@ function run-stochastic-testsuite
     OUTPUT_DIR=$1
     shift
     MODEL=$1
+    COUNT=0;
+    NUM_PASSED=0;
+    NUM_FAILED=0;
+    NUM_SUCCEED=0;
     while [ -n "$MODEL" ];do
       echo -n "Simulating ${MODEL} stochastically ${NUM_ITERATIONS} times ... ";
+      COUNT=$(($COUNT + 1))
       run-single-stochastic-test ${MODEL} ${TMP_DIR}
       case $? in
       0 )
           echo -n -e '\E[32;47mOK';
           ${TPUT} sgr0;
           echo -n -e "\n";
+          NUM_PASSED=$(($NUM_PASSED + 1));
           ;;
       1 )
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
           echo -n -e "\n";
+          NUM_FAILED=$(($NUM_FAILED + 1));
           ;;
       3 )
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
           echo -e "\nCalculation of mean values and standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-calc.out";
+          NUM_FAILED=$(($NUM_FAILED + 1));
           ;;
       4 )
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
           echo -e "\nComparison of mean values failed. See ${OUTPUT_DIR}/${MODEL}-mean-compare.out";
+          NUM_FAILED=$(($NUM_FAILED + 1));
           ;;
       5 )
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
           echo -e "\nComparison of standard deviations failed. See ${OUTPUT_DIR}/${MODEL}-sd-compare.out";
+          NUM_FAILED=$(($NUM_FAILED + 1));
           ;;
       6 )
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
           echo -e "\nSome result file was missing";
+          NUM_FAILED=$(($NUM_FAILED + 1));
           ;;
       102 ) 
           echo -n -e '\E[33;47mSUCCEDED';
           ${TPUT} sgr0;
           echo -e -n "\nValgrind reported errors. Check ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
+          NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
           ;;
       103 ) 
           echo -n -e '\E[33;47mSUCCEDED';
           ${TPUT} sgr0;
           echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${MODEL}.stochastic.log.";
+          NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
           ;;
       104 ) 
           echo -e -n '\E[33;47mSUCCEDED';
           ${TPUT} sgr0;
           echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${MODEL}.stochastic.log for details.";
+          NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
           ;;
       * )
           echo -n -e '\E[31;47mFAILED';
           ${TPUT} sgr0;
           echo -e "\nAn unknown error code \"$?\" was reported from run-single-stochastic-test.";
+          NUM_FAILED=$(($NUM_FAILED + 1));
           ;;
       esac
       shift
       MODEL=$1
     done
+    echo -e "\nOut of ${COUNT} tests ${NUM_PASSED} passed, ${NUM_SUCCEEDED} succeeded and ${NUM_FAILED} failed.\n\n"
 }
 
 # enable leak checking in valgrind if requested

@@ -131,6 +131,7 @@ function run-single-test
     NAME=${NAME%%.test}
     DIR=${TESTFILE%/*}
     OUTPUT_FILE=${NAME}.testsuite.out
+    COMMAND_FILE=${NAME}.testsuite.sh
     ERROR_FILE=${NAME}.testsuite.err
     VALGRIND_LOG=${NAME}.testsuite.log
     OLD_PWD=`pwd`
@@ -155,12 +156,14 @@ function run-single-test
     # remove an existing result file 
     rm -rf ${DIR}/testout.csv
     if [ ${OUTPUT_DIR:0:1} == "/" ];then
+      echo "$COMMAND" > ${OUTPUT_DIR}/${COMMAND_FILE}
       $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE}
       if [ $? -ne 0 ];then
        cd ${OLD_PWD}
        return 1
       fi 
     else
+      echo "$COMMAND" > ${OLD_PWD}/${OUTPUT_DIR}/${COMMAND_FILE}
       $COMMAND > ${OLD_PWD}/${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OLD_PWD}/${OUTPUT_DIR}/${ERROR_FILE}
       if [ $? -ne 0 ];then
        cd ${OLD_PWD}
@@ -206,8 +209,18 @@ function run_testlist
    # each line that start with TEST is a test
    # each line that start with CATEGORY is a new category
    # all other lines are ignored
-    $CAT ${TESTLIST} | while read LINE; do
+   CATEGORY_NAME="" 
+   CATEGORY_COUNT=0 
+   CATEGORY_FAILED=0 
+   CATEGORY_PASSED=0 
+   CATEGORY_SUCCEEDED=0 
+   COUNT=0 
+   NUM_PASSED=0 
+   NUM_FAILED=0 
+   NUM_SUCCEEDED=0 
+   while read LINE; do
       if [ "${LINE:0:5}" == "TEST " ];then
+        CATEGORY_COUNT=$(($CATEGORY_COUNT + 1));
         TESTNAME=${LINE:5}
         NAME=${TESTNAME##*/}
         NAME=${NAME%%.test}
@@ -221,46 +234,68 @@ function run_testlist
             echo -n -e '\E[32;47mOK';
             ${TPUT} sgr0;
             echo -n -e "\n";
+            CATEGORY_PASSED=$((${CATEGORY_PASSED} + 1));
             ;;
         1 )
             echo -n -e '\E[31;47mFAILED';
             ${TPUT} sgr0;
             echo -n -e  "\n";
+            CATEGORY_FAILED=$((${CATEGORY_FAILED} + 1));
             ;;
         2 )
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nThere was additional output from the test. Check ${OUTPUT_DIR}/${ERROR_FILE} for details.";
+            CATEGORY_SUCCEEDED=$((${CATEGORY_SUCCEEDED} + 1));
             ;;
         102 ) 
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nValgrind reported errors. Check ${OUTPUT_DIR}/${VALGRIND_LOG} for details.";
+            CATEGORY_SUCCEEDED=$((${CATEGORY_SUCCEEDED} + 1));
             ;;
         103 ) 
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${VALGRIND_LOG}.";
+            CATEGORY_SUCCEEDED=$((${CATEGORY_SUCCEEDED} + 1));
             ;;
         104 ) 
             echo -e -n '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${VALGRIND_LOG} for details.";
+            CATEGORY_SUCCEEDED=$((${CATEGORY_SUCCEEDED} + 1));
             ;;
         * )
             echo -n -e '\E[31;47mFAILED';
             ${TPUT} sgr0;
             echo -e "\nAn unknown error code was reported from run-single-test.";
+            CATEGORY_FAILED=$((${CATEGORY_FAILED} + 1));
             ;;
         esac
-
-
       fi
       if [ "${LINE:0:9}" == "CATEGORY " ];then
+        if [ ! -z "${CATEGORYNAME}" ];then
+          NUM_PASSED=$((${NUM_PASSED} + ${CATEGORY_PASSED}));
+          NUM_FAILED=$((${NUM_FAILED} + ${CATEGORY_FAILED}));
+          NUM_SUCCEEDED=$((${NUM_SUCCEEDED} + ${CATEGORY_SUCCEEDED}));
+          COUNT=$((${COUNT} + ${CATEGORY_COUNT})); 
+          echo -e "\nOut of ${CATEGORY_COUNT} tests in category ${CATEGORYNAME} ${CATEGORY_PASSED} passed, ${CATEGORY_SUCCEEDED} succeeded and ${CATEGORY_FAILED} failed."
+        fi
+        CATEGORY_PASSED=0;
+        CATEGORY_FAILED=0;
+        CATEGORY_SUCCEEDED=0;
+        CATEGORY_COUNT=0;
         CATEGORYNAME=${LINE:9}
-        echo "Running tests in category $CATEGORYNAME ..."
+        echo -e "\nRunning tests in category $CATEGORYNAME ..."
       fi
-    done
+    done <${TESTLIST}
+    NUM_PASSED=$((${NUM_PASSED} + ${CATEGORY_PASSED}));
+    NUM_FAILED=$((${NUM_FAILED} + ${CATEGORY_FAILED}));
+    NUM_SUCCEEDED=$((${NUM_SUCCEEDED} + ${CATEGORY_SUCCEEDED}));
+    COUNT=$((${COUNT} + ${CATEGORY_COUNT})); 
+    echo -e "\nOut of ${CATEGORY_COUNT} tests in category ${CATEGORYNAME} ${CATEGORY_PASSED} passed, ${CATEGORY_SUCCEEDED} succeeded and ${CATEGORY_FAILED} failed."
+    echo -e "\nOut of ${COUNT} tests ${NUM_PASSED} passed, ${NUM_SUCCEEDED} succeeded and ${NUM_FAILED} failed.\n\n"
 }
 
 # enable leak checking in valgrind if requested

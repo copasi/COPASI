@@ -111,11 +111,16 @@ function test_import_files
     # create a direcory in TMP_DIR that holds all result files
     OUTPUT_DIR=$TMP_DIR
     FILENAME=$1
+    NUM_FAILED=0
+    NUM_PASSED=0
+    NUM_SUCCEEDED=0
+    COUNT=0
     while [ -n "$FILENAME" ];do
       # check if the file exists
       if [ ! -r $FILENAME ];then
           echo "$FILENAME does not exist, is not a regular file or is not readable."
       else
+        COUNT=$(($COUNT + 1))
         echo -n "Importing $FILENAME ... ";
         NAME=${FILENAME##*/};
         NAME=${NAME%%.xml};
@@ -125,9 +130,11 @@ function test_import_files
             echo -n -e '\E[32;47mOK';
             ${TPUT} sgr0;
             echo -n -e "\n";
+            NUM_PASSED=$(($NUM_PASSED + 1))
             ;;
         1 )
             echo -n -e '\E[31;47mFAILED';
+            NUM_FAILED=$(($NUM_FAILED + 1))
             ${TPUT} sgr0;
             echo -n -e "\n";
             ;;
@@ -135,25 +142,30 @@ function test_import_files
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nThere was additional output from COPASI. Check ${OUTPUT_DIR}/${NAME}.import.err for details.";
+            NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         102 ) 
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nValgrind reported errors. Check ${OUTPUT_DIR}/${NAME}.import.log for details.";
+            NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         103 ) 
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${NAME}.import.log.";
+            NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         104 ) 
             echo -e -n '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
             echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${NAME}.import.log for details.";
+            NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         * )
             echo -n -e '\E[31;47mFAILED';
             ${TPUT} sgr0;
+            NUM_FAILED=$(($NUM_FAILED + 1))
             echo -e ".\nAn unknown error code was reported from test_import_file.";
             ;;
         esac
@@ -161,6 +173,7 @@ function test_import_files
       shift
       FILENAME=$1
     done
+    echo -e "\nOut of ${COUNT} imports ${NUM_PASSED} PASSED, ${NUM_SUCCEEDED} SUCCEEDED and ${NUM_FAILED} FAILED.\n\n" 
 }
 
 # enable leak checking in valgrind if requested
