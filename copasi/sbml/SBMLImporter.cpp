@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.208 $
+//   $Revision: 1.209 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/22 11:36:55 $
+//   $Date: 2008/07/23 10:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1184,177 +1184,222 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
             {
               CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
               pTmpTree->setRoot(pExpressionTreeRoot);
-              // check if the root node is a simple function call
-              if (this->isSimpleFunctionCall(pExpressionTreeRoot))
+              // check if the expression is constant flux
+              CCopasiObject* pParamObject = SBMLImporter::isConstantFlux(pExpressionTreeRoot, copasiModel, pTmpFunctionDB);
+              if (pParamObject != NULL)
                 {
-                  // if yes, we check if it corresponds to an already existing function
-                  std::string functionName = pExpressionTreeRoot->getData();
-                  CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
-                  assert(tree);
-                  std::vector<CEvaluationNodeObject*>* v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
-                  if (!v)
+                  // assert that the object really is a local or global
+                  // parameter
+                  assert(dynamic_cast<const CCopasiParameter*>(pParamObject) || dynamic_cast<const CModelValue*>(pParamObject));
+                  std::string functionName;
+                  if (copasiReaction->isReversible())
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
-                    }
-                  if (!v->empty())
-                    {
-                      CFunction* pFun = NULL;
-                      if (copasiReaction->isReversible())
-                        {
-                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
-                        }
-                      else
-                        {
-                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
-                        }
-                      if (!pFun)
-                        {
-                          fatalError();
-                        }
-                      // do the mapping
-                      CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                      unsigned int i, iMax = v->size();
-                      for (i = 0;i < iMax;++i)
-                        {
-                          pCallNode->addChild((*v)[i]);
-                        }
-                      this->renameMassActionParameters(pCallNode);
-                      copasiReaction->setFunction(pFun);
-                      this->doMapping(copasiReaction, pCallNode);
-                      delete pCallNode;
+                      // set the function to Constant flux (reversible)
+                      functionName = "Constant flux (reversible)";
                     }
                   else
                     {
-                      CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
-                      // if it does, we set the existing function for this reaction
-                      if (pExistingFunction)
-                        {
-                          copasiReaction->setFunction(pExistingFunction);
-                          // do the mapping
-                          this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
-                        }
-                      // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
-                      else
-                        {
-                          // replace the variable nodes in tree with  nodes from
-                          std::map<std::string, std::string > arguments;
-                          const CFunctionParameters& funParams = tree->getVariables();
-                          const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
-                          unsigned int i, iMax = funParams.size();
-                          for (i = 0;(i < iMax) && pTmpNode;++i)
-                            {
-                              if (!(pTmpNode->getType() == CEvaluationNode::OBJECT)) fatalError();
-                              arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
-                              pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
-                            }
-                          assert((i == iMax) && pTmpNode == NULL);
-                          CEvaluationNode* pTmpExpression = this->variables2objects(tree->getRoot(), arguments);
-
-                          CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
-                          pTmpTree2->setRoot(pTmpExpression);
-                          copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
-                          delete pTmpTree2;
-                          if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
-                            {
-                              // in order to get around the const_casts, I
-                              // have to find the function in the
-                              // functiondb
-                              CFunction* pNonconstFun = NULL;
-                              CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
-                              while (it != endit)
-                                {
-                                  if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
-                                    {
-                                      pNonconstFun = dynamic_cast<CFunction*>(*it);
-                                      break;
-                                    }
-                                  ++it;
-                                }
-                              assert(pNonconstFun != NULL);
-                              // code to fix Bug 1015
-                              if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
-                                {
-                                  pNonconstFun->setReversible(TriUnspecified);
-                                }
-                              pTmpFunctionDB->add(pNonconstFun, false);
-                              this->mUsedFunctions.insert(pNonconstFun->getObjectName());
-                            }
-                        }
+                      // set the function to Constant flux (irreversible)
+                      functionName = "Constant flux (irreversible)";
                     }
-                  pdelete(v);
+                  CFunction* pCFFun = dynamic_cast<CFunction*>(this->functionDB->findFunction(functionName));
+                  assert(pCFFun != NULL);
+                  CEvaluationNodeCall* pCallNode = NULL;
+                  if (CEvaluationNode::type(pExpressionTreeRoot->getType()) == CEvaluationNode::OBJECT)
+                    {
+                      pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                      // add the parameter
+                      pCallNode->addChild(pExpressionTreeRoot->copyBranch());
+                    }
+                  else
+                    {
+                      pCallNode = dynamic_cast<CEvaluationNodeCall*>(pExpressionTreeRoot->copyBranch());
+                      assert(pCallNode != NULL);
+                    }
+                  if (pParamObject->getObjectType() == "Parameter")
+                    {
+                      pParamObject->setObjectName("v");
+                      dynamic_cast<CEvaluationNode*>(pCallNode->getChild())->setData("<" + pParamObject->getCN() + ">");
+                    }
+                  copasiReaction->setFunction(pCFFun);
+                  // map the parameter
+                  this->doMapping(copasiReaction, pCallNode);
+                  delete pCallNode;
                 }
               else
                 {
-                  std::vector<CEvaluationNodeObject*>* v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
-                  if (!v)
+                  // check if the root node is a simple function call
+                  if (this->isSimpleFunctionCall(pExpressionTreeRoot))
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
-                    }
-                  if (!v->empty())
-                    {
-                      CFunction* pFun = NULL;
-                      if (copasiReaction->isReversible())
+                      // if yes, we check if it corresponds to an already existing function
+                      std::string functionName = pExpressionTreeRoot->getData();
+                      CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
+                      assert(tree);
+                      std::vector<CEvaluationNodeObject*>* v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                      if (!v)
                         {
-                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                        }
+                      if (!v->empty())
+                        {
+                          CFunction* pFun = NULL;
+                          if (copasiReaction->isReversible())
+                            {
+                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                            }
+                          else
+                            {
+                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                            }
+                          if (!pFun)
+                            {
+                              fatalError();
+                            }
+                          // do the mapping
+                          CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                          unsigned int i, iMax = v->size();
+                          for (i = 0;i < iMax;++i)
+                            {
+                              pCallNode->addChild((*v)[i]);
+                            }
+                          this->renameMassActionParameters(pCallNode);
+                          copasiReaction->setFunction(pFun);
+                          this->doMapping(copasiReaction, pCallNode);
+                          delete pCallNode;
                         }
                       else
                         {
-                          pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                          CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
+                          // if it does, we set the existing function for this reaction
+                          if (pExistingFunction)
+                            {
+                              copasiReaction->setFunction(pExistingFunction);
+                              // do the mapping
+                              this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                            }
+                          // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
+                          else
+                            {
+                              // replace the variable nodes in tree with  nodes from
+                              std::map<std::string, std::string > arguments;
+                              const CFunctionParameters& funParams = tree->getVariables();
+                              const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
+                              unsigned int i, iMax = funParams.size();
+                              for (i = 0;(i < iMax) && pTmpNode;++i)
+                                {
+                                  if (!(pTmpNode->getType() == CEvaluationNode::OBJECT)) fatalError();
+                                  arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
+                                  pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
+                                }
+                              assert((i == iMax) && pTmpNode == NULL);
+                              CEvaluationNode* pTmpExpression = this->variables2objects(tree->getRoot(), arguments);
+
+                              CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
+                              pTmpTree2->setRoot(pTmpExpression);
+                              copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
+                              delete pTmpTree2;
+                              if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
+                                {
+                                  // in order to get around the const_casts, I
+                                  // have to find the function in the
+                                  // functiondb
+                                  CFunction* pNonconstFun = NULL;
+                                  CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                                  while (it != endit)
+                                    {
+                                      if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
+                                        {
+                                          pNonconstFun = dynamic_cast<CFunction*>(*it);
+                                          break;
+                                        }
+                                      ++it;
+                                    }
+                                  assert(pNonconstFun != NULL);
+                                  // code to fix Bug 1015
+                                  if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
+                                    {
+                                      pNonconstFun->setReversible(TriUnspecified);
+                                    }
+                                  pTmpFunctionDB->add(pNonconstFun, false);
+                                  this->mUsedFunctions.insert(pNonconstFun->getObjectName());
+                                }
+                            }
                         }
-                      if (!pFun)
-                        {
-                          fatalError();
-                        }
-                      // do the mapping
-                      CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
-                      unsigned int i, iMax = v->size();
-                      for (i = 0;i < iMax;++i)
-                        {
-                          pCallNode->addChild((*v)[i]);
-                        }
-                      // rename the function parameters to k1 and k2
-                      this->renameMassActionParameters(pCallNode);
-                      copasiReaction->setFunction(pFun);
-                      this->doMapping(copasiReaction, pCallNode);
-                      delete pCallNode;
+                      pdelete(v);
                     }
                   else
                     {
-                      if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+                      std::vector<CEvaluationNodeObject*>* v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
+                      if (!v)
                         {
-                          // error message
-                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+                        }
+                      if (!v->empty())
+                        {
+                          CFunction* pFun = NULL;
+                          if (copasiReaction->isReversible())
+                            {
+                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                            }
+                          else
+                            {
+                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                            }
+                          if (!pFun)
+                            {
+                              fatalError();
+                            }
+                          // do the mapping
+                          CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                          unsigned int i, iMax = v->size();
+                          for (i = 0;i < iMax;++i)
+                            {
+                              pCallNode->addChild((*v)[i]);
+                            }
+                          // rename the function parameters to k1 and k2
+                          this->renameMassActionParameters(pCallNode);
+                          copasiReaction->setFunction(pFun);
+                          this->doMapping(copasiReaction, pCallNode);
+                          delete pCallNode;
                         }
                       else
                         {
-                          if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
+                          if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
                             {
-                              // in order to get around the const_casts, I
-                              // have to find the function in the
-                              // functiondb
-                              CFunction* pNonconstFun = NULL;
-                              CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
-                              while (it != endit)
+                              // error message
+                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                            }
+                          else
+                            {
+                              if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
                                 {
-                                  if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
+                                  // in order to get around the const_casts, I
+                                  // have to find the function in the
+                                  // functiondb
+                                  CFunction* pNonconstFun = NULL;
+                                  CCopasiVectorN<CEvaluationTree>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
+                                  while (it != endit)
                                     {
-                                      pNonconstFun = dynamic_cast<CFunction*>(*it);
-                                      break;
+                                      if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
+                                        {
+                                          pNonconstFun = dynamic_cast<CFunction*>(*it);
+                                          break;
+                                        }
+                                      ++it;
                                     }
-                                  ++it;
+                                  assert(pNonconstFun != NULL);
+                                  // code to fix Bug 1015
+                                  if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
+                                    {
+                                      pNonconstFun->setReversible(TriUnspecified);
+                                    }
+                                  pTmpFunctionDB->add(pNonconstFun, false);
+                                  this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
                                 }
-                              assert(pNonconstFun != NULL);
-                              // code to fix Bug 1015
-                              if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
-                                {
-                                  pNonconstFun->setReversible(TriUnspecified);
-                                }
-                              pTmpFunctionDB->add(pNonconstFun, false);
-                              this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
                             }
                         }
+                      pdelete(v);
                     }
-                  pdelete(v);
                 }
               // delete the temporary tree and all the nodes
               delete pTmpTree;
@@ -5414,6 +5459,59 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
         }
     }
   return result;
+}
+
+CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB)
+{
+  CCopasiObject* pObject = NULL;
+  CRegisteredObjectName name;
+  CEvaluationNode::Type type = pRoot->getType();
+  switch (CEvaluationNode::type(type))
+    {
+    case CEvaluationNode::CALL:
+      {
+        // the function call may only have one child
+        // which must be o object node
+        if (pRoot->getChild() != NULL && pRoot->getChild()->getSibling() == NULL && CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->getType()) == CEvaluationNode::OBJECT)
+          {
+            const CEvaluationTree* pTree = pFunctionDB->findFunction(pRoot->getData());
+            assert(pTree != NULL);
+            // the function may only have one node which must be the
+            // variable
+            if (pTree->getRoot() != NULL && pTree->getRoot()->getChild() == NULL && CEvaluationNode::type(pTree->getRoot()->getType()) == CEvaluationNode::VARIABLE)
+              {
+                name = dynamic_cast<const CEvaluationNodeObject*>(pRoot->getChild())->getObjectCN();
+                assert(!name.empty());
+                // TODO remove this function from the usedFunctions list
+                // if it is still in there
+              }
+          }
+      }
+      break;
+    case CEvaluationNode::OBJECT:
+      name = dynamic_cast<const CEvaluationNodeObject*>(pRoot)->getObjectCN();
+      assert(!name.empty());
+      break;
+    default:
+      break;
+    }
+  if (!name.empty())
+    {
+      // check if the object is a local or global parameter
+      std::vector<CCopasiContainer*> listOfContainers;
+      listOfContainers.push_back(pModel);
+      pObject = CCopasiContainer::ObjectFromName(listOfContainers, name);
+      assert(pObject != NULL);
+      if (pObject->isReference())
+        {
+          pObject = pObject->getObjectParent();
+        }
+      if (!(dynamic_cast<CModelValue*>(pObject) || dynamic_cast<CCopasiParameter*>(pObject)))
+        {
+          pObject = NULL;
+        }
+    }
+  return pObject;
 }
 
 #ifdef COPASI_DEBUG

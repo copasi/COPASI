@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:58:56 $
+//   $Author: gauges $
+//   $Date: 2008/07/23 10:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -273,6 +273,12 @@ class SBMLImporter
     bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
     std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
+
+    /**
+     * Checks if the given node is an object node that represents a parameter
+     * or a model value or a function which has a single parameter and a single node which also represents a parameter.
+     */
+    static CCopasiObject* isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB);
 
     std::vector<CEvaluationNodeObject*>* isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
 
