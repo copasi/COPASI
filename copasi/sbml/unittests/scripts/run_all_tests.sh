@@ -75,7 +75,13 @@ ANALYSIS_SCRIPTS_DIR=${ANALYSIS_SCRIPTS_DIR:="../../../../stochastic-testsuite"}
 STOCHASTIC_TESTSUITE_LIST=${STOCHASTIC_TESTSUITE_LIST:="../../../../stochastic-testsuite/copasi-model-list"}
 
 # parameters for franks testsuite
-
+if [ -z "$FRANKS_WRAPPER" ];then
+  if [ "$SYSTEM" == "Darwin" ];then
+    FRANKS_WRAPPER=../../../../franks_testsuite/franks_testsuite.app/Contents/MacOS/franks_testsuite
+  else
+    FRANKS_WRAPPER=../../../../franks_testsuite/franks_testsuite
+  fi
+fi
 
 
 # check if TMP_DIR is writable
@@ -204,6 +210,24 @@ echo -e "\n\n"
 
 # run franks test
 # not written yet.
-#echo "Running Franks simulation test ..."
-#${MKDIR} ${RESULT_DIR}/franks
-#USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/franks 
+echo "Running Franks simulation test ..."
+${MKDIR} ${RESULT_DIR}/franks
+${MKDIR} ${RESULT_DIR}/franks/curated
+if [ ! -d ${BIOMODELS_DIR}/curated ];then
+  echo "Error. \"${BIOMODELS_DIR}/curated\" does not exist or is not a directory."
+  exit 1;
+fi
+USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/franks/curated ./run_franks_test.sh ${BIOMODELS_DIR}/curated/*.xml
+if [ "${DO_NONCURATED}" == "yes" ];then
+  echo -e "\nRoundtripping noncurated models ..."
+  # check if ${BIOMODELS_DIR}/noncurated exists
+  if [ ! -d ${BIOMODELS_DIR}/noncurated ];then
+    echo "Error. \"${BIOMODELS_DIR}/noncurated\" does not exist or is not a directory."
+    exit 1;
+  fi
+  ${MKDIR} ${RESULT_DIR}/franks/noncurated
+  USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/franks/noncurated ./run_franks_test.sh ${BIOMODELS_DIR}/noncurated/*.xml
+fi
+echo -e "\n\n"
+
+
