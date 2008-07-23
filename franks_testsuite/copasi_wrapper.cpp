@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/08 13:39:09 $
+//   $Date: 2008/07/23 12:28:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,6 +174,8 @@ int main(int argc, char *argv[])
 
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask();
+      // use LSODAR from now on since we will have events pretty soon
+      pTrajectoryTask->setMethodType(CCopasiMethod::LSODAR);
       pTrajectoryTask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
 
       pTrajectoryTask->setScheduled(true);
