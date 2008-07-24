@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/14 13:51:28 $
+//   $Date: 2008/07/24 07:11:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -270,20 +270,23 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
 
 CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
 {
+  // TODO actually I could use the createOperatorChain method here as well
   //std::cout << "Converting Sum: " << sum << std::endl;
   const std::set<CNormalFraction*>& fractions = sum.getFractions();
   std::set<CNormalFraction*>::const_iterator it = fractions.begin();
   std::set<CNormalFraction*>::const_iterator itEnd = fractions.end();
-  CEvaluationNode* pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-  CEvaluationNode* pOperator = pResult;
+  std::vector<const CEvaluationNode*> summands;
+  //CEvaluationNode* pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+  //CEvaluationNode* pOperator = pResult;
   CEvaluationNode* pChild = NULL;
   while (it != itEnd)
     {
       pChild = convertToCEvaluationNode(**it);
-      pOperator->addChild(pChild);
-      pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-      pOperator->addChild(pChild);
-      pOperator = pChild;
+      //pOperator->addChild(pChild);
+      //pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+      //pOperator->addChild(pChild);
+      //pOperator = pChild;
+      summands.push_back(pChild);
       ++it;
     }
   const std::set<CNormalProduct*, compareProducts >& products = sum.getProducts();
@@ -292,14 +295,16 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
   while (it2 != itEnd2)
     {
       pChild = convertToCEvaluationNode(**it2);
-      pOperator->addChild(pChild);
-      pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-      pOperator->addChild(pChild);
-      pOperator = pChild;
+      //pOperator->addChild(pChild);
+      //pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+      //pOperator->addChild(pChild);
+      //pOperator = pChild;
+      summands.push_back(pChild);
       ++it2;
     }
   // get the parent of the last operator and replace it by its first child.
   // but only if the last operator is not equal to pResult
+  /*
   if (pOperator != pResult)
     {
       pOperator = dynamic_cast<CEvaluationNodeOperator*>(pOperator->getParent());
@@ -316,6 +321,24 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
           pParent->addChild(dynamic_cast<CEvaluationNode*>(pOperator->getChild())->copyBranch());
         }
       delete pOperator;
+    }
+  // if there are no fractions and no products, 0.0 has to be returned.
+  if(pResult->getChild()==NULL)
+  {
+      delete pResult;
+      pResult=new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"0.0");
+  }
+  else
+  {
+    assert(pResult->getChild()->getSibling()!=NULL);
+  }
+  */
+  CEvaluationNode* pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", summands);
+  std::vector<const CEvaluationNode*>::iterator vIt = summands.begin(), vEndit = summands.end();
+  while (vIt != vEndit)
+    {
+      delete *vIt;
+      ++vIt;
     }
   //std::cout << "Converted Sum: " << std::endl;
   //pResult->printRecursively(std::cout);
