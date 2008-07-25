@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 11:31:41 $
+//   $Date: 2008/07/25 14:26:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -473,6 +473,10 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
                 pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
               }
           }
+      }
+    else
+      {
+        result = false;
       }
     return result;
   }
