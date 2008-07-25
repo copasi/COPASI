@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 06:42:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,22 +23,17 @@
  ** destructor.
  *****************************************************************************/
 
+#include "CQMessageBox.h"
+
 #include "qtUtilities.h" // for UTF8
+
+#include "CopasiFileDialog.h"
+#include "tex/CMathMLToTeX.h"
 
 void CQExpressionMmlWidget::slotGoExpressionWidget()
 {
+  std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << mpExpressionWidget->text() << std::endl;
   mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
-  /*  std::ostringstream mml;
-    std::vector<std::vector<std::string> > params;
-
-    if (mpExpressionWidget->text().isEmpty())
-      mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
-    else
-    {
-  //    ExpressionPage->mp
-      mpWidgetStackExpressionMml->raiseWidget(mpMmlPage);
-    }
-  */
 }
 
 void CQExpressionMmlWidget::slotGoMmlWidget()
@@ -70,10 +65,74 @@ void CQExpressionMmlWidget::updateWidget()
   */
   mpMmlScrollView->updateWidget(mml);
 
+  MMLStr = FROM_UTF8(mml.str());
+
 #endif /* HAVE_MML */
 }
 
 void CQExpressionMmlWidget::init()
 {
   //  mpBtnViewExpression->setEnabled(FALSE);
+}
+
+// add 22.07.08
+void CQExpressionMmlWidget::slotSaveExpression()
+{
+  QString filter;
+  QString outfilename;
+
+  C_INT32 Answer = QMessageBox::No;
+
+  while (Answer == QMessageBox::No)
+    {
+      outfilename =
+        CopasiFileDialog::getSaveFileNameAndFilter(filter, this,
+            "Save File Dialog",
+            QString::null,
+            "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
+            "Save Expression to Disk");
+
+      if (!outfilename) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(outfilename);
+
+      if (Answer == QMessageBox::Cancel)
+        return;
+    }
+
+  if (filter.contains("tex"))
+    saveTeX(outfilename);
+  else
+    saveMML(outfilename);
+}
+
+void CQExpressionMmlWidget::saveMML(const QString outfilename)
+{
+  std::ofstream ofile;
+  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+
+  ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
+  ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
+
+  //  ofile << mml.str();
+  ofile << MMLStr.latin1();
+
+  ofile << "</math>" << std::endl;
+
+  ofile.close();
+}
+
+void CQExpressionMmlWidget::saveTeX(const QString outfilename)
+{
+  QString latexStr(MMLStr.latin1());
+
+  CMathMLToTeX::convert(latexStr);
+
+  std::ofstream ofile;
+  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+  ofile << latexStr;
+  //  ofile << mml.str() << std::endl;
+  ofile.close();
 }
