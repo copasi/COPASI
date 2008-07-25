@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/07/24 10:57:18 $
+//   $Date: 2008/07/25 07:51:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,6 @@
 CStructureParser::CStructureParser(int n)
 {
   sumColumns = n;
-  //  texHead = "";
-  //  std::cout << "sumColumns = " << sumColumns << std::endl;
 }
 
 bool CStructureParser::startDocument()
@@ -43,14 +41,10 @@ bool CStructureParser::startDocument()
 }
 
 bool CStructureParser::startElement(const QString& str1, const QString& str2,
-                                     const QString& qName,
-                                     const QXmlAttributes& attr)
+                                    const QString& qName,
+                                    const QXmlAttributes& attr)
 {
   tagName = qName;
-
-  //  std::cout << indent << " - " << qName << std::endl;
-  //  std::cout << " - " << str2 << std::endl;
-  //  std::cout << qName << " - " << attr.count() << " - " << attr.length() << std::endl;
 
   if (qName == "mtable")
     texHead = "\\begin{array}";
@@ -112,14 +106,10 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
-          //   std::cout << last << " --> split: " << lastUncompletedTags << " & " << idx << std::endl;
           idx++;
 
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
-
-          //   std::cout << "msub L" << __LINE__ << std::endl;
-          //   std::cout << mListOfUncompletedTags.last() << std::endl;
 
           tex += "{";
         }
@@ -127,7 +117,6 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
       // <msub> direct after <mfenced>
       if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
         {
-          //   std::cout << tex << std::endl;
           tex += ", \\, ";
         }
 
@@ -174,14 +163,10 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
-          //   std::cout << last << " --> split: " << lastUncompletedTags << " & " << idx << std::endl;
           idx++;
 
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
-
-          //   std::cout << "mrow L" << __LINE__ << std::endl;
-          //   std::cout << mListOfUncompletedTags.last() << std::endl;
 
           if (lastUncompletedTags.contains("msub") && idx == 2)
             tex += "_";
@@ -192,13 +177,6 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
 
       mListOfUncompletedTags.push_back("mrow");
       tex += " {";
-      /*
-       std::cout << "List of Uncompleted Tags: " << std::endl;
-       QValueList<QString>::iterator itL;
-       for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
-            std::cout << *itL << std::endl;
-       std::cout << std::endl;
-      */
     }
 
   if (qName == "mi" || qName == "mn")
@@ -207,15 +185,12 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
 
       if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
         {
-          //   std::cout << tex << std::endl;
           tex += ", \\, ";
         }
     }
 
   if (qName == "mi" || qName == "mo" || qName == "mn")
     {
-      // std::cout << qName << " L" << __LINE__ << std::endl;
-
       QString &last = mListOfUncompletedTags.last();
 
       if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
@@ -224,13 +199,10 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
-          //   std::cout << last << " --> split: " << lastUncompletedTags << " & " << idx << std::endl;
           idx++;
 
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
-
-          //   std::cout << "---" << mListOfUncompletedTags.last() << std::endl;
 
           if (lastUncompletedTags.contains("msub") && idx == 2)
             tex += "_";
@@ -238,13 +210,6 @@ bool CStructureParser::startElement(const QString& str1, const QString& str2,
           if (lastUncompletedTags.contains("msup") && idx == 2)
             tex += "^";
         }
-      /*
-       std::cout << "List of Uncompleted Tags: " << std::endl;
-       QValueList<QString>::iterator itL;
-       for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
-            std::cout << *itL << std::endl;
-       std::cout << std::endl;
-      */
     }
 
   indent += "    ";
@@ -275,8 +240,8 @@ bool CStructureParser::characters(const QString& str)
           else if (strAux.length() > 1)
             {
               if (strAux == "sech" || strAux == "csch" || strAux == "arcsec" || strAux == "arccsc"
-                   || strAux == "arccot" || strAux == "arcsinh" || strAux == "arccosh" || strAux == "arctanh"
-                   || strAux == "arcsech" || strAux == "arccsch" || strAux == "arccoth")
+                  || strAux == "arccot" || strAux == "arcsinh" || strAux == "arccosh" || strAux == "arctanh"
+                  || strAux == "arcsech" || strAux == "arccsch" || strAux == "arccoth")
                 tex += "{\\mathrm{" + strAux + " \\: }}";
               else
                 tex += "{\\mathrm{" + strAux + "}}";
@@ -335,14 +300,10 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mfrac")
     {
-      //    std::cout << std::endl << "on End Element of mfrac, mListOfUncompletedTags = " << mListOfUncompletedTags.last() << std::endl;
-
       if (mListOfUncompletedTags.last().contains("mfrac"))
         mListOfUncompletedTags.pop_back();
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
-
-      //    std::cout << "on endElement of mfrac, tex = " << tex << std::endl;
     }
 
   if (qName == "mtr")
@@ -355,10 +316,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
       indexColumns++;
     }
-  /*
-    if (qName == "mi" || qName == "mo" || qName == "mn")
-      std::cout << std::endl << "on endElement of " << qName << ", tex = " << tex << std::endl;
-  */
+
   if (qName == "mrow")
     {
       std::cout << std::endl << "on End Element of mrow, mListOfUncompletedTags = " << mListOfUncompletedTags.last() << std::endl;
@@ -427,8 +385,6 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "msub")
     {
-      //    std::cout << std::endl << "on End Element of msub, mListOfUncompletedTags = " << mListOfUncompletedTags.last() << std::endl;
-
       if (mListOfUncompletedTags.last().contains("msub"))
         mListOfUncompletedTags.pop_back();
       else
@@ -437,8 +393,6 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
       // </mfrac> direct after </msub>
       if (mListOfUncompletedTags.last().contains("mfrac"))
         tex += " }";
-
-      //    std::cout << "on endElement of msub, tex = " << tex << std::endl;
     }
 
   if (qName == "msup")
@@ -463,13 +417,11 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
 bool CStructureParser::ignorableWhitespace (const QString& str)
 {
-  //  std::cout << "ignore: " << str << std::endl;
   return TRUE;
 }
 
 bool CStructureParser::skippedEntity (const QString& str)
 {
-  //  std::cout << "skipEntry: " << str << std::endl;
   return TRUE;
 }
 

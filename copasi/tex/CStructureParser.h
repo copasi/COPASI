@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/07/24 10:57:21 $
+//   $Date: 2008/07/25 07:51:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@
 #include <qvaluelist.h>
 
 class QString;
-//class QValueList;
 
 class CStructureParser : public QXmlDefaultHandler
   {
@@ -30,7 +29,7 @@ class CStructureParser : public QXmlDefaultHandler
 
     bool startDocument();
     bool startElement(const QString&, const QString&, const QString& ,
-                       const QXmlAttributes&);
+                      const QXmlAttributes&);
     bool characters(const QString&);
     bool endElement(const QString&, const QString&, const QString&);
 
@@ -48,21 +47,10 @@ class CStructureParser : public QXmlDefaultHandler
     // tags
     QString tagName;
 
-    // for msub
-    //  bool isSub;
-    /*  int nSub;
-      int nSubTag;
-      QValueList<QString> texSub;
-    */
     // for column allignment
     bool needToWriteColumnAllignment;
     int sumColumns;
     int indexColumns;
-
-    // for mfrac
-    //  bool isFrac;
-    //  int nFrac;
-    //  QValueList<QString> texFrac;
 
     QValueList<QString> mListOfUncompletedTags;
   };
