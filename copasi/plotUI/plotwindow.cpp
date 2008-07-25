@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:58:56 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 06:04:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,32 +137,7 @@ void PlotWindow::printAsImage()
       QFileInfo fileInfo(fileName);
       extensionName = fileInfo.extension();
 
-      if (filter.contains("png"))
-        {
-          if (extensionName != "png")
-            fileName.replace("." + extensionName, ".png");
-
-          fileInfo.setFile(fileName);
-          extensionName = fileInfo.extension();
-
-          if (extensionName == "")
-            fileName += ".png";
-        }
-      else if (filter.contains("svg"))
-        {
-          if (extensionName != "svg")
-            fileName.replace("." + extensionName, ".svg");
-
-          fileInfo.setFile(fileName);
-          extensionName = fileInfo.extension();
-
-          if (extensionName == "")
-            fileName += ".svg";
-        }
-
-      fileInfo.setFile(fileName);
-      extensionName = fileInfo.extension();
-
+      // check whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
