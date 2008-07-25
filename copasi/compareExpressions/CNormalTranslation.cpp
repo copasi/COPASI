@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/16 13:09:44 $
+//   $Date: 2008/07/25 14:27:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,14 @@
 
 const double CNormalTranslation::ZERO = 1e-100;
 const unsigned int CNormalTranslation::RECURSION_LIMIT = 20;
+const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_ADD = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
+const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_OR = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
+const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_AND = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+const CEvaluationNode* const CNormalTranslation::ZERO_NODE = CNormalTranslation::NEUTRAL_ELEMENT_ADD;
+const CEvaluationNode* const CNormalTranslation::ONE_NODE = CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY;
+const CEvaluationNode* const CNormalTranslation::PLUS_NODE = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+const CEvaluationNode* const CNormalTranslation::TIMES_NODE = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
 
 /**
  * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
@@ -3510,4 +3518,48 @@ CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator
       ++it;
     }
   return CNormalTranslation::createOperatorChain(type, data, tmpV);
+}
+
+/**
+ * This method creates a chain of operations. The individual elements are
+ * linked with copies of pLink.
+ * The default result is returned if elements is empty.
+ * So the default result should always be the element that does not change the
+ * result of the operation that the resulting element will be embedded in.
+ * So if this method is used to create a chanin of OR linked elements which
+ * will be embedded in another and linked chain, the neutral element should be
+ * a TRUE node since AND combining something with true does not change the result.
+ * The neutral element is the element that does not change the result of the
+ * operation represented be pLink. So if pLink represents a multiplication,
+ * the neutral element is the number node 1.0.
+ */
+CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* pNeutralElement, const std::vector<const CEvaluationNode*>& elements)
+{
+  CEvaluationNode* pResult = NULL;
+  if (elements.size() == 1)
+    {
+      pResult = elements[0]->copyBranch();
+    }
+  else if (elements.size() > 1)
+    {
+      std::vector<const CEvaluationNode*>::const_reverse_iterator it = elements.rbegin(), endit = elements.rend();
+      CEvaluationNode* pOperator = pLink->copyBranch();
+      CEvaluationNode* pChild2 = (*it)->copyBranch();
+      ++it;
+      CEvaluationNode* pChild1 = (*it)->copyBranch();
+      pOperator->addChild(pChild1->copyBranch());
+      pOperator->addChild(pChild2->copyBranch());
+      ++it;
+      pChild2 = pOperator;
+      while (it != endit)
+        {
+          pOperator = pLink->copyBranch();
+          pOperator->addChild((*it)->copyBranch());
+          pOperator->addChild(pChild2);
+          pChild2 = pOperator;
+          ++it;
+        }
+      pResult = pOperator;
+    }
+  return pResult;
 }

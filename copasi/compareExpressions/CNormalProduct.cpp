@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/15 15:27:47 $
+//   $Date: 2008/07/25 14:27:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,7 +410,10 @@ std::string CNormalProduct::toString() const
         if (this->mFactor < 0.0)
           os << "(" << this->mFactor << ")";
         else
-          os << this->mFactor;
+          {
+            os.precision(18);
+            os << this->mFactor;
+          }
         firstFactor = false;
       }
     std::set <CNormalItemPower*, compareItemPowers >::const_iterator it;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/24 07:11:18 $
+//   $Date: 2008/07/25 14:27:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,6 +196,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
   std::ostringstream sstream;
   if (product.getItemPowers().size() == 0)
     {
+      sstream.precision(18);
       sstream << product.getFactor();
       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, sstream.str());
     }
@@ -204,65 +205,26 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
       const std::set<CNormalItemPower*, compareItemPowers >& itemPowers = product.getItemPowers();
       std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = itemPowers.begin();
       std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = itemPowers.end();
-      CEvaluationNodeOperator* pMult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-      pResult = pMult;
       CEvaluationNode* pChild = NULL;
+      std::vector<const CEvaluationNode*> products;
       while (it != itEnd)
         {
-          pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-          pMult->addChild(pChild);
           pChild = convertToCEvaluationNode(**it);
-          pMult->addChild(pChild);
-          pMult = dynamic_cast<CEvaluationNodeOperator*>(pMult->getChild());
+          products.push_back(pChild);
           ++it;
         }
-      if (product.getFactor() != 1.0)
+      if (fabs(product.getFactor() - 1.0) >= 1e-12)
         {
+          sstream.precision(18);
           sstream << product.getFactor();
-          pMult->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, sstream.str()));
-          if (pMult == pResult)
-            {
-              // there were no item powers
-              pResult = dynamic_cast<CEvaluationNode*>(pResult->getChild())->copyBranch();
-              delete pMult;
-            }
-          else
-            {
-              CEvaluationNode* pParent = dynamic_cast<CEvaluationNode*>(pMult->getParent());
-              assert(pParent != NULL);
-              pParent->removeChild(pMult);
-              pParent->addChild(dynamic_cast<CEvaluationNode*>(pMult->getChild())->copyBranch());
-              delete pMult;
-            }
+          products.push_back(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, sstream.str()));
         }
-      else
+      pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", products);
+      std::vector<const CEvaluationNode*>::iterator vIt = products.begin(), vEndit = products.end();
+      while (vIt != vEndit)
         {
-          if (pMult == pResult)
-            {
-              // there were no item powers
-              delete pResult;
-              pResult = dynamic_cast<CEvaluationNode*>(pResult->getChild())->copyBranch();
-            }
-          else
-            {
-              // replace the parent of pMult by the sibling of pMult and delete
-              // the parent and pMult
-              CEvaluationNode* pParent = dynamic_cast<CEvaluationNode*>(pMult->getParent());
-              assert(pParent != NULL);
-              if (pParent == pResult)
-                {
-                  pResult = dynamic_cast<CEvaluationNode*>(pMult->getSibling());
-                  pParent->removeChild(pResult);
-                  delete pParent;
-                }
-              else
-                {
-                  CEvaluationNode* pGrandParent = dynamic_cast<CEvaluationNode*>(pParent->getParent());
-                  pGrandParent->removeChild(pParent);
-                  pGrandParent->addChild(dynamic_cast<CEvaluationNode*>(pMult->getSibling())->copyBranch());
-                  delete pParent;
-                }
-            }
+          delete *vIt;
+          ++vIt;
         }
     }
   return pResult;
@@ -270,22 +232,15 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
 
 CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
 {
-  // TODO actually I could use the createOperatorChain method here as well
   //std::cout << "Converting Sum: " << sum << std::endl;
   const std::set<CNormalFraction*>& fractions = sum.getFractions();
   std::set<CNormalFraction*>::const_iterator it = fractions.begin();
   std::set<CNormalFraction*>::const_iterator itEnd = fractions.end();
   std::vector<const CEvaluationNode*> summands;
-  //CEvaluationNode* pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-  //CEvaluationNode* pOperator = pResult;
   CEvaluationNode* pChild = NULL;
   while (it != itEnd)
     {
       pChild = convertToCEvaluationNode(**it);
-      //pOperator->addChild(pChild);
-      //pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-      //pOperator->addChild(pChild);
-      //pOperator = pChild;
       summands.push_back(pChild);
       ++it;
     }
@@ -295,45 +250,18 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
   while (it2 != itEnd2)
     {
       pChild = convertToCEvaluationNode(**it2);
-      //pOperator->addChild(pChild);
-      //pChild = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-      //pOperator->addChild(pChild);
-      //pOperator = pChild;
       summands.push_back(pChild);
       ++it2;
     }
-  // get the parent of the last operator and replace it by its first child.
-  // but only if the last operator is not equal to pResult
-  /*
-  if (pOperator != pResult)
+  CEvaluationNode* pResult = NULL;
+  if (!summands.empty())
     {
-      pOperator = dynamic_cast<CEvaluationNodeOperator*>(pOperator->getParent());
-      assert(pOperator != NULL);
-      CEvaluationNode* pParent = dynamic_cast<CEvaluationNode*>(pOperator->getParent());
-      if (pParent == NULL)
-        {
-          pResult = dynamic_cast<CEvaluationNode*>(pOperator->getChild());
-          pOperator->removeChild(pResult);
-        }
-      else
-        {
-          pParent->removeChild(pOperator);
-          pParent->addChild(dynamic_cast<CEvaluationNode*>(pOperator->getChild())->copyBranch());
-        }
-      delete pOperator;
+      pResult = CNormalTranslation::createChain(CNormalTranslation::PLUS_NODE, CNormalTranslation::ZERO_NODE, summands);
     }
-  // if there are no fractions and no products, 0.0 has to be returned.
-  if(pResult->getChild()==NULL)
-  {
-      delete pResult;
-      pResult=new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"0.0");
-  }
   else
-  {
-    assert(pResult->getChild()->getSibling()!=NULL);
-  }
-  */
-  CEvaluationNode* pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", summands);
+    {
+      pResult = CNormalTranslation::ZERO_NODE->copyBranch();
+    }
   std::vector<const CEvaluationNode*>::iterator vIt = summands.begin(), vEndit = summands.end();
   while (vIt != vEndit)
     {
@@ -1670,7 +1598,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogicalItem& item)
       pLogicalNode->compile(NULL);
       break;
     case CNormalLogicalItem::FALSE:
-      pLogicalNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "FALSE");
+      pLogicalNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
       pLogicalNode->compile(NULL);
       break;
     case CNormalLogicalItem::EQ:
@@ -1721,6 +1649,218 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogicalItem& item)
   return pLogicalNode;
 }
 
+CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
+{
+  CEvaluationNode* pResult = NULL;
+  // go through all mAndSets and create AND combined chains which are then
+  // combined with OR
+  // do the same with all choice sets
+  // combine the two results with OR
+  CEvaluationNode* pNotNode = NULL;
+  CEvaluationNode* pNode = NULL;
+  CEvaluationNode* pOrNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+  CEvaluationNode* pAndNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+  std::vector<const CEvaluationNode*> andElements;
+  std::vector<const CEvaluationNode*> orElements;
+  CNormalLogical::ChoiceSetOfSets::const_iterator cIt = logical.getChoices().begin(), cEndit = logical.getChoices().end();
+  while (cIt != cEndit)
+    {
+      CNormalLogical::ChoiceSet::const_iterator cInnerIt = (*cIt).first.begin(), cInnerEndit = (*cIt).first.end();
+      while (cInnerIt != cInnerEndit)
+        {
+          pNode = convertToCEvaluationNode(*(*cInnerIt).first);
+          assert(pNode != NULL);
+          if ((*cInnerIt).second == true)
+            {
+              // only create the not node if it wouldn't result in the neutral
+              // element
+              if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+                {
+                  pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                  pNotNode->addChild(pNode);
+                  pNode = pNotNode;
+                }
+              else
+                {
+                  pNode = NULL;
+                }
+            }
+          ++cInnerIt;
+          // if it is not the neutral element or it is the last element to be
+          // inserted into an otherwise empty vector, insert the element
+          if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && cInnerIt == cInnerEndit))
+            {
+              andElements.push_back(pNode);
+            }
+        }
+      // create the and chain
+      pNode = CNormalTranslation::createChain(pAndNode, CNormalTranslation::NEUTRAL_ELEMENT_AND, andElements);
+      assert(pNode != NULL);
+      // delete the created nodes
+      std::vector<const CEvaluationNode*>::const_iterator vIt = andElements.begin(), vEndit = andElements.end();
+      while (vIt != vEndit)
+        {
+          delete *vIt;
+          ++vIt;
+        }
+      andElements.clear();
+      // check *cIt.second if it is true
+      if ((*cIt).second == true)
+        {
+          // create a not node if it would not result in the creation of the
+          // neutral element
+          if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND)
+            {
+              pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNode->addChild(pNode);
+              pNode = pNotNode;
+            }
+          else
+            {
+              pNode = NULL;
+            }
+        }
+      ++cIt;
+      // if it is not the neutral element or it is the last element to be
+      // inserted into an otherwise empty vector, insert the element
+      if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && cIt == cEndit))
+        {
+          orElements.push_back(pNode);
+        }
+    }
+  // create the OR chain
+  if (!orElements.empty())
+    {
+      pNode = CNormalTranslation::createChain(pOrNode, CNormalTranslation::NEUTRAL_ELEMENT_OR, orElements);
+      assert(pNode != NULL);
+      std::vector<const CEvaluationNode*>::const_iterator vIt = orElements.begin(), vEndit = orElements.end();
+      // delete the created elements
+      while (vIt != vEndit)
+        {
+          delete *vIt;
+          ++vIt;
+        }
+      orElements.clear();
+    }
+  pResult = pNode;
+  pNode = NULL;
+
+  CNormalLogical::ItemSetOfSets::const_iterator iIt = logical.getAndSets().begin(), iEndit = logical.getAndSets().end();
+  while (iIt != iEndit)
+    {
+      CNormalLogical::ItemSet::const_iterator iInnerIt = (*iIt).first.begin(), iInnerEndit = (*iIt).first.end();
+      while (iInnerIt != iInnerEndit)
+        {
+          pNode = convertToCEvaluationNode(*(*iInnerIt).first);
+          assert(pNode != NULL);
+          if ((*iInnerIt).second == true)
+            {
+              // only create the not node if it wouldn't result in the neutral
+              // element
+              if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+                {
+                  pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+                  pNotNode->addChild(pNode);
+                  pNode = pNotNode;
+                }
+              else
+                {
+                  pNode = NULL;
+                }
+            }
+          ++iInnerIt;
+          // if it is not the neutral element or it is the last element to be
+          // inserted into an otherwise empty vector, insert the element
+          if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && iInnerIt == iInnerEndit))
+            {
+              andElements.push_back(pNode);
+            }
+        }
+      // create the and chain
+      pNode = CNormalTranslation::createChain(pAndNode, CNormalTranslation::NEUTRAL_ELEMENT_AND, andElements);
+      assert(pNode != NULL);
+      // delete the created nodes
+      std::vector<const CEvaluationNode*>::const_iterator vIt = andElements.begin(), vEndit = andElements.end();
+      while (vIt != vEndit)
+        {
+          delete *vIt;
+          ++vIt;
+        }
+      andElements.clear();
+      // check *iIt.second if it is true
+      if ((*iIt).second == true)
+        {
+
+          // create a not node if it does not result in the neutral node
+          if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND)
+            {
+              pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+              pNode->addChild(pNode);
+              pNode = pNotNode;
+            }
+          else
+            {
+              pNode = NULL;
+            }
+        }
+      ++iIt;
+      // if it is not the neutral element or it is the last element to be
+      // inserted into an otherwise empty vector, insert the element
+      if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && iIt == iEndit))
+        {
+          orElements.push_back(pNode);
+        }
+    }
+  // create the OR chain
+  if (!orElements.empty())
+    {
+      pNode = CNormalTranslation::createChain(pOrNode, CNormalTranslation::NEUTRAL_ELEMENT_OR, orElements);
+      assert(pNode != NULL);
+      // delete the created elements
+      std::vector<const CEvaluationNode*>::const_iterator vIt = orElements.begin();
+      std::vector<const CEvaluationNode*>::const_iterator vEndit = orElements.end();
+      while (vIt != vEndit)
+        {
+          delete *vIt;
+          ++vIt;
+        }
+      orElements.clear();
+    }
+  if (pResult == NULL)
+    {
+      pResult = pNode;
+      assert(pResult != NULL);
+    }
+  else
+    {
+      if (*pResult == *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+        {
+          pResult = pNode;
+        }
+      else if (*pNode == *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+        {
+          CEvaluationNode* pTmpNode = pOrNode->copyBranch();
+          pTmpNode->addChild(pResult);
+          pTmpNode->addChild(pNode);
+          pResult = pTmpNode;
+        }
+    }
+  // check if mNot is set
+  if (logical.isNegated() == true)
+    {
+      pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+      pNode->addChild(pResult);
+      pResult = pNotNode;
+    }
+  // clean up
+  delete pOrNode;
+  delete pAndNode;
+  assert(pResult != NULL);
+  return pResult;
+}
+
+/**
+ * This version of the method is wrong.
 CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
 {
   CEvaluationNode* pResult = NULL;
@@ -1913,6 +2053,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
     }
   return pResult;
 }
+ */
 
 CNormalChoice* createChoice(const CEvaluationNode* pNode)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/28 18:22:06 $
+//   $Date: 2008/07/25 14:27:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,7 +157,7 @@ class CNormalLogical : public CNormalBase
 
   protected:
     /**
-     * Flag to specify wether the whole logical expression has to be
+     * Flag to specify whether the whole logical expression has to be
      * negated.
      */
     bool mNot;

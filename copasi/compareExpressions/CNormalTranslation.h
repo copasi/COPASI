@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/16 13:04:53 $
+//   $Date: 2008/07/25 14:27:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,14 @@ class CNormalTranslation
     static CNormalFraction* normAndSimplifyReptdly(const CEvaluationNode* tree0, unsigned int depth = 0);
 
     /**
+     * More general version of createOperatorChain.
+     * This method can also be used to combine logical item chains.
+     * Once I know this works, I will replace createOperatorChain with this
+     * method.
+     */
+    static CEvaluationNode* createChain(const CEvaluationNode* pLink, const CEvaluationNode* pNeutralElement, const std::vector<const CEvaluationNode*>& elements);
+
+    /**
      * Given a vector of nodes, this method creates a multiplication chain of
      * all the nodes. The chain contains the original nodes and not copies.
      */
@@ -117,6 +125,46 @@ class CNormalTranslation
      * This method evaluates operators acting on two numbers
      */
     static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
+
+    /**
+     * Neutral element for an addition chain.
+     */
+    static const CEvaluationNode* const NEUTRAL_ELEMENT_ADD;
+
+    /**
+     * Neutral element for a multiplication chain.
+     */
+    static const CEvaluationNode* const NEUTRAL_ELEMENT_MULTIPLY;
+
+    /**
+     * Neutral element for an or chain.
+     */
+    static const CEvaluationNode* const NEUTRAL_ELEMENT_OR;
+
+    /**
+     * Neutral element for an and chain.
+     */
+    static const CEvaluationNode* const NEUTRAL_ELEMENT_AND;
+
+    /**
+     * Number node that represents 0.0
+     */
+    static const CEvaluationNode* const ZERO_NODE;
+
+    /**
+     * Number node that represents 1.0
+     */
+    static const CEvaluationNode* const ONE_NODE;
+
+    /**
+     * Operator node that represents the PLUS operation.
+     */
+    static const CEvaluationNode* const PLUS_NODE;
+
+    /**
+     * Operator node that represents the TIMES operation.
+     */
+    static const CEvaluationNode* const TIMES_NODE;
 
   protected:
     /**
@@ -207,7 +255,6 @@ class CNormalTranslation
 
     static const double ZERO;
     static const unsigned int RECURSION_LIMIT;
-
     /**
      * This method eliminates directly nested fractions. ((a/b)/(c/d)) -> (a*d)/(b*c)
      */
