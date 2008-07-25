@@ -1,18 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/16 19:55:37 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 05:53:24 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qtoolbutton.h>
+#include <qfileinfo.h>
 
 #include "copasi.h"
 
@@ -150,6 +156,33 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
   CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
 
   QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
+  if (!File) return "";
+
+  // check the extension and replace the uncorrect extension with the correct one according to the filter
+  QString Filter;
+
+  if (pDialog->selectedFilter().contains("png"))
+    Filter = "png";
+  else if (pDialog->selectedFilter().contains("svg"))
+    Filter = "svg";
+  else if (pDialog->selectedFilter().contains("tex"))
+    Filter = "tex";
+  else if (pDialog->selectedFilter().contains("mml"))
+    Filter = "mml";
+  else if (pDialog->selectedFilter().contains("xml"))
+    Filter = "xml";
+
+  if (!File.endsWith("." + Filter))
+    {
+      if (File.contains("."))
+        {
+          int pos = File.find(".");
+          File.truncate(pos);
+        }
+
+      File += "." + Filter;
+    }
+
   delete pDialog;
 
   return File;
@@ -166,7 +199,34 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & newFilter,
   CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
 
   QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
+  if (!File) return "";
+
   newFilter = pDialog->selectedFilter();
+
+  // check the extension and replace the uncorrect extension with the correct one according to the filter
+  QString Filter;
+
+  if (newFilter.contains("png"))
+    Filter = "png";
+  else if (newFilter.contains("svg"))
+    Filter = "svg";
+  else if (newFilter.contains("tex"))
+    Filter = "tex";
+  else if (newFilter.contains("mml"))
+    Filter = "mml";
+  else if (newFilter.contains("xml"))
+    Filter = "xml";
+
+  if (!File.endsWith("." + Filter))
+    {
+      if (File.contains("."))
+        {
+          int pos = File.find(".");
+          File.truncate(pos);
+        }
+
+      File += "." + Filter;
+    }
 
   delete pDialog;
 
