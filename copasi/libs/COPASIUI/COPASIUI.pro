@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $ 
-#   $Revision: 1.16 $ 
+#   $Revision: 1.17 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/01/22 16:57:58 $ 
+#   $Author: pwilly $ 
+#   $Date: 2008/07/25 07:11:26 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -37,6 +37,7 @@ contains(DEFINES, WITH_QWT3D) {
 
 COPASI_LIBS += MIRIAMUI
 COPASI_LIBS += plotUI
+COPASI_LIBS += tex
 COPASI_LIBS += UI
 COPASI_LIBS += wizard
 
