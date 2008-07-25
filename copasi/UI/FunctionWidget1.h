@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-  $Revision: 1.53 $
-  $Name:  $
-  $Author: pwilly $
-  $Date: 2008/06/09 06:08:45 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
+ $Revision: 1.54 $
+ $Name:  $
+ $Author: pwilly $
+ $Date: 2008/07/25 06:53:38 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -25,6 +25,8 @@
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
 
+#include <sstream>
+
 #include "UI/copasiWidget.h"
 
 class QVBox;
@@ -40,6 +42,8 @@ class QRadioButton;
 class QTable;
 class QTextEdit;
 class QWidgetStack;
+class QToolButton;
+class QSpacerItem;
 //class MyLineEdit;
 
 class QtMmlWidget;
@@ -76,6 +80,7 @@ class FunctionWidget1 : public CopasiWidget
     virtual void slotToggleFcnDescriptionEdit();
     virtual void slotFcnDescriptionChanged();
     virtual void slotReversibilityChanged();
+    void slotSave();
 
   protected:
     bool loadFromFunction(const CFunction* = NULL);
@@ -124,10 +129,25 @@ class FunctionWidget1 : public CopasiWidget
     QVBox* mMmlViewBox;
     QScrollView* mScrollView;
 #ifdef HAVE_MML
-    QPushButton* mFormulaEditToggleButton;
+    //    QPushButton* mFormulaEditToggleButton;
+    QToolButton* mFormulaEditToggleButton;
     QtMmlWidget* mMmlWidget;
+
+    QString MMLStr;
 #endif // HAVE_MML
     CFunction * mpFunction;
+
+    QToolButton *mpSaveBtn;
+    QHBoxLayout *mpFormulaHBL;
+    QVBoxLayout *mpFormulaVBL;
+    QSpacerItem *mpFormulaSpacer;
+
+  private:
+
+#ifdef HAVE_MML
+    void saveTeX(const QString filename);
+    void saveMML(const QString filename);
+#endif // HAVE_MML
   };
 
 #endif // FunctionWidget1

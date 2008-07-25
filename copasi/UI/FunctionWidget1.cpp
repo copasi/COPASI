@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.156 $
+//   $Revision: 1.157 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 06:53:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@
 #include <qtextbrowser.h>
 #include <qwidgetstack.h>
 #include <qvbox.h>
+#include <qtoolbutton.h>
 
 #include <sstream>
 #include <stdlib.h>
@@ -56,6 +57,7 @@
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
+#include "tex/CMathMLToTeX.h"
 #endif // Have_MML
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -67,6 +69,10 @@
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CDimension.h"
+
+#include "CopasiFileDialog.h"
+#include "./icons/saveIcon.xpm"
+#include "./icons/edit_Icon.xpm"
 
 //#include "./icons/product.xpm"
 //#include "./icons/substrate.xpm"
@@ -145,11 +151,38 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   // raise mScrollView with mMmmlWidget:
   mStack->raiseWidget(1);
 
-  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
+  mpFormulaHBL = new QHBoxLayout(0, 0, 6, "mpFormulaHBL");
+  mpFormulaHBL->addWidget(mStack);
+
+  mpFormulaVBL = new QVBoxLayout(0, 0, 6, "mpFormulaVBL");
+
   //mMmlViewBox->insertChild(mFormulaEditToggleButton);
 #endif // HAVE_MML
 
-  FunctionWidget1Layout->addWidget(mStack, 1, 1);
+  //  FunctionWidget1Layout->addWidget(mStack, 1, 1);
+
+  // add 21.07.08
+  //********************
+  mpSaveBtn = new QToolButton(this, "mpSaveBtn");
+  mpSaveBtn->setMaximumSize(QSize(20, 20));
+  //  mpSaveBtn->setText(trUtf8("Save Formula to Disk"));
+  //  mpSaveBtn->setTextLabel(trUtf8("Save Formula to Disk"));
+  mpSaveBtn->setIconSet(QIconSet(saveIcon));
+  mpFormulaVBL->addWidget(mpSaveBtn);
+
+  //  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
+  mFormulaEditToggleButton = new QToolButton(this, "mFormulaEditToggleButton");
+  mFormulaEditToggleButton->setMaximumSize(QSize(20, 20));
+  mFormulaEditToggleButton->setIconSet(QIconSet(editIcon));
+  mpFormulaVBL->addWidget(mFormulaEditToggleButton);
+
+  mpFormulaSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  mpFormulaVBL->addItem(mpFormulaSpacer);
+
+  mpFormulaHBL->addLayout(mpFormulaVBL);
+
+  //  FunctionWidget1Layout->addWidget(mpSaveBtn, 2, 1);
+  FunctionWidget1Layout->addLayout(mpFormulaHBL, 1, 1);
 
   //********************
 
@@ -157,7 +190,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   TextLabel3->setText(trUtf8("Function Type"));
   TextLabel3->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
-  FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
+  FunctionWidget1Layout->addWidget(TextLabel3, 4, 0);
 
   ButtonGroup1 = new QHButtonGroup(this, "ButtonGroup1");
   ButtonGroup1->setFlat(true);
@@ -176,7 +209,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
   RadioButton3->setText(trUtf8("General"));
 
-  FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
+  FunctionWidget1Layout->addWidget(ButtonGroup1, 4, 1);
 
   //***************************************
 
@@ -296,6 +329,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(newFcn, SIGNAL(clicked()), this, SLOT(slotNewButtonClicked()));
   connect(deleteFcn, SIGNAL(clicked()), this, SLOT(slotDeleteButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
+  connect(mpSaveBtn, SIGNAL(clicked()), this, SLOT(slotSave()));
 
   connect(RadioButton1, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
@@ -306,6 +340,9 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
           SLOT(slotToggleFcnDescriptionEdit()));
 #endif // HAVE_MML
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
+
+  QToolTip::add(mFormulaEditToggleButton, tr("edit formula"));
+  QToolTip::add(mpSaveBtn, tr("save formula"));
 }
 
 //! Destructor
@@ -1078,6 +1115,10 @@ void FunctionWidget1::slotNewButtonClicked()
 
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
+
+  mFormulaEditToggleButton->hide();
+
+  mpSaveBtn->setEnabled(false);
 }
 
 //! Slot for being activated wehenver Delete button is clicked
@@ -1291,6 +1332,10 @@ void FunctionWidget1::slotDeleteButtonClicked()
 void FunctionWidget1::slotToggleFcnDescriptionEdit()
 {
   mStack->raiseWidget(textBrowser);
+
+  mFormulaEditToggleButton->hide();
+
+  mpSaveBtn->setEnabled(false);
 }
 
 //! Function to update the function formula
@@ -1307,14 +1352,23 @@ void FunctionWidget1::updateMmlWidget()
 
   mStack->raiseWidget(mMmlViewBox);
 
+  mpSaveBtn->setEnabled(true);
+
   mpFunction->createListOfParametersForMathML(params);
 
   if (textBrowser->text().isEmpty())
-    mStack->raiseWidget(textBrowser);
+    {
+      mStack->raiseWidget(textBrowser);
+
+      mpSaveBtn->setEnabled(false);
+    }
   else
     mpFunction->writeMathML(mml, params, true, false, 0);
 
-  mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  MMLStr = FROM_UTF8(mml.str());
+
+  //  mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  mMmlWidget->setContent(MMLStr);
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);
@@ -1360,4 +1414,68 @@ bool FunctionWidget1::enter(const std::string & key)
 
   mpListView->switchToOtherWidget(5, "");
   return false;
+}
+
+// add 21.07.08
+void FunctionWidget1::slotSave()
+{
+  QString filter;
+  QString outfilename;
+
+  C_INT32 Answer = QMessageBox::No;
+
+  while (Answer == QMessageBox::No)
+    {
+      outfilename =
+        CopasiFileDialog::getSaveFileNameAndFilter(filter, this,
+            "Save File Dialog",
+            QString::null,
+            "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
+            "Save Formula to Disk");
+
+      if (!outfilename) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(outfilename);
+
+      if (Answer == QMessageBox::Cancel)
+        return;
+    }
+
+  if (filter.contains("tex"))
+    saveTeX(outfilename);
+  else
+    saveMML(outfilename);
+}
+
+// add 21.07.08
+void FunctionWidget1::saveMML(const QString outfilename)
+{
+  std::ofstream ofile;
+  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+
+  ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+  ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
+  ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
+
+  //  ofile << mml.str();
+  ofile << MMLStr.latin1();
+
+  ofile << "</math>" << std::endl;
+
+  ofile.close();
+}
+
+// add 21.07.08
+void FunctionWidget1::saveTeX(const QString outfilename)
+{
+  QString latexStr(MMLStr.latin1());
+
+  CMathMLToTeX::convert(latexStr);
+
+  std::ofstream ofile;
+  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+  ofile << latexStr;
+  //  ofile << mml.str() << std::endl;
+  ofile.close();
 }
