@@ -1,22 +1,22 @@
-# Begin CVS Header
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.51 $
-#   $Name:  $
-#   $Author: gauges $
-#   $Date: 2008/07/09 07:36:14 $
-# End CVS Header
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
+#   $Revision: 1.52 $ 
+#   $Name:  $ 
+#   $Author: pwilly $ 
+#   $Date: 2008/07/25 07:08:30 $ 
+# End CVS Header 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
 
 ######################################################################
-# $Revision: 1.51 $ $Author: gauges $ $Date: 2008/07/09 07:36:14 $
+# $Revision: 1.52 $ $Author: pwilly $ $Date: 2008/07/25 07:08:30 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -69,6 +69,7 @@ contains(DEFINES, WITH_LAYOUT) {
 # Now the UI libraries
 COPASIUI_DIRS += MIRIAMUI
 COPASIUI_DIRS += plotUI
+COPASIUI_DIRS += tex
 COPASIUI_DIRS += UI
 COPASIUI_DIRS += wizard
 
