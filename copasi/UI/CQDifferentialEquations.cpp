@@ -1,20 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/05 12:24:53 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 06:30:01 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQDifferentialEquations.ui'
  **
- ** Created: So Aug 5 14:22:48 2007
- **      by: The User Interface Compiler ($Id: CQDifferentialEquations.cpp,v 1.2 2007/08/05 12:24:53 ssahle Exp $)
+ ** Created: Wed Jul 23 14:04:51 2008
+ **      by: The User Interface Compiler ($Id: CQDifferentialEquations.cpp,v 1.3 2008/07/25 06:30:01 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,12 +25,12 @@
 #include <qvariant.h>
 #include <qscrollview.h>
 #include <qpushbutton.h>
-#include <qlabel.h>
 #include <qcombobox.h>
+#include <qlabel.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "copasiWidget.h"
+#include "qscrollview.h"
 #include "CQDifferentialEquations.ui.h"
 
 /*
@@ -41,54 +42,46 @@ CQDifferentialEquations::CQDifferentialEquations(QWidget* parent, const char* na
 {
   if (!name)
     setName("CQDifferentialEquations");
-  CQDifferentialEquationsLayout = new QGridLayout(this, 1, 1, 11, 6, "CQDifferentialEquationsLayout");
+  CQDifferentialEquationsLayout = new QVBoxLayout(this, 11, 6, "CQDifferentialEquationsLayout");
 
   mpScrollView = new QScrollView(this, "mpScrollView");
+  mpScrollView->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 194, mpScrollView->sizePolicy().hasHeightForWidth()));
+  CQDifferentialEquationsLayout->addWidget(mpScrollView);
 
-  CQDifferentialEquationsLayout->addMultiCellWidget(mpScrollView, 0, 0, 0, 2);
+  layout9 = new QGridLayout(0, 1, 1, 0, 6, "layout9");
+
+  mpSaveButton = new QPushButton(this, "mpSaveButton");
+
+  layout9->addWidget(mpSaveButton, 0, 4);
+  spacer1_2 = new QSpacerItem(242, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout9->addMultiCell(spacer1_2, 0, 0, 2, 3);
+
+  comboBoxFunctions = new QComboBox(FALSE, this, "comboBoxFunctions");
+
+  layout9->addMultiCellWidget(comboBoxFunctions, 1, 1, 1, 2);
+
+  comboBoxParameters = new QComboBox(FALSE, this, "comboBoxParameters");
+
+  layout9->addWidget(comboBoxParameters, 0, 1);
 
   textLabelParameters = new QLabel(this, "textLabelParameters");
   textLabelParameters->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  CQDifferentialEquationsLayout->addWidget(textLabelParameters, 1, 0);
+  layout9->addWidget(textLabelParameters, 0, 0);
+  spacer1 = new QSpacerItem(212, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout9->addItem(spacer1, 1, 3);
 
   textLabelFunctions = new QLabel(this, "textLabelFunctions");
   textLabelFunctions->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  CQDifferentialEquationsLayout->addWidget(textLabelFunctions, 2, 0);
-
-  layout1 = new QHBoxLayout(0, 0, 6, "layout1");
-
-  comboBoxParameters = new QComboBox(FALSE, this, "comboBoxParameters");
-  layout1->addWidget(comboBoxParameters);
-  spacer1_2 = new QSpacerItem(120, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout1->addItem(spacer1_2);
-
-  CQDifferentialEquationsLayout->addLayout(layout1, 1, 1);
-
-  layout2 = new QHBoxLayout(0, 0, 6, "layout2");
-
-  comboBoxFunctions = new QComboBox(FALSE, this, "comboBoxFunctions");
-  layout2->addWidget(comboBoxFunctions);
-  spacer1 = new QSpacerItem(120, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout2->addItem(spacer1);
-
-  CQDifferentialEquationsLayout->addLayout(layout2, 2, 1);
-
-  layout3 = new QVBoxLayout(0, 0, 6, "layout3");
-
-  mpSaveButton = new QPushButton(this, "mpSaveButton");
-  layout3->addWidget(mpSaveButton);
-  spacer3 = new QSpacerItem(20, 71, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  layout3->addItem(spacer3);
-
-  CQDifferentialEquationsLayout->addMultiCellLayout(layout3, 1, 2, 2, 2);
+  layout9->addWidget(textLabelFunctions, 1, 0);
+  CQDifferentialEquationsLayout->addLayout(layout9);
   languageChange();
   resize(QSize(673, 573).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(mpSaveButton, SIGNAL(clicked()), this, SLOT(slotSaveMML()));
+  connect(mpSaveButton, SIGNAL(clicked()), this, SLOT(slotSave()));
   connect(comboBoxParameters, SIGNAL(activated(int)), this, SLOT(slotUpdateWidget()));
   connect(comboBoxFunctions, SIGNAL(activated(int)), this, SLOT(slotUpdateWidget()));
   init();
@@ -109,14 +102,14 @@ CQDifferentialEquations::~CQDifferentialEquations()
 void CQDifferentialEquations::languageChange()
 {
   setCaption(tr("Form1"));
-  textLabelParameters->setText(tr("local parameters"));
-  textLabelFunctions->setText(tr("functions"));
-  comboBoxParameters->clear();
-  comboBoxParameters->insertItem(tr("display numerical value"));
-  comboBoxParameters->insertItem(tr("display name"));
+  mpSaveButton->setText(tr("Save Formula to Disk"));
   comboBoxFunctions->clear();
   comboBoxFunctions->insertItem(tr("display name"));
   comboBoxFunctions->insertItem(tr("expand only kinetic functions"));
   comboBoxFunctions->insertItem(tr("expand all functions"));
-  mpSaveButton->setText(tr("Save MathML to disk"));
+  comboBoxParameters->clear();
+  comboBoxParameters->insertItem(tr("display numerical value"));
+  comboBoxParameters->insertItem(tr("display name"));
+  textLabelParameters->setText(tr("local parameters"));
+  textLabelFunctions->setText(tr("functions"));
 }

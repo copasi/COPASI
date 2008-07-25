@@ -1,20 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/05 12:24:53 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 06:30:01 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQDifferentialEquations.ui'
  **
- ** Created: So Aug 5 14:11:34 2007
- **      by: The User Interface Compiler ($Id: CQDifferentialEquations.h,v 1.2 2007/08/05 12:24:53 ssahle Exp $)
+ ** Created: Wed Jul 23 14:04:44 2008
+ **      by: The User Interface Compiler ($Id: CQDifferentialEquations.h,v 1.3 2008/07/25 06:30:01 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,9 +33,9 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QScrollView;
-class QLabel;
-class QComboBox;
 class QPushButton;
+class QComboBox;
+class QLabel;
 class QtMmlWidget;
 
 class CQDifferentialEquations : public CopasiWidget
@@ -46,39 +47,37 @@ class CQDifferentialEquations : public CopasiWidget
     ~CQDifferentialEquations();
 
     QScrollView* mpScrollView;
+    QPushButton* mpSaveButton;
+    QComboBox* comboBoxFunctions;
+    QComboBox* comboBoxParameters;
     QLabel* textLabelParameters;
     QLabel* textLabelFunctions;
-    QComboBox* comboBoxParameters;
-    QComboBox* comboBoxFunctions;
-    QPushButton* mpSaveButton;
 
     virtual bool enter(const std::string &);
 
   public slots:
     virtual void slotUpdateWidget();
+    virtual void slotSave();
 
   protected:
     QtMmlWidget * mpMMLWidget;
     std::ostringstream mml;
 
-    QGridLayout* CQDifferentialEquationsLayout;
-    QHBoxLayout* layout1;
+    QVBoxLayout* CQDifferentialEquationsLayout;
+    QGridLayout* layout9;
     QSpacerItem* spacer1_2;
-    QHBoxLayout* layout2;
     QSpacerItem* spacer1;
-    QVBoxLayout* layout3;
-    QSpacerItem* spacer3;
 
   protected slots:
     virtual void languageChange();
-
-    virtual void slotSaveMML();
 
   private:
     QPixmap image0;
 
     void init();
     virtual void newFunction();
+    virtual void saveMML(const QString filename);
+    virtual void saveTeX(const QString filename);
   };
 
 #endif // CQDIFFERENTIALEQUATIONS_H
