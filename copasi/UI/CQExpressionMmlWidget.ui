@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui,v $ </comment>
-<comment>   $Revision: 1.3 $ </comment>
+<comment>   $Revision: 1.4 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2008/06/10 08:08:36 $ </comment>
+<comment>   $Date: 2008/07/25 06:40:24 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -135,13 +135,18 @@
                 <attribute name="id">
                     <number>1</number>
                 </attribute>
-                <grid>
+                <hbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLayoutWidget" row="0" column="1">
+                    <widget class="CQMmlScrollView">
                         <property name="name">
-                            <cstring>mpVBLayoutMml</cstring>
+                            <cstring>mpMmlScrollView</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout5</cstring>
                         </property>
                         <vbox>
                             <property name="name">
@@ -167,6 +172,26 @@
                                     <string>edit expression</string>
                                 </property>
                             </widget>
+                            <widget class="QToolButton">
+                                <property name="name">
+                                    <cstring>mpBtnSaveExpression</cstring>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="iconSet">
+                                    <iconset>image3</iconset>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>save expression</string>
+                                </property>
+                            </widget>
                             <spacer>
                                 <property name="name">
                                     <cstring>mpSpacerMmlObject</cstring>
@@ -180,18 +205,13 @@
                                 <property name="sizeHint">
                                     <size>
                                         <width>20</width>
-                                        <height>30</height>
+                                        <height>50</height>
                                     </size>
                                 </property>
                             </spacer>
                         </vbox>
                     </widget>
-                    <widget class="CQMmlScrollView" row="0" column="0">
-                        <property name="name">
-                            <cstring>mpMmlScrollView</cstring>
-                        </property>
-                    </widget>
-                </grid>
+                </hbox>
             </widget>
         </widget>
     </grid>
@@ -211,7 +231,7 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image3</pixmap>
+        <pixmap>image4</pixmap>
         <signal>valid(bool)</signal>
         <slot access="public" specifier="">slotSelectObject()</slot>
     </customwidget>
@@ -229,7 +249,7 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image4</pixmap>
+        <pixmap>image5</pixmap>
     </customwidget>
 </customwidgets>
 <images>
@@ -240,12 +260,15 @@
         <data format="PNG" length="475">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000001a249444154388d9d933b4b2b4118869f5976738fd72818055104e180851a2c160b7f8017309d200801b5b0b0f1570836da9c9c26a4b4b3b6109ba95c41441021955710a332129378598b4d964d34caf1ab66be99e7fdde99f9464829f92ecc8ccff6cee5425978e7fa4fe0f2fc0800f7a56afed0f60a89af1c98199fbdb53acc4054c3d0207b064779506578b5411790dbb3900b65d1d0418ba1d1ea83b14eb829c076ce81fd75c427816af57c19ce0bf07009390583edd01182800ec55720398a99b1ec860e2e9fe1b6048517676c7643571882063cbf387b76bfbc44cba22b3cc2fd1b5c3cc15d11fa5aa0b7097a2210f5832a812abc8365357e85b600bc01cd418887a13304b110c42370f504b1900680560fcacd21919cfd87df809e287447a03d0861c359cf179d7b189f482337876a5fe13863569ae62fa9de8ae0033cbe3b50ab0e7f02b505752f3c999c26de3fc3d4690a9170f2f6c1620d201269d7a92b50856331c1f5690aa5602eb0c4caba142291ae6de50ae83af0c277573b28054a3506ea43033ec11b59585997df82aec0fe09bf86a1f299b6d64cf79cff03037c007953a224a1d8e8a20000000049454e44ae426082</data>
     </image>
     <image name="image2">
-        <data format="PNG" length="262">89504e470d0a1a0a0000000d4948445200000009000000090806000000e0910610000000cd4944415418956dceb14b025100c7f1ef7b5e220477a791b707a18390100dde2804e276db99ff8b7fc84de10d81535b868b43bc686972b0a9d93b870e8e3ab07a0d91d0d3dffce1f7fb09a514667cdfd70e302a97e9cce7c2da075e1e5bbc659f5cf69644ddae96fbc02ad9f0f094339b36098b026982f78f6fa238e5a27d88ebfc0e49138c276bc2a086573fa0d159a0941202d84e44714a18d4383da96c0180b839b37575e072ff5a10f4abff1afeae48f22f92db8ca128e11d593b004000fafadce6580bae9e33ee0c00f0033a05589bd4ab74d10000000049454e44ae426082</data>
+        <data format="PNG" length="405">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000015c49444154388d9dd0b14b026118c7f1efab62a283f407249525141a08dee2d85e4182b744e1a6d1d2dc1c24048141a5434a24e1d0dce2247453920e813836b4998b0e92f0369c771a6977f44ceff07e7e3ccf4f689a86dd71a5e2d2780f8b9a0070d8c56ac5231d6589e207a52ccd305b016ac523cfd2210af93af52b098702c5af6f6419901ce1c8920fbfba4c215fe726655e82cb0a67d321a2411fc55a17addda1118bc08b1e32cc08c4ac122771a9d6e5b9dda1e10cd077b8f5c3afefd072ab62ea06d370d319a0ef72eb1f4618a694380bf70c5cb835f1af0e92159fcca6578806bdb3f1c59a983466805a9997d9748070d06b166685cd13eaf9b87cdf3b211cf4725feb526df568d8c03f3b883db0d14c506df5789d5bd0dbb6c000e2f20079541ac0d7270c3ea0758a683cead11678dc8181071fb0b88b2481c8eca0e5fec600625dd994006f4fc700ec6f6f019039d72cf178837f4063be01fa49a902e453671d0000000049454e44ae426082</data>
     </image>
     <image name="image3">
-        <data format="PNG" length="871">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032e49444154388db59531681c4714863f892dde8004b320c32e38700732f80a17d71ea8b04a81c016a809a8716b42208454098604d2c4904a6954a410511ae75c18ac42b61230dc35221244b00119f60ac12ee860062c980719708a95a248f129459cd7cceeccf0edb76fff61a7068301e7d5ebf5def21e6a30184c4d9d835feebc7cdb9e6fe3bda7aa2b9c77180c8170ede8bca3382a18ee0d215ec09373d3273f3c21cd216f432bead9b28344008749040817f35cdc174702df5b862ffc653040ed6bd20fa01cff84be2909513106c21fe06ba1aa15413073d0be05220a11149059486f287fafbfc0ae76843b1e7d5313a2c7cc5aca7dd8dd56f6f76a24018d8a24966c5e585a4de92d048466dece08cd63ae802b5fd14509b1c218cb6047d9daf010c15a219f1744a01a29a3d7ca775f95d46b192b6b20d2c0df696c120328665628f7a17f065dba97717719f2dc4012504dd9dd0ef4373cfdcd1159d661f1be4112bd643c7d7e1162008410e0f9338f4665e95ec6ca03487345930a7f6278fed4b1b49af2e1471612616bb342c7ff8cdc65e3c4e1eb94e2a0c4dac654a4b1f0a739ebdf38ca438f3b81879fe50c773ce5ef4a5104442e832f199b44a86a0709e42d486f80a2789fb2fe654571e8112bf41652987174ba168d4a750c1a27809b1e832010153b73f6514e72d6bf7694874dbcec8c90df84549af79544d0087245f94a8fc1cc0189a51829aa86dd17a1319d11b29b96d1a8e6f1a38a623fa52a158d4abb65e0fa54383ab7a0d512ea91b2bb1d58594b71274aef6e4a9ec1e347307a5df3f9c7157aeac9324ba70b557d4d8f414094a55541a3d2dff0ec6e3b1e7e92d35d08b4ba814fbfc8c9328b1fd710a1b76c69dffed71c0788426f01eae38cfee688ad6f61b8e3e9dcb19040553afc589bdea214af94e2c06065c2c973637776f6150156d6842cebd0ffb1a238548a8351b33b829db32cdeb7fcfab3529d7a34a6d4e309c6c55141510a92362692c0e272a0b790531481eab881e62d43a70beddb502c1b8839248ef237de0d1eee0d614348f32652aabec91b1e39db250994c7bec9edb3a61dde43b1af54f50463220c7f395fbc3a4eaac9ebd31357fe634d43f38ffa5fc0ef1b3e180ca6fe0409399be159e5ea280000000049454e44ae426082</data>
+        <data format="PNG" length="528">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000001d749444154388d8d93bf6b935114869f7373bfefcb8fa2d245b4369b2e15045dd2163a541c5cdc8b8b838a8b9b9251c5491017c145fc139c143a74d5501a4b447010a156c158150b36d5e44b72ef71b829894193deed70cf79cff39e7bae70e595d2eef0f56889dfcabe4e5ee0707d15e2088bf32c3f28919f84c6feeac903cbdb25cedfac225c5d579eada0f5329d6e074146162b4a6423e4c83db8700e8b739c795c06a0ba169131a3bb3b0f737370fd7999878faa5854f19d7079ea740b190d802a4096773f4260072fdfd4b2983104dec3ec2c6cfc0484bf058ecfec62c620785560828dc680c05ed31c3a6684618800be19620b90b3907d02e9b6059be1bf3ebc0785e9adb7307d02447a0402050ba9b6e1c53ad46a204322aa707601ba8ecb4b27b9f5bad92780e0879d26fa741158fc27805caa820833c502ac7e1b120048d39038751f2e2ef1e9da14f5ef10279ec983fd3df70aa4ed9e056302ad00692b64142cd066b701b9bc274a1c4976e8a3b442ae918f1fd8acbec7d840a04da0dd859d5f44314489238a1d49d60f78e90988605fde39260bb76b9a742ca8a7d180cd951b2431b80c4cc486248143073c6432609438015c178c412a950a00f377bfa87ede02a77bfbda9bbef4bb46bd97713e2c4fb1c81f9e09a88cc044136b0000000049454e44ae426082</data>
     </image>
     <image name="image4">
+        <data format="PNG" length="871">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000032e49444154388db59531681c4714863f892dde8004b320c32e38700732f80a17d71ea8b04a81c016a809a8716b42208454098604d2c4904a6954a410511ae75c18ac42b61230dc35221244b00119f60ac12ee860062c980719708a95a248f129459cd7cceeccf0edb76fff61a7068301e7d5ebf5def21e6a30184c4d9d835feebc7cdb9e6fe3bda7aa2b9c77180c8170ede8bca3382a18ee0d215ec09373d3273f3c21cd216f432bead9b28344008749040817f35cdc174702df5b862ffc653040ed6bd20fa01cff84be2909513106c21fe06ba1aa15413073d0be05220a11149059486f287fafbfc0ae76843b1e7d5313a2c7cc5aca7dd8dd56f6f76a24018d8a24966c5e585a4de92d048466dece08cd63ae802b5fd14509b1c218cb6047d9daf010c15a219f1744a01a29a3d7ca775f95d46b192b6b20d2c0df696c120328665628f7a17f065dba97717719f2dc4012504dd9dd0ef4373cfdcd1159d661f1be4112bd643c7d7e1162008410e0f9338f4665e95ec6ca03487345930a7f6278fed4b1b49af2e1471612616bb342c7ff8cdc65e3c4e1eb94e2a0c4dac654a4b1f0a739ebdf38ca438f3b81879fe50c773ce5ef4a5104442e832f199b44a86a0709e42d486f80a2789fb2fe654571e8112bf41652987174ba168d4a750c1a27809b1e832010153b73f6514e72d6bf7694874dbcec8c90df84549af79544d0087245f94a8fc1cc0189a51829aa86dd17a1319d11b29b96d1a8e6f1a38a623fa52a158d4abb65e0fa54383ab7a0d512ea91b2bb1d58594b71274aef6e4a9ec1e347307a5df3f9c7157aeac9324ba70b557d4d8f414094a55541a3d2dff0ec6e3b1e7e92d35d08b4ba814fbfc8c9328b1fd710a1b76c69dffed71c0788426f01eae38cfee688ad6f61b8e3e9dcb19040553afc589bdea214af94e2c06065c2c973637776f6150156d6842cebd0ffb1a238548a8351b33b829db32cdeb7fcfab3529d7a34a6d4e309c6c55141510a92362692c0e272a0b790531481eab881e62d43a70beddb502c1b8839248ef237de0d1eee0d614348f32652aabec91b1e39db250994c7bec9edb3a61dde43b1af54f50463220c7f395fbc3a4eaac9ebd31357fe634d43f38ffa5fc0ef1b3e180ca6fe0409399be159e5ea280000000049454e44ae426082</data>
+    </image>
+    <image name="image5">
         <data format="PNG" length="1002">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003b149444154388dad945f4c5b551cc73fe7dc4b7b4bcba0762d45c43114323599ee6192609c51d883892ce083f1718b3ebb185f8dc91e972cf39d2d2a2f1af664b6f1e0fe3863a0718969700eb0c52142da0242a1bd6d696f7bcff101585203ceb8fd9ece39f99dcff9fe7edf939f88c562ec465f5f9fe609442c161362173c3e3eae7b7a7ac8e7f36432196cdbfe4f907c3e4f2291201e8fe338cec3737357e9e8e828aded1e229d650e1f2d51754b082110124c13a4dc5ea341eb9dc284c0558a853f3ce8cb0677ef500fde7d39d2596679e326597b8e9abb85d7a770ab16ab6983ec5a05b487a70e36f0f4e10afe408d6a558310980108478dba4a1e8233990c5d474b64ed39aa3a8fe5f3317fbf81dbd70bccfeb205947632fd74f6589c1c6ea2f70d03a58ba0c1f2c9bdc1b66de3b8256a6e11cbe7e3ee1d181b590124fe2693aeee08d223c82c3a2c24b7b874bec8f26288774f7bd054504aef0dde6e99c0eb83f9fb266323cb80a27fb0958141836044605a2ee5523393371cc646fee2da37195aa35d0c0c5b4859ac03d7e91712dcaac5adab3650a3ff9d08ef7dd8404bb48869e5d958b5b87dadc4c9a1464e9f0d0326df7ebd86bd2e310cb1bf62d384d59441f2d70a070e1c60e09489929b988681bdd9cc97170bcc4c65595f71f8e0e3301337fc24a7732467831875a47f289652b0be5e4151e6d07316c1b0c0340d8ab92023e76d66a6b2840e36d2fb7a13fee632475e6edc367ea98a90fb98b7dd6310ca0328a44761582e1bab41befabcc0ec940d28bc5e93b68e064cab84e1d9beaeb48934eac1f53b01c1b000fca496aa54b61a99fcde61662a4b4b4b23d1680be9d426173e4df3602a48ea411989a4fd590f52a8fd156b05ed9d350e3defe3cfdf4b4c7ce770ea7d3fb9f520afbe1620daeee5c26735d20b9b9cfb6811a754a439e4e5c5639a4caa1e5caf586bfc0197b78702005cb9b4cae4cd3267ce8638fe964bd72b393e39d74928d242617303a756a37f284447770dcdbffc6384a05a85de1306e9a52057c7527c7131c3c42d3f475eb2303c82d4fc3276d6811db37efeb148723082d9b08f79f97c1e5729109a9a28307cc622d2d6cdf52b2b24efe548dedb00142009862cfa879ee1a71f6cec928353511472fbf4389148b0b0e0c108081412458dfe21c9f11351e67e7358595468246d1d1e5e38a6e9e851bc39d84ab502a669331dafec0d8ec7e3e8cb06e1a881d727d1ae40180a434a8c9db129a54126ad48a7358c2b4c5352c8c374bcccdab2bb37d8719cba79fab8211f9df218e0582c261e95f8bfc04f1a1e8bc5c4dfe0a190172af6a9690000000049454e44ae426082</data>
     </image>
 </images>
@@ -274,6 +297,12 @@
         <receiver>mpBtnViewExpression</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
+    <connection>
+        <sender>mpBtnSaveExpression</sender>
+        <signal>clicked()</signal>
+        <receiver>CQExpressionMmlWidget</receiver>
+        <slot>slotSaveExpression()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">qwidgetstack.h</include>
@@ -285,13 +314,19 @@
 <signals>
     <signal>signalCheckValidity(bool)</signal>
 </signals>
+<variables>
+    <variable access="private">QString MMLStr;</variable>
+</variables>
 <slots>
     <slot access="protected" specifier="non virtual">slotGoExpressionWidget()</slot>
     <slot access="protected" specifier="non virtual">slotGoMmlWidget()</slot>
     <slot specifier="non virtual">updateWidget()</slot>
+    <slot access="private" specifier="non virtual">slotSaveExpression()</slot>
 </slots>
 <functions>
     <function access="protected" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">saveTeX( const QString filename)</function>
+    <function access="private" specifier="non virtual">saveMML( const QString filename)</function>
 </functions>
 <layoutdefaults spacing="6" margin="0"/>
 <includehints>

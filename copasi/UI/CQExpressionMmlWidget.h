@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/06/10 08:08:46 $
+//   $Date: 2008/07/25 06:40:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExpressionMmlWidget.ui'
  **
- ** Created: Tue Jun 10 09:53:19 2008
- **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.h,v 1.3 2008/06/10 08:08:46 pwilly Exp $)
+ ** Created: Wed Jul 23 14:05:57 2008
+ **      by: The User Interface Compiler ($Id: CQExpressionMmlWidget.h,v 1.4 2008/07/25 06:40:24 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -51,8 +51,9 @@ class CQExpressionMmlWidget : public QWidget
     QToolButton* mpBtnExpressionObject;
     QToolButton* mpBtnViewExpression;
     QWidget* mpMmlPage;
-    QToolButton* mpBtnEditExpression;
     CQMmlScrollView* mpMmlScrollView;
+    QToolButton* mpBtnEditExpression;
+    QToolButton* mpBtnSaveExpression;
 
   public slots:
     void updateWidget();
@@ -67,8 +68,8 @@ class CQExpressionMmlWidget : public QWidget
     QGridLayout* mpExpressionPageLayout;
     QVBoxLayout* layout4;
     QSpacerItem* mpSpacerExpressionObject;
-    QGridLayout* mpMmlPageLayout;
-    QVBoxLayout* mpVBLayoutMml;
+    QHBoxLayout* mpMmlPageLayout;
+    QVBoxLayout* layout5;
     QSpacerItem* mpSpacerMmlObject;
 
   protected slots:
@@ -78,11 +79,20 @@ class CQExpressionMmlWidget : public QWidget
     void slotGoMmlWidget();
 
   private:
+    QString MMLStr;
+
     QPixmap image0;
     QPixmap image1;
     QPixmap image2;
     QPixmap image3;
     QPixmap image4;
+    QPixmap image5;
+
+    void saveTeX(const QString filename);
+    void saveMML(const QString filename);
+
+  private slots:
+    void slotSaveExpression();
   };
 
 #endif // CQEXPRESSIONMMLWIDGET_H
