@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.224 $
+//   $Revision: 1.225 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: pwilly $
+//   $Date: 2008/07/25 07:03:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1594,7 +1594,7 @@ void CopasiUI3Window::slotCapture()
   QPixmap pixmap = QPixmap::grabWidget(listViews->getCurrentWidget());
 
   C_INT32 Answer = QMessageBox::No;
-  QString fileName, extensionName = "";
+  QString fileName;
 
   while (Answer == QMessageBox::No)
     {
@@ -1603,27 +1603,26 @@ void CopasiUI3Window::slotCapture()
 
       if (fileName.isEmpty()) return;
 
-      QFileInfo fileInfo(fileName);
-      extensionName = fileInfo.extension();
+      // Checks whether the file exists
+      /*
+            QFileInfo fileInfo(fileName);
+            extensionName = fileInfo.extension();
 
-      if (extensionName != "png")
-        fileName.replace("." + extensionName, ".png");
+            if (extensionName != "png")
+              fileName.replace("." + extensionName, ".png");
 
-      fileInfo.setFile(fileName);
-      extensionName = fileInfo.extension();
+            fileInfo.setFile(fileName);
+            extensionName = fileInfo.extension();
 
-      if (extensionName == "")
-        fileName += ".png";
-
+            if (extensionName == "")
+              fileName += ".png";
+      */
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  //  if (extensionName == "png")
-  //  {
   pixmap.save(fileName, "PNG");
-  //}
 }
 
 #ifdef COPASI_LICENSE_COM
