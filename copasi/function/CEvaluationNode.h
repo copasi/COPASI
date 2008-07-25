@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/16 20:22:00 $
+//   $Author: gauges $
+//   $Date: 2008/07/25 11:31:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,12 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * Default constructor
      */
     CEvaluationNode();
+
+    /**
+     * Unequals operator, compares two CEvaluationNode objects and return true if
+     * they are equal.
+     */
+    virtual bool operator!=(const CEvaluationNode& right) const;
 
     /**
      * Equals operator, compares two CEvaluationNode objects and return true if

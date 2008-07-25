@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:11 $
+//   $Author: gauges $
+//   $Date: 2008/07/25 11:31:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -424,6 +424,11 @@ const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunction
     return NULL;
   }
 
+bool CEvaluationNode::operator!=(const CEvaluationNode& right) const
+  {
+    return !(*this == right);
+  }
+
 bool CEvaluationNode::operator==(const CEvaluationNode& right) const
   {
     bool result = true;
@@ -459,13 +464,14 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
                   {
                     result = false;
                   }
+                break;
               }
             else
               {
                 result = (*pChild1 == *pChild2);
+                pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+                pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
               }
-            pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-            pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
           }
       }
     return result;
