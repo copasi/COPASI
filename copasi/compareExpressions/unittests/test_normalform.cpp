@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/01 14:43:24 $
+//   $Date: 2008/07/26 11:59:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3436,6 +3436,142 @@ void test_normalform::test_nested_stepwise_numbers_2levels_3()
 
 void test_normalform::test_nested_stepwise_fractions_3levels()
 {
+  // the condition expression in this test should lead to a truth table with 64 entries and 6 items in each
+  // entry, 24 of those items evaluate to false,so 40 entries remain after
+  // normalization
+  // to simplify the display, the individual logical items are substituted by
+  // one letter variables
+  // A: A < PI
+  // B: 4 != A
+  // C: 2 == T
+  // D: NOT (D == F)
+  // E: SIND(D*PI) < X
+  // F: "*T^(3J) != 6.2
+  //
+  // So the simplified condition is:
+  // IF(IF(A,FALSE,B),IF(C,FALSE,D),IF(E,TRUE,F))
+  //
+  // And the resulting truth table is:
+  //     A B C D E F      RESULT
+  // 01: 0 0 0 0 0 0        0
+  // 02: 0 0 0 0 0 1        1
+  // 03: 0 0 0 0 1 0        1
+  // 04: 0 0 0 0 1 1        1
+  // 05: 0 0 0 1 0 0        0
+  // 06: 0 0 0 1 0 1        1
+  // 07: 0 0 0 1 1 0        1
+  // 08: 0 0 0 1 1 1        1
+  // 09: 0 0 1 0 0 0        0
+  // 10: 0 0 1 0 0 1        1
+  // 11: 0 0 1 0 1 0        1
+  // 12: 0 0 1 0 1 1        1
+  // 13: 0 0 1 1 0 0        0
+  // 14: 0 0 1 1 0 1        1
+  // 15: 0 0 1 1 1 0        1
+  // 16: 0 0 1 1 1 1        1
+  // 17: 0 1 0 0 0 0        0
+  // 18: 0 1 0 0 0 1        0
+  // 19: 0 1 0 0 1 0        0
+  // 20: 0 1 0 0 1 1        0
+  // 21: 0 1 0 1 0 0        1
+  // 22: 0 1 0 1 0 1        1
+  // 23: 0 1 0 1 1 0        1
+  // 24: 0 1 0 1 1 1        1
+  // 25: 0 1 1 0 0 0        0
+  // 26: 0 1 1 0 0 1        0
+  // 27: 0 1 1 0 1 0        0
+  // 28: 0 1 1 0 1 1        0
+  // 29: 0 1 1 1 0 0        0
+  // 30: 0 1 1 1 0 1        0
+  // 31: 0 1 1 1 1 0        0
+  // 32: 0 1 1 1 1 1        0
+  // 33: 1 0 0 0 0 0        0
+  // 34: 1 0 0 0 0 1        1
+  // 35: 1 0 0 0 1 0        1
+  // 36: 1 0 0 0 1 1        1
+  // 37: 1 0 0 1 0 0        0
+  // 38: 1 0 0 1 0 1        1
+  // 39: 1 0 0 1 1 0        1
+  // 40: 1 0 0 1 1 1        1
+  // 41: 1 0 1 0 0 0        0
+  // 42: 1 0 1 0 0 1        1
+  // 43: 1 0 1 0 1 0        1
+  // 44: 1 0 1 0 1 1        1
+  // 45: 1 0 1 1 0 0        0
+  // 46: 1 0 1 1 0 1        1
+  // 47: 1 0 1 1 1 0        1
+  // 48: 1 0 1 1 1 1        1
+  // 49: 1 1 0 0 0 0        0
+  // 50: 1 1 0 0 0 1        1
+  // 51: 1 1 0 0 1 0        1
+  // 52: 1 1 0 0 1 1        1
+  // 53: 1 1 0 1 0 0        0
+  // 54: 1 1 0 1 0 1        1
+  // 55: 1 1 0 1 1 0        1
+  // 56: 1 1 0 1 1 1        1
+  // 57: 1 1 1 0 0 0        0
+  // 58: 1 1 1 0 0 1        1
+  // 59: 1 1 1 0 1 0        1
+  // 60: 1 1 1 0 1 1        1
+  // 61: 1 1 1 1 0 0        0
+  // 62: 1 1 1 1 0 1        1
+  // 63: 1 1 1 1 1 0        1
+  // 64: 1 1 1 1 1 1        1
+  //
+  // normalized and simplified forms of logical elements:
+  // A: (A < PI)           !A: (PI <= A)
+  // B: (4 != A)           !B: (4 == A)
+  // C: (2 == T)           !C: (2 != T)
+  // D: (D != F)           !D: (D == F)
+  // E: (SIN (D*PI) < X)   !E: (X <= SIN(D*PI))
+  // F: (6.2 != 2*T^(3J))  !F: (6.2 == 2*T^(3J))
+  //
+  // after removing the false entries, we are left with the following 40
+  // entries.
+  // the expanded form is ordered according to the comparison operators
+  //     A B C D E F      expanded and ordered
+  // 01: 0 0 0 0 0 1   (4 == A) & (D == F) & (2 != T) & (6.2 != 2*T^(3J)) & (PI <= A) & (X <= SIN(D*PI))
+  // 02: 0 0 0 0 1 0   (4 == A) & (D == F) & (6.2 == 2*T^(3J)) & (2 != T) & (SIN (D*PI) < X) & (PI <= A)
+  // 03: 0 0 0 0 1 1   (4 == A) & (D == F) & (2 != T) & (6.2 != 2*T^(3J)) & (SIN (D*PI) < X) & (PI <= A)
+  // 04: 0 0 0 1 0 1   (4 == A) & (2 != T) & (6.2 != 2*T^(3J)) & (D != F) & (PI <= A) & (X <= SIN(D*PI))
+  // 05: 0 0 0 1 1 0   (4 == A) & (6.2 == 2*T^(3J)) & (2 != T) & (D != F) & (SIN (D*PI) < X) & (PI <= A)
+  // 06: 0 0 0 1 1 1   (4 == A) & (2 != T) & (6.2 != 2*T^(3J)) & (D != F) & (SIN (D*PI) < X) & (PI <= A)
+  // 07: 0 0 1 0 0 1   (2 == T) & (4 == A) & (D == F) & (6.2 != 2*T^(3J)) & (PI <= A) & (X <= SIN(D*PI))
+  // 08: 0 0 1 0 1 0   (2 == T) & (4 == A) & (6.2 == 2*T^(3J)) & (D == F) & (SIN (D*PI) < X) & (PI <= A)
+  // 09: 0 0 1 0 1 1   (2 == T) & (4 == A) & (D == F) & (6.2 != 2*T^(3J)) & (SIN (D*PI) < X) & (PI <= A)
+  // 10: 0 0 1 1 0 1   (2 == T) & (4 == A) & (6.2 != 2*T^(3J)) & (D != F) & (PI <= A) & (X <= SIN(D*PI))
+  // 11: 0 0 1 1 1 0   (2 == T) & (4 == A) & (6.2 == 2*T^(3J)) & (D != F) & (SIN (D*PI) < X) & (PI <= A)
+  // 12: 0 0 1 1 1 1   (2 == T) & (4 == A) & (6.2 != 2*T^(3J)) & (D != F) & (SIN (D*PI) < X) & (PI <= A)
+  // 13: 0 1 0 1 0 0   (6.2 == 2*T^(3J)) & (2 != T) & (4 != A) & (D != F) & (PI <= A) & (X <= SIN(D*PI))
+  // 14: 0 1 0 1 0 1   (2 != T) & (4 != A) & (6.2 != 2*T^(3J)) & (D != F) & (PI <= A) & (X <= SIN(D*PI))
+  // 15: 0 1 0 1 1 0   (6.2 == 2*T^(3J)) & (2 != T) & (4 != A) & (D != F) & (SIN (D*PI) < X) & (PI <= A)
+  // 16: 0 1 0 1 1 1   (2 != T) & (4 != A) & (6.2 != 2*T^(3J)) & (D != F) & (SIN (D*PI) < X) & (PI <= A)
+  // 17: 1 0 0 0 0 1   (4 == A) & (D == F) & (2 != T) & (6.2 != 2*T^(3J)) & (A  < PI) & (X <= SIN(D*PI))
+  // 18: 1 0 0 0 1 0   (4 == A) & (6.2 == 2*T^(3J)) & (D == F) & (2 != T) & (A  < PI) & (SIN (D*PI) < X)
+  // 19: 1 0 0 0 1 1   (4 == A) & (D == F) & (2 != T) & (6.2 != 2*T^(3J)) & (A  < PI) & (SIN (D*PI) < X)
+  // 20: 1 0 0 1 0 1   (4 == A) & (2 != T) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (X <= SIN(D*PI))
+  // 21: 1 0 0 1 1 0   (4 == A) & (2 != T) & (6.2 == 2*T^(3J)) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 22: 1 0 0 1 1 1   (4 == A) & (2 != T) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 23: 1 0 1 0 0 1   (2 == T) & (4 == A) & (D == F) & (6.2 != 2*T^(3J)) & (A  < PI) & (X <= SIN(D*PI))
+  // 24: 1 0 1 0 1 0   (2 == T) & (4 == A) & (6.2 == 2*T^(3J)) & (D == F) & (A  < PI) & (SIN (D*PI) < X)
+  // 25: 1 0 1 0 1 1   (2 == T) & (4 == A) & (D == F) & (6.2 != 2*T^(3J)) & (A  < PI) & (SIN (D*PI) < X)
+  // 26: 1 0 1 1 0 1   (2 == T) & (4 == A) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (X <= SIN(D*PI))
+  // 27: 1 0 1 1 1 0   (2 == T) & (4 == A) & (6.2 == 2*T^(3J)) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 28: 1 0 1 1 1 1   (2 == T) & (4 == A) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 29: 1 1 0 0 0 1   (D == F) & (2 != T) & (4 != A) & (6.2 != 2*T^(3J)) & (A  < PI) & (X <= SIN(D*PI))
+  // 30: 1 1 0 0 1 0   (6.2 == 2*T^(3J)) & (D == F) & (2 != T) & (4 != A) & (A  < PI) & (SIN (D*PI) < X)
+  // 31: 1 1 0 0 1 1   (D == F) & (2 != T) & (4 != A) & (6.2 != 2*T^(3J)) & (A  < PI) & (SIN (D*PI) < X)
+  // 32: 1 1 0 1 0 1   (2 != T) & (4 != A) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (X <= SIN(D*PI))
+  // 33: 1 1 0 1 1 0   (6.2 == 2*T^(3J)) & (2 != T) & (4 != A) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 34: 1 1 0 1 1 1   (2 != T) & (4 != A) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 35: 1 1 1 0 0 1   (2 == T) & (D == F) & (4 != A) & (6.2 != 2*T^(3J)) & (A  < PI) & (X <= SIN(D*PI))
+  // 36: 1 1 1 0 1 0   (2 == T) & (6.2 == 2*T^(3J)) & (D == F) & (4 != A) & (A  < PI) & (SIN (D*PI) < X)
+  // 37: 1 1 1 0 1 1   (2 == T) & (D == F) & (4 != A) & (6.2 != 2*T^(3J)) & (A  < PI) & (SIN (D*PI) < X)
+  // 38: 1 1 1 1 0 1   (2 == T) & (4 != A) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (X <= SIN(D*PI))
+  // 39: 1 1 1 1 1 0   (2 == T) & (6.2 == 2*T^(3J)) & (4 != A) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  // 40: 1 1 1 1 1 1   (2 == T) & (4 != A) & (6.2 != 2*T^(3J)) & (D != F) & (A  < PI) & (SIN (D*PI) < X)
+  //
+  //
   std::string infix("IF(IF(IF(A gt PI,FALSE,4.0 ne A),IF(2 eq T,FALSE,NOT (D eq F)),IF(SIN(D*PI) lt X,TRUE,2*T^(3*J) ne 6.2)),A/TAN(X)^R,SIN(PI)/A^6)");
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
