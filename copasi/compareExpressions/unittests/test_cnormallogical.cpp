@@ -1,19 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/06 11:28:49 $
+//   $Date: 2008/07/28 16:28:18 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "test_cnormallogical.hpp"
 #include "compareExpressions/CNormalLogicalItem.h"
@@ -640,6 +640,728 @@ void test_cnormallogical::test_simplify_1()
   CPPUNIT_ASSERT(pNormalItem->getName() == "PI");
 
   delete pLogical;
+}
+
+void test_cnormallogical::test_SetSorter_operator2()
+{
+  // create items to sort
+  // A: (PI < A)           !A: (A <= PI)
+  // B: (4 != A)           !B: (4 == A)
+  // C: (2 == T)           !C: (2 != T)
+  // D: (D != F)           !D: (D == F)
+  // E: (SIN (PI*D) < X)   !E: (X <= SIN(PI*D))
+  // F: (2*T^(3J) != 6.2)  !F: (2*T^(3J) == 6.2)
+  std::string infix("A");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pA = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pA != NULL);
+  infix = "PI";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pPI = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pPI != NULL);
+  infix = "D";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pD = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pD != NULL);
+  infix = "F";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pF = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pF != NULL);
+  infix = "T";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pT = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pT != NULL);
+  infix = "X";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pX = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pX != NULL);
+  infix = "SIN(PI*D)";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pSIN = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pSIN != NULL);
+  infix = "2*T^(3*J)";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pPOWER = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pPOWER != NULL);
+  infix = "2";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pTWO = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pTWO != NULL);
+  infix = "4";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pFOUR = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pFOUR != NULL);
+  infix = "6.2";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction*pSIX = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pSIX != NULL);
+  delete pTree;
+
+  // A: (PI < A)           !A: (A <= PI)
+  CNormalLogicalItem* pLA = new CNormalLogicalItem();
+  pLA->setType(CNormalLogicalItem::LT);
+  pLA->setLeft(*pPI);
+  pLA->setRight(*pA);
+  CNormalLogicalItem* pLNotA = new CNormalLogicalItem();
+  pLNotA->setType(CNormalLogicalItem::LE);
+  pLNotA->setLeft(*pA);
+  pLNotA->setRight(*pPI);
+  // B: (4 != A)           !B: (4 == A)
+  CNormalLogicalItem* pLB = new CNormalLogicalItem();
+  pLB->setType(CNormalLogicalItem::NE);
+  pLB->setLeft(*pFOUR);
+  pLB->setRight(*pA);
+  CNormalLogicalItem* pLNotB = new CNormalLogicalItem();
+  pLNotB->setType(CNormalLogicalItem::EQ);
+  pLNotB->setLeft(*pFOUR);
+  pLNotB->setRight(*pA);
+  // C: (2 == T)           !C: (2 != T)
+  CNormalLogicalItem* pLC = new CNormalLogicalItem();
+  pLC->setType(CNormalLogicalItem::EQ);
+  pLC->setLeft(*pTWO);
+  pLC->setRight(*pT);
+  CNormalLogicalItem* pLNotC = new CNormalLogicalItem();
+  pLNotC->setType(CNormalLogicalItem::NE);
+  pLNotC->setLeft(*pTWO);
+  pLNotC->setRight(*pT);
+  // D: (D != F)           !D: (D == F)
+  CNormalLogicalItem* pLD = new CNormalLogicalItem();
+  pLD->setType(CNormalLogicalItem::NE);
+  pLD->setLeft(*pD);
+  pLD->setRight(*pF);
+  CNormalLogicalItem* pLNotD = new CNormalLogicalItem();
+  pLNotD->setType(CNormalLogicalItem::EQ);
+  pLNotD->setLeft(*pD);
+  pLNotD->setRight(*pF);
+  // E: (SIN (PI*D) < X)   !E: (X <= SIN(PI*D))
+  CNormalLogicalItem* pLE = new CNormalLogicalItem();
+  pLE->setType(CNormalLogicalItem::LT);
+  pLE->setLeft(*pSIN);
+  pLE->setRight(*pX);
+  CNormalLogicalItem* pLNotE = new CNormalLogicalItem();
+  pLNotE->setType(CNormalLogicalItem::LE);
+  pLNotE->setLeft(*pX);
+  pLNotE->setRight(*pSIN);
+  // F: (2*T^(3J) != 6.2)  !F: (2*T^(3J) == 6.2)
+  CNormalLogicalItem* pLF = new CNormalLogicalItem();
+  pLF->setType(CNormalLogicalItem::NE);
+  pLF->setLeft(*pPOWER);
+  pLF->setRight(*pSIX);
+  CNormalLogicalItem* pLNotF = new CNormalLogicalItem();
+  pLNotF->setType(CNormalLogicalItem::EQ);
+  pLNotF->setLeft(*pPOWER);
+  pLNotF->setRight(*pSIX);
+
+  delete pA;
+  delete pPI;
+  delete pT;
+  delete pX;
+  delete pF;
+  delete pD;
+  delete pPOWER;
+  delete pSIN;
+  delete pTWO;
+  delete pFOUR;
+  delete pSIX;
+
+  // now compare the items with each other
+  CNormalLogical::SetSorter<CNormalLogicalItem> sorter;
+  // pLA with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLA, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLNotA with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotA, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLB with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLB, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLNotB with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotB, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLC with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLC, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == true);
+
+  // pLNotC with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotC, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLD with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLD, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLNotD with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotD, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == true);
+
+  // pLE with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLE, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLNotE with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotE, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLF with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLF, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // pLNotF with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLNotA, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLNotB, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLC, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLNotC, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLD, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLNotD, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLNotE, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLF, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogicalItem*, bool>(pLNotF, false), std::pair<CNormalLogicalItem*, bool>(pLNotF, false)) == false);
+
+  // now try the whole thing in a real set
+  std::set<std::pair<CNormalLogicalItem*, bool>, CNormalLogical::SetSorter<CNormalLogicalItem> > sortedSet;
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLA, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotA, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLB, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotB, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLC, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotC, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLD, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotD, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLE, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotE, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLF, false));
+  sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotF, false));
+  CPPUNIT_ASSERT(sortedSet.size() == 12);
+  // make sure no item is inserted twice
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLA, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotA, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLB, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotB, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLC, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotC, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLD, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotD, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLE, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotE, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLF, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.insert(std::pair<CNormalLogicalItem*, bool>(pLNotF, false)).second == false);
+  CPPUNIT_ASSERT(sortedSet.size() == 12);
+
+  // check the order in the set
+  std::set<std::pair<CNormalLogicalItem*, bool>, CNormalLogical::SetSorter<CNormalLogicalItem> >::iterator it = sortedSet.begin();
+  CPPUNIT_ASSERT(it->first == pLNotD);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLC);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLNotF);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLNotB);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLD);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLNotC);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLF);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLB);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLA);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLE);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLNotA);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it->first == pLNotE);
+  CPPUNIT_ASSERT(it->second == false);
+  ++it;
+  CPPUNIT_ASSERT(it == sortedSet.end());
+
+  delete pLA;
+  delete pLNotA;
+  delete pLB;
+  delete pLNotB;
+  delete pLC;
+  delete pLNotC;
+  delete pLD;
+  delete pLNotD;
+  delete pLE;
+  delete pLNotE;
+  delete pLF;
+  delete pLNotF;
+}
+
+void test_cnormallogical::test_SetOfSetsSorter_operator2()
+{
+  // create items to sort
+  // A: (PI < A)           !A: (A <= PI)
+  // B: (4 != A)           !B: (4 == A)
+  // C: (2 == T)           !C: (2 != T)
+  // D: (D != F)           !D: (D == F)
+  // E: (SIN (PI*D) < X)   !E: (X <= SIN(PI*D))
+  // F: (2*T^(3J) != 6.2)  !F: (2*T^(3J) == 6.2)
+  std::string infix("A");
+  CEvaluationTree* pTree = new CEvaluationTree();
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pA = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pA != NULL);
+  infix = "PI";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pPI = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pPI != NULL);
+  infix = "D";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pD = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pD != NULL);
+  infix = "F";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pF = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pF != NULL);
+  infix = "T";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pT = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pT != NULL);
+  infix = "X";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pX = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pX != NULL);
+  infix = "SIN(PI*D)";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pSIN = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pSIN != NULL);
+  infix = "2*T^(3*J)";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pPOWER = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pPOWER != NULL);
+  infix = "2";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pTWO = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pTWO != NULL);
+  infix = "4";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pFOUR = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pFOUR != NULL);
+  infix = "6.2";
+  pTree->setInfix(infix);
+  CPPUNIT_ASSERT(pTree->getRoot() != NULL);
+  CNormalFraction* pSIX = CNormalTranslation::normAndSimplifyReptdly(pTree->getRoot());
+  CPPUNIT_ASSERT(pSIX != NULL);
+  delete pTree;
+
+  // A: (PI < A)           !A: (A <= PI)
+  CNormalLogicalItem* pLA = new CNormalLogicalItem();
+  pLA->setType(CNormalLogicalItem::LT);
+  pLA->setLeft(*pPI);
+  pLA->setRight(*pA);
+  CNormalLogicalItem* pLNotA = new CNormalLogicalItem();
+  pLNotA->setType(CNormalLogicalItem::LE);
+  pLNotA->setLeft(*pA);
+  pLNotA->setRight(*pPI);
+  // B: (4 != A)           !B: (4 == A)
+  CNormalLogicalItem* pLB = new CNormalLogicalItem();
+  pLB->setType(CNormalLogicalItem::NE);
+  pLB->setLeft(*pFOUR);
+  pLB->setRight(*pA);
+  CNormalLogicalItem* pLNotB = new CNormalLogicalItem();
+  pLNotB->setType(CNormalLogicalItem::EQ);
+  pLNotB->setLeft(*pFOUR);
+  pLNotB->setRight(*pA);
+  // C: (2 == T)           !C: (2 != T)
+  CNormalLogicalItem* pLC = new CNormalLogicalItem();
+  pLC->setType(CNormalLogicalItem::EQ);
+  pLC->setLeft(*pTWO);
+  pLC->setRight(*pT);
+  CNormalLogicalItem* pLNotC = new CNormalLogicalItem();
+  pLNotC->setType(CNormalLogicalItem::NE);
+  pLNotC->setLeft(*pTWO);
+  pLNotC->setRight(*pT);
+  // D: (D != F)           !D: (D == F)
+  CNormalLogicalItem* pLD = new CNormalLogicalItem();
+  pLD->setType(CNormalLogicalItem::NE);
+  pLD->setLeft(*pD);
+  pLD->setRight(*pF);
+  CNormalLogicalItem* pLNotD = new CNormalLogicalItem();
+  pLNotD->setType(CNormalLogicalItem::EQ);
+  pLNotD->setLeft(*pD);
+  pLNotD->setRight(*pF);
+  // E: (SIN (PI*D) < X)   !E: (X <= SIN(PI*D))
+  CNormalLogicalItem* pLE = new CNormalLogicalItem();
+  pLE->setType(CNormalLogicalItem::LT);
+  pLE->setLeft(*pSIN);
+  pLE->setRight(*pX);
+  CNormalLogicalItem* pLNotE = new CNormalLogicalItem();
+  pLNotE->setType(CNormalLogicalItem::LE);
+  pLNotE->setLeft(*pX);
+  pLNotE->setRight(*pSIN);
+  // F: (2*T^(3J) != 6.2)  !F: (2*T^(3J) == 6.2)
+  CNormalLogicalItem* pLF = new CNormalLogicalItem();
+  pLF->setType(CNormalLogicalItem::NE);
+  pLF->setLeft(*pPOWER);
+  pLF->setRight(*pSIX);
+  CNormalLogicalItem* pLNotF = new CNormalLogicalItem();
+  pLNotF->setType(CNormalLogicalItem::EQ);
+  pLNotF->setLeft(*pPOWER);
+  pLNotF->setRight(*pSIX);
+
+  delete pA;
+  delete pPI;
+  delete pT;
+  delete pX;
+  delete pF;
+  delete pD;
+  delete pPOWER;
+  delete pSIN;
+  delete pTWO;
+  delete pFOUR;
+  delete pSIX;
+
+  // create 12 sorted sets and add them to a Set of Sets
+  CNormalLogical::ItemSet sortedSet1, sortedSet2, sortedSet3, sortedSet4, sortedSet5, sortedSet6, sortedSet7, sortedSet8, sortedSet9, sortedSet10, sortedSet11, sortedSet12;
+  // add one item to each sorted set
+  sortedSet1.insert(std::pair<CNormalLogicalItem*, bool>(pLA, false));
+  sortedSet2.insert(std::pair<CNormalLogicalItem*, bool>(pLNotA, false));
+  sortedSet3.insert(std::pair<CNormalLogicalItem*, bool>(pLB, false));
+  sortedSet4.insert(std::pair<CNormalLogicalItem*, bool>(pLNotB, false));
+  sortedSet5.insert(std::pair<CNormalLogicalItem*, bool>(pLC, false));
+  sortedSet6.insert(std::pair<CNormalLogicalItem*, bool>(pLNotC, false));
+  sortedSet7.insert(std::pair<CNormalLogicalItem*, bool>(pLD, false));
+  sortedSet8.insert(std::pair<CNormalLogicalItem*, bool>(pLNotD, false));
+  sortedSet9.insert(std::pair<CNormalLogicalItem*, bool>(pLE, false));
+  sortedSet10.insert(std::pair<CNormalLogicalItem*, bool>(pLNotE, false));
+  sortedSet11.insert(std::pair<CNormalLogicalItem*, bool>(pLF, false));
+  sortedSet12.insert(std::pair<CNormalLogicalItem*, bool>(pLNotF, false));
+
+  // check the sets agains each other
+  CNormalLogical::SetOfSetsSorter<CNormalLogicalItem> sorter;
+  // sortedSet1 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet2 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet3 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet4 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet5 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == true);
+
+  // sortedSet6 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet7 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet8 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == true);
+
+  // sortedSet9 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet10 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet11 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  // sortedSet12 with the rest
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet1, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet2, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet3, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet4, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet5, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet6, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet7, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet8, false)) == false);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet9, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet10, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet11, false)) == true);
+  CPPUNIT_ASSERT(sorter(std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false), std::pair<CNormalLogical::ItemSet, bool>(sortedSet12, false)) == false);
+
+  delete pLA;
+  delete pLNotA;
+  delete pLB;
+  delete pLNotB;
+  delete pLC;
+  delete pLNotC;
+  delete pLD;
+  delete pLNotD;
+  delete pLE;
+  delete pLNotE;
+  delete pLF;
+  delete pLNotF;
 }
 
 /* This test is not necessary right now.
