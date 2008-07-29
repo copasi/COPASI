@@ -160,7 +160,7 @@ function run-single-stochastic-test
     if [ "$USE_VALGRIND" == "yes" ];then
        COMMAND="${VALGRIND} ${VALGRIND_OPTIONS} --log-file-exactly=${OUTPUT_DIR}/${VALGRIND_LOG} ${COMMAND}"
     fi
-    echo "${COMMAND}" > ${POUTPUT_DIR}/${COMMAND_FILE}
+    echo "${COMMAND}" > ${OUTPUT_DIR}/${COMMAND_FILE}
     $COMMAND > ${OUTPUT_DIR}/${OUTPUT_FILE} 2> ${OUTPUT_DIR}/${ERROR_FILE}
     analyse_testrun ${MODEL} ${OUTPUT_DIR} ${STEPNUMBER};
     return $?
