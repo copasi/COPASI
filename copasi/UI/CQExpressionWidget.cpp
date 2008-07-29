@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: pwilly $
+//   $Date: 2008/07/29 10:53:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,9 @@
 
 #include <iostream>
 
+#include <qlabel.h>
+#include <qcombobox.h>
+
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
@@ -26,6 +29,10 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
+#include "utilities/CAnnotatedMatrix.h"
+#include "model/CModel.h"
+#include "CQMatrixDialog.h"
+#include "qtUtilities.h"
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : QSyntaxHighlighter(ew)
@@ -429,6 +436,59 @@ void CQExpressionWidget::slotSelectObject()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, mExpressionType);
+
+  if (pObject->getObjectType() == "Array")
+    {
+      QString str = pObject->getObjectType() + "=" + pObject->getObjectName();
+
+      const CModel* pModel = CCopasiDataModel::Global->getModel();
+      const CArrayAnnotation * tmp;
+
+      tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
+
+      CQMatrixDialog *dialog = new CQMatrixDialog();
+
+      int i;
+
+      dialog->mpLabelRow->setText("Rows : " + tmp->getDimensionDescription(0));
+      int nRows = tmp->getAnnotationsCN(0).size();
+
+      for (i = 0; i < nRows; i++)
+        {
+          dialog->mpCBRow->insertItem(FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
+        }
+
+      dialog->mpLabelColumn->setText("Columns : " + tmp->getDimensionDescription(1));
+      int nCols = tmp->getAnnotationsCN(1).size();
+
+      for (i = 0; i < nCols; i++)
+        {
+          dialog->mpCBColumn->insertItem(FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
+        }
+
+      if (tmp->dimensionality() == 2)
+        {
+          dialog->mpLabelDim3->hide();
+          dialog->mpCBDim3->hide();
+        }
+      else if (tmp->dimensionality() == 3)
+        {
+          dialog->mpLabelDim3->setText("Dimension : " + tmp->getDimensionDescription(2));
+          int nDims = tmp->getAnnotationsCN(2).size();
+
+          for (i = 0; i < nDims; i++)
+            dialog->mpCBDim3->insertItem(FROM_UTF8(tmp->getAnnotationsString(2, true)[i]));
+        }
+
+      int Result = dialog->exec();
+
+      if (Result == QDialog::Rejected)
+        return;
+      else if (Result == QDialog::Accepted)
+        {
+          std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
+        }
+    }
 
   if (pObject)
     {
