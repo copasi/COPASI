@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/28 16:28:18 $
+//   $Date: 2008/07/29 09:29:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3554,7 +3554,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 22: 1 0 1 1 1 1   (2 == T) & (4 == A) & (D != F) & (2*T^(3J) != 6.2) & (PI <  A) & (SIN (PI*D) < X)
   // 23: 1 0 1 1 0 1   (2 == T) & (4 == A) & (D != F) & (2*T^(3J) != 6.2) & (PI <  A) & (X <= SIN(PI*D))
   // 24: 0 0 1 1 1 1   (2 == T) & (4 == A) & (D != F) & (2*T^(3J) != 6.2) & (SIN (PI*D) < X) & (A <= PI)
-  // 24: 0 0 1 1 0 1   (2 == T) & (4 == A) & (D != F) & (2*T^(3J) != 6.2) & (A <= PI) & (X <= SIN(PI*D))
+  // 25: 0 0 1 1 0 1   (2 == T) & (4 == A) & (D != F) & (2*T^(3J) != 6.2) & (A <= PI) & (X <= SIN(PI*D))
   // 26: 1 1 1 1 1 1   (2 == T) & (D != F) & (2*T^(3J) != 6.2) & (4 != A) & (PI <  A) & (SIN (PI*D) < X)
   // 27: 1 1 1 1 0 1   (2 == T) & (D != F) & (2*T^(3J) != 6.2) & (4 != A) & (PI <  A) & (X <= SIN(PI*D))
   // 28: 1 0 0 1 1 0   (2*T^(3J) == 6.2) & (4 == A) & (D != F) & (2 != T) & (PI <  A) & (SIN (PI*D) < X)

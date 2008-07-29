@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 14:27:08 $
+//   $Date: 2008/07/29 09:29:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,6 +92,12 @@ class CNormalLogical : public CNormalBase
                     SetSorter<TYPE> sorter;
                     while (it != endit && result == false)
                       {
+                        // first test the other way round because if
+                        // it2 is less then it, we can already stop
+                        if (sorter(*it2, *it) == true)
+                          {
+                            break;
+                          }
                         result = sorter(*it, *it2);
                         ++it;
                         ++it2;
