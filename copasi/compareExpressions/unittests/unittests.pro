@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.12 $ 
+#   $Revision: 1.13 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/06/30 11:25:05 $ 
+#   $Date: 2008/07/29 20:23:58 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@ CONFIG -= qt
 
 include(../../common.pri)
 
-LIBS += -L../../lib/ -lCOPASISE 
+LIBS += -lCOPASISE -L../../lib/ 
 
 
 include(../../common.pri)

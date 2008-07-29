@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 14:27:08 $
+//   $Date: 2008/07/29 20:23:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,6 +295,11 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
           ++it;
         }
       CEvaluationNode* pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+      unsigned int i, iMax = tmp.size();
+      for (i = 0;i < iMax;++i)
+        {
+          delete tmp[i];
+        }
       assert(pTmpNode != NULL);
       CNormalSum* pNum = createSum(pTmpNode);
       assert(pNum != NULL);
@@ -1765,6 +1770,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
                 }
               else
                 {
+                  delete pNode;
                   pNode = NULL;
                 }
             }
@@ -1795,11 +1801,12 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND)
             {
               pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
-              pNode->addChild(pNode);
+              pNotNode->addChild(pNode);
               pNode = pNotNode;
             }
           else
             {
+              delete pNode;
               pNode = NULL;
             }
         }
@@ -2279,6 +2286,12 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                             }
                           ++it2;
                         }
+                      delete pLeftLogical;
+                      delete pRightLogical;
+                    }
+                  else
+                    {
+                      delete pLeftLogical;
                     }
                 }
               break;

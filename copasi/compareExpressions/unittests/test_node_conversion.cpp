@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_node_conversion.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/23 15:03:22 $
+//   $Date: 2008/07/29 20:23:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@ void test_node_conversion::test_0001()
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
   pTree->setInfix(expr);
   CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  delete pTree;
   CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne());
@@ -78,6 +79,7 @@ void test_node_conversion::test_0001()
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());
   CPPUNIT_ASSERT(pVariable != NULL);
+  delete pFraction;
 }
 
 void test_node_conversion::test_0002()
@@ -86,6 +88,7 @@ void test_node_conversion::test_0002()
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
   pTree->setInfix(expr);
   CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  delete pTree;
   CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
   CPPUNIT_ASSERT(pFraction != NULL);
   CPPUNIT_ASSERT(pFraction->checkDenominatorOne());
@@ -118,6 +121,7 @@ void test_node_conversion::test_0003()
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
   pTree->setInfix(expr);
   CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  delete pTree;
   CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
   CPPUNIT_ASSERT(pFraction != NULL);
   // for now, we see if it can be converted to a string without crashing
@@ -130,6 +134,7 @@ void test_node_conversion::test_0004()
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
   pTree->setInfix(expr);
   CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  delete pTree;
   CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
   CPPUNIT_ASSERT(pFraction != NULL);
   // for now, we see if it can be converted to a string without crashing
@@ -142,6 +147,7 @@ void test_node_conversion::test_0005()
   CEvaluationTree* pTree = new CEvaluationTree("tree", NULL, CEvaluationTree::Function);
   pTree->setInfix(expr);
   CNormalBase* pNormal = createNormalRepresentation(pTree->getRoot());
+  delete pTree;
   CNormalFraction* pFraction = dynamic_cast<CNormalFraction*>(pNormal);
   CPPUNIT_ASSERT(pFraction != NULL);
   // for now, we see if it can be converted to a string without crashing

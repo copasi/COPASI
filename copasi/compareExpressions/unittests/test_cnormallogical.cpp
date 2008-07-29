@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 09:29:56 $
+//   $Date: 2008/07/29 20:23:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -346,6 +346,7 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
   set.insert(std::make_pair(pNewItem, false));
   CPPUNIT_ASSERT(set.size() == 1);
+  delete pNewItem;
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
   CPPUNIT_ASSERT(pNewItem != NULL);
   set.insert(std::make_pair(pNewItem, true));
@@ -361,6 +362,7 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
   set.insert(std::make_pair(pNewItem, false));
   CPPUNIT_ASSERT(set.size() == 1);
+  delete pNewItem;
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
   CPPUNIT_ASSERT(pNewItem != NULL);
   set.insert(std::make_pair(pNewItem, true));
@@ -382,6 +384,7 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
   set.insert(std::make_pair(pNewItem, false));
   CPPUNIT_ASSERT(set.size() == 1);
+  delete pNewItem;
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pItem->copy());
   CPPUNIT_ASSERT(pNewItem != NULL);
   set.insert(std::make_pair(pNewItem, true));

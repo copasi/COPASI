@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 14:27:08 $
+//   $Date: 2008/07/29 20:23:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,13 +74,13 @@ class CNormalTranslation
 
     /**
      * Given a vector of nodes, this method creates a multiplication chain of
-     * all the nodes. The chain contains the original nodes and not copies.
+     * all the nodes. The chain contains copies of the nodes passed in.
      */
     static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes);
 
     /**
      * Given a vector of nodes, this method creates a multiplication chain of
-     * all the nodes. The chain contains the original nodes and not copies.
+     * all the nodes. The chain contains copies of the nodes passed in.
      */
     static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes);
 

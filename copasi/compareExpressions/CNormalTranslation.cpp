@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 17:41:00 $
+//   $Date: 2008/07/29 20:23:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2117,6 +2117,12 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
               subtractions[i] = pTmpNode;
             }
           pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", additions);
+          iMax = additions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete additions[i];
+            }
+          additions.clear();
           assert(pResult != NULL);
           if (!subtractions.empty())
             {
@@ -2126,6 +2132,12 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
               pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", subtractions);
               assert(pTmpNode != NULL);
               pResult->addChild(pTmpNode);
+              iMax = subtractions.size();
+              for (i = 0;i < iMax;++i)
+                {
+                  delete subtractions[i];
+                }
+              subtractions.clear();
             }
           // delete the children
           delete children[0];
@@ -2756,6 +2768,18 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           // the second entry is the original branch
           // make sure the collected factor is again simplified
           std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > collected = CNormalTranslation::matchSummands(additions, subtractions);
+          iMax = additions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete additions[i];
+            }
+          additions.clear();
+          iMax = subtractions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete subtractions[i];
+            }
+          subtractions.clear();
           std::vector<CEvaluationNode*> chain;
           iMax = collected.size();
           for (i = 0;i < iMax;++i)
@@ -3236,6 +3260,18 @@ CEvaluationNode* CNormalTranslation::expandPowerBases(const CEvaluationNode* pRo
           std::vector<CEvaluationNode*> additions, subtractions;
           CNormalTranslation::splitSum(pBase, additions, subtractions, false);
           std::pair<CEvaluationNode*, CEvaluationNode*> resultPair = CNormalTranslation::factorize(additions, subtractions);
+          unsigned int i, iMax = additions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete additions[i];
+            }
+          additions.clear();
+          iMax = subtractions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete subtractions[i];
+            }
+          subtractions.clear();
           if (resultPair.first != NULL)
             {
               pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
@@ -3334,7 +3370,7 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
     {
       bool everywhere = true;
       std::vector<std::vector<const CEvaluationNode*> >::iterator innerIt = multiplicationVectors.begin(), innerEndit = multiplicationVectors.end();
-      // we can leav out the first one since the item comes from there anyway,
+      // we can leave out the first one since the item comes from there anyway,
       // so we know it is in that vector
       std::string infix = (*it)->getInfix();
       ++innerIt;

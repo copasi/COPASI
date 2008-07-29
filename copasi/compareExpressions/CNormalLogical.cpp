@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/28 18:22:06 $
+//   $Date: 2008/07/29 20:23:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -334,6 +334,7 @@ bool CNormalLogical::simplify()
           delete itemSetOfSets;
           ++it2;
         }
+      cleanSet(tmpSet);
       ++it;
     }
   if (result == true)
@@ -351,6 +352,10 @@ bool CNormalLogical::simplify()
               cleanSetOfSets(this->mAndSets);
               convertAndOrToOrAnd(tmpSetOfSets, this->mAndSets);
               this->mNot = false;
+            }
+          else
+            {
+              cleanSetOfSets(tmpSetOfSets);
             }
         }
       ItemSetOfSets::iterator it2 = this->mAndSets.begin(), endit2 = this->mAndSets.end();
@@ -545,6 +550,10 @@ bool CNormalLogical::simplify()
     {
       cleanSetOfSets(this->mAndSets);
       this->mAndSets = tmpSet;
+    }
+  else
+    {
+      cleanSetOfSets(tmpSet);
     }
   return result;
 }
@@ -916,16 +925,19 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
           if (pos != outerIt->first.end())
             {
               eliminate = true;
+              delete pNegatedItem;
               break;
             }
-          // also look for the simplified form just on case
+          // also look for the simplified form just in case
           pNegatedItem->simplify();
           pos = outerIt->first.find(negatedPair);
           if (pos != outerIt->first.end())
             {
               eliminate = true;
+              delete pNegatedItem;
               break;
             }
+          delete pNegatedItem;
           ++innerIt;
         }
       ItemSet tmpSet;
@@ -1028,6 +1040,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
                 {
                   delete pI;
                 }
+              delete pItem;
               break;
             }
           else
@@ -1039,6 +1052,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
                   cleanSet(tmpSet2);
                 }
             }
+          delete pItem;
         }
       else
         {
@@ -1051,6 +1065,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
         }
       ++outerIt;
     }
+  cleanSetOfSets(tmpTarget);
   delete pNegatedNeutralItem;
   if (target.size() > 1)
     {
