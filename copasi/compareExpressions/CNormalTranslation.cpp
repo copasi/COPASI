@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 11:24:43 $
+//   $Date: 2008/07/29 17:41:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -326,8 +326,8 @@ CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator
       CEvaluationNode* pChild2 = (*it)->copyBranch();
       ++it;
       CEvaluationNode* pChild1 = (*it)->copyBranch();
-      pOperator->addChild(pChild1->copyBranch());
-      pOperator->addChild(pChild2->copyBranch());
+      pOperator->addChild(pChild1);
+      pOperator->addChild(pChild2);
       ++it;
       pChild2 = pOperator;
       while (it != endit)
@@ -2803,14 +2803,12 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           for (i = 0;i < iMax;++i)
             {
               CEvaluationNode* pChild = CNormalTranslation::cancel(multiplications[i]);
-              //delete multiplications[i];
               multiplications[i] = pChild;
             }
           iMax = divisions.size();
           for (i = 0;i < iMax;++i)
             {
               CEvaluationNode* pChild = CNormalTranslation::cancel(divisions[i]);
-              //delete divisions[i];
               divisions[i] = pChild;
             }
           // find identical nodes in multiplications and divisions
@@ -2818,6 +2816,18 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           // the second entry is the original power base
           // make sure the collected factor is again simplified
           std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > collected = CNormalTranslation::matchPowerBases(multiplications, divisions);
+          iMax = multiplications.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete multiplications[i];
+            }
+          multiplications.clear();
+          iMax = divisions.size();
+          for (i = 0;i < iMax;++i)
+            {
+              delete divisions[i];
+            }
+          divisions.clear();
           std::vector<CEvaluationNode*> numeratorChain;
           std::vector<CEvaluationNode*> denominatorChain;
           iMax = collected.size();
