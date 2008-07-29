@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CMathMLToTeX.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/25 08:09:00 $
+//   $Author: shoops $
+//   $Date: 2008/07/29 13:41:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 
 // Written by pwilly on 07.07.08
 
-#include <iostream.h>
+#include <iostream>
 
 //#include <qstring.h>
 #include <qstringlist.h>

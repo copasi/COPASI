@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/25 06:35:22 $
+//   $Author: shoops $
+//   $Date: 2008/07/29 13:41:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ void CQDifferentialEquations::newFunction()
 
 void CQDifferentialEquations::saveTeX(const QString outfilename)
 {
-  QString latexStr(mml.str());
+  QString latexStr(FROM_UTF8(mml.str()));
 
   CMathMLToTeX::convert(latexStr);
 

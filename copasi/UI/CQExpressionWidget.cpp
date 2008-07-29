@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/29 10:53:36 $
+//   $Author: shoops $
+//   $Date: 2008/07/29 13:41:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -439,7 +439,7 @@ void CQExpressionWidget::slotSelectObject()
 
   if (pObject->getObjectType() == "Array")
     {
-      QString str = pObject->getObjectType() + "=" + pObject->getObjectName();
+      QString str = FROM_UTF8(pObject->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectName());
 
       const CModel* pModel = CCopasiDataModel::Global->getModel();
       const CArrayAnnotation * tmp;
@@ -450,7 +450,7 @@ void CQExpressionWidget::slotSelectObject()
 
       int i;
 
-      dialog->mpLabelRow->setText("Rows : " + tmp->getDimensionDescription(0));
+      dialog->mpLabelRow->setText("Rows : " + FROM_UTF8(tmp->getDimensionDescription(0)));
       int nRows = tmp->getAnnotationsCN(0).size();
 
       for (i = 0; i < nRows; i++)
@@ -458,7 +458,7 @@ void CQExpressionWidget::slotSelectObject()
           dialog->mpCBRow->insertItem(FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
         }
 
-      dialog->mpLabelColumn->setText("Columns : " + tmp->getDimensionDescription(1));
+      dialog->mpLabelColumn->setText("Columns : " + FROM_UTF8(tmp->getDimensionDescription(1)));
       int nCols = tmp->getAnnotationsCN(1).size();
 
       for (i = 0; i < nCols; i++)
@@ -473,7 +473,7 @@ void CQExpressionWidget::slotSelectObject()
         }
       else if (tmp->dimensionality() == 3)
         {
-          dialog->mpLabelDim3->setText("Dimension : " + tmp->getDimensionDescription(2));
+          dialog->mpLabelDim3->setText("Dimension : " + FROM_UTF8(tmp->getDimensionDescription(2)));
           int nDims = tmp->getAnnotationsCN(2).size();
 
           for (i = 0; i < nDims; i++)
