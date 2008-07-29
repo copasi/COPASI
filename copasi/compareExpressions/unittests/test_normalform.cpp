@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 09:29:56 $
+//   $Date: 2008/07/29 11:24:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3293,7 +3293,7 @@ void test_normalform::test_nested_stepwise_numbers_2levels_2()
 
   const CNormalLogicalItem* pLogicalItem = innerIt->first;
   // check type, left side and right side
-  CPPUNIT_ASSERT(check_LogicalItemNotD(pLogicalItem) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(pLogicalItem) == true);
 
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
@@ -3559,13 +3559,13 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 27: 1 1 1 1 0 1   (2 == T) & (D != F) & (2*T^(3J) != 6.2) & (4 != A) & (PI <  A) & (X <= SIN(PI*D))
   // 28: 1 0 0 1 1 0   (2*T^(3J) == 6.2) & (4 == A) & (D != F) & (2 != T) & (PI <  A) & (SIN (PI*D) < X)
   // 29: 0 0 0 1 1 0   (2*T^(3J) == 6.2) & (4 == A) & (D != F) & (2 != T) & (SIN (PI*D) < X) & (A <= PI)
-  // 30: 1 0 0 1 1 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (PI <  A) & (SIN (PI*D) < X)
-  // 31: 1 0 0 1 0 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (PI <  A) & (X <= SIN(PI*D))
-  // 32: 0 0 0 1 1 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (SIN (PI*D) < X) & (A <= PI)
-  // 33: 0 0 0 1 0 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (A <= PI) & (X <= SIN(PI*D))
-  // 34: 1 1 0 1 1 0   (2*T^(3J) == 6.2) & (D != F) & (2 != T) & (4 != A) & (PI <  A) & (SIN (PI*D) < X)
-  // 35: 0 1 0 1 1 0   (2*T^(3J) == 6.2) & (D != F) & (2 != T) & (4 != A) & (SIN (PI*D) < X) & (A <= PI)
-  // 36: 0 1 0 1 0 0   (2*T^(3J) == 6.2) & (D != F) & (2 != T) & (4 != A) & (A <= PI) & (X <= SIN(PI*D))
+  // 30: 1 1 0 1 1 0   (2*T^(3J) == 6.2) & (D != F) & (2 != T) & (4 != A) & (PI <  A) & (SIN (PI*D) < X)
+  // 31: 0 1 0 1 1 0   (2*T^(3J) == 6.2) & (D != F) & (2 != T) & (4 != A) & (SIN (PI*D) < X) & (A <= PI)
+  // 32: 0 1 0 1 0 0   (2*T^(3J) == 6.2) & (D != F) & (2 != T) & (4 != A) & (A <= PI) & (X <= SIN(PI*D))
+  // 33: 1 0 0 1 1 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (PI <  A) & (SIN (PI*D) < X)
+  // 34: 1 0 0 1 0 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (PI <  A) & (X <= SIN(PI*D))
+  // 35: 0 0 0 1 1 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (SIN (PI*D) < X) & (A <= PI)
+  // 36: 0 0 0 1 0 1   (4 == A) & (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (A <= PI) & (X <= SIN(PI*D))
   // 37: 1 1 0 1 1 1   (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (4 != A) & (PI <  A) & (SIN (PI*D) < X)
   // 38: 1 1 0 1 0 1   (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (4 != A) & (PI <  A) & (X <= SIN(PI*D))
   // 39: 0 1 0 1 1 1   (D != F) & (2 != T) & (2*T^(3J) != 6.2) & (4 != A) & (SIN (PI*D) < X) & (A <= PI)
@@ -3612,7 +3612,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 6 items in each set
   CNormalLogical::ItemSet::const_iterator innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
@@ -3635,30 +3635,10 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 2
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
-
-  ++outerIt;
-  CPPUNIT_ASSERT(outerIt->second == false);
-  CPPUNIT_ASSERT(outerIt->first.size() == 6);
-  // 3
-  innerIt = outerIt->first.begin();
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
@@ -3667,7 +3647,27 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+
+  ++outerIt;
+  CPPUNIT_ASSERT(outerIt->second == false);
+  CPPUNIT_ASSERT(outerIt->first.size() == 6);
+  // 3
+  innerIt = outerIt->first.begin();
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
@@ -3681,13 +3681,13 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 4
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
@@ -3704,22 +3704,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 5
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -3727,22 +3727,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 6
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -3750,22 +3750,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 7
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -3773,16 +3773,16 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 8
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
@@ -3796,30 +3796,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 9
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
-
-  ++outerIt;
-  CPPUNIT_ASSERT(outerIt->second == false);
-  CPPUNIT_ASSERT(outerIt->first.size() == 6);
-  // 10
-  innerIt = outerIt->first.begin();
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
@@ -3829,6 +3806,29 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+
+  ++outerIt;
+  CPPUNIT_ASSERT(outerIt->second == false);
+  CPPUNIT_ASSERT(outerIt->first.size() == 6);
+  // 10
+  innerIt = outerIt->first.begin();
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
@@ -3842,22 +3842,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 11
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -3865,13 +3865,13 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 12
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
@@ -3888,16 +3888,16 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 13
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
@@ -3911,22 +3911,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 14
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -3934,22 +3934,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 15
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -3960,6 +3960,29 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+
+  ++outerIt;
+  CPPUNIT_ASSERT(outerIt->second == false);
+  CPPUNIT_ASSERT(outerIt->first.size() == 6);
+  // 17
+  innerIt = outerIt->first.begin();
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
@@ -3977,48 +4000,25 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
   CPPUNIT_ASSERT(outerIt->first.size() == 6);
-  // 17
-  innerIt = outerIt->first.begin();
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
-
-  ++outerIt;
-  CPPUNIT_ASSERT(outerIt->second == false);
-  CPPUNIT_ASSERT(outerIt->first.size() == 6);
   // 18
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4026,7 +4026,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 19
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
@@ -4035,13 +4035,13 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4049,16 +4049,16 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 20
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
@@ -4078,16 +4078,16 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4101,16 +4101,16 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4118,22 +4118,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 23
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4141,13 +4141,13 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 24
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
@@ -4164,22 +4164,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 25
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4187,10 +4187,10 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 26
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
@@ -4199,10 +4199,10 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4210,16 +4210,16 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 27
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
@@ -4233,22 +4233,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 28
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4256,22 +4256,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 29
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4279,22 +4279,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 30
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4302,28 +4302,8 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 31
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
   ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
-
-  ++outerIt;
-  CPPUNIT_ASSERT(outerIt->second == false);
-  CPPUNIT_ASSERT(outerIt->first.size() == 6);
-  // 32
-  innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
@@ -4331,13 +4311,33 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+
+  ++outerIt;
+  CPPUNIT_ASSERT(outerIt->second == false);
+  CPPUNIT_ASSERT(outerIt->first.size() == 6);
+  // 32
+  innerIt = outerIt->first.begin();
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
@@ -4348,30 +4348,10 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 33
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
-
-  ++outerIt;
-  CPPUNIT_ASSERT(outerIt->second == false);
-  CPPUNIT_ASSERT(outerIt->first.size() == 6);
-  // 34
-  innerIt = outerIt->first.begin();
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
@@ -4380,7 +4360,27 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+
+  ++outerIt;
+  CPPUNIT_ASSERT(outerIt->second == false);
+  CPPUNIT_ASSERT(outerIt->first.size() == 6);
+  // 34
+  innerIt = outerIt->first.begin();
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
@@ -4394,22 +4394,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 35
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4417,10 +4417,10 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 36
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
@@ -4440,33 +4440,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 37
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemC(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
-
-  ++outerIt;
-  CPPUNIT_ASSERT(outerIt->second == false);
-  CPPUNIT_ASSERT(outerIt->first.size() == 6);
-  // 38
-  innerIt = outerIt->first.begin();
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotB(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
@@ -4475,7 +4449,33 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
+
+  ++outerIt;
+  CPPUNIT_ASSERT(outerIt->second == false);
+  CPPUNIT_ASSERT(outerIt->first.size() == 6);
+  // 38
+  innerIt = outerIt->first.begin();
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemA(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
@@ -4486,22 +4486,22 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 39
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotF(innerIt->first) == true);
-  ++innerIt;
-  CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
+  CPPUNIT_ASSERT(check_LogicalItemF(innerIt->first) == true);
+  ++innerIt;
+  CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemB(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemE(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotE(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemNotA(innerIt->first) == true);
 
   ++outerIt;
   CPPUNIT_ASSERT(outerIt->second == false);
@@ -4509,7 +4509,7 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
   // 40
   innerIt = outerIt->first.begin();
   CPPUNIT_ASSERT(innerIt->second == false);
-  CPPUNIT_ASSERT(check_LogicalItemNotD(innerIt->first) == true);
+  CPPUNIT_ASSERT(check_LogicalItemD(innerIt->first) == true);
   ++innerIt;
   CPPUNIT_ASSERT(innerIt->second == false);
   CPPUNIT_ASSERT(check_LogicalItemNotC(innerIt->first) == true);
@@ -4807,7 +4807,7 @@ bool test_normalform::check_LogicalItemC(const CNormalLogicalItem* pLogicalItem)
 }
 
 // D == F
-bool test_normalform::check_LogicalItemD(const CNormalLogicalItem* pLogicalItem)
+bool test_normalform::check_LogicalItemNotD(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
   if (pLogicalItem == NULL) return false;
@@ -5138,7 +5138,7 @@ bool test_normalform::check_LogicalItemNotC(const CNormalLogicalItem* pLogicalIt
 }
 
 // D != F
-bool test_normalform::check_LogicalItemNotD(const CNormalLogicalItem* pLogicalItem)
+bool test_normalform::check_LogicalItemD(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
   if (pLogicalItem == NULL) return false;

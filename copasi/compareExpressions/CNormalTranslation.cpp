@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 14:27:08 $
+//   $Date: 2008/07/29 11:24:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3533,7 +3533,7 @@ CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator
  * operation represented be pLink. So if pLink represents a multiplication,
  * the neutral element is the number node 1.0.
  */
-CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* pNeutralElement, const std::vector<const CEvaluationNode*>& elements)
+CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* /*pNeutralElement*/, const std::vector<const CEvaluationNode*>& elements)
 {
   CEvaluationNode* pResult = NULL;
   if (elements.size() == 1)
