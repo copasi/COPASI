@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/07/30 15:18:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2496,6 +2496,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
               os.precision(18);
               os << dynamic_cast<const CEvaluationNodeNumber*>(pNode)->value() * -1.0;
               pTmpNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
+              delete pNode;
             }
           else
             {
@@ -3593,8 +3594,8 @@ CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, c
       CEvaluationNode* pChild2 = (*it)->copyBranch();
       ++it;
       CEvaluationNode* pChild1 = (*it)->copyBranch();
-      pOperator->addChild(pChild1->copyBranch());
-      pOperator->addChild(pChild2->copyBranch());
+      pOperator->addChild(pChild1);
+      pOperator->addChild(pChild2);
       ++it;
       pChild2 = pOperator;
       while (it != endit)

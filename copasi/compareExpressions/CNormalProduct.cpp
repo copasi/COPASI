@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 14:27:08 $
+//   $Date: 2008/07/30 15:18:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,9 +56,11 @@ CNormalProduct::CNormalProduct(const CNormalProduct& src): CNormalBase(src), mFa
 {
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = src.mItemPowers.end();
+  CNormalItemPower* pNewItemPower = NULL;
   for (it = src.mItemPowers.begin(); it != itEnd; ++it)
     {
-      mItemPowers.insert(new CNormalItemPower(**it));
+      pNewItemPower = new CNormalItemPower(**it);
+      assert(mItemPowers.insert(pNewItemPower).second == true);
     }
 }
 

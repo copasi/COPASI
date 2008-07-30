@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/07/30 15:18:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,6 +313,11 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
           ++it;
         }
       pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", tmp);
+      iMax = tmp.size();
+      for (i = 0;i < iMax;++i)
+        {
+          delete tmp[i];
+        }
       assert(pTmpNode != NULL);
       CNormalSum* pDenom = createSum(pTmpNode);
       assert(pDenom != NULL);

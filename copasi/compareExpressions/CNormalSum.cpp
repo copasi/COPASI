@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/14 13:51:28 $
+//   $Date: 2008/07/30 15:18:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,12 +65,16 @@ CNormalSum::CNormalSum(const CNormalSum& src): CNormalBase(src)
   std::set<CNormalProduct*, compareProducts >::const_iterator it;
   std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = src.mProducts.end();
   for (it = src.mProducts.begin(); it != itEnd; ++it)
-    mProducts.insert(new CNormalProduct(**it));
+    {
+      assert(mProducts.insert(new CNormalProduct(**it)).second == true);
+    }
 
   std::set<CNormalFraction*>::const_iterator it2;
   std::set<CNormalFraction*>::const_iterator it2End = src.mFractions.end();
   for (it2 = src.mFractions.begin(); it2 != it2End; ++it2)
-    mFractions.insert(new CNormalFraction(**it2));
+    {
+      assert(mFractions.insert(new CNormalFraction(**it2)).second == true);
+    }
 }
 
 /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/07/30 15:18:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -301,10 +301,13 @@ bool CNormalLogical::simplify()
           cleanSetOfSets(tmpSetOfSets);
           set2[1] = itemSetOfSets;
           cleanSetOfSets(*set1[0]);
+          delete set1[0];
           cleanSetOfSets(*set1[1]);
+          delete set1[1];
           cleanSetOfSets(*set1[2]);
+          delete set1[2];
           cleanSetOfSets(*set1[3]);
-
+          delete set1[3];
           itemSetOfSets = new ItemSetOfSets();
           convertAndOrToOrAnd(*set2[0], tmpSetOfSets);
           convertAndOrToOrAnd(*set2[1], tmpSetOfSets);
@@ -325,12 +328,14 @@ bool CNormalLogical::simplify()
           ItemSetOfSets::const_iterator tmpIt = itemSetOfSets->begin(), tmpEndit = itemSetOfSets->end();
           while (tmpIt != tmpEndit)
             {
-              std::pair<ItemSetOfSets::iterator, bool> tmpResult = this->mAndSets.insert(*tmpIt);
+              /*std::pair<ItemSetOfSets::iterator, bool> tmpResult = */this->mAndSets.insert(*tmpIt);
               ++tmpIt;
             }
 
           cleanSetOfSets(*set2[0]);
+          delete set2[0];
           cleanSetOfSets(*set2[1]);
+          delete set2[1];
           delete itemSetOfSets;
           ++it2;
         }
@@ -351,6 +356,7 @@ bool CNormalLogical::simplify()
             {
               cleanSetOfSets(this->mAndSets);
               convertAndOrToOrAnd(tmpSetOfSets, this->mAndSets);
+              cleanSetOfSets(tmpSetOfSets);
               this->mNot = false;
             }
           else
@@ -984,12 +990,15 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
                   tmpSet.erase(tmpPair);
                   delete pTmpItem;
                 }
+              delete pItem;
               // since all items in tmpSet are simplified, we don't have to
               // look for the negated form of pItem with a true flag
             }
         }
       if (tmpTarget.insert(std::make_pair(tmpSet, outerIt->second)).second == false)
         {
+          // TODO check why this is the case in e.g. test_normalform::test_nested_stepwise_fractions_3levels
+          // TODO But right now this does not seem to invalidate the results.
           cleanSet(tmpSet);
         }
       ++outerIt;
