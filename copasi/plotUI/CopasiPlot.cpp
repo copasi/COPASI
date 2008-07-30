@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.52.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:27:10 $
+//   $Date: 2008/07/30 02:05:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,21 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
 
     if (isnan(minX + maxX + minY + maxY))
       return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+
+    // We need to avoid near extremely data ranges (absolute and relative)
+    C_FLOAT64 minRange = ((minX + maxX) / 2.0 * DBL_EPSILON + DBL_MIN) * 100.0;
+    if (maxX - minX < minRange)
+      {
+        minX = (minX + maxX - minRange) / 2.0;
+        maxX = (minX + maxX + minRange) / 2.0;
+      }
+
+    minRange = ((minY + maxY) / 2.0 * DBL_EPSILON + DBL_MIN) * 100.0;
+    if (maxY - minY < minRange)
+      {
+        minY = (minY + maxY - minRange) / 2.0;
+        maxY = (minY + maxY - minRange) / 2.0;
+      }
 
     return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
   }
@@ -383,13 +398,18 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
+
+                  setAxisUnits(xBottom, pObj);
                 }
 
               if (mCurveTypes[i] == CPlotItem::histoItem1d)
                 mSaveHistogramObjects.push_back(pObj);
             }
           else
-            itX->push_back(pObj);
+            {
+              itX->push_back(pObj);
+              setAxisUnits(yLeft, pObj);
+            }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
 
@@ -895,4 +915,16 @@ void CopasiPlot::clearBuffers()
   mHaveBefore = false;
   mHaveDuring = false;
   mHaveAfter = false;
+}
+
+void CopasiPlot::setAxisUnits(const C_INT32 & index,
+                              const CCopasiObject * pObject)
+{
+  if (pObject == NULL) return;
+
+  std::string Units = FROM_UTF8(pObject->getUnits());
+  if (Units != "")
+    setAxisTitle(index, FROM_UTF8(Units));
+
+  return;
 }
