@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.175 $
+//   $Revision: 1.175.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:49:34 $
+//   $Date: 2008/07/30 02:05:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,6 +104,24 @@ CReaction::~CReaction()
   DESTRUCTOR_TRACE;
 }
 
+// virtual
+std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
+  {
+    const CModel * pModel =
+      dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+
+    if (pModel == NULL) return "";
+
+    const std::string & Name = pObject->getObjectName();
+
+    if (Name == "ParticleFlux")
+      return "1/" + pModel->getTimeUnitName();
+    else if (Name == "Fux")
+      return pModel->getConcentrationRateUnitName();
+
+    return "";
+  }
+
 void CReaction::cleanup()
 {
   // TODO: mMap.cleanup();
@@ -141,7 +159,8 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Equation", "string", &ChemEq)))
     return Fail;
 
-  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  CModel * pModel
+  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   CChemEqInterface::setChemEqFromString(pModel, *this, ChemEq);
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
@@ -524,7 +543,8 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
                             CFunctionParameter::Role role, unsigned C_INT32 n,
                             const std::string & prefix)
 {
-  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  const CModel * pModel
+  = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
   const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   unsigned C_INT32 i, imax, pos;
@@ -844,7 +864,8 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
-  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  CModel * pModel
+  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
   containers.push_back(pModel);
   CCopasiObject* object = CCopasiContainer::ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));

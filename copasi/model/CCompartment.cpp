@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.67.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 19:29:53 $
+//   $Date: 2008/07/30 02:05:05 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,6 +33,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "CCompartment.h"
+#include "CModel.h"
 
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
@@ -60,6 +66,22 @@ CCompartment::~CCompartment()
   GlobalKeys.remove(mKey);
   DESTRUCTOR_TRACE;
 }
+
+// virtual
+std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
+  {
+    if (mpModel == NULL) return "";
+
+    const std::string & Name = pObject->getObjectName();
+
+    if (Name == "InitialVolume" ||
+        Name == "Volume")
+      return mpModel->getVolumeUnitName();
+    else if (Name == "Rate")
+      return mpModel->getVolumeUnitName() + "/" + mpModel->getTimeUnitName();
+
+    return "";
+  }
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}
 

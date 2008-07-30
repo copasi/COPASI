@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.160.2.1 $
+//   $Revision: 1.160.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/18 16:21:05 $
+//   $Date: 2008/07/30 02:05:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,6 +178,12 @@ class CModel : public CModelEntity
      * Destructor
      */
     ~CModel();        // destructor (deallocation code here)
+
+    /**
+     * Retrieve the units of the child object.
+     * @return std::string units
+     */
+    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
     /**
      * Cleanup

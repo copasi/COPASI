@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.343.2.1 $
+//   $Revision: 1.343.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/18 16:21:05 $
+//   $Date: 2008/07/30 02:05:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,6 +202,16 @@ CModel::~CModel()
   //cleanup();
   DESTRUCTOR_TRACE;
 }
+
+// virtual
+std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
+  {
+    if (pObject->getObjectName() == "Initial Time" ||
+        pObject->getObjectName() == "Time")
+      return getTimeUnitName();
+
+    return "";
+  }
 
 void CModel::cleanup()
 {

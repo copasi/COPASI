@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.87.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:34 $
+//   $Date: 2008/07/30 02:05:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,6 +131,12 @@ class CMetab : public CModelEntity
      *  Destructor.
      */
     ~CMetab();
+
+    /**
+     * Retrieve the units of the child object.
+     * @return std::string units
+     */
+    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
     virtual void * getValuePointer() const;
     //TODO: discuss if it should be concentration or particle number...

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.135 $
+//   $Revision: 1.135.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 16:47:46 $
+//   $Date: 2008/07/30 02:05:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,6 +112,29 @@ CMetab::~CMetab()
   GlobalKeys.remove(mKey);
   DESTRUCTOR_TRACE;
 }
+
+// virtual
+std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
+  {
+    if (mpModel == NULL) return "";
+
+    const std::string & Name = pObject->getObjectName();
+
+    if (Name == "InitialParticleNumber" ||
+        Name == "ParticleNumber")
+      return "#";
+    else if (Name == "ParticleNumberRate")
+      return "#/" + mpModel->getTimeUnitName();
+    else if (Name == "InitialConcentration" ||
+             Name == "Concentration")
+      return mpModel->getConcentrationUnitName();
+    else if (Name == "Rate")
+      return mpModel->getConcentrationRateUnitName();
+    else if (Name == "TransitionTime")
+      return mpModel->getTimeUnitName();
+
+    return "";
+  }
 
 void CMetab::cleanup() {}
 
