@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.45.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:26:46 $
+//   $Author: shoops $
+//   $Date: 2008/07/30 02:04:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,3 +265,11 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 
   return true;
 }
+
+// virtual
+std::string CCopasiContainer::getUnits() const
+{return "";}
+
+// virtual
+std::string CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
+  {return "";}

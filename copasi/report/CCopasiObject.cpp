@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.71.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/17 16:23:34 $
+//   $Date: 2008/07/30 02:04:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -476,6 +476,15 @@ void CCopasiObject::clearRefresh()
 
 Refresh * CCopasiObject::getRefresh() const
   {return mpRefresh;}
+
+// virtual
+std::string CCopasiObject::getUnits() const
+  {
+    if (mpObjectParent != NULL)
+      return mpObjectParent->getChildObjectUnits(this);
+
+    return "";
+  }
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {
