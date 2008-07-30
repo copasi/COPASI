@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.54 $ -->
+<!--   $Revision: 1.54.2.1 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: gauges $ -->
-<!--   $Date: 2008/06/14 17:42:03 $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2008/07/30 15:51:40 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4316,7 +4316,7 @@ COPASI has read a file, you have to specify some information for each
 experiment included in the file. To select an experiment you choose it
 from the right selection box. The first thing you need to specify is
 whether the data belongs to a Steady-State analysis or to a time
-course simulation. You also have to associate the individual rows of
+course simulation. You also have to associate the individual columns of
 input data to elements of the model. For this, you click on the
 <guibutton>...</guibutton> button in each row and select the
 corresponding object in the selection dialog. It is mandatory that
