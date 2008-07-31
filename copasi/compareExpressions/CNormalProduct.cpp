@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/30 15:18:23 $
+//   $Date: 2008/07/31 13:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,11 +56,13 @@ CNormalProduct::CNormalProduct(const CNormalProduct& src): CNormalBase(src), mFa
 {
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = src.mItemPowers.end();
-  CNormalItemPower* pNewItemPower = NULL;
+  const CNormalItemPower* pSrcItemPower = NULL;
+  CNormalItemPower* pDestItemPower = NULL;
   for (it = src.mItemPowers.begin(); it != itEnd; ++it)
     {
-      pNewItemPower = new CNormalItemPower(**it);
-      assert(mItemPowers.insert(pNewItemPower).second == true);
+      pSrcItemPower = *it;
+      pDestItemPower = new CNormalItemPower(*pSrcItemPower);
+      assert(this->mItemPowers.insert(pDestItemPower).second == true);
     }
 }
 
@@ -97,6 +99,12 @@ bool CNormalProduct::setFactor(const C_FLOAT64& number)
   mFactor = number;
   if (fabs(mFactor) < 1.0E-100)
     {
+      std::set<CNormalItemPower*, compareItemPowers>::iterator it = mItemPowers.begin(), endit = mItemPowers.end();
+      while (it != endit)
+        {
+          delete *it;
+          ++it;
+        }
       mItemPowers.clear();
       //mPowers.clear();
     }
@@ -112,6 +120,12 @@ bool CNormalProduct::multiply(const C_FLOAT64& number)
   mFactor = mFactor * number;
   if (fabs(mFactor) < 1.0E-100)
     {
+      std::set<CNormalItemPower*, compareItemPowers>::iterator it = mItemPowers.begin(), endit = mItemPowers.end();
+      while (it != endit)
+        {
+          delete *it;
+          ++it;
+        }
       mItemPowers.clear();
       //mPowers.clear();
     }

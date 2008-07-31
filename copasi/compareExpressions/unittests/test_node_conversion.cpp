@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_node_conversion.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/07/31 13:40:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,8 @@ void test_node_conversion::test_0001()
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());
   CPPUNIT_ASSERT(pVariable != NULL);
-  delete pFraction;
+  delete pNormal;
+  delete pResultNode;
 }
 
 void test_node_conversion::test_0002()
@@ -113,6 +114,8 @@ void test_node_conversion::test_0002()
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());
   CPPUNIT_ASSERT(pVariable != NULL);
+  delete pNormal;
+  delete pResultNode;
 }
 
 void test_node_conversion::test_0003()
@@ -126,6 +129,7 @@ void test_node_conversion::test_0003()
   CPPUNIT_ASSERT(pFraction != NULL);
   // for now, we see if it can be converted to a string without crashing
   std::string s = pFraction->toString();
+  delete pNormal;
 }
 
 void test_node_conversion::test_0004()
@@ -139,6 +143,7 @@ void test_node_conversion::test_0004()
   CPPUNIT_ASSERT(pFraction != NULL);
   // for now, we see if it can be converted to a string without crashing
   std::string s = pFraction->toString();
+  delete pNormal;
 }
 
 void test_node_conversion::test_0005()
@@ -152,4 +157,5 @@ void test_node_conversion::test_0005()
   CPPUNIT_ASSERT(pFraction != NULL);
   // for now, we see if it can be converted to a string without crashing
   std::string s = pFraction->toString();
+  delete pNormal;
 }

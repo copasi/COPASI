@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/30 15:18:23 $
+//   $Date: 2008/07/31 13:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -256,11 +256,11 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalSum& sum)
   CEvaluationNode* pResult = NULL;
   if (!summands.empty())
     {
-      pResult = CNormalTranslation::createChain(CNormalTranslation::PLUS_NODE, CNormalTranslation::ZERO_NODE, summands);
+      pResult = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, summands);
     }
   else
     {
-      pResult = CNormalTranslation::ZERO_NODE->copyBranch();
+      pResult = CNormalTranslation::ZERO_NODE.copyBranch();
     }
   std::vector<const CEvaluationNode*>::iterator vIt = summands.begin(), vEndit = summands.end();
   while (vIt != vEndit)
@@ -324,7 +324,7 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
       delete pTmpNode;
       pFraction->setNumerator(*pNum);
       pFraction->setDenominator(*pDenom);
-      pFraction->cancel();
+      //pFraction->cancel();
       delete pNum;
       delete pDenom;
     }
@@ -1684,7 +1684,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
             {
               // only create the not node if it wouldn't result in the neutral
               // element
-              if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+              if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR)
                 {
                   pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
                   pNotNode->addChild(pNode);
@@ -1698,13 +1698,13 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           ++cInnerIt;
           // if it is not the neutral element or it is the last element to be
           // inserted into an otherwise empty vector, insert the element
-          if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && cInnerIt == cInnerEndit))
+          if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && cInnerIt == cInnerEndit))
             {
               andElements.push_back(pNode);
             }
         }
       // create the and chain
-      pNode = CNormalTranslation::createChain(pAndNode, CNormalTranslation::NEUTRAL_ELEMENT_AND, andElements);
+      pNode = CNormalTranslation::createChain(pAndNode, &CNormalTranslation::NEUTRAL_ELEMENT_AND, andElements);
       assert(pNode != NULL);
       // delete the created nodes
       std::vector<const CEvaluationNode*>::const_iterator vIt = andElements.begin(), vEndit = andElements.end();
@@ -1719,7 +1719,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
         {
           // create a not node if it would not result in the creation of the
           // neutral element
-          if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND)
+          if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND)
             {
               pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
               pNode->addChild(pNode);
@@ -1733,7 +1733,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
       ++cIt;
       // if it is not the neutral element or it is the last element to be
       // inserted into an otherwise empty vector, insert the element
-      if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && cIt == cEndit))
+      if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && cIt == cEndit))
         {
           orElements.push_back(pNode);
         }
@@ -1741,7 +1741,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
   // create the OR chain
   if (!orElements.empty())
     {
-      pNode = CNormalTranslation::createChain(pOrNode, CNormalTranslation::NEUTRAL_ELEMENT_OR, orElements);
+      pNode = CNormalTranslation::createChain(pOrNode, &CNormalTranslation::NEUTRAL_ELEMENT_OR, orElements);
       assert(pNode != NULL);
       std::vector<const CEvaluationNode*>::const_iterator vIt = orElements.begin(), vEndit = orElements.end();
       // delete the created elements
@@ -1767,7 +1767,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
             {
               // only create the not node if it wouldn't result in the neutral
               // element
-              if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+              if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR)
                 {
                   pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
                   pNotNode->addChild(pNode);
@@ -1782,13 +1782,13 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
           ++iInnerIt;
           // if it is not the neutral element or it is the last element to be
           // inserted into an otherwise empty vector, insert the element
-          if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && iInnerIt == iInnerEndit))
+          if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND || (andElements.empty() && iInnerIt == iInnerEndit))
             {
               andElements.push_back(pNode);
             }
         }
       // create the and chain
-      pNode = CNormalTranslation::createChain(pAndNode, CNormalTranslation::NEUTRAL_ELEMENT_AND, andElements);
+      pNode = CNormalTranslation::createChain(pAndNode, &CNormalTranslation::NEUTRAL_ELEMENT_AND, andElements);
       assert(pNode != NULL);
       // delete the created nodes
       std::vector<const CEvaluationNode*>::const_iterator vIt = andElements.begin(), vEndit = andElements.end();
@@ -1803,7 +1803,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
         {
 
           // create a not node if it does not result in the neutral node
-          if (*pNode != *CNormalTranslation::NEUTRAL_ELEMENT_AND)
+          if (*pNode != CNormalTranslation::NEUTRAL_ELEMENT_AND)
             {
               pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
               pNotNode->addChild(pNode);
@@ -1818,7 +1818,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
       ++iIt;
       // if it is not the neutral element or it is the last element to be
       // inserted into an otherwise empty vector, insert the element
-      if (pNode != NULL && *pNode != *CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && iIt == iEndit))
+      if (pNode != NULL && *pNode != CNormalTranslation::NEUTRAL_ELEMENT_OR || (orElements.empty() && iIt == iEndit))
         {
           orElements.push_back(pNode);
         }
@@ -1826,7 +1826,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
   // create the OR chain
   if (!orElements.empty())
     {
-      pNode = CNormalTranslation::createChain(pOrNode, CNormalTranslation::NEUTRAL_ELEMENT_OR, orElements);
+      pNode = CNormalTranslation::createChain(pOrNode, &CNormalTranslation::NEUTRAL_ELEMENT_OR, orElements);
       assert(pNode != NULL);
       // delete the created elements
       std::vector<const CEvaluationNode*>::const_iterator vIt = orElements.begin();
@@ -1845,11 +1845,11 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical)
     }
   else
     {
-      if (*pResult == *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+      if (*pResult == CNormalTranslation::NEUTRAL_ELEMENT_OR)
         {
           pResult = pNode;
         }
-      else if (*pNode == *CNormalTranslation::NEUTRAL_ELEMENT_OR)
+      else if (*pNode == CNormalTranslation::NEUTRAL_ELEMENT_OR)
         {
           CEvaluationNode* pTmpNode = pOrNode->copyBranch();
           pTmpNode->addChild(pResult);

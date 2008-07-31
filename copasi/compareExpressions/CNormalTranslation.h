@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/07/31 13:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,42 +129,42 @@ class CNormalTranslation
     /**
      * Neutral element for an addition chain.
      */
-    static const CEvaluationNode* const NEUTRAL_ELEMENT_ADD;
+    static const CEvaluationNode NEUTRAL_ELEMENT_ADD;
 
     /**
      * Neutral element for a multiplication chain.
      */
-    static const CEvaluationNode* const NEUTRAL_ELEMENT_MULTIPLY;
+    static const CEvaluationNode NEUTRAL_ELEMENT_MULTIPLY;
 
     /**
      * Neutral element for an or chain.
      */
-    static const CEvaluationNode* const NEUTRAL_ELEMENT_OR;
+    static const CEvaluationNode NEUTRAL_ELEMENT_OR;
 
     /**
      * Neutral element for an and chain.
      */
-    static const CEvaluationNode* const NEUTRAL_ELEMENT_AND;
+    static const CEvaluationNode NEUTRAL_ELEMENT_AND;
 
     /**
      * Number node that represents 0.0
      */
-    static const CEvaluationNode* const ZERO_NODE;
+    static const CEvaluationNode ZERO_NODE;
 
     /**
      * Number node that represents 1.0
      */
-    static const CEvaluationNode* const ONE_NODE;
+    static const CEvaluationNode ONE_NODE;
 
     /**
      * Operator node that represents the PLUS operation.
      */
-    static const CEvaluationNode* const PLUS_NODE;
+    static const CEvaluationNode PLUS_NODE;
 
     /**
      * Operator node that represents the TIMES operation.
      */
-    static const CEvaluationNode* const TIMES_NODE;
+    static const CEvaluationNode TIMES_NODE;
 
   protected:
     /**

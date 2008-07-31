@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/23 14:04:54 $
+//   $Date: 2008/07/31 13:40:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,8 +50,8 @@ void test_expression_comparison::test_substrate_activation()
   CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
   CPPUNIT_ASSERT(secondFraction != NULL);
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-  delete secondFraction;
-  delete firstFraction;
+  delete secondBase;
+  delete firstBase;
   delete secondTree;
   delete firstTree;
 }
@@ -80,8 +80,8 @@ void test_expression_comparison::test_allosteric_inhibition()
       CPPUNIT_ASSERT(secondFraction != NULL);
       std::string s2 = secondFraction->toString();
       CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-      delete secondFraction;
-      delete firstFraction;
+      delete secondBase;
+      delete firstBase;
       delete secondTree;
       delete firstTree;
     }
@@ -110,8 +110,8 @@ void test_expression_comparison::test_hyperbolic_modifier()
   CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
   CPPUNIT_ASSERT(secondFraction != NULL);
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-  delete secondFraction;
-  delete firstFraction;
+  delete secondBase;
+  delete firstBase;
   delete secondTree;
   delete firstTree;
 }
@@ -135,8 +135,8 @@ void test_expression_comparison::test_specific_activation_reversible()
   CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
   CPPUNIT_ASSERT(secondFraction != NULL);
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-  delete secondFraction;
-  delete firstFraction;
+  delete secondBase;
+  delete firstBase;
   delete secondTree;
   delete firstTree;
 }
@@ -160,8 +160,8 @@ void test_expression_comparison::test_ordered_bi_bi()
   CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
   CPPUNIT_ASSERT(secondFraction != NULL);
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-  delete secondFraction;
-  delete firstFraction;
+  delete secondBase;
+  delete firstBase;
   delete secondTree;
   delete firstTree;
 }
@@ -204,8 +204,8 @@ void test_expression_comparison::test_reversible_hill()
       //std::cout << *secondFraction << "</p>" << std::endl;
       //std::cout << "</body>\n</html>" << std::endl;
       CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-      delete secondFraction;
-      delete firstFraction;
+      delete secondBase;
+      delete firstBase;
       delete secondTree;
       delete firstTree;
     }
@@ -234,8 +234,8 @@ void test_expression_comparison::test_reversible_hill_one_modifier()
   CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
   CPPUNIT_ASSERT(secondFraction != NULL);
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-  delete secondFraction;
-  delete firstFraction;
+  delete secondBase;
+  delete firstBase;
   delete secondTree;
   delete firstTree;
 }
@@ -261,8 +261,8 @@ void test_expression_comparison::test_reversible_hill_two_modifiers()
   CPPUNIT_ASSERT(secondFraction != NULL);
   std::string s2 = secondFraction->toString();
   CPPUNIT_ASSERT(*firstFraction == *secondFraction);
-  delete secondFraction;
-  delete firstFraction;
+  delete secondBase;
+  delete firstBase;
   delete secondTree;
   delete firstTree;
 }
@@ -319,8 +319,8 @@ bool test_expression_comparison::are_expressions_equal(const std::string& expr1,
       //std::cout << *secondFraction << "</p>" << std::endl;
       //std::cout << "</body>\n</html>" << std::endl;
       result = (*firstFraction == *secondFraction);
-      delete secondFraction;
-      delete firstFraction;
+      delete secondBase;
+      delete firstBase;
       delete secondTree;
       delete firstTree;
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/30 15:18:23 $
+//   $Date: 2008/07/31 13:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,14 +43,14 @@
 
 const double CNormalTranslation::ZERO = 1e-100;
 const unsigned int CNormalTranslation::RECURSION_LIMIT = 20;
-const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_ADD = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_OR = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
-const CEvaluationNode* const CNormalTranslation::NEUTRAL_ELEMENT_AND = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
-const CEvaluationNode* const CNormalTranslation::ZERO_NODE = CNormalTranslation::NEUTRAL_ELEMENT_ADD;
-const CEvaluationNode* const CNormalTranslation::ONE_NODE = CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY;
-const CEvaluationNode* const CNormalTranslation::PLUS_NODE = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-const CEvaluationNode* const CNormalTranslation::TIMES_NODE = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+const CEvaluationNode CNormalTranslation::NEUTRAL_ELEMENT_ADD = CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
+const CEvaluationNode CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY = CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+const CEvaluationNode CNormalTranslation::NEUTRAL_ELEMENT_OR = CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
+const CEvaluationNode CNormalTranslation::NEUTRAL_ELEMENT_AND = CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+const CEvaluationNode CNormalTranslation::ZERO_NODE = CNormalTranslation::NEUTRAL_ELEMENT_ADD;
+const CEvaluationNode CNormalTranslation::ONE_NODE = CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY;
+const CEvaluationNode CNormalTranslation::PLUS_NODE = CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+const CEvaluationNode CNormalTranslation::TIMES_NODE = CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
 
 /**
  * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.

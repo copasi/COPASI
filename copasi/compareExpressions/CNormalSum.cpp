@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/30 15:18:23 $
+//   $Date: 2008/07/31 13:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,9 +252,13 @@ bool CNormalSum::multiply(const CNormalSum& sum)
   mProducts.clear();
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = tmpProducts.end();
+  CNormalSum* pSum = NULL;
   for (it = tmpProducts.begin(); it != itEnd; ++it)
     {
-      add(*(*it)->multiply(sum));
+      pSum = (*it)->multiply(sum);
+      assert(pSum != NULL);
+      add(*pSum);
+      delete pSum;
       delete *it;
     }
   return true;
@@ -609,6 +613,7 @@ bool CNormalSum::simplify()
                   delete pTmpItemPower;
                   pTmpSum = new CNormalSum();
                   pTmpSum->add(*pTmpProduct);
+                  delete pTmpProduct;
                   pFraction->setDenominator(*pTmpSum);
                   delete pTmpSum;
                 }

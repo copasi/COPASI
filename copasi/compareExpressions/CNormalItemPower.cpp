@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/08 16:30:02 $
+//   $Date: 2008/07/31 13:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,9 @@
  * Default constructor
  */
 CNormalItemPower::CNormalItemPower(): CNormalBase(), mpItem(NULL), mExp(1.0), mItemType(CNormalItemPower::INVALID)
-{}
+{
+  std::cerr << "Created: " << this << std::endl;
+}
 
 /**
  * Copy Constructor
@@ -48,11 +50,13 @@ CNormalItemPower::CNormalItemPower(const CNormalItemPower& src): CNormalBase(src
     {
       this->mpItem = src.mpItem->copy();
     }
+  std::cerr << "Created: " << this << std::endl;
 }
 
 CNormalItemPower::~CNormalItemPower()
 {
   if (this->mpItem != NULL) delete this->mpItem;
+  std::cerr << "Deleted: " << this << std::endl;
 }
 
 /**
