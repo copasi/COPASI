@@ -1,20 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.18.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2008/07/31 23:10:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetScan.ui'
  **
- ** Created: Tue Mar 28 14:27:57 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.6 2007/03/13 19:56:56 shoops Exp $)
+ ** Created: Thu Jul 31 17:06:25 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.6.18.1 2008/07/31 23:10:16 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +24,7 @@
 #define CSCANWIDGETSCAN_H
 
 #include <qvariant.h>
+#include <qpixmap.h>
 #include <qwidget.h>
 
 class QVBoxLayout;
@@ -48,8 +50,8 @@ class CScanWidgetScan : public QWidget
     ~CScanWidgetScan();
 
     QFrame* frame;
-    QLabel* labelObject;
     QLabel* labelTitle;
+    QLabel* labelObject;
     QLineEdit* lineEditObject;
     QToolButton* buttonObject;
     QLineEdit* lineEditMin;
@@ -64,13 +66,12 @@ class CScanWidgetScan : public QWidget
     virtual bool saveToScanItem(CScanProblem * pg) const;
 
   protected:
-    const CCopasiObject* mpObject;
     const CModel* mpModel;
+    const CCopasiObject* mpObject;
 
-    QGridLayout* CScanWidgetScanLayout;
+    QVBoxLayout* CScanWidgetScanLayout;
     QVBoxLayout* frameLayout;
-    QGridLayout* layout1;
-    QSpacerItem* spacer1;
+    QHBoxLayout* layout7;
     QGridLayout* layout2;
 
   protected slots:
@@ -79,6 +80,8 @@ class CScanWidgetScan : public QWidget
     virtual void slotChooseObject();
 
   private:
+    QPixmap image0;
+
     void init();
   };
 
