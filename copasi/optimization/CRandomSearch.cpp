@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2008/07/31 16:31:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -241,7 +246,7 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
-    mValue = DBL_MAX;
+    mValue = 2.0 * DBL_MAX;
   else
     mValue = mpOptProblem->getCalculateValue();
 
