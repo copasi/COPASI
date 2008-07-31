@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
- $Revision: 1.14 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/07/10 20:40:09 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
+$Revision: 1.14.2.1 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/07/31 23:13:45 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -37,10 +37,7 @@
 #include "scan/CScanProblem.h"
 
 void CScanWidgetTask::init()
-{
-  //no validators to be set in this widget
-  buttonEdit->hide();
-}
+{}
 
 #include "report/CCopasiObjectName.h"
 bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model)
@@ -77,7 +74,6 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
       n = 0;
     }
   comboType->setCurrentItem(n);
-  typeChanged(n);
 
   checkInitialConditions->setChecked(!(pg->getAdjustInitialConditions()));
 
@@ -123,12 +119,16 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
     return true;
   }
 
-void CScanWidgetTask::typeChanged(int C_UNUSED(n))
+void CScanWidgetTask::typeChanged(int n)
 {
-  /*
-  if (n == 1) //time course
-    checkOutput->setEnabled(true);
-  else
-    checkOutput->setEnabled(false);
-  */
+  switch (n)
+    {
+    case 1:
+      checkOutput->setChecked(true);
+      break;
+
+    default:
+      checkOutput->setChecked(false);
+      break;
+    }
 }

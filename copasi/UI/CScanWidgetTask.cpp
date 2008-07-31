@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/13 10:32:44 $
+//   $Author: shoops $
+//   $Date: 2008/07/31 23:13:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Thu Feb 21 14:54:19 2008
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.10 2008/03/13 10:32:44 ssahle Exp $)
+ ** Created: Thu Jul 31 17:06:27 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.10.4.1 2008/07/31 23:13:45 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,7 +27,6 @@
 #include <qframe.h>
 #include <qlabel.h>
 #include <qcombobox.h>
-#include <qtoolbutton.h>
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -60,12 +59,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
 
   comboType = new QComboBox(FALSE, frame, "comboType");
   layout1->addWidget(comboType);
-
-  buttonEdit = new QToolButton(frame, "buttonEdit");
-  buttonEdit->setEnabled(FALSE);
-  buttonEdit->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth()));
-  layout1->addWidget(buttonEdit);
-  spacer2 = new QSpacerItem(21, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  spacer2 = new QSpacerItem(99, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layout1->addItem(spacer2);
   frameLayout->addLayout(layout1);
 
@@ -85,7 +79,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   frameLayout->addLayout(layout2);
   CScanWidgetTaskLayout->addWidget(frame);
   languageChange();
-  resize(QSize(524, 80).expandedTo(minimumSizeHint()));
+  resize(QSize(374, 76).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -108,7 +102,7 @@ CScanWidgetTask::~CScanWidgetTask()
 void CScanWidgetTask::languageChange()
 {
   setCaption(tr("Form1"));
-  labelTitle->setText(tr("<h2>Task</h2>"));
+  labelTitle->setText(tr("<h2>Subtask</h2>"));
   comboType->clear();
   comboType->insertItem(tr("Steady State"));
   comboType->insertItem(tr("Time course"));
@@ -117,10 +111,9 @@ void CScanWidgetTask::languageChange()
   comboType->insertItem(tr("Prameter Estimation"));
   comboType->insertItem(tr("Sensitivities"));
   comboType->setCurrentItem(1);
-  buttonEdit->setText(tr("..."));
   checkInitialConditions->setText(tr("always use initial conditions"));
   QToolTip::add(checkInitialConditions, tr("If this is activated every calculation will start with the initial conditions specified in the model. <p>If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation."));
-  checkOutput->setText(tr("output from subtask"));
+  checkOutput->setText(tr("output during subtask execution"));
   checkOutput->setAccel(QKeySequence(QString::null));
   QToolTip::add(checkOutput, tr("If this is activated output will be generated during each calculation. <p>If it is not activated only the state at the end of each calculation will be plotted."));
 }
