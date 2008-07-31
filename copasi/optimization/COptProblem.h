@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.55.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:54 $
+//   $Date: 2008/07/31 16:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -406,9 +406,19 @@ class COptProblem : public CCopasiProblem
     unsigned C_INT32 mCounter;
 
     /**
-     * Counter of evaluations
+     * Counter of failed evaluations
      */
     unsigned C_INT32 mFailedCounter;
+
+    /**
+     * Counter of constraint checks
+     */
+    unsigned C_INT32 mConstraintCounter;
+
+    /**
+     * Counter of failed constraint checks
+     */
+    unsigned C_INT32 mFailedConstraintCounter;
 
     /**
      * A CPU Timer

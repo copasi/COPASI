@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.54.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:55 $
+//   $Date: 2008/07/31 16:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -412,18 +412,21 @@ bool CFitProblem::initialize()
   end = mpConstraintItems->end();
 
   CFitConstraint * pConstraint;
+  std::set< const CCopasiObject * >::const_iterator itDepend;
+  std::set< const CCopasiObject * >::const_iterator endDepend;
 
   for (j = 0; it != end; ++it, j++)
     {
       pConstraint = static_cast<CFitConstraint *>(*it);
-
+      itDepend = pConstraint->getDirectDependencies().begin();
+      endDepend = pConstraint->getDirectDependencies().end();
       imax = pConstraint->getExperimentCount();
       if (imax == 0)
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
               mExperimentConstraints(i, j) = pConstraint;
-              ObjectSet[i].insert(pConstraint->getObject());
+              ObjectSet[i].insert(itDepend, endDepend);
             }
         }
       else
@@ -433,7 +436,7 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pConstraint->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
               mExperimentConstraints(Index, j) = pConstraint;
-              ObjectSet[Index].insert(pConstraint->getObject());
+              ObjectSet[Index].insert(itDepend, endDepend);
             };
         }
     }
@@ -584,9 +587,13 @@ bool CFitProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
+  mConstraintCounter++;
   for (; it != end; ++it)
-    if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() != 0.0)
-      return false;
+    if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() > 0.0)
+      {
+        mFailedConstraintCounter++;
+        return false;
+      }
 
   return true;
 }
@@ -616,7 +623,7 @@ bool CFitProblem::calculate()
 
   // Reset the constraints memory
   for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
-    static_cast<CFitConstraint *>(*itConstraint)->setLocalValue(0.0);
+    static_cast<CFitConstraint *>(*itConstraint)->resetConstraintViolation();
 
   CFitConstraint **ppConstraint = mExperimentConstraints.array();
   CFitConstraint **ppConstraintEnd;
@@ -669,7 +676,7 @@ bool CFitProblem::calculate()
                   ppConstraint = mExperimentConstraints[i];
                   ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
                   for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                    if (*ppConstraint) (*ppConstraint)->checkConstraint();
+                    if (*ppConstraint) (*ppConstraint)->calculateConstraintViolation();
 
                   if (mStoreResults)
                     mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
@@ -697,23 +704,23 @@ bool CFitProblem::calculate()
                         }
                     }
 
+                  // We check after each simulation step whether the constraints are violated.
+                  // Make sure the constraint values are up to date.
+                  itRefresh = mExperimentConstraintRefreshes[i].begin();
+                  endRefresh = mExperimentConstraintRefreshes[i].end();
+                  for (; itRefresh != endRefresh; ++itRefresh)
+                    (**itRefresh)();
+
+                  ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
+                  for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                    if (*ppConstraint) (*ppConstraint)->calculateConstraintViolation();
+                  break;
+
                   if (mStoreResults)
                     mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                   else
                     mCalculateValue += pExp->sumOfSquares(j, Residuals);
                 }
-
-              // We check after each simulation whether the constraints are violated.
-              // Make sure the constraint values are up to date.
-              itRefresh = mExperimentConstraintRefreshes[i].begin();
-              endRefresh = mExperimentConstraintRefreshes[i].end();
-              for (; itRefresh != endRefresh; ++itRefresh)
-                (**itRefresh)();
-
-              ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
-              for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                if (*ppConstraint) (*ppConstraint)->checkConstraint();
-              break;
 
             default:
               break;

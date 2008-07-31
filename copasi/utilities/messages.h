@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.120.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/30 08:35:06 $
+//   $Author: shoops $
+//   $Date: 2008/07/31 16:33:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,7 +148,8 @@ const MESSAGES Messages[] =
     {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
     {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
     {MCOptimization + 7, "Optimization (7): No Task Type specified."},
-    {MCOptimization + 8, "Optimization (8): '%d' Function Evaluation out of '%d' failed."},
+    {MCOptimization + 8, "Optimization (8): '%d' Function Evaluations out of '%d' failed."},
+    {MCOptimization + 9, "Optimization (9): '%d' Contraint Checks out of '%d' failed."},
 
     // SBML
     {MCSBML + 1, "SBML (1): SBML Level 2 Version 1 does not support initial times different from 0. This information will be lost in the exported file."},

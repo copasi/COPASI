@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:55 $
+//   $Date: 2008/07/31 16:33:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -273,20 +273,42 @@ class CFitConstraint : public CFitItem
     virtual ~CFitConstraint();
 
     /**
+     * Reset the constraint violation
+     */
+    void resetConstraintViolation();
+
+    /**
+     * Calculate and save the constraint violation
+     */
+    void calculateConstraintViolation();
+
+    /**
      * This functions check whether the current value is within the limits
-     * of the optimization item.
+     * of the constraint. The result depends on last performed
+     * calculateConstraintViolation, i.e., it may not be trusted.
      * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
      */
     virtual C_INT32 checkConstraint() const;
 
     /**
      * Retrieve the magnitude of the constraint violation
-     * This is a negative number if the lower bound is violated,
-     * a positive number if the upper bound is violated and 0
-     * otherwise.
+     * This is always a positive number or 0. It is the sum of all
+     * constraint violation for a single function evaluation.
      * @return C_FLOAT64 constraintViolation;
      */
     virtual C_FLOAT64 getConstraintViolation() const;
+
+    // Attributes
+  private:
+    /**
+     * The value that will be returned by checkConstraint
+     */
+    C_INT32 mCheckConstraint;
+
+    /**
+     * The value that will be returned by getConstraintViolation
+     */
+    C_FLOAT64 mConstraintViolation;
   };
 
 #endif // COPASI_CFitItem
