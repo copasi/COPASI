@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/31 13:40:47 $
+//   $Date: 2008/08/01 14:36:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -270,26 +270,15 @@ CEvaluationNode* CNormalTranslation::expandPowerExponents(const CEvaluationNode*
       delete children[0];
       delete children[1];
       // create the numerator chain
-      pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", numeratorNodes);
-      std::vector<CEvaluationNode*>::iterator vit = numeratorNodes.begin(), vendit = numeratorNodes.end();
-      while (vit != vendit)
-        {
-          delete (*vit);
-          ++vit;
-        }
+      pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, numeratorNodes);
+      assert(pResult != NULL);
       // if there are items in the denominator vector create the denominator
       // chain and divide the numerato chain by the denominator chain
       if (!denominatorNodes.empty())
         {
           CEvaluationNodeOperator* pDivision = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
           pDivision->addChild(pResult);
-          pDivision->addChild(CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", denominatorNodes));
-          vit = denominatorNodes.begin(), vendit = denominatorNodes.end();
-          while (vit != vendit)
-            {
-              delete (*vit);
-              ++vit;
-            }
+          pDivision->addChild(CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, denominatorNodes));
           pResult = pDivision;
         }
     }
@@ -1525,29 +1514,17 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
                 }
             }
           // now create a new operation chain from the children
-          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", v3);
+          pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, v3);
+          assert(pResult != NULL);
           assert(pResult != NULL);
           if (!v4.empty())
             {
               pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pTmpNode->addChild(pResult);
               pResult = pTmpNode;
-              pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", v4);
+              pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, v4);
               assert(pTmpNode != NULL);
               pResult->addChild(pTmpNode);
-            }
-          // delete the create nodes
-          it = v3.begin();
-          while (it != v3.end())
-            {
-              delete (*it);
-              ++it;
-            }
-          it = v4.begin();
-          while (it != v4.end())
-            {
-              delete (*it);
-              ++it;
             }
           break;
         case CEvaluationNodeOperator::PLUS:
@@ -1642,29 +1619,16 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
                 }
             }
           // now create a new operation chain from the children
-          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", v3);
+          pResult = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, v3);
           assert(pResult != NULL);
           if (!v4.empty())
             {
               pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
               pTmpNode->addChild(pResult);
               pResult = pTmpNode;
-              pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", v4);
+              pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, v4);
               assert(pTmpNode != NULL);
               pResult->addChild(pTmpNode);
-            }
-          // delete the create nodes
-          it = v3.begin();
-          while (it != v3.end())
-            {
-              delete (*it);
-              ++it;
-            }
-          it = v4.begin();
-          while (it != v4.end())
-            {
-              delete (*it);
-              ++it;
             }
           break;
         case CEvaluationNodeOperator::INVALID:
@@ -2116,27 +2080,26 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
                 }
               subtractions[i] = pTmpNode;
             }
-          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", additions);
-          iMax = additions.size();
-          for (i = 0;i < iMax;++i)
+          // if we have only subtractions, the numerator of the resulting
+          // exponent has to be 1
+          if (additions.empty())
             {
-              delete additions[i];
+              pResult = CNormalTranslation::ONE_NODE.copyBranch();
             }
-          additions.clear();
+          else
+            {
+              pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, additions);
+              additions.clear();
+            }
           assert(pResult != NULL);
           if (!subtractions.empty())
             {
               CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pTmpNode->addChild(pResult);
               pResult = pTmpNode;
-              pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", subtractions);
+              pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, subtractions);
               assert(pTmpNode != NULL);
               pResult->addChild(pTmpNode);
-              iMax = subtractions.size();
-              for (i = 0;i < iMax;++i)
-                {
-                  delete subtractions[i];
-                }
               subtractions.clear();
             }
           // delete the children
@@ -2246,16 +2209,9 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
   std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
   while (mapIt != mapEndit)
     {
-      std::vector<CEvaluationNode*> constVect;
-      constVect.insert(constVect.begin(), mapIt->second.begin(), mapIt->second.end());
-      CEvaluationNode* pNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", constVect);
+      CEvaluationNode* pNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, mapIt->second);
+      assert(pNode != NULL);
       result.push_back(std::make_pair(pNode, mapIt->first->copyBranch()));
-      // delete the obsolete nodes
-      unsigned int i, iMax = mapIt->second.size();
-      for (i = 0;i < iMax;++i)
-        {
-          delete mapIt->second[i];
-        }
       ++mapIt;
     }
   mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
@@ -2449,16 +2405,10 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
   std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
   while (mapIt != mapEndit)
     {
-      std::vector<CEvaluationNode*> constVect;
-      constVect.insert(constVect.begin(), mapIt->second.begin(), mapIt->second.end());
-      CEvaluationNode* pNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", constVect);
+      CEvaluationNode* pNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, mapIt->second);
+      assert(pNode != NULL);
       result.push_back(std::make_pair(pNode, mapIt->first->copyBranch()));
       // delete the obsolete nodes
-      unsigned int i, iMax = mapIt->second.size();
-      for (i = 0;i < iMax;++i)
-        {
-          delete mapIt->second[i];
-        }
       ++mapIt;
     }
   mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
@@ -2642,14 +2592,10 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
     }
   if (!tmp.empty())
     {
-      pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", tmp);
+      pResult = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, tmp);
+      assert(pResult != NULL);
+      tmp.clear();
     }
-  iMax = tmp.size();
-  for (i = 0;i < iMax;++i)
-    {
-      delete tmp[i];
-    }
-  tmp.clear();
   iMax = additions1.size();
   for (i = 0;i < iMax;++i)
     {
@@ -2681,7 +2627,8 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
           CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
           pTmpNode->addChild(pResult);
           pResult = pTmpNode;
-          pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", tmp);
+          pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, tmp);
+          assert(pTmpNode != NULL);
           pResult->addChild(pTmpNode);
         }
       else
@@ -2689,13 +2636,9 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
           CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
           pTmpNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
           pResult = pTmpNode;
-          pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", tmp);
+          pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, tmp);
+          assert(pTmpNode != NULL);
           pResult->addChild(pTmpNode);
-        }
-      iMax = tmp.size();
-      for (i = 0;i < iMax;++i)
-        {
-          delete tmp[i];
         }
     }
   std::vector<CEvaluationNode*>::iterator it = additions1.begin(), endit = additions1.end();
@@ -2809,13 +2752,8 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
                   chain.push_back(pMult);
                 }
             }
-          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", chain);
-          // delete the chain nodes
-          iMax = chain.size();
-          for (i = 0;i < iMax;++i)
-            {
-              delete chain[i];
-            }
+          pResult = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, chain);
+          assert(pResult != NULL);
         }
       else if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType())) == CEvaluationNodeOperator::MULTIPLY ||
                ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType())) == CEvaluationNodeOperator::DIVIDE)
@@ -2946,25 +2884,24 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
                     }
                 }
             }
-          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", numeratorChain);
+          // if there are only divisions, we have an empty numerator chain
+          if (numeratorChain.empty())
+            {
+              pResult = CNormalTranslation::ONE_NODE.copyBranch();
+            }
+          else
+            {
+              pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, numeratorChain);
+              assert(pResult != NULL);
+            }
           if (!denominatorChain.empty())
             {
               CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pTmpNode->addChild(pResult);
               pResult = pTmpNode;
-              pTmpNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", denominatorChain);
+              pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, denominatorChain);
+              assert(pTmpNode != NULL);
               pResult->addChild(pTmpNode);
-            }
-          // delete the chain nodes
-          iMax = numeratorChain.size();
-          for (i = 0;i < iMax;++i)
-            {
-              delete numeratorChain[i];
-            }
-          iMax = denominatorChain.size();
-          for (i = 0;i < iMax;++i)
-            {
-              delete denominatorChain[i];
             }
         }
       else
@@ -3225,13 +3162,8 @@ CEvaluationNode* CNormalTranslation::expandPowerBases(const CEvaluationNode* pRo
               numeratorNodes.push_back(pPower);
               ++it;
             }
-          pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", numeratorNodes);
-          std::vector<CEvaluationNode*>::iterator vit = numeratorNodes.begin(), vendit = numeratorNodes.end();
-          while (vit != vendit)
-            {
-              delete (*vit);
-              ++vit;
-            }
+          pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, numeratorNodes);
+          assert(pResult != NULL);
           if (!divisions.empty())
             {
               it = divisions.begin(), endit = divisions.end();
@@ -3245,15 +3177,10 @@ CEvaluationNode* CNormalTranslation::expandPowerBases(const CEvaluationNode* pRo
                 }
               CEvaluationNode* pTmpResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pTmpResult->addChild(pResult);
-              pResult = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", denominatorNodes);
+              pResult = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, denominatorNodes);
+              assert(pResult != NULL);
               pTmpResult->addChild(pResult);
               pResult = pTmpResult;
-              vit = denominatorNodes.begin(), vendit = denominatorNodes.end();
-              while (vit != vendit)
-                {
-                  delete (*vit);
-                  ++vit;
-                }
             }
         }
       else if (CEvaluationNode::type(type) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::PLUS || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(type) == CEvaluationNodeOperator::MINUS))
@@ -3516,28 +3443,15 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
               newSubtractions.push_back(pTmpNode);
             }
         }
-      pSecondNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", newAdditions);
-      // delete the newAdditions
-      std::vector<CEvaluationNode*>::iterator it = newAdditions.begin(), endit = newAdditions.end();
-      while (it != endit)
-        {
-          delete *it;
-          ++it;
-        }
+      pSecondNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, newAdditions);
+      assert(pSecondNode != NULL);
       if (!newSubtractions.empty())
         {
           CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
           pTmpNode->addChild(pSecondNode);
-          pTmpNode->addChild(CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::PLUS, "+", newSubtractions));
+          pTmpNode->addChild(CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, newSubtractions));
+          assert(pTmpNode != NULL);
           pSecondNode = pTmpNode;
-          // delete the new subtractions
-          it = newAdditions.begin();
-          endit = newAdditions.end();
-          while (it != endit)
-            {
-              delete *it;
-              ++it;
-            }
         }
       pFirstNode = CNormalTranslation::createOperatorChain(CEvaluationNodeOperator::MULTIPLY, "*", commonMultiplications);
       if (!commonDivisions.empty())
@@ -3568,42 +3482,60 @@ CEvaluationNode* CNormalTranslation::createOperatorChain(CEvaluationNodeOperator
 }
 
 /**
+ * This version of create chain copies the given elements in the vector and
+ *then calls the createChain method which does not need copying.
+ */
+CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* pNeutralElement, const std::vector<const CEvaluationNode*>& elements)
+{
+  std::vector<CEvaluationNode*> tmpVector;
+  tmpVector.reserve(elements.size());
+  std::vector<const CEvaluationNode*>::const_iterator it = elements.begin(), endit = elements.end();
+  while (it != endit)
+    {
+      tmpVector.push_back((*it)->copyBranch());
+      ++it;
+    }
+  return CNormalTranslation::createChain(pLink, pNeutralElement, tmpVector);
+}
+
+/**
  * This method creates a chain of operations. The individual elements are
  * linked with copies of pLink.
- * The default result is returned if elements is empty.
- * So the default result should always be the element that does not change the
- * result of the operation that the resulting element will be embedded in.
+ * NULL is returned if elements is empty.
  * So if this method is used to create a chanin of OR linked elements which
  * will be embedded in another and linked chain, the neutral element should be
  * a TRUE node since AND combining something with true does not change the result.
  * The neutral element is the element that does not change the result of the
  * operation represented be pLink. So if pLink represents a multiplication,
  * the neutral element is the number node 1.0.
+ * This method does not copy the elements in the given vector, but uses them in
+ *the chain directly.
  */
-CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* /*pNeutralElement*/, const std::vector<const CEvaluationNode*>& elements)
+CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* /*pNeutralElement*/, const std::vector<CEvaluationNode*>& elements)
 {
+  // TODO maybe copy the correct number of link elements and then use them
+  // TODO later
   CEvaluationNode* pResult = NULL;
   if (elements.size() == 1)
     {
-      pResult = elements[0]->copyBranch();
+      pResult = elements[0];
     }
   else if (elements.size() > 1)
     {
-      std::vector<const CEvaluationNode*>::const_reverse_iterator it = elements.rbegin(), endit = elements.rend();
+      std::vector<CEvaluationNode*>::const_reverse_iterator it = elements.rbegin(), endit = elements.rend();
       CEvaluationNode* pOperator = pLink->copyBranch();
-      CEvaluationNode* pChild2 = (*it)->copyBranch();
+      CEvaluationNode* pChild = *it;
       ++it;
-      CEvaluationNode* pChild1 = (*it)->copyBranch();
-      pOperator->addChild(pChild1);
-      pOperator->addChild(pChild2);
+      pOperator->addChild(*it);
+      pOperator->addChild(pChild);
       ++it;
-      pChild2 = pOperator;
+      pChild = pOperator;
       while (it != endit)
         {
           pOperator = pLink->copyBranch();
-          pOperator->addChild((*it)->copyBranch());
-          pOperator->addChild(pChild2);
-          pChild2 = pOperator;
+          pOperator->addChild(*it);
+          pOperator->addChild(pChild);
+          pChild = pOperator;
           ++it;
         }
       pResult = pOperator;

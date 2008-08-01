@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/31 13:40:47 $
+//   $Date: 2008/08/01 14:36:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,15 @@ class CNormalTranslation
      * method.
      */
     static CEvaluationNode* createChain(const CEvaluationNode* pLink, const CEvaluationNode* pNeutralElement, const std::vector<const CEvaluationNode*>& elements);
+
+    /**
+     * More general version of createOperatorChain.
+     * This version does not copy the nodes in the given vector, but uses them
+     * directly.
+     * This method can also be used to combine logical item chains.
+     * method.
+     */
+    static CEvaluationNode* createChain(const CEvaluationNode* pLink, const CEvaluationNode* pNeutralElement, const std::vector<CEvaluationNode*>& elements);
 
     /**
      * Given a vector of nodes, this method creates a multiplication chain of
