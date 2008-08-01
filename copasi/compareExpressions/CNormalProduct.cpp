@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/31 13:40:47 $
+//   $Date: 2008/08/01 06:11:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -531,12 +531,13 @@ bool CNormalProduct::simplify()
           if (pGeneralPower)
             {
               pGeneralPower->multiply(*static_cast<CNormalGeneralPower*>(&(*it)->getItem()));
-              delete *it;
             }
           else
             {
               pGeneralPower = static_cast<CNormalGeneralPower*>(&(*it)->getItem());
+              pGeneralPower = new CNormalGeneralPower(*pGeneralPower);
             }
+          delete *it;
         }
       else
         {
