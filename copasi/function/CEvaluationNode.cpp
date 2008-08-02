@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/25 14:26:04 $
+//   $Date: 2008/08/02 14:10:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,7 +188,7 @@ CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& 
   {
     //std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
 
-    CEvaluationNode *newnode = create(getType(), getData());
+    CEvaluationNode *newnode = create(mType, mData);
     std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
     while (it != endit)
       {
@@ -204,9 +204,7 @@ CEvaluationNode* CEvaluationNode::copyBranch() const
     const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
     while (child != NULL)
       {
-        CEvaluationNode *newchild = NULL;
-        newchild = child->copyBranch();
-        children.push_back(newchild);
+        children.push_back(child->copyBranch());
         child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
       }
     //children.push_back(NULL);
