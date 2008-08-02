@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/08/02 14:09:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include "compareExpressions/CNormalProduct.h"
 #include "compareExpressions/CNormalItem.h"
 
-template void CNormalLogical::cleanSet(CNormalLogical::ItemSet&);
+template void CNormalLogical::cleanSet(const CNormalLogical::ItemSet&);
 
 void test_cnormallogical::setUp(){}
 
@@ -352,6 +352,7 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   set.insert(std::make_pair(pNewItem, true));
   CPPUNIT_ASSERT(set.size() == 2);
   CNormalLogical::cleanSet(set);
+  set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
 
   pItem->setType(CNormalLogicalItem::FALSE);
@@ -368,6 +369,7 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   set.insert(std::make_pair(pNewItem, true));
   CPPUNIT_ASSERT(set.size() == 2);
   CNormalLogical::cleanSet(set);
+  set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
 
   pItem->setType(CNormalLogicalItem::LT);
@@ -390,6 +392,7 @@ void test_cnormallogical::test_SetSorter_LogicalItem()
   set.insert(std::make_pair(pNewItem, true));
   CPPUNIT_ASSERT(set.size() == 2);
   CNormalLogical::cleanSet(set);
+  set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
 
   delete pItem;
@@ -418,6 +421,7 @@ void test_cnormallogical::test_SetOfSetsSorter_LogicalItem()
   CPPUNIT_ASSERT(setOfSets.size() == 1);
 
   CNormalLogical::cleanSet(set);
+  set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
   CPPUNIT_ASSERT(pNewItem != NULL);
@@ -434,6 +438,7 @@ void test_cnormallogical::test_SetOfSetsSorter_LogicalItem()
   CPPUNIT_ASSERT(setOfSets.size() == 2);
 
   CNormalLogical::cleanSet(set);
+  set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
   CPPUNIT_ASSERT(pNewItem != NULL);
@@ -450,6 +455,7 @@ void test_cnormallogical::test_SetOfSetsSorter_LogicalItem()
   CPPUNIT_ASSERT(setOfSets.size() == 3);
 
   CNormalLogical::cleanSet(set);
+  set.clear();
   CPPUNIT_ASSERT(set.size() == 0);
   pNewItem = dynamic_cast<CNormalLogicalItem*>(pLogicalItem->copy());
   CPPUNIT_ASSERT(pNewItem != NULL);
@@ -465,6 +471,7 @@ void test_cnormallogical::test_SetOfSetsSorter_LogicalItem()
   setOfSets.insert(std::make_pair(set, true));
   CPPUNIT_ASSERT(setOfSets.size() == 4);
   CNormalLogical::cleanSet(set);
+  set.clear();
   CNormalLogical::cleanSetOfSets(setOfSets);
   delete pLogicalItem;
 }

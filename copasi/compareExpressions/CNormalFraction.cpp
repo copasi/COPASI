@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/08 13:40:04 $
+//   $Date: 2008/08/02 14:09:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -383,9 +383,13 @@ std::string CNormalFraction::toString() const
   {
     std::ostringstream os;
     if (this->checkDenominatorOne() == true)
-      os << *this->mpNumerator;
+      {
+        os << *this->mpNumerator;
+      }
     else
-      os << "(" << *this->mpNumerator << ")/(" << *this->mpDenominator << ")";
+      {
+        os << "(" << *this->mpNumerator << ")/(" << *this->mpDenominator << ")";
+      }
     return os.str();
   }
 

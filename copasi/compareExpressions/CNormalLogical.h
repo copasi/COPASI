@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 09:29:55 $
+//   $Date: 2008/08/02 14:09:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,8 +220,8 @@ class CNormalLogical : public CNormalBase
       typename TemplateSetOfSets<TYPE>::iterator it = s.begin(), endit = s.end();
       while (it != endit)
         {
-          TemplateSet<TYPE> tmpSet = it->first;
-          cleanSet(tmpSet);
+          //TemplateSet<TYPE> tmpSet=it->first;
+          cleanSet(/*tmpSet*/it->first);
           ++it;
         }
       s.clear();
@@ -237,12 +237,7 @@ class CNormalLogical : public CNormalBase
       typename TemplateSet<TYPE>::const_iterator it = source.begin(), endit = source.end();
       while (it != endit)
         {
-          TYPE* pNewItem = new TYPE(*it->first);
-          if (target.insert(std::make_pair(pNewItem, it->second)).second == false)
-            {
-              // clean up the item if the insert failed
-              delete pNewItem;
-            }
+          assert(target.insert(std::make_pair(new TYPE(*it->first), it->second)).second == true);
           ++it;
         }
     }
@@ -251,15 +246,14 @@ class CNormalLogical : public CNormalBase
      * This routine calls delete an all pointers in the set.
      */
     template<typename TYPE>
-    static void cleanSet(TemplateSet<TYPE> & s)
+    static void cleanSet(const TemplateSet<TYPE> & s)
     {
-      typename std::set<std::pair<TYPE*, bool>, CNormalLogical::SetSorter<TYPE> >::const_iterator it = s.begin(), endit = s.end();
+      typename TemplateSet<TYPE>::const_iterator it = s.begin(), endit = s.end();
       while (it != endit)
         {
           delete it->first;
           ++it;
         }
-      s.clear();
     }
 
   protected:
@@ -472,11 +466,7 @@ class CNormalLogical : public CNormalBase
         {
           TemplateSet<TYPE> tmpSet;
           copySet(it->first, tmpSet);
-          if (target.insert(std::make_pair(tmpSet, it->second)).second == false)
-            {
-              // clean the set if the insert failed
-              cleanSet(tmpSet);
-            }
+          assert(target.insert(std::make_pair(tmpSet, it->second)).second == true);
           ++it;
         }
     }

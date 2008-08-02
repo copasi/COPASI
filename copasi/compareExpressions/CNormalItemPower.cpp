@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/01 06:11:48 $
+//   $Date: 2008/08/02 14:09:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,16 +289,18 @@ std::ostream & operator<< (std::ostream &os, const CNormalItemPower & d)
 std::string CNormalItemPower::toString() const
   {
     std::ostringstream os;
-    if (this->mItemType == CNormalItemPower::ITEM || this->mItemType == CNormalItemPower::FUNCTION || this->mItemType == CNormalItemPower::CALL)
-      os << this->mpItem->toString();
-    else if(this->mItemType == CNormalItemPower::POWER && this->mExp == 1.0)
+    if (this->mItemType == CNormalItemPower::ITEM || this->mItemType == CNormalItemPower::FUNCTION || this->mItemType == CNormalItemPower::CALL || (this->mItemType == CNormalItemPower::POWER && this->mExp == 1.0))
       {
         os << this->mpItem->toString();
       }
     else
-      os << "(" << this->mpItem->toString() << ")";
+      {
+        os << "(" << this->mpItem->toString() << ")";
+      }
     if (this->mExp != 1.0)
-      os << "^" << this->mExp;
+      {
+        os << "^" << this->mExp;
+      }
     return os.str();
   }
 

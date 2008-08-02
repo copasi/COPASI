@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/08 16:30:02 $
+//   $Date: 2008/08/02 14:09:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,8 +65,8 @@ std::string CNormalGeneralPower::toString() const
         // canceled fraction
         if (!(this->mpRight->getNumerator().checkIsOne() && this->mpRight->getDenominator().checkIsOne()))
           {
-            s << "(" << this->mpLeft->toString() << ")";
-            s << CNormalGeneralPower::SYMBOLS[this->mType] << "(" << this->mpRight->toString() << ")";
+            s << "(" << *this->mpLeft << ")";
+            s << CNormalGeneralPower::SYMBOLS[this->mType] << "(" << *this->mpRight << ")";
           }
         else
           {
@@ -74,11 +74,11 @@ std::string CNormalGeneralPower::toString() const
             // side is 1
             if (this->mpLeft->checkDenominatorOne())
               {
-                s << "(" << this->mpLeft->toString() << ")";
+                s << "(" << *this->mpLeft << ")";
               }
             else
               {
-                s << this->mpLeft->toString();
+                s << *this->mpLeft;
               }
           }
       }

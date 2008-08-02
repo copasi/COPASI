@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/30 15:18:23 $
+//   $Date: 2008/08/02 14:09:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ CNormalLogical::CNormalLogical(): CNormalBase(), mNot(false)
 
 CNormalLogical::CNormalLogical(const CNormalLogical& src): CNormalBase(src), mNot(src.mNot)
 {
-  cleanSetOfSets(mChoices);
+  cleanSetOfSets(this->mChoices);
   copySetOfSets(src.mChoices, this->mChoices);
   cleanSetOfSets(this->mAndSets);
   copySetOfSets(src.mAndSets, this->mAndSets);
@@ -68,12 +68,12 @@ CNormalBase * CNormalLogical::copy() const
 std::string CNormalLogical::toString() const
   {
     std::ostringstream str;
-    ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
     if (this->mNot == true)
       {
         str << "NOT ";
       }
     str << "(";
+    ChoiceSetOfSets::const_iterator it = this->mChoices.begin(), endit = this->mChoices.end();
     while (it != endit)
       {
         if (it->second == true)
@@ -340,6 +340,7 @@ bool CNormalLogical::simplify()
           ++it2;
         }
       cleanSet(tmpSet);
+      tmpSet.clear();
       ++it;
     }
   if (result == true)
@@ -434,6 +435,7 @@ bool CNormalLogical::simplify()
               if (tmpAndSets.insert(std::make_pair(tmpSet, false)).second == false)
                 {
                   cleanSet(tmpSet);
+                  tmpSet.clear();
                 }
             }
           else
@@ -443,6 +445,7 @@ bool CNormalLogical::simplify()
               if (tmpAndSets.insert(std::make_pair(tmpSet, false)).second == false)
                 {
                   cleanSet(tmpSet);
+                  tmpSet.clear();
                 }
             }
           ++it2;
@@ -543,6 +546,7 @@ bool CNormalLogical::simplify()
         {
           // delete the items in this set.
           cleanSet(tmpSet2);
+          tmpSet.clear();
         }
       ++it2;
     }
@@ -1000,6 +1004,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
           // TODO check why this is the case in e.g. test_normalform::test_nested_stepwise_fractions_3levels
           // TODO But right now this does not seem to invalidate the results.
           cleanSet(tmpSet);
+          tmpSet.clear();
         }
       ++outerIt;
     }
@@ -1059,6 +1064,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
               if (target.insert(std::make_pair(tmpSet2, outerIt->second)).second == false)
                 {
                   cleanSet(tmpSet2);
+                  tmpSet.clear();
                 }
             }
           delete pItem;
@@ -1070,6 +1076,7 @@ void CNormalLogical::eliminateNullItems(const ItemSetOfSets& source, ItemSetOfSe
           if (target.insert(std::make_pair(tmpSet2, outerIt->second)).second == false)
             {
               cleanSet(tmpSet2);
+              tmpSet2.clear();
             }
         }
       ++outerIt;

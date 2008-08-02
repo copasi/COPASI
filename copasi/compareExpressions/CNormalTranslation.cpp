@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/01 14:36:54 $
+//   $Date: 2008/08/02 14:09:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1377,6 +1377,10 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(const CEvaluatio
  */
 CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOrig)
 {
+  // TODO this method is one of the major bottlenecks and has to be
+  // TODO rewritten.
+  // TODO maybe using an iterator go go over the tree instead of the
+  // TODO recursion here would allow me to save many unneccesary copies.
   // since the nodes are not ordered, it can happen that two number
   // nodes in a chain are seperated by a nonnumber node.
   // We have to find chains and evaluate all number nodes in the chain
@@ -1425,16 +1429,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
             }
           break;
         case CEvaluationNodeOperator::MULTIPLY:
-          /*
-             os << (pNumberNode1->value()*pNumberNode2->value());
-             pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-             break;
-             */
         case CEvaluationNodeOperator::DIVIDE:
-          /*
-             os << (pNumberNode1->value() / pNumberNode2->value());
-             pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-             */
           pTmpNode = pOrig->copyNode(children);
           CNormalTranslation::splitProduct(pTmpNode, v1, v2, false);
           pos = v1.begin();
@@ -1528,16 +1523,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(const CEvaluationNode* pOri
             }
           break;
         case CEvaluationNodeOperator::PLUS:
-          /*
-             os << (pNumberNode3->value() + pNumberNode4->value());
-             pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-             break;
-             */
         case CEvaluationNodeOperator::MINUS:
-          /*
-             os << (pNumberNode3->value() - pNumberNode4->value());
-             pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-             */
           pTmpNode = pOrig->copyNode(children);
           CNormalTranslation::splitSum(pTmpNode, v3, v4, false);
           delete pTmpNode;
@@ -1785,6 +1771,11 @@ void CNormalTranslation::splitProduct(const CEvaluationNode* pRoot, std::vector<
  */
 void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& subtractions, bool minus)
 {
+  // TODO this methos might save some copy/delete cycles if the test for
+  // TODO negative number was done before making copies of children and
+  // TODO inserting them
+  // TODO this would also simplify the code since the test would be put
+  // TODO into a separate function
   if (CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pRoot->getType()) == CEvaluationNodeOperator::PLUS || (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pRoot->getType()) == CEvaluationNodeOperator::MINUS))
     {
       const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
@@ -2554,6 +2545,10 @@ CEvaluationNode* CNormalTranslation::expandProducts(const CEvaluationNode* pOrig
  */
 CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2)
 {
+  // TODO the nodes created by splitSum are later deleted again,
+  // TODO maybe this can be done more intelligently
+  // TODO the easiest solution would probably be if splitSum didn't make
+  // TODO copies in the first place
   CEvaluationNode* pResult = NULL;
   std::vector<CEvaluationNode*> additions1, subtractions1;
   CNormalTranslation::splitSum(pNode1, additions1, subtractions1, false);
@@ -2676,6 +2671,10 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
  */
 CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
 {
+  // TODO I think this method has much potential for improvement
+  // TODO since the comparison code seems to spend about 85% of the time
+  // TODO here, this is where I should start making optimizations
+  //
   // try to find multiplication chains where something is divided by itself
   // or multiplied by -1 times itself
   // also consider powers (it's the bases that have to match)
@@ -2765,14 +2764,12 @@ CEvaluationNode* CNormalTranslation::cancel(const CEvaluationNode* pOrig)
           unsigned int i, iMax = multiplications.size();
           for (i = 0;i < iMax;++i)
             {
-              CEvaluationNode* pChild = CNormalTranslation::cancel(multiplications[i]);
-              multiplications[i] = pChild;
+              multiplications[i] = CNormalTranslation::cancel(multiplications[i]);
             }
           iMax = divisions.size();
           for (i = 0;i < iMax;++i)
             {
-              CEvaluationNode* pChild = CNormalTranslation::cancel(divisions[i]);
-              divisions[i] = pChild;
+              divisions[i] = CNormalTranslation::cancel(divisions[i]);
             }
           // find identical nodes in multiplications and divisions
           // The first entry in the pair is the collected power exponent
@@ -3513,8 +3510,6 @@ CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, c
  */
 CEvaluationNode* CNormalTranslation::createChain(const CEvaluationNode* pLink, const CEvaluationNode* /*pNeutralElement*/, const std::vector<CEvaluationNode*>& elements)
 {
-  // TODO maybe copy the correct number of link elements and then use them
-  // TODO later
   CEvaluationNode* pResult = NULL;
   if (elements.size() == 1)
     {
