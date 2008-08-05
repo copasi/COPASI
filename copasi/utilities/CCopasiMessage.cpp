@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.38.4.1 $
+//   $Revision: 1.38.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/17 14:48:16 $
+//   $Date: 2008/08/05 19:44:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@
 #ifdef WIN32
 /**
  * The stack of messages. Each message created with one of
- * the specific constructors is automically added to the stack.
+ * the specific constructors is automatically added to the stack.
  */
 static std::deque< CCopasiMessage > mMessageDeque;
 #else
@@ -216,6 +216,8 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
     }
 
   mText = Text;
+  delete [] Text;
+
   mType = type;
   mNumber = number;
 

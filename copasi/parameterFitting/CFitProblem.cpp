@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.54.4.1 $
+//   $Revision: 1.54.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/31 16:33:37 $
+//   $Date: 2008/08/05 19:44:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,6 +115,8 @@ CFitProblem::~CFitProblem()
 {
   pdelete(mpTrajectoryProblem);
   pdelete(mpInitialState);
+  pdelete(mpFisherMatrixInterface);
+  pdelete(mpFisherMatrix);
   pdelete(mpCorrelationMatrixInterface);
   pdelete(mpCorrelationMatrix);
 }
@@ -127,14 +129,14 @@ void CFitProblem::initObjects()
 #endif // COPASI_CROSSVALIDATION
 
   mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
-  mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface);
+  mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
   mpFisherMatrix->setDescription("Fisher Information Matrix");
   mpFisherMatrix->setDimensionDescription(0, "Parameters");
   mpFisherMatrix->setDimensionDescription(1, "Parameters");
   mpFisherMatrix->setMode(CArrayAnnotation::STRINGS);
 
   mpCorrelationMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
-  mpCorrelationMatrix = new CArrayAnnotation("Correlation Matrix", this, mpCorrelationMatrixInterface);
+  mpCorrelationMatrix = new CArrayAnnotation("Correlation Matrix", this, mpCorrelationMatrixInterface, false);
   mpCorrelationMatrix->setDescription("Correlation Matrix");
   mpCorrelationMatrix->setDimensionDescription(0, "Parameters");
   mpCorrelationMatrix->setDimensionDescription(1, "Parameters");

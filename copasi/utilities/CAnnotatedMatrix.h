@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:53:05 $
+//   $Author: shoops $
+//   $Date: 2008/08/05 19:44:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,7 +186,7 @@ class CCopasiVectorInterface: public CCopasiAbstractArray
     const index_type & size() const
       {
         //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-        /*tmp->*/mSizes[0] =   mVector->size();
+        /*tmp->*/mSizes[0] =    mVector->size();
         return mSizes;
       }
 
@@ -228,7 +228,8 @@ class CArrayAnnotation: public CCopasiContainer
     };
 
   private:
-    CCopasiAbstractArray * mArray;
+    CCopasiAbstractArray * mpArray;
+    bool mDestructArray;
 
     mutable std::vector< std::vector<CRegisteredObjectName> > mAnnotationsCN;
     mutable std::vector< std::vector<std::string> > mAnnotationsString;
@@ -252,7 +253,10 @@ class CArrayAnnotation: public CCopasiContainer
   public:
     CArrayAnnotation(const std::string & name,
                      const CCopasiContainer * pParent,
-                     CCopasiAbstractArray * array);
+                     CCopasiAbstractArray * array,
+                     const bool & adopt);
+
+    ~CArrayAnnotation();
 
   private:
     CArrayAnnotation();
@@ -271,10 +275,10 @@ class CArrayAnnotation: public CCopasiContainer
     void setArray(CCopasiAbstractArray * a);
 
     CCopasiAbstractArray * array()
-    {return mArray;}
+    {return mpArray;}
 
     const CCopasiAbstractArray * array() const
-      {return mArray;}
+      {return mpArray;}
 
     /**
      * set the mode for the dimension d
@@ -297,7 +301,7 @@ class CArrayAnnotation: public CCopasiContainer
     unsigned int dimensionality() const;
 
     CCopasiAbstractArray::index_type size() const
-      {return mArray->size();}
+      {return mpArray->size();}
 
     /**
      * Associates a dimension d of the array with a CCopasiVector of

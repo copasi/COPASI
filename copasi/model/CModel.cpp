@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.343.2.3 $
+//   $Revision: 1.343.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/08/05 16:43:51 $
+//   $Date: 2008/08/05 19:44:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,14 +98,17 @@ CModel::CModel():
     mValues("Values", this),
     mMoieties("Moieties", this),
     mStoi(),
+    mpStoiAnnotation(NULL),
     mStoiReordered(),
     mRedStoi(),
+    mpRedStoiAnnotation(NULL),
     mNumMetabolitesUnused(0),
     mNumMetabolitesODE(0),
     mNumMetabolitesReaction(0),
     mNumMetabolitesAssignment(0),
     mNumMetabolitesIndependent(0),
     mL(),
+    mpLinkMatrixAnnotation(NULL),
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
@@ -161,14 +164,17 @@ CModel::CModel(const CModel & src):
     mValues(src.mValues, this),
     mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
+    mpStoiAnnotation(NULL),
     mStoiReordered(src.mStoiReordered),
     mRedStoi(src.mRedStoi),
+    mpRedStoiAnnotation(NULL),
     mNumMetabolitesUnused(src.mNumMetabolitesUnused),
     mNumMetabolitesODE(src.mNumMetabolitesODE),
     mNumMetabolitesReaction(src.mNumMetabolitesReaction),
     mNumMetabolitesAssignment(src.mNumMetabolitesAssignment),
     mNumMetabolitesIndependent(src.mNumMetabolitesIndependent),
     mL(src.mL),
+    mpLinkMatrixAnnotation(NULL),
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
@@ -197,6 +203,10 @@ CModel::~CModel()
 {
   mpIValue = NULL;
   mpValueData = NULL;
+
+  pdelete(mpStoiAnnotation);
+  pdelete(mpRedStoiAnnotation);
+  pdelete(mpLinkMatrixAnnotation);
 
   GlobalKeys.remove(mKey);
   //cleanup();
@@ -2880,7 +2890,7 @@ void CModel::initObjects()
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
 
-  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered));
+  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
   mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
@@ -2888,7 +2898,7 @@ void CModel::initObjects()
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
+  mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi), true);
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
   mpRedStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
@@ -2896,7 +2906,7 @@ void CModel::initObjects()
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpRedStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
+  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView), true);
   mpLinkMatrixAnnotation->setDescription("Link matrix");
   mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");

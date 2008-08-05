@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/17 19:47:35 $
+//   $Date: 2008/08/05 19:44:44 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -230,15 +235,15 @@ CSensProblem::CSensProblem(const CSensProblem & src,
 
 void CSensProblem::initObjects()
 {
-  mpResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult);
+  mpResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult, false);
   mpResultAnnotation->setDescription("");
   mpResultAnnotation->setMode(CArrayAnnotation::OBJECTS);
 
-  mpScaledResultAnnotation = new CArrayAnnotation("Scaled sensitivities array", this, &mScaledResult);
+  mpScaledResultAnnotation = new CArrayAnnotation("Scaled sensitivities array", this, &mScaledResult, false);
   mpScaledResultAnnotation->setDescription("");
   mpScaledResultAnnotation->setMode(CArrayAnnotation::OBJECTS);
 
-  mpCollapsedResultAnnotation = new CArrayAnnotation("Summarized sensitivities array", this, &mCollapsedResult);
+  mpCollapsedResultAnnotation = new CArrayAnnotation("Summarized sensitivities array", this, &mCollapsedResult, false);
   mpCollapsedResultAnnotation->setDescription("");
   mpCollapsedResultAnnotation->setMode(CArrayAnnotation::OBJECTS);
 }

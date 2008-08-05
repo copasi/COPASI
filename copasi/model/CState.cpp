@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.70.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:35 $
+//   $Date: 2008/08/05 19:44:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,10 @@ CStateTemplate::CStateTemplate(CModel & model, CState & initialState, CState & c
     mpCurrentValues(NULL)
 {}
 
-CStateTemplate::~CStateTemplate() {}
+CStateTemplate::~CStateTemplate()
+{
+  pdeletev(mpEntities);
+}
 
 void CStateTemplate::add(CModelEntity * entity)
 {

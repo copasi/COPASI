@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.62.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:21:54 $
+//   $Author: shoops $
+//   $Date: 2008/08/05 19:44:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -516,13 +516,14 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
 
   if (mpModel)
     {
+      // This allocates new objects for mpIValue and mpValueData
       mpModel->getStateTemplate().remove(this);
     }
-  else
-    {
-      pdelete(mpIValue);
-      pdelete(mpValueData);
-    }
+
+  // We can safely remove the currently allocated objects as they
+  // are not part of an CStateTemplate
+  pdelete(mpIValue);
+  pdelete(mpValueData);
 
   if (pNewModel)
     {
