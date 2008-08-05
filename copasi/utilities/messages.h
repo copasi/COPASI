@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.120.2.1 $
+//   $Revision: 1.120.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/31 16:33:38 $
+//   $Date: 2008/08/05 16:43:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,8 @@ const MESSAGES Messages[] =
     {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
     {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
     {MCReaction + 11, "CReaction (11): Reaction '%s' refers to unusable Function '%s'."},
+    {MCReaction + 12, "CReaction (12): The reversible Reaction '%s' could not be split into two irreversible "
+     "Reactions due to the Structure of the Kinetic Law '%s'."},
 
     // CChemEq
     {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},

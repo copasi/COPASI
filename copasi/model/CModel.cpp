@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.343.2.2 $
+//   $Revision: 1.343.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/30 02:05:06 $
+//   $Date: 2008/08/05 16:43:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2672,7 +2672,7 @@ bool CModel::convert2NonReversible()
   //TODO check if newly generated reaction names are valid
   //TODO map, so that the same function is split only once
 
-  bool ret = true;
+  bool success = true;
 
   std::vector<std::string> reactionsToDelete;
 
@@ -2689,7 +2689,6 @@ bool CModel::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     if (steps[i]->isReversible())
       {
-        ret = false;
         reac0 = steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
         rn2 = reac0->getObjectName() + " (backward)";
@@ -2718,6 +2717,11 @@ bool CModel::convert2NonReversible()
 
             if ((tmp.first == NULL) || (tmp.second == NULL))
               {
+                // Create a message that the conversion for this reaction failed.
+                CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 12,
+                               reac0->getObjectName().c_str(), fn.c_str());
+                success = false;
+
                 pdelete(tmp.first);
                 pdelete(tmp.second);
                 continue;
@@ -2835,14 +2839,13 @@ bool CModel::convert2NonReversible()
 
         //remove the old reaction
         reactionsToDelete.push_back(reac0->getObjectName());
-        ret = true;
       }
 
   imax = reactionsToDelete.size();
   for (i = 0; i < imax; ++i)
     steps.remove(reactionsToDelete[i]);
 
-  return ret;
+  return success;
 }
 
 //**********************************************************************
