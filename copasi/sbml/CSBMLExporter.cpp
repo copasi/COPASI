@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/22 14:15:26 $
+//   $Date: 2008/08/06 17:02:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1731,6 +1731,18 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
               id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
             }
         }
+      /* TODO remove this if it is no longer needed
+      else
+      {
+        std::map<std::string,const SBase*>::const_iterator pos=this->mIdMap.find(id);
+        if(pos!=this->mIdMap.end())
+        {
+            // we need to change the SBML id of the function
+            id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+            function.setSBMLid(id);
+        }
+      }
+      */
       this->mIdMap.insert(std::pair<const std::string, const SBase*>(id, pFunDef));
       pFunDef->setId(id);
       function.setSBMLId(id);
@@ -1822,6 +1834,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       CSBMLExporter::collectIds(this->mpSBMLDocument->getModel(), this->mIdMap, this->mMetaIdMap);
     }
+  this->mFunctionIdMap.clear();
   // update the copasi2sbmlmap
   updateCOPASI2SBMLMap(dataModel);
   // update the comments on the model
@@ -2725,24 +2738,41 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
     }
   else
     {
-      std::string id = pFun->getSBMLId();
+
+      /*std::string id = pFun->getSBMLId();
       if (id.empty())
-        {
-          id = pFun->getObjectName();
-          if (CSBMLExporter::isValidSId(id))
-            {
-              if (this->mIdMap.find(id) != this->mIdMap.end())
-                {
-                  id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
-                }
-            }
-          else
-            {
-              id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
-            }
-          this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+      {
+        id = pFun->getObjectName();
+        if (CSBMLExporter::isValidSId(id))
+          {
+            if (this->mIdMap.find(id) != this->mIdMap.end())
+              {
+                id = CSBMLExporter::createUniqueId(this->mIdMap, id + "_");
+              }
+          }
+        else
+          {
+            id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+          }
+        this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+        pFun->setSBMLId(id);
+        // add the id,pointer pair to the function id map so that we know
+        // that this id has been used for that function
+        this->mFunctionIdMap.insert(std::pair<std::string,const CEvaluationTree*>(id,pFun));
+      }
+      else
+      {
+      // check if there is an entry in the function id map for that id
+      std::map<std::string,const CEvaluationTree*>::iterator pos=this->mFunctionIdMap.find(id);
+      if(pos->second!=pFun)
+      {
+          // mark the id as taken
+          this->mIdMap.insert(std::pair<std::string,const SBase*>(id,(SBase*)NULL));
+          id=CSBMLExporter::createUniqueId(this->mIdMap, "function_");
           pFun->setSBMLId(id);
-        }
+      }
+      }
+      */
       CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFun->getObjectName());
       this->mUsedFunctions.insert(pFun);
       unsigned int i, iMax = arguments.size();
@@ -5204,22 +5234,46 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
       CEvaluationTree* pFun = dataModel.getFunctionList()->findFunction(funName);
       assert(pFun != NULL);
       if (pFun == NULL) fatalError();
-
-      if (pFun->getSBMLId() == "")
+      std::string id = pFun->getSBMLId();
+      if (id.empty())
         {
           if (CSBMLExporter::isValidSId(funName))
             {
               if (this->mIdMap.find(funName) != this->mIdMap.end())
                 {
-                  funName = CSBMLExporter::createUniqueId(this->mIdMap, funName);
+                  id = CSBMLExporter::createUniqueId(this->mIdMap, funName);
                 }
             }
           else
             {
-              funName = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+              id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
             }
-          this->mIdMap.insert(std::make_pair(funName, (const SBase*)NULL));
-          pFun->setSBMLId(funName);
+          this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
+          pFun->setSBMLId(id);
+          // add the id,pointer pair to the fucntion id map so that we know
+          // that this id has been used for that function
+          this->mFunctionIdMap.insert(std::pair<std::string, const CEvaluationTree*>(id, pFun));
+        }
+      else
+        {
+          // check if there is an entry in the function id map for that id
+          std::map<std::string, const CEvaluationTree*>::iterator pos = this->mFunctionIdMap.find(id);
+          if (pos == this->mFunctionIdMap.end())
+            {
+              // reserve this function name
+              this->mIdMap.insert(std::pair<std::string, const SBase*>(id, (SBase*)NULL));
+              this->mFunctionIdMap.insert(std::pair<std::string, const CEvaluationTree*>(id, pFun));
+            }
+          else
+            {
+              if (pos->second != pFun)
+                {
+                  // mark the id as taken
+                  this->mIdMap.insert(std::pair<std::string, const SBase*>(id, (SBase*)NULL));
+                  id = CSBMLExporter::createUniqueId(this->mIdMap, "function_");
+                  pFun->setSBMLId(id);
+                }
+            }
         }
     }
   const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
