@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 07:33:03 $
+//   $Date: 2008/08/06 17:09:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,8 @@ class test000059 : public CppUnit::TestFixture
     CPPUNIT_TEST(test_unique_id_18);
     CPPUNIT_TEST(test_unique_id_19);
     CPPUNIT_TEST(test_unique_id_20);
+    CPPUNIT_TEST(test_unique_id_21);
+    CPPUNIT_TEST(test_unique_id_21_2);
     CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -75,10 +77,11 @@ class test000059 : public CppUnit::TestFixture
     static const char* MODEL_STRING18;
     static const char* MODEL_STRING19;
     static const char* MODEL_STRING20;
-
-    bool checkIfIdsUnique(const Model* pSBMLModel);
+    static const char* MODEL_STRING21;
 
   public:
+    static bool checkIfIdsUnique(const Model* pSBMLModel);
+
     void setUp();
 
     void tearDown();
@@ -106,6 +109,10 @@ class test000059 : public CppUnit::TestFixture
     void test_unique_id_14();
     void test_unique_id_15();
     void test_unique_id_16();
+
+    // test for bug 1060
+    void test_unique_id_21();
+    void test_unique_id_21_2();
   };
 
 #endif /* TEST000059_H__ */
