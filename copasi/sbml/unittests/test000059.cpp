@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 07:33:03 $
+//   $Date: 2008/08/06 17:00:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1329,6 +1329,103 @@ void test000059::test_unique_id_20()
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
+/**
+ * Test for Bug 1060.
+ */
+void test000059::test_unique_id_21()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000059::MODEL_STRING21);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  // now we add a new function definition
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // add a new function definition
+  CFunction* pFunctionDefinition = new CFunction("test function");
+  CPPUNIT_ASSERT(pFunctionDefinition != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
+  pFunctionDefinition->compile();
+  // add the function definition to the function database
+  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CModelValue* pModelValue = pModel->createModelValue("parameter_2");
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->setExpression(std::string("\"" + pFunctionDefinition->getObjectName() + "\"()")) == true);
+  // now create a rule for the parameter
+  pModel->compileIfNecessary(NULL);
+  std::set<const CCopasiObject*> changedObjects;
+  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  CPPUNIT_ASSERT(pObject != NULL);
+  changedObjects.insert(pObject);
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt++)();
+    }
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
+/**
+ * Same test as the test before, only the newly added function definition has a
+ * different name.
+ */
+void test000059::test_unique_id_21_2()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000059::MODEL_STRING21);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  // now we add a new function definition
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  // add a new function definition
+  CFunction* pFunctionDefinition = new CFunction("function_1");
+  CPPUNIT_ASSERT(pFunctionDefinition != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
+  pFunctionDefinition->compile();
+  // add the function definition to the function database
+  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CModelValue* pModelValue = pModel->createModelValue("parameter_2");
+  CPPUNIT_ASSERT(pModelValue != NULL);
+  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
+  // now create a rule for the parameter
+  pModel->compileIfNecessary(NULL);
+  std::set<const CCopasiObject*> changedObjects;
+  const CCopasiObject* pObject = pModelValue->getObject(CCopasiObjectName("Reference=InitialValue"));
+  CPPUNIT_ASSERT(pObject != NULL);
+  changedObjects.insert(pObject);
+  std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
+  std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+  while (refreshIt != refreshEndit)
+    {
+      (**refreshIt++)();
+    }
+  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
   CPPUNIT_ASSERT(pSBMLModel != NULL);
   CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 2);
   CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
@@ -2735,4 +2832,77 @@ const char* test000059::MODEL_STRING20 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
+;
+
+const char* test000059::MODEL_STRING21 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<!-- generated with COPASI 4.3.25 (Debug) (http://www.copasi.org) at 2008-04-29 13:08:40 UTC -->\n"
+  "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"25\">\n"
+  "  <ListOfFunctions>\n"
+  "    <Function key=\"Function_40\" name=\"function_4_reaction_1\" type=\"UserDefined\" reversible=\"true\">\n"
+  "      <Expression>\n"
+  "        parameter_1*species_1\n"
+  "      </Expression>\n"
+  "      <ListOfParameterDescriptions>\n"
+  "        <ParameterDescription key=\"FunctionParameter_250\" name=\"parameter_1\" order=\"0\" role=\"constant\"/>\n"
+  "        <ParameterDescription key=\"FunctionParameter_254\" name=\"species_1\" order=\"1\" role=\"substrate\"/>\n"
+  "      </ListOfParameterDescriptions>\n"
+  "    </Function>\n"
+  "  </ListOfFunctions>\n"
+  "  <Model key=\"Model_1\" name=\"model_1\" timeUnit=\"s\" volumeUnit=\"l\" quantityUnit=\"mol\" type=\"deterministic\">\n"
+  "    <Comment>\n"
+  "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  "        \n"
+  "      </body>\n"
+  "    </Comment>\n"
+  "    <ListOfCompartments>\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment_1\" simulationType=\"fixed\">\n"
+  "      </Compartment>\n"
+  "    </ListOfCompartments>\n"
+  "    <ListOfMetabolites>\n"
+  "      <Metabolite key=\"Metabolite_0\" name=\"species_1\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "    </ListOfMetabolites>\n"
+  "    <ListOfModelValues>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"parameter_1\" simulationType=\"fixed\">\n"
+  "      </ModelValue>\n"
+  "    </ListOfModelValues>\n"
+  "    <ListOfReactions>\n"
+  "      <Reaction key=\"Reaction_0\" name=\"reaction_1\" reversible=\"true\">\n"
+  "        <ListOfSubstrates>\n"
+  "          <Substrate metabolite=\"Metabolite_0\" stoichiometry=\"1\"/>\n"
+  "        </ListOfSubstrates>\n"
+  "        <ListOfConstants>\n"
+  "          <Constant key=\"Parameter_81\" name=\"parameter_1\" value=\"1\"/>\n"
+  "        </ListOfConstants>\n"
+  "        <KineticLaw function=\"Function_40\">\n"
+  "          <ListOfCallParameters>\n"
+  "            <CallParameter functionParameter=\"FunctionParameter_250\">\n"
+  "              <SourceParameter reference=\"ModelValue_0\"/>\n"
+  "            </CallParameter>\n"
+  "            <CallParameter functionParameter=\"FunctionParameter_254\">\n"
+  "              <SourceParameter reference=\"Metabolite_0\"/>\n"
+  "            </CallParameter>\n"
+  "          </ListOfCallParameters>\n"
+  "        </KineticLaw>\n"
+  "      </Reaction>\n"
+  "    </ListOfReactions>\n"
+  "    <StateTemplate>\n"
+  "      <StateTemplateVariable objectReference=\"Model_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "    </StateTemplate>\n"
+  "    <InitialState type=\"initialState\">\n"
+  "      0 6.0221415e+23 3 1e-16\n"
+  "    </InitialState>\n"
+  "  </Model>\n"
+  "  <SBMLReference file=\"test000059.xml\">\n"
+  "    <SBMLMap SBMLid=\"compartment_1\" COPASIkey=\"Compartment_0\"/>\n"
+  "    <SBMLMap SBMLid=\"function_1\" COPASIkey=\"Function_40\"/>\n"
+  "    <SBMLMap SBMLid=\"reaction_2\" COPASIkey=\"ModelValue_0\"/>\n"
+  "    <SBMLMap SBMLid=\"reaction_1\" COPASIkey=\"Reaction_0\"/>\n"
+  "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
+  "  </SBMLReference>\n"
+  "</COPASI>\n"
 ;
