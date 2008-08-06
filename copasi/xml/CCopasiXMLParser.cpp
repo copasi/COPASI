@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.183.2.1 $
+//   $Revision: 1.183.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/08/05 19:44:45 $
+//   $Date: 2008/08/06 18:10:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2276,7 +2276,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                         // Old file format support
+    case MathML:                                          // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2374,7 +2374,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                         // Old file format support
+    case MathML:                                          // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -4842,11 +4842,20 @@ void CCopasiXMLParser::ChannelSpecElement::end(const XML_Char *pszName)
   return;
 }
 
-CCopasiXMLParser::PlotItemElement::PlotItemElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::PlotItemElement::PlotItemElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpParameterElement(NULL),
+    mpParameterGroupElement(NULL),
+    mpListOfChannelsElement(NULL)
+
 {}
 
 CCopasiXMLParser::PlotItemElement::~PlotItemElement()
-{}
+{
+  pdelete(mpParameterElement);
+  pdelete(mpParameterGroupElement);
+  pdelete(mpListOfChannelsElement);
+}
 
 void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML_Char** papszAttrs)
 {
@@ -4875,10 +4884,11 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       if (!strcmp(pszName, "Parameter"))
         {
           mLineNumber = mParser.getCurrentLineNumber();
-          if (!mpCurrentHandler)
+          if (!mpParameterElement)
             {
-              mpCurrentHandler = new ParameterElement(mParser, mCommon);
+              mpParameterElement = new ParameterElement(mParser, mCommon);
             }
+          mpCurrentHandler = mpParameterElement;
         }
       break;
 
@@ -4886,10 +4896,11 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       if (!strcmp(pszName, "ParameterGroup"))
         {
           mLineNumber = mParser.getCurrentLineNumber();
-          if (!mpCurrentHandler)
+          if (!mpParameterGroupElement)
             {
-              mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
+              mpParameterGroupElement = new ParameterGroupElement(mParser, mCommon);
             }
+          mpCurrentHandler = mpParameterGroupElement;
         }
       break;
 
@@ -4897,10 +4908,11 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       if (!strcmp(pszName, "ListOfChannels"))
         {
           mLineNumber = mParser.getCurrentLineNumber();
-          if (!mpCurrentHandler)
+          if (!mpListOfChannelsElement)
             {
-              mpCurrentHandler = new ListOfChannelsElement(mParser, mCommon);
+              mpListOfChannelsElement = new ListOfChannelsElement(mParser, mCommon);
             }
+          mpCurrentHandler = mpListOfChannelsElement;
         }
       break;
 

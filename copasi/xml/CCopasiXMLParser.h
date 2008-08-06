@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.60.2.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 07:47:05 $
+//   $Author: shoops $
+//   $Date: 2008/08/06 18:10:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1807,6 +1807,21 @@ class CCopasiXMLParser : public CExpat
           ParameterGroup,
           ListOfChannels
         };
+
+        /**
+         * Pointer to the Parameter Element Handler
+         */
+        CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * mpParameterElement;
+
+        /**
+         * Pointer to the Parameter Group Element Handler
+         */
+        CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * mpParameterGroupElement;
+
+        /**
+         * Pointer to the List Of Channels Element Handler
+         */
+        CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon > * mpListOfChannelsElement;
 
         /**
          * The line number the unknown parameter was encountered.
