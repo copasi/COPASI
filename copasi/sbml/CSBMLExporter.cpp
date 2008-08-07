@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.31.2.5 $
+//   $Revision: 1.31.2.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/06 17:22:30 $
+//   $Date: 2008/08/07 20:18:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1710,6 +1710,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
     {
       pFunDef = dynamic_cast<FunctionDefinition*>(pos->second);
       assert(pFunDef);
+      this->mpSBMLDocument->getModel()->getListOfFunctionDefinitions()->appendAndOwn(pFunDef);
     }
   else
     {
@@ -2404,6 +2405,40 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           // ignore it and continue
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, std::string("event assignment in event called \"" + event.getObjectName() + "\"").c_str(), pSBase->getId().c_str());
           continue;
+        }
+      // set the constant flag to false
+      Compartment* pSBMLCompartment = NULL;
+      Species* pSBMLSpecies = NULL;
+      Parameter* pSBMLParameter = NULL;
+      switch (pSBase->getTypeCode())
+        {
+        case SBML_COMPARTMENT:
+          pSBMLCompartment = dynamic_cast<Compartment*>(pSBase);
+          assert(pSBMLCompartment != NULL);
+          if (pSBMLCompartment->getConstant() == true)
+            {
+              pSBMLCompartment->setConstant(false);
+            }
+          break;
+        case SBML_SPECIES:
+          pSBMLSpecies = dynamic_cast<Species*>(pSBase);
+          assert(pSBMLSpecies != NULL);
+          if (pSBMLSpecies->getConstant() == true)
+            {
+              pSBMLSpecies->setConstant(false);
+            }
+          break;
+        case SBML_PARAMETER:
+          pSBMLParameter = dynamic_cast<Parameter*>(pSBase);
+          assert(pSBMLParameter != NULL);
+          if (pSBMLParameter->getConstant() == true)
+            {
+              pSBMLParameter->setConstant(false);
+            }
+          break;
+        default:
+          fatalError();
+          break;
         }
       std::string sbmlId = pSBase->getId();
       assert(sbmlId.find_first_not_of("\t\r\n ") != std::string::npos);
@@ -5195,6 +5230,10 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
               if (this->mIdMap.find(funName) != this->mIdMap.end())
                 {
                   id = CSBMLExporter::createUniqueId(this->mIdMap, funName);
+                }
+              else
+                {
+                  id = funName;
                 }
             }
           else
