@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.52.4.1 $
+//   $Revision: 1.52.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/30 02:05:38 $
+//   $Author: gauges $
+//   $Date: 2008/08/08 07:52:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -922,7 +922,7 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
 {
   if (pObject == NULL) return;
 
-  std::string Units = FROM_UTF8(pObject->getUnits());
+  std::string Units = pObject->getUnits();
   if (Units != "")
     setAxisTitle(index, FROM_UTF8(Units));
 
