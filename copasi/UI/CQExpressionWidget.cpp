@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/08/18 08:47:43 $
+//   $Date: 2008/08/18 08:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -439,91 +439,6 @@ void CQExpressionWidget::slotSelectObject()
 
   if (pObject)
     {
-      //      QString str = FROM_UTF8(pObject->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectName());
-      /*
-          if (pObject->getObjectType() == "Array")
-            {
-              QString str = pObject->getObjectType() + "=" + pObject->getObjectName();
-
-              const CModel* pModel = CCopasiDataModel::Global->getModel();
-              const CArrayAnnotation * tmp;
-
-              tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
-           if (!tmp)
-               return;
-
-              CQMatrixDialog *dialog = new CQMatrixDialog();
-
-              int i;
-              int nRows = tmp->getAnnotationsCN(0).size();
-              int nCols = tmp->getAnnotationsCN(1).size();
-
-        if (!nRows || !nCols)
-          return;
-
-              dialog->mpLabelRow->setText("Rows : " + FROM_UTF8(tmp->getDimensionDescription(0)));
-
-        dialog->mpCBRow->insertItem("ALL");
-              for (i = 0; i < nRows; i++)
-                {
-                  dialog->mpCBRow->insertItem(FROM_UTF8(tmp->getAnnotationsString(0, true)[i]));
-                }
-
-              dialog->mpLabelColumn->setText("Columns : " + tmp->getDimensionDescription(1));
-
-        dialog->mpCBColumn->insertItem("ALL");
-              for (i = 0; i < nCols; i++)
-                {
-                  dialog->mpCBColumn->insertItem(FROM_UTF8(tmp->getAnnotationsString(1, true)[i]));
-                }
-
-              if (tmp->dimensionality() == 2)
-                {
-                  dialog->mpLabelDim3->hide();
-                  dialog->mpCBDim3->hide();
-                }
-              else if (tmp->dimensionality() == 3)
-                {
-                  dialog->mpLabelDim3->setText("Dimension : " + tmp->getDimensionDescription(2));
-                  int nDims = tmp->getAnnotationsCN(2).size();
-
-         dialog->mpCBDim3->insertItem("ALL");
-                  for (i = 0; i < nDims; i++)
-                    dialog->mpCBDim3->insertItem(FROM_UTF8(tmp->getAnnotationsString(2, true)[i]));
-                }
-
-              int Result = dialog->exec();
-
-              if (Result == QDialog::Rejected)
-                return;
-              else if (Result == QDialog::Accepted)
-                {
-                  std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
-                }
-            }
-      */
-      /*
-       if (str == "Reference=Annotated Matrix")
-       {
-         const CModel* pModel = CCopasiDataModel::Global->getModel();
-            const CArrayAnnotation * tmp;
-
-            tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
-         if (!tmp)
-             return;
-
-            int nRows = tmp->getAnnotationsCN(0).size();
-            int nCols = tmp->getAnnotationsCN(1).size();
-
-         if (!nRows || !nCols)
-        return;
-
-            CQMatrixDialog *dialog = new CQMatrixDialog();
-         dialog->setArray(tmp);
-
-            int Result = dialog->exec();
-       }
-      */
       // Check whether the object is valid
       if (!CCopasiSimpleSelectionTree::filter(mExpressionType, pObject))
         {
