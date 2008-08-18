@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.54.4.2 $
+//   $Revision: 1.54.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/08/05 19:44:45 $
+//   $Date: 2008/08/18 18:37:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -716,13 +716,13 @@ bool CFitProblem::calculate()
                   ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
                   for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
                     if (*ppConstraint) (*ppConstraint)->calculateConstraintViolation();
-                  break;
 
                   if (mStoreResults)
                     mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                   else
                     mCalculateValue += pExp->sumOfSquares(j, Residuals);
                 }
+              break;
 
             default:
               break;
