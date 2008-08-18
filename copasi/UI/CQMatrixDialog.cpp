@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/07/29 10:56:22 $
+//   $Date: 2008/08/18 09:08:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMatrixDialog.ui'
  **
- ** Created: Tue Jul 29 12:11:45 2008
- **      by: The User Interface Compiler ($Id: CQMatrixDialog.cpp,v 1.1 2008/07/29 10:56:22 pwilly Exp $)
+ ** Created: Fri Aug 8 13:10:01 2008
+ **      by: The User Interface Compiler ($Id: CQMatrixDialog.cpp,v 1.2 2008/08/18 09:08:58 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,6 +30,8 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include "utilities/CAnnotatedMatrix.h"
+#include "CQMatrixDialog.ui.h"
 
 /*
  *  Constructs a CQMatrixDialog as a child of 'parent', with the
@@ -102,7 +104,7 @@ CQMatrixDialog::~CQMatrixDialog()
  */
 void CQMatrixDialog::languageChange()
 {
-  setCaption(tr("Matrix Dialog"));
+  setCaption(tr("Cell Matrix Selection Dialog"));
   mpLabelRow->setText(tr("Row :"));
   mpLabelColumn->setText(tr("Column :"));
   mpLabelDim3->setText(tr("Dimension 3 :"));
