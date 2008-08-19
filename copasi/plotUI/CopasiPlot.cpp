@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.52.4.2 $
+//   $Revision: 1.52.4.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/08/08 07:52:53 $
+//   $Author: shoops $
+//   $Date: 2008/08/19 16:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,7 +121,7 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
     if (maxY - minY < minRange)
       {
         minY = (minY + maxY - minRange) / 2.0;
-        maxY = (minY + maxY - minRange) / 2.0;
+        maxY = (minY + maxY + minRange) / 2.0;
       }
 
     return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
