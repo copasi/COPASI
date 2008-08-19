@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/16 13:16:05 $
+//   $Date: 2008/08/19 13:42:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,9 @@ void CQMiriamWidget::slotBtnClearClicked()
 
 bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  if (getIgnoreUpdates())
+    return true;
+
   if (objectType != ListViews::MIRIAM)
     return true;
 
@@ -129,8 +132,11 @@ bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action 
 
 bool CQMiriamWidget::leave()
 {
+
   // First Ignore updates for all widgets or else we will
   // lose user entered data if data is entered/updated for more than one widget.
+  setIgnoreUpdates(true);
+
   std::vector< CopasiTableWidget * >::const_iterator it;
   std::vector< CopasiTableWidget * >::const_iterator end = mWidgets.end();
 
@@ -157,17 +163,17 @@ bool CQMiriamWidget::leave()
       changed |= (*it)->isChanged();
     }
 
-  // Reset the mIgnoreUpdates.
-  for (it = mWidgets.begin(); it != end; it++)
-    (*it)->setIgnoreUpdates(false);
-
   if (changed)
     {
       mpMIRIAMInfo->save();
 
-      // We are catching our own update which is correct.
       protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
     }
+
+  // Reset the mIgnoreUpdates.
+  setIgnoreUpdates(false);
+  for (it = mWidgets.begin(); it != end; it++)
+    (*it)->setIgnoreUpdates(false);
 
   return true;
 }
