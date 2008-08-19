@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.343.2.4 $
+//   $Revision: 1.343.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/08/05 19:44:43 $
+//   $Date: 2008/08/19 16:04:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,7 +118,7 @@ CModel::CModel():
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
     mReorderNeeded(false),
-    mIsAutonomous(false)
+    mIsAutonomous(true)
 {
   initObjects();
 
@@ -3279,6 +3279,13 @@ const bool & CModel::isAutonomous() const
 
 void CModel::determineIsAutonomous()
 {
+  if (mCompartments.size() == 0 &&
+      mValues.size() == 0)
+    {
+      mIsAutonomous = false;
+      return;
+    }
+
   std::set< const CCopasiObject * > TimeDependent;
 
   appendDependentReactions(getDeletedObjects(), TimeDependent);
