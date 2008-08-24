@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/01 14:36:54 $
+//   $Date: 2008/08/24 21:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,42 +188,42 @@ class CNormalTranslation
      * These steps can not lead to new simplifications in the children of the node
      * being simplified, so it is not necessary to run this on the children again.
      */
-    static CEvaluationNode* elementaryElimination(const CEvaluationNode* pOrig);
+    static CEvaluationNode* elementaryElimination(CEvaluationNode* pOrig);
 
     /**
      * This method makes elementary eliminations on function nodes
      */
-    static CEvaluationNode* elementaryEliminationFunction(const CEvaluationNode* pFunctionNode, std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationFunction(CEvaluationNode* pFunctionNode);
 
     /**
      * This method makes the elementary elimination on a power node.
      */
-    static CEvaluationNode* elementaryEliminationPower(const CEvaluationNode* pPowerNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationPower(CEvaluationNode* pPowerNode);
 
     /**
      * This method makes the elementary elimination on a modulus node.
      */
-    static CEvaluationNode* elementaryEliminationModulus(const CEvaluationNode* pModulusNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationModulus(CEvaluationNode* pModulusNode);
 
     /**
      * This method makes the elementary elimination on a multiply node.
      */
-    static CEvaluationNode* elementaryEliminationMultiply(const CEvaluationNode* pMultiplyNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationMultiply(CEvaluationNode* pMultiplyNode);
 
     /**
      * This method makes the elementary elimination on a divide node.
      */
-    static CEvaluationNode* elementaryEliminationDivide(const CEvaluationNode* pDivideNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationDivide(CEvaluationNode* pDivideNode);
 
     /**
      * This method makes the elementary elimination on a plus node.
      */
-    static CEvaluationNode* elementaryEliminationPlus(const CEvaluationNode* pPlusNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationPlus(CEvaluationNode* pPlusNode);
 
     /**
      * This method makes the elementary elimination on a minus node.
      */
-    static CEvaluationNode* elementaryEliminationMinus(const CEvaluationNode* pMinusNode, const std::vector<CEvaluationNode*>& children);
+    static CEvaluationNode* elementaryEliminationMinus(CEvaluationNode* pMinusNode);
 
     /**
      * This method removes nested power nodes, e.g. (a^b)^c -> a^(b*c)

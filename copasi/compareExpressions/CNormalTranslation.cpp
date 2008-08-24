@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/04 06:57:39 $
+//   $Date: 2008/08/24 21:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -389,14 +389,15 @@ CEvaluationNode* CNormalTranslation::eliminate(const CEvaluationNode* pOrig)
     {
       // first make elementary eliminations
       pTmp = CNormalTranslation::elementaryElimination(pResult);
-      delete pResult;
+      if (pTmp != pResult) delete pResult;
       // now get rid of nested powers a^b^c
       pResult = CNormalTranslation::eliminateNestedPowers(pTmp);
       delete pTmp;
+      pTmp = pResult;
       // eliminate fractions within powers
       // (a/b)^3 -> a^3 / b^3
       // now get rid of directly nested fractions
-      pTmp = CNormalTranslation::eliminatePowersOfFractions(pResult);
+      pResult = CNormalTranslation::eliminatePowersOfFractions(pTmp);
       delete pResult;
       pResult = CNormalTranslation::eliminateDirectlyNestedFractions(pTmp);
       delete pTmp;
@@ -492,43 +493,50 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
  * These steps can not lead to new simplifications in the children of the node
  * being simplified, so it is not necessary to run this on the children again.
  */
-CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode* pOrig)
+CEvaluationNode* CNormalTranslation::elementaryElimination(CEvaluationNode* pOrig)
 {
   // this is done depth first
-  CEvaluationNode* pResult = NULL;
-  std::vector<CEvaluationNode*> children;
-  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrig->getChild());
+  CEvaluationNode* pResult = pOrig;
+  CEvaluationNode* pChild = dynamic_cast<CEvaluationNode*>(pOrig->getChild());
+  CEvaluationNode* pLastChild = pOrig;
   while (pChild != NULL)
     {
       CEvaluationNode* pNewChild = elementaryElimination(pChild);
       assert(pNewChild != NULL);
-      children.push_back(pNewChild);
-      pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+      if (pNewChild != pChild)
+        {
+          // remove the old child and add the new one
+          pOrig->removeChild(pChild);
+          delete pChild;
+          pChild = pNewChild;
+          pOrig->addChild(pNewChild, pLastChild);
+        }
+      pLastChild = pChild;
+      pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
     }
   if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::OPERATOR)
     {
       // check if we can eliminate anything
       // check if one of the children is (-)0, (-)1, NaN or INFINITY
-      assert(children.size() == 2);
       switch ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()))
         {
         case CEvaluationNodeOperator::POWER:
-          pResult = CNormalTranslation::elementaryEliminationPower(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationPower(pOrig);
           break;
         case CEvaluationNodeOperator::MODULUS:
-          pResult = CNormalTranslation::elementaryEliminationModulus(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationModulus(pOrig);
           break;
         case CEvaluationNodeOperator::MULTIPLY:
-          pResult = CNormalTranslation::elementaryEliminationMultiply(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationMultiply(pOrig);
           break;
         case CEvaluationNodeOperator::DIVIDE:
-          pResult = CNormalTranslation::elementaryEliminationDivide(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationDivide(pOrig);
           break;
         case CEvaluationNodeOperator::PLUS:
-          pResult = CNormalTranslation::elementaryEliminationPlus(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationPlus(pOrig);
           break;
         case CEvaluationNodeOperator::MINUS:
-          pResult = CNormalTranslation::elementaryEliminationMinus(pOrig, children);
+          pResult = CNormalTranslation::elementaryEliminationMinus(pOrig);
           break;
         default:
           // we should never end up here
@@ -538,13 +546,7 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
     }
   else if (CEvaluationNode::type(pOrig->getType()) == CEvaluationNode::FUNCTION)
     {
-      pResult = CNormalTranslation::elementaryEliminationFunction(pOrig, children);
-    }
-  else
-    {
-      // just make a swallow copy of the original node
-      // and add the new children
-      pResult = pOrig->copyNode(children);
+      pResult = CNormalTranslation::elementaryEliminationFunction(pOrig);
     }
   return pResult;
 }
@@ -552,69 +554,57 @@ CEvaluationNode* CNormalTranslation::elementaryElimination(const CEvaluationNode
 /**
  * This method makes elementary eliminations on function nodes
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationFunction(const CEvaluationNode* pFunctionNode, std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationFunction(CEvaluationNode* pFunctionNode)
 {
   // PLUS(X) -> X
   // X(NaN) -> NaN
   // MINUX(X) where X is a number -> -X
-  CEvaluationNode* pResult = NULL;
-  unsigned int i, iMax = children.size();
+  CEvaluationNode* pResult = pFunctionNode;
+  CEvaluationNode* pChild = NULL;
   switch ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pFunctionNode->getType()))
     {
     case CEvaluationNodeFunction::INVALID:
       break;
     case CEvaluationNodeFunction::PLUS:
-      assert(children.size() == 1);
-      pResult = children[0];
+      pChild = dynamic_cast<CEvaluationNode*>(pFunctionNode->getChild());
+      assert(pChild != NULL);
+      assert(pChild->getSibling() == NULL);
+      pResult = pChild->copyBranch();
       break;
     case CEvaluationNodeFunction::MINUS:
-      assert(children.size() == 1);
-      if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER)
+      pChild = dynamic_cast<CEvaluationNode*>(pFunctionNode->getChild());
+      assert(pChild != NULL);
+      assert(pChild->getSibling() == NULL);
+      if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER)
         {
           std::ostringstream os;
           os.precision(18);
-          os << -1.0*dynamic_cast<const CEvaluationNodeNumber*>(children[0])->value();
+          os << -1.0*dynamic_cast<const CEvaluationNodeNumber*>(pChild)->value();
           pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
         }
-      else if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT &&
-               ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[0]->getType())) == CEvaluationNodeConstant::_NaN)
+      else if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::CONSTANT &&
+               ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild->getType())) == CEvaluationNodeConstant::_NaN)
         {
           pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
         }
-      if (pResult != NULL)
-        {
-          // delete the unused children
-          delete children[0];
-        }
-      else
+      if (pResult == pFunctionNode)
         {
           // MINUS(X) -> -1.0 * X
           pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
           pResult->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
-          pResult->addChild(children[0]);
+          pResult->addChild(pChild->copyBranch());
         }
       break;
     default:
-      for (i = 0;i < iMax;++i)
+      pChild = dynamic_cast<CEvaluationNode*>(pFunctionNode->getChild());
+      while (pChild != NULL)
         {
-          if (CEvaluationNode::type(children[i]->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[i]->getType())) == CEvaluationNodeConstant::_NaN)
+          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild->getType())) == CEvaluationNodeConstant::_NaN)
             {
               pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
               break;
             }
-        }
-      if (pResult != NULL)
-        {
-          // delete the unused children
-          for (i = 0;i < iMax;++i)
-            {
-              delete children[i];
-            }
-        }
-      else
-        {
-          // make a copy of the original node and add the children
-          pResult = pFunctionNode->copyNode(children);
+          pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
         }
       break;
     }
@@ -624,68 +614,57 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationFunction(const CEvalua
 /**
  * This method makes the elementary elimination on a power node.
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluationNode* pPowerNode, const std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationPower(CEvaluationNode* pPowerNode)
 {
-  CEvaluationNode* pResult = NULL;
+  CEvaluationNode* pResult = pPowerNode;
   assert(CEvaluationNode::type(pPowerNode->getType()) == CEvaluationNode::OPERATOR);
   assert(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pPowerNode->getType())) == CEvaluationNodeOperator::POWER);
-  assert(children.size() == 2);
-  if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER)
+  CEvaluationNode* pChild1 = dynamic_cast<CEvaluationNode*>(pPowerNode->getChild());
+  assert(pChild1 != NULL);
+  CEvaluationNode* pChild2 = dynamic_cast<CEvaluationNode*>(pChild1->getSibling());
+  assert(pChild2 != NULL);
+  assert(pChild2->getSibling() == NULL);
+  if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
     {
       // 0 and 1
-      CEvaluationNodeNumber* pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(children[0]);
+      CEvaluationNodeNumber* pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pChild1);
       assert(pNumberNode != NULL);
       double value = pNumberNode->value();
       if (fabs(value) < ZERO)
         {
           // 0^(NaN) -> NaN
-          if (children[1]->getType() == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[1]->getType())) == CEvaluationNodeConstant::_NaN)
+          if (pChild2->getType() == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
             {
               pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
-          else if (children[1]->getType() == CEvaluationNode::NUMBER)
+          else if (pChild2->getType() == CEvaluationNode::NUMBER)
             {
-              CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(children[1]);
+              CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(pChild2);
               double value = pNumberNode2->value();
               // 0^0 -> NaN
               // 0^(-x) -> NaN
               if (fabs(value) < ZERO || value < 0.0)
                 {
                   pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
             }
           // 0^x -> 0
-          if (pResult == NULL)
+          if (pResult == pPowerNode)
             {
               pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
         }
       else if (fabs(value - 1.0) < ZERO)
         {
           // 1^NaN -> NaN
           // 1^x -> 1
-          if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[1]->getType())) == CEvaluationNodeConstant::_NaN)
+          if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
             {
               pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
           if (pResult == NULL)
             {
               pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
         }
       /* ignore -1 for now
@@ -694,135 +673,100 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
          }
          */
     }
-  else if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT)
+  else if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::CONSTANT)
     {
       // infinity and NaN
-      if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[0]->getType())) == CEvaluationNodeConstant::_NaN)
+      if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeConstant::_NaN)
         {
           // NaN^x -> NaN
           pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
-          // delete the unused children
-          delete children[0];
-          delete children[1];
         }
-      else if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[0]->getType())) == CEvaluationNodeConstant::_INFINITY)
+      else if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild1->getType())) == CEvaluationNodeConstant::_INFINITY)
         {
           // INFINITY^(-NaN) -> NaN
           // INFINITY^-x -> 0.0 // x being a positive number
           // INFINITY^x -> INFINITY // x being a positive number
           // INFINITY^0 -> 1
-          if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER)
+          if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
             {
-              CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(children[1]);
+              CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(pChild2);
               assert(pNumberNode2 != NULL);
               double value = pNumberNode2->value();
               // INFINITY^0 -> 1
               if (fabs(value) < ZERO)
                 {
                   pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
               // INFINITY^x -> INFINITY // x being a positive number
               else if (value > 0.0)
                 {
                   pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "inf");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
               // INFINITY^-x -> 0.0 // x being a positive number
               else
                 {
                   pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
             }
-          else if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[1]->getType())) == CEvaluationNodeConstant::_NaN)
+          else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT && ((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
             {
               // INFINITY^NaN    -> NaN
               pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
           /* the minus function is eliminated
-          else if(CEvaluationNode::type(children[1]->getType())==CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(children[1]->getType()))==CEvaluationNodeFunction::MINUS)
+          else if(CEvaluationNode::type(pChild2->getType())==CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChild2->getType()))==CEvaluationNodeFunction::MINUS)
           {
-              CEvaluationNode* pChild=dynamic_cast<CEvaluationNode*>(children[1]->getChild());
+              CEvaluationNode* pChild=dynamic_cast<CEvaluationNode*>(pChild2->getChild());
               // INFINITY^(-CONSTANT) -> 0.0 // where CONSTANT != NaN
               if(CEvaluationNode::type(pChild->getType())==CEvaluationNode::CONSTANT)
               {
                   pResult=new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"0.0");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
               }
           }
           */
-          else if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER)
+          else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
             {
-              CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(children[1]);
+              CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(pChild2);
               assert(pNumberNode2 != NULL);
               double value = pNumberNode2->value();
               // INFINITY^0 -> 1.0
               if (fabs(value) < ZERO)
                 {
                   pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
               // INFINITY^(-x) -> 0.0
               else if (value > 0.0)
                 {
                   pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
               // INFINITY^x -> INFINITY
               else
                 {
                   pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "inf");
-                  // delete the unused children
-                  delete children[0];
-                  delete children[1];
                 }
             }
           // INFINITY ^ x -> INFINITY
           if (pResult == NULL)
             {
               pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "inf");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
         }
     }
-  else if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER)
+  else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
     {
       // 0 and 1
-      CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(children[1]);
+      CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<CEvaluationNodeNumber*>(pChild2);
       assert(pNumberNode2 != NULL);
       double value = pNumberNode2->value();
       // x^0 -> 1.0
       if (fabs(value) < ZERO)
         {
           pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-          // delete the unused children
-          delete children[0];
-          delete children[1];
         }
       else if (fabs(value - 1.0) < ZERO)
         {
           // make a deep copy of the first child
-          pResult = children[0];
-          // delete the unused child
-          delete children[1];
+          pResult = pChild1->copyBranch();
         }
       /* ignore -1 since this may interfere with other simplification
        * mechanisms.
@@ -832,27 +776,17 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
        }
        */
     }
-  else if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT)
+  else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT)
     {
       // infinity and NaN
-      if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[1]->getType())) == CEvaluationNodeConstant::_NaN)
+      if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_NaN)
         {
-          pResult = children[1];
-          // delete the unused child
-          delete children[0];
+          pResult = pChild2->copyBranch();
         }
-      else if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(children[1]->getType())) == CEvaluationNodeConstant::_INFINITY)
+      else if (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pChild2->getType())) == CEvaluationNodeConstant::_INFINITY)
         {
-          pResult = children[1];
-          // delete the unused child
-          delete children[0];
+          pResult = pChild2->copyBranch();
         }
-    }
-  if (pResult == NULL)
-    {
-      // none of the above conditions was true so pResult is still unset
-      // just make a shallow copy of the original node and add the children
-      pResult = pPowerNode->copyNode(children);
     }
   return pResult;
 }
@@ -860,61 +794,53 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPower(const CEvaluatio
 /**
  * This method makes the elementary elimination on a modulus node.
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationModulus(const CEvaluationNode* pModulusNode, const std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationModulus(CEvaluationNode* pModulusNode)
 {
-  CEvaluationNode* pResult = NULL;
+  CEvaluationNode* pResult = pModulusNode;
   assert(CEvaluationNode::type(pModulusNode->getType()) == CEvaluationNode::OPERATOR);
   assert(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pModulusNode->getType())) == CEvaluationNodeOperator::MODULUS);
-  assert(children.size() == 2);
+  CEvaluationNode* pChild1 = dynamic_cast<CEvaluationNode*>(pModulusNode->getChild());
+  assert(pChild1 != NULL);
+  CEvaluationNode* pChild2 = dynamic_cast<CEvaluationNode*>(pChild1->getSibling());
+  assert(pChild2 != NULL);
+  assert(pChild2->getSibling() == NULL);
   // if one child is NaN, the result is NaN
-  if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[0]->getType()))) == CEvaluationNodeConstant::_NaN) ||
-      (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[1]->getType()))) == CEvaluationNodeConstant::_NaN))
+  if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild1->getType()))) == CEvaluationNodeConstant::_NaN) ||
+      (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
       pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // X%X -> 0
-  CNormalFraction* base1 = createNormalRepresentation(children[0]);
-  CNormalFraction* base2 = createNormalRepresentation(children[1]);
+  CNormalFraction* base1 = createNormalRepresentation(pChild1);
+  CNormalFraction* base2 = createNormalRepresentation(pChild2);
   if (base1->toString() == base2->toString())
     {
       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
-  else if (CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER)
+  else if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
     {
       // 0 and 1
-      CEvaluationNodeNumber* pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(children[0]);
+      CEvaluationNodeNumber* pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pChild1);
       assert(pNumberNode != NULL);
       double value = pNumberNode->value();
       if (fabs(value) < ZERO)
         {
           pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-          // delete the unused children
-          delete children[0];
-          delete children[1];
         }
       else if (fabs(value - 1.0) < ZERO)
         {
           // 1%X where X is any number other than 1 will give 1.0
           // the case where X is 1 is already covered above
-          if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER)
+          if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
             {
               pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-              // delete the unused children
-              delete children[0];
-              delete children[1];
             }
         }
       // ignore the rest
     }
-  else if (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER)
+  else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
     {
       // 0 and 1
     }
@@ -922,66 +848,48 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationModulus(const CEvaluat
   delete base2;
   base1 = NULL;
   base2 = NULL;
-  if (pResult == NULL)
-    {
-      // none of the above conditions was true so pResult is still unset
-      // just make a shallow copy of the original node and add the children
-      pResult = pModulusNode->copyNode(children);
-    }
   return pResult;
 }
 
 /**
  * This method makes the elementary elimination on a multiply node.
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationMultiply(const CEvaluationNode* pMultiplyNode, const std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationMultiply(CEvaluationNode* pMultiplyNode)
 {
-  CEvaluationNode* pResult = NULL;
+  CEvaluationNode* pResult = pMultiplyNode;
   assert(CEvaluationNode::type(pMultiplyNode->getType()) == CEvaluationNode::OPERATOR);
   assert(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pMultiplyNode->getType())) == CEvaluationNodeOperator::MULTIPLY);
-  assert(children.size() == 2);
+  CEvaluationNode* pChild1 = dynamic_cast<CEvaluationNode*>(pMultiplyNode->getChild());
+  assert(pChild1 != NULL);
+  CEvaluationNode* pChild2 = dynamic_cast<CEvaluationNode*>(pChild1->getSibling());
+  assert(pChild2 != NULL);
+  assert(pChild2->getSibling() == NULL);
   // if one child is NaN, the result is NaN
-  if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[0]->getType()))) == CEvaluationNodeConstant::_NaN) ||
-      (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[1]->getType()))) == CEvaluationNodeConstant::_NaN))
+  if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild1->getType()))) == CEvaluationNodeConstant::_NaN) ||
+      (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
       pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // if one child is 0, the result is 0
-  else if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[0])->value())< ZERO) ||
-           (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[1])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild1)->value())< ZERO) ||
+           (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value())< ZERO))
     {
       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // if one child is 1, the result is the other child
-  else if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[0])->value() - 1.0)< ZERO))
+  else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild1)->value() - 1.0)< ZERO))
     {
-      pResult = children[1];
-      // delete the unused child
-      delete children[0];
+      pResult = pChild2->copyBranch();
     }
-  else if ((CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[1])->value() - 1.0)< ZERO))
+  else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value() - 1.0)< ZERO))
     {
-      pResult = children[0];
-      // delete the unused child
-      delete children[1];
-    }
-  if (pResult == NULL)
-    {
-      // none of the above conditions was true so pResult is still unset
-      // just make a shallow copy of the original node and add the children
-      pResult = pMultiplyNode->copyNode(children);
+      pResult = pChild1->copyBranch();
     }
   return pResult;
 }
@@ -989,113 +897,88 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMultiply(const CEvalua
 /**
  * This method makes the elementary elimination on a divide node.
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationDivide(const CEvaluationNode* pDivideNode, const std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationDivide(CEvaluationNode* pDivideNode)
 {
-  CEvaluationNode* pResult = NULL;
+  CEvaluationNode* pResult = pDivideNode;
   assert(CEvaluationNode::type(pDivideNode->getType()) == CEvaluationNode::OPERATOR);
   assert(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pDivideNode->getType())) == CEvaluationNodeOperator::DIVIDE);
-  assert(children.size() == 2);
+  CEvaluationNode* pChild1 = dynamic_cast<CEvaluationNode*>(pDivideNode->getChild());
+  assert(pChild1 != NULL);
+  CEvaluationNode* pChild2 = dynamic_cast<CEvaluationNode*>(pChild1->getSibling());
+  assert(pChild2 != NULL);
+  assert(pChild2->getSibling() == NULL);
   // if one of the children is NaN, the result is NaN
-  CNormalFraction* base1 = createNormalRepresentation(children[0]);
-  CNormalFraction* base2 = createNormalRepresentation(children[1]);
-  if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[0]->getType()))) == CEvaluationNodeConstant::_NaN) ||
-      (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[1]->getType()))) == CEvaluationNodeConstant::_NaN))
+  CNormalFraction* base1 = createNormalRepresentation(pChild1);
+  CNormalFraction* base2 = createNormalRepresentation(pChild2);
+  if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild1->getType()))) == CEvaluationNodeConstant::_NaN) ||
+      (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
       pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // the second child is 0, the result is NaN
-  else if ((CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[1])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value())< ZERO))
     {
       pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // if the first child is 0, the result is 0
-  else if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[0])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild1)->value())< ZERO))
     {
       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // if both children are the same, the result is 1
   else if (base1->toString() == base2->toString())
     {
       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // if the second child is 1, the result is the first child
-  else if ((CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[1])->value() - 1.0)< ZERO))
+  else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value() - 1.0)< ZERO))
     {
-      pResult = children[0];
-      // delete the unused child
-      delete children[1];
+      pResult = pChild1->copyBranch();
     }
   delete base1;
   delete base2;
   base1 = NULL;
   base2 = NULL;
-  if (pResult == NULL)
-    {
-      // none of the above conditions was true so pResult is still unset
-      // just make a shallow copy of the original node and add the children
-      pResult = pDivideNode->copyNode(children);
-    }
   return pResult;
 }
 
 /**
  * This method makes the elementary elimination on a plus node.
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationPlus(const CEvaluationNode* pPlusNode, const std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationPlus(CEvaluationNode* pPlusNode)
 {
-  CEvaluationNode* pResult = NULL;
+  CEvaluationNode* pResult = pPlusNode;
   assert(CEvaluationNode::type(pPlusNode->getType()) == CEvaluationNode::OPERATOR);
   assert(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pPlusNode->getType())) == CEvaluationNodeOperator::PLUS);
-  assert(children.size() == 2);
+  CEvaluationNode* pChild1 = dynamic_cast<CEvaluationNode*>(pPlusNode->getChild());
+  assert(pChild1 != NULL);
+  CEvaluationNode* pChild2 = dynamic_cast<CEvaluationNode*>(pChild1->getSibling());
+  assert(pChild2 != NULL);
+  assert(pChild2->getSibling() == NULL);
   // if one child is NaN, the result is NaN
-  if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[0]->getType()))) == CEvaluationNodeConstant::_NaN) ||
-      (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[1]->getType()))) == CEvaluationNodeConstant::_NaN))
+  if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild1->getType()))) == CEvaluationNodeConstant::_NaN) ||
+      (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
       pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // the second child is 0, the result is the first child
-  else if ((CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[1])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value())< ZERO))
     {
-      pResult = children[0];
-      // delete the unused child
-      delete children[1];
+      pResult = pChild1->copyBranch();
     }
   // if the first child is 0, the result is the second child
-  else if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[0])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild1)->value())< ZERO))
     {
-      pResult = children[1];
-      // delete the unused child
-      delete children[0];
-    }
-  if (pResult == NULL)
-    {
-      // none of the above conditions was true so pResult is still unset
-      // just make a shallow copy of the original node and add the children
-      pResult = pPlusNode->copyNode(children);
+      pResult = pChild2->copyBranch();
     }
   return pResult;
 }
@@ -1103,62 +986,50 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPlus(const CEvaluation
 /**
  * This method makes the elementary elimination on a minus node.
  */
-CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(const CEvaluationNode* pMinusNode, const std::vector<CEvaluationNode*>& children)
+CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(CEvaluationNode* pMinusNode)
 {
-  CEvaluationNode* pResult = NULL;
+  CEvaluationNode* pResult = pMinusNode;
   assert(CEvaluationNode::type(pMinusNode->getType()) == CEvaluationNode::OPERATOR);
   assert(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pMinusNode->getType())) == CEvaluationNodeOperator::MINUS);
-  assert(children.size() == 2);
+  CEvaluationNode* pChild1 = dynamic_cast<CEvaluationNode*>(pMinusNode->getChild());
+  assert(pChild1 != NULL);
+  CEvaluationNode* pChild2 = dynamic_cast<CEvaluationNode*>(pChild1->getSibling());
+  assert(pChild2 != NULL);
+  assert(pChild2->getSibling() == NULL);
   // if one child is NaN, the result is NaN (one could also consider to put
   // the second condition first so that to NaN would cancel each other out
-  CNormalFraction* base1 = createNormalRepresentation(children[0]);
-  CNormalFraction* base2 = createNormalRepresentation(children[1]);
-  if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[0]->getType()))) == CEvaluationNodeConstant::_NaN) ||
-      (CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::CONSTANT &&
-       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(children[1]->getType()))) == CEvaluationNodeConstant::_NaN))
+  CNormalFraction* base1 = createNormalRepresentation(pChild1);
+  CNormalFraction* base2 = createNormalRepresentation(pChild2);
+  if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild1->getType()))) == CEvaluationNodeConstant::_NaN) ||
+      (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
+       ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
       pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // if both nodes are equal, the result is 0.0
   else if (base1->toString() == base2->toString())
     {
       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0");
-      // delete the unused children
-      delete children[0];
-      delete children[1];
     }
   // the second child is 0, the result is the first child
-  else if ((CEvaluationNode::type(children[1]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[1])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild2)->value())< ZERO))
     {
-      pResult = children[0];
-      // delete the unused child
-      delete children[1];
+      pResult = pChild1->copyBranch();
     }
   // if the first child is 0, the result is -1 times the second child
-  else if ((CEvaluationNode::type(children[0]->getType()) == CEvaluationNode::NUMBER &&
-            fabs(dynamic_cast<const CEvaluationNodeNumber*>(children[0])->value())< ZERO))
+  else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
+            fabs(dynamic_cast<const CEvaluationNodeNumber*>(pChild1)->value())< ZERO))
     {
       pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-      pResult->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0"));
-      pResult->addChild(children[1]);
-      // delete the unused child
-      delete children[0];
+      pResult->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
+      pResult->addChild(pChild2->copyBranch());
     }
   delete base1;
   delete base2;
   base1 = NULL;
   base2 = NULL;
-  if (pResult == NULL)
-    {
-      // none of the above conditions was true so pResult is still unset
-      // just make a shallow copy of the original node and add the children
-      pResult = pMinusNode->copyNode(children);
-    }
   return pResult;
 }
 
