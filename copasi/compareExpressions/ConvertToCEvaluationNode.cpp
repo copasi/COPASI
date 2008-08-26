@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/01 14:36:54 $
+//   $Date: 2008/08/26 05:33:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -943,7 +943,10 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
   CNormalFraction* pFrac = NULL;
   CEvaluationNode* pTmp = CNormalTranslation::expandProducts(node);
   CEvaluationNode* pTmp2 = CNormalTranslation::evaluateNumbers(pTmp);
-  delete pTmp;
+  if (pTmp2 != pTmp)
+    {
+      delete pTmp;
+    }
   switch (CEvaluationNode::type(node->getType()))
     {
     case CEvaluationNode::NUMBER:
