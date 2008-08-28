@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/08/18 09:03:46 $
+//   $Date: 2008/08/28 09:11:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
 
               QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());
               //  tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName(strAux)));
-              tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName(strAux)));
+              tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName((const char*) strAux.utf8())));
               if (!tmp)
                 return std::vector< const CCopasiObject * >();
               /*     if (!tmp && pCurrentSelection)
@@ -251,7 +251,7 @@ void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
 
       QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());
       //      tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName(strAux)));
-      tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName(strAux)));
+      tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName((const char*) strAux.utf8())));
       if (!tmp)
         return;
 
