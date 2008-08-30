@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.209 $
+//   $Revision: 1.210 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/23 10:07:14 $
+//   $Date: 2008/08/30 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2620,7 +2620,7 @@ void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
     }
 }
 
-void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
+void SBMLImporter::replaceTimeNodeNames(ASTNode* pNode)
 {
   if (!pNode) return;
   if (pNode->getType() == AST_NAME_TIME)
@@ -2633,12 +2633,12 @@ void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
-          this->replaceTimeNodeNames(dynamic_cast<ConverterASTNode*>(pNode->getChild(i)));
+          this->replaceTimeNodeNames(dynamic_cast<ASTNode*>(pNode->getChild(i)));
         }
     }
 }
 
-void SBMLImporter::replaceCallNodeNames(ConverterASTNode* pNode)
+void SBMLImporter::replaceCallNodeNames(ASTNode* pNode)
 {
   if (pNode)
     {
@@ -2658,7 +2658,7 @@ void SBMLImporter::replaceCallNodeNames(ConverterASTNode* pNode)
       unsigned int i, iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
-          this->replaceCallNodeNames(dynamic_cast<ConverterASTNode*>(pNode->getChild(i)));
+          this->replaceCallNodeNames(dynamic_cast<ASTNode*>(pNode->getChild(i)));
         }
     }
 }

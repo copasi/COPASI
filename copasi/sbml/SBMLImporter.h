@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/23 10:07:14 $
+//   $Date: 2008/08/30 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,7 +238,7 @@ class SBMLImporter
      * database. So each ASTNode tree has its call node names replaced
      * before it will be processed further.
      */
-    void replaceCallNodeNames(ConverterASTNode* pNode);
+    void replaceCallNodeNames(ASTNode* pNode);
 
     /**
      * The data for a CEvaluationNodeObject needs to have the common
@@ -247,7 +247,7 @@ class SBMLImporter
      * import, all AST_NAME_TIME nodes that are imported need to have
      * their name replaced by the common name of this model.
      */
-    void replaceTimeNodeNames(ConverterASTNode* pNode);
+    void replaceTimeNodeNames(ASTNode* pNode);
 
     /**
      * COPASI can not handle the delay function yet, so if it is used in some expression, we

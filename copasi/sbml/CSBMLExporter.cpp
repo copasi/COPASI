@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/07 20:15:31 $
+//   $Date: 2008/08/30 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1765,6 +1765,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
             }
           pLambda->addChild(pFunNode);
           pFunDef->setMath(pLambda);
+          delete pLambda;
         }
       else
         {
@@ -1872,15 +1873,21 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   createReactions(dataModel);
   createEvents(dataModel);
   // find all used functions
-  if (this->mSBMLLevel != 1)
-    {
-      createFunctionDefinitions(dataModel);
-    }
-  else
+  createFunctionDefinitions(dataModel);
+  if (this->mSBMLLevel == 1)
     {
       // do sbml Level1 Voodoo
       // e.g. replace some of the unsupported nodes with workarounds
       convertToLevel1();
+      // delete all function definitions since L1 does not have functions
+      Model* pSBMLModel = this->mpSBMLDocument->getModel();
+      assert(pSBMLModel != NULL);
+      int i = pSBMLModel->getListOfFunctionDefinitions()->size();
+      while (i > 0)
+        {
+          --i;
+          delete pSBMLModel->getListOfFunctionDefinitions()->remove(i);
+        }
     }
   this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
   // remove mpAvogadro from the model again
@@ -3140,7 +3147,13 @@ void CSBMLExporter::convertToLevel1()
       std::string message = "rule for object with id \"";
       message += pRule->getVariable();
       message += "\"";
-      CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+      ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+      assert(pNewMath != NULL);
+      if (pNewMath != NULL)
+        {
+          pRule->setMath(pNewMath);
+          delete pNewMath;
+        }
     }
   /*
   Event* pEvent = NULL;
@@ -3156,11 +3169,12 @@ void CSBMLExporter::convertToLevel1()
       std::string message = "event with id \"";
       message += pEvent->getId();
       message += "\"";
-      pMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
-      if (pMath != NULL)
+      ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+      assert(pNewMath!=NULL);
+      if (pNewMath != NULL)
         {
-          Trigger* pNewTrigger = new Trigger(pMath);
-          delete pMath;
+          Trigger* pNewTrigger = new Trigger(pNewMath);
+          delete pNewMath;
           pEvent->setTrigger(pNewTrigger);
           delete pNewTrigger;
         }
@@ -3181,13 +3195,14 @@ void CSBMLExporter::convertToLevel1()
           message += "\" in event with id \"";
           message += pEvent->getId();
           message + "\"";
-          pMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
-          if (pMath != NULL)
+          pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+          assert(pNewMath!=NULL);
+          if (pNewMath != NULL)
             {
               // delete the old event assignment and create a new one
               EventAssignment* pNewEA = new EventAssignment(*pEA);
-              pNewEA->setMath(pMath);
-              delete pMath;
+              pNewEA->setMath(pNewMath);
+              delete pNewMath;
               pEvent->getListOfEventAssignments()->remove(j);
               delete pEA;
               pEvent->addEventAssignment(pNewEA);
@@ -3214,11 +3229,12 @@ void CSBMLExporter::convertToLevel1()
           std::string message = "kinetic law in reaction with id \"";
           message += pReaction->getId();
           message += "\"";
-          pMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
-          if (pMath != NULL)
+          ASTNode* pNewMath = CSBMLExporter::convertASTTreeToLevel1(pMath, pModel, message);
+          assert(pNewMath != NULL);
+          if (pNewMath != NULL)
             {
-              pLaw->setMath(pMath);
-              delete pMath;
+              pLaw->setMath(pNewMath);
+              delete pNewMath;
             }
           else
             {
@@ -3385,12 +3401,12 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         }
       else
         {
-          pResult = new ASTNode(*pNode);
+          pResult = pNode->deepCopy();
         }
       break;
     default:
       // copy the node
-      pResult = new ASTNode(*pNode);
+      pResult = ConverterASTNode::shallowCopy(pNode);
       iMax = pNode->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
@@ -3400,7 +3416,6 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
             {
               pResult->addChild(pChild);
             }
-          break;
         }
     }
   return pResult;
@@ -3417,6 +3432,7 @@ ASTNode* CSBMLExporter::convertASTTreeToLevel1(const ASTNode* pNode, const Model
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 62, message.c_str());
         }
+      pExpanded = pReplaced;
     }
   else
     {
