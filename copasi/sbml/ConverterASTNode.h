@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.h,v $
-  $Revision: 1.7 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 19:58:56 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.h,v $
+ $Revision: 1.8 $
+ $Name:  $
+ $Author: gauges $
+ $Date: 2008/08/30 16:06:49 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -48,6 +48,9 @@ class ConverterASTNode : public ASTNode
      * This function returns true if the node represents a user defined function.
      */
     //bool isUserDefinedFunction();
+
+    // make a shallow copy of an ASTNode
+    static ASTNode* shallowCopy(const ASTNode* pOrig);
 
 #ifdef COPASI_DEBUG
     /**
