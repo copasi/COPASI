@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/12/05 11:46:27 $
+//   $Date: 2008/08/30 15:57:27 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,11 +35,11 @@ bool are_equal(const CNormalFraction* pLHS, const CNormalFraction* pRHS);
 
 void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::string>& variableMap);
 
-bool replace_variable_names(ASTNode* pNode, const std::map<std::string, ASTNode*>& argumentMap);
+ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string, const ASTNode*>& argumentMap);
 
 ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel);
 
-bool expand_function_calls(ASTNode* pNode, const Model* pModel);
+ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel);
 
 /**
  * This function replaces a call to SEC by 1/COS.

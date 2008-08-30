@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
+//   $Author: gauges $
+//   $Date: 2008/08/30 15:57:27 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,38 +51,41 @@
 ASTNode* create_expression(const ASTNode* pSource, const Model* pModel)
 {
   // expand all function calls
-  ConverterASTNode* pResult = new ConverterASTNode(*pSource);
-  if (!expand_function_calls(pResult, pModel))
-    {
-      delete pResult;
-      pResult = NULL;
-    }
+  ASTNode* pResult = expand_function_calls(pSource, pModel);
   return pResult;
 }
 
-bool expand_function_calls(ASTNode* pNode, const Model* pModel)
+ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
 {
-  bool result = true;
+  ASTNode* pResult = NULL;
   if (pNode->getType() == AST_FUNCTION)
     {
-      ASTNode* pTmpNode = expand_function_call(pNode, pModel);
-      if (pTmpNode == NULL)
-        {
-          result = false;
-        }
-      else
-        {
-          delete pNode;
-          pNode = pTmpNode;
-        }
+      pResult = expand_function_call(pNode, pModel);
+      assert(pResult != NULL);
+      ASTNode* pTmp = expand_function_calls(pResult, pModel);
+      assert(pTmp != NULL);
+      delete pResult;
+      pResult = pTmp;
     }
-  unsigned int i = 0, iMax = pNode->getNumChildren();
-  while (i < iMax && result == true)
+  else
     {
-      result = expand_function_calls(pNode->getChild(i), pModel);
-      ++i;
+      // only make a shallow copy
+      pResult = ConverterASTNode::shallowCopy(pNode);
+      unsigned int i = 0;
+      unsigned int iMax = pNode->getNumChildren();
+      ASTNode* pChild = NULL;
+      ASTNode* pNewChild = NULL;
+      while (i < iMax)
+        {
+          pChild = pNode->getChild(i);
+          assert(pChild != NULL);
+          pNewChild = expand_function_calls(pChild, pModel);
+          assert(pNewChild != NULL);
+          pResult->addChild(pNewChild);
+          ++i;
+        }
     }
-  return result;
+  return pResult;
 }
 
 ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
@@ -101,7 +109,7 @@ ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
   if (pFunctionDefinition != NULL && iMax == pCall->getNumChildren())
     {
       // map the first function argument to the first child in the call etc.
-      std::map<std::string, ASTNode*> argumentMap;
+      std::map<std::string, const ASTNode*> argumentMap;
       i = 0;
       while (i < iMax)
         {
@@ -110,41 +118,48 @@ ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
         }
       // create the resulting tree
       pResult = pFunctionDefinition->getBody()->deepCopy();
-      if (!replace_variable_names(pResult, argumentMap))
-        {
-          delete pResult;
-          pResult = NULL;
-        }
+      ASTNode* pTmpNode = replace_variable_names(pResult, argumentMap);
+      assert(pTmpNode != NULL);
+      delete pResult;
+      pResult = pTmpNode;
     }
   return pResult;
 }
 
-bool replace_variable_names(ASTNode* pNode, const std::map<std::string, ASTNode*>& argumentMap)
+ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string, const ASTNode*>& argumentMap)
 {
-  bool result = true;
+  ASTNode* pResult = NULL;
   if (pNode->getType() == AST_NAME)
     {
-      std::map<std::string, ASTNode*>::const_iterator pos = argumentMap.find(pNode->getName());
+      std::map<std::string, const ASTNode*>::const_iterator pos = argumentMap.find(pNode->getName());
       if (pos == argumentMap.end())
         {
-          result = false;
+          pResult = NULL;
         }
       else
         {
-          delete pNode;
-          pNode = pos->second->deepCopy();
+          pResult = pos->second->deepCopy();
         }
     }
   else
     {
-      unsigned int i = 0, iMax = pNode->getNumChildren();
-      while (i < iMax && result == true)
+      // only make a shallow copy
+      pResult = ConverterASTNode::shallowCopy(pNode);
+      unsigned int i = 0;
+      unsigned int iMax = pNode->getNumChildren();
+      ASTNode* pChild = NULL;
+      ASTNode* pNewChild = NULL;
+      while (i < iMax)
         {
-          result = replace_variable_names(pNode->getChild(i), argumentMap);
+          pChild = pNode->getChild(i);
+          assert(pChild != NULL);
+          pNewChild = replace_variable_names(pChild, argumentMap);
+          assert(pNewChild != NULL);
+          pResult->addChild(pNewChild);
           ++i;
         }
     }
-  return result;
+  return pResult;
 }
 
 bool are_equal(const CNormalFraction* pLHS, const CNormalFraction* pRHS)
