@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
- $Revision: 1.9 $
- $Name:  $
- $Author: gauges $
- $Date: 2008/08/30 16:06:49 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
+$Revision: 1.10 $
+$Name:  $
+$Author: gauges $
+$Date: 2008/08/30 17:33:35 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -141,9 +141,9 @@ ASTNode* ConverterASTNode::shallowCopy(const ASTNode* pOrig)
   ConverterASTNode* pTmp = new ConverterASTNode(*pOrig);
   while (pTmp->getNumChildren() > 0)
     {
-      pTmp->removeChild(0);
+      delete pTmp->removeChild(0);
     }
-  ASTNode* pCopy = new ASTNode(*pTmp);
+  ASTNode* pCopy = pTmp->deepCopy();
   delete pTmp;
   return pCopy;
 };
