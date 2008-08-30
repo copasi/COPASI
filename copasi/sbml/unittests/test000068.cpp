@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000068.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/28 19:25:32 $
+//   $Date: 2008/08/30 15:21:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,60 +260,80 @@ void test000068::test_bug1068()
   CPPUNIT_ASSERT(pSBMLModel->getListOfRules()->size() == 6);
   CPPUNIT_ASSERT(pSBMLModel->getListOfReactions()->size() == 6);
 
+  std::map<std::string, const Rule*> ruleMap;
+  unsigned int i, iMax = pSBMLModel->getListOfRules()->size();
+  const Rule* pRule = NULL;
+  for (i = 0;i < iMax;++i)
+    {
+      pRule = pSBMLModel->getRule(i);
+      ruleMap.insert(std::pair<std::string, const Rule*>(pRule->getVariable(), pRule));
+    }
   // check the rules
-  const Rule* pRule = pSBMLModel->getRule(0);
+  std::map<std::string, const Rule*>::const_iterator pos = ruleMap.find("parameter_1");
+  CPPUNIT_ASSERT(pos != ruleMap.end());
+  pRule = pos->second;
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == "parameter_1");
   const ASTNode* pMath = pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // only check the infix
   std::string formula = pRule->getFormula();
-  CPPUNIT_ASSERT(formula == "3.0 * 4.5");
+  CPPUNIT_ASSERT(formula == "3 * 4.5");
 
-  pRule = pSBMLModel->getRule(1);
+  pos = ruleMap.find("parameter_3");
+  CPPUNIT_ASSERT(pos != ruleMap.end());
+  pRule = pos->second;
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == "parameter_3");
   pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // only check the infix
   formula = pRule->getFormula();
-  CPPUNIT_ASSERT(formula == "parameter_1 - 2.0 * 1.3");
+  CPPUNIT_ASSERT(formula == "parameter_1 - 2 * 1.3");
 
-  pRule = pSBMLModel->getRule(2);
+  pos = ruleMap.find("species_3");
+  CPPUNIT_ASSERT(pos != ruleMap.end());
+  pRule = pos->second;
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == "species_3");
   pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // only check the infix
   formula = pRule->getFormula();
-  CPPUNIT_ASSERT(formula == "(parameter_1 - 3.5 * 1.3) + (3.0 * 2.4 - 5.23)");
+  CPPUNIT_ASSERT(formula == "parameter_1 - 3.5 * 1.3 + (3 * 2.4 - 5.23)");
 
-  pRule = pSBMLModel->getRule(3);
+  pos = ruleMap.find("species_4");
+  CPPUNIT_ASSERT(pos != ruleMap.end());
+  pRule = pos->second;
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == "species_4");
   pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // only check the infix
   formula = pRule->getFormula();
-  CPPUNIT_ASSERT(formula == "parameter_1 + 3.4");
+  CPPUNIT_ASSERT(formula == "3.4 + parameter_1");
 
-  pRule = pSBMLModel->getRule(4);
+  pos = ruleMap.find("species_5");
+  CPPUNIT_ASSERT(pos != ruleMap.end());
+  pRule = pos->second;
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == "species_5");
   pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // only check the infix
   formula = pRule->getFormula();
-  CPPUNIT_ASSERT(formula == "(1.4 + parameter_2) / 2.0");
+  CPPUNIT_ASSERT(formula == "(parameter_2 + 1.4) / 2");
 
-  pRule = pSBMLModel->getRule(5);
+  pos = ruleMap.find("species_6");
+  CPPUNIT_ASSERT(pos != ruleMap.end());
+  pRule = pos->second;
   CPPUNIT_ASSERT(pRule != NULL);
   CPPUNIT_ASSERT(pRule->getVariable() == "species_6");
   pRule->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   // only check the infix
   formula = pRule->getFormula();
-  CPPUNIT_ASSERT(formula == "(parameter_3 - 3.4 * 1.3) + (3.0 * parameter_1 - 5.23)");
+  CPPUNIT_ASSERT(formula == "parameter_3 - 3.4 * 1.3 + (3 * parameter_1 - 5.23)");
 
   // check the reactions
   const Reaction* pSBMLReaction = pSBMLModel->getReaction(0);
@@ -327,7 +347,7 @@ void test000068::test_bug1068()
   pMath = pSBMLReaction->getKineticLaw()->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   formula = pSBMLReaction->getKineticLaw()->getFormula();
-  CPPUNIT_ASSERT(formula == "compartment_1 * 3.0 * parameter_1");
+  CPPUNIT_ASSERT(formula == "compartment_1 * 3 * parameter_1");
 
   pSBMLReaction = pSBMLModel->getReaction(1);
   CPPUNIT_ASSERT(pSBMLReaction != NULL);
@@ -340,7 +360,7 @@ void test000068::test_bug1068()
   pMath = pSBMLReaction->getKineticLaw()->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   formula = pSBMLReaction->getKineticLaw()->getFormula();
-  CPPUNIT_ASSERT(formula == "compartment_1 * (parameter_1 + parameter_2)");
+  CPPUNIT_ASSERT(formula == "compartment_1 * (parameter_2 + parameter_1)");
 
   pSBMLReaction = pSBMLModel->getReaction(2);
   CPPUNIT_ASSERT(pSBMLReaction != NULL);
@@ -366,7 +386,7 @@ void test000068::test_bug1068()
   pMath = pSBMLReaction->getKineticLaw()->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   formula = pSBMLReaction->getKineticLaw()->getFormula();
-  CPPUNIT_ASSERT(formula == "compartment_1 * (species_1 + species_2) / 2.0");
+  CPPUNIT_ASSERT(formula == "compartment_1 * ((species_2 + species_1) / 2)");
 
   pSBMLReaction = pSBMLModel->getReaction(4);
   CPPUNIT_ASSERT(pSBMLReaction != NULL);
@@ -379,7 +399,7 @@ void test000068::test_bug1068()
   pMath = pSBMLReaction->getKineticLaw()->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   formula = pSBMLReaction->getKineticLaw()->getFormula();
-  CPPUNIT_ASSERT(formula == "compartment_1 * ((parameter_1 - species_2 * 1.3) + (3.0 * parameter_3 - 5.23))");
+  CPPUNIT_ASSERT(formula == "compartment_1 * (parameter_1 - species_2 * 1.3 + (3 * parameter_3 - 5.23))");
 
   pSBMLReaction = pSBMLModel->getReaction(5);
   CPPUNIT_ASSERT(pSBMLReaction != NULL);
@@ -392,7 +412,7 @@ void test000068::test_bug1068()
   pMath = pSBMLReaction->getKineticLaw()->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
   formula = pSBMLReaction->getKineticLaw()->getFormula();
-  CPPUNIT_ASSERT(formula == "compartment_1 * ((parameter_1 - parameter_1 * 1.3) + (3.0 * parameter_2 - 5.23))");
+  CPPUNIT_ASSERT(formula == "compartment_1 * (parameter_1 - parameter_3 * 1.3 + (3 * parameter_2 - 5.23))");
 }
 
 const char* test000068::MODEL_STRING1 =
