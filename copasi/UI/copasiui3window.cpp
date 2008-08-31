@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.226 $
+//   $Revision: 1.227 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/08/18 11:21:41 $
+//   $Author: ssahle $
+//   $Date: 2008/08/31 23:20:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,7 +294,7 @@ void CopasiUI3Window::createActions()
   mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
 
-  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", CTRL + Key_A, this, "saveas");
+  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", SHIFT + CTRL + Key_S, this, "saveas");
   connect(mpaSaveAs, SIGNAL(activated()), this, SLOT(slotFileSaveAs()));
 
   mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", CTRL + Key_I, this, "importsbml");
@@ -1550,7 +1550,8 @@ void CopasiUI3Window::slotCheckModel()
   CModelAnalyzer MA(CCopasiDataModel::Global->getModel());
 
   std::ostringstream ss;
-  MA.writeReport(ss, true, false);
+  // MA.writeReport(ss, true, false);
+  MA.writeReport(ss, true, true);
 
   QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
   pTE->setReadOnly(true);
