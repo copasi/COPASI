@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:17 $
+//   $Author: ssahle $
+//   $Date: 2008/09/01 13:46:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,11 +66,10 @@ CLCurve::CLCurve(const Curve & sbmlcurve)
       const LineSegment* tmp
       = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments()->get(i));
       if (tmp)
-        addCurveSegment(new CLLineSegment(*tmp));
+        mCurveSegments.push_back(CLLineSegment(*tmp));
+      //addCurveSegment(CLLineSegment(*tmp));
     }
 }
-
-std::vector<CLLineSegment*> mCurveSegments;
 
 CLCurve::~CLCurve()
 {}
