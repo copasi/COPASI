@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2007/08/31 10:58:05 $
+//   $Date: 2008/09/01 09:43:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,14 +58,14 @@ void ParaPanel::disableStepNumberChoice()
 void ParaPanel::changeFrameRate()
 {
   //CVisParameters::stepsPerSecond = spinBox1->value();
-  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setStepsPerSecond(spinBox1->value());
 }
 
 void ParaPanel::setGlobalScaling()
 {
-  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setGlobalScaling();
   //((CQLayoutMainWindow *)(this->parentWidget()))->setGlobalScaling();
@@ -68,7 +73,7 @@ void ParaPanel::setGlobalScaling()
 
 void ParaPanel::setIndividualScaling()
 {
-  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setIndividualScaling();
 
@@ -92,7 +97,7 @@ void ParaPanel::stepEdit_returnPressed()
   int val = line.toInt(&ok, 10);
   if (ok)
     {
-      CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+      CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
       assert(tmp);
       if (tmp) tmp -> setValueOnSlider(val);
     }
@@ -101,14 +106,14 @@ void ParaPanel::stepEdit_returnPressed()
 
 void ParaPanel::setSizeMode()
 {
-  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setSizeMode();
 }
 
 void ParaPanel::setColorMode()
 {
-  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget());
+  CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setColorMode();
 }
