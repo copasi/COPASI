@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/01 15:37:27 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:13:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ void CQLayoutMainWindow::setStepsPerSecond(C_INT16 val)
 
 C_INT32 CQLayoutMainWindow::getCurrentStep()
 {
-  return this->timeSlider->value();
+  return (C_INT32) this->timeSlider->value();
 }
 
 C_INT16 CQLayoutMainWindow::getScalingMode()

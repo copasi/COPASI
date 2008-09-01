@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 11:08:12 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:13:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -850,7 +850,7 @@ void CQEventWidget1::saveToEvent()
 }
 
 /*! The slot to update the active event widget */
-bool CQEventWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key)
+bool CQEventWidget1::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
 {
   return true;
 }

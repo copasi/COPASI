@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/08/28 09:11:15 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:13:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,7 +196,6 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
 
           if (str == "Reference=Annotated Matrix")
             {
-              const CModel* pModel = CCopasiDataModel::Global->getModel();
               const CArrayAnnotation * tmp;
 
               QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());
@@ -213,7 +212,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
               int nCols = tmp->getAnnotationsCN(1).size();
 
               if (!nRows || !nCols)
-                return (std::vector< const CCopasiObject * >) NULL;
+                return std::vector< const CCopasiObject * >();
               /*
                 if (!nRows || !nCols)
                   return *pCurrentSelection;
@@ -230,7 +229,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
               //    return NULL;
               */
               if (Result == QDialog::Rejected)
-                return (std::vector< const CCopasiObject * >) NULL;
+                return std::vector< const CCopasiObject * >();
               else if (Result == QDialog::Accepted)
                 std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
             }
@@ -246,7 +245,6 @@ void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
 
   if (str == "Reference=Annotated Matrix")
     {
-      const CModel* pModel = CCopasiDataModel::Global->getModel();
       const CArrayAnnotation * tmp;
 
       QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());

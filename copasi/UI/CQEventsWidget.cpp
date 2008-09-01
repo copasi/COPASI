@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/20 10:06:13 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:13:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,7 @@ void CQEventsWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiOb
   if (!obj) return;
 }
 
-void CQEventsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+void CQEventsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 /* exc */)
 {
   //  std::cout << "exc = " << exc << std::endl;
 
@@ -317,7 +317,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                       // Yes or Enter
+      case 0:                                      // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -330,7 +330,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                       // No or Escape
+      default:                                      // No or Escape
         break;
       }
   */
