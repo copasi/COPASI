@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/06/02 09:14:52 $
+//   $Author: gauges $
+//   $Date: 2008/09/01 15:37:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -766,8 +766,9 @@ QIconSet CQLayoutMainWindow::createStartIcon()
   QPixmap *pixmap = new QPixmap();
   pixmap->convertFromImage(img);
   //pixmap->fill(QColor(0,255,0));
-  QIconSet *iconset = new QIconSet(*pixmap);
-  return *iconset;
+  QIconSet iconset = QIconSet(*pixmap);
+  delete pixmap;
+  return iconset;
 }
 
 QIconSet CQLayoutMainWindow::createStopIcon()
@@ -804,8 +805,9 @@ QIconSet CQLayoutMainWindow::createStopIcon()
   QPixmap *pixmap = new QPixmap();
   //pixmap->fill(QColor(255, 0, 0));
   pixmap->convertFromImage(img);
-  QIconSet *iconset = new QIconSet(*pixmap);
-  return *iconset;
+  QIconSet iconset = QIconSet(*pixmap);
+  delete pixmap;
+  return iconset;
 }
 
 // returns true because window is opened from Copasi and can be easily reopened

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:17 $
+//   $Author: gauges $
+//   $Date: 2008/09/01 15:37:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,13 @@ CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
 CQGLNetworkPainter::~CQGLNetworkPainter()
 {
   std::cout << "destroy network painter" << std::endl;
+  std::map<std::string, RGTextureSpec*>::iterator it = labelTextureMap.begin(), endit = labelTextureMap.end();
+  while (it != endit)
+    {
+      delete[] it->second->textureData;
+      delete it->second;
+      ++it;
+    }
 }
 
 const CLPoint& CQGLNetworkPainter::getGraphMin()
@@ -213,15 +220,19 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                           C_INT32 num = bezierPts.size();
                           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
                           ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
+                          delete bezier;
                         }
                       else
-                        ar = new CArrow(lastSeg, p.getX(), p.getY(), this->currentZoom);
+                        {
+                          ar = new CArrow(lastSeg, p.getX(), p.getY(), this->currentZoom);
+                        }
                       //std::cout << "arrow line: " << ar->getStartOfLine() << ar->getEndOfLine() << std::endl;
                       //                   nodeArrowMap.insert(std::pair<std::string, CArrow>
                       //                                       (nodeKey, *ar));
 
                       curve.setArrowP(true);
                       curve.setArrow(*ar);
+                      delete ar;
                       //viewerArrows.push_back(*ar);
                       //storeCurveInCorrespondingNode(nodeKey, viewerCurves.size() - 1, viewerArrows.size() - 1); //store with arrow index, see below
                     }
@@ -553,6 +564,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   glColor3f(0.0f, 0.0f, 0.0f); // black
   gluDisk(qobj, scaledValue / 2.0 - 1.0, scaledValue / 2.0, 25, 2);
   glTranslatef(-(float)tx, -(float)ty, 0.0f);
+  gluDeleteQuadric(qobj);
 }
 
 // draw a curve: at the moment just a line from the start point to the end point (for each segment)
@@ -598,6 +610,7 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
           y = endPoint.getY();
           //glVertex2d(x, y);
           glEnd();
+          delete bezier;
         }
       else
         {// just draw a straight line
@@ -771,6 +784,7 @@ void CQGLNetworkPainter::drawLabel(CLabel l)
   glTranslatef(-l.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
   gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
   glPopMatrix();
+  gluDeleteQuadric(qobj);
   // draw frame for rectangle
   //glColor3f(1.0f, 1.0f, 1.0f);
   //glBegin(GL_LINE_LOOP);
@@ -854,13 +868,6 @@ void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_
 
   glDisable(GL_TEXTURE_2D);
   glPopMatrix();
-  //   if((this->mMode==MODE_SELECT || this->mMode==MODE_LAYOUT_CIRCULAR) && std::find(this->mSelection.begin(),this->mSelection.end(),pTextGlyph)!=this->mSelection.end())
-  //   {
-  //      RectangleSpec* frame=this->mSelectionFrameDict[pTextGlyph->getId()];
-  //      this->drawSelectionFrame(frame,this->mSelectionFrameDictHandles[frame]);
-  //}
-  //delete[] texSpec->textureData;
-  //delete texSpec;
 }
 
 int CQGLNetworkPainter::getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize)
@@ -888,6 +895,13 @@ int CQGLNetworkPainter::getLabelWindowWidth(int width)
 void CQGLNetworkPainter::createTextureForAllLabels()
 {
   //std::cout << "createTextureForAllLabels" << std::endl;
+  std::map<std::string, RGTextureSpec*>::iterator it = labelTextureMap.begin(), endit = labelTextureMap.end();
+  while (it != endit)
+    {
+      delete[] it->second->textureData;
+      delete it->second;
+      ++it;
+    }
   labelTextureMap.clear();
   unsigned int i = 0;
   for (i = 0;i < viewerLabels.size();i++)
@@ -910,11 +924,17 @@ RGTextureSpec* CQGLNetworkPainter::getTextureForText(const std::string& text, co
 {
   std::map<std::string, RGTextureSpec*>::iterator it;
   it = labelTextureMap.find(text);
+  RGTextureSpec* texSpec = NULL;
   if (it != labelTextureMap.end())
-    return ((*it).second);
+    {
+      texSpec = ((*it).second);
+    }
   else
-    return RG_createTextureForText(text, fontName, fontSize);
-  std::cout << "create new texture for: " << text << std::endl;
+    {
+      texSpec = RG_createTextureForText(text, fontName, fontSize);
+      labelTextureMap.insert(std::pair<std::string, RGTextureSpec*>(text, texSpec));
+    }
+  return texSpec;
 }
 
 RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize)
@@ -1717,6 +1737,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
               nodeArrowMap.insert(std::pair<std::string, CArrow>
                                   (key, *ar));
               pCurve->setArrow(*ar);
+              delete ar;
             }
         }
       curveIt++;
