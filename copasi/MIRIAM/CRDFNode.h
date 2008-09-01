@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/01 15:41:13 $
+//   $Date: 2008/09/01 18:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 class CRDFGraph;
 class CRDFSubject;
 class CRDFObject;
-class CMIRIAMResource;
+class CMIRIAMResourceObject;
 
 class CRDFNode
   {
@@ -118,7 +118,7 @@ class CRDFNode
      * @param const CRDFPredicate::Path & nodePath
      * @return bool success
      */
-    bool setFieldValue(const CMIRIAMResource & value,
+    bool setFieldValue(const CMIRIAMResourceObject & value,
                        const CRDFPredicate::ePredicateType & predicate,
                        const CRDFPredicate::Path & nodePath);
 

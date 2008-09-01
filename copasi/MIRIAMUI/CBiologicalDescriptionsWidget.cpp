@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/09/01 18:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,7 @@ void CBiologicalDescriptionsWidget::init()
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
 
   // Build the list of known resources
-  const CMIRIAMResource::sResource * pResource = CMIRIAMResource::getResourceList();
+  const CMIRIAMResourceObject::sResource * pResource = CMIRIAMResourceObject::getResourceList();
   mResources.push_back("-- select --");
   for (; pResource->MiriamId != ""; ++pResource)
     mResources.push_back(FROM_UTF8(pResource->DisplayName));

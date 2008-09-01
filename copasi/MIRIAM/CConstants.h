@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/03 12:33:39 $
+//   $Date: 2008/09/01 18:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 class CRDFNode;
 
-class CMIRIAMResource
+class CMIRIAMResourceObject
   {
   public:
     struct sResource
@@ -51,14 +51,14 @@ class CMIRIAMResource
     static const sResource * getResourceList();
 
   private:
-    CMIRIAMResource();
+    CMIRIAMResourceObject();
 
   public:
-    CMIRIAMResource(CRDFNode * pNode);
+    CMIRIAMResourceObject(CRDFNode * pNode);
 
-    CMIRIAMResource(const std::string & displayName, const std::string & id);
+    CMIRIAMResourceObject(const std::string & displayName, const std::string & id);
 
-    CMIRIAMResource(const CMIRIAMResource & src);
+    CMIRIAMResourceObject(const CMIRIAMResourceObject & src);
 
     bool setId(const std::string & id);
 

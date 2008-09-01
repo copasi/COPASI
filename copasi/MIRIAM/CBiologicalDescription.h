@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:18 $
+//   $Date: 2008/09/01 18:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ class CBiologicalDescription : public CCopasiContainer
     /**
      * MIRIAM resource for holding the PubMed Id
      */
-    CMIRIAMResource mResource;
+    CMIRIAMResourceObject mResource;
 
   public:
     // Operations

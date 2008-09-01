@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:48 $
+//   $Date: 2008/09/01 18:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #include "CRDFGraph.h"
 
 // static
-CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
+CMIRIAMResourceObject::sResource CMIRIAMResourceObject::Resources[] =
   {
     {
       "MIR:00000036",
@@ -643,13 +643,13 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
   };
 
 // static
-bool CMIRIAMResource::Initialized = false;
+bool CMIRIAMResourceObject::Initialized = false;
 
 // static
-std::map< std::string, unsigned C_INT32 > CMIRIAMResource::DisplayName2Resource;
+std::map< std::string, unsigned C_INT32 > CMIRIAMResourceObject::DisplayName2Resource;
 
 // static
-void CMIRIAMResource::createDisplayNameMap()
+void CMIRIAMResourceObject::createDisplayNameMap()
 {
   unsigned C_INT32 Index;
 
@@ -658,10 +658,10 @@ void CMIRIAMResource::createDisplayNameMap()
 }
 
 // static
-std::map< std::string, unsigned C_INT32 > CMIRIAMResource::URI2Resource;
+std::map< std::string, unsigned C_INT32 > CMIRIAMResourceObject::URI2Resource;
 
 // static
-void CMIRIAMResource::createURIMap()
+void CMIRIAMResourceObject::createURIMap()
 {
   unsigned C_INT32 Index;
 
@@ -676,7 +676,7 @@ void CMIRIAMResource::createURIMap()
 }
 
 // static
-unsigned C_INT32 CMIRIAMResource::getResource(const std::string & URI)
+unsigned C_INT32 CMIRIAMResourceObject::getResource(const std::string & URI)
 {
   // Since the URI contains always an id this will always point past the actual element.
   std::map< std::string , unsigned C_INT32 >::const_iterator it = URI2Resource.upper_bound(URI);
@@ -704,10 +704,10 @@ unsigned C_INT32 CMIRIAMResource::getResource(const std::string & URI)
 }
 
 // static
-const CMIRIAMResource::sResource * CMIRIAMResource::getResourceList()
+const CMIRIAMResourceObject::sResource * CMIRIAMResourceObject::getResourceList()
 {return Resources;}
 
-CMIRIAMResource::CMIRIAMResource(CRDFNode * pNode):
+CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode):
     mResource(C_INVALID_INDEX),
     mId(),
     mpNode(pNode)
@@ -723,7 +723,7 @@ CMIRIAMResource::CMIRIAMResource(CRDFNode * pNode):
     setURI(mpNode->getObject().getResource());
 }
 
-CMIRIAMResource::CMIRIAMResource(const std::string & displayName, const std::string & id):
+CMIRIAMResourceObject::CMIRIAMResourceObject(const std::string & displayName, const std::string & id):
     mResource(C_INVALID_INDEX),
     mId(),
     mpNode(NULL)
@@ -739,23 +739,23 @@ CMIRIAMResource::CMIRIAMResource(const std::string & displayName, const std::str
   mId = id;
 }
 
-CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src):
+CMIRIAMResourceObject::CMIRIAMResourceObject(const CMIRIAMResourceObject & src):
     mResource(src.mResource),
     mId(src.mId)
 {}
 
-bool CMIRIAMResource::setId(const std::string & id)
+bool CMIRIAMResourceObject::setId(const std::string & id)
 {
   mId = id;
   return isValid();
 }
 
-const std::string & CMIRIAMResource::getId() const
+const std::string & CMIRIAMResourceObject::getId() const
   {
     return mId;
   }
 
-bool CMIRIAMResource::setURI(const std::string & URI)
+bool CMIRIAMResourceObject::setURI(const std::string & URI)
 {
   mResource = getResource(URI);
   extractId(URI);
@@ -763,7 +763,7 @@ bool CMIRIAMResource::setURI(const std::string & URI)
   return isValid();
 }
 
-std::string CMIRIAMResource::getURI() const
+std::string CMIRIAMResourceObject::getURI() const
   {
     // Check whether the resource is known.
     if (!isValid())
@@ -772,7 +772,7 @@ std::string CMIRIAMResource::getURI() const
     return Resources[mResource].URI + ":" + mId;
   }
 
-bool CMIRIAMResource::setNode(CRDFNode * pNode)
+bool CMIRIAMResourceObject::setNode(CRDFNode * pNode)
 {
   mpNode = pNode;
 
@@ -782,10 +782,10 @@ bool CMIRIAMResource::setNode(CRDFNode * pNode)
   return true;
 }
 
-CRDFNode * CMIRIAMResource::getNode() const
+CRDFNode * CMIRIAMResourceObject::getNode() const
 {return mpNode;}
 
-bool CMIRIAMResource::setDisplayName(const std::string & displayName)
+bool CMIRIAMResourceObject::setDisplayName(const std::string & displayName)
 {
   // Check if the display name is a know resource
   std::map< std::string, unsigned C_INT32>::const_iterator it =
@@ -803,7 +803,7 @@ bool CMIRIAMResource::setDisplayName(const std::string & displayName)
   return isValid();
 }
 
-std::string CMIRIAMResource::getDisplayName() const
+std::string CMIRIAMResourceObject::getDisplayName() const
   {
     // Check whether the resource is known.
     if (mResource == C_INVALID_INDEX)
@@ -812,7 +812,7 @@ std::string CMIRIAMResource::getDisplayName() const
     return Resources[mResource].DisplayName;
   }
 
-bool CMIRIAMResource::isValid() const
+bool CMIRIAMResourceObject::isValid() const
   {
     // Check whether the resource is known.
     if (mResource == C_INVALID_INDEX)
@@ -826,7 +826,7 @@ bool CMIRIAMResource::isValid() const
     return true;
   }
 
-bool CMIRIAMResource::isValid(const std::string & URI) const
+bool CMIRIAMResourceObject::isValid(const std::string & URI) const
   {
     if (getResource(URI) != mResource ||
         mResource == C_INVALID_INDEX)
@@ -835,7 +835,7 @@ bool CMIRIAMResource::isValid(const std::string & URI) const
     return true;
   }
 
-void CMIRIAMResource::extractId(const std::string & URI)
+void CMIRIAMResourceObject::extractId(const std::string & URI)
 {
   mId = "";
 

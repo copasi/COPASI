@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/01 15:41:13 $
+//   $Date: 2008/09/01 18:08:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,7 @@ const std::string & CRDFNode::getFieldValue(const CRDFPredicate::ePredicateType 
     return Empty;
   }
 
-bool CRDFNode::setFieldValue(const CMIRIAMResource & value,
+bool CRDFNode::setFieldValue(const CMIRIAMResourceObject & value,
                              const CRDFPredicate::ePredicateType & predicate,
                              const CRDFPredicate::Path & nodePath)
 {
