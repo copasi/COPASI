@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/05/26 11:18:16 $
+//   $Author: gauges $
+//   $Date: 2008/09/01 22:41:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,12 +45,12 @@
 //#include <qwt_slider.h>
 
 //#include "CQGLNetworkPainter.h"
-#include "layoutUI/ParaPanel.h"
-#include "layoutUI/CQCurrentValueTable.h"
+#include "copasi/layoutUI/ParaPanel.h"
+#include "copasi/layoutUI/CQCurrentValueTable.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "layoutUI/CVisParameters.h"
-#include "layoutUI/CDataEntity.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/layoutUI/CVisParameters.h"
+#include "copasi/layoutUI/CDataEntity.h"
 
 class QwtSlider;
 class CQGLNetworkPainter;
