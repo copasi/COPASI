@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/14 10:23:03 $
+//   $Date: 2008/09/01 09:48:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,9 @@ void CGraphNode::setSize(C_FLOAT64 newSize)
 std::ostream & operator<<(std::ostream &os, const CGraphNode & gn)
 {
   os << "node key: " << gn.morigNodeKey << "  size: " << gn.msize << std::endl;
+  os << "object key: " << gn.mObjectKey << std::endl;
+  os << "bounding box: " << gn.mBBox << std::endl;
+  os << "label: " << gn.mLabelText << std::endl;
   //for (int i=0;i<gn.mConnectedCurveIndices.size();i++)
   // os << gn.mConnectedCurveIndices[i] << std::endl;;
 

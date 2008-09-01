@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/04/14 10:23:03 $
+//   $Date: 2008/09/01 09:48:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ class CGraphNode : public CLMetabGlyph
                const CCopasiContainer * pParent = NULL);
 
     CGraphNode(const CGraphNode & src,
+
                const CCopasiContainer * pParent = NULL);
 
     C_FLOAT64 getSize(){return this->msize;}
