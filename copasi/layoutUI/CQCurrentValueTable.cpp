@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: urost $
-//   $Date: 2008/05/02 11:18:04 $
+//   $Date: 2008/09/01 09:45:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@ void CQCurrentValueTable::init()
   setColumnReadOnly(1, TRUE);
   //connect(this, SIGNAL(clicked(int, int, int, const QPoint &)), this, SLOT(mouseClickedOverTable(int, int, int, const QPoint &)));
   connect(this, SIGNAL(valueChanged(int, int)), this, SLOT(valChanged(int, int)));
+  resize(QSize(202, 143).expandedTo(minimumSizeHint()));
 }
 
 CQCurrentValueTable::~CQCurrentValueTable()
