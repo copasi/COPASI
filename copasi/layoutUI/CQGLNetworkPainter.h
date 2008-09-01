@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/05/28 11:57:09 $
+//   $Author: gauges $
+//   $Date: 2008/09/01 22:36:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,8 +163,8 @@ class CQGLNetworkPainter : public QGLWidget
     std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
     //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
-    std::set<std::string>setOfConstantMetabolites;
-    std::set<std::string>setOfDisabledMetabolites;
+    std::set<std::string> setOfConstantMetabolites;
+    std::set<std::string> setOfDisabledMetabolites;
 
     void addMetaboliteForAnimation(std::string key);
     void removeMetaboliteForAnimation(std::string key);
@@ -215,6 +215,8 @@ class CQGLNetworkPainter : public QGLWidget
     void printNodeMap();
     void printAvailableFonts();
     //CLDataSet getDataSet(C_INT32 t);
+    GLuint textureNames[1];
+
   protected:
 
     void initializeGraphPainter(QWidget *viewportWidget);
