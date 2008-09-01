@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:59:30 $
+//   $Date: 2008/09/01 17:01:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,21 +94,29 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
 
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
-                                   CCopasiAbstractArray * array)
+                                   CCopasiAbstractArray * array,
+                                   const bool & adopt)
     : CCopasiContainer(name, pParent, "Array" /*, flags */), //TODO: flags
-    mArray(array),
+    mpArray(array),
+    mDestructArray(adopt),
     mDefaultMode(OBJECTS)
 {
-  assert(mArray);
+  assert(mpArray);
 
   resize();
 
   addObjectReference("Annotated Matrix", *this, CCopasiObject::ValueDbl);
 }
 
+CArrayAnnotation::~CArrayAnnotation()
+{
+  if (mDestructArray)
+    pdelete(mpArray);
+}
+
 void CArrayAnnotation::setArray(CCopasiAbstractArray * a)
 {
-  mArray = a;
+  mpArray = a;
 }
 
 void CArrayAnnotation::setMode(unsigned int d, Mode m)
@@ -232,7 +240,7 @@ bool CArrayAnnotation::createAnnotationsCNFromCopasiVector(unsigned int d,
   {
     if (!v) return false;
     if (! (v->isVector() || v->isNameVector())) return false;
-    if (d >= mArray->dimensionality()) return false;
+    if (d >= mpArray->dimensionality()) return false;
 
     //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
     const CCopasiVector< CCopasiObject > * pVector =
@@ -273,17 +281,17 @@ void CArrayAnnotation::resizeOneDimension(unsigned int d)
 {
   if (mModes[d] != VECTOR)
     {
-      mAnnotationsCN[d].resize(mArray->size()[d]);
-      mAnnotationsString[d].resize(mArray->size()[d]);
+      mAnnotationsCN[d].resize(mpArray->size()[d]);
+      mAnnotationsString[d].resize(mpArray->size()[d]);
     }
 }
 
 void CArrayAnnotation::resize()
 {
-  assert(mArray);
-  reDimensionalize(mArray->dimensionality());
+  assert(mpArray);
+  reDimensionalize(mpArray->dimensionality());
 
-  unsigned int i, imax = mArray->dimensionality();
+  unsigned int i, imax = mpArray->dimensionality();
   for (i = 0; i < imax; ++i)
     resizeOneDimension(i);
 }

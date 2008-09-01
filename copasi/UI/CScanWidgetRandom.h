@@ -1,20 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2008/09/01 16:55:49 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetRandom.ui'
  **
- ** Created: Tue Mar 28 14:23:45 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetRandom.h,v 1.5 2007/03/13 19:56:56 shoops Exp $)
+ ** Created: Thu Jul 31 17:06:25 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetRandom.h,v 1.6 2008/09/01 16:55:49 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +24,7 @@
 #define CSCANWIDGETRANDOM_H
 
 #include <qvariant.h>
+#include <qpixmap.h>
 #include <qwidget.h>
 
 class QVBoxLayout;
@@ -49,8 +51,8 @@ class CScanWidgetRandom : public QWidget
     ~CScanWidgetRandom();
 
     QFrame* frame;
-    QLabel* labelObject;
     QLabel* labelTitle;
+    QLabel* labelObject;
     QLineEdit* lineEditObject;
     QToolButton* buttonObject;
     QComboBox* comboBoxType;
@@ -65,13 +67,12 @@ class CScanWidgetRandom : public QWidget
     virtual bool saveToScanItem(CScanProblem * pg) const;
 
   protected:
-    const CCopasiObject * mpObject;
     const CModel* mpModel;
+    const CCopasiObject* mpObject;
 
     QVBoxLayout* CScanWidgetRandomLayout;
     QVBoxLayout* frameLayout;
-    QGridLayout* layout1;
-    QSpacerItem* spacer1;
+    QHBoxLayout* layout8;
     QGridLayout* layout2;
 
   protected slots:
@@ -81,6 +82,8 @@ class CScanWidgetRandom : public QWidget
     virtual void changeType();
 
   private:
+    QPixmap image0;
+
     void init();
   };
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/09/01 16:55:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 #include "CRDFParser.h"
 #include "CRDFWriter.h"
 #include "CRDFGraph.h"
+
+#include "utilities/CCopasiMessage.h"
 
 // static
 CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
@@ -123,6 +125,32 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
   pGraph->updateNamespaces();
 
   XML = CRDFWriter::xmlFromGraph(pGraph);
+
+  if (pGraph != NULL)
+    {
+      delete pGraph;
+      pGraph = NULL;
+    }
+
+  // It is possible that the graph is still corrupt due secondary errors.
+  // Another parse and write should take care of this.
+  unsigned C_INT32 Size = CCopasiMessage::size();
+
+  pGraph = CRDFParser::graphFromXml(XML);
+  if (pGraph == NULL)
+    return false;
+
+  XML = CRDFWriter::xmlFromGraph(pGraph);
+
+  if (pGraph != NULL)
+    {
+      delete pGraph;
+      pGraph = NULL;
+    }
+
+  // Remove error messages created by the second parse as these are secondary.
+  while (CCopasiMessage::size() > Size)
+    CCopasiMessage::getLastMessage();
 
   return success;
 }

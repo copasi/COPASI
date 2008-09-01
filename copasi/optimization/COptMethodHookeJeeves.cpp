@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2008/09/01 16:58:11 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -265,7 +270,7 @@ bool COptMethodHookeJeeves::evaluate()
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = DBL_MAX;
+    mEvaluationValue = 2.0 * DBL_MAX;
   else
     // get the value of the objective function
     mEvaluationValue = mpOptProblem->getCalculateValue();

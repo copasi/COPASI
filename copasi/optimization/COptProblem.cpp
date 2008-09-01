@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:54 $
+//   $Date: 2008/09/01 16:58:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,8 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mSolutionValue(0),
     mCounter(0),
     mFailedCounter(0),
+    mConstraintCounter(0),
+    mFailedConstraintCounter(0),
     mCPUTime(CCopasiTimer::CPU, this),
     mhSolutionValue(C_INVALID_INDEX),
     mhCounter(C_INVALID_INDEX),
@@ -112,6 +114,8 @@ COptProblem::COptProblem(const COptProblem& src,
     mSolutionValue(src.mCalculateValue),
     mCounter(0),
     mFailedCounter(0),
+    mConstraintCounter(0),
+    mFailedConstraintCounter(0),
     mCPUTime(CCopasiTimer::CPU, this),
     mhSolutionValue(C_INVALID_INDEX),
     mhCounter(C_INVALID_INDEX),
@@ -246,6 +250,9 @@ bool COptProblem::initialize()
   mpReport = NULL;
   mCounter = 0;
   mFailedCounter = 0;
+  mConstraintCounter = 0;
+  mFailedConstraintCounter = 0;
+
   mSolutionValue = mInfinity;
 
   std::vector< CCopasiContainer * > ContainerList;
@@ -342,7 +349,8 @@ bool COptProblem::initialize()
     {
       if (!(*it)->compile(ContainerList)) return false;
 
-      Objects.insert((*it)->getObject());
+      Objects.insert((*it)->getDirectDependencies().begin(),
+                     (*it)->getDirectDependencies().end());
     }
 
   mRefreshConstraints = CCopasiObject::buildUpdateSequence(Objects, mpModel->getUptoDateObjects());
@@ -401,6 +409,9 @@ bool COptProblem::restore(const bool & updateModel)
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
 
+  if (10 * mFailedConstraintCounter > 8 * mConstraintCounter) // > 80 % failure rate
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter);
+
   return success;
 }
 
@@ -426,8 +437,13 @@ bool COptProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
+  mConstraintCounter++;
   for (; it != end; ++it)
-    if ((*it)->checkConstraint()) return false;
+    if ((*it)->checkConstraint())
+      {
+        mFailedConstraintCounter++;
+        return false;
+      }
 
   return true;
 }

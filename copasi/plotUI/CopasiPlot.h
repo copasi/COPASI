@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:36:33 $
+//   $Date: 2008/09/01 17:01:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,6 +155,15 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * Clear all allocate buffers and set reset values
      */
     void clearBuffers();
+
+    /**
+     * Set the units of the indexed axis based on the
+     * type of the object.
+     * @param const C_INT32 & index
+     * @param const CCopasiObject * pObject
+     */
+    void setAxisUnits(const C_INT32 & index,
+                      const CCopasiObject * pObject);
 
   private slots:
     /**

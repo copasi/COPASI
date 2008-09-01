@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.343 $
+//   $Revision: 1.344 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/17 09:55:07 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 16:55:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,14 +98,17 @@ CModel::CModel():
     mValues("Values", this),
     mMoieties("Moieties", this),
     mStoi(),
+    mpStoiAnnotation(NULL),
     mStoiReordered(),
     mRedStoi(),
+    mpRedStoiAnnotation(NULL),
     mNumMetabolitesUnused(0),
     mNumMetabolitesODE(0),
     mNumMetabolitesReaction(0),
     mNumMetabolitesAssignment(0),
     mNumMetabolitesIndependent(0),
     mL(),
+    mpLinkMatrixAnnotation(NULL),
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
@@ -114,7 +117,8 @@ CModel::CModel():
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
-    mReorderNeeded(false)
+    mReorderNeeded(false),
+    mIsAutonomous(true)
 {
   initObjects();
 
@@ -160,14 +164,17 @@ CModel::CModel(const CModel & src):
     mValues(src.mValues, this),
     mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
+    mpStoiAnnotation(NULL),
     mStoiReordered(src.mStoiReordered),
     mRedStoi(src.mRedStoi),
+    mpRedStoiAnnotation(NULL),
     mNumMetabolitesUnused(src.mNumMetabolitesUnused),
     mNumMetabolitesODE(src.mNumMetabolitesODE),
     mNumMetabolitesReaction(src.mNumMetabolitesReaction),
     mNumMetabolitesAssignment(src.mNumMetabolitesAssignment),
     mNumMetabolitesIndependent(src.mNumMetabolitesIndependent),
     mL(src.mL),
+    mpLinkMatrixAnnotation(NULL),
     mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
@@ -176,7 +183,8 @@ CModel::CModel(const CModel & src):
     mSimulatedRefreshes(),
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
-    mReorderNeeded(false)
+    mReorderNeeded(false),
+    mIsAutonomous(false)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -196,10 +204,24 @@ CModel::~CModel()
   mpIValue = NULL;
   mpValueData = NULL;
 
+  pdelete(mpStoiAnnotation);
+  pdelete(mpRedStoiAnnotation);
+  pdelete(mpLinkMatrixAnnotation);
+
   GlobalKeys.remove(mKey);
   //cleanup();
   DESTRUCTOR_TRACE;
 }
+
+// virtual
+std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
+  {
+    if (pObject->getObjectName() == "Initial Time" ||
+        pObject->getObjectName() == "Time")
+      return getTimeUnitName();
+
+    return "";
+  }
 
 void CModel::cleanup()
 {
@@ -411,9 +433,13 @@ bool CModel::compile()
   updateMatrixAnnotations();
 
   if (!success)
-    return false;
+    {
+      mIsAutonomous = false;
+      return false;
+    }
 
   mCompileIsNecessary = false;
+  determineIsAutonomous();
 
   //writeDependenciesToDotFile();
 
@@ -1568,6 +1594,9 @@ void CModel::setInitialState(const CState & state)
 {
   mInitialState = state;
 
+  if (mIsAutonomous)
+    mInitialState.setTime(0.0);
+
   return;
 }
 
@@ -2653,7 +2682,7 @@ bool CModel::convert2NonReversible()
   //TODO check if newly generated reaction names are valid
   //TODO map, so that the same function is split only once
 
-  bool ret = true;
+  bool success = true;
 
   std::vector<std::string> reactionsToDelete;
 
@@ -2670,7 +2699,6 @@ bool CModel::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     if (steps[i]->isReversible())
       {
-        ret = false;
         reac0 = steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
         rn2 = reac0->getObjectName() + " (backward)";
@@ -2699,6 +2727,11 @@ bool CModel::convert2NonReversible()
 
             if ((tmp.first == NULL) || (tmp.second == NULL))
               {
+                // Create a message that the conversion for this reaction failed.
+                CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 12,
+                               reac0->getObjectName().c_str(), fn.c_str());
+                success = false;
+
                 pdelete(tmp.first);
                 pdelete(tmp.second);
                 continue;
@@ -2816,14 +2849,13 @@ bool CModel::convert2NonReversible()
 
         //remove the old reaction
         reactionsToDelete.push_back(reac0->getObjectName());
-        ret = true;
       }
 
   imax = reactionsToDelete.size();
   for (i = 0; i < imax; ++i)
     steps.remove(reactionsToDelete[i]);
 
-  return ret;
+  return success;
 }
 
 //**********************************************************************
@@ -2858,7 +2890,7 @@ void CModel::initObjects()
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
 
-  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered));
+  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
   mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
@@ -2866,7 +2898,7 @@ void CModel::initObjects()
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
+  mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi), true);
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
   mpRedStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
@@ -2874,7 +2906,7 @@ void CModel::initObjects()
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpRedStoiAnnotation->setCopasiVector(1, &mSteps);
 
-  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
+  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView), true);
   mpLinkMatrixAnnotation->setDescription("Link matrix");
   mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
@@ -3242,17 +3274,27 @@ void CModel::buildLinkZero()
   return;
 }
 
-bool CModel::isAutonomous() const
-  {
-    std::set< const CCopasiObject * > TimeDependent;
+const bool & CModel::isAutonomous() const
+{return mIsAutonomous;}
 
-    appendDependentReactions(getDeletedObjects(), TimeDependent);
-    appendDependentMetabolites(getDeletedObjects(), TimeDependent);
-    appendDependentCompartments(getDeletedObjects(), TimeDependent);
-    appendDependentModelValues(getDeletedObjects(), TimeDependent);
+void CModel::determineIsAutonomous()
+{
+  if (mCompartments.size() == 0 &&
+      mValues.size() == 0)
+    {
+      mIsAutonomous = false;
+      return;
+    }
 
-    return (TimeDependent.begin() == TimeDependent.end());
-  }
+  std::set< const CCopasiObject * > TimeDependent;
+
+  appendDependentReactions(getDeletedObjects(), TimeDependent);
+  appendDependentMetabolites(getDeletedObjects(), TimeDependent);
+  appendDependentCompartments(getDeletedObjects(), TimeDependent);
+  appendDependentModelValues(getDeletedObjects(), TimeDependent);
+
+  mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
+}
 
 const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
   {return mInitialRefreshes;}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:55 $
+//   $Date: 2008/09/01 16:59:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,42 +297,56 @@ bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
 
 CFitConstraint::CFitConstraint(const std::string & name,
                                const CCopasiContainer * pParent):
-    CFitItem(name, pParent)
+    CFitItem(name, pParent),
+    mCheckConstraint(0),
+    mConstraintViolation(0.0)
 {}
 
 CFitConstraint::CFitConstraint(const CFitConstraint & src,
                                const CCopasiContainer * pParent):
-    CFitItem(src, pParent)
+    CFitItem(src, pParent),
+    mCheckConstraint(src.mCheckConstraint),
+    mConstraintViolation(src.mConstraintViolation)
 {}
 
 CFitConstraint::CFitConstraint(const CCopasiParameterGroup & group,
                                const CCopasiContainer * pParent):
-    CFitItem(group, pParent)
+    CFitItem(group, pParent),
+    mCheckConstraint(0),
+    mConstraintViolation(0.0)
 {}
 
 CFitConstraint::~CFitConstraint() {}
 
+void CFitConstraint::resetConstraintViolation()
+{
+  mCheckConstraint = 0;
+  mConstraintViolation = 0.0;
+}
+
+void CFitConstraint::calculateConstraintViolation()
+{
+  if (*mpLowerBound > *mpObjectValue) mCheckConstraint = -1;
+  else if (*mpObjectValue > *mpUpperBound) mCheckConstraint = 1;
+  else mCheckConstraint = 0;
+
+  switch (mCheckConstraint)
+    {
+    case - 1:
+      mConstraintViolation += *mpLowerBound - *mpObjectValue;
+      break;
+
+    case 1:
+      mConstraintViolation += *mpObjectValue - *mpUpperBound;
+      break;
+
+    default:
+      break;
+    }
+}
+
 C_INT32 CFitConstraint::checkConstraint() const
-  {
-    if (*mpLowerBound > mLocalValue) return - 1;
-    if (mLocalValue > *mpUpperBound) return 1;
-    return 0;
-  }
+{return mCheckConstraint;}
 
 C_FLOAT64 CFitConstraint::getConstraintViolation() const
-  {
-    switch (checkConstraint())
-      {
-      case - 1:
-        return *mpLowerBound - mLocalValue;
-        break;
-
-      case 1:
-        return mLocalValue - *mpUpperBound;
-        break;
-
-      default:
-        return 0.0;
-        break;
-      }
-  }
+  {return mConstraintViolation;}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 18:13:18 $
+//   $Date: 2008/09/01 16:55:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,6 +251,7 @@ bool ModelWidget::loadModel(CModel *model)
   mpBoxModelType->setCurrentItem(model->getModelType());
 
   mpInitialTime->setText(QString::number(model->getInitialTime()));
+  mpInitialTime->setReadOnly(model->isAutonomous());
   mpCurrentTime->setText(QString::number(model->getTime()));
 
   return ret;

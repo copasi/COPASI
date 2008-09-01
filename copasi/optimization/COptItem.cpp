@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:25:56 $
+//   $Date: 2008/09/01 16:58:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -328,6 +328,8 @@ bool COptItem::isValid(CCopasiParameterGroup & group)
 
 bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
+  mDependencies.clear();
+
   std::string Bound;
 
   mpMethod = &DoNothing;
@@ -343,6 +345,8 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
       return false;
     }
+
+  addDirectDependency(mpObject);
   mpMethod = mpObject->getUpdateMethod();
 
   mpLowerObject = NULL;
@@ -362,7 +366,11 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
               CCopasiContainer::ObjectFromName(listOfContainer,
                                                Bound)) != NULL &&
            mpLowerObject->isValueDbl())
-    mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
+    {
+      mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
+      addDirectDependency(mpLowerObject);
+    }
+
   if (!mpLowerBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
@@ -386,7 +394,11 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
               CCopasiContainer::ObjectFromName(listOfContainer,
                                                Bound)) != NULL &&
            mpUpperObject->isValueDbl())
-    mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
+    {
+      mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
+      addDirectDependency(mpUpperObject);
+    }
+
   if (!mpUpperBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, Bound.c_str());

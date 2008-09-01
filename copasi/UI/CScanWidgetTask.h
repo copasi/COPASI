@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/13 10:32:44 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 16:55:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Thu Feb 21 14:52:44 2008
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.9 2008/03/13 10:32:44 ssahle Exp $)
+ ** Created: Thu Jul 31 16:58:54 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.10 2008/09/01 16:55:49 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -33,7 +33,6 @@ class QSpacerItem;
 class QFrame;
 class QLabel;
 class QComboBox;
-class QToolButton;
 class QCheckBox;
 class CModel;
 class CCopasiObject;
@@ -50,7 +49,6 @@ class CScanWidgetTask : public QWidget
     QFrame* frame;
     QLabel* labelTitle;
     QComboBox* comboType;
-    QToolButton* buttonEdit;
     QCheckBox* checkInitialConditions;
     QCheckBox* checkOutput;
 

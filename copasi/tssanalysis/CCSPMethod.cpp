@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:01:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,8 @@ void CCSPMethod::initializeParameter()
   assertParameter("Time Scale of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0);
   assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-5);
   assertParameter("Maximum Absolute Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-10);
-  assertParameter("Refinement Iterations Number", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+  //assertParameter("Maximum Iterations Number", CCopasiParameter::UINT, (unsigned C_INT32) 100);
+  //assertParameter("Refinement Iterations Number", CCopasiParameter::UINT, (unsigned C_INT32) 1);
   // assertParameter("Use Stoichiometric Vectors", CCopasiParameter::BOOL, (bool) false);
 
   createAnnotationsM();
@@ -342,10 +343,12 @@ void CCSPMethod::cspstep(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix
 #endif
 
   CMatrix<C_FLOAT64> ALA;
+  CMatrix<C_FLOAT64> ALA0;
   CMatrix<C_FLOAT64> TAU;
   CMatrix<C_FLOAT64> F;
 
   ALA.resize(N, N);
+  ALA0.resize(N, N);
   TAU.resize(N, N);
   F.resize(N, 1);
 
@@ -358,84 +361,32 @@ void CCSPMethod::cspstep(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix
   QF.resize(N, N);
   QSL.resize(N, N);
 
-  /*  fast subspace projection matrix */
-  smmult(A, B, QF, N, M, N);
-
-  /* slow subspace projection matrix */
-  smsubst(mI, QF, QSL, N, N);
-
-#if 0
-  std::cout << "fast subspace projection matrix  " << std::endl;
-  std::cout << QF << std::endl;
-  std::cout << "slow subspace projection matrix  " << std::endl;
-  std::cout << QSL << std::endl;
-#endif
-
-  /* projection of the current jacobian into the slow subspace  J*(I-A*B) */
-
-  CMatrix<C_FLOAT64> JSL;
-  JSL.resize(N, N);
-
-  smmult(J, QSL, JSL, N, N, N);
-
-  /* find eigenvalues of  JSL and initial basis vectors  */
-
   mJacobian_initial.resize(N, N);
   mQ.resize(N, N);
   mR.resize(N, N);
 
-  mJacobian_initial = JSL;
+  mJacobian_initial = J;
 
   C_INT info;
 
   schur(info);
 
-  if (M == 0)
-    {
-      /* trial basis vectors */
+  /* trial basis vectors */
 
-      /* use the matrix of Schur vectors */
+  /* use the matrix of Schur vectors */
 
-      A = mQ;
-      B = 0;
+  A = mQ;
+  B = 0;
 
-#if 0
-      std::cout << "schur matrix " << std::endl;
-      std::cout << mR << std::endl;
-      std::cout << "matrix of schur vectors " << std::endl;
-      std::cout << mQ << std::endl;
-      std::cout << "A " << std::endl;
-      std::cout << A << std::endl;
-      std::cout << "B " << std::endl;
-      std::cout << B << std::endl;
-#endif
-
-      smnorm(N, A, B, N);
+  smnorm(N, A, B, N);
+  sminverse(N, A, B);
 
 #if 0
-      std::cout << "after norm  " << std::endl;
-      std::cout << "A " << std::endl;
-      std::cout << A << std::endl;
-      std::cout << "B " << std::endl;
-      std::cout << B << std::endl;
+  std::cout << "A " << std::endl;
+  std::cout << A << std::endl;
+  std::cout << "B " << std::endl;
+  std::cout << B << std::endl;
 #endif
-      sminverse(N, A, B);
-
-      CMatrix<C_FLOAT64> test;
-      test.resize(N, N);
-
-      smmult(A, B, test, N, N, N);
-
-#if 0
-      std::cout << "after inverse  " << std::endl;
-      std::cout << "columne basis vectors are the columne of A" << std::endl;
-      std::cout << A << std::endl;
-      std::cout << "row basis vectors are the rows of B" << std::endl;
-      std::cout << B << std::endl;
-      std::cout << "A*B " << std::endl;
-      std::cout << test << std::endl;
-#endif
-    }
 
   /* ordered real parts of eigen values */
 
@@ -504,7 +455,7 @@ void CCSPMethod::cspstep(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix
     {
 
       CCopasiMessage(CCopasiMessage::WARNING,
-                     MCTSSAProblem + 4, 0);
+                     MCTSSAMethod + 5, 0);
 
       std::cout << "after time scales separation :  " << std::endl;
       std::cout << "number of fast modes = 0" << std::endl;
@@ -544,38 +495,6 @@ void CCSPMethod::cspstep(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix
   else
     TAUM(0, 0) = 1. / ALA(0, 0);
 
-#if 0
-
-  //sminverse(N, ALA, TAU);
-
-  CMatrix<C_FLOAT64> TESTM;
-  TESTM.resize(M, M);
-
-  //smmult(ALA, TAU, TEST, N, N, N);
-
-  std::cout << "after inverse :" << std::endl;
-  std::cout << "ALA" << std::endl;
-  std::cout << ALAM << std::endl;
-  std::cout << "TAU" << std::endl;
-  std::cout << TAUM << std::endl;
-
-  smmult(ALAM, TAUM, TESTM, M, M, M);
-
-  std::cout << "ALAM*TAUM" << std::endl;
-  std::cout << TESTM << std::endl;
-#endif
-
-  /**
-   * radical and reaction pointer computed using trial basis vector
-   * are theoretically unreliable, and therefore their results should be ignored.
-   * Nevertheless, we shall compute them here for later comparisons.
-   **/
-
-#if 0
-  std::cout << "compute radical pointer and fast reaction pointer using trial basis vectors:  " << std::endl;
-  // does not work more hier : CSPradicalPointer(N, M, A, B);
-#endif
-
   modesAmplitude(N, M, g, B, F);
 
   /**
@@ -584,82 +503,18 @@ void CCSPMethod::cspstep(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix
 
   yCorrection(N, M, y, TAUM, F, A);
 
-#if 0
-  std::cout << "right hand side computed from calculateDerivativesX using new y:  " << std::endl;
-#endif
+  /* right hand side computed  using new y */
 
   calculateDerivativesX(y.array(), g.array());
 
-#if 0
-  for (i = 0; i < N; i++)
-    std::cout << i << "  " << g[i] << std::endl;
+  J = 0;
 
-  std::cout << "new y and  right hand side :" << std::endl;
-  for (j = 0; j < N; j++)
-    std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << "  " << y[j] << "  " << g[j] << std::endl;
-
-  std::cout << "amplitudes  computed using new g:  " << std::endl;
-#endif
-
-#if 1
-  std::cout << "amplitudes  after correction of y :  " << std::endl;
-#endif
+  calculateJacobianX(N, y, J);
 
   modesAmplitude(N, M, g, B, F);
 
-  /*  fast subspace projection matrix */
-  smmult(A, B, QF, N, M, N);
-
-  /* slow subspace projection matrix */
-  smsubst(mI, QF, QSL, N, N);
-
-#if 0
-  std::cout << "fast subspace projection matrix  " << std::endl;
-  std::cout << QF << std::endl;
-  std::cout << "slow subspace projection matrix  " << std::endl;
-  std::cout << QSL << std::endl;
-
-  /* decompose right hand side into its fast and slow components */
-
-  for (i = 0; i < N; i++)
-    {
-      gfast[i] = 0.;
-      gslow[i] = 0.;
-      for (j = 0; j < N; j++)
-        {
-          gfast[i] += QF(i, j) * g[j];
-          gslow[i] += QSL(i, j) * g[j];
-        }
-    }
-
-  std::cout << "decompose right hand side into its fast and slow components:  " << std::endl;
-
-  std::cout << "fast part of rhs :  " << std::endl;
-  /**
-   * this fast rhs is the same oder of as slow rhs (component by component)
-   * and it's neglect will cause ab oder unity error
-   * since it was computed using the trial basis vectors
-   * which have never been refined
-   **/
-
-  for (i = 0; i < N; i++)
-    std::cout << "fast : " << gfast[i] << " slow " << gslow[i]
-    << " fast + slow " << gfast[i] + gslow[i] << " g  " << g[i] << std::endl;
-#endif
-
-  //if (M)
-  //{
-
-  J = 0;
-
   ALA = 0;
   TAU = 0;
-  calculateJacobianX(N, y, J);
-
-#if 0
-  std::cout << "Jacobian, computed by calculateJacobianX for the new y, JSL : " << std::endl;
-  std::cout << J << std::endl;
-#endif
 
   /* ALA = B*J*A  */
 
@@ -670,24 +525,12 @@ void CCSPMethod::cspstep(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix
     for (j = 0; j < M; j++)
       ALAM(i, j) = ALA(i, j);
 
-  sminverse(M, ALAM, TAUM);
-
-#if 1
-  std::cout << "B * J * A, after radical correction using the trial basis: " << std::endl;
-  std::cout << ALA << std::endl;
-  //std::cout << "new TAUM" << std::endl;
-  //std::cout << TAUM << std::endl;
-
-  //smmult(ALAM, TAUM, TESTM, M, M, M);
-
-  //std::cout << "ALAM*TAUM" << std::endl;
-  //std::cout << TESTM << std::endl;
-#endif
-  //}
+  if (M > 1)
+    sminverse(M, ALAM, TAUM);
+  else
+    TAUM(0, 0) = 1. / ALA(0, 0);
 
 cspiteration:
-
-  if (iter >= nIter) return;
 
   emptyOutputData(N, M, reacs_size);
 
@@ -806,6 +649,15 @@ cspiteration:
     }
 
 #if 1
+  std::cout << "amplitudes  after refinemnet :  " << std::endl;
+  for (i = 0; i < N; i++)
+    {
+
+      std::cout << F(i, 0) << std::endl;
+    }
+#endif
+
+#if 1
   std::cout << "number of exhausted fast modes : " << std::endl;
   std::cout << exhausted << std::endl;
 #endif
@@ -880,7 +732,7 @@ cspiteration:
 
   std::cout << "amplitudes  computed using new g:  " << std::endl;
 #endif
-#if 1
+#if 0
   std::cout << "amplitudes  after correction of y :  " << std::endl;
 #endif
   modesAmplitude(N, M, g, B0, F);
@@ -906,6 +758,9 @@ cspiteration:
 
   if (M)
     {
+      for (i = 0; i < N; i++)
+        for (j = 0; j < N; j++)
+          ALA0(i, j) = ALA(i, j);
 
       J = 0;
       ALA = 0;
@@ -935,6 +790,11 @@ cspiteration:
 #if 1
       std::cout << "B0 * J * A0, after radical correction" << std::endl;
       std::cout << ALA << std::endl;
+      std::cout << "ALA0" << std::endl;
+      std::cout << ALA0 << std::endl;
+#endif
+
+#if 0
       //std::cout << "new TAUM" << std::endl;
       //std::cout << TAUM << std::endl;
 
@@ -947,12 +807,101 @@ cspiteration:
 
   //CSPOutput(N,M,reacs_size);
 
-  mSetVectors = 1;
+  if (isBlockDiagonal(N, M, ALA0, 1.e-5))
+    {
+      mSetVectors = 1;
+    }
+  else
+    if (iter < 100)
+      {
+        iter ++;
+        goto cspiteration;
+      }
+    else
+      {
+        CCopasiMessage(CCopasiMessage::WARNING,
+                       MCTSSAMethod + 6, 0);
+        return;
+      }
 
-  iter++;
-  goto cspiteration;
+  //mSetVectors = 1;
+
+  //iter++;
+  //goto cspiteration;
 
   return;
+}
+/*  compute  the norm C  of the off-diagonal blocks   */
+bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small)
+{
+  C_INT i, j, imax, jmax;
+  C_FLOAT64 max = -1.;
+
+  std::cout << "blocks of ALA : " << std::endl;
+
+  std::cout << "upper - left : " << std::endl;
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0 ; j < M; j++)
+        std::cout << ALA(i, j) << "  ";
+
+      std::cout << std::endl;
+    }
+
+  std::cout << "upper - right : " << std::endl;
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = M ; j < N; j++)
+        std::cout << ALA(i, j) << "  ";
+
+      std::cout << std::endl;
+    }
+
+  std::cout << "lower - left : " << std::endl;
+
+  for (i = M; i < N; i++)
+    {
+      for (j = 0 ; j < M; j++)
+        std::cout << ALA(i, j) << "  ";
+
+      std::cout << std::endl;
+    }
+
+  std::cout << "upper - right : " << std::endl;
+
+  for (i = M; i < N; i++)
+    {
+      for (j = M ; j < N; j++)
+        std::cout << ALA(i, j) << "  ";
+
+      std::cout << std::endl;
+    }
+
+  /* step #1: upper-right block */
+
+  for (i = 0; i < M; i++)
+    for (j = M ; j < N; j++)
+      if (fabs(ALA(i, j)) > max)
+        {
+          max = fabs(ALA(i, j));
+          imax = i; jmax = j;
+        }
+  /* step #2: lower-left block */
+
+  for (i = M; i < N; i++)
+    for (j = 0 ; j < M; j++)
+      if (fabs(ALA(i, j)) > max)
+        {
+          max = fabs(ALA(i, j));
+          imax = i ; jmax = j;
+        }
+  std::cout << "the norm C of the off-diagonal blocks of ALA is ALA(" << imax << "," << jmax << ") = " << max << std::endl;
+
+  if (max <= small) return 1;
+  else
+    return 0;
 }
 void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
 {
@@ -1101,7 +1050,7 @@ void CCSPMethod::start(const CState * initialState)
   mTsc = * getValue("Time Scale of Modes Separation").pUDOUBLE;
   mRerror = * getValue("Maximum Relative Error").pUDOUBLE;
   mAerror = * getValue("Maximum Absolute Error").pUDOUBLE;
-  nIter = * getValue("Refinement Iterations Number").pUINT;
+  //nIter = * getValue("Refinement Iterations Number").pUINT;
 
   mI.resize(mData.dim, mData.dim);
 
@@ -1451,7 +1400,7 @@ void CCSPMethod::modesAmplitude(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & g, 
 
       mAmplitude[i] = F(i, 0);
 
-#if 1
+#if 0
       std::cout << " mode  " << i << "      F :  " << F(i, 0) << std::endl;
 #endif
     }
@@ -1659,7 +1608,7 @@ void CCSPMethod::classifyModes(C_INT & N, C_INT & M, C_INT & exhausted, C_FLOAT6
 #endif
     }
 
-#if 1
+#if 0
   std::cout << "classify Modes:  " << std::endl;
   // std::cout << "A" << std::endl;
   // std::cout << A << std::endl;
@@ -1689,7 +1638,7 @@ void CCSPMethod::classifyModes(C_INT & N, C_INT & M, C_INT & exhausted, C_FLOAT6
         {
           test = tmp * fabs(A(i, j));
 
-#if 1
+#if 0
           std::cout << "component " << i << " test " << test << " mYerror[i] " << mYerror[i] << " mY[i] " << mY[i]*number2conc << std::endl;
 #endif
         }
@@ -1708,7 +1657,7 @@ void CCSPMethod::classifyModes(C_INT & N, C_INT & M, C_INT & exhausted, C_FLOAT6
             }
         }
 
-#if 1
+#if 0
 
       C_FLOAT64 tmp1 = 0;
       for (i = 0; i < N; ++i)
@@ -1720,7 +1669,7 @@ void CCSPMethod::classifyModes(C_INT & N, C_INT & M, C_INT & exhausted, C_FLOAT6
 #endif
     }
 
-#if 1
+#if 0
   std::cout << "slow modes : " << std::endl;
 #endif
   for (j = M; j < N; ++j)
@@ -1769,7 +1718,7 @@ void CCSPMethod::createAnnotationsM()
 {
   CArrayAnnotation *
   pTmp1 = new CArrayAnnotation("Amplitude", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mAmplitudeTab));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mAmplitudeTab), true);
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->STRINGS);
   pTmp1->setDescription("Amplitude Table");
@@ -1779,7 +1728,7 @@ void CCSPMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp2 = new CArrayAnnotation("Radical Pointer", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRadicalPointerTab));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRadicalPointerTab), true);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setDescription("Radical Pointer Table");
@@ -1789,7 +1738,7 @@ void CCSPMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("Fast Reaction Pointer", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab), true);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setDescription("Fast Reaction Pointer Table");
@@ -1799,7 +1748,7 @@ void CCSPMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp4 = new CArrayAnnotation("Participation Index", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab), true);
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription("Participation Index Table");
@@ -1809,7 +1758,7 @@ void CCSPMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp5 = new CArrayAnnotation("Importance Index", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexTab));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexTab), true);
   pTmp5->setMode(1, pTmp5->VECTOR);
   pTmp5->setMode(0, pTmp5->VECTOR);
   pTmp5->setDescription("Importance Index Table");
@@ -1924,6 +1873,7 @@ void CCSPMethod::setVectors()
   for (i = 0; i < mAmplitude.size();i++)
     mVec_mAmplitude[mCurrentStep][i][0] = mAmplitude[i];
 
+#if 0
   std::cout << "mCurrentStep " << mCurrentStep << std::endl;
   for (i = 0; i < mAmplitude.size(); i++)
     {
@@ -1932,6 +1882,7 @@ void CCSPMethod::setVectors()
 
       std::cout << std::endl;
     }
+#endif
 
   mVec_mRadicalPointer.push_back(mCurrentStep);
   mVec_mRadicalPointer[mCurrentStep].resize(mRadicalPointer.numCols(), mRadicalPointer.numRows());

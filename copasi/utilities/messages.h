@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/30 08:35:06 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:01:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,8 @@ const MESSAGES Messages[] =
     {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
     {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
     {MCReaction + 11, "CReaction (11): Reaction '%s' refers to unusable Function '%s'."},
+    {MCReaction + 12, "CReaction (12): The reversible Reaction '%s' could not be split into two irreversible "
+     "Reactions due to the Structure of the Kinetic Law '%s'."},
 
     // CChemEq
     {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},
@@ -148,7 +150,8 @@ const MESSAGES Messages[] =
     {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
     {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
     {MCOptimization + 7, "Optimization (7): No Task Type specified."},
-    {MCOptimization + 8, "Optimization (8): '%d' Function Evaluation out of '%d' failed."},
+    {MCOptimization + 8, "Optimization (8): '%d' Function Evaluations out of '%d' failed."},
+    {MCOptimization + 9, "Optimization (9): '%d' Contraint Checks out of '%d' failed."},
 
     // SBML
     {MCSBML + 1, "SBML (1): SBML Level 2 Version 1 does not support initial times different from 0. This information will be lost in the exported file."},

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:49:34 $
+//   $Date: 2008/09/01 16:55:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,6 +144,12 @@ class CReaction : public CCopasiContainer
      *  Destructor
      */
     ~CReaction();
+
+    /**
+     * Retrieve the units of the child object.
+     * @return std::string units
+     */
+    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
     /**
      *  Delete

@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-  $Revision: 1.30 $
-  $Name:  $
-  $Author: pwilly $
-  $Date: 2008/06/11 10:27:13 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
+$Revision: 1.31 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/09/01 17:01:30 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -88,6 +88,18 @@ class CCopasiContainer: public CCopasiObject
     virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
     virtual bool remove(CCopasiObject * pObject);
+
+    /**
+     * Retrieve the units of the object.
+     * @return std::string units
+     */
+    virtual std::string getUnits() const;
+
+    /**
+     * Retrieve the units of the child object.
+     * @return std::string units
+     */
+    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
   protected:
     void initObjects();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:31:45 $
+//   $Date: 2008/09/01 17:02:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,14 +89,14 @@ void CSteadyStateTask::cleanup()
 void CSteadyStateTask::initObjects()
 {
   mpJacobianAnn = new CArrayAnnotation("Jacobian (complete system)", this,
-                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian));
+                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
   mpJacobianAnn->setMode(CArrayAnnotation::OBJECTS);
   mpJacobianAnn->setDescription("");
   mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent species");
   mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
 
   mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
-                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX));
+                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianX), true);
   mpJacobianXAnn->setMode(CArrayAnnotation::OBJECTS);
   mpJacobianXAnn->setDescription("");
   mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");

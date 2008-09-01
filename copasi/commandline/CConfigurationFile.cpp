@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 16:17:58 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
+ $Revision: 1.8 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/09/01 16:55:50 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -278,7 +283,10 @@ bool CConfigurationFile::CXML::load(std::istream & is,
 #undef BUFFER_SIZE
 
   if (success && Parser.getCurrentGroup() != NULL)
-    mConfiguration = * Parser.getCurrentGroup();
+    {
+      mConfiguration = * Parser.getCurrentGroup();
+      delete Parser.getCurrentGroup();
+    }
   else
     mConfiguration.clear();
 

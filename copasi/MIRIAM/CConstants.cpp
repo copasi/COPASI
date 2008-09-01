@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 21:11:41 $
+//   $Date: 2008/09/01 16:55:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,6 +93,17 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
       false
     },
     {
+      "MIR:00000044",
+      "Database of Interacting Proteins",
+      "http://dip.doe-mbi.ucla.edu/",
+      "urn:miriam:dip",
+      {
+        ""
+      },
+      "^DIP\\:\\d{3}[EN]$",
+      true
+    },
+    {
       "MIR:00000019",
       "DOI",
       "http://www.doi.org/",
@@ -155,6 +166,17 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
       false
     },
     {
+      "MIR:00000051",
+      "HMDB",
+      "http://www.hmdb.ca/",
+      "urn:miriam:hmdb",
+      {
+        ""
+      },
+      "^HMDB\\d{5}$",
+      false
+    },
+    {
       "MIR:00000009",
       "ICD",
       "http://www3.who.int/icd/currentversion/fr-icd.htm",
@@ -188,6 +210,17 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
         ""
       },
       "IPR\\d{6}$",
+      false
+    },
+    {
+      "MIR:00000043",
+      "IPI",
+      "http://www.ebi.ac.uk/IPI",
+      "urn:miriam:ipi",
+      {
+        ""
+      },
+      "^IPI\\d{8}$",
       false
     },
     {
@@ -248,6 +281,28 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
         ""
       },
       "^R\\d+$",
+      false
+    },
+    {
+      "MIR:00000052",
+      "LIPID MAPS",
+      "http://www.lipidmaps.org",
+      "urn:miriam:lipidmaps",
+      {
+        ""
+      },
+      "^LM(FA|GL|GP|SP|ST|PR|SL|PK)[0-9]{6}[0-9a-zA-Z]{4}$",
+      false
+    },
+    {
+      "MIR:00000042",
+      "MINT",
+      "http://mint.bio.uniroma2.it/mint/",
+      "urn:miriam:mint",
+      {
+        ""
+      },
+      "^MINT\\-\\d{1,5}$",
       false
     },
     {
@@ -385,6 +440,17 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
       true
     },
     {
+      "MIR:00000047",
+      "Rat Genome Database",
+      "http://rgd.mcw.edu/genes/",
+      "urn:miriam:rgd",
+      {
+        ""
+      },
+      "^\\d{4,7}$",
+      false
+    },
+    {
       "MIR:00000018",
       "Reactome",
       "http://www.reactome.org/",
@@ -394,6 +460,28 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
         ""
       },
       "^REACT_\\d+(\\.\\d+)?$",
+      false
+    },
+    {
+      "MIR:00000039",
+      "RefSeq",
+      "http://www.ncbi.nlm.nih.gov/projects/RefSeq/",
+      "urn:miriam:refseq",
+      {
+        ""
+      },
+      "^[NC|AC|NG|NT|NW|NZ|NM|NR|XM|XR|NP|AP|XP|ZP]_\\d+$",
+      false
+    },
+    {
+      "MIR:00000046",
+      "RESID",
+      "http://www.ebi.ac.uk/RESID/",
+      "urn:miriam:resid",
+      {
+        ""
+      },
+      "^AA\\d{4}$",
       false
     },
     {
@@ -421,6 +509,17 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
       false
     },
     {
+      "MIR:00000045",
+      "Signaling Gateway",
+      "http://www.signaling-gateway.org/",
+      "urn:miriam:signaling-gateway",
+      {
+        ""
+      },
+      "^A0/d+$",
+      false
+    },
+    {
       "MIR:00000024",
       "Systems Biology Ontology",
       "http://biomodels.net/SBO/",
@@ -434,6 +533,39 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
       false
     },
     {
+      "MIR:00000049",
+      "TAIR Gene",
+      "http://arabidopsis.org/index.jsp",
+      "urn:miriam:tair.gene",
+      {
+        ""
+      },
+      "^Gene\\:\\d{7}$",
+      false
+    },
+    {
+      "MIR:000000050",
+      "TAIR Locus",
+      "http://arabidopsis.org/index.jsp",
+      "urn:miriam:tair.locus",
+      {
+        ""
+      },
+      "^AT\\d[1-5]G\\d{5}$",
+      false
+    },
+    {
+      "MIR:00000048",
+      "TAIR Protein",
+      "http://arabidopsis.org/index.jsp",
+      "urn:miriam:tair.protein",
+      {
+        ""
+      },
+      "^AASequence\\:\\d{10}$",
+      false
+    },
+    {
       "MIR:00000006",
       "Taxonomy",
       "http://www.ncbi.nlm.nih.gov/Taxonomy/",
@@ -444,6 +576,28 @@ CMIRIAMResource::sResource CMIRIAMResource::Resources[] =
         ""
       },
       "^\\d+$",
+      false
+    },
+    {
+      "MIR:00000040",
+      "Transport Classification Database",
+      "http://www.tcdb.org/index.php",
+      "urn:miriam:tcdb",
+      {
+        ""
+      },
+      "^\\d+\\.[A-Z]\\.\\d+\\.\\d+\\.\\d+$",
+      false
+    },
+    {
+      "MIR:00000041",
+      "UniParc",
+      "http://www.ebi.ac.uk/uniparc/",
+      "urn:miriam:uniparc",
+      {
+        ""
+      },
+      "^UPI[A-F0-9]{10}$",
       false
     },
     {

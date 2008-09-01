@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 19:49:33 $
+//   $Date: 2008/09/01 16:55:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,9 +179,13 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
                            const unsigned C_INT32 noProducts,
                            const TriLogic reversible)
 {
+  // A function which in neither restricted to reversible nor to irreversible reactions is always suitable
+  // independent from the number of substrates or products
+  if (isReversible() == TriUnspecified)
+    return true;
+
   //first reversibility:
-  if (reversible != this->isReversible() &&
-      this->isReversible() != TriUnspecified)
+  if (reversible != isReversible())
     return false;
 
   //check substrates

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/09/01 16:55:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,13 @@ class CParameterListItem : public QListViewItem
                 setText(COL_STATUS, "unused");
 
               setRenameEnabled(COL_VALUE, InitiaValueChangeAllowed);
+              break;
+
+            case CModelEntity::TIME:
+              if (static_cast< CModel * >(me)->isAutonomous())
+                setRenameEnabled(COL_VALUE, false);
+              else
+                setRenameEnabled(COL_VALUE, true);
               break;
 
             default:

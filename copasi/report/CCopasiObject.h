@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:36:33 $
+//   $Date: 2008/09/01 17:01:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,6 +312,12 @@ class CCopasiObject
      */
     static std::vector< Refresh * > buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
         const std::set< const CCopasiObject * > & uptoDateObjects);
+
+    /**
+     * Retrieve the units of the object.
+     * @return std::string units
+     */
+    virtual std::string getUnits() const;
 
     /**
      * Comparison operator which can be used to sort objects based on their dependencies

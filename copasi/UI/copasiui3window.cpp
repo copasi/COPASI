@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.227 $
+//   $Revision: 1.228 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/08/31 23:20:42 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 16:55:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1307,7 +1307,17 @@ void CopasiUI3Window::slotConvertToIrreversible()
   ListViews::commit();
   ListViews::switchAllListViewsToWidget(114, "");
 
-  model->convert2NonReversible();
+  CCopasiMessage::clearDeque();
+  if (!model->convert2NonReversible())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
   ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 

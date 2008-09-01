@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.160 $
+//   $Revision: 1.161 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/05/08 15:36:13 $
+//   $Date: 2008/09/01 16:55:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,218 +160,6 @@ class CModel : public CModelEntity
       };
 
   private:
-    CState mInitialState;
-
-    CState mCurrentState;
-
-    /**
-     * The state template for the model
-     */
-    CStateTemplate mStateTemplate;
-
-    /**
-     * This is the list of objects which contains all objects which
-     * are up to date after a call to updateSimulatedValues
-     */
-    std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
-
-    /**
-     *  Comments
-     */
-    std::string mComments;
-
-    /**
-     * The volume unit used in the Model
-     */
-    VolumeUnit mVolumeUnit;
-
-    /**
-     * The time unit used in the Model
-     */
-    TimeUnit mTimeUnit;
-
-    /**
-     * The quantity unit used in the Model
-     */
-    QuantityUnit mQuantityUnit;
-
-    /**
-     * The type of the model
-     */
-    ModelType mType;
-
-    /**
-     *  for array of compartments
-     *  @supplierCardinality 0..*
-     *  @associates <{CCompartment}>
-     */
-    CCopasiVectorNS < CCompartment > mCompartments;
-
-    /**
-     *  Vector of reference to metabolites
-     */
-    CCopasiVector< CMetab > mMetabolites;
-
-    /**
-     *  Vector of reference to metabolites in reduced model representation
-     */
-    CCopasiVector< CMetab > mMetabolitesX;
-
-    /**
-     *  for array of steps
-     */
-    CCopasiVectorNS< CReaction > mSteps;
-
-    /**
-     *  for array of events
-     */
-    CCopasiVectorN< CEvent > mEvents;
-
-    /**
-     *  Vectors of fluxes of the reactions.
-     */
-    CVector< C_FLOAT64 > mParticleFluxes;
-
-    /**
-     *  vector of non concentration values in the model
-     */
-    CCopasiVectorN< CModelValue > mValues;
-
-    /**
-     *  for array of conserved moieties
-     */
-    CCopasiVector< CMoiety > mMoieties;
-
-    /**
-     *   Stoichiometry Matrix
-     */
-    CMatrix< C_FLOAT64 > mStoi;
-
-    /**
-     * Column and Row Annotation for the reduced Stoichiometry Matrix
-     */
-    CArrayAnnotation * mpStoiAnnotation;
-
-    /**
-     *   Stoichiometry Matrix
-     */
-    CMatrix< C_FLOAT64 > mStoiReordered;
-
-    /**
-     *   Reduced Stoichiometry Matrix
-     */
-    CMatrix< C_FLOAT64 > mRedStoi;
-
-    /**
-     * Column and Row Annotation for the reduced Stoichiometry Matrix
-     */
-    CArrayAnnotation * mpRedStoiAnnotation;
-
-    /**
-     * The elasticity matrix d(Flux_i)/dx_j
-     */
-    CMatrix< C_FLOAT64 > mElasticities;
-
-    /**
-     * Vector for storing the row interchanges during LU-Decomposition
-     */
-    CVector< unsigned C_INT32 > mRowLU;
-
-    /**
-     * Vector for storing the row and column interchanges needed to calculate
-     * the full Jacobian in user order.
-     */
-    CVector< unsigned C_INT32 > mJacobianPivot;
-
-    /**
-     * The number of unused metabs in the model
-     */
-    unsigned C_INT32 mNumMetabolitesUnused;
-
-    /**
-     * The number of metabs determined by ODEs in the model
-     */
-    unsigned C_INT32 mNumMetabolitesODE;
-
-    /**
-     * The number of metabs determined by reactions in the model
-     */
-    unsigned C_INT32 mNumMetabolitesReaction;
-
-    /**
-     * The number of metabs determined by assignements in the model
-     */
-    unsigned C_INT32 mNumMetabolitesAssignment;
-
-    /**
-     * The number of metabs determined by reactions which can be calculated
-     * through moieties
-     */
-    unsigned C_INT32 mNumMetabolitesIndependent;
-
-    /**
-     *   This matrix stores L
-     */
-    CMatrix < C_FLOAT64 > mL;
-
-    /**
-     * Column and Row Annotation for the Link Matrix
-     */
-    CArrayAnnotation * mpLinkMatrixAnnotation;
-
-    /**
-     *   This is used to return a view to L
-     */
-    CLinkMatrixView mLView;
-
-    /**
-     *  Factor to convert from quantity to particle number
-     *  taking into account the unit for substance quantities
-     */
-    C_FLOAT64 mQuantity2NumberFactor;
-
-    /**
-     *  Factor to convert from  particle number to quantity
-     *  taking into account the unit for substance quantities
-     */
-    C_FLOAT64 mNumber2QuantityFactor;
-
-    /**
-     * indicates whether a recalculation of the stoichiometry matrix decomposition is
-     * necessary
-     */
-    bool mCompileIsNecessary;
-
-    CProcessReport * mpCompileHandler;
-
-    /**
-     * An ordered list of refresh methods needed by the updateInitialValues
-     */
-    std::vector< Refresh * > mInitialRefreshes;
-
-    /**
-     * An ordered list of refresh methods needed by the updateSimulatedValues
-     */
-    std::vector< Refresh * > mSimulatedRefreshes;
-
-    /**
-     * An ordered list of refresh methods needed by the applyInitialValues
-     * to update values which stay constant during simulation.
-     */
-    std::vector< Refresh * > mConstantRefreshes;
-
-    /**
-     * An ordered list of refresh methods needed to update all model values
-     * which are not calculated during simulation
-     */
-    std::vector< Refresh * > mNonSimulatedRefreshes;
-
-    /**
-     * A flag indicating whether the state template has to be reordered
-     */
-    bool mReorderNeeded;
-
-  private:
     /**
      *  Copy construnctor
      *  @param "const CModel &" src
@@ -390,6 +178,12 @@ class CModel : public CModelEntity
      * Destructor
      */
     ~CModel();        // destructor (deallocation code here)
+
+    /**
+     * Retrieve the units of the child object.
+     * @return std::string units
+     */
+    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
     /**
      * Cleanup
@@ -1098,9 +892,9 @@ class CModel : public CModelEntity
 
     /**
      * Check whether the model is autonomous
-     * @return bool isAutonomous
+     * @return const bool &isAutonomous
      */
-    bool isAutonomous() const;
+    const bool & isAutonomous() const;
 
     /**
      * Build the update sequence used to calculate all initial values depending
@@ -1176,10 +970,232 @@ class CModel : public CModelEntity
      */
     void updateMatrixAnnotations();
 
+    /**
+     * Determine whether the model is autonomous
+     */
+    void determineIsAutonomous();
+
 #ifdef COPASI_DEBUG
   public:
     void check() const;
 #endif
+    // Attributes
+  private:
+    CState mInitialState;
+
+    CState mCurrentState;
+
+    /**
+     * The state template for the model
+     */
+    CStateTemplate mStateTemplate;
+
+    /**
+     * This is the list of objects which contains all objects which
+     * are up to date after a call to updateSimulatedValues
+     */
+    std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
+
+    /**
+     *  Comments
+     */
+    std::string mComments;
+
+    /**
+     * The volume unit used in the Model
+     */
+    VolumeUnit mVolumeUnit;
+
+    /**
+     * The time unit used in the Model
+     */
+    TimeUnit mTimeUnit;
+
+    /**
+     * The quantity unit used in the Model
+     */
+    QuantityUnit mQuantityUnit;
+
+    /**
+     * The type of the model
+     */
+    ModelType mType;
+
+    /**
+     *  for array of compartments
+     *  @supplierCardinality 0..*
+     *  @associates <{CCompartment}>
+     */
+    CCopasiVectorNS < CCompartment > mCompartments;
+
+    /**
+     *  Vector of reference to metabolites
+     */
+    CCopasiVector< CMetab > mMetabolites;
+
+    /**
+     *  Vector of reference to metabolites in reduced model representation
+     */
+    CCopasiVector< CMetab > mMetabolitesX;
+
+    /**
+     *  for array of steps
+     */
+    CCopasiVectorNS< CReaction > mSteps;
+
+    /**
+     *  for array of events
+     */
+    CCopasiVectorN< CEvent > mEvents;
+
+    /**
+     *  Vectors of fluxes of the reactions.
+     */
+    CVector< C_FLOAT64 > mParticleFluxes;
+
+    /**
+     *  vector of non concentration values in the model
+     */
+    CCopasiVectorN< CModelValue > mValues;
+
+    /**
+     *  for array of conserved moieties
+     */
+    CCopasiVector< CMoiety > mMoieties;
+
+    /**
+     *   Stoichiometry Matrix
+     */
+    CMatrix< C_FLOAT64 > mStoi;
+
+    /**
+     * Column and Row Annotation for the reduced Stoichiometry Matrix
+     */
+    CArrayAnnotation * mpStoiAnnotation;
+
+    /**
+     *   Stoichiometry Matrix
+     */
+    CMatrix< C_FLOAT64 > mStoiReordered;
+
+    /**
+     *   Reduced Stoichiometry Matrix
+     */
+    CMatrix< C_FLOAT64 > mRedStoi;
+
+    /**
+     * Column and Row Annotation for the reduced Stoichiometry Matrix
+     */
+    CArrayAnnotation * mpRedStoiAnnotation;
+
+    /**
+     * The elasticity matrix d(Flux_i)/dx_j
+     */
+    CMatrix< C_FLOAT64 > mElasticities;
+
+    /**
+     * Vector for storing the row interchanges during LU-Decomposition
+     */
+    CVector< unsigned C_INT32 > mRowLU;
+
+    /**
+     * Vector for storing the row and column interchanges needed to calculate
+     * the full Jacobian in user order.
+     */
+    CVector< unsigned C_INT32 > mJacobianPivot;
+
+    /**
+     * The number of unused metabs in the model
+     */
+    unsigned C_INT32 mNumMetabolitesUnused;
+
+    /**
+     * The number of metabs determined by ODEs in the model
+     */
+    unsigned C_INT32 mNumMetabolitesODE;
+
+    /**
+     * The number of metabs determined by reactions in the model
+     */
+    unsigned C_INT32 mNumMetabolitesReaction;
+
+    /**
+     * The number of metabs determined by assignements in the model
+     */
+    unsigned C_INT32 mNumMetabolitesAssignment;
+
+    /**
+     * The number of metabs determined by reactions which can be calculated
+     * through moieties
+     */
+    unsigned C_INT32 mNumMetabolitesIndependent;
+
+    /**
+     *   This matrix stores L
+     */
+    CMatrix < C_FLOAT64 > mL;
+
+    /**
+     * Column and Row Annotation for the Link Matrix
+     */
+    CArrayAnnotation * mpLinkMatrixAnnotation;
+
+    /**
+     *   This is used to return a view to L
+     */
+    CLinkMatrixView mLView;
+
+    /**
+     *  Factor to convert from quantity to particle number
+     *  taking into account the unit for substance quantities
+     */
+    C_FLOAT64 mQuantity2NumberFactor;
+
+    /**
+     *  Factor to convert from  particle number to quantity
+     *  taking into account the unit for substance quantities
+     */
+    C_FLOAT64 mNumber2QuantityFactor;
+
+    /**
+     * indicates whether a recalculation of the stoichiometry matrix decomposition is
+     * necessary
+     */
+    bool mCompileIsNecessary;
+
+    CProcessReport * mpCompileHandler;
+
+    /**
+     * An ordered list of refresh methods needed by the updateInitialValues
+     */
+    std::vector< Refresh * > mInitialRefreshes;
+
+    /**
+     * An ordered list of refresh methods needed by the updateSimulatedValues
+     */
+    std::vector< Refresh * > mSimulatedRefreshes;
+
+    /**
+     * An ordered list of refresh methods needed by the applyInitialValues
+     * to update values which stay constant during simulation.
+     */
+    std::vector< Refresh * > mConstantRefreshes;
+
+    /**
+     * An ordered list of refresh methods needed to update all model values
+     * which are not calculated during simulation
+     */
+    std::vector< Refresh * > mNonSimulatedRefreshes;
+
+    /**
+     * A flag indicating whether the state template has to be reordered
+     */
+    bool mReorderNeeded;
+
+    /**
+     * A flag indicating whether the model is autonomous.
+     */
+    bool mIsAutonomous;
   };
 
 #endif // CModel

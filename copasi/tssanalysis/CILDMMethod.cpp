@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: shoops $
+//   $Date: 2008/09/01 17:01:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1096,7 +1096,7 @@ void CILDMMethod::createAnnotationsM()
 {
   CArrayAnnotation *
   pTmp1 = new CArrayAnnotation("Unscaled elasticities", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->VECTOR);
   pTmp1->setDescription("mVslowPrintAnn matrix");
@@ -1107,7 +1107,7 @@ void CILDMMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp2 = new CArrayAnnotation("mVslowMetabPrint", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription("mVslowMetabPrint matrix");
@@ -1118,7 +1118,7 @@ void CILDMMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("mVslowSpacePrint", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setDescription("mVslowSpacePrint matrix");
@@ -1128,7 +1128,7 @@ void CILDMMethod::createAnnotationsM()
 
   CArrayAnnotation *
   pTmp4 = new CArrayAnnotation("mVfastSpacePrint", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint));
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription("mVfastSpacePrint matrix");

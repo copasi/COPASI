@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:31:52 $
+//   $Date: 2008/09/01 16:55:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -523,6 +523,7 @@ int main(int argc, char *argv[])
 
 finish:
   pdelete(CCopasiDataModel::Global);
+  COptions::cleanup();
   pdelete(CCopasiContainer::Root);
 
   //std::cout << "Leaving main program." << std::endl;
