@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.119 $
+//   $Revision: 1.120 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/02 14:28:32 $
+//   $Date: 2008/09/02 15:02:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -460,6 +460,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
 {
   std::vector<CLLineSegment> segments = c.getCurveSegments();
+  unsigned int i;
   for (int k = 0;k < c.getNumCurveSegments();k++)
     {
       CLLineSegment seg = segments[k];
@@ -468,39 +469,35 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
       CLPoint endPoint = seg.getEnd();
       // for the moment do not take type of curve into account
 
-      C_FLOAT64 x, y;
-
       if (seg.isBezier())
         {
-          std::vector<CLPoint> pts = std::vector<CLPoint>();
-          pts.push_back(startPoint);
-          pts.push_back(seg.getBase1());
-          pts.push_back(seg.getBase2());
-          pts.push_back(endPoint);
-          BezierCurve *bezier = new BezierCurve();
-          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
+          CLPoint base1 = seg.getBase1();
+          CLPoint base2 = seg.getBase2();
           //now paint bezier as line strip
+          // use an evaluator since this is probably a lot more efficient
+          GLfloat controlPts[4][3] = {
+                                       {startPoint.getX(), startPoint.getY(), 0.0},
+                                       {base1.getX(), base1.getY(), 0.0},
+                                       {base2.getX(), base2.getY(), 0.0},
+                                       {endPoint.getX(), endPoint.getY(), 0.0}
+                                     };
+          // enable the evaluator to draw the cubic beziers
+          glMap1f(GL_MAP1_VERTEX_3, 0.0f, 100.0f, 3, 4, &controlPts[0][0]);
+          glEnable(GL_MAP1_VERTEX_3);
           glBegin(GL_LINE_STRIP);
-          x = startPoint.getX();
-          y = startPoint.getY();
-          glVertex2d(x, y);
-          unsigned int i;
-          for (i = 0;i < bezierPts.size();i++)
+          for (i = 0;i <= 100;++i)
             {
-              x = bezierPts[i].getX();
-              y = bezierPts[i].getY();
-              glVertex2d(x, y);
+              // evaluate the function
+              glEvalCoord1f((GLfloat)i);
             }
-          x = endPoint.getX();
-          y = endPoint.getY();
           glEnd();
-          delete bezier;
+          glDisable(GL_MAP1_VERTEX_3);
         }
       else
         {// just draw a straight line
           glBegin(GL_LINE_STRIP);
-          x = startPoint.getX();
-          y = startPoint.getY();
+          double x = startPoint.getX();
+          double y = startPoint.getY();
           glVertex2d(x, y);
           x = endPoint.getX();
           y = endPoint.getY();
