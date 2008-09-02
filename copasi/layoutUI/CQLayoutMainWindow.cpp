@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:13:42 $
+//   $Author: gauges $
+//   $Date: 2008/09/02 13:12:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@ using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
+  this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   currentPlace = QString::null;
   resizeToggle = true;
   dataPresent = false;
