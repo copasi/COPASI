@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/02 13:12:21 $
+//   $Date: 2008/09/02 14:28:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,10 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   else
     pLayoutList = NULL;
 
-  glPainter = new CQGLNetworkPainter(scrollView->viewport(), "Network layout");
+  // enable double buffering
+  QGLFormat f;
+  f.setDoubleBuffer(TRUE);
+  glPainter = new CQGLNetworkPainter(f, scrollView->viewport(), "Network layout");
   if (pLayoutList != NULL)
     {
       CLayout * pLayout;
@@ -422,7 +425,10 @@ void CQLayoutMainWindow::loadSBMLFile()
   else
     pLayoutList = NULL;
 
-  glPainter = new CQGLNetworkPainter(scrollView->viewport());
+  // enable double buffering
+  QGLFormat f;
+  f.setDoubleBuffer(TRUE);
+  glPainter = new CQGLNetworkPainter(f, scrollView->viewport());
   if (pLayoutList != NULL)
     {
       CLayout * pLayout;

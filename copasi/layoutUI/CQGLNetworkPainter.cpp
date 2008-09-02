@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.119 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/01 21:53:18 $
+//   $Date: 2008/09/02 14:28:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,9 +61,11 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-CQGLNetworkPainter::CQGLNetworkPainter(QWidget *parent, const char *name)
-    : QGLWidget(parent, name)
-{initializeGraphPainter(parent);}
+CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent, const char *name)
+    : QGLWidget(format, parent, name)
+{
+  initializeGraphPainter(parent);
+}
 
 CQGLNetworkPainter::~CQGLNetworkPainter()
 {
@@ -74,6 +76,8 @@ CQGLNetworkPainter::~CQGLNetworkPainter()
       delete it->second;
       ++it;
     }
+  // delete the node display list
+  glDeleteLists(this->mNodeDisplayList, 1);
 }
 
 const CLPoint& CQGLNetworkPainter::getGraphMin()
@@ -1848,7 +1852,42 @@ void CQGLNetworkPainter::initializeGL()
   glDisable(GL_ALPHA_TEST);
 
   glShadeModel(GL_SMOOTH);
+
   glGenTextures(1, textureNames);
+  // convert the node into a display list that is created once and call once
+  // for each node.
+  // this might safe some cpu cycles, especially when the nodes get more fancy.
+  this->mNodeDisplayList = glGenLists(1);
+  GLUquadricObj* qobj = NULL;
+  glNewList(mNodeDisplayList, GL_COMPILE);
+  glBegin(GL_POLYGON);
+  glVertex2d(0.05, 0.0);
+  glVertex2d(0.95, 0.0);
+  glVertex2d(0.95, 0.05);
+  glVertex2d(1.0 , 0.05);
+  glVertex2d(1.0 , 0.95);
+  glVertex2d(0.95, 0.95);
+  glVertex2d(0.95, 1.0);
+  glVertex2d(0.05, 1.0);
+  glVertex2d(0.05, 0.95);
+  glVertex2d(0.0 , 0.95);
+  glVertex2d(0.0 , 0.05);
+  glVertex2d(0.05, 0.05);
+  glEnd();
+  qobj = gluNewQuadric();
+  gluQuadricDrawStyle(qobj, GLU_FILL);
+  glPushMatrix();
+  glTranslatef(0.05f, 0.05f , 0.0f);
+  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 180, 90);
+  glTranslatef(0.90f, 0.0f , 0.0f);
+  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 90, 90);
+  glTranslatef(0.0f, 0.90f, 0.0f);
+  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 0, 90);
+  glTranslatef(-0.90f , 0.0f , 0.0f);
+  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 270, 90);
+  glPopMatrix();
+  gluDeleteQuadric(qobj);
+  glEndList();
 }
 
 void CQGLNetworkPainter::resizeGL(int w, int h)

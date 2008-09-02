@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/01 22:36:02 $
+//   $Date: 2008/09/02 14:28:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ class CQGLNetworkPainter : public QGLWidget
     Q_OBJECT        // must include this if you use Qt signals/slots
 
   public:
-    CQGLNetworkPainter(QWidget *parent = 0, const char *name = 0);
+    CQGLNetworkPainter(const QGLFormat& format, QWidget *parent = 0, const char *name = 0);
     ~CQGLNetworkPainter();
 
     CSimSummaryInfo *pSummaryInfo;
@@ -145,6 +145,7 @@ class CQGLNetworkPainter : public QGLWidget
     std::vector<CGraphCurve> curvesWithArrow;
 
     GLuint graphObjList;
+    GLuint mNodeDisplayList;
     std::string mFontname;
     unsigned int mFontsize;
     double mFontsizeDouble;
