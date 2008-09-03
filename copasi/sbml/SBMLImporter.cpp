@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.210 $
+//   $Revision: 1.211 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/30 16:20:17 $
+//   $Date: 2008/09/03 12:22:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3847,7 +3847,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
     }
   ConverterASTNode tmpNode(*rule->getMath());
   // replace all the nodes that represent species with the
-  // hasOnlySubstanceUnits flag set with the node divided by the volume
+  // hasOnlySubstanceUnits flag set with the node multiplied by the volume
   //replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
   this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlmap);
   // replace the object names
@@ -4051,7 +4051,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
       // not found
       if (it == endit)
         {
-          fatalError();
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 74, name.c_str());
         }
     }
   else
