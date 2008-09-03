@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/30 16:20:17 $
+//   $Date: 2008/09/03 12:21:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,7 +463,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     }
   else if (status == CModelEntity::FIXED)
     {
-      // do this expolicitly since we might handle an exisiting object from an
+      // do this explicitly since we might handle an exisiting object from an
       // earlier import that had it attribute set already
       pSBMLSpecies->setConstant(true);
       pSBMLSpecies->setBoundaryCondition(true);
@@ -3102,7 +3102,10 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
       if (pObjectNode != NULL)
         {
           const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(pObjectNode->getObjectCN());
-          assert(pObject);
+          if (!pObject)
+            {
+              fatalError();
+            }
           if (pObject->isReference())
             {
               pObject = pObject->getObjectParent();
