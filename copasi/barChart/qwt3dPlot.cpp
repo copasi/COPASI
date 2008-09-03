@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: akoenig $
-//   $Date: 2007/12/03 12:43:56 $
+//   $Date: 2008/09/03 13:11:52 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,6 +31,9 @@ Plot3d::Plot3d(QWidget* parent, const char* name)
 
   mTitle = QString("");
   mColorLegend = true;
+
+  mData.maxValue = 0;
+  mData.minValue = 0;
 
   mpPlot->coordinates()->setAutoScale(false);
   mpPlot->updateData();
