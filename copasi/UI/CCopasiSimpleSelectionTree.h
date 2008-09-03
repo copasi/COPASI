@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Date: 2008/09/03 17:40:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,8 @@ class CCopasiSimpleSelectionTree: public QListView
       BASE_INITIAL = 0x04,
       BASE_TRANSIENT = 0x08,
       BASE_EXPRESSION = 0x10,
-      BASE_MODEL = 0x20
+      BASE_MODEL = 0x20,
+      BASE_GLOBAL = 0x40
     };
 
   public:
@@ -50,8 +51,8 @@ class CCopasiSimpleSelectionTree: public QListView
       NUMERIC = BASE_DOUBLE | BASE_INTEGER,
       INITIAL_VALUE = BASE_DOUBLE | BASE_INITIAL | BASE_MODEL,
       TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
-      INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL,
-      TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL,
+      INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
+      TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
       OBJECTIVE_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION,
       NO_RESTRICTION = -1
     };

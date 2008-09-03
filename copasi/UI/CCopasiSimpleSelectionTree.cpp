@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Date: 2008/09/03 17:40:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -643,7 +643,7 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
       if (pReaction)
         {
           // Local reaction parameters may not be used in any expression in the model.
-          if ((flag & BASE_MODEL))
+          if ((flag & BASE_GLOBAL))
             return false;
 
           // These are initial values which may be used in expressions.
