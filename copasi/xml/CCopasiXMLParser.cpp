@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.184 $
+//   $Revision: 1.185 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:32 $
+//   $Author: ssahle $
+//   $Date: 2008/09/03 13:30:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2276,7 +2276,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                           // Old file format support
+    case MathML:                                            // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2374,7 +2374,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                           // Old file format support
+    case MathML:                                            // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -5350,7 +5350,7 @@ void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Ch
         if (!mCommon.pLineSegment)
           mCommon.pLineSegment = new CLLineSegment;
 
-        mCommon.pLineSegment->setIsBezier(type == "CubicBezier");
+        mCommon.pLineSegment->setIsBezier(!strcmp(type, "CubicBezier"));
       }
       return;
       break;
@@ -5382,6 +5382,38 @@ void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Ch
         attr = mParser.getAttributeValue("y", papszAttrs);
         C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
         mCommon.pLineSegment->setEnd(CLPoint(dX, dY));
+        return;
+      }
+      return;
+      break;
+
+    case BasePoint1:
+      if (strcmp(pszName, "BasePoint1"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "BasePoint1", mParser.getCurrentLineNumber());
+      {//workload
+        const char * attr;
+        attr = mParser.getAttributeValue("x", papszAttrs);
+        C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+        attr = mParser.getAttributeValue("y", papszAttrs);
+        C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+        mCommon.pLineSegment->setBase1(CLPoint(dX, dY));
+        return;
+      }
+      return;
+      break;
+
+    case BasePoint2:
+      if (strcmp(pszName, "BasePoint2"))
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
+                       pszName, "BasePoint2", mParser.getCurrentLineNumber());
+      {//workload
+        const char * attr;
+        attr = mParser.getAttributeValue("x", papszAttrs);
+        C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+        attr = mParser.getAttributeValue("y", papszAttrs);
+        C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+        mCommon.pLineSegment->setBase2(CLPoint(dX, dY));
         return;
       }
       return;
@@ -5429,7 +5461,15 @@ void CCopasiXMLParser::CurveElement::end(const XML_Char *pszName)
           break;
 
         case End:
-          //tell the handler where to continue
+          //tell the handler where to continue, depending on the type of the curve segment
+          if (mCommon.pLineSegment && !mCommon.pLineSegment->isBezier())
+            mCurrentElement = CurveSegment;
+          break;
+
+        case BasePoint1:
+          break;
+
+        case BasePoint2:
           mCurrentElement = CurveSegment;
           break;
 

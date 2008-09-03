@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:32 $
+//   $Author: ssahle $
+//   $Date: 2008/09/03 13:30:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3236,7 +3236,9 @@ class CCopasiXMLParser : public CExpat
           ListOfCurveSegments,
           CurveSegment,
           Start,
-          End
+          End,
+          BasePoint1,
+          BasePoint2
         };
 
         unsigned C_INT32 mLineNumber;
