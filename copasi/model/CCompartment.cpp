@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Author: ssahle $
+//   $Date: 2008/09/03 23:11:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
+#include "report/CRenameHandler.h"
 #include "CCompartment.h"
 #include "CModel.h"
 
@@ -138,7 +139,20 @@ bool CCompartment::createMetabolite(const CMetab & metabolite)
 
 bool CCompartment::addMetabolite(CMetab * pMetabolite)
 {
+  if (!pMetabolite) return false;
+
+  std::string oldCN = pMetabolite->getCN();
+
   bool success = mMetabolites.add(pMetabolite, true);
+
+  //if a metabolite is added to a compartment successfully the CN of
+  //the metabolite is changed. This needs to be handled similarly to a
+  //rename.
+  if (success && smpRenameHandler && getObjectParent())
+    {
+      std::string newCN = pMetabolite->getCN();
+      smpRenameHandler->handle(oldCN, newCN);
+    }
 
   return success;
 }
