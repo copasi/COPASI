@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Author: akoenig $
+//   $Date: 2008/09/03 13:58:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -479,7 +479,11 @@ void CQArrayAnnotationsWidget::clearWidget()
   mpContentTable->setNumCols(0);
   mpContentTable->setNumRows(0);
 #ifdef WITH_QWT3D
-  if (showBarChart) plot3d->emptyPlot();
+  if (showBarChart && mBarChartFilled)
+    {
+      plot3d->emptyPlot();
+      mBarChartFilled = false;
+    }
 #endif
 }
 
