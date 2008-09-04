@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.247 $
+//   $Revision: 1.248 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: ssahle $
+//   $Date: 2008/09/04 14:56:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -603,7 +603,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         break;
 #endif
 #ifdef WITH_LAYOUT
-      case 131:
+      case 13:
         return mpCopasiLayoutWidget;
         break;
 #endif
@@ -1180,6 +1180,7 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
 
   while ((pCopasiWidget = static_cast< CopasiWidget * >(it.current())) != NULL)
     {
+      //std::cout << pCopasiWidget->name() << std::endl;
       pCopasiWidget->update(objectType, action, key);
       ++it;
     }

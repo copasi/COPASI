@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 07:59:05 $
+//   $Author: ssahle $
+//   $Date: 2008/09/04 14:56:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,7 @@ static char DataModeltxt[] =
   "12:128:Update order\n"
 #endif
 #ifdef WITH_LAYOUT
-  "1:13:Graphical\n"
-  "13:131:Layout\n"
+  "1:13:Diagrams\n"
 #endif
   "0:2:Tasks\n"
   "2:21:Steady-State\n"
