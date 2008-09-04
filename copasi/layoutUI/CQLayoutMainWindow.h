@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/01 22:41:32 $
+//   $Date: 2008/09/04 06:01:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 #include <qmessagebox.h>
 #include <qgl.h>
 #include <qlayout.h>
-#include <qscrollview.h>
+//#include <qscrollview.h>
 #include <qsplitter.h>
 #include <qlayout.h>
 #include <qwidget.h>
@@ -40,6 +40,7 @@
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qevent.h>
+#include <qtoolbar.h>
 //#include <qlayout.h>
 //#include <qslider.h>
 //#include <qwt_slider.h>
@@ -53,7 +54,9 @@
 #include "copasi/layoutUI/CDataEntity.h"
 
 class QwtSlider;
-class CQGLNetworkPainter;
+class CQGLViewport;
+class QSplitter;
+class QComboBox;
 
 class CQLayoutMainWindow : public QMainWindow
   {
@@ -111,7 +114,7 @@ class CQLayoutMainWindow : public QMainWindow
 
     void changeMinMaxNodeSizes();
     void changeFontSize();
-    void toggleAutomaticRescaling(bool isChecked);
+    //void toggleAutomaticRescaling(bool isChecked);
 
     void showStep(double i);
     void startAnimation();
@@ -122,6 +125,7 @@ class CQLayoutMainWindow : public QMainWindow
   public slots:
     void changeStepValue(C_INT32 i);
     void endOfAnimationReached();
+    void slotActivated(int);
 
   private:
     void createActions();
@@ -151,8 +155,9 @@ class CQLayoutMainWindow : public QMainWindow
     //CQParameterWindow *paraWin;
     ParaPanel *paraPanel;
     CQCurrentValueTable *valTable;
-    CQGLNetworkPainter *glPainter;
-    QScrollView *scrollView;
+    CQGLViewport *mpGLViewport;
+    QSplitter* mpSplitter;
+    //QScrollView *scrollView;
     //QSlider *timeSlider;
     QwtSlider *timeSlider;
 
@@ -170,10 +175,12 @@ class CQLayoutMainWindow : public QMainWindow
     QIconSet createStartIcon();
     QIconSet createStopIcon();
 
-    void resizeEvent(QResizeEvent *ev);
-    bool resizeToggle;
+    //void resizeEvent(QResizeEvent *ev);
+    //bool resizeToggle;
     bool dataPresent; // shows whether time series data already load
     QString currentPlace;
+    QToolBar* mpToolbar;
+    QComboBox* mpZoomComboBox;
   };
 
 #endif /*SIMGUI_H_*/

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/02 15:02:39 $
+//   $Date: 2008/09/04 06:01:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,8 @@
 #include <qrect.h>
 #include <qpoint.h>
 #include <qpixmap.h>
+#include <qevent.h>
+#include <qsize.h>
 //#include <qimage.h>
 #include <qcolor.h>
 #include <qtimer.h>
@@ -61,6 +63,24 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
+// TODO change resize behaviour.
+// The maximal size for a layout should be 2000x2000 for now.
+// Everything that is larger has to be scaled and a maximal zoom factor has to
+// be set so that it will never get larger.
+// Later this can be handled more inteligently by only drawing in the available
+// area. But for that the scrollview will have to be manually modified.
+//
+// If the layout is smaller than the space that is available in the scroll
+// view, the layout should fill the whole space, this will get rid of the ugly
+// gray area
+//
+// We need some kind of zoom. The user should be allowed to zoom in and out.
+// The maximal zoom factor is the one that gets at least one of the dimensions
+// to 2000 pixels. There should probably also be a minimal zoom factor.
+//
+// TODO change the text rendering or the texture creation. Right now it seems
+// to work reasonably wel under Mac OS X, but under Linux it doesn't.
+
 CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent, const char *name)
     : QGLWidget(format, parent, name)
 {
@@ -100,6 +120,7 @@ void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
   mgraphMax.setX(max.getX());
   mgraphMax.setY(max.getY());
 
+  /*
   this->setFixedSize((int)max.getX(), (int)max.getY());
   // now adapt viewing "volume"
   glMatrixMode(GL_PROJECTION);        // Select The Projection Matrix
@@ -109,13 +130,13 @@ void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
              (GLdouble)mgraphMax.getY(),
              (GLdouble)mgraphMin.getY());
   glMatrixMode(GL_MODELVIEW); // Select The Modelview Matrix
-  std::cout << "graph size: " << (mgraphMax.getX() - mgraphMin.getX()) << " x " << (mgraphMax.getY() - mgraphMin.getY()) << std::endl;
+  //std::cout << "graph size: " << (mgraphMax.getX() - mgraphMin.getX()) << " x " << (mgraphMax.getY() - mgraphMin.getY()) << std::endl;
+  */
 }
 
 void CQGLNetworkPainter::draw()
 {
   glLoadIdentity();
-
   drawGraph();
 }
 
@@ -141,7 +162,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   CCopasiVector<CLReactionGlyph> reactions;
   reactions = lP->getListOfReactionGlyphs();
 
-  std::cout << "number of reactions: " << reactions.size() << std::endl;
+  //std::cout << "number of reactions: " << reactions.size() << std::endl;
 
   //now extract curves to draw from reaction
   viewerCurves = std::vector<CGraphCurve>();
@@ -195,12 +216,12 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
                           C_INT32 num = bezierPts.size();
                           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-                          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
+                          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->mCurrentZoom);
                           delete bezier;
                         }
                       else
                         {
-                          ar = new CArrow(lastSeg, p.getX(), p.getY(), this->currentZoom);
+                          ar = new CArrow(lastSeg, p.getX(), p.getY(), this->mCurrentZoom);
                         }
 
                       curve.setArrowP(true);
@@ -275,7 +296,6 @@ bool CQGLNetworkPainter::checkCurve(CGraphCurve * curve, CGraphCurve /* curveR *
 
 void CQGLNetworkPainter::drawGraph()
 {
-  std::cout << "draw graph" << std::endl;
   // create OpenGL display list
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
@@ -352,7 +372,7 @@ void CQGLNetworkPainter::drawGraph()
               C_INT32 yNdCenter = (C_INT32) (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
               if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                 {
-                  x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->currentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
+                  x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->mCurrentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
                   y = yNdCenter;
                 }
               else if ((tWid + 4) > nDiam)
@@ -407,7 +427,7 @@ void CQGLNetworkPainter::drawColorLegend()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 {
-  float scaledValue = CVisParameters::DEFAULT_NODE_SIZE * currentZoom;
+  float scaledValue = CVisParameters::DEFAULT_NODE_SIZE * mCurrentZoom;
   C_INT16 mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
   if (pParentLayoutWindow != NULL)
     {
@@ -1388,7 +1408,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           CLPoint p = pLastSeg->getEnd();
           if (pCurve->hasArrowP())
             {
-              CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->currentZoom);
+              CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
               nodeArrowMap.insert(std::pair<std::string, CArrow>
                                   (key, *ar));
               pCurve->setArrow(*ar);
@@ -1537,10 +1557,10 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
           C_INT32 num = bezierPts.size();
           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
+          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->mCurrentZoom);
         }
       else
-        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->currentZoom);
+        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
 
       nodeArrowMap.insert(std::pair<std::string, CArrow>
                           ((*it).first, *ar));
@@ -1578,10 +1598,10 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
           std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
           C_INT32 num = bezierPts.size();
           CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->currentZoom);
+          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->mCurrentZoom);
         }
       else
-        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->currentZoom);
+        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
 
       nodeArrowMap.insert(std::pair<std::string, CArrow>
                           ((*it).first, *ar));
@@ -1623,12 +1643,12 @@ void CQGLNetworkPainter::setFontSize()
 
 void CQGLNetworkPainter::zoomIn()
 {
-  zoom(1.5);
+  this->mCurrentZoom *= 1.5;
 }
 
 void CQGLNetworkPainter::zoomOut()
 {
-  zoom(2.0 / 3.0);
+  this->mCurrentZoom /= 1.5;
 }
 
 void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)
@@ -1638,11 +1658,11 @@ void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)
 
 void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
 {
-  std::cout << "zoom  " << zoomFactor << std::endl;
-  this->currentZoom *= zoomFactor;
+  //std::cout << "zoom  " << zoomFactor << std::endl;
+  this->mCurrentZoom *= zoomFactor;
 
   CLPoint cMax = CLPoint(this->mgraphMax.getX() * zoomFactor, this->mgraphMax.getY() * zoomFactor);
-  this->setGraphSize(this->mgraphMin, cMax);
+  //this->setGraphSize(this->mgraphMin, cMax);
 
   if (pParentLayoutWindow != NULL)
     {
@@ -1689,20 +1709,20 @@ void CQGLNetworkPainter::zoom(C_FLOAT64 zoomFactor)
       // and scaled byc urrentZoom (which is the product of all zoomFactors applied so far)
       this->mFontsizeDouble = this->mFontsizeDouble * zoomFactor;
       this->mFontsize = (int)this->mFontsizeDouble;
-      std::cout << "new fontsize: " << this->mFontsize << std::endl;
+      //std::cout << "new fontsize: " << this->mFontsize << std::endl;
       for (i = 0;i < viewerLabels.size();i++)
         {
           if (!preserveMinLabelHeightP)
-            this->viewerLabels[i].scale(currentZoom);
+            this->viewerLabels[i].scale(mCurrentZoom);
           else
             {
-              std::cout << "height of label: " << this->viewerLabels[i].getHeight() << " *  " << zoomFactor << std::endl;
+              //std::cout << "height of label: " << this->viewerLabels[i].getHeight() << " *  " << zoomFactor << std::endl;
 
-              if ((this->viewerLabels[i].getOrigHeight() * currentZoom) >= MIN_HEIGHT)
-                this->viewerLabels[i].scale(currentZoom);
+              if ((this->viewerLabels[i].getOrigHeight() * mCurrentZoom) >= MIN_HEIGHT)
+                this->viewerLabels[i].scale(mCurrentZoom);
               else
                 {
-                  std::cout << "set font size to MIN_HEIGHT " << std::endl;
+                  //std::cout << "set font size to MIN_HEIGHT " << std::endl;
                   this->mFontsizeDouble = (double) MIN_HEIGHT;
                   this->mFontsize = MIN_HEIGHT;
                   this->viewerLabels[i].adaptToHeight(MIN_HEIGHT);
@@ -1804,9 +1824,11 @@ bool CQGLNetworkPainter::isCircleMode()
   else return false;
 }
 
-void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
+void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
 {
-  currentZoom = 1.0;
+  mCurrentZoom = 1.0;
+  mCurrentPositionX = 0.0;
+  mCurrentPositionX = 0.0;
   mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
@@ -1822,8 +1844,14 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *viewportWidget)
   const QFont& mfRef = mf;
   QFontMetrics mfm = QFontMetrics(mfRef);
 
-  // parent structure: glPainter -> viewport -> scrollView -> splitter -> mainWindow
-  QWidget *ancestor = viewportWidget->parentWidget()->parentWidget()->parentWidget()->parentWidget();
+  // parent structure: glPainter -> CQGLViewport -> splitter ->
+  // vbox -> mainWindow
+  QWidget *ancestor = parent->parentWidget();
+  while (ancestor && dynamic_cast<CQLayoutMainWindow*>(ancestor) == NULL)
+    {
+      ancestor = ancestor->parentWidget();
+    }
+  assert(ancestor != NULL);
   connect(this, SIGNAL(stepChanged(C_INT32)), ancestor, SLOT(changeStepValue(C_INT32)));
   connect(this, SIGNAL(endOfAnimationReached()), ancestor, SLOT(endOfAnimationReached()));
   regularTimer = new QTimer(this);
@@ -1894,10 +1922,14 @@ void CQGLNetworkPainter::resizeGL(int w, int h)
 
   glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
   glLoadIdentity();             // Reset The Projection Matrix
-  gluOrtho2D((GLdouble)mgraphMin.getX(),
-             (GLdouble)mgraphMax.getX(),
-             (GLdouble)mgraphMax.getY(),
-             (GLdouble)mgraphMin.getY()); // y: 0.0 is bottom left instead of top left as in SBML
+  //  gluOrtho2D((GLdouble)mgraphMin.getX(),
+  //             (GLdouble)mgraphMax.getX(),
+  //             (GLdouble)mgraphMax.getY(),
+  //             (GLdouble)mgraphMin.getY()); // y: 0.0 is bottom left instead of top left as in SBML
+  gluOrtho2D((GLdouble)mCurrentPositionX,
+             (GLdouble)(mCurrentPositionX + w / mCurrentZoom),
+             (GLdouble)(mCurrentPositionY + h / mCurrentZoom),
+             (GLdouble)mCurrentPositionY); // y: 0.0 is bottom left instead of top left as in SBML
   glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
 }
 
@@ -1968,3 +2000,67 @@ void CQGLNetworkPainter::printAvailableFonts()
         }
     }
 }
+
+/*
+void CQGLNetworkPainter::resizeEvent(QResizeEvent* e)
+{
+    // received an resize event
+    //this->resizeGL();
+    QGLWidget::resizeEvent(e);
+}
+ */
+
+void CQGLNetworkPainter::setZoomFactor(C_FLOAT64 zoom)
+{
+  if (zoom != this->mCurrentZoom)
+    {
+      this->mCurrentZoom = zoom;
+      this->updateGL();
+    }
+}
+
+C_FLOAT64 CQGLNetworkPainter::getZoomFactor() const
+  {
+    return this->mCurrentZoom;
+  }
+
+void CQGLNetworkPainter::setCurrentPosition(C_FLOAT64 x, C_FLOAT64 y)
+{
+  if (this->mCurrentPositionX != x || this->mCurrentPositionY != y)
+    {
+      this->mCurrentPositionX = x;
+      this->mCurrentPositionY = y;
+      this->resizeGL(this->width(), this->height());
+      this->updateGL();
+    }
+}
+
+void CQGLNetworkPainter::setCurrentPositionX(C_FLOAT64 x)
+{
+  if (this->mCurrentPositionX != x)
+    {
+      this->mCurrentPositionX = x;
+      this->resizeGL(this->width(), this->height());
+      this->updateGL();
+    }
+}
+
+void CQGLNetworkPainter::setCurrentPositionY(C_FLOAT64 y)
+{
+  if (this->mCurrentPositionY != y)
+    {
+      this->mCurrentPositionY = y;
+      this->resizeGL(this->width(), this->height());
+      this->updateGL();
+    }
+}
+
+C_FLOAT64 CQGLNetworkPainter::getCurrentPositionX() const
+  {
+    return this->mCurrentPositionX;
+  }
+
+C_FLOAT64 CQGLNetworkPainter::getCurrentPositionY() const
+  {
+    return this->mCurrentPositionY;
+  }

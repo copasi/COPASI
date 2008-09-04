@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/02 14:28:32 $
+//   $Date: 2008/09/04 06:01:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,12 +18,14 @@
 #include <qwt_slider.h>
 #include <qvaluelist.h>
 #include <qmessagebox.h>
+#include <qcombobox.h>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "layout/CListOfLayouts.h"
 #include "layout/CLayout.h"
 #include "layout/CLBase.h"
 #include "CQLayoutMainWindow.h"
+#include "CQGLViewport.h"
 #include "CQGLNetworkPainter.h"
 #include "NodeSizePanel.h"
 #include "FontChooser.h"
@@ -39,7 +41,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 {
   this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   currentPlace = QString::null;
-  resizeToggle = true;
+  //resizeToggle = true;
   dataPresent = false;
   pVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
@@ -50,10 +52,10 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   mainBox = new QVBox(this);
 
   // create split window with parameter panel and graph panel
-  QSplitter *splitter = new QSplitter(Qt::Horizontal, mainBox);
-  splitter->setCaption("Test");
+  mpSplitter = new QSplitter(Qt::Horizontal, mainBox);
+  mpSplitter->setCaption("Test");
 
-  infoBox = new QVBox(splitter);
+  infoBox = new QVBox(mpSplitter);
 
   paraPanel = new ParaPanel(infoBox);
 
@@ -92,10 +94,10 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   //std::cout << "info box: min height: " << infoBox->minimumHeight() << std::endl;
 
   // create sroll view
-  scrollView = new QScrollView(splitter);
-  scrollView->setCaption("Network Graph Viewer");
+  //scrollView = new QScrollView(mpSplitter);
+  //scrollView->setCaption("Network Graph Viewer");
   //scrollView->viewport()->setPaletteBackgroundColor(QColor(255,255,240));
-  scrollView->viewport()->setPaletteBackgroundColor(QColor(219, 235, 255));
+  //scrollView->viewport()->setPaletteBackgroundColor(QColor(219, 235, 255));
   //scrollView->viewport()->setMouseTracking(TRUE);
   // Create OpenGL widget
   CListOfLayouts *pLayoutList;
@@ -107,9 +109,10 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
     pLayoutList = NULL;
 
   // enable double buffering
-  QGLFormat f;
-  f.setDoubleBuffer(TRUE);
-  glPainter = new CQGLNetworkPainter(f, scrollView->viewport(), "Network layout");
+  //QGLFormat f;
+  //f.setDoubleBuffer(TRUE);
+  //glPainter = new CQGLNetworkPainter(f, scrollView->viewport(), "Network layout");
+  mpGLViewport = new CQGLViewport(mpSplitter, "Network layout");
   if (pLayoutList != NULL)
     {
       CLayout * pLayout;
@@ -119,8 +122,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
           CLDimensions dim = pLayout->getDimensions();
           CLPoint c1;
           CLPoint c2(dim.getWidth(), dim.getHeight());
-          glPainter->setGraphSize(c1, c2);
-          glPainter->createGraph(pLayout); // create local data structures
+          // TODO mpGLViewport->getPainter()->setGraphSize(c1, c2);
+          mpGLViewport->createGraph(pLayout); // create local data structures
           // now zoom graph so that it fits into the panel
           // --> is done in resize method
           //C_FLOAT64 w = 200.0; // initial width of graph panel
@@ -132,9 +135,9 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
         }
     }
   // put OpenGL widget into scrollView
-  scrollView->addChild(glPainter);
+  //scrollView->addChild(glPainter);
 
-  // QValueList<int> sizeList = splitter->sizes();
+  // QValueList<int> sizeList = mpSplitter->sizes();
   //   if (sizeList.size() >= 2)
   //     {
   //       QValueList<int>::Iterator it = sizeList.begin();
@@ -142,8 +145,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   //       ++it;
   //       (*it) = scrollView->width();
   //}
-  //   splitter->setSizes(sizeList);
-  splitter->setResizeMode(infoBox, QSplitter::KeepSize);
+  //   mpSplitter->setSizes(sizeList);
+  mpSplitter->setResizeMode(infoBox, QSplitter::KeepSize);
 
   frame = new QFrame(mainBox);
   //bottomBox = new QBox(mainBox);
@@ -178,7 +181,29 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   setCentralWidget(mainBox);
   loadData(); // try to load data (if already present)
-
+  this->mpToolbar = new QToolBar("layout toolbar", this, this);
+  QLabel* pLabel = new QLabel("zoom factor:", this->mpToolbar);
+  this->mpZoomComboBox = new QComboBox("zoom box", this->mpToolbar);
+  QStringList l;
+  l.push_back("1%");
+  l.push_back("2%");
+  l.push_back("3%");
+  l.push_back("4%");
+  l.push_back("5%");
+  l.push_back("10%");
+  l.push_back("20%");
+  l.push_back("30%");
+  l.push_back("40%");
+  l.push_back("50%");
+  l.push_back("100%");
+  l.push_back("200%");
+  l.push_back("300%");
+  l.push_back("400%");
+  l.push_back("500%");
+  this->mpZoomComboBox->insertStringList(l);
+  this->mpZoomComboBox->setCurrentItem(10);
+  this->mpZoomComboBox->setEditable(FALSE);
+  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   this->show();
   //glPainter->drawGraph();
 }
@@ -244,7 +269,7 @@ void CQLayoutMainWindow::setMaxNodeSize(C_FLOAT64 maxNdSize)
 
 C_INT16 CQLayoutMainWindow::getFontSize()
 {
-  return glPainter->getFontSize();
+  return mpGLViewport->getPainter()->getFontSize();
 }
 
 C_INT32 CQLayoutMainWindow::getStepsPerSecond()
@@ -359,18 +384,18 @@ void CQLayoutMainWindow::createActions()
   connect(sFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
   sFontSize->setToolTip("Change the font size of the node labels in the graph view");
 
-  automaticRescaleToggle = new QAction ("autorescale",
-                                        "Automatic Rescaling of Graph",
-                                        CTRL + Key_A,
-                                        this);
+  //automaticRescaleToggle = new QAction ("autorescale",
+  //                                      "Automatic Rescaling of Graph",
+  //                                      CTRL + Key_A,
+  //                                      this);
 
-  automaticRescaleToggle->setToggleAction(true);
-  automaticRescaleToggle->setOn(true);
+  //automaticRescaleToggle->setToggleAction(true);
+  //automaticRescaleToggle->setOn(true);
   //automaticRescaleToggle = new QCheckBox("Automatic Rescaling of Graph", this);
   //automaticRescaleToggle->setChecked(true);
 
-  connect(automaticRescaleToggle, SIGNAL(toggled(bool)), this, SLOT(toggleAutomaticRescaling(bool)));
-  automaticRescaleToggle->setToolTip("Enable/disable automatic rescaling of graph when panel is resized");
+  //connect(automaticRescaleToggle, SIGNAL(toggled(bool)), this, SLOT(toggleAutomaticRescaling(bool)));
+  //automaticRescaleToggle->setToolTip("Enable/disable automatic rescaling of graph when panel is resized");
 }
 
 void CQLayoutMainWindow::createMenus()
@@ -395,7 +420,7 @@ void CQLayoutMainWindow::createMenus()
   optionsMenu->insertItem("Shape of Label", labelShapeMenu);
   miMaNodeSizes->addTo(optionsMenu);
   sFontSize->addTo(optionsMenu);
-  automaticRescaleToggle->addTo(optionsMenu);
+  //automaticRescaleToggle->addTo(optionsMenu);
 
   menuBar()->insertItem("File", fileMenu);
   menuBar()->insertItem("Actions", actionsMenu);
@@ -426,9 +451,10 @@ void CQLayoutMainWindow::loadSBMLFile()
     pLayoutList = NULL;
 
   // enable double buffering
-  QGLFormat f;
-  f.setDoubleBuffer(TRUE);
-  glPainter = new CQGLNetworkPainter(f, scrollView->viewport());
+  //QGLFormat f;
+  //f.setDoubleBuffer(TRUE);
+  //glPainter = new CQGLNetworkPainter(f, scrollView->viewport());
+  mpGLViewport = new CQGLViewport(mpSplitter);
   if (pLayoutList != NULL)
     {
       CLayout * pLayout;
@@ -438,8 +464,8 @@ void CQLayoutMainWindow::loadSBMLFile()
           CLDimensions dim = pLayout->getDimensions();
           CLPoint c1;
           CLPoint c2(dim.getWidth(), dim.getHeight());
-          glPainter->setGraphSize(c1, c2);
-          glPainter->createGraph(pLayout); // create local data structures
+          // TODO mpGLViewport->getPainter()->setGraphSize(c1, c2);
+          mpGLViewport->createGraph(pLayout); // create local data structures
           //glPainter->drawGraph(); // create display list
         }
     }
@@ -447,19 +473,19 @@ void CQLayoutMainWindow::loadSBMLFile()
 
 void CQLayoutMainWindow::mapLabelsToCircles()
 {
-  if (glPainter != NULL)
+  if (mpGLViewport->getPainter() != NULL)
     {
-      glPainter->mapLabelsToCircles();
-      if (glPainter->getNumberOfSteps() > 0)
+      mpGLViewport->getPainter()->mapLabelsToCircles();
+      if (mpGLViewport->getPainter()->getNumberOfSteps() > 0)
         showStep(this->timeSlider->value());
     }
 }
 
 void CQLayoutMainWindow::mapLabelsToRectangles()
 {
-  if (glPainter != NULL)
+  if (mpGLViewport->getPainter() != NULL)
     {
-      glPainter->mapLabelsToRectangles();
+      mpGLViewport->getPainter()->mapLabelsToRectangles();
     }
 }
 
@@ -479,7 +505,7 @@ void CQLayoutMainWindow::changeFontSize()
 
 void CQLayoutMainWindow::loadData()
 {
-  bool successfulP = glPainter->createDataSets();
+  bool successfulP = mpGLViewport->getPainter()->createDataSets();
   if (successfulP)
     {
       this->timeSlider->setEnabled(true);
@@ -487,12 +513,12 @@ void CQLayoutMainWindow::loadData()
       //this->startStopButton->setEnabled(true);
       this->dataPresent = true;
       paraPanel->enableStepNumberChoice();
-      int maxVal = glPainter->getNumberOfSteps();
+      int maxVal = mpGLViewport->getPainter()->getNumberOfSteps();
       //std::cout << "number of steps: " << maxVal << std::endl;
       this->timeSlider->setRange(0, maxVal - 1);
       //pVisParameters->numberOfSteps = maxVal;
-      glPainter->updateGL();
-      if (this->glPainter->isCircleMode())
+      mpGLViewport->getPainter()->updateGL();
+      if (this->mpGLViewport->getPainter()->isCircleMode())
         showStep(this->timeSlider->value());
     }
 }
@@ -504,9 +530,9 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   C_FLOAT64 val;
   valTable->setNumRows(dataSet.getNumberOfElements());
   valTable->setNumCols(2);
-  while ((key = glPainter->getNodeNameEntry(i)) != "")
+  while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
-      name = glPainter->getNameForNodeKey(key);
+      name = this->mpGLViewport->getPainter()->getNameForNodeKey(key);
       val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
       valTable->setRowInTable(i, key, name, val);
       //std::cout << i << "   "  << key << "  " << val << std::endl;
@@ -520,9 +546,9 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
-  while ((key = glPainter->getNodeNameEntry(i)) != "")
+  while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
-      name = glPainter->getNameForNodeKey(key);
+      name = mpGLViewport->getPainter()->getNameForNodeKey(key);
       val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
       valTable->updateRowInTable(i, val);
       i++;
@@ -543,14 +569,14 @@ void CQLayoutMainWindow::uncheckAllCheckboxesInTable()
 void CQLayoutMainWindow::addItemInAnimation (std::string key)
 {
   //std::cout << "add " << key << std::endl;
-  glPainter->setItemAnimated(key, true);
+  mpGLViewport->getPainter()->setItemAnimated(key, true);
 }
 
 // removes the item given by s from the list of items to animate (no change, if it is not present in the list)
 void CQLayoutMainWindow::removeItemInAnimation (std::string key)
 {
   //std::cout << "remove " << key << std::endl;
-  glPainter->setItemAnimated(key, false);
+  mpGLViewport->getPainter()->setItemAnimated(key, false);
 }
 
 void CQLayoutMainWindow::showAnimation()
@@ -566,7 +592,7 @@ void CQLayoutMainWindow::startAnimation()
     {// only if time series data present
       pVisParameters->animationRunning = true;
       this->timeSlider->setEnabled(false);
-      glPainter->runAnimation();
+      mpGLViewport->getPainter()->runAnimation();
 
       //exchange icon and callback for start/stop button
       disconnect(startStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
@@ -583,7 +609,7 @@ void CQLayoutMainWindow::startAnimation()
 
 void CQLayoutMainWindow::saveImage()
 {
-  QImage img = glPainter->getImage();
+  QImage img = mpGLViewport->getPainter()->getImage();
   QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", currentPlace, "PNG Files (*.png);;All Files (*.*);;", "Choose a filename to save the image under");
   if (filename)
     {
@@ -614,10 +640,10 @@ void CQLayoutMainWindow::endOfAnimationReached()
 void CQLayoutMainWindow::showStep(double i)
 {
 
-  glPainter->showStep(static_cast<int>(i));
-  glPainter->updateGL();
+  mpGLViewport->getPainter()->showStep(static_cast<int>(i));
+  mpGLViewport->getPainter()->updateGL();
   paraPanel->setStepNumber(static_cast<int>(i));
-  updateValueTable(*(glPainter->getDataSetAt(static_cast<int>(i))));
+  updateValueTable(*(mpGLViewport->getPainter()->getDataSetAt(static_cast<int>(i))));
 }
 
 void CQLayoutMainWindow::changeStepValue(C_INT32 i)
@@ -629,14 +655,14 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 void CQLayoutMainWindow::setIndividualScaling()
 {
   pVisParameters->scalingMode = pVisParameters->INDIVIDUAL_SCALING;
-  glPainter->rescaleDataSets(pVisParameters->INDIVIDUAL_SCALING);
+  mpGLViewport->getPainter()->rescaleDataSets(pVisParameters->INDIVIDUAL_SCALING);
   showStep(this->timeSlider->value());
 }
 
 void CQLayoutMainWindow::setGlobalScaling()
 {
   pVisParameters->scalingMode = pVisParameters->GLOBAL_SCALING;
-  glPainter->rescaleDataSets(pVisParameters->GLOBAL_SCALING);
+  mpGLViewport->getPainter()->rescaleDataSets(pVisParameters->GLOBAL_SCALING);
   showStep(this->timeSlider->value());
 }
 
@@ -644,7 +670,7 @@ void CQLayoutMainWindow::setSizeMode()
 {
   pVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
   //glPainter->changeMinMaxNodeSize(getMinNodeSize(), getMaxNodeSize(),pVisParameters->scalingMode);
-  glPainter->rescaleDataSetsWithNewMinMax(0.0, 240.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 240.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
   //std::cout << "show Step: " << this->timeSlider->value() << std::endl;
 }
@@ -653,7 +679,7 @@ void CQLayoutMainWindow::setColorMode()
 {
   pVisParameters->mappingMode = CVisParameters::COLOR_MODE;
   //glPainter->changeMinMaxNodeSize(pVisParameters->scalingMode); // rescaling, because min and max node size changed
-  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 240.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 240.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->timeSlider->value());
   //std::cout << "showStep: " << this->timeSlider->value() << std::endl;
 }
@@ -666,7 +692,7 @@ void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
 // set minimum possible node size for animation
 void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
 {
-  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), pVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), pVisParameters->scalingMode);
   setMinNodeSize(minNdSize);
   showStep(this->timeSlider->value());
 }
@@ -674,7 +700,7 @@ void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
 // set maximum possible node size for animation
 void CQLayoutMainWindow::setMaxValue(C_INT32 maxNdSize)
 {
-  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, pVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, pVisParameters->scalingMode);
   setMaxNodeSize(maxNdSize);
   showStep(this->timeSlider->value());
 }
@@ -682,7 +708,7 @@ void CQLayoutMainWindow::setMaxValue(C_INT32 maxNdSize)
 void CQLayoutMainWindow::setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize)
 {
   //std::cout << "min old: " << getMinNodeSize() << "  max  old:  " << getMaxNodeSize() << "  min new: " << minNdSize << "  max new: " << maxNdSize << std::endl;
-  glPainter->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, pVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, pVisParameters->scalingMode);
   setMinNodeSize(minNdSize);
   setMaxNodeSize(maxNdSize);
   showStep(this->timeSlider->value());
@@ -690,7 +716,7 @@ void CQLayoutMainWindow::setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize)
 
 void CQLayoutMainWindow::setFontSizeForLabels(C_INT32 size)
 {
-  glPainter->setFontSizeForLabels((unsigned int) size);
+  mpGLViewport->getPainter()->setFontSizeForLabels((unsigned int) size);
 }
 
 void CQLayoutMainWindow::closeApplication()
@@ -711,29 +737,29 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void CQLayoutMainWindow::toggleAutomaticRescaling(bool isChecked)
-{
-  resizeToggle = isChecked;
-}
+//void CQLayoutMainWindow::toggleAutomaticRescaling(bool isChecked)
+//{
+//  resizeToggle = isChecked;
+//}
 
 // when resize of panel occurs, the graph should be resized accordingly
-void CQLayoutMainWindow::resizeEvent(QResizeEvent * /* ev */)
-{
-  //std::cout << "event type: " << ev->type() << std::endl;
-  if (resizeToggle)
-    {// if automatic rescaling of graph is enabled
-      int w = scrollView->width(); // ev->size().width();
-      int h = scrollView->height(); // ev->size().height();
-      //std::cout << "scroll view "  << w << "  "  << h << std::endl;
-
-      const CLPoint& c2 = glPainter->getGraphMax();
-
-      // now zoom graph according to new panel size
-      C_FLOAT64 z = ((w / c2.getX()) < (h / c2.getY())) ? w / c2.getX() : h / c2.getY();
-      //std::cout << "zoom factor in RESIZE: "  << z << std::endl;
-      glPainter->zoomGraph(z);
-    }
-}
+//void CQLayoutMainWindow::resizeEvent(QResizeEvent * /* ev */)
+//{
+//  //std::cout << "event type: " << ev->type() << std::endl;
+//  if (resizeToggle)
+//    {// if automatic rescaling of graph is enabled
+//      int w = scrollView->width(); // ev->size().width();
+//      int h = scrollView->height(); // ev->size().height();
+//      //std::cout << "scroll view "  << w << "  "  << h << std::endl;
+//
+//      const CLPoint& c2 = mpGLViewport->getPainter()->getGraphMax();
+//
+//      // now zoom graph according to new panel size
+//      C_FLOAT64 z = ((w / c2.getX()) < (h / c2.getY())) ? w / c2.getX() : h / c2.getY();
+//      //std::cout << "zoom factor in RESIZE: "  << z << std::endl;
+//      mpGLViewport->getPainter()->zoomGraph(z);
+//}
+//}
 
 QIconSet CQLayoutMainWindow::createStartIcon()
 {
@@ -844,3 +870,13 @@ bool CQLayoutMainWindow::maybeSave()
 // win.show();
 // return app.exec();
 //}
+
+void CQLayoutMainWindow::slotActivated(int index)
+{
+  QString item = this->mpZoomComboBox->text(index);
+  // create a number from the text
+  item = item.remove(item.length() - 1, 1);
+  double n = strtod(item.latin1(), NULL);
+  n /= 100.0;
+  this->mpGLViewport->setZoomFactor(n);
+}

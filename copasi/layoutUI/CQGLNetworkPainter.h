@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/02 14:28:32 $
+//   $Date: 2008/09/04 06:01:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,7 @@
 
 class CLayout;
 class CQLayoutMainWindow;
+class QResizeEvent;
 
 class CQGLNetworkPainter : public QGLWidget
   {
@@ -67,6 +68,15 @@ class CQGLNetworkPainter : public QGLWidget
     ~CQGLNetworkPainter();
 
     CSimSummaryInfo *pSummaryInfo;
+
+    void setZoomFactor(C_FLOAT64);
+    C_FLOAT64 getZoomFactor() const;
+
+    void setCurrentPosition(C_FLOAT64 x, C_FLOAT64 y);
+    void setCurrentPositionX(C_FLOAT64 x);
+    void setCurrentPositionY(C_FLOAT64 y);
+    C_FLOAT64 getCurrentPositionX() const;
+    C_FLOAT64 getCurrentPositionY() const;
 
     void setGraphSize(const CLPoint & min, const CLPoint & max);
     const CLPoint& getGraphMin();
@@ -133,7 +143,9 @@ class CQGLNetworkPainter : public QGLWidget
     CLPoint mgraphMin;
     CLPoint mgraphMax;
 
-    C_FLOAT64 currentZoom ; // current zoom factor
+    C_FLOAT64 mCurrentZoom ; // current zoom factor
+    C_FLOAT64 mCurrentPositionX;
+    C_FLOAT64 mCurrentPositionY;
     bool preserveMinLabelHeightP;
     static const C_INT32 MIN_HEIGHT = 10; // min height for bounding boxes of labels (-> min font pt size)
 
@@ -219,6 +231,7 @@ class CQGLNetworkPainter : public QGLWidget
     GLuint textureNames[1];
 
   protected:
+    //virtual void resizeEvent(QResizeEvent* e);
 
     void initializeGraphPainter(QWidget *viewportWidget);
     void draw();
