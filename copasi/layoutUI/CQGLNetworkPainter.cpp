@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 08:33:03 $
+//   $Date: 2008/09/04 14:15:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -387,25 +387,39 @@ void CQGLNetworkPainter::drawColorLegend()
   C_INT32 sy = 20;
   C_INT32 w = 120; // size of legend rectangle w x h
   C_INT32 h = 15;
-  C_FLOAT64 dHue = 240.0 / w;
-  C_FLOAT64 hue = 0.0;
 
   RG_drawStringAt("MIN", 7, sy + 3, 32, 16);
   RG_drawStringAt("MAX", 165, sy + 3, 32, 16);
 
+  // the colors should go from RGB 0,0,0 to RGB 200,0,0 to RGB 200,200,0 to RGB
+  // 255,255,0
   C_INT16 i;
   QColor col = QColor();
-  for (i = sx;i <= (w + sx);i++)
+  // the color range has 456 steps and the legend has 120 pixels
+  // so the step size is 455/120
+  double ratio = 455 / 120;
+  double val;
+  for (i = 0;i <= w;i++)
     {
-      col.setHsv((int)(240 - hue), 255, 255);
+      val = i * ratio;
+      if (val < 200.0)
+        {
+          col.setRgb((int)val, 0, 0);
+        }
+      else if (val < 400.0)
+        {
+          col.setRgb(200, (int)(val - 200.0), 0);
+        }
+      else
+        {
+          col.setRgb(200 + (int)(val - 400.0), 200 + (int)(val - 400.0), 0);
+        }
       QGLWidget::qglColor(col);
       // draw colored line in rectangle
       glBegin(GL_LINES);
-      glVertex2d(i, sy);
-      glVertex2d(i, sy + h);
+      glVertex2d(i + sx, sy);
+      glVertex2d(i + sx, sy + h);
       glEnd();
-
-      hue += dHue;
     }
 }
 
@@ -449,8 +463,19 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   else
     {// color mapping
       QColor col = QColor();
-      C_INT32 colVal = (int)(240 - n.getSize());
-      col.setHsv(colVal, 255, 255);
+      double v = n.getSize();
+      if (v < 200.0)
+        {
+          col.setRgb((int)v, 0, 0);
+        }
+      else if (v < 400)
+        {
+          col.setRgb(200, (int)(v - 200.0), 0);
+        }
+      else
+        {
+          col.setRgb(200 + (int)(v - 400), 200 + (int)(v - 400), 0);
+        }
       QGLWidget::qglColor(col);
     }
 
@@ -1035,7 +1060,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
               if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                 {
                   minNodeSize = 0.0;
-                  maxNodeSize = 240.0; // red to blue in HSV color value (hue) circle
+                  maxNodeSize = 455.0; // 456 color values from black to red to yellow
                 }
               else
                 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/05/02 11:18:04 $
+//   $Author: gauges $
+//   $Date: 2008/09/04 14:15:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,9 @@ class CQCurrentValueTable : public QTable
   private slots:
     //void mouseClickedOverTable(int row, int col , int button, const QPoint & mousepos);
     void valChanged(int row, int col);
+
+  signals:
+    void changed();
   };
 
 #endif /*CQCURRENTVALUETABLE_H_*/

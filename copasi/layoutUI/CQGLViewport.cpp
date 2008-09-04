@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 08:33:03 $
+//   $Date: 2008/09/04 14:15:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,14 +12,18 @@
 // All rights reserved.
 
 #include "CQGLViewport.h"
-#include "CQGLNetworkPainter.h"
+
 #include <qgl.h>
 #include <qscrollbar.h>
 #include <qrect.h>
+#include <qhbox.h>
+#include <qlayout.h>
 
 #include <iostream>
+
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLayout.h"
+#include "CQGLNetworkPainter.h"
 
 /**
  * Constructor.
@@ -74,6 +78,7 @@ void CQGLViewport::setZoomFactor(C_FLOAT64 zoom)
   // TODO make sure the GL window is only redrawn once
   this->mpNetworkPainter->setZoomFactor(zoom);
   this->updateScrollbars();
+  this->mpNetworkPainter->update();
 }
 
 void CQGLViewport::updateScrollbars()
@@ -136,4 +141,9 @@ void CQGLViewport::resetView()
   // so that the display is only redrawn once
   this->mpNetworkPainter->resetView();
   this->updateScrollbars();
+}
+
+void CQGLViewport::updateWidget()
+{
+  this->mpNetworkPainter->update();
 }

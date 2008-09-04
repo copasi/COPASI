@@ -1,26 +1,25 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/09/01 09:45:48 $
+//   $Author: gauges $
+//   $Date: 2008/09/04 14:15:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
-#include <iostream>
+#include "CQCurrentValueTable.h"
 
 #include <qheader.h>
 
+#include <iostream>
+
 #include "copasi.h"
 
-#include "UI/qtUtilities.h"
-
-#include "CQCurrentValueTable.h"
-#include "layoutUI/CQLayoutMainWindow.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/layoutUI/CQLayoutMainWindow.h"
 
 CQCurrentValueTable::CQCurrentValueTable(QWidget *parent, const char *name)
     : QTable(parent, name)
@@ -88,7 +87,6 @@ void CQCurrentValueTable::setAllBoxesChecked()
           assert(tmp);
           if (tmp)
             tmp->addItemInAnimation(this->getKeyForRow(i));
-          //tmp->addItemInAnimation(checkItem->text());
         }
     }
 }
@@ -108,24 +106,9 @@ void CQCurrentValueTable::setAllBoxesUnchecked()
           assert(tmp);
           if (tmp)
             tmp->removeItemInAnimation(this->getKeyForRow(i));
-          //tmp->removeItemInAnimation(checkItem->text());
         }
     }
 }
-
-// void CQCurrentValueTable::mouseClickedOverTable(int row, int col , int button, const QPoint & mousepos)
-// {
-//   //std::cout << row << "  :  " << col << std::endl;
-//   if (col == 0)
-//     {
-//       QTableItem *cell = this->item(row, 0);
-//       if (cell->rtti() == 2)
-//         {// is cell a QCheckTableItem?
-//           QCheckTableItem *checkItem = dynamic_cast<QCheckTableItem *> (cell);
-//    std::cout << checkItem->text() << std::endl;
-//}
-//}
-//}
 
 void CQCurrentValueTable::valChanged(int row, int col)
 {
@@ -135,20 +118,18 @@ void CQCurrentValueTable::valChanged(int row, int col)
       if (cell->rtti() == 2)
         {// is cell a QCheckTableItem?
           QCheckTableItem *checkItem = dynamic_cast<QCheckTableItem *> (cell);
-          //std::cout << checkItem->text() << std::endl;
           CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
           assert(tmp);
           if (tmp)
             {
               if (checkItem->isChecked())
                 tmp->addItemInAnimation(this->getKeyForRow(row));
-              //tmp->addItemInAnimation(checkItem->text());
               else
                 tmp->removeItemInAnimation(this->getKeyForRow(row));
-              //tmp->removeItemInAnimation(checkItem->text());
             }
         }
     }
+  emit changed();
 }
 
 //store row index for every node key
