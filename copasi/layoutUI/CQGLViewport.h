@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 06:01:52 $
+//   $Date: 2008/09/04 08:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,8 @@ class CQGLViewport : public QFrame
      *scrollbars.
      */
     void setZoomFactor(double zoom);
+
+    void resetView();
 
   protected:
     virtual void resizeEvent(QResizeEvent* e);

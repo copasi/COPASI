@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 06:01:52 $
+//   $Date: 2008/09/04 08:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ void CQGLViewport::createGraph(CLayout* IP)
 
 void CQGLViewport::setZoomFactor(C_FLOAT64 zoom)
 {
+  // TODO make sure the GL window is only redrawn once
   this->mpNetworkPainter->setZoomFactor(zoom);
   this->updateScrollbars();
 }
@@ -78,6 +79,10 @@ void CQGLViewport::setZoomFactor(C_FLOAT64 zoom)
 void CQGLViewport::updateScrollbars()
 {
   // reset the scollbar range
+  // TODO check te setting for the scroll range since there seem to be some
+  // error messages
+  // disconnect the scrollbar listeners and handle the update so that the GL
+  // window is only redrawn once
   double zoom = this->mpNetworkPainter->getZoomFactor();
   CLPoint max = this->mpNetworkPainter->getGraphMax();
   CLPoint min = this->mpNetworkPainter->getGraphMin();
@@ -93,8 +98,9 @@ void CQGLViewport::updateScrollbars()
   else
     {
       this->mpVerticalScrollbar->setPageStep(rectangleHeight);
-      // the value might have to be reset as well
+      this->mpVerticalScrollbar->setRange(0, (unsigned int)(graphHeight - rectangleHeight));
       this->mpVerticalScrollbar->show();
+      this->mpNetworkPainter->update();
     }
   if (graphWidth < rectangleWidth)
     {
@@ -104,11 +110,10 @@ void CQGLViewport::updateScrollbars()
   else
     {
       this->mpHorizontalScrollbar->setPageStep(rectangleWidth);
-      // the value might have to be reset as well
+      this->mpHorizontalScrollbar->setRange(0, (unsigned int)(graphWidth - rectangleWidth));
       this->mpHorizontalScrollbar->show();
+      this->mpNetworkPainter->update();
     }
-  this->mpVerticalScrollbar->setRange(0, (unsigned int)(graphHeight - rectangleHeight));
-  this->mpHorizontalScrollbar->setRange(0, (unsigned int)(graphWidth - rectangleWidth));
 }
 
 void CQGLViewport::slotVValueChanged(int value)
@@ -123,4 +128,12 @@ void CQGLViewport::slotHValueChanged(int value)
   CLPoint p = this->mpNetworkPainter->getGraphMin();
   double zoom = this->mpNetworkPainter->getZoomFactor();
   this->mpNetworkPainter->setCurrentPositionX((double)(p.getX() + value / zoom));
+}
+
+void CQGLViewport::resetView()
+{
+  // TODO disconnect the scrollbar listeners
+  // so that the display is only redrawn once
+  this->mpNetworkPainter->resetView();
+  this->updateScrollbars();
 }

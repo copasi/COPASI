@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 06:01:52 $
+//   $Date: 2008/09/04 08:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,10 @@ class CQGLNetworkPainter : public QGLWidget
     void setFontSizeForLabels(unsigned int fs);
     C_INT16 getFontSize(){return mFontsize;}
 
+    void update();
+
+    void resetView();
+
   private slots:
     void zoomIn();
     void zoomOut();
@@ -231,8 +235,6 @@ class CQGLNetworkPainter : public QGLWidget
     GLuint textureNames[1];
 
   protected:
-    //virtual void resizeEvent(QResizeEvent* e);
-
     void initializeGraphPainter(QWidget *viewportWidget);
     void draw();
     void contextMenuEvent(QContextMenuEvent *event);

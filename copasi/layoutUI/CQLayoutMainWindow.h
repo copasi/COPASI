@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 06:01:52 $
+//   $Date: 2008/09/04 08:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,8 @@
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/CDataEntity.h"
 
+#include <string>
+
 class QwtSlider;
 class CQGLViewport;
 class QSplitter;
@@ -100,7 +102,7 @@ class CQLayoutMainWindow : public QMainWindow
 
   protected:
     void closeEvent(QCloseEvent *event);
-    //void contextMenuEvent(QContextMenuEvent *event);
+    void setZoomFactor(std::string s);
 
   private slots:
     void loadSBMLFile();
@@ -114,13 +116,15 @@ class CQLayoutMainWindow : public QMainWindow
 
     void changeMinMaxNodeSizes();
     void changeFontSize();
-    //void toggleAutomaticRescaling(bool isChecked);
 
     void showStep(double i);
     void startAnimation();
     void stopAnimation();
     void checkAllCheckboxesInTable();
     void uncheckAllCheckboxesInTable();
+
+    void slotResetView();
+    void slotZoomItemActivated(int id);
 
   public slots:
     void changeStepValue(C_INT32 i);
@@ -132,37 +136,31 @@ class CQLayoutMainWindow : public QMainWindow
     void createMenus();
     bool maybeSave();
 
-    QPopupMenu *fileMenu;
-    QPopupMenu *actionsMenu;
-    QPopupMenu *optionsMenu;
-    QPopupMenu *labelShapeMenu;
+    QPopupMenu *mpFileMenu;
+    QPopupMenu *mpActionsMenu;
+    QPopupMenu *mpOptionsMenu;
+    QPopupMenu *mpLabelShapeMenu;
+    QPopupMenu *mpViewMenu;
+    QPopupMenu *mpZoomMenu;
 
-    QAction *runAnimation;
-    QAction *createPicture;
-    QAction *openSBMLFile;
-    //QAction *openDataFile;
-    QAction *closeAction;
+    QAction *mpRunAnimation;
+    QAction *mpCreatePicture;
+    QAction *mpOpenSBMLFile;
+    QAction *mpCloseAction;
 
-    QAction *rectangularShape;
-    QAction *circularShape;
+    QAction *mpRectangluarShape;
+    QAction *mpCircularShape;
 
-    QAction *miMaNodeSizes;
-    QAction *sFontSize;
-    QAction *automaticRescaleToggle;
+    QAction *mpMimaNodeSizes;
+    QAction *mpSFontSize;
+    //QAction *automaticRescaleToggle;
 
-    //QCheckBox *automaticRescaleToggle;
-
-    //CQParameterWindow *paraWin;
     ParaPanel *paraPanel;
     CQCurrentValueTable *valTable;
     CQGLViewport *mpGLViewport;
     QSplitter* mpSplitter;
-    //QScrollView *scrollView;
-    //QSlider *timeSlider;
     QwtSlider *timeSlider;
 
-    //QVBox *buttonBox;
-    //QHBox *bottomBox;
     QFrame *frame;
     QVBox *mainBox;
 
@@ -175,8 +173,6 @@ class CQLayoutMainWindow : public QMainWindow
     QIconSet createStartIcon();
     QIconSet createStopIcon();
 
-    //void resizeEvent(QResizeEvent *ev);
-    //bool resizeToggle;
     bool dataPresent; // shows whether time series data already load
     QString currentPlace;
     QToolBar* mpToolbar;

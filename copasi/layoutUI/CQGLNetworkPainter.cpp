@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 06:01:52 $
+//   $Date: 2008/09/04 08:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,21 +63,6 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-// TODO change resize behaviour.
-// The maximal size for a layout should be 2000x2000 for now.
-// Everything that is larger has to be scaled and a maximal zoom factor has to
-// be set so that it will never get larger.
-// Later this can be handled more inteligently by only drawing in the available
-// area. But for that the scrollview will have to be manually modified.
-//
-// If the layout is smaller than the space that is available in the scroll
-// view, the layout should fill the whole space, this will get rid of the ugly
-// gray area
-//
-// We need some kind of zoom. The user should be allowed to zoom in and out.
-// The maximal zoom factor is the one that gets at least one of the dimensions
-// to 2000 pixels. There should probably also be a minimal zoom factor.
-//
 // TODO change the text rendering or the texture creation. Right now it seems
 // to work reasonably wel under Mac OS X, but under Linux it doesn't.
 
@@ -2001,15 +1986,6 @@ void CQGLNetworkPainter::printAvailableFonts()
     }
 }
 
-/*
-void CQGLNetworkPainter::resizeEvent(QResizeEvent* e)
-{
-    // received an resize event
-    //this->resizeGL();
-    QGLWidget::resizeEvent(e);
-}
- */
-
 void CQGLNetworkPainter::setZoomFactor(C_FLOAT64 zoom)
 {
   if (zoom != this->mCurrentZoom)
@@ -2030,9 +2006,14 @@ void CQGLNetworkPainter::setCurrentPosition(C_FLOAT64 x, C_FLOAT64 y)
     {
       this->mCurrentPositionX = x;
       this->mCurrentPositionY = y;
-      this->resizeGL(this->width(), this->height());
-      this->updateGL();
+      this->update();
     }
+}
+
+void CQGLNetworkPainter::update()
+{
+  this->resizeGL(this->width(), this->height());
+  this->updateGL();
 }
 
 void CQGLNetworkPainter::setCurrentPositionX(C_FLOAT64 x)
@@ -2040,8 +2021,7 @@ void CQGLNetworkPainter::setCurrentPositionX(C_FLOAT64 x)
   if (this->mCurrentPositionX != x)
     {
       this->mCurrentPositionX = x;
-      this->resizeGL(this->width(), this->height());
-      this->updateGL();
+      this->update();
     }
 }
 
@@ -2050,8 +2030,7 @@ void CQGLNetworkPainter::setCurrentPositionY(C_FLOAT64 y)
   if (this->mCurrentPositionY != y)
     {
       this->mCurrentPositionY = y;
-      this->resizeGL(this->width(), this->height());
-      this->updateGL();
+      this->update();
     }
 }
 
@@ -2064,3 +2043,9 @@ C_FLOAT64 CQGLNetworkPainter::getCurrentPositionY() const
   {
     return this->mCurrentPositionY;
   }
+
+void CQGLNetworkPainter::resetView()
+{
+  this->setZoomFactor(1.0);
+  this->setCurrentPosition(this->getGraphMin().getX(), this->getGraphMin().getY());
+}

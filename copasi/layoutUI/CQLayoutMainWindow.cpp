@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 06:01:52 $
+//   $Date: 2008/09/04 08:33:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,14 +41,12 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 {
   this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   currentPlace = QString::null;
-  //resizeToggle = true;
   dataPresent = false;
   pVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
   createActions();
   createMenus();
 
-  //mainWidget = new QWidget;
   mainBox = new QVBox(this);
 
   // create split window with parameter panel and graph panel
@@ -62,8 +60,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   valTable = new CQCurrentValueTable(infoBox);
   valTable->setMinimumSize(100, 150);
   valTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-  //valTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  //valTable->setFixedWidth()
 
   // add two buttons in an horizontal box
   QHBox *buttonBox = new QHBox(infoBox);
@@ -78,28 +74,13 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   pcheckAllButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   puncheckAllButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-  //buttonBox->setFixedSize(pcheckAllButton->minimumWidth() + puncheckAllButton->minimumWidth()+ 15,
-  //       pcheckAllButton->minimumHeight() + 6);
   buttonBox->setFixedHeight(pcheckAllButton->minimumHeight() + 6);
 
   buttonBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  //std::cout << "buttonBox min height: " << buttonBox->minimumHeight() << std::endl;
 
-  //infoBox->setMinimumSize(paraPanel->minimumWidth(),
-  //     paraPanel->minimumHeight()+valTable->minimumHeight()+buttonBox->minimumHeight() + 50);
   paraPanel->setMinimumHeight(250);
   paraPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   infoBox->setMinimumHeight(paraPanel->minimumHeight() + valTable->minimumHeight() + buttonBox->minimumHeight() + 25);
-  //infoBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  //std::cout << "info box: min height: " << infoBox->minimumHeight() << std::endl;
-
-  // create sroll view
-  //scrollView = new QScrollView(mpSplitter);
-  //scrollView->setCaption("Network Graph Viewer");
-  //scrollView->viewport()->setPaletteBackgroundColor(QColor(255,255,240));
-  //scrollView->viewport()->setPaletteBackgroundColor(QColor(219, 235, 255));
-  //scrollView->viewport()->setMouseTracking(TRUE);
-  // Create OpenGL widget
   CListOfLayouts *pLayoutList;
   if (CCopasiDataModel::Global != NULL)
     {
@@ -108,10 +89,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   else
     pLayoutList = NULL;
 
-  // enable double buffering
-  //QGLFormat f;
-  //f.setDoubleBuffer(TRUE);
-  //glPainter = new CQGLNetworkPainter(f, scrollView->viewport(), "Network layout");
+  // Create OpenGL widget
   mpGLViewport = new CQGLViewport(mpSplitter, "Network layout");
   if (pLayoutList != NULL)
     {
@@ -122,35 +100,12 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
           CLDimensions dim = pLayout->getDimensions();
           CLPoint c1;
           CLPoint c2(dim.getWidth(), dim.getHeight());
-          // TODO mpGLViewport->getPainter()->setGraphSize(c1, c2);
           mpGLViewport->createGraph(pLayout); // create local data structures
-          // now zoom graph so that it fits into the panel
-          // --> is done in resize method
-          //C_FLOAT64 w = 200.0; // initial width of graph panel
-          //C_FLOAT64 h = 250.0; // initial height of graph panel
-          //C_FLOAT64 z = ((w / dim.getWidth()) < (h / dim.getHeight())) ? w / dim.getWidth() : h / dim.getHeight();
-          //std::cout << "zoom by. " << z << std::endl;
-          //glPainter->zoomGraph(z);
-          //glPainter->drawGraph(); // create display list
         }
     }
-  // put OpenGL widget into scrollView
-  //scrollView->addChild(glPainter);
-
-  // QValueList<int> sizeList = mpSplitter->sizes();
-  //   if (sizeList.size() >= 2)
-  //     {
-  //       QValueList<int>::Iterator it = sizeList.begin();
-  //       (*it) = infoBox->width();
-  //       ++it;
-  //       (*it) = scrollView->width();
-  //}
-  //   mpSplitter->setSizes(sizeList);
   mpSplitter->setResizeMode(infoBox, QSplitter::KeepSize);
 
   frame = new QFrame(mainBox);
-  //bottomBox = new QBox(mainBox);
-  //bottomBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
   startIcon = createStartIcon();
   stopIcon = createStopIcon();
@@ -168,8 +123,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
 
   timeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   frame->setFixedHeight(55);
-  //timeSlider->setTickmarks(QSlider::Below);
-  //timeSlider->setDisabled(TRUE);
   connect(timeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
@@ -182,7 +135,9 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   setCentralWidget(mainBox);
   loadData(); // try to load data (if already present)
   this->mpToolbar = new QToolBar("layout toolbar", this, this);
+  this->mpToolbar->show();
   QLabel* pLabel = new QLabel("zoom factor:", this->mpToolbar);
+  pLabel->show();
   this->mpZoomComboBox = new QComboBox("zoom box", this->mpToolbar);
   QStringList l;
   l.push_back("1%");
@@ -203,6 +158,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   this->mpZoomComboBox->insertStringList(l);
   this->mpZoomComboBox->setCurrentItem(10);
   this->mpZoomComboBox->setEditable(FALSE);
+  this->mpZoomComboBox->show();
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   this->show();
   //glPainter->drawGraph();
@@ -317,12 +273,12 @@ C_INT16 CQLayoutMainWindow::getMappingMode()
 
 void CQLayoutMainWindow::createActions()
 {
-  //   openSBMLFile = new QAction("SBML",
+  //   mpOpenSBMLFile = new QAction("SBML",
   //                              "Load SBML file",
   //                              CTRL + Key_F,
   //                              this);
-  //   openSBMLFile->setStatusTip("Load SBML file with/without layout");
-  //   connect(openSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
+  //   mpOpenSBMLFile->setStatusTip("Load SBML file with/without layout");
+  //   connect(mpOpenSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
 
   //   openDataFile = new QAction("data",
   //                              "Load Simulation Data",
@@ -331,58 +287,58 @@ void CQLayoutMainWindow::createActions()
   //   openDataFile->setStatusTip("Load simulation data");
   //   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
 
-  closeAction = new QAction ("close",
-                             "Close Window",
-                             CTRL + Key_Q ,
-                             this);
-  closeAction->setStatusTip("Close Layout Window");
-  connect(closeAction, SIGNAL(activated()), this, SLOT(closeApplication()));
+  mpCloseAction = new QAction ("close",
+                               "Close Window",
+                               CTRL + Key_Q ,
+                               this);
+  mpCloseAction->setStatusTip("Close Layout Window");
+  connect(mpCloseAction, SIGNAL(activated()), this, SLOT(closeApplication()));
 
-  runAnimation = new QAction("animate",
-                             "Run animation",
-                             CTRL + Key_A,
-                             this);
-  runAnimation->setStatusTip("show complete animation sequence of current times series");
-  connect(runAnimation, SIGNAL(activated()), this, SLOT(showAnimation()));
-  runAnimation->setEnabled(true);
+  mpRunAnimation = new QAction("animate",
+                               "Run animation",
+                               CTRL + Key_A,
+                               this);
+  mpRunAnimation->setStatusTip("show complete animation sequence of current times series");
+  connect(mpRunAnimation, SIGNAL(activated()), this, SLOT(showAnimation()));
+  mpRunAnimation->setEnabled(true);
   dataPresent = false;
 
-  createPicture = new QAction("image",
-                              "Create image",
-                              CTRL + Key_I,
-                              this);
-  createPicture->setStatusTip("create a picture from the current view and save it to file");
-  connect(createPicture, SIGNAL(activated()), this, SLOT(saveImage()));
+  mpCreatePicture = new QAction("image",
+                                "Create image",
+                                CTRL + Key_I,
+                                this);
+  mpCreatePicture->setStatusTip("create a picture from the current view and save it to file");
+  connect(mpCreatePicture, SIGNAL(activated()), this, SLOT(saveImage()));
 
-  rectangularShape = new QAction ("rectangle",
-                                  "rectangle",
-                                  CTRL + Key_R ,
-                                  this);
-  rectangularShape->setStatusTip("Show labels as rectangles");
-  connect(rectangularShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
+  mpRectangluarShape = new QAction ("rectangle",
+                                    "rectangle",
+                                    CTRL + Key_R ,
+                                    this);
+  mpRectangluarShape->setStatusTip("Show labels as rectangles");
+  connect(mpRectangluarShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
 
-  circularShape = new QAction ("circle",
-                               "circle",
-                               CTRL + Key_C ,
-                               this);
-  connect(circularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
-  circularShape->setStatusTip("Show labels as circles");
+  mpCircularShape = new QAction ("circle",
+                                 "circle",
+                                 CTRL + Key_C ,
+                                 this);
+  connect(mpCircularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
+  mpCircularShape->setStatusTip("Show labels as circles");
 
-  miMaNodeSizes = new QAction ("minmax",
-                               "Set Min/Max Node Sizes",
-                               CTRL + Key_M,
-                               this);
+  mpMimaNodeSizes = new QAction ("minmax",
+                                 "Set Min/Max Node Sizes",
+                                 CTRL + Key_M,
+                                 this);
 
-  connect(miMaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
-  miMaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
+  connect(mpMimaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
+  mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
 
-  sFontSize = new QAction("fontsiz",
-                          "Set Font Size",
-                          CTRL + Key_F,
-                          this);
+  mpSFontSize = new QAction("fontsiz",
+                            "Set Font Size",
+                            CTRL + Key_F,
+                            this);
 
-  connect(sFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
-  sFontSize->setToolTip("Change the font size of the node labels in the graph view");
+  connect(mpSFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
+  mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
 
   //automaticRescaleToggle = new QAction ("autorescale",
   //                                      "Automatic Rescaling of Graph",
@@ -400,31 +356,66 @@ void CQLayoutMainWindow::createActions()
 
 void CQLayoutMainWindow::createMenus()
 {
-  fileMenu = new QPopupMenu(this);
-  //openSBMLFile->addTo(fileMenu);
-  //openDataFile->addTo(fileMenu);
-  fileMenu->insertSeparator();
-  closeAction->addTo(fileMenu);
+  mpFileMenu = new QPopupMenu(this);
+  mpFileMenu->insertSeparator();
+  mpCloseAction->addTo(mpFileMenu);
 
-  actionsMenu = new QPopupMenu(this);
-  runAnimation->addTo(actionsMenu);
+  mpActionsMenu = new QPopupMenu(this);
+  mpRunAnimation->addTo(mpActionsMenu);
 
-  createPicture->addTo(actionsMenu);
+  mpCreatePicture->addTo(mpActionsMenu);
 
-  labelShapeMenu = new QPopupMenu(this);
+  mpLabelShapeMenu = new QPopupMenu(this);
 
-  rectangularShape->addTo(labelShapeMenu);
-  circularShape->addTo(labelShapeMenu);
+  mpRectangluarShape->addTo(mpLabelShapeMenu);
+  mpCircularShape->addTo(mpLabelShapeMenu);
 
-  optionsMenu = new QPopupMenu(this);
-  optionsMenu->insertItem("Shape of Label", labelShapeMenu);
-  miMaNodeSizes->addTo(optionsMenu);
-  sFontSize->addTo(optionsMenu);
-  //automaticRescaleToggle->addTo(optionsMenu);
+  mpViewMenu = new QPopupMenu(this);
+  mpViewMenu->insertItem("Reset View", this, SLOT(slotResetView()));
+  mpZoomMenu = new QPopupMenu(this);
+  mpViewMenu->insertItem("Zoom", mpZoomMenu);
+  int id;
+  id = mpZoomMenu->insertItem("1%", 1);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("2%", 2);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("3%", 3);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("4%", 4);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("5%", 5);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("10%", 10);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("20%", 20);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("30%", 30);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("40%", 40);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("50%", 50);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("100%", 100);
+  mpZoomMenu->setItemChecked(id, true);
+  id = mpZoomMenu->insertItem("200%", 200);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("300%", 300);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("400%", 400);
+  mpZoomMenu->setItemChecked(id, false);
+  id = mpZoomMenu->insertItem("500%", 500);
+  mpZoomMenu->setItemChecked(id, false);
+  connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
 
-  menuBar()->insertItem("File", fileMenu);
-  menuBar()->insertItem("Actions", actionsMenu);
-  menuBar()->insertItem("Options", optionsMenu);
+  mpOptionsMenu = new QPopupMenu(this);
+  mpOptionsMenu->insertItem("Shape of Label", mpLabelShapeMenu);
+  mpMimaNodeSizes->addTo(mpOptionsMenu);
+  mpSFontSize->addTo(mpOptionsMenu);
+
+  menuBar()->insertItem("File", mpFileMenu);
+  menuBar()->insertItem("Actions", mpActionsMenu);
+  menuBar()->insertItem("View", this->mpViewMenu);
+  menuBar()->insertItem("Options", mpOptionsMenu);
 }
 
 //void CQLayoutMainWindow::contextMenuEvent(QContextMenuEvent *cme){
@@ -464,9 +455,7 @@ void CQLayoutMainWindow::loadSBMLFile()
           CLDimensions dim = pLayout->getDimensions();
           CLPoint c1;
           CLPoint c2(dim.getWidth(), dim.getHeight());
-          // TODO mpGLViewport->getPainter()->setGraphSize(c1, c2);
           mpGLViewport->createGraph(pLayout); // create local data structures
-          //glPainter->drawGraph(); // create display list
         }
     }
 }
@@ -509,7 +498,7 @@ void CQLayoutMainWindow::loadData()
   if (successfulP)
     {
       this->timeSlider->setEnabled(true);
-      //this->runAnimation->setEnabled(true);
+      //this->mpRunAnimation->setEnabled(true);
       //this->startStopButton->setEnabled(true);
       this->dataPresent = true;
       paraPanel->enableStepNumberChoice();
@@ -874,9 +863,66 @@ bool CQLayoutMainWindow::maybeSave()
 void CQLayoutMainWindow::slotActivated(int index)
 {
   QString item = this->mpZoomComboBox->text(index);
+  this->setZoomFactor(item.latin1());
+}
+
+void CQLayoutMainWindow::setZoomFactor(std::string s)
+{
+  s.erase(s.size() - 1);
   // create a number from the text
-  item = item.remove(item.length() - 1, 1);
-  double n = strtod(item.latin1(), NULL);
+  double n = strtod(s.c_str(), NULL);
   n /= 100.0;
   this->mpGLViewport->setZoomFactor(n);
+}
+
+void CQLayoutMainWindow::slotResetView()
+{
+  // check the 100% zoom entry
+  disconnect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+  this->mpZoomMenu->setItemChecked(1, false);
+  this->mpZoomMenu->setItemChecked(2, false);
+  this->mpZoomMenu->setItemChecked(3, false);
+  this->mpZoomMenu->setItemChecked(4, false);
+  this->mpZoomMenu->setItemChecked(5, false);
+  this->mpZoomMenu->setItemChecked(10, false);
+  this->mpZoomMenu->setItemChecked(20, false);
+  this->mpZoomMenu->setItemChecked(30, false);
+  this->mpZoomMenu->setItemChecked(40, false);
+  this->mpZoomMenu->setItemChecked(50, false);
+  this->mpZoomMenu->setItemChecked(100, true);
+  this->mpZoomMenu->setItemChecked(200, false);
+  this->mpZoomMenu->setItemChecked(300, false);
+  this->mpZoomMenu->setItemChecked(400, false);
+  this->mpZoomMenu->setItemChecked(500, false);
+  connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+  this->mpGLViewport->resetView();
+}
+
+void CQLayoutMainWindow::slotZoomItemActivated(int id)
+{
+  // if the item is not checked, uncheck all other and check this one
+  // set the zoom factor
+  if (!this->mpZoomMenu->isItemChecked(id))
+    {
+      disconnect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+      this->mpZoomMenu->setItemChecked(1, false);
+      this->mpZoomMenu->setItemChecked(2, false);
+      this->mpZoomMenu->setItemChecked(3, false);
+      this->mpZoomMenu->setItemChecked(4, false);
+      this->mpZoomMenu->setItemChecked(5, false);
+      this->mpZoomMenu->setItemChecked(10, false);
+      this->mpZoomMenu->setItemChecked(20, false);
+      this->mpZoomMenu->setItemChecked(30, false);
+      this->mpZoomMenu->setItemChecked(40, false);
+      this->mpZoomMenu->setItemChecked(50, false);
+      this->mpZoomMenu->setItemChecked(100, false);
+      this->mpZoomMenu->setItemChecked(200, false);
+      this->mpZoomMenu->setItemChecked(300, false);
+      this->mpZoomMenu->setItemChecked(400, false);
+      this->mpZoomMenu->setItemChecked(500, false);
+      this->mpZoomMenu->setItemChecked(id, true);
+      QString text = this->mpZoomMenu->text(id);
+      this->setZoomFactor(text.latin1());
+      connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+    }
 }
