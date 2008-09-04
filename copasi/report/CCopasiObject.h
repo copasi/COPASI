@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:30 $
+//   $Author: ssahle $
+//   $Date: 2008/09/04 07:57:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,10 +205,10 @@ class CCopasiObject
 
     static UpdateMethod mDefaultUpdateMethod;
 
+  protected:
     static const CRenameHandler * smpRenameHandler;
 
     //Operations
-  protected:
     CCopasiObject();
 
     CCopasiObject(const std::string & name,
