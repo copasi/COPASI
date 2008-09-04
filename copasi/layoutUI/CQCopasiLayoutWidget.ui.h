@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/CQCopasiLayoutWidget.ui.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/07 15:35:41 $
+//   $Author: gauges $
+//   $Date: 2008/09/04 14:16:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,6 +59,6 @@ void CQCopasiLayoutWidget::displayNetworkWidgetOld()
   QWidget* pWin = new CQLayoutMainWindow(this, "Reaction Network");
   //mWin((QWidget *)this,"Reaction Network");
   //app.setMainWidget(&gui);
-  pWin->resize(600, 430);
+  pWin->resize(900, 430);
   pWin->show();
 }
