@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:58:00 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:57:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,7 +408,7 @@ CSSAMethod::buildKineticMatrix()
 
   CCopasiVectorNS< CReaction > & reactions = mpModel->getReactions();
 
-  C_FLOAT64 num_metabolites = mpModel->getNumIndependentMetabs();
+  C_FLOAT64 num_metabolites = mpModel->getNumIndependentReactionMetabs();
 
   C_FLOAT64 num_reactions = mNumReactions;
 

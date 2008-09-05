@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:19 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:56:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -684,7 +684,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
     const C_FLOAT64 * pIt = particlefluxes.array();
     const C_FLOAT64 * pEnd =
       pIt + mpModel->getStateTemplate().getNumIndependent()
-      - mpModel->getNumODEMetabs() - mpModel->getNumIndependentMetabs();
+      - mpModel->getNumODEMetabs() - mpModel->getNumIndependentReactionMetabs();
 
     for (; pIt != pEnd; ++pIt)
       {
@@ -700,7 +700,8 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
     store *= mpModel->getQuantity2NumberFactor();
 
     // Now all metabolites determined by ODEs and reactions (only independent)
-    pEnd += mpModel->getNumIndependentMetabs();
+    pEnd += mpModel->getNumIndependentMetabs(); //TODO???
+    //pEnd = particlefluxes.array() + mpModel->getStateTemplate().getNumIndependent();
     for (; pIt != pEnd; ++pIt)
       {
         tmp = fabs(*pIt);

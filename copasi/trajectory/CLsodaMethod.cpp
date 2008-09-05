@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:51:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,7 +213,7 @@ void CLsodaMethod::start(const CState * initialState)
   if (mReducedModel)
     mData.dim = mpState->getNumIndependent();
   else
-    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
+    mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
 
   mYdot.resize(mData.dim);
 

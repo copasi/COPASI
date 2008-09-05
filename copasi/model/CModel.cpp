@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.345 $
+//   $Revision: 1.346 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/05 15:56:23 $
+//   $Date: 2008/09/05 19:51:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -940,10 +940,10 @@ unsigned C_INT32 CModel::getNumVariableMetabs() const
 unsigned C_INT32 CModel::getNumODEMetabs() const
   {CCHECK return mNumMetabolitesODE;}
 
-unsigned C_INT32 CModel::getNumIndependentMetabs() const
+unsigned C_INT32 CModel::getNumIndependentReactionMetabs() const
   {CCHECK return mNumMetabolitesReactionIndependent;}
 
-unsigned C_INT32 CModel::getNumDependentMetabs() const
+unsigned C_INT32 CModel::getNumDependentReactionMetabs() const
   {CCHECK return mNumMetabolitesReaction - mNumMetabolitesReactionIndependent;}
 
 unsigned C_INT32 CModel::getTotSteps() const

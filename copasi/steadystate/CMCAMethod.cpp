@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:02:11 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:56:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,7 +152,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 
   // We need the number of metabolites determined by reactions.
   unsigned C_INT32 numMetabs =
-    mpModel->getNumIndependentMetabs() + mpModel->getNumDependentMetabs();
+    mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
 
   mUnscaledElasticities.resize(numReacs, numMetabs);
   C_FLOAT64 * pElasticity;
@@ -222,7 +222,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
       metabs[j]->setValue(Store);
     }
 
-  // make sure the fluxes are correct afterwords (needed for scaling of the MCA results)
+  // make sure the fluxes are correct afterwards (needed for scaling of the MCA results)
   mpModel->updateSimulatedValues(false);
 }
 
@@ -240,9 +240,9 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
 
   char T = 'N';
-  C_INT M = mpModel->getNumIndependentMetabs(); /* LDA, LDC */
+  C_INT M = mpModel->getNumIndependentReactionMetabs(); /* LDA, LDC */
   C_INT N = mUnscaledElasticities.numRows();
-  C_INT K = mpModel->getNumDependentMetabs();
+  C_INT K = mpModel->getNumDependentReactionMetabs();
   C_INT LD = mUnscaledElasticities.numCols();
 
   C_FLOAT64 Alpha = 1.0;
@@ -363,12 +363,9 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
 void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 {
   assert(mpModel);
-  // if previous calcutations failed return now
-  if (condition != MCA_OK)
-    return;
   // The number of metabs determined by reaction.
   unsigned C_INT32 numSpeciesReaction =
-    mpModel->getNumIndependentMetabs() + mpModel->getNumDependentMetabs();
+    mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
   CCopasiVector< CMetab > & metabs = mpModel->getMetabolitesX();
   CCopasiVector< CMetab >::const_iterator itSpecies = metabs.begin();
   CCopasiVector< CMetab >::const_iterator endSpecies = itSpecies + numSpeciesReaction;
@@ -412,7 +409,12 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   mScaledElasticitiesAnn->setCopasiVector(0, &reacs);
   mScaledElasticitiesAnn->setCopasiVector(1, &metabs);
 
+  //if we are not in a steady state we cannot calculate CCs
   if (mSSStatus != CSteadyStateMethod::found) return;
+
+  // if previous calcutations failed return now
+  if (condition != MCA_OK)
+    return;
 
   // Scale ConcCC
   // Reactions are columns, species are rows
@@ -586,7 +588,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
   unsigned C_INT32 NumODE =
     pModel->getStateTemplate().endIndependent() - pModel->getStateTemplate().beginIndependent();
 
-  if (pModel->getNumIndependentMetabs() < NumODE)
+  if (pModel->getNumIndependentReactionMetabs() < NumODE)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, "MCA is not applicable for a system with explicit ODEs.");
       return false;

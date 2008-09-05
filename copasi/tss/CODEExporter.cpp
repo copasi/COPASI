@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:20 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:57:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -668,7 +668,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
   const CModel::CLinkMatrixView & L = copasiModel->getL();
 
   unsigned C_INT32 metabs_size = metabs.size();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
   unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
 
   unsigned C_INT32 i, j;
@@ -942,7 +942,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
 
   unsigned C_INT32 reacs_size = reacs.size();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
   unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
 
   const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
@@ -1017,7 +1017,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 bool CODEExporter::exportODEs(const CModel* copasiModel)
 {
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
   unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
   unsigned C_INT32 metabs_size = metabs.size();
 

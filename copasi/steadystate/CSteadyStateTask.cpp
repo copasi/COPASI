@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:02:11 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:56:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +160,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
 
-  mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentMetabs() != 0);
+  mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
 
   //init jacobians
   unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:34:30 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 19:57:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ofstream & o
 {
 
   unsigned C_INT32 metab_size = copasiModel->getMetabolitesX().size();
-  unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 indep_size = copasiModel->getNumIndependentReactionMetabs();
   unsigned C_INT32 ode_size = copasiModel->getNumODEMetabs();
   unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
   unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
