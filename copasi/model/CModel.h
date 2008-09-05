@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.161 $
+//   $Revision: 1.162 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 15:56:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ class CModel : public CModelEntity
 
   private:
     /**
-     *  Copy construnctor
+     *  Copy constructor
      *  @param "const CModel &" src
      */
     CModel(const CModel & src);
@@ -191,7 +191,7 @@ class CModel : public CModelEntity
     void cleanup();
 
     /**
-     * Converts the set of reactions to a set of reaction where all reactions are irreversible.
+     * Converts the set of reactions to a set of reactions where all reactions are irreversible.
     */
     bool convert2NonReversible();
 
@@ -450,6 +450,8 @@ class CModel : public CModelEntity
      * @return const CCopasiVectorNS < CCompartment > *
      */
     const CCopasiVectorNS < CCompartment > & getCompartments() const;
+
+    //***************************************************
 
     /**
      *  Get the Stoichiometry Matrix of this Model
@@ -1128,7 +1130,7 @@ class CModel : public CModelEntity
      * The number of metabs determined by reactions which can be calculated
      * through moieties
      */
-    unsigned C_INT32 mNumMetabolitesIndependent;
+    unsigned C_INT32 mNumMetabolitesReactionIndependent;
 
     /**
      *   This matrix stores L

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.344 $
+//   $Revision: 1.345 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 15:56:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@
 #define CCHECK
 #endif
 
-#define mNumMetabolitesDependent (mNumMetabolitesReaction - mNumMetabolitesIndependent)
+#define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
 const char * CModel::VolumeUnitNames[] =
   {"m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
@@ -106,10 +106,10 @@ CModel::CModel():
     mNumMetabolitesODE(0),
     mNumMetabolitesReaction(0),
     mNumMetabolitesAssignment(0),
-    mNumMetabolitesIndependent(0),
+    mNumMetabolitesReactionIndependent(0),
     mL(),
     mpLinkMatrixAnnotation(NULL),
-    mLView(mL, mNumMetabolitesIndependent),
+    mLView(mL, mNumMetabolitesReactionIndependent),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
     mpCompileHandler(NULL),
@@ -146,58 +146,58 @@ CModel::CModel():
   CONSTRUCTOR_TRACE;
 }
 
-CModel::CModel(const CModel & src):
-    CModelEntity(src),
-    mInitialState(),
-    mCurrentState(),
-    mStateTemplate(*this, this->mInitialState, this->mCurrentState),
-    mComments(src.mComments),
-    mVolumeUnit(src.mVolumeUnit),
-    mTimeUnit(src.mTimeUnit),
-    mQuantityUnit(src.mQuantityUnit),
-    mType(src.mType),
-    mCompartments(src.mCompartments, this),
-    mMetabolites(src.mMetabolites, this),
-    mMetabolitesX(src.mMetabolitesX, this),
-    mSteps(src.mSteps, this),
-    mParticleFluxes(src.mParticleFluxes),
-    mValues(src.mValues, this),
-    mMoieties(src.mMoieties, this),
-    mStoi(src.mStoi),
-    mpStoiAnnotation(NULL),
-    mStoiReordered(src.mStoiReordered),
-    mRedStoi(src.mRedStoi),
-    mpRedStoiAnnotation(NULL),
-    mNumMetabolitesUnused(src.mNumMetabolitesUnused),
-    mNumMetabolitesODE(src.mNumMetabolitesODE),
-    mNumMetabolitesReaction(src.mNumMetabolitesReaction),
-    mNumMetabolitesAssignment(src.mNumMetabolitesAssignment),
-    mNumMetabolitesIndependent(src.mNumMetabolitesIndependent),
-    mL(src.mL),
-    mpLinkMatrixAnnotation(NULL),
-    mLView(mL, mNumMetabolitesIndependent),
-    mQuantity2NumberFactor(src.mQuantity2NumberFactor),
-    mNumber2QuantityFactor(src.mNumber2QuantityFactor),
-    mpCompileHandler(NULL),
-    mInitialRefreshes(),
-    mSimulatedRefreshes(),
-    mConstantRefreshes(),
-    mNonSimulatedRefreshes(),
-    mReorderNeeded(false),
-    mIsAutonomous(false)
-{
-  CONSTRUCTOR_TRACE;
-  initObjects();
-
-  unsigned C_INT32 i, imax = mSteps.size();
-
-  for (i = 0; i < imax; i++)
-    mSteps[i]->compile(/*mCompartments*/);
-
-  initializeMetabolites();
-
-  forceCompile(NULL);
-}
+// CModel::CModel(const CModel & src):
+//     CModelEntity(src),
+//     mInitialState(),
+//     mCurrentState(),
+//     mStateTemplate(*this, this->mInitialState, this->mCurrentState),
+//     mComments(src.mComments),
+//     mVolumeUnit(src.mVolumeUnit),
+//     mTimeUnit(src.mTimeUnit),
+//     mQuantityUnit(src.mQuantityUnit),
+//     mType(src.mType),
+//     mCompartments(src.mCompartments, this),
+//     mMetabolites(src.mMetabolites, this),
+//     mMetabolitesX(src.mMetabolitesX, this),
+//     mSteps(src.mSteps, this),
+//     mParticleFluxes(src.mParticleFluxes),
+//     mValues(src.mValues, this),
+//     mMoieties(src.mMoieties, this),
+//     mStoi(src.mStoi),
+//     mpStoiAnnotation(NULL),
+//     mStoiReordered(src.mStoiReordered),
+//     mRedStoi(src.mRedStoi),
+//     mpRedStoiAnnotation(NULL),
+//     mNumMetabolitesUnused(src.mNumMetabolitesUnused),
+//     mNumMetabolitesODE(src.mNumMetabolitesODE),
+//     mNumMetabolitesReaction(src.mNumMetabolitesReaction),
+//     mNumMetabolitesAssignment(src.mNumMetabolitesAssignment),
+//     mNumMetabolitesIndependent(src.mNumMetabolitesIndependent),
+//     mL(src.mL),
+//     mpLinkMatrixAnnotation(NULL),
+//     mLView(mL, mNumMetabolitesIndependent),
+//     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
+//     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
+//     mpCompileHandler(NULL),
+//     mInitialRefreshes(),
+//     mSimulatedRefreshes(),
+//     mConstantRefreshes(),
+//     mNonSimulatedRefreshes(),
+//     mReorderNeeded(false),
+//     mIsAutonomous(false)
+// {
+//   CONSTRUCTOR_TRACE;
+//   initObjects();
+//
+//   unsigned C_INT32 i, imax = mSteps.size();
+//
+//   for (i = 0; i < imax; i++)
+//     mSteps[i]->compile(/*mCompartments*/);
+//
+//   initializeMetabolites();
+//
+//   forceCompile(NULL);
+//}
 
 CModel::~CModel()
 {
@@ -690,7 +690,7 @@ void CModel::buildRedStoi()
   unsigned C_INT32 i;
   unsigned C_INT32 numCols = mStoi.numCols();
 
-  mRedStoi.resize(mNumMetabolitesIndependent, numCols);
+  mRedStoi.resize(mNumMetabolitesReactionIndependent, numCols);
   mStoiReordered.resize(mStoi.numRows(), numCols);
 
   C_FLOAT64 * pRedStoi = mRedStoi.array();
@@ -710,7 +710,7 @@ void CModel::buildRedStoi()
 
   /* just have to swap rows */
   itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
-  for (i = 0; i < mNumMetabolitesIndependent; i++, pRow++, pRedStoi += numCols, pStoiReordered += numCols, itMetabX++)
+  for (i = 0; i < mNumMetabolitesReactionIndependent; i++, pRow++, pRedStoi += numCols, pStoiReordered += numCols, itMetabX++)
     {
       memcpy(pRedStoi, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
       memcpy(pStoiReordered, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
@@ -738,7 +738,7 @@ void CModel::updateMatrixAnnotations()
   mpRedStoiAnnotation->resize();
 
   CCopasiVector< CMetab >::const_iterator it = mMetabolitesX.begin() + mNumMetabolitesODE;
-  CCopasiVector< CMetab >::const_iterator end = it + mNumMetabolitesIndependent;
+  CCopasiVector< CMetab >::const_iterator end = it + mNumMetabolitesReactionIndependent;
 
   CCopasiObjectName CN;
   unsigned C_INT32 j;
@@ -753,7 +753,7 @@ void CModel::updateMatrixAnnotations()
       mpRedStoiAnnotation->setAnnotationCN(0, j, CN);
     }
 
-  end += mNumMetabolitesDependent;
+  end += MNumMetabolitesReactionDependent;
 
   for (; it != end; ++it, j++)
     {
@@ -774,11 +774,11 @@ void CModel::updateMoietyValues()
 
 void CModel::buildMoieties()
 {
-  unsigned C_INT32 i, imax = mNumMetabolitesDependent;
+  unsigned C_INT32 i, imax = MNumMetabolitesReactionDependent;
   unsigned C_INT32 j;
 
   CCopasiVector< CMetab >::iterator it =
-    mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesIndependent;
+    mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
   C_FLOAT64 * pFactor = mL.array();
 
   CMoiety *pMoiety;
@@ -790,7 +790,7 @@ void CModel::buildMoieties()
       pMoiety = new CMoiety((*it)->getObjectName());
       pMoiety->add(1.0, *it);
 
-      for (j = 0; j < mNumMetabolitesIndependent; j++, pFactor++)
+      for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
         if (fabs(*pFactor) > DBL_EPSILON)
           pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
 
@@ -941,10 +941,10 @@ unsigned C_INT32 CModel::getNumODEMetabs() const
   {CCHECK return mNumMetabolitesODE;}
 
 unsigned C_INT32 CModel::getNumIndependentMetabs() const
-  {CCHECK return mNumMetabolitesIndependent;}
+  {CCHECK return mNumMetabolitesReactionIndependent;}
 
 unsigned C_INT32 CModel::getNumDependentMetabs() const
-  {CCHECK return mNumMetabolitesReaction - mNumMetabolitesIndependent;}
+  {CCHECK return mNumMetabolitesReaction - mNumMetabolitesReactionIndependent;}
 
 unsigned C_INT32 CModel::getTotSteps() const
   {return mSteps.size();}
@@ -1183,7 +1183,8 @@ bool CModel::buildUserOrder()
 
   mStateTemplate.setUserOrder(Entities);
 
-  mJacobianPivot.resize(mStateTemplate.getNumIndependent() + mNumMetabolitesDependent);
+  mJacobianPivot.resize(mStateTemplate.getNumIndependent() + MNumMetabolitesReactionDependent);
+  //now sized to the number of entities with ODEs + all metabolites dependent on reactions
 
   const unsigned C_INT32 * pUserOrder = mStateTemplate.getUserOrder().array();
   const unsigned C_INT32 * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
@@ -1274,19 +1275,19 @@ bool CModel::buildSimulatedSequence()
   // For CModelValues and CCompartment ODEs we need to add the Rate
   // For CMetab ODEs we need to add the Particle Rate
   CModelEntity **ppEntity = mStateTemplate.beginIndependent();
-  CModelEntity **ppEntityEnd = mStateTemplate.endIndependent() - mNumMetabolitesIndependent;
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  CModelEntity **ppEntityEnd = mStateTemplate.endIndependent() - mNumMetabolitesReactionIndependent;
+  for (; ppEntity != ppEntityEnd; ++ppEntity) //loop over all entities with ODEs
     mSimulatedUpToDateObjects.insert((*ppEntity)->getRateReference());
 
   // We do not add the rates for metabolites of type REACTION. These are automatically calculated
   // with dgemm in calculate derivatives based on the reaction fluxes added below.
   // In the case that other simulated values depend on such a rate this is taken care by
   // calculating all dependencies.
-  // This mechanism may lead occasinally to multiple calculations of rates of metabolites when used
+  // This mechanism may lead occasionally to multiple calculations of rates of metabolites when used
   // in assignments or ODEs. However this is acceptable and more than compensated by the performance
   // gains of dgemm.
 
-  // Further more all reaction fluxes have to be calculated too (see CMetab REACTION above)
+  // Furthermore all reaction fluxes have to be calculated too (see CMetab REACTION above)
   CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
   for (; itReaction != endReaction; ++itReaction)
@@ -1306,9 +1307,10 @@ bool CModel::buildSimulatedSequence()
   while (UnusedFound)
     {
       UnusedFound = false;
-      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
+      ppEntity = mStateTemplate.beginDependent() + MNumMetabolitesReactionDependent;
+      //now points to the first entity with assignment
 
-      for (; ppEntity != ppEntityEnd; ++ppEntity)
+      for (; ppEntity != ppEntityEnd; ++ppEntity) //over all entities with assignments
         if ((*ppEntity)->isUsed())
           {
             if ((*ppEntity)->getStatus() != ASSIGNMENT)
@@ -1340,26 +1342,29 @@ bool CModel::buildSimulatedSequence()
     {
       CVector< CModelEntity * > Reorder(mStateTemplate.size() - 1);
       CModelEntity ** ppReorder = Reorder.array();
-      ppEntity = mStateTemplate.beginIndependent();
-      ppEntityEnd = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
 
+      ppEntity = mStateTemplate.beginIndependent();
+      ppEntityEnd = mStateTemplate.beginDependent() + MNumMetabolitesReactionDependent;
+      //range is for all entities with ODEs + all metabs dependent on Reactions
       for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder)
         *ppReorder = *ppEntity;
 
       // :TODO: This must be enhanced as the mMetaboliteX and the state template may get out of sync
       // when we use assignments for metabolites.
+
+      // the entities with assignments are reordered according to the isUsed() flag
       ppEntityEnd = mStateTemplate.endDependent();
-      for (; ppEntity != ppEntityEnd; ++ppEntity)
+      for (; ppEntity != ppEntityEnd; ++ppEntity) //over all entities with assignments
         if ((*ppEntity)->isUsed())
           *ppReorder++ = *ppEntity;
 
-      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesDependent;
-      for (; ppEntity != ppEntityEnd; ++ppEntity)
+      ppEntity = mStateTemplate.beginDependent() + MNumMetabolitesReactionDependent;
+      for (; ppEntity != ppEntityEnd; ++ppEntity) //again over all entities with assignments
         if (!(*ppEntity)->isUsed())
           *ppReorder++ = *ppEntity;
 
       ppEntityEnd = mStateTemplate.endFixed();
-      for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder)
+      for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder) //over all fixed entities
         *ppReorder = *ppEntity;
 
       mStateTemplate.reorder(Reorder);
@@ -1428,8 +1433,10 @@ bool CModel::buildConstantSequence()
   std::set< const CCopasiObject * > Objects;
 
   CModelEntity ** ppEntity =
-    mStateTemplate.beginDependent() + mNumMetabolitesDependent;
+    mStateTemplate.beginDependent() + MNumMetabolitesReactionDependent;
   CModelEntity ** ppEntityEnd = mStateTemplate.endFixed();
+  //range now includes all entities with assignments, and fixed entities. The loop
+  // is only over the entities with assignments ???
   for (; ppEntity != ppEntityEnd && (*ppEntity)->getStatus() == ASSIGNMENT; ++ppEntity)
     {
       Dependencies.clear();
@@ -1657,7 +1664,7 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
   // state variable.
   CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
   CModelEntity ** ppEnd =
-    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
+    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesReactionIndependent;
 
   for (; ppIt != ppEnd; ++ppIt, ++pTmp)
     *pTmp = (*ppIt)->getRate();
@@ -1684,7 +1691,7 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   // state variable.
   CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
   CModelEntity ** ppEnd =
-    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
+    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesReactionIndependent;
 
   for (; ppIt != ppEnd; ++ppIt, ++pTmp)
     *pTmp = (*ppIt)->getRate();
@@ -1692,7 +1699,7 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   // Now calculate derivatives of the independent metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = mNumMetabolitesIndependent;
+  C_INT N = mNumMetabolitesReactionIndependent;
   C_INT K = mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
@@ -1745,7 +1752,9 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & /* resolution */)
 {
   unsigned C_INT32 Dim =
-    mCurrentState.getNumIndependent() + mNumMetabolitesDependent;
+    mCurrentState.getNumIndependent() + MNumMetabolitesReactionDependent;
+  //Dim now contains the number of entities with ODEs + number of metabs depending on reactions.
+
   unsigned C_INT32 Col;
 
   jacobian.resize(Dim, Dim);
@@ -3040,7 +3049,7 @@ void CModel::buildLinkZero()
       for (i = 0; i < N; i++)
         mRowLU[i] = i;
 
-      mNumMetabolitesIndependent = 0;
+      mNumMetabolitesReactionIndependent = 0;
       mL.resize(N - 0, 0);
 
       return;
@@ -3164,7 +3173,7 @@ void CModel::buildLinkZero()
          fabs(mRedStoi(independent, independent)) > 100 * DBL_EPSILON) independent++;
 
   // Resize mL
-  mNumMetabolitesIndependent = independent;
+  mNumMetabolitesReactionIndependent = independent;
   mL.resize(N - independent, independent);
   if (N == independent || independent == 0) return;
 
