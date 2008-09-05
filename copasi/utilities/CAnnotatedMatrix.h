@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:31 $
+//   $Author: ssahle $
+//   $Date: 2008/09/05 13:59:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,9 @@
 
 #include "copasi.h"
 
+/**
+ * This abstract class defines the interface for an n-dimensional array of floats
+ */
 class CCopasiAbstractArray
   {
   public:
@@ -186,7 +189,7 @@ class CCopasiVectorInterface: public CCopasiAbstractArray
     const index_type & size() const
       {
         //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-        /*tmp->*/mSizes[0] =     mVector->size();
+        /*tmp->*/mSizes[0] =      mVector->size();
         return mSizes;
       }
 
@@ -196,13 +199,18 @@ class CCopasiVectorInterface: public CCopasiAbstractArray
 
 //**********************************************************************
 
+/**
+ * This class contains the annotations to a n-dimensional array. Annotations can be provided
+ * for the array as such, for each of the dimensions, and for each of the indices (rows,
+ * columns, ...)
+ */
 class CArrayAnnotation: public CCopasiContainer
   {
   public:
 
     /**
      * The annotation to an array can work in different modes. The mode
-     * for each dimension can be changes independently.
+     * for each dimension can be changed independently.
      *
      * OBJECTS: The CNs for the rows, cols, ... of the array are given explicitly
      *
@@ -216,7 +224,7 @@ class CArrayAnnotation: public CCopasiContainer
      * as strings.
      *
      * NUMBERS: The rows, cols, ... of the array are only annotation with
-     * runnng numbers (starting with 0)-
+     * running numbers (starting with 0)-
      */
     enum Mode
     {
