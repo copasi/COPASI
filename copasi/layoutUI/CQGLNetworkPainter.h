@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 08:33:03 $
+//   $Date: 2008/09/05 09:29:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,6 +140,8 @@ class CQGLNetworkPainter : public QGLWidget
   signals:
     void stepChanged(C_INT32);
     void endOfAnimationReached ();
+    void signalZoomIn();
+    void signalZoomOut();
 
   private:
     static const C_FLOAT64 DEFAULT_NODE_SIZE;

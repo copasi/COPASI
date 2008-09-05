@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 14:15:34 $
+//   $Date: 2008/09/05 09:29:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,26 +23,19 @@
 #include <qpixmap.h>
 #include <qevent.h>
 #include <qsize.h>
-//#include <qimage.h>
 #include <qcolor.h>
 #include <qtimer.h>
 #include <qcanvas.h>
-//#include <qmessagebox.h>
 
 #include <qfontinfo.h>
 #include <qfontdatabase.h>
-
-//#include <Q3Canvas>
-//#include <Q3CanvasText>
-//#include <QPainter>
-//#include <QFont>
-//#include <QFontMetrics>
-//#include <QString>
 
 #include <iostream>
 #include <math.h>
 #include <float.h>
 #include <utility>
+
+#include "copasi/utilities/COutputHandler.h"
 
 #include "copasi.h"
 
@@ -64,7 +57,10 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/BezierCurve.h"
 
 // TODO change the text rendering or the texture creation. Right now it seems
-// to work reasonably wel under Mac OS X, but under Linux it doesn't.
+// to work reasonably well under Mac OS X, but under Linux it doesn't.
+
+// TODO Antialias Nodes and arrowheds, right now it looks as if only the edges
+// do get antialiasing
 
 CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent, const char *name)
     : QGLWidget(format, parent, name)
@@ -463,7 +459,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   else
     {// color mapping
       QColor col = QColor();
-      double v = n.getSize();
+      double v = n.getSize() * 455.0; // there are 456 colors in the current gradient and the node sizes are scaled from 0.0 to 1.0 in color mode
       if (v < 200.0)
         {
           col.setRgb((int)v, 0, 0);
@@ -946,6 +942,17 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_
                            (s, dataSet));
         }
     }
+  // if there is no time course data, we set all values to 0.0
+  if (dataSets.size() == 0)
+    {
+      CDataEntity dataSet;
+      unsigned int i;
+      for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
+        {
+          dataSet.putValueForSpecies(viewerNodes[i], 0.0);
+        }
+      dataSets.insert (std::pair<C_INT32, CDataEntity> (s, dataSet));
+    }
 }
 
 void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
@@ -1060,7 +1067,7 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
               if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                 {
                   minNodeSize = 0.0;
-                  maxNodeSize = 455.0; // 456 color values from black to red to yellow
+                  maxNodeSize = 1.0; // 456 color values from black to red to yellow
                 }
               else
                 {
@@ -1127,108 +1134,111 @@ bool CQGLNetworkPainter::createDataSets()
   if (CCopasiDataModel::Global != NULL)
     {
       CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-      const CTimeSeries & timeSer = ptask->getTimeSeries();
-      if (timeSer.getRecordedSteps() > 0)
+      const CTimeSeries* pTimeSer = &ptask->getTimeSeries();
+      CTimeSeries dummyTimeSeries;
+      if (pTimeSer->getRecordedSteps() == 0)
         {
-          if (timeSer.getNumVariables() > 0)
+          // create a dummy time series from the current state
+          dummyTimeSeries.allocate(1);
+          std::vector<CCopasiContainer*> tmpV;
+          dummyTimeSeries.compile(tmpV);
+          dummyTimeSeries.output(COutputInterface::DURING);
+          assert(dummyTimeSeries.getRecordedSteps() == 1);
+          pTimeSer = &dummyTimeSeries; // point to the dummy time series
+        }
+      if (pTimeSer->getNumVariables() > 0)
+        {
+          dataSets.clear(); // remove old data sets
+          pSummaryInfo = new CSimSummaryInfo(pTimeSer->getRecordedSteps(), pTimeSer->getNumVariables(),
+                                             pTimeSer->getConcentrationData(pTimeSer->getRecordedSteps() - 1, 0) - pTimeSer->getConcentrationData(0, 0));
+          unsigned int i;
+          unsigned int t;
+          C_FLOAT64 val;
+          std::string name;
+          std::string objKey;
+          std::string ndKey;
+          C_FLOAT64 minR;
+          C_FLOAT64 maxR;
+          C_FLOAT64 maxAll = 0.0;
+          // now get some info about the data set such as the maximum concentration values for each reactant
+          for (i = 0; i < pTimeSer->getNumVariables(); i++) // iterate on reactants
             {
-              dataSets.clear(); // remove old data sets
-              pSummaryInfo = new CSimSummaryInfo(timeSer.getRecordedSteps(), timeSer.getNumVariables(),
-                                                 timeSer.getConcentrationData(timeSer.getRecordedSteps() - 1, 0) - timeSer.getConcentrationData(0, 0));
-              unsigned int i;
-              unsigned int t;
-              C_FLOAT64 val;
-              std::string name;
-              std::string objKey;
-              std::string ndKey;
-              C_FLOAT64 minR;
-              C_FLOAT64 maxR;
-              C_FLOAT64 maxAll = 0.0;
-              // now get some info about the data set such as the maximum concentration values for each reactant
-              for (i = 0; i < timeSer.getNumVariables(); i++) // iterate on reactants
+              maxR = - DBL_MAX;
+              minR = DBL_MAX;
+              name = pTimeSer->getTitle(i);
+              objKey = pTimeSer->getKey(i);
+              std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
+              if (iter != keyMap.end())
+                {// if there is a node (key)
+                  ndKey = (keyMap.find(objKey))->second;
+                  for (t = 0;t < pTimeSer->getRecordedSteps();t++) // iterate on time steps t=0..n
+                    {
+                      val = pTimeSer->getConcentrationData(t, i);
+
+                      if (val > maxR)
+                        maxR = val;
+                      if (val < minR)
+                        minR = val;
+                    }
+                  pSummaryInfo->storeMax(ndKey, maxR);
+                  pSummaryInfo->storeMin(ndKey, minR);
+                  if (maxR > maxAll)
+                    maxAll = maxR;
+                }
+            }
+          pSummaryInfo->setMaxOverallConcentration(maxAll);
+          // now create data sets for visualization/animation
+          // try to get VisParameters from parent (CQLayoutMainWindow)
+          C_FLOAT64 minNodeSize = 10;
+          C_FLOAT64 maxNodeSize = 100;
+          if (pParentLayoutWindow != NULL)
+            {
+              minNodeSize = pParentLayoutWindow->getMinNodeSize();
+              maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
+            }
+          for (t = 0; t < pTimeSer->getRecordedSteps(); t++)  // iterate on time steps t=0..n
+            {
+              CDataEntity dataSet;
+              for (i = 0;i < pTimeSer->getNumVariables();i++) // iterate on reactants
                 {
-                  maxR = - DBL_MAX;
-                  minR = DBL_MAX;
-                  name = timeSer.getTitle(i);
-                  objKey = timeSer.getKey(i);
+                  objKey = pTimeSer->getKey(i); // object key os dbml species
                   std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
                   if (iter != keyMap.end())
                     {// if there is a node (key)
-                      ndKey = (keyMap.find(objKey))->second;
-                      for (t = 0;t < timeSer.getRecordedSteps();t++) // iterate on time steps t=0..n
+                      ndKey = (keyMap.find(objKey))->second; // key of graphical node
+                      val = pTimeSer->getConcentrationData(t, i); // get concentration of species i at timepoint t
+                      C_FLOAT64 scaledVal;
+                      // now scale value;
+                      if (pParentLayoutWindow->getScalingMode() == CVisParameters::INDIVIDUAL_SCALING)
                         {
-                          val = timeSer.getConcentrationData(t, i);
-
-                          if (val > maxR)
-                            maxR = val;
-                          if (val < minR)
-                            minR = val;
+                          minR = pSummaryInfo->getMinForSpecies(ndKey);
+                          maxR = pSummaryInfo->getMaxForSpecies(ndKey);
                         }
-                      pSummaryInfo->storeMax(ndKey, maxR);
-                      pSummaryInfo->storeMin(ndKey, minR);
-                      if (maxR > maxAll)
-                        maxAll = maxR;
+                      else
+                        {// == CVisParameters.GLOBAL_SCALING
+                          minR = pSummaryInfo->getMinOverallConcentration();
+                          maxR = pSummaryInfo->getMaxOverallConcentration();
+                        }
+                      if ((maxR - minR) > CVisParameters::EPSILON)
+                        scaledVal = minNodeSize +
+                                    (((maxNodeSize - minNodeSize) / (maxR - minR))
+                                     * (val - minR));
+                      else
+                        scaledVal = (maxNodeSize + minNodeSize) / 2.0;
+                      // put scaled value in data entity (collection of scaled values for one step)
+                      dataSet.putValueForSpecies(ndKey, scaledVal);
+                      dataSet.putOrigValueForSpecies(ndKey, val);
                     }
                 }
-              pSummaryInfo->setMaxOverallConcentration(maxAll);
-              // now create data sets for visualization/animation
-              // try to get VisParameters from parent (CQLayoutMainWindow)
-              C_FLOAT64 minNodeSize = 10;
-              C_FLOAT64 maxNodeSize = 100;
-              if (pParentLayoutWindow != NULL)
-                {
-                  minNodeSize = pParentLayoutWindow->getMinNodeSize();
-                  maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
-                }
-              for (t = 0; t < timeSer.getRecordedSteps(); t++)  // iterate on time steps t=0..n
-                {
-                  CDataEntity dataSet;
-                  for (i = 0;i < timeSer.getNumVariables();i++) // iterate on reactants
-                    {
-                      objKey = timeSer.getKey(i); // object key os dbml species
-                      std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
-                      if (iter != keyMap.end())
-                        {// if there is a node (key)
-                          ndKey = (keyMap.find(objKey))->second; // key of graphical node
-                          val = timeSer.getConcentrationData(t, i); // get concentration of species i at timepoint t
-                          C_FLOAT64 scaledVal;
-                          // now scale value;
-                          if (pParentLayoutWindow->getScalingMode() == CVisParameters::INDIVIDUAL_SCALING)
-                            {
-                              minR = pSummaryInfo->getMinForSpecies(ndKey);
-                              maxR = pSummaryInfo->getMaxForSpecies(ndKey);
-                            }
-                          else
-                            {// == CVisParameters.GLOBAL_SCALING
-                              minR = pSummaryInfo->getMinOverallConcentration();
-                              maxR = pSummaryInfo->getMaxOverallConcentration();
-                            }
-                          if ((maxR - minR) > CVisParameters::EPSILON)
-                            scaledVal = minNodeSize +
-                                        (((maxNodeSize - minNodeSize) / (maxR - minR))
-                                         * (val - minR));
-                          else
-                            scaledVal = (maxNodeSize + minNodeSize) / 2.0;
-                          // put scaled value in data entity (collection of scaled values for one step)
-                          dataSet.putValueForSpecies(ndKey, scaledVal);
-                          dataSet.putOrigValueForSpecies(ndKey, val);
-                        }
-                    }
-                  // now collect data set
-                  dataSets.insert(std::pair<C_INT32, CDataEntity>
-                                  (t, dataSet));
-                  counter++;
-                }
-              loadDataSuccessful = true;
+              // now collect data set
+              dataSets.insert(std::pair<C_INT32, CDataEntity>
+                              (t, dataSet));
+              counter++;
             }
-          else
-            std::cout << "empty time series: no variables present" << std::endl;
+          loadDataSuccessful = true;
         }
       else
-        {
-          //QMessageBox::warning (this, "Missing Data", "No data found: \nYou first have to create a time course.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-          //std::cout << "no simulation steps found: you have to create a time course first" << std::endl;
-        }
+        std::cout << "empty time series: no variables present" << std::endl;
     }
   this->mDataPresentP = loadDataSuccessful;
   if (loadDataSuccessful)
@@ -1653,12 +1663,12 @@ void CQGLNetworkPainter::setFontSize()
 
 void CQGLNetworkPainter::zoomIn()
 {
-  this->mCurrentZoom *= 1.5;
+  emit signalZoomIn();
 }
 
 void CQGLNetworkPainter::zoomOut()
 {
-  this->mCurrentZoom /= 1.5;
+  emit signalZoomOut();
 }
 
 void CQGLNetworkPainter::zoomGraph(C_FLOAT64 zoomFactor)

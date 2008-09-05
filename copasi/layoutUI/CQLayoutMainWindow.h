@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 14:15:34 $
+//   $Date: 2008/09/05 09:29:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,8 @@ class CQLayoutMainWindow : public QMainWindow
     void slotResetView();
     void slotZoomItemActivated(int id);
     void slotActivated(int);
+    void slotZoomIn();
+    void slotZoomOut();
 
   public slots:
     void changeStepValue(C_INT32 i);

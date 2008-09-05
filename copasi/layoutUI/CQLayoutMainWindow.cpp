@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 14:15:34 $
+//   $Date: 2008/09/05 09:29:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -172,6 +172,8 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   this->mpZoomComboBox->show();
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   connect(this->mpValTable , SIGNAL(changed()), this->mpGLViewport, SLOT(updateWidget()));
+  connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
+  connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
   this->show();
   //glPainter->drawGraph();
 }
@@ -551,7 +553,10 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
     {
       name = mpGLViewport->getPainter()->getNameForNodeKey(key);
       val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
-      mpValTable->updateRowInTable(i, val);
+      if (mpValTable->numRows() > i)
+        {
+          mpValTable->updateRowInTable(i, val);
+        }
       i++;
     }
 }
@@ -642,7 +647,11 @@ void CQLayoutMainWindow::showStep(double i)
   mpGLViewport->getPainter()->showStep(static_cast<int>(i));
   mpGLViewport->getPainter()->updateGL();
   mpParaPanel->setStepNumber(static_cast<int>(i));
-  updateValueTable(*(mpGLViewport->getPainter()->getDataSetAt(static_cast<int>(i))));
+  CDataEntity* srcData = mpGLViewport->getPainter()->getDataSetAt(static_cast<int>(i));
+  if (srcData)
+    {
+      updateValueTable(*srcData);
+    }
 }
 
 void CQLayoutMainWindow::changeStepValue(C_INT32 i)
@@ -668,7 +677,7 @@ void CQLayoutMainWindow::setSizeMode()
 {
   pVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
   //glPainter->changeMinMaxNodeSize(getMinNodeSize(), getMaxNodeSize(),pVisParameters->scalingMode);
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 455.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 1.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->mpTimeSlider->value());
   //std::cout << "show Step: " << this->mpTimeSlider->value() << std::endl;
 }
@@ -677,7 +686,7 @@ void CQLayoutMainWindow::setColorMode()
 {
   pVisParameters->mappingMode = CVisParameters::COLOR_MODE;
   //glPainter->changeMinMaxNodeSize(pVisParameters->scalingMode); // rescaling, because min and max node size changed
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 455.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 1.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->mpTimeSlider->value());
   //std::cout << "showStep: " << this->mpTimeSlider->value() << std::endl;
 }
@@ -842,6 +851,30 @@ void CQLayoutMainWindow::slotActivated(int index)
 {
   QString item = this->mpZoomComboBox->text(index);
   this->setZoomFactor(item.latin1());
+  // update menu items
+  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
+  if (index >= 0 && index < 15)
+    {
+      unsigned int id = ids[index];
+      disconnect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+      this->mpZoomMenu->setItemChecked(1, false);
+      this->mpZoomMenu->setItemChecked(2, false);
+      this->mpZoomMenu->setItemChecked(3, false);
+      this->mpZoomMenu->setItemChecked(4, false);
+      this->mpZoomMenu->setItemChecked(5, false);
+      this->mpZoomMenu->setItemChecked(10, false);
+      this->mpZoomMenu->setItemChecked(20, false);
+      this->mpZoomMenu->setItemChecked(30, false);
+      this->mpZoomMenu->setItemChecked(40, false);
+      this->mpZoomMenu->setItemChecked(50, false);
+      this->mpZoomMenu->setItemChecked(100, false);
+      this->mpZoomMenu->setItemChecked(200, false);
+      this->mpZoomMenu->setItemChecked(300, false);
+      this->mpZoomMenu->setItemChecked(400, false);
+      this->mpZoomMenu->setItemChecked(500, false);
+      this->mpZoomMenu->setItemChecked(id, true);
+      connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+    }
 }
 
 void CQLayoutMainWindow::setZoomFactor(std::string s)
@@ -902,5 +935,47 @@ void CQLayoutMainWindow::slotZoomItemActivated(int id)
       QString text = this->mpZoomMenu->text(id);
       this->setZoomFactor(text.latin1());
       connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+      // update toolbar
+      disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+      this->mpZoomComboBox->setCurrentItem(this->mpZoomMenu->indexOf(id));
+      connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+    }
+}
+
+void CQLayoutMainWindow::slotZoomIn()
+{
+  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
+  int checkedItem = 0;
+  unsigned int i, iMax = 15;
+  for (i = 0;i < iMax;++i)
+    {
+      if (this->mpZoomMenu->isItemChecked(ids[i]))
+        {
+          checkedItem = i;
+          break;
+        }
+    }
+  if (checkedItem != 14)
+    {
+      slotZoomItemActivated(ids[++checkedItem]);
+    }
+}
+
+void CQLayoutMainWindow::slotZoomOut()
+{
+  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
+  int checkedItem = 0;
+  unsigned int i, iMax = 15;
+  for (i = 0;i < iMax;++i)
+    {
+      if (this->mpZoomMenu->isItemChecked(ids[i]))
+        {
+          checkedItem = i;
+          break;
+        }
+    }
+  if (checkedItem != 0)
+    {
+      slotZoomItemActivated(ids[--checkedItem]);
     }
 }

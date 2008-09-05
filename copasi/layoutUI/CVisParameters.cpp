@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CVisParameters.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/04/14 10:24:03 $
+//   $Author: gauges $
+//   $Date: 2008/09/05 09:29:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@ const C_INT16 CVisParameters::COLOR_MODE = 0;
 const C_INT16 CVisParameters::SIZE_DIAMETER_MODE = 1;
 const C_INT16 CVisParameters::SIZE_AREA_MODE = 2;
 
-C_INT16 CVisParameters::DEFAULT_NODE_SIZE = 20;
+C_INT16 CVisParameters::DEFAULT_NODE_SIZE = 40;
 
 CVisParameters::CVisParameters()
 {

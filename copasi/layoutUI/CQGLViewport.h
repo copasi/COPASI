@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/04 14:15:34 $
+//   $Date: 2008/09/05 09:29:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,8 +64,10 @@ class CQGLViewport : public QFrame
 
     void updateScrollbars();
 
-  public slots:
+  protected slots:
     void slotVValueChanged(int value);
     void slotHValueChanged(int value);
+
+  public slots:
     void updateWidget();
   };
