@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.175 $
+#   $Revision: 1.176 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2008/07/29 10:51:30 $
+#   $Author: gauges $
+#   $Date: 2008/09/08 08:33:53 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.175 $ $Author: pwilly $ $Date: 2008/07/29 10:51:30 $
+# $Revision: 1.176 $ $Author: gauges $ $Date: 2008/09/08 08:33:53 $
 ######################################################################
 
 LIB = UI
@@ -173,10 +173,10 @@ SOURCES	+= \
 }
 
 
-#contains(DEFINES, WITH_LAYOUT) {
-#  HEADERS += CQCopasiLayoutWidget.h
-#  SOURCES += CQCopasiLayoutWidget.cpp
-#}
+contains(DEFINES, WITH_LAYOUT) {
+  HEADERS += CQLayoutsWidget.h
+  SOURCES += CQLayoutsWidget.cpp
+}
 
 
 # FORMS += CMCAResultSubwidget.ui

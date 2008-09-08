@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.248 $
+//   $Revision: 1.249 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/04 14:56:45 $
+//   $Author: gauges $
+//   $Date: 2008/09/08 08:33:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@
 #include "CTabWidget.h"
 
 #ifdef WITH_LAYOUT
-#include "layoutUI/CQCopasiLayoutWidget.h"
+#include "UI/CQLayoutsWidget.h"
 #endif
 
 #include "copasi.h"
@@ -265,7 +265,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     mpUpdatesWidget(NULL),
 #endif
 #ifdef WITH_LAYOUT
-    mpCopasiLayoutWidget(NULL),
+    mpLayoutsWidget(NULL),
 #endif
     mpMathMatrixWidget(NULL)
 {
@@ -498,8 +498,8 @@ void ListViews::ConstructNodeWidgets()
   mpMathMatrixWidget->hide();
 
 #ifdef WITH_LAYOUT
-  if (!mpCopasiLayoutWidget) mpCopasiLayoutWidget = new CQCopasiLayoutWidget(this);
-  mpCopasiLayoutWidget->hide();
+  if (!mpLayoutsWidget) mpLayoutsWidget = new CQLayoutsWidget(this);
+  mpLayoutsWidget->hide();
 #endif
 }
 
@@ -604,9 +604,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
 #endif
 #ifdef WITH_LAYOUT
       case 13:
-        return mpCopasiLayoutWidget;
+        return mpLayoutsWidget;
         break;
-#endif
+#endif // WITH_LAYOUT
       case 21:
         return steadystateWidget;
         break;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.145 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/03 09:40:35 $
+//   $Author: gauges $
+//   $Date: 2008/09/08 08:33:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ class CQModelValue;
 class CQMathMatrixWidget;
 
 #ifdef WITH_LAYOUT
-class CQCopasiLayoutWidget;
+class CQLayoutsWidget;
 #endif
 
 //*********************************************************************************
@@ -127,7 +127,21 @@ class ListViews : public QSplitter
 
     // CHANGE does not include RENAME
     enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-    enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT, PLOT, MODELVALUE, EVENT, MIRIAM};
+    enum ObjectType {METABOLITE = 0
+                                  , COMPARTMENT
+                     , REACTION
+                     , FUNCTION
+                     , MODEL
+                     , STATE
+                     , REPORT
+                     , PLOT
+                     , MODELVALUE
+                     , EVENT
+                     , MIRIAM
+#ifdef WITH_LAYOUT
+                     , LAYOUT
+#endif // WITH_LAYOUT
+                    };
 
     static void setDataModel(DataModelGUI* dm);
     static DataModelGUI* getDataModel() {return dataModel;};
@@ -251,7 +265,7 @@ class ListViews : public QSplitter
     CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
 #ifdef WITH_LAYOUT
-    CQCopasiLayoutWidget * mpCopasiLayoutWidget;
+    CQLayoutsWidget * mpLayoutsWidget;
 #endif
     CQMathMatrixWidget * mpMathMatrixWidget;
   };
