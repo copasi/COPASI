@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/05 09:29:03 $
+//   $Date: 2008/09/08 08:29:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@ class QFrame;
 class QVBox;
 class QPushButton;
 class QToolBar;
+class CLayout;
 
 class CQLayoutMainWindow : public QMainWindow
   {
@@ -48,7 +49,7 @@ class CQLayoutMainWindow : public QMainWindow
     Q_OBJECT      // must include this if you use Qt signals/slots
 
   public:
-    CQLayoutMainWindow(QWidget *parent = 0, const char *name = 0);
+    CQLayoutMainWindow(CLayout* pLayout = NULL, QWidget *parent = 0, const char *name = 0);
     void setIndividualScaling();
     void setGlobalScaling();
     void setSizeMode();

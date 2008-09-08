@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.124 $
+//   $Revision: 1.125 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/05 09:29:03 $
+//   $Date: 2008/09/08 08:29:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,7 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 
 // TODO Antialias Nodes and arrowheds, right now it looks as if only the edges
 // do get antialiasing
+const double CQGLNetworkPainter::PLANE_DEPTH = 1.0;
 
 CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent, const char *name)
     : QGLWidget(format, parent, name)
@@ -78,7 +79,7 @@ CQGLNetworkPainter::~CQGLNetworkPainter()
       ++it;
     }
   // delete the node display list
-  glDeleteLists(this->mNodeDisplayList, 1);
+  glDeleteLists(this->mDisplayLists, 2);
 }
 
 const CLPoint& CQGLNetworkPainter::getGraphMin()
@@ -281,7 +282,7 @@ void CQGLNetworkPainter::drawGraph()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   unsigned int i;
-
+  glCallList(this->mDisplayLists);
   if ((pParentLayoutWindow != NULL) &&
       (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)) // draw color legend
     {
@@ -1895,6 +1896,8 @@ void CQGLNetworkPainter::initializeGL()
   glEnable(GL_BLEND);
   glEnable(GL_LINE_SMOOTH);
   glDisable(GL_ALPHA_TEST);
+  glEnable(GL_POINT_SMOOTH);
+  glEnable(GL_POLYGON_SMOOTH);
 
   glShadeModel(GL_SMOOTH);
 
@@ -1902,9 +1905,24 @@ void CQGLNetworkPainter::initializeGL()
   // convert the node into a display list that is created once and call once
   // for each node.
   // this might safe some cpu cycles, especially when the nodes get more fancy.
-  this->mNodeDisplayList = glGenLists(1);
+  this->mDisplayLists = glGenLists(2);
   GLUquadricObj* qobj = NULL;
-  glNewList(mNodeDisplayList, GL_COMPILE);
+  // the first display list if for a background plane that allows us to create
+  // nice shadows
+  CLPoint p1 = this->getGraphMin();
+  CLPoint p2 = this->getGraphMax();
+  glNewList(mDisplayLists, GL_COMPILE);
+  glColor3f(1.0f, 1.0f, 0.94);
+  glBegin(GL_POLYGON);
+  glVertex3d(p1.getX(), p1.getY(), CQGLNetworkPainter::PLANE_DEPTH);
+  glVertex3d(p2.getX(), p1.getY(), CQGLNetworkPainter::PLANE_DEPTH);
+  glVertex3d(p2.getX(), p2.getY(), CQGLNetworkPainter::PLANE_DEPTH);
+  glVertex3d(p1.getX(), p2.getY(), CQGLNetworkPainter::PLANE_DEPTH);
+  glEnd();
+  glEndList();
+
+  // second list is for the rectangular nodes
+  glNewList(mDisplayLists + 1, GL_COMPILE);
   glBegin(GL_POLYGON);
   glVertex2d(0.05, 0.0);
   glVertex2d(0.95, 0.0);

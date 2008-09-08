@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/05 09:29:03 $
+//   $Date: 2008/09/08 08:29:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,6 +144,8 @@ class CQGLNetworkPainter : public QGLWidget
     void signalZoomOut();
 
   private:
+    static const double PLANE_DEPTH;
+
     static const C_FLOAT64 DEFAULT_NODE_SIZE;
 
     CLPoint mgraphMin;
@@ -163,7 +165,7 @@ class CQGLNetworkPainter : public QGLWidget
     std::vector<CGraphCurve> curvesWithArrow;
 
     GLuint graphObjList;
-    GLuint mNodeDisplayList;
+    GLuint mDisplayLists;
     std::string mFontname;
     unsigned int mFontsize;
     double mFontsizeDouble;

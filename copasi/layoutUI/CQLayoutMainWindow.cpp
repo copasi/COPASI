@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/05 09:29:03 $
+//   $Date: 2008/09/08 08:29:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@
 
 using namespace std;
 
-CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMainWindow(parent, name)
+CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
   this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   mCurrentPlace = QString::null;
@@ -92,27 +92,14 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget *parent, const char *name) : QMai
   mpParaPanel->setMinimumHeight(250);
   mpParaPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   mpInfoBox->setMinimumHeight(mpParaPanel->minimumHeight() + mpValTable->minimumHeight() + buttonBox->minimumHeight() + 25);
-  CListOfLayouts *pLayoutList;
-  if (CCopasiDataModel::Global != NULL)
-    {
-      pLayoutList = CCopasiDataModel::Global->getListOfLayouts();
-    }
-  else
-    pLayoutList = NULL;
-
   // Create OpenGL widget
   mpGLViewport = new CQGLViewport(mpSplitter, "Network layout");
-  if (pLayoutList != NULL)
+  if (pLayout != NULL)
     {
-      CLayout * pLayout;
-      if (pLayoutList->size() > 0)
-        {
-          pLayout = (*pLayoutList)[0];
-          CLDimensions dim = pLayout->getDimensions();
-          CLPoint c1;
-          CLPoint c2(dim.getWidth(), dim.getHeight());
-          mpGLViewport->createGraph(pLayout); // create local data structures
-        }
+      CLDimensions dim = pLayout->getDimensions();
+      CLPoint c1;
+      CLPoint c2(dim.getWidth(), dim.getHeight());
+      mpGLViewport->createGraph(pLayout); // create local data structures
     }
   mpSplitter->setResizeMode(mpInfoBox, QSplitter::KeepSize);
 
