@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:47 $
+//   $Author: gauges $
+//   $Date: 2008/09/08 08:53:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1163,4 +1163,23 @@ CFunction * CCopasiDataModel::getUnsupportedDelay()
     }
 
   return mpUnsupportedDelay;
+}
+
+bool CCopasiDataModel::removeLayout(const std::string & key)
+{
+  CLayout *pLayout =
+    dynamic_cast< CLayout * >(GlobalKeys.get(key));
+
+  if (!pLayout)
+    return false;
+
+  //Check if Layout with that name exists
+  unsigned C_INT32 index =
+    mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  mpListOfLayouts->CCopasiVector< CLayout >::remove(index);
+
+  return true;
 }

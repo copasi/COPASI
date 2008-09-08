@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/05/07 20:37:18 $
+//   $Author: gauges $
+//   $Date: 2008/09/08 08:53:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,7 @@ class CCopasiDataModel: public COutputHandler
 
 #ifdef WITH_LAYOUT
     CListOfLayouts * getListOfLayouts();
+    bool removeLayout(const std::string& key);
 #endif
 
     CFunctionDB * getFunctionList();
