@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.22 $
+#   $Revision: 1.23 $
 #   $Name:  $
 #   $Author: gauges $
-#   $Date: 2008/09/04 06:01:52 $
+#   $Date: 2008/09/08 08:34:36 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,6 @@ HEADERS = CQGLNetworkPainter.h \
           CSimSummaryInfo.h \
           CDataEntity.h \
           CVisParameters.h \
-          CQCopasiLayoutWidget.h \
           CQCurrentValueTable.h \
           BezierCurve.h \
           RGTextureSpec.h \
@@ -46,7 +45,6 @@ SOURCES = CQLayoutMainWindow.cpp \
           CSimSummaryInfo.cpp \
           CDataEntity.cpp \
           CVisParameters.cpp \
-          CQCopasiLayoutWidget.cpp \
           CQCurrentValueTable.cpp \
           CQGLViewport.cpp \
           BezierCurve.cpp \
