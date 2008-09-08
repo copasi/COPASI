@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/05/19 07:52:03 $
+//   $Author: shoops $
+//   $Date: 2008/09/08 11:41:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ void CQMetabolite::init()
 
   mpReactionTable->header()->hide();
 
+  mInitialNumber = 0.0;
   mInitialNumberLastChanged = true;
 
   int Width = fontMetrics().width("Concentration (" +
