@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 09:16:26 $
+//   $Date: 2008/09/09 12:13:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,13 +121,12 @@ class CQLayoutMainWindow : public QMainWindow
 
     CVisParameters *pVisParameters;
     QPopupMenu *mpFileMenu;
-    QPopupMenu *mpActionsMenu;
     QPopupMenu *mpOptionsMenu;
     QPopupMenu *mpLabelShapeMenu;
     QPopupMenu *mpViewMenu;
     QPopupMenu *mpZoomMenu;
+    QPopupMenu *mpPlayMenu;
 
-    QAction *mpRunAnimation;
     QAction *mpCreatePicture;
     QAction *mpOpenSBMLFile;
     QAction *mpCloseAction;
