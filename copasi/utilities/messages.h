@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:31 $
+//   $Author: gauges $
+//   $Date: 2008/09/09 03:43:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,6 +227,7 @@ const MESSAGES Messages[] =
     {MCSBML + 71, "SBML (71): The time units of some events were ignored. Since ids on event are optional, only those events with ids are listed below. Units might be displayed incorrectly.\nEvents: %s"},
     {MCSBML + 72, "SBML (72): Error in eventassignment. Eventassignments may only assign values to compartments, species or global parameters, object with id \"%s\" is neither compartment, species or global parameter. Ignoring assignment."},
     {MCSBML + 73, "SBML (73): Could not export %s. %s has been ignored."},
+    {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
