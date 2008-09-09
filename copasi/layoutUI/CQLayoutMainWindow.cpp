@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:29:10 $
+//   $Date: 2008/09/09 03:40:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,12 +45,13 @@
 #include "FontChooser.h"
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
+#include "CQPlayerControlWidget.h"
+#include "load_data.xpm"
 
 using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
-  this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   mCurrentPlace = QString::null;
   mDataPresent = false;
   pVisParameters = new CVisParameters();
@@ -105,14 +106,23 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
 
   mpFrame = new QFrame(mpMainBox);
 
-  mStartIcon = createStartIcon();
-  mStopIcon = createStopIcon();
+  this->mpControlWidget = new CQPlayerControlWidget(mpFrame);
+  connect(this->mpControlWidget, SIGNAL(play()), this, SLOT(startAnimation()));
+  connect(this->mpControlWidget, SIGNAL(pause()), this, SLOT(pauseAnimation()));
+  connect(this->mpControlWidget, SIGNAL(stop()), this, SLOT(stopAnimation()));
+  connect(this->mpControlWidget, SIGNAL(forward()), this, SLOT(forwardAnimation()));
+  connect(this->mpControlWidget, SIGNAL(backward()), this, SLOT(backwardAnimation()));
+  connect(this->mpControlWidget, SIGNAL(step_backward()), this, SLOT(stepBackwardAnimation()));
+  connect(this->mpControlWidget, SIGNAL(step_forward()), this, SLOT(stepForwardAnimation()));
 
-  mpStartStopButton = new QPushButton(mpFrame, "start/stop button");
+  //mStartIcon = createStartIcon();
+  //mStopIcon = createStopIcon();
 
-  connect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
-  mpStartStopButton->setIconSet(mStartIcon);
-  mpStartStopButton->setEnabled(true);
+  //mpStartStopButton = new QPushButton(mpFrame, "start/stop button");
+
+  //connect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
+  //mpStartStopButton->setIconSet(mStartIcon);
+  //mpStartStopButton->setEnabled(true);
 
   mpTimeSlider = new QwtSlider(mpFrame, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   mpTimeSlider->setRange(0, 100, 1, 0);
@@ -120,20 +130,22 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   this->mpTimeSlider->setEnabled(false);
 
   mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  mpFrame->setFixedHeight(55);
+  mpFrame->setFixedHeight(68);
   connect(mpTimeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
   QGridLayout* bottomBoxlayout = new QGridLayout(mpFrame, 2, 2, 3, 6);
   bottomBoxlayout->addMultiCellWidget(mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
-  bottomBoxlayout->addWidget(mpStartStopButton, 0, 0);
+  //bottomBoxlayout->addWidget(mpStartStopButton, 0, 0);
+  bottomBoxlayout->addMultiCellWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
   QSpacerItem* theSpacer = new QSpacerItem(20, 20);
   bottomBoxlayout->addItem(theSpacer, 1, 0);
 
   setCentralWidget(mpMainBox);
   loadData(); // try to load data (if already present)
-  this->mpToolbar = new QToolBar("layout toolbar", this, this);
-  this->mpToolbar->show();
+  this->mpToolbar = new QToolBar(this, "layout toolbar");
+  this->mpLoadDataAction->addTo(this->mpToolbar);
+  this->mpToolbar->addSeparator();
   QLabel* pLabel = new QLabel("zoom factor:", this->mpToolbar);
   pLabel->show();
   this->mpZoomComboBox = new QComboBox("zoom box", this->mpToolbar);
@@ -353,6 +365,11 @@ void CQLayoutMainWindow::createActions()
 
   //connect(automaticRescaleToggle, SIGNAL(toggled(bool)), this, SLOT(toggleAutomaticRescaling(bool)));
   //automaticRescaleToggle->setToolTip("Enable/disable automatic rescaling of graph when panel is resized");
+  this->mpLoadDataAction = new QAction(QPixmap(load_data_xpm),
+                                       "load data",
+                                       QKeySequence(),
+                                       this);
+  connect(this->mpLoadDataAction, SIGNAL(activated()), this, SLOT(loadData()));
 }
 
 void CQLayoutMainWindow::createMenus()
@@ -498,18 +515,20 @@ void CQLayoutMainWindow::loadData()
   bool successfulP = mpGLViewport->getPainter()->createDataSets();
   if (successfulP)
     {
+      // set the number of steps in the control widget and place the current
+      // step at 0
+      this->mpControlWidget->setCurrentStep(0);
       this->mpTimeSlider->setEnabled(true);
-      //this->mpRunAnimation->setEnabled(true);
-      //this->mpStartStopButton->setEnabled(true);
       this->mDataPresent = true;
       mpParaPanel->enableStepNumberChoice();
       int maxVal = mpGLViewport->getPainter()->getNumberOfSteps();
-      //std::cout << "number of steps: " << maxVal << std::endl;
       this->mpTimeSlider->setRange(0, maxVal - 1);
-      //pVisParameters->numberOfSteps = maxVal;
+      this->mpControlWidget->setNumSteps(maxVal);
       mpGLViewport->getPainter()->updateGL();
       if (this->mpGLViewport->getPainter()->isCircleMode())
-        showStep(this->mpTimeSlider->value());
+        {
+          showStep(this->mpTimeSlider->value());
+        }
     }
 }
 
@@ -586,11 +605,11 @@ void CQLayoutMainWindow::startAnimation()
       pVisParameters->animationRunning = true;
       this->mpTimeSlider->setEnabled(false);
       mpGLViewport->getPainter()->runAnimation();
-
+      this->mpControlWidget->setNumSteps(this->mpGLViewport->getPainter()->getNumberOfSteps());
       //exchange icon and callback for start/stop button
-      disconnect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
-      connect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
-      mpStartStopButton->setIconSet(mStopIcon);
+      //disconnect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
+      //connect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
+      //mpStartStopButton->setIconSet(mStopIcon);
       mpParaPanel->disableParameterChoice();
       mpParaPanel->disableStepNumberChoice();
     }
@@ -611,26 +630,22 @@ void CQLayoutMainWindow::saveImage()
     }
 }
 
-void CQLayoutMainWindow::stopAnimation()
+void CQLayoutMainWindow::pauseAnimation()
 {
   pVisParameters->animationRunning = false;
   this->mpTimeSlider->setEnabled(true);
-
-  connect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
-  disconnect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(stopAnimation()));
-  mpStartStopButton->setIconSet(mStartIcon);
   mpParaPanel->enableParameterChoice();
   mpParaPanel->enableStepNumberChoice();
 }
 
 void CQLayoutMainWindow::endOfAnimationReached()
 {
-  this->stopAnimation();
+  this->pauseAnimation();
 }
 
 void CQLayoutMainWindow::showStep(double i)
 {
-
+  this->mpControlWidget->setCurrentStep(static_cast<int>(i));
   mpGLViewport->getPainter()->showStep(static_cast<int>(i));
   mpGLViewport->getPainter()->updateGL();
   mpParaPanel->setStepNumber(static_cast<int>(i));
@@ -964,5 +979,71 @@ void CQLayoutMainWindow::slotZoomOut()
   if (checkedItem != 0)
     {
       slotZoomItemActivated(ids[--checkedItem]);
+    }
+}
+
+void CQLayoutMainWindow::stopAnimation()
+{
+  // go to step 0 and stop
+  this->pauseAnimation();
+  this->showStep(0.0);
+  // update the slider
+  disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+  this->mpTimeSlider->setValue(0.0);
+  connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+}
+
+void CQLayoutMainWindow::forwardAnimation()
+{
+  // go to last step and redisplay
+  this->pauseAnimation();
+  double stepNumber = (double)(this->mpGLViewport->getPainter()->getNumberOfSteps() - 1);
+  this->showStep(stepNumber);
+  // update the slider
+  disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+  this->mpTimeSlider->setValue(stepNumber);
+  connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+}
+
+void CQLayoutMainWindow::backwardAnimation()
+{
+  // go to step 0 and redisplay
+  this->stopAnimation();
+  if (this->mpControlWidget->isPlaying())
+    {
+      this->startAnimation();
+    }
+}
+
+void CQLayoutMainWindow::stepForwardAnimation()
+{
+  // raise step by one if possible and continue animation
+  // go to last step and redisplay
+  C_INT32 currentStep = this->getCurrentStep();
+  ++currentStep;
+  if (currentStep < this->mpGLViewport->getPainter()->getNumberOfSteps())
+    {
+      this->pauseAnimation();
+      this->showStep((double)currentStep);
+      // update the slider
+      disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+      this->mpTimeSlider->setValue((double)currentStep);
+      connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+    }
+}
+
+void CQLayoutMainWindow::stepBackwardAnimation()
+{
+  // lower step by one if possible and redisplay
+  C_INT32 currentStep = this->getCurrentStep();
+  if (currentStep > 0)
+    {
+      --currentStep;
+      this->pauseAnimation();
+      this->showStep((double)currentStep);
+      // update the slider
+      disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+      this->mpTimeSlider->setValue((double)currentStep);
+      connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
     }
 }

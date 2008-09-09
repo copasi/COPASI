@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:29:10 $
+//   $Date: 2008/09/09 03:40:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,11 +42,15 @@ class QVBox;
 class QPushButton;
 class QToolBar;
 class CLayout;
+class CQPlayerControlWidget;
 
 class CQLayoutMainWindow : public QMainWindow
   {
 
     Q_OBJECT      // must include this if you use Qt signals/slots
+
+  signals:
+    void signal_close(const CQLayoutMainWindow* pWindow);
 
   public:
     CQLayoutMainWindow(CLayout* pLayout = NULL, QWidget *parent = 0, const char *name = 0);
@@ -93,7 +97,12 @@ class CQLayoutMainWindow : public QMainWindow
     void changeFontSize();
     void showStep(double i);
     void startAnimation();
+    void pauseAnimation();
     void stopAnimation();
+    void forwardAnimation();
+    void backwardAnimation();
+    void stepForwardAnimation();
+    void stepBackwardAnimation();
     void checkAllCheckboxesInTable();
     void uncheckAllCheckboxesInTable();
     void slotResetView();
@@ -129,6 +138,7 @@ class CQLayoutMainWindow : public QMainWindow
     QAction *mpCircularShape;
     QAction *mpMimaNodeSizes;
     QAction *mpSFontSize;
+    QAction *mpLoadDataAction;
 
     ParaPanel *mpParaPanel;
     CQCurrentValueTable *mpValTable;
@@ -141,9 +151,11 @@ class CQLayoutMainWindow : public QMainWindow
 
     QVBox *mpInfoBox;
 
-    QPushButton *mpStartStopButton;
-    QIconSet mStartIcon;
-    QIconSet mStopIcon;
+    CQPlayerControlWidget* mpControlWidget;
+
+    //QPushButton *mpStartStopButton;
+    //QIconSet mStartIcon;
+    //QIconSet mStopIcon;
 
     bool mDataPresent; // shows whether time series data already load
     QString mCurrentPlace;
