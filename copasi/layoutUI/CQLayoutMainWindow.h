@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 03:40:41 $
+//   $Date: 2008/09/09 09:16:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,6 @@ class QSplitter;
 class QwtSlider;
 class QFrame;
 class QVBox;
-class QPushButton;
 class QToolBar;
 class CLayout;
 class CQPlayerControlWidget;
@@ -61,7 +60,6 @@ class CQLayoutMainWindow : public QMainWindow
     void setValueOnSlider(C_INT32);
     void insertValueTable(CDataEntity dataSet);
     void updateValueTable(CDataEntity dataSet);
-
     void setMinValue(C_INT32 minNdSize); // set minimum possible node size
     void setMaxValue(C_INT32 maxNdSize); // set maximum possible node size
     void setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize);
@@ -103,13 +101,12 @@ class CQLayoutMainWindow : public QMainWindow
     void backwardAnimation();
     void stepForwardAnimation();
     void stepBackwardAnimation();
-    void checkAllCheckboxesInTable();
-    void uncheckAllCheckboxesInTable();
     void slotResetView();
     void slotZoomItemActivated(int id);
     void slotActivated(int);
     void slotZoomIn();
     void slotZoomOut();
+    void slotViewActivated(int id);
 
   public slots:
     void changeStepValue(C_INT32 i);
@@ -152,10 +149,6 @@ class CQLayoutMainWindow : public QMainWindow
     QVBox *mpInfoBox;
 
     CQPlayerControlWidget* mpControlWidget;
-
-    //QPushButton *mpStartStopButton;
-    //QIconSet mStartIcon;
-    //QIconSet mStopIcon;
 
     bool mDataPresent; // shows whether time series data already load
     QString mCurrentPlace;

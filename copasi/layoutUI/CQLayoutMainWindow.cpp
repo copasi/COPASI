@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 03:40:41 $
+//   $Date: 2008/09/09 09:16:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,29 +70,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   mpParaPanel = new ParaPanel(mpInfoBox);
 
   mpValTable = new CQCurrentValueTable(mpInfoBox);
-  mpValTable->setMinimumSize(100, 150);
-  mpValTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
-  // add two buttons in an horizontal box
-  QHBox *buttonBox = new QHBox(mpInfoBox);
-  QPushButton *pcheckAllButton = new QPushButton("Check all", buttonBox);
-  QPushButton *puncheckAllButton = new QPushButton("Uncheck all", buttonBox);
-  connect(pcheckAllButton , SIGNAL(clicked()), this, SLOT(checkAllCheckboxesInTable()));
-  connect(puncheckAllButton , SIGNAL(clicked()), this, SLOT(uncheckAllCheckboxesInTable()));
-
-  pcheckAllButton->setMinimumSize(40, 30);
-  puncheckAllButton->setMinimumSize(40, 30);
-
-  pcheckAllButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  puncheckAllButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-  buttonBox->setFixedHeight(pcheckAllButton->minimumHeight() + 6);
-
-  buttonBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-  mpParaPanel->setMinimumHeight(250);
-  mpParaPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  mpInfoBox->setMinimumHeight(mpParaPanel->minimumHeight() + mpValTable->minimumHeight() + buttonBox->minimumHeight() + 25);
   // Create OpenGL widget
   mpGLViewport = new CQGLViewport(mpSplitter, "Network layout");
   if (pLayout != NULL)
@@ -114,15 +91,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   connect(this->mpControlWidget, SIGNAL(backward()), this, SLOT(backwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_backward()), this, SLOT(stepBackwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_forward()), this, SLOT(stepForwardAnimation()));
-
-  //mStartIcon = createStartIcon();
-  //mStopIcon = createStopIcon();
-
-  //mpStartStopButton = new QPushButton(mpFrame, "start/stop button");
-
-  //connect(mpStartStopButton, SIGNAL(clicked()), this, SLOT(startAnimation()));
-  //mpStartStopButton->setIconSet(mStartIcon);
-  //mpStartStopButton->setEnabled(true);
 
   mpTimeSlider = new QwtSlider(mpFrame, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough);
   mpTimeSlider->setRange(0, 100, 1, 0);
@@ -174,7 +142,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
   this->show();
-  //glPainter->drawGraph();
 }
 
 bool CQLayoutMainWindow::getAnimationRunning()
@@ -389,6 +356,16 @@ void CQLayoutMainWindow::createMenus()
   mpCircularShape->addTo(mpLabelShapeMenu);
 
   mpViewMenu = new QPopupMenu(this);
+  mpViewMenu->insertItem("parameters", 1001);
+  mpViewMenu->setItemChecked(1001, TRUE);
+  mpViewMenu->insertItem("value table", 1002);
+  mpViewMenu->setItemChecked(1002, TRUE);
+  mpViewMenu->insertItem("player control", 1003);
+  mpViewMenu->setItemChecked(1003, TRUE);
+  mpViewMenu->insertItem("toolbar", 1004);
+  mpViewMenu->setItemChecked(1004, TRUE);
+  connect(this->mpViewMenu, SIGNAL(activated(int)), this, SLOT(slotViewActivated(int)));
+  mpViewMenu->insertSeparator();
   mpViewMenu->insertItem("Reset View", this, SLOT(slotResetView()));
   mpZoomMenu = new QPopupMenu(this);
   mpViewMenu->insertItem("Zoom", mpZoomMenu);
@@ -565,16 +542,6 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
         }
       i++;
     }
-}
-
-void CQLayoutMainWindow::checkAllCheckboxesInTable()
-{
-  mpValTable->setAllBoxesChecked();
-}
-
-void CQLayoutMainWindow::uncheckAllCheckboxesInTable()
-{
-  mpValTable->setAllBoxesUnchecked();
 }
 
 // adds the item given by s to the list of items to animate (no change, if it is already present)
@@ -1045,5 +1012,58 @@ void CQLayoutMainWindow::stepBackwardAnimation()
       disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
       this->mpTimeSlider->setValue((double)currentStep);
       connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+    }
+}
+
+void CQLayoutMainWindow::slotViewActivated(int id)
+{
+  switch (id)
+    {
+    case 1001:
+      if (!this->mpViewMenu->isItemChecked(id))
+        {
+          this->mpParaPanel->show();
+        }
+      else
+        {
+          this->mpParaPanel->hide();
+        }
+      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+      break;
+    case 1002:
+      if (!this->mpViewMenu->isItemChecked(id))
+        {
+          this->mpValTable->show();
+        }
+      else
+        {
+          this->mpValTable->hide();
+        }
+      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+      break;
+    case 1003:
+      if (!this->mpViewMenu->isItemChecked(id))
+        {
+          this->mpFrame->show();
+        }
+      else
+        {
+          this->mpFrame->hide();
+        }
+      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+      break;
+    case 1004:
+      if (!this->mpViewMenu->isItemChecked(id))
+        {
+          this->mpToolbar->show();
+        }
+      else
+        {
+          this->mpToolbar->hide();
+        }
+      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+      break;
+    default:
+      break;
     }
 }
