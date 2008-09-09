@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:30:08 $
+//   $Date: 2008/09/09 03:41:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 
 #define COL_MARK         0
 #define COL_NAME         1
+#define COL_SHOW         2
 
 std::vector<const CCopasiObject*> CQLayoutsWidget::getObjects() const
   {
@@ -51,13 +52,14 @@ void CQLayoutsWidget::init()
 {
   this->btnNew->hide();
   mOT = ListViews::LAYOUT;
-  numCols = 2;
+  numCols = 3;
   table->setNumCols(numCols);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
   tableHeader->setLabel(COL_NAME, "Name");
+  tableHeader->setLabel(COL_SHOW, "Show");
 }
 
 void CQLayoutsWidget::updateHeaderUnits()
@@ -72,6 +74,10 @@ void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   // Name
   table->setText(row, COL_NAME, FROM_UTF8(pLayout->getObjectName()));
+  CQShowLayoutButton* pButton = new CQShowLayoutButton(row, NULL);
+  pButton->setText("Show");
+  table->setCellWidget(row, COL_SHOW, pButton);
+  connect(pButton, SIGNAL(signal_show(int)), this, SLOT(slot_show(int)));
   std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
   // if this layout does not have an entry in the layout window map, add one
   if (pos == this->mLayoutWindowMap.end())
@@ -150,7 +156,7 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
             if (pos != this->mLayoutWindowMap.end() && pos->second != NULL)
               {
                 // close the window
-                pos->second->close(TRUE);
+                pos->second->close();
               }
           }
 
@@ -223,10 +229,12 @@ void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
   fillTable();
 
-  /*
-  if (GlobalKeys.get(key))
-    mpListView->switchToOtherWidget(0, key);
-  */
+  this->slot_show(row);
+}
+
+void CQLayoutsWidget::slot_show(int row)
+{
+  std::string key = mKeys[row];
   CLayout* pLayout = dynamic_cast<CLayout*>(GlobalKeys.get(key));
   if (pLayout != NULL)
     {
@@ -264,4 +272,15 @@ void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     {
       std::cerr << "Could not find layout." << std::endl;
     }
+}
+
+void CQShowLayoutButton::slot_clicked()
+{
+  emit signal_show(this->mRow);
+}
+
+CQShowLayoutButton::CQShowLayoutButton(unsigned int row, QWidget* pParent, const char* name): QToolButton(pParent, name), mRow(row)
+{
+  this->setTextLabel("Show");
+  connect(this, SIGNAL(clicked()), this, SLOT(slot_clicked()));
 }

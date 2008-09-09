@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:30:08 $
+//   $Date: 2008/09/09 03:41:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 #define CQLAYOUTS_WIDGET_H
 
 #include <map>
+
+#include <qtoolbutton.h>
 
 #include "copasi/UI/CopasiTableWidget.h"
 
@@ -93,6 +95,24 @@ class CQLayoutsWidget : public CopasiTableWidget
 
   protected slots:
     void slotDoubleClicked(int row, int col, int m, const QPoint & n);
+    void slot_show(int row);
+  };
+
+class CQShowLayoutButton : public QToolButton
+  {
+    Q_OBJECT
+
+  public:
+    CQShowLayoutButton(unsigned int row, QWidget* pParent = NULL, const char* name = "");
+
+  signals:
+    void signal_show(int row);
+
+  protected:
+    unsigned int mRow;
+
+  protected slots:
+    void slot_clicked();
   };
 
 #endif // CQLAYOUT_WIDGETS_H
