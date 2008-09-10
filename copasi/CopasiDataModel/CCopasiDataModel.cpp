@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/08 08:53:46 $
+//   $Author: aruff $
+//   $Date: 2008/09/10 15:02:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1165,6 +1165,7 @@ CFunction * CCopasiDataModel::getUnsupportedDelay()
   return mpUnsupportedDelay;
 }
 
+#ifdef WITH_LAYOUT
 bool CCopasiDataModel::removeLayout(const std::string & key)
 {
   CLayout *pLayout =
@@ -1183,3 +1184,4 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
 
   return true;
 }
+#endif //WITH_LAYOUT
