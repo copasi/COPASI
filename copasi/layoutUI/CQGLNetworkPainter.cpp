@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.126 $
+//   $Revision: 1.127 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/11 10:31:33 $
+//   $Date: 2008/09/11 12:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -676,8 +676,9 @@ void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_
   glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY8, static_cast<int>(texSpec->textureWidth), static_cast<int>(texSpec->textureHeight), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, texSpec->textureData);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glTranslated(x, y, 0.5);
+
   double xOffset = (w - texSpec->textWidth + 2) / 2.0;
-  double yOffset = (h - texSpec->textHeight + 2) / 2.0;
+  double yOffset = (h - texSpec->textHeight + texSpec->textYOffset + 2) / 2.0;
   xOffset = (xOffset < 0.0) ? 0.0 : xOffset;
   yOffset = (yOffset < 0.0) ? 0.0 : yOffset;
   double textureXRatio = ((texSpec->textWidth + 2) / texSpec->textureWidth) / ((w - xOffset) / w);
@@ -686,10 +687,13 @@ void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_
   glBegin(GL_POLYGON);
   glTexCoord2f(-xOffset / texSpec->textureWidth, -yOffset / texSpec->textureHeight);
   glVertex3f(0.0, 0.0, 0.0);
+
   glTexCoord2f(textureXRatio, -yOffset / texSpec->textureHeight);
   glVertex3f(w, 0.0, 0.0);
+
   glTexCoord2f(textureXRatio, textureYRatio);
   glVertex3f(w, h, 0.0);
+
   glTexCoord2f(-xOffset / texSpec->textureWidth, textureYRatio);
   glVertex3f(0.0, h, 0.0);
   glEnd();
@@ -799,16 +803,31 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
   texture->textWidth = rect.width();
   texture->textHeight = rect.height();
   QImage image = pixmap.convertToImage(); // UR
-  int i;
+  // write the texture to a file to check if they were created correctly
+  //assert(image.save(text+".png","PNG"));
+  int i, j;
+  int firstWhitePixel = height;
+  char pixelValue;
+  QRgb pixel;
   for (i = 0;i < height;++i)
     {
-      int j;
       for (j = 0;j < width;++j)
         {
-          QRgb pixel = image.pixel(j, i);
-          texture->textureData[i*width + j] = static_cast<unsigned char>(255 - (qRed(pixel) + qGreen(pixel) + qBlue(pixel)) / 3);
+          pixel = image.pixel(j, i);
+          pixelValue = static_cast<unsigned char>(255 - (qRed(pixel) + qGreen(pixel) + qBlue(pixel)) / 3);
+          texture->textureData[i*width + j] = pixelValue;
+          if (pixelValue != 0)
+            {
+              if (firstWhitePixel == height)
+                {
+                  firstWhitePixel = i;
+                }
+            }
         }
     }
+  texture->textYOffset = firstWhitePixel;
+  // write the actual texture to a file
+  //texture->save(text+".tga");
   return texture;
 }
 
