@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.228 $
+//   $Revision: 1.229 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Author: gauges $
+//   $Date: 2008/09/11 10:28:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,10 @@ CopasiUI3Window::CopasiUI3Window():
     mpMenuRecentFiles(NULL),
     mpMenuRecentSBMLFiles(NULL)
 {
+  // set destructive close
+  WFlags f = this->getWFlags();
+  f |= Qt::WDestructiveClose;
+  this->setWFlags(f);
   QImage img;
   img.loadFromData(image0_data, sizeof(image0_data), "PNG");
   QPixmap image0 = img;
