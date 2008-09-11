@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/ParaPanel.ui,v $ </comment>
-<comment>   $Revision: 1.7 $ </comment>
+<comment>   $Revision: 1.8 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2008/02/19 12:36:07 $ </comment>
+<comment>   $Author: gauges $ </comment>
+<comment>   $Date: 2008/09/11 10:31:33 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,11 +12,11 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>ParaPanel</class>
+<class>CQParaPanel</class>
 <comment> All rights reserved. </comment>
 <widget class="QWidget">
     <property name="name">
-        <cstring>ParaPanel</cstring>
+        <cstring>CQParaPanel</cstring>
     </property>
     <property name="enabled">
         <bool>true</bool>
@@ -46,7 +46,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>mpLayout2</cstring>
             </property>
             <grid>
                 <property name="name">
@@ -54,7 +54,7 @@
                 </property>
                 <widget class="QLineEdit" row="4" column="1">
                     <property name="name">
-                        <cstring>stepEdit</cstring>
+                        <cstring>mpStepEdit</cstring>
                     </property>
                     <property name="enabled">
                         <bool>false</bool>
@@ -65,7 +65,7 @@
                 </widget>
                 <widget class="QLabel" row="4" column="0">
                     <property name="name">
-                        <cstring>stepLabel</cstring>
+                        <cstring>mpStepLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Step Number</string>
@@ -76,7 +76,7 @@
                 </widget>
                 <widget class="QButtonGroup" row="2" column="1">
                     <property name="name">
-                        <cstring>scalingButtonGroup</cstring>
+                        <cstring>mpScalingButtonGroup</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -95,7 +95,7 @@
                         </property>
                         <widget class="QRadioButton">
                             <property name="name">
-                                <cstring>individScalButton</cstring>
+                                <cstring>mpIndividScalButton</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -114,7 +114,7 @@
                         </widget>
                         <widget class="QRadioButton">
                             <property name="name">
-                                <cstring>globalScalButton</cstring>
+                                <cstring>mpGlobalScalButton</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -132,7 +132,7 @@
                 </widget>
                 <widget class="QLabel" row="1" column="0">
                     <property name="name">
-                        <cstring>frameRateLabel</cstring>
+                        <cstring>mpFrameRateLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Frame rate (frames/sec)</string>
@@ -141,12 +141,12 @@
                         <set>WordBreak|AlignVCenter|AlignRight</set>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>spinBox1</cstring>
+                        <cstring>mpSpinBox1</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="2" column="0">
                     <property name="name">
-                        <cstring>schedModeLabel</cstring>
+                        <cstring>mpSchedModeLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Scheduling Mode</string>
@@ -155,12 +155,12 @@
                         <set>AlignVCenter|AlignRight</set>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>individScalButton</cstring>
+                        <cstring>mpIndividScalButton</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="3" column="0">
                     <property name="name">
-                        <cstring>schedModeLabel_2</cstring>
+                        <cstring>mpSchedModeLabel_2</cstring>
                     </property>
                     <property name="text">
                         <string>Mapping Mode</string>
@@ -169,12 +169,12 @@
                         <set>AlignVCenter|AlignRight</set>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>individScalButton</cstring>
+                        <cstring>mpIndividScalButton</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>paraLabel</cstring>
+                        <cstring>mpParaLabel</cstring>
                     </property>
                     <property name="font">
                         <font>
@@ -188,7 +188,7 @@
                 </widget>
                 <widget class="QButtonGroup" row="3" column="1">
                     <property name="name">
-                        <cstring>scalingButtonGroup_2</cstring>
+                        <cstring>mpScalingButtonGroup_2</cstring>
                     </property>
                     <property name="title">
                         <string></string>
@@ -199,7 +199,7 @@
                         </property>
                         <widget class="QRadioButton">
                             <property name="name">
-                                <cstring>sizeModeButton</cstring>
+                                <cstring>mpSizeModeButton</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -218,7 +218,7 @@
                         </widget>
                         <widget class="QRadioButton">
                             <property name="name">
-                                <cstring>colorModeButton</cstring>
+                                <cstring>mpColorModeButton</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -236,7 +236,7 @@
                 </widget>
                 <widget class="QSpinBox" row="1" column="1">
                     <property name="name">
-                        <cstring>spinBox1</cstring>
+                        <cstring>mpSpinBox1</cstring>
                     </property>
                     <property name="maxValue">
                         <number>50</number>
@@ -252,7 +252,7 @@
         </widget>
         <spacer>
             <property name="name">
-                <cstring>spacer1</cstring>
+                <cstring>mpSpacer1</cstring>
             </property>
             <property name="orientation">
                 <enum>Vertical</enum>
@@ -271,46 +271,46 @@
 </widget>
 <connections>
     <connection>
-        <sender>spinBox1</sender>
+        <sender>mpSpinBox1</sender>
         <signal>valueChanged(int)</signal>
-        <receiver>ParaPanel</receiver>
+        <receiver>CQParaPanel</receiver>
         <slot>changeFrameRate()</slot>
     </connection>
     <connection>
-        <sender>globalScalButton</sender>
+        <sender>mpGlobalScalButton</sender>
         <signal>clicked()</signal>
-        <receiver>ParaPanel</receiver>
+        <receiver>CQParaPanel</receiver>
         <slot>setGlobalScaling()</slot>
     </connection>
     <connection>
-        <sender>individScalButton</sender>
+        <sender>mpIndividScalButton</sender>
         <signal>clicked()</signal>
-        <receiver>ParaPanel</receiver>
+        <receiver>CQParaPanel</receiver>
         <slot>setIndividualScaling()</slot>
     </connection>
     <connection>
-        <sender>stepEdit</sender>
+        <sender>mpStepEdit</sender>
         <signal>returnPressed()</signal>
-        <receiver>ParaPanel</receiver>
+        <receiver>CQParaPanel</receiver>
         <slot>stepEdit_returnPressed()</slot>
     </connection>
     <connection>
-        <sender>sizeModeButton</sender>
+        <sender>mpSizeModeButton</sender>
         <signal>clicked()</signal>
-        <receiver>ParaPanel</receiver>
+        <receiver>CQParaPanel</receiver>
         <slot>setSizeMode()</slot>
     </connection>
     <connection>
-        <sender>colorModeButton</sender>
+        <sender>mpColorModeButton</sender>
         <signal>clicked()</signal>
-        <receiver>ParaPanel</receiver>
+        <receiver>CQParaPanel</receiver>
         <slot>setColorMode()</slot>
     </connection>
 </connections>
 <tabstops>
-    <tabstop>spinBox1</tabstop>
-    <tabstop>individScalButton</tabstop>
-    <tabstop>globalScalButton</tabstop>
+    <tabstop>mpSpinBox1</tabstop>
+    <tabstop>mpIndividScalButton</tabstop>
+    <tabstop>mpGlobalScalButton</tabstop>
 </tabstops>
 <includes>
     <include location="local" impldecl="in implementation">ParaPanel.ui.h</include>
@@ -326,6 +326,8 @@
 <functions>
     <function>enableParameterChoice()</function>
     <function>disableParameterChoice()</function>
+    <function>enableModeChoice()</function>
+    <function>disableModeChoice()</function>
     <function>enableStepNumberChoice()</function>
     <function>disableStepNumberChoice()</function>
     <function>setStepNumber( int i )</function>

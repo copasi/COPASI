@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 12:13:37 $
+//   $Date: 2008/09/11 10:31:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,9 +52,10 @@ using namespace std;
 
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : QMainWindow(parent, name)
 {
+  mpLayout = pLayout;
   mCurrentPlace = QString::null;
   mDataPresent = false;
-  pVisParameters = new CVisParameters();
+  mpVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
   mpMainBox = new QVBox(this);
 
@@ -64,7 +65,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
 
   mpInfoBox = new QVBox(mpSplitter);
 
-  mpParaPanel = new ParaPanel(mpInfoBox);
+  mpParaPanel = new CQParaPanel(mpInfoBox);
 
   mpValTable = new CQCurrentValueTable(mpInfoBox);
   // Create OpenGL widget
@@ -74,7 +75,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
       CLDimensions dim = pLayout->getDimensions();
       CLPoint c1;
       CLPoint c2(dim.getWidth(), dim.getHeight());
-      mpGLViewport->createGraph(pLayout); // create local data structures
+      mpGLViewport->createGraph(mpLayout); // create local data structures
     }
   mpSplitter->setResizeMode(mpInfoBox, QSplitter::KeepSize);
 
@@ -145,14 +146,15 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   connect(this->mpValTable , SIGNAL(changed()), this->mpGLViewport, SLOT(updateWidget()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
+  this->mLooping = false;
   this->show();
 }
 
 bool CQLayoutMainWindow::getAnimationRunning()
 {
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      return pVisParameters->animationRunning;
+      return mpVisParameters->animationRunning;
     }
   else
     return false;
@@ -160,19 +162,19 @@ bool CQLayoutMainWindow::getAnimationRunning()
 
 void CQLayoutMainWindow::setAnimationRunning(bool animationRunningP)
 {
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      pVisParameters->animationRunning = animationRunningP;
+      mpVisParameters->animationRunning = animationRunningP;
     }
 }
 
 C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
 {
   C_FLOAT64 minNodeSize = 10.0;
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
 
-      minNodeSize = pVisParameters->minNodeSize;
+      minNodeSize = mpVisParameters->minNodeSize;
     }
   return minNodeSize;
 }
@@ -180,23 +182,23 @@ C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
 C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
 {
   C_FLOAT64 maxNodeSize = 100.0;
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      maxNodeSize = pVisParameters->maxNodeSize;
+      maxNodeSize = mpVisParameters->maxNodeSize;
     }
   return maxNodeSize;
 }
 
 void CQLayoutMainWindow::setMinNodeSize(C_FLOAT64 minNdSize)
 {
-  if (pVisParameters != NULL)
-    pVisParameters->minNodeSize = minNdSize;
+  if (mpVisParameters != NULL)
+    mpVisParameters->minNodeSize = minNdSize;
 }
 
 void CQLayoutMainWindow::setMaxNodeSize(C_FLOAT64 maxNdSize)
 {
-  if (pVisParameters != NULL)
-    pVisParameters->maxNodeSize = maxNdSize;
+  if (mpVisParameters != NULL)
+    mpVisParameters->maxNodeSize = maxNdSize;
 }
 
 C_INT16 CQLayoutMainWindow::getFontSize()
@@ -206,9 +208,9 @@ C_INT16 CQLayoutMainWindow::getFontSize()
 
 C_INT32 CQLayoutMainWindow::getStepsPerSecond()
 {
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      return pVisParameters->stepsPerSecond;
+      return mpVisParameters->stepsPerSecond;
     }
   else
     return 2;
@@ -216,9 +218,9 @@ C_INT32 CQLayoutMainWindow::getStepsPerSecond()
 
 void CQLayoutMainWindow::setStepsPerSecond(C_INT16 val)
 {
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      pVisParameters->stepsPerSecond = val;
+      mpVisParameters->stepsPerSecond = val;
     }
 }
 
@@ -229,9 +231,9 @@ C_INT32 CQLayoutMainWindow::getCurrentStep()
 
 C_INT16 CQLayoutMainWindow::getScalingMode()
 {
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      return pVisParameters->scalingMode;
+      return mpVisParameters->scalingMode;
     }
   else
     return CVisParameters::INDIVIDUAL_SCALING;
@@ -239,9 +241,9 @@ C_INT16 CQLayoutMainWindow::getScalingMode()
 
 C_INT16 CQLayoutMainWindow::getMappingMode()
 {
-  if (pVisParameters != NULL)
+  if (mpVisParameters != NULL)
     {
-      return pVisParameters->mappingMode;
+      return mpVisParameters->mappingMode;
     }
   else
     return CVisParameters::SIZE_DIAMETER_MODE; // default mode
@@ -335,6 +337,8 @@ void CQLayoutMainWindow::createMenus()
   this->mpControlWidget->getBackwardAction()->addTo(this->mpPlayMenu);
   this->mpControlWidget->getStepForwardAction()->addTo(this->mpPlayMenu);
   this->mpControlWidget->getStepBackwardAction()->addTo(this->mpPlayMenu);
+  this->mpPlayMenu->insertSeparator();
+  this->mLoopItemId = this->mpPlayMenu->insertItem("loop animation", this, SLOT(slotLoopActivated()));
   this->mpPlayMenu->insertSeparator();
   this->mpLoadDataAction->addTo(this->mpPlayMenu);
 
@@ -471,9 +475,22 @@ void CQLayoutMainWindow::loadData()
       this->mpTimeSlider->setRange(0, maxVal - 1);
       this->mpControlWidget->setNumSteps(maxVal);
       mpGLViewport->getPainter()->updateGL();
-      if (this->mpGLViewport->getPainter()->isCircleMode())
+      CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
+      if (pPainter->getNumberOfSteps() > 1)
         {
-          showStep(this->mpTimeSlider->value());
+          this->mpParaPanel->enableParameterChoice();
+          this->mpParaPanel->enableStepNumberChoice();
+          this->mpParaPanel->enableModeChoice();
+          if (pPainter->isCircleMode())
+            {
+              showStep(this->mpTimeSlider->value());
+            }
+        }
+      else
+        {
+          this->mpParaPanel->disableParameterChoice();
+          this->mpParaPanel->disableStepNumberChoice();
+          this->mpParaPanel->disableModeChoice();
         }
     }
 }
@@ -534,12 +551,12 @@ void CQLayoutMainWindow::startAnimation()
     this->loadData(); // look for data
   if (this->mDataPresent)
     {// only if time series data present
-      pVisParameters->animationRunning = true;
+      this->mpVisParameters->animationRunning = true;
       this->mpTimeSlider->setEnabled(false);
-      mpGLViewport->getPainter()->runAnimation();
+      this->mpGLViewport->getPainter()->runAnimation();
       this->mpControlWidget->setNumSteps(this->mpGLViewport->getPainter()->getNumberOfSteps());
-      mpParaPanel->disableParameterChoice();
-      mpParaPanel->disableStepNumberChoice();
+      this->mpParaPanel->disableParameterChoice();
+      this->mpParaPanel->disableStepNumberChoice();
     }
   else
     {
@@ -560,7 +577,9 @@ void CQLayoutMainWindow::saveImage()
 
 void CQLayoutMainWindow::pauseAnimation()
 {
-  pVisParameters->animationRunning = false;
+  // tell the painter that the anmation is paused
+  this->mpGLViewport->getPainter()->pauseAnimation();
+  this->mpVisParameters->animationRunning = false;
   this->mpTimeSlider->setEnabled(true);
   mpParaPanel->enableParameterChoice();
   mpParaPanel->enableStepNumberChoice();
@@ -568,7 +587,14 @@ void CQLayoutMainWindow::pauseAnimation()
 
 void CQLayoutMainWindow::endOfAnimationReached()
 {
-  this->pauseAnimation();
+  if (this->mLooping)
+    {
+      this->backwardAnimation();
+    }
+  else
+    {
+      this->mpControlWidget->getPauseAction()->activate();
+    }
 }
 
 void CQLayoutMainWindow::showStep(double i)
@@ -591,29 +617,29 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 
 void CQLayoutMainWindow::setIndividualScaling()
 {
-  pVisParameters->scalingMode = pVisParameters->INDIVIDUAL_SCALING;
-  mpGLViewport->getPainter()->rescaleDataSets(pVisParameters->INDIVIDUAL_SCALING);
+  mpVisParameters->scalingMode = mpVisParameters->INDIVIDUAL_SCALING;
+  mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->INDIVIDUAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setGlobalScaling()
 {
-  pVisParameters->scalingMode = pVisParameters->GLOBAL_SCALING;
-  mpGLViewport->getPainter()->rescaleDataSets(pVisParameters->GLOBAL_SCALING);
+  mpVisParameters->scalingMode = mpVisParameters->GLOBAL_SCALING;
+  mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->GLOBAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setSizeMode()
 {
-  pVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 1.0, getMinNodeSize(), getMaxNodeSize(), pVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 1.0, getMinNodeSize(), getMaxNodeSize(), mpVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setColorMode()
 {
-  pVisParameters->mappingMode = CVisParameters::COLOR_MODE;
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 1.0, pVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpVisParameters->mappingMode = CVisParameters::COLOR_MODE;
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 1.0, mpVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->mpTimeSlider->value());
 }
 
@@ -625,7 +651,7 @@ void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
 // set minimum possible node size for animation
 void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
 {
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), pVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), mpVisParameters->scalingMode);
   setMinNodeSize(minNdSize);
   showStep(this->mpTimeSlider->value());
 }
@@ -633,14 +659,14 @@ void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
 // set maximum possible node size for animation
 void CQLayoutMainWindow::setMaxValue(C_INT32 maxNdSize)
 {
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, pVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, mpVisParameters->scalingMode);
   setMaxNodeSize(maxNdSize);
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize)
 {
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, pVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, mpVisParameters->scalingMode);
   setMinNodeSize(minNdSize);
   setMaxNodeSize(maxNdSize);
   showStep(this->mpTimeSlider->value());
@@ -892,30 +918,43 @@ void CQLayoutMainWindow::slotZoomOut()
 void CQLayoutMainWindow::stopAnimation()
 {
   // go to step 0 and stop
-  this->pauseAnimation();
-  this->showStep(0.0);
-  // update the slider
-  disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
-  this->mpTimeSlider->setValue(0.0);
-  connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+  this->backwardAnimation();
+  // next recreate the graph since there is currently no method to reset the
+  // edges
+  // TODO this neds to be fixed
+  this->mpGLViewport->createGraph(mpLayout);
+  this->mpGLViewport->getPainter()->resetGraphToLabelView();
 }
 
 void CQLayoutMainWindow::forwardAnimation()
 {
   // go to last step and redisplay
-  this->pauseAnimation();
-  double stepNumber = (double)(this->mpGLViewport->getPainter()->getNumberOfSteps() - 1);
-  this->showStep(stepNumber);
-  // update the slider
-  disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
-  this->mpTimeSlider->setValue(stepNumber);
-  connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+  if (!this->mLooping)
+    {
+      this->pauseAnimation();
+      double stepNumber = (double)(this->mpGLViewport->getPainter()->getNumberOfSteps() - 1);
+      this->showStep(stepNumber);
+      // update the slider
+      disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+      this->mpTimeSlider->setValue(stepNumber);
+      connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+    }
+  else
+    {
+      this->backwardAnimation();
+    }
 }
 
 void CQLayoutMainWindow::backwardAnimation()
 {
   // go to step 0 and redisplay
-  this->stopAnimation();
+  this->pauseAnimation();
+  this->mpGLViewport->getPainter()->showStep(0);
+  // update the slider
+  disconnect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+  this->mpTimeSlider->setValue(0.0);
+  this->mpParaPanel->setStepNumber(0);
+  connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
   if (this->mpControlWidget->isPlaying())
     {
       this->startAnimation();
@@ -1015,4 +1054,10 @@ void CQLayoutMainWindow::slotViewActivated(int id)
     {
       this->mpInfoBox->show();
     }
+}
+
+void CQLayoutMainWindow::slotLoopActivated()
+{
+  this->mLooping = !this->mpPlayMenu->isItemChecked(this->mLoopItemId);
+  this->mpPlayMenu->setItemChecked(this->mLoopItemId, this->mLooping);
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.126 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:29:10 $
+//   $Date: 2008/09/11 10:31:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 // TODO change the text rendering or the texture creation. Right now it seems
 // to work reasonably well under Mac OS X, but under Linux it doesn't.
 
-// TODO Antialias Nodes and arrowheds, right now it looks as if only the edges
+// TODO Antialias Nodes and arrowheads, right now it looks as if only the edges
 // do get antialiasing
 const double CQGLNetworkPainter::PLANE_DEPTH = 1.0;
 
@@ -101,19 +101,6 @@ void CQGLNetworkPainter::setGraphSize(const CLPoint & min, const CLPoint & max)
   mgraphMin.setY(min.getY());
   mgraphMax.setX(max.getX());
   mgraphMax.setY(max.getY());
-
-  /*
-  this->setFixedSize((int)max.getX(), (int)max.getY());
-  // now adapt viewing "volume"
-  glMatrixMode(GL_PROJECTION);        // Select The Projection Matrix
-  glLoadIdentity();       // Reset The Projection Matrix
-  gluOrtho2D((GLdouble)mgraphMin.getX(),
-             (GLdouble)mgraphMax.getX(),
-             (GLdouble)mgraphMax.getY(),
-             (GLdouble)mgraphMin.getY());
-  glMatrixMode(GL_MODELVIEW); // Select The Modelview Matrix
-  //std::cout << "graph size: " << (mgraphMax.getX() - mgraphMin.getX()) << " x " << (mgraphMax.getY() - mgraphMin.getY()) << std::endl;
-  */
 }
 
 void CQGLNetworkPainter::draw()
@@ -124,6 +111,14 @@ void CQGLNetworkPainter::draw()
 
 void CQGLNetworkPainter::createGraph(CLayout *lP)
 {
+  keyMap.clear();
+  labelNodeMap.clear();
+  nodeArrowMap.clear();
+  nodeCurveMap.clear();
+  viewerNodes.clear();
+  viewerCurves.clear();
+  viewerLabels.clear();
+  curvesWithArrow.clear();
   int numberOfInvertedCurves = 0;
   // copy graph to local variables
   CCopasiVector<CLMetabGlyph> nodes;
@@ -283,7 +278,7 @@ void CQGLNetworkPainter::drawGraph()
   glLoadIdentity();
   unsigned int i;
   glCallList(this->mDisplayLists);
-  if ((pParentLayoutWindow != NULL) &&
+  if ((pParentLayoutWindow != NULL) && this->mLabelShape == CIRCLE &&
       (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)) // draw color legend
     {
       drawColorLegend();
@@ -1271,15 +1266,7 @@ void CQGLNetworkPainter::runAnimation()
       stepsPerSecond = pParentLayoutWindow->getStepsPerSecond();
     }
 
-  //CVisParameters::animationRunning = true;
   regularTimer->start((int)(1000 / stepsPerSecond), false); // emit signal in chosen framerate
-
-  //while ((stepShown <= CVisParameters::numberOfSteps) &&
-  //       (CVisParameters::animationRunning))
-  //  {// while process has not been stopped
-  //    //QTimer::singleShot(1000, this, SLOT(triggerAnimationStep()));
-  //    //this->stepShown++;
-  //}
 }
 
 void CQGLNetworkPainter::triggerAnimationStep()
@@ -2101,4 +2088,15 @@ void CQGLNetworkPainter::resetView()
 {
   this->setZoomFactor(1.0);
   this->setCurrentPosition(this->getGraphMin().getX(), this->getGraphMin().getY());
+}
+
+void CQGLNetworkPainter::resetGraphToLabelView()
+{
+  this->mLabelShape = RECTANGLE;
+  this->updateGL();
+}
+
+void CQGLNetworkPainter::pauseAnimation()
+{
+  regularTimer->stop();
 }

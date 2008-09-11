@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/Attic/ParaPanel.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/09/01 09:43:57 $
+//   $Author: gauges $
+//   $Date: 2008/09/11 10:31:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,66 +33,71 @@
 #include <qstring.h>
 #include <qvalidator.h>
 
-void ParaPanel::enableParameterChoice()
+void CQParaPanel::enableModeChoice()
 {
-  spinBox1->setEnabled(true);
-  scalingButtonGroup->setEnabled(true);
+  mpScalingButtonGroup_2->setEnabled(true);
 }
 
-void ParaPanel::disableParameterChoice()
+void CQParaPanel::disableModeChoice()
 {
-  spinBox1->setEnabled(false);
-  scalingButtonGroup->setEnabled(false);
+  mpScalingButtonGroup_2->setEnabled(false);
 }
 
-void ParaPanel::enableStepNumberChoice()
+void CQParaPanel::enableParameterChoice()
 {
-  stepEdit->setEnabled(true);
+  mpSpinBox1->setEnabled(true);
+  mpScalingButtonGroup->setEnabled(true);
 }
 
-void ParaPanel::disableStepNumberChoice()
+void CQParaPanel::disableParameterChoice()
 {
-  stepEdit->setEnabled(false);
+  mpSpinBox1->setEnabled(false);
+  mpScalingButtonGroup->setEnabled(false);
 }
 
-void ParaPanel::changeFrameRate()
+void CQParaPanel::enableStepNumberChoice()
 {
-  //CVisParameters::stepsPerSecond = spinBox1->value();
+  mpStepEdit->setEnabled(true);
+}
+
+void CQParaPanel::disableStepNumberChoice()
+{
+  mpStepEdit->setEnabled(false);
+}
+
+void CQParaPanel::changeFrameRate()
+{
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
-  if (tmp) tmp -> setStepsPerSecond(spinBox1->value());
+  if (tmp) tmp -> setStepsPerSecond(mpSpinBox1->value());
 }
 
-void ParaPanel::setGlobalScaling()
+void CQParaPanel::setGlobalScaling()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setGlobalScaling();
-  //((CQLayoutMainWindow *)(this->parentWidget()))->setGlobalScaling();
 }
 
-void ParaPanel::setIndividualScaling()
+void CQParaPanel::setIndividualScaling()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setIndividualScaling();
-
-  //((CQLayoutMainWindow *)(this->parentWidget()))->setIndividualScaling();
 }
 
-void ParaPanel::setStepNumber(int i)
+void CQParaPanel::setStepNumber(int i)
 {
   QString s = QString::number(i, 10);
-  stepEdit->setText(s);
+  mpStepEdit->setText(s);
 }
 
-void ParaPanel::stepEdit_returnPressed()
+void CQParaPanel::stepEdit_returnPressed()
 {
-  QValidator* validator = new QIntValidator(0, INT_MAX, this);
-  stepEdit->setValidator(validator);
+  QValidator* pValidator = new QIntValidator(0, INT_MAX, this);
+  mpStepEdit->setValidator(pValidator);
 
-  //if (validator->validate(stepEdit->text()) == QValidator::Acceptable) {
-  QString line = stepEdit->text();
+  QString line = mpStepEdit->text();
   bool ok;
   int val = line.toInt(&ok, 10);
   if (ok)
@@ -101,17 +106,16 @@ void ParaPanel::stepEdit_returnPressed()
       assert(tmp);
       if (tmp) tmp -> setValueOnSlider(val);
     }
-  //}
 }
 
-void ParaPanel::setSizeMode()
+void CQParaPanel::setSizeMode()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);
   if (tmp) tmp -> setSizeMode();
 }
 
-void ParaPanel::setColorMode()
+void CQParaPanel::setColorMode()
 {
   CQLayoutMainWindow * tmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
   assert(tmp);

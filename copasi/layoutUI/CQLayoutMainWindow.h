@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 12:13:37 $
+//   $Date: 2008/09/11 10:31:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class QComboBox;
 class QAction;
 class QPopupMenu;
 class CVisParameters;
-class ParaPanel;
+class CQParaPanel;
 class CQCurrentValueTable;
 class QSplitter;
 class QwtSlider;
@@ -107,6 +107,7 @@ class CQLayoutMainWindow : public QMainWindow
     void slotZoomIn();
     void slotZoomOut();
     void slotViewActivated(int id);
+    void slotLoopActivated();
 
   public slots:
     void changeStepValue(C_INT32 i);
@@ -119,7 +120,7 @@ class CQLayoutMainWindow : public QMainWindow
     QIconSet createStartIcon();
     QIconSet createStopIcon();
 
-    CVisParameters *pVisParameters;
+    CVisParameters *mpVisParameters;
     QPopupMenu *mpFileMenu;
     QPopupMenu *mpOptionsMenu;
     QPopupMenu *mpLabelShapeMenu;
@@ -136,7 +137,7 @@ class CQLayoutMainWindow : public QMainWindow
     QAction *mpSFontSize;
     QAction *mpLoadDataAction;
 
-    ParaPanel *mpParaPanel;
+    CQParaPanel *mpParaPanel;
     CQCurrentValueTable *mpValTable;
     CQGLViewport *mpGLViewport;
     QSplitter* mpSplitter;
@@ -153,6 +154,9 @@ class CQLayoutMainWindow : public QMainWindow
     QString mCurrentPlace;
     QToolBar* mpToolbar;
     QComboBox* mpZoomComboBox;
+    bool mLooping;
+    int mLoopItemId;
+    CLayout* mpLayout;
   };
 
 #endif /*SIMGUI_H_*/

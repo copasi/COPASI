@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:29:10 $
+//   $Date: 2008/09/11 10:31:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,7 +86,6 @@ class CQGLNetworkPainter : public QGLWidget
     void drawNode(CGraphNode &n);
     void drawEdge(CGraphCurve &c);
     void drawLabel(CLabel l);
-    // void drawStringAt(string s, double x, double y);
     void drawArrow(CArrow a, CLMetabReferenceGlyph::Role role);
 
     bool createDataSets();
@@ -96,7 +95,6 @@ class CQGLNetworkPainter : public QGLWidget
 
     void setNodeSize(std::string key, C_FLOAT64 val);
     void setNodeSizeWithoutChangingCurves(std::string key, C_FLOAT64 val);
-    //void changeNodeSize(std::string viewerNodeKey, double newSize);
 
     std::string getNodeNameEntry(int i);
     std::string getNameForNodeKey(std::string key);
@@ -129,6 +127,10 @@ class CQGLNetworkPainter : public QGLWidget
 
     void resetView();
 
+    void resetGraphToLabelView();
+
+    void pauseAnimation();
+
   private slots:
     void zoomIn();
     void zoomOut();
@@ -159,8 +161,6 @@ class CQGLNetworkPainter : public QGLWidget
 
     std::vector<std::string> viewerNodes; // contains node keys
     std::vector<CGraphCurve> viewerCurves; // contains curves defining a reaction (not directly associated with a node)
-    //std::vector<CArrow> viewerArrows;
-    //std::vector<CLTextGlyph> viewerLabels;
     std::vector<CLabel> viewerLabels;
     std::vector<CGraphCurve> curvesWithArrow;
 
@@ -170,7 +170,6 @@ class CQGLNetworkPainter : public QGLWidget
     unsigned int mFontsize;
     double mFontsizeDouble;
     QFont mf;
-    //QFontMetrics mfm;
 
     std::map<C_INT32, CDataEntity> dataSets;
 
@@ -179,20 +178,14 @@ class CQGLNetworkPainter : public QGLWidget
     std::map<std::string, std::string>labelNodeMap; // maps label keys to node keys
 
     std::map<std::string, RGTextureSpec*>labelTextureMap; // maps label texts to texture info
-    //std::multimap<std::string, CLCurve*> curveMap; // maps mMetabGlyphKey of CLMetabReferenceGlyph to curve in reaction
     std::multimap<std::string, CGraphCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph) to curves (stored in viewerCurves) that point to this node)
     std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
-    //std::map<std::string, float> nodeSizeMap; // maps mKey of viewer node to size of this node in circular view
 
     std::set<std::string> setOfConstantMetabolites;
     std::set<std::string> setOfDisabledMetabolites;
 
     void addMetaboliteForAnimation(std::string key);
     void removeMetaboliteForAnimation(std::string key);
-
-    //CGraphNode* findNodeWithKey(std::string nodeKey);
-    //void storeCurveInCorrespondingNode(std::string nodeKey, int indx);
-    //void storeCurveInCorrespondingNode(std::string nodeKey, int indx1, int indx2);
 
     void drawColorLegend();
 
@@ -210,7 +203,6 @@ class CQGLNetworkPainter : public QGLWidget
     QAction *setFontSizeAction;
     void createActions();
     void zoom(double zoomFactor);
-    //void renderBitmapString(double x, double y, std::string s, double w, double h);
     void drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C_FLOAT64 w, C_FLOAT64 h, QColor bgCol);
     int round2powN(double d);
 
@@ -225,17 +217,13 @@ class CQGLNetworkPainter : public QGLWidget
 
     void updateGraphWithNodeSizes();
     void updateEdge(CLLineSegment line);
-    void resetGraphToLabelView();
     bool checkCurve(CGraphCurve *curve, CGraphCurve curveR, CLBoundingBox box);
-
-    //bool checkCurveForArrow(CGraphCurve curve);
 
     enum shapeOfLabels {CIRCLE, RECTANGLE};
     shapeOfLabels mLabelShape;
 
     void printNodeMap();
     void printAvailableFonts();
-    //CLDataSet getDataSet(C_INT32 t);
     GLuint textureNames[1];
 
   protected:
