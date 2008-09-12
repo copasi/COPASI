@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/12 11:33:19 $
+//   $Date: 2008/09/12 13:16:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -447,6 +447,7 @@ void CQLayoutMainWindow::mapLabelsToRectangles()
   if (mpGLViewport->getPainter() != NULL)
     {
       mpGLViewport->getPainter()->mapLabelsToRectangles();
+      mpGLViewport->getPainter()->updateGL();
     }
 }
 
@@ -925,11 +926,7 @@ void CQLayoutMainWindow::stopAnimation()
 {
   // go to step 0 and stop
   this->backwardAnimation();
-  // next recreate the graph since there is currently no method to reset the
-  // edges
-  // TODO this neds to be fixed
-  this->mpGLViewport->createGraph(mpLayout);
-  this->mpGLViewport->getPainter()->resetGraphToLabelView();
+  this->mapLabelsToRectangles();
 }
 
 void CQLayoutMainWindow::forwardAnimation()

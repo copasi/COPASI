@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.127 $
+//   $Revision: 1.128 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/11 12:41:37 $
+//   $Date: 2008/09/12 13:16:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2107,12 +2107,6 @@ void CQGLNetworkPainter::resetView()
 {
   this->setZoomFactor(1.0);
   this->setCurrentPosition(this->getGraphMin().getX(), this->getGraphMin().getY());
-}
-
-void CQGLNetworkPainter::resetGraphToLabelView()
-{
-  this->mLabelShape = RECTANGLE;
-  this->updateGL();
 }
 
 void CQGLNetworkPainter::pauseAnimation()

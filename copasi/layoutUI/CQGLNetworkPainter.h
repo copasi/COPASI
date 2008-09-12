@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/11 10:31:33 $
+//   $Date: 2008/09/12 13:16:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,8 +126,6 @@ class CQGLNetworkPainter : public QGLWidget
     void update();
 
     void resetView();
-
-    void resetGraphToLabelView();
 
     void pauseAnimation();
 
