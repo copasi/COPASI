@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Author: ssahle $
+//   $Date: 2008/09/12 01:14:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "sensitivities/CSensTask.h"
 #include "sensitivities/CSensProblem.h"
+#include "sensitivities/CSensMethod.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
