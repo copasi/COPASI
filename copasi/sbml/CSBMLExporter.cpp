@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/03 12:21:25 $
+//   $Date: 2008/09/12 12:58:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -339,7 +339,16 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
     {
       // do this expolicitly since we might handle an exisiting object from an
       // earlier import that had it attribute set already
-      pSBMLCompartment->setConstant(true);
+      if (this->mSBMLLevel != 1)
+        {
+          pSBMLCompartment->setConstant(true);
+        }
+      else
+        {
+          // Level 1 does not know the constant flag and libsbmnl does not drop
+          // it automatically
+          pSBMLCompartment->setConstant(false);
+        }
       removeRule(pSBMLCompartment->getId());
       // fill initial assignment set
       if (compartment.getInitialExpression() != "")
@@ -465,7 +474,16 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     {
       // do this explicitly since we might handle an exisiting object from an
       // earlier import that had it attribute set already
-      pSBMLSpecies->setConstant(true);
+      if (this->mSBMLLevel != 1)
+        {
+          pSBMLSpecies->setConstant(true);
+        }
+      else
+        {
+          // Level 1 doesn't have the constant attribute and libSBML 3.2.0 does
+          // not drop it automatically
+          pSBMLSpecies->setConstant(false);
+        }
       pSBMLSpecies->setBoundaryCondition(true);
       removeRule(pSBMLSpecies->getId());
       // fill initial assignment set
@@ -570,7 +588,16 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
     {
       // do this expolicitly since we might handle an exisiting object from an
       // earlier import that had it attribute set already
-      pParameter->setConstant(true);
+      if (this->mSBMLLevel != 1)
+        {
+          pParameter->setConstant(true);
+        }
+      else
+        {
+          // Level 1 does not have a constant flag
+          // and libsbml does not drop it automatically
+          pParameter->setConstant(false);
+        }
       // fill initial assignment set
       removeRule(pParameter->getId());
       if (modelValue.getInitialExpression() != "")
@@ -3873,7 +3900,16 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           pSBMLAvogadro->setId(sbmlId);
                           const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
                           this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
-                          pSBMLAvogadro->setConstant(true);
+                          if (this->mSBMLLevel != 1)
+                            {
+                              pSBMLAvogadro->setConstant(true);
+                            }
+                          else
+                            {
+                              // Level 1 doesn't knoiw the constant flag and
+                              // libSBML does not drop it automatically
+                              pSBMLAvogadro->setConstant(true);
+                            }
                           pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
                           this->mHandledSBMLObjects.insert(pSBMLAvogadro);
                           this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
