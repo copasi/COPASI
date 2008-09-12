@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: ssahle $
+//   $Date: 2008/09/12 14:13:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1180,7 +1180,7 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   C_INT i, imax;
   C_INT indep;
 
-  indep = mpModel->getNumIndependentMetabs();
+  indep = mpModel->getNumIndependentReactionMetabs();
 
   CVector<C_FLOAT64> tmp;
   tmp.resize(indep);
@@ -1346,7 +1346,7 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   else
     {
       //mpState->setUpdateDependentRequired(false);
-      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
+      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
     }
 
   mYdot.resize(mData.dim);
