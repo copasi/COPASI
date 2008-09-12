@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:31:45 $
+//   $Author: ssahle $
+//   $Date: 2008/09/12 01:12:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,12 +26,6 @@
 #include <iostream>
 
 #include "utilities/CCopasiTask.h"
-#include "utilities/CMatrix.h"
-#include "utilities/CReadConfig.h"
-#include "sensitivities/CSensMethod.h"
-
-class CState;
-class CReportDefinitionVector;
 
 class CSensTask : public CCopasiTask
   {

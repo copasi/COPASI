@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:31:44 $
+//   $Author: ssahle $
+//   $Date: 2008/09/12 01:12:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ bool CSensTask::initialize(const OutputFlag & of,
   return success;
 }
 
-bool CSensTask::process(const bool & /* useInitialValues */)
+bool CSensTask::process(const bool & useInitialValues)
 {
   assert(/*mpProblem && */mpMethod);
   mpMethod->isValidProblem(mpProblem);
@@ -95,6 +95,9 @@ bool CSensTask::process(const bool & /* useInitialValues */)
   CSensMethod* pMethod =
     dynamic_cast<CSensMethod *>(mpMethod);
   assert(pMethod);
+
+  if (useInitialValues)
+    pProblem->getModel()->applyInitialValues();
 
   //TODO: move to Task::initialize() ?
   pMethod->initialize(pProblem);
