@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2008/09/12 18:04:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ class COptProblem : public CCopasiProblem
     /**
      * Copy constructor.
      * @param const COptProblem & src
-     * @paramconst CCopasiContainer * pParent (default: NULL)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
     COptProblem(const COptProblem & src,
                 const CCopasiContainer * pParent = NULL);
@@ -87,36 +87,36 @@ class COptProblem : public CCopasiProblem
     /**
      * Set the model of the problem
      * @param CModel * pModel
-     * @result bool succes
+     * @result bool success
      */
     virtual bool setModel(CModel * pModel);
 
     /**
      * Set the call back of the problem
      * @param CProcessReport * pCallBack
-     * @result bool succes
+     * @result bool success
      */
     virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
-     * Do all neccessary initialization so that calls to caluclate will
+     * Do all necessary initialization so that calls to calculate will
      * be successful. This is called once from CCopasiTask::process()
-     * @result bool succes
+     * @result bool success
      */
     virtual bool initialize();
 
     /**
-     * Do the calculatting based on CalculateVariables and fill
+     * Do the calculating based on CalculateVariables and fill
      * CalculateResults with the results.
      * @result bool continue
      */
     virtual bool calculate();
 
     /**
-     * Do all neccessary restore procedures so that the
+     * Do all necessary restore procedures so that the
      * model is in the same state as before
-     * @parem const bool & updateModel
-     * @result bool succes
+     * @param const bool & updateModel
+     * @result bool success
      */
     virtual bool restore(const bool & updateModel);
 
@@ -127,8 +127,8 @@ class COptProblem : public CCopasiProblem
     virtual bool checkParametricConstraints();
 
     /**
-     * Check whether all functional constraints are fullfilled.
-     * @result bool fullfilled
+     * Check whether all functional constraints are fulfilled.
+     * @result bool fulfilled
      */
     virtual bool checkFunctionalConstraints();
 
@@ -189,12 +189,6 @@ class COptProblem : public CCopasiProblem
     const C_FLOAT64 & getSolutionValue() const;
 
     /**
-     * Set problem type : Steady State or Trajectory
-     * @param: ProblemType type
-     */
-    void setProblemType(ProblemType type);
-
-    /**
      * Retrieve the 'index' optimization item.
      * @param const unsigned C_INT32 & index
      * @return COptItem optItem
@@ -233,7 +227,7 @@ class COptProblem : public CCopasiProblem
     /**
      * Set optimization function
      * @param const std::string & infix
-     * @return bool sccuess
+     * @return bool success
      */
     bool setObjectiveFunction(const std::string & infix);
 
@@ -242,6 +236,31 @@ class COptProblem : public CCopasiProblem
      * @return const std::string infix.
      */
     const std::string getObjectiveFunction();
+
+    /**
+     * Set subtask type
+     * @param const CCopasiTask::Type & subtaskType
+     * @return success
+     */
+    bool setSubtaskType(const CCopasiTask::Type & subtaskType);
+
+    /**
+     * Retrieve the subtask type
+     * @return CCopasiTask::Type subtaskType
+     */
+    CCopasiTask::Type getSubtaskType() const;
+
+    /**
+     * Set whether we have to maximize the objective function
+     * @param const bool & maximize
+     */
+    void setMaximize(const bool & maximize);
+
+    /**
+     * Check whether we have to maximize
+     * @return const bool & maximize
+     */
+    const bool & maximize() const;
 
     /**
      * Retrieve the objective function.
@@ -258,7 +277,7 @@ class COptProblem : public CCopasiProblem
     /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
+     * to print the object.To override this default behavior one needs to
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
@@ -274,8 +293,8 @@ class COptProblem : public CCopasiProblem
 
     /**
      * This is the output method for any result of a problem. The default implementation
-     * provided with CCopasiProblem. Does only print "Not implmented." To overide this
-     * default behaviour one needs to reimplement the virtual printResult function.
+     * provided with CCopasiProblem. Does only print "Not implemented." To override this
+     * default behavior one needs to reimplement the virtual printResult function.
      * @param std::ostream * ostream
      */
     virtual void printResult(std::ostream * ostream) const;
@@ -298,17 +317,12 @@ class COptProblem : public CCopasiProblem
     /**
      * A static value containing Infinity.
      */
-    static C_FLOAT64 mInfinity;
+    C_FLOAT64 mInfinity;
 
     /**
-     * A pointer to the value of the CCopasiParameter holding the SteadyStateKey
+     * A pointer to the value of the CCopasiParameter holding the CN for the subtask
      */
-    std::string * mpParmSteadyStateKey;
-
-    /**
-     * A pointer to the value of the CCopasiParameter holding the TimeCourseKey
-     */
-    std::string * mpParmTimeCourseKey;
+    std::string * mpParmSubtaskCN;
 
     /**
      * A pointer to the value of the CCopasiParameter holding the ObjectiveFunctionKey
@@ -341,16 +355,9 @@ class COptProblem : public CCopasiProblem
     std::vector<COptItem *> * mpConstraintItems;
 
     /**
-     * Pointer to CSteadyStateTask.  To be used in calculate() to select between
-     * trajectory and steady state method
+     * Pointer to the subtask to be used in the optimization
      */
-    CSteadyStateTask * mpSteadyState;
-
-    /**
-     * Pointer to CTrajectory.  To be used in calculate() to select between
-     * trajectory and steady state method
-     */
-    CTrajectoryTask * mpTrajectory;
+    mutable CCopasiTask * mpSubtask;
 
     /**
      * The objective function which should be minimized or maximized.
@@ -369,13 +376,13 @@ class COptProblem : public CCopasiProblem
     std::vector< Refresh * > mInitialRefreshMethods;
 
     /**
-     * A vector of refresh methods which need to be called retreive the value
+     * A vector of refresh methods which need to be called retrieve the value
      * of the objective function.
      */
     std::vector< Refresh * > mRefreshMethods;
 
     /**
-     * A vector of refresh methods which need to be called retreive the values
+     * A vector of refresh methods which need to be called retrieve the values
      * of constraints.
      */
     std::vector< Refresh * > mRefreshConstraints;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/09/12 18:04:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,21 +64,16 @@ bool CQOptimizationWidget::saveTask()
       mChanged = true;
     }
 
-  if (mpBtnSteadystate->isChecked() &&
-      *pProblem->getValue("Steady-State").pSTRING == "")
+  if (mpBoxSubtask->currentText() != FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]))
     {
       mChanged = true;
-
-      pProblem->setValue("Time-Course", std::string(""));
-      pProblem->setValue("Steady-State", (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
+      pProblem->setSubtaskType((CCopasiTask::Type) mSubtaskMap[(const char *) mpBoxSubtask->currentText().utf8()]);
     }
-  else if (mpBtnTimeCourse->isChecked() &&
-           *pProblem->getValue("Time-Course").pSTRING == "")
+
+  if (mpCheckMaximize->isChecked() != pProblem->maximize())
     {
       mChanged = true;
-
-      pProblem->setValue("Time-Course", (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
-      pProblem->setValue("Steady-State", std::string(""));
+      pProblem->setMaximize(mpCheckMaximize->isChecked());
     }
 
   mChanged |= mpParameters->save(NULL, NULL);
@@ -123,16 +118,9 @@ bool CQOptimizationWidget::loadTask()
   //  mpEditExpression->updateExpressionWidget();
   mpExpressionEMW->updateWidget();
 
-  if (*pProblem->getValue("Steady-State").pSTRING != "")
-    {
-      mpBtnSteadystate->setChecked(true);
-      mpBtnTimeCourse->setChecked(false);
-    }
-  else
-    {
-      mpBtnSteadystate->setChecked(false);
-      mpBtnTimeCourse->setChecked(true);
-    }
+  mpCheckMaximize->setChecked(pProblem->maximize());
+
+  mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
   mpParameters->load(pProblem->getGroup("OptimizationItemList"), NULL, NULL);
 
@@ -209,6 +197,15 @@ void CQOptimizationWidget::init()
   addMethodSelectionBox(COptTask::ValidMethods);
   addMethodParameterTable();
 
+  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
+  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;
+  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::mca]] = CCopasiTask::mca;
+  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;
+
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
 
   mpParameters = new CQFittingItemWidget(mpParametersPage);
@@ -229,9 +226,6 @@ void CQOptimizationWidget::init()
 void CQOptimizationWidget::destroy()
 {}
 
-bool CQOptimizationWidget::isSteadyState()
-{return mpBtnSteadystate->isChecked();}
-
 void CQOptimizationWidget::slotExpressionValid(bool valid)
 {
   mpBtnWidget->mpBtnRun->setEnabled(valid);
@@ -251,4 +245,8 @@ void CQOptimizationWidget::slotEditExpression()
     // hide the button of going back to the expression editor
     mpBtnEdit->hide();
   */
+}
+
+void CQOptimizationWidget::slotSubtaskChanged(const QString & /* subtask */)
+{
 }

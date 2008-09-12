@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:59:18 $
+//   $Date: 2008/09/12 18:04:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,11 @@
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     COptProblem(type, pParent),
+    mpParmSteadyStateCN(NULL),
+    mpParmTimeCourseCN(NULL),
     mpExperimentSet(NULL),
+    mpSteadyState(NULL),
+    mpTrajectory(NULL),
     mExperimentUpdateMethods(0, 0),
     mExperimentConstraints(0, 0),
     mExperimentDependentValues(0),
@@ -78,7 +82,11 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
 CFitProblem::CFitProblem(const CFitProblem& src,
                          const CCopasiContainer * pParent):
     COptProblem(src, pParent),
+    mpParmSteadyStateCN(NULL),
+    mpParmTimeCourseCN(NULL),
     mpExperimentSet(NULL),
+    mpSteadyState(NULL),
+    mpTrajectory(NULL),
     mExperimentUpdateMethods(0, 0),
     mExperimentConstraints(0, 0),
     mExperimentDependentValues(src.mExperimentDependentValues),
@@ -145,32 +153,39 @@ void CFitProblem::initObjects()
 
 void CFitProblem::initializeParameter()
 {
+  removeParameter("Subtask");
+  mpParmSubtaskCN = NULL;
   removeParameter("ObjectiveFunction");
-  removeParameter("Maximize");
+  *mpParmMaximize = false;
+
+  mpParmSteadyStateCN =
+    assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pKEY;
+  mpParmTimeCourseCN =
+    assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pKEY;
 
   CCopasiVectorN< CCopasiTask > * pTasks = NULL;
   if (CCopasiDataModel::Global)
     pTasks = CCopasiDataModel::Global->getTaskList();
-  if (!pTasks)
-    pTasks = dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
+  if (pTasks == NULL)
+    dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
   if (pTasks)
     {
       unsigned C_INT32 i, imax = pTasks->size();
 
-      if (*mpParmSteadyStateKey == "")
+      if (*mpParmSteadyStateCN == "")
         for (i = 0; i < imax; i++)
           if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
             {
-              *mpParmSteadyStateKey = (*pTasks)[i]->getKey();
+              *mpParmSteadyStateCN = (*pTasks)[i]->getCN();
               break;
             }
 
-      if (*mpParmTimeCourseKey == "")
+      if (*mpParmTimeCourseCN == "")
         for (i = 0; i < imax; i++)
           if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
             {
-              *mpParmTimeCourseKey = (*pTasks)[i]->getKey();
+              *mpParmTimeCourseCN = (*pTasks)[i]->getCN();
               break;
             }
     }
@@ -306,19 +321,7 @@ bool CFitProblem::initialize()
     {
       while (CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 5 ||
              CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 7)
-        {
-          if (CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 7)
-            {
-              mpSteadyState =
-                static_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-              mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-              mpTrajectory =
-                static_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-              mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-            }
-
-          CCopasiMessage::getLastMessage();
-        }
+        CCopasiMessage::getLastMessage();
 
       if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING &&
           CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
@@ -326,6 +329,25 @@ bool CFitProblem::initialize()
     }
 
   std::vector< CCopasiContainer * > ContainerList;
+  ContainerList.push_back(getObjectAncestor("Vector"));
+
+  mpSteadyState =
+    dynamic_cast< CSteadyStateTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmSteadyStateCN));
+  if (mpSteadyState == NULL)
+    mpSteadyState =
+      static_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+
+  mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+  mpTrajectory =
+    dynamic_cast< CTrajectoryTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmTimeCourseCN));
+  if (mpTrajectory == NULL)
+    mpTrajectory =
+      static_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+  mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+  ContainerList.clear();
+
   ContainerList.push_back(mpModel);
 
   CFitTask * pTask = dynamic_cast<CFitTask *>(getObjectParent());

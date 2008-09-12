@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.146 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/08 08:33:54 $
+//   $Author: shoops $
+//   $Date: 2008/09/12 18:04:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -236,8 +236,7 @@ class ListViews : public QSplitter
     CQMoietiesTaskResult *mpMoietiesTaskResult;
     CQMoietiesTaskWidget *mpMoietiesTaskWidget;
     CQOptimizationWidget *optimizationWidget;
-    OptimizationResultWidget *optResultWidgetS;
-    OptimizationResultWidget *optResultWidgetT;
+    OptimizationResultWidget *optResultWidget;
     CQFittingWidget *paramFittingWidget;
     CQFittingResult *mpFittingResultWidget;
     ParametersWidget *parametersWidget;

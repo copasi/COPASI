@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 09:13:21 $
+//   $Author: shoops $
+//   $Date: 2008/09/12 18:04:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Fri Apr 18 08:34:12 2008
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.9 2008/04/18 09:13:21 pwilly Exp $)
+ ** Created: Fri Sep 12 09:34:14 2008
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.10 2008/09/12 18:04:11 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,15 +23,14 @@
 #include "CQOptimizationWidget.h"
 
 #include <qvariant.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
+#include <qcheckbox.h>
 #include <qlabel.h>
+#include <qcombobox.h>
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "TaskWidget.h"
 #include "CQExpressionMmlWidget.h"
 #include "CQOptimizationWidget.ui.h"
 
@@ -50,43 +49,34 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
 
   mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
 
+  mpCheckMaximize = new QCheckBox(this, "mpCheckMaximize");
+
+  mpGridLayout->addWidget(mpCheckMaximize, 1, 1);
+
   mpExpressionEMW = new CQExpressionMmlWidget(this, "mpExpressionEMW");
   mpExpressionEMW->setMinimumSize(QSize(420, 70));
 
   mpGridLayout->addMultiCellWidget(mpExpressionEMW, 0, 0, 1, 2);
-
-  mpBtnGroup = new QButtonGroup(this, "mpBtnGroup");
-  mpBtnGroup->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)4, 0, 0, mpBtnGroup->sizePolicy().hasHeightForWidth()));
-  mpBtnGroup->setFrameShape(QButtonGroup::NoFrame);
-  mpBtnGroup->setAlignment(int(QButtonGroup::WordBreak | QButtonGroup::AlignVCenter | QButtonGroup::AlignBottom | QButtonGroup::AlignTop));
-  mpBtnGroup->setColumnLayout(0, Qt::Vertical);
-  mpBtnGroup->layout()->setSpacing(6);
-  mpBtnGroup->layout()->setMargin(0);
-  mpBtnGroupLayout = new QHBoxLayout(mpBtnGroup->layout());
-  mpBtnGroupLayout->setAlignment(Qt::AlignTop);
-
-  mpBtnSteadystate = new QRadioButton(mpBtnGroup, "mpBtnSteadystate");
-  mpBtnSteadystate->setChecked(TRUE);
-  mpBtnGroupLayout->addWidget(mpBtnSteadystate);
-
-  mpBtnTimeCourse = new QRadioButton(mpBtnGroup, "mpBtnTimeCourse");
-  mpBtnGroupLayout->addWidget(mpBtnTimeCourse);
-
-  mpGridLayout->addWidget(mpBtnGroup, 1, 1);
 
   mpLblExpression = new QLabel(this, "mpLblExpression");
   mpLblExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpLblExpression->sizePolicy().hasHeightForWidth()));
   mpLblExpression->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
   mpGridLayout->addWidget(mpLblExpression, 0, 0);
-  mpSpacer2 = new QSpacerItem(261, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  mpGridLayout->addItem(mpSpacer2, 1, 2);
+
+  mpBoxSubtask = new QComboBox(FALSE, this, "mpBoxSubtask");
+
+  mpGridLayout->addWidget(mpBoxSubtask, 2, 1);
 
   mpLblType = new QLabel(this, "mpLblType");
-  mpLblType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)5, 0, 0, mpLblType->sizePolicy().hasHeightForWidth()));
-  mpLblType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  mpLblType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpLblType->sizePolicy().hasHeightForWidth()));
+  mpLblType->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  mpGridLayout->addWidget(mpLblType, 1, 0);
+  mpGridLayout->addWidget(mpLblType, 2, 0);
+  mpSpacer = new QSpacerItem(250, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpGridLayout->addItem(mpSpacer, 2, 2);
+  mpSpacer_2 = new QSpacerItem(250, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpGridLayout->addItem(mpSpacer_2, 1, 2);
   CQOptimizationWidgetLayout->addLayout(mpGridLayout);
 
   mpTabWidget = new QTabWidget(this, "mpTabWidget");
@@ -99,11 +89,15 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
   mpTabWidget->insertTab(mpConstraintsPage, QString::fromLatin1(""));
   CQOptimizationWidgetLayout->addWidget(mpTabWidget);
   languageChange();
-  resize(QSize(627, 412).expandedTo(minimumSizeHint()));
+  resize(QSize(529, 295).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(mpTabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotPageChange(QWidget*)));
+  connect(mpBoxSubtask, SIGNAL(activated(const QString&)), this, SLOT(slotSubtaskChanged(const QString&)));
+
+  // tab order
+  setTabOrder(mpBoxSubtask, mpTabWidget);
   init();
 }
 
@@ -123,11 +117,9 @@ CQOptimizationWidget::~CQOptimizationWidget()
 void CQOptimizationWidget::languageChange()
 {
   setCaption(tr("Optimization"));
-  mpBtnGroup->setTitle(QString::null);
-  mpBtnSteadystate->setText(tr("Steady State"));
-  mpBtnTimeCourse->setText(tr("Time Course"));
+  mpCheckMaximize->setText(tr("maximize"));
   mpLblExpression->setText(tr("Expression"));
-  mpLblType->setText(tr("Experiment Type"));
+  mpLblType->setText(tr("Subtask"));
   mpTabWidget->changeTab(mpParametersPage, tr("Parameters (0)"));
   mpTabWidget->changeTab(mpConstraintsPage, tr("Constraints (0)"));
 }

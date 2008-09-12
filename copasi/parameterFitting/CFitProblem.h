@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:55 $
+//   $Date: 2008/09/12 18:04:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,9 +257,31 @@ class CFitProblem : public COptProblem
   private:
     // Attributes
     /**
+     * A pointer to the value of the CCopasiParameter holding the Steady-State CN
+     */
+    std::string * mpParmSteadyStateCN;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the Time Course CN
+     */
+    std::string * mpParmTimeCourseCN;
+
+    /**
      * The experiment set to which the model is fitted.
      */
     CExperimentSet * mpExperimentSet;
+
+    /**
+     * Pointer to CSteadyStateTask.  To be used in calculate() to select between
+     * trajectory and steady state method
+     */
+    CSteadyStateTask * mpSteadyState;
+
+    /**
+     * Pointer to CTrajectory.  To be used in calculate() to select between
+     * trajectory and steady state method
+     */
+    CTrajectoryTask * mpTrajectory;
 
     /**
      * Matrix of update methods for items for each experiment.

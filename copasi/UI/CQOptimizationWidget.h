@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 09:13:10 $
+//   $Author: shoops $
+//   $Date: 2008/09/12 18:04:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Fri Apr 18 08:34:09 2008
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.11 2008/04/18 09:13:10 pwilly Exp $)
+ ** Created: Wed Sep 10 13:29:52 2008
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.12 2008/09/12 18:04:11 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,6 +25,8 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
+#include <map>
+#include <string>
 #include "TaskWidget.h"
 
 class QVBoxLayout;
@@ -32,9 +34,9 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class CQExpressionMmlWidget;
-class QButtonGroup;
-class QRadioButton;
+class QCheckBox;
 class QLabel;
+class QComboBox;
 class QTabWidget;
 class QWidget;
 class CQFittingItemWidget;
@@ -47,11 +49,10 @@ class CQOptimizationWidget : public TaskWidget
     CQOptimizationWidget(QWidget* parent = 0, const char* name = 0);
     ~CQOptimizationWidget();
 
+    QCheckBox* mpCheckMaximize;
     CQExpressionMmlWidget* mpExpressionEMW;
-    QButtonGroup* mpBtnGroup;
-    QRadioButton* mpBtnSteadystate;
-    QRadioButton* mpBtnTimeCourse;
     QLabel* mpLblExpression;
+    QComboBox* mpBoxSubtask;
     QLabel* mpLblType;
     QTabWidget* mpTabWidget;
     QWidget* mpParametersPage;
@@ -74,6 +75,7 @@ class CQOptimizationWidget : public TaskWidget
     bool mTypeChanged;
     QHBoxLayout * mpConstraintPageLayout;
     QHBoxLayout * mpParameterPageLayout;
+    std::map< std::string, C_INT32 > mSubtaskMap;
 
     virtual bool saveTask();
     virtual bool loadTask();
@@ -81,18 +83,18 @@ class CQOptimizationWidget : public TaskWidget
 
     QVBoxLayout* CQOptimizationWidgetLayout;
     QGridLayout* mpGridLayout;
-    QSpacerItem* mpSpacer2;
-    QHBoxLayout* mpBtnGroupLayout;
+    QSpacerItem* mpSpacer;
+    QSpacerItem* mpSpacer_2;
 
   protected slots:
     virtual void languageChange();
 
     void slotPageChange(QWidget * currentPage);
     void slotExpressionValid(bool valid);
+    void slotSubtaskChanged(const QString & subtask);
 
   private:
     QPixmap image0;
-    QPixmap image1;
 
     void init();
     void destroy();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2008/09/12 18:04:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,22 +49,19 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 
-C_FLOAT64 COptProblem::mInfinity;
-
 //  Default constructor
 COptProblem::COptProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     CCopasiProblem(type, pParent),
-    mpParmSteadyStateKey(NULL),
-    mpParmTimeCourseKey(NULL),
+    mInfinity(0.0),
+    mpParmSubtaskCN(NULL),
     mpParmObjectiveFunctionKey(NULL),
     mpParmMaximize(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
     mpConstraintItems(NULL),
-    mpSteadyState(NULL),
-    mpTrajectory(NULL),
+    mpSubtask(NULL),
     mpFunction(NULL),
     mUpdateMethods(),
     mInitialRefreshMethods(),
@@ -93,16 +90,15 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
 COptProblem::COptProblem(const COptProblem& src,
                          const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mpParmSteadyStateKey(NULL),
-    mpParmTimeCourseKey(NULL),
+    mInfinity(src.mInfinity),
+    mpParmSubtaskCN(NULL),
     mpParmObjectiveFunctionKey(NULL),
     mpParmMaximize(NULL),
     mpGrpItems(NULL),
     mpGrpConstraints(NULL),
     mpOptItems(NULL),
     mpConstraintItems(NULL),
-    mpSteadyState(src.mpSteadyState),
-    mpTrajectory(src.mpTrajectory),
+    mpSubtask(NULL),
     mpFunction(NULL),
     mUpdateMethods(),
     mInitialRefreshMethods(),
@@ -111,7 +107,7 @@ COptProblem::COptProblem(const COptProblem& src,
     mCalculateValue(src.mCalculateValue),
     mSolutionVariables(src.mSolutionVariables),
     mOriginalVariables(src.mOriginalVariables),
-    mSolutionValue(src.mCalculateValue),
+    mSolutionValue(src.mSolutionValue),
     mCounter(0),
     mFailedCounter(0),
     mConstraintCounter(0),
@@ -147,10 +143,8 @@ COptProblem::~COptProblem()
 
 void COptProblem::initializeParameter()
 {
-  mpParmSteadyStateKey =
-    assertParameter("Steady-State", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
-  mpParmTimeCourseKey =
-    assertParameter("Time-Course", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
+  mpParmSubtaskCN =
+    assertParameter("Subtask", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
   mpParmObjectiveFunctionKey =
     assertParameter("ObjectiveFunction", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
   mpParmMaximize =
@@ -164,6 +158,36 @@ void COptProblem::initializeParameter()
 
 bool COptProblem::elevateChildren()
 {
+  // We need to handle the old file format which had two different task keys
+  if (mpParmSubtaskCN != NULL)
+    {
+      CCopasiParameter * pParameter;
+      if ((pParameter = getParameter("Steady-State")) != NULL)
+        {
+          mpSubtask =
+            dynamic_cast< CCopasiTask * >(GlobalKeys.get(*pParameter->getValue().pKEY));
+
+          if (mpSubtask != NULL)
+            *mpParmSubtaskCN = mpSubtask->getCN();
+
+          removeParameter("Steady-State");
+        }
+      else if ((pParameter = getParameter("Time-Course")) != NULL)
+        {
+          mpSubtask =
+            dynamic_cast< CCopasiTask * >(GlobalKeys.get(*pParameter->getValue().pKEY));
+
+          if (mpSubtask != NULL)
+            *mpParmSubtaskCN = mpSubtask->getCN();
+
+          removeParameter("Time-Course");
+        }
+
+      // If no subtask is defined we default to steady-state
+      if (*mpParmSubtaskCN == "")
+        setSubtaskType(CCopasiTask::steadyState);
+    }
+
   mpGrpItems =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);
   if (!mpGrpItems) return false;
@@ -210,11 +234,13 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
   if (pCallBack)
     {
-      mSolutionValue = mInfinity;
+      // We need to reset mSolutionValue here since initialize is called later during the process
+      mSolutionValue = (*mpParmMaximize ? -2.0 : 2.0) * DBL_MAX;
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             CCopasiParameter::DOUBLE,
                             & mSolutionValue);
+      // We need to reset mCounter here since initialize is called later during the process
       mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
@@ -240,7 +266,7 @@ void COptProblem::initObjects()
 
 bool COptProblem::initialize()
 {
-  mInfinity = 2.0 * DBL_MAX;
+  mInfinity = (*mpParmMaximize ? -2.0 : 2.0) * DBL_MAX;
 
   if (!mpModel) return false;
   mpModel->compileIfNecessary(mpCallBack);
@@ -266,42 +292,25 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  // This is extremely vulnerable to human COPASI file manipulations
-  mpSteadyState =
-    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(* getValue("Steady-State").pKEY));
-  if (!mpSteadyState && * getValue("Steady-State").pKEY != "")
+  if (mpParmSubtaskCN != NULL)
     {
-      mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-
-      if (mpSteadyState != NULL) setValue("Steady-State", mpSteadyState->getKey());
+      std::vector< CCopasiContainer * > ListOfContainer;
+      ListOfContainer.push_back(getObjectAncestor("Vector"));
+      mpSubtask =
+        dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
     }
+  else
+    mpSubtask = NULL;
 
-  mpTrajectory =
-    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(* getValue("Time-Course").pKEY));
-  if (!mpTrajectory && * getValue("Time-Course").pKEY != "")
+  if (mpSubtask != NULL)
     {
-      mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-
-      if (mpTrajectory != NULL) setValue("Time-Course", mpTrajectory->getKey());
+      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      ContainerList.push_back(mpSubtask);
     }
-
-  if (!mpSteadyState && !mpTrajectory)
+  else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 7);
       success = false;
-    }
-
-  if (mpSteadyState)
-    {
-      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      ContainerList.push_back(mpSteadyState);
-    }
-  if (mpTrajectory)
-    {
-      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      ContainerList.push_back(mpTrajectory);
     }
 
   unsigned C_INT32 i;
@@ -461,12 +470,16 @@ bool COptProblem::calculate()
   bool success = false;
   COutputHandler * pOutputHandler = NULL;
 
-  if (mStoreResults && mpTrajectory != NULL)
+  if (mpSubtask == NULL)
+    return false;
+
+  if (mStoreResults &&
+      mpSubtask->getType() == CCopasiTask::timeCourse)
     {
-      static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setTimeSeriesRequested(true);
+      static_cast< CTrajectoryProblem * >(mpSubtask->getProblem())->setTimeSeriesRequested(true);
 
       pOutputHandler = new COutputHandler();
-      mpTrajectory->initialize(CCopasiTask::ONLY_TIME_SERIES, pOutputHandler, NULL);
+      mpSubtask->initialize(CCopasiTask::ONLY_TIME_SERIES, pOutputHandler, NULL);
     }
 
   try
@@ -477,10 +490,7 @@ bool COptProblem::calculate()
       for (; it != end; ++it)
         (**it)();
 
-      if (mpSteadyState != NULL)
-        success = mpSteadyState->process(true);
-      else if (mpTrajectory != NULL)
-        success = mpTrajectory->process(true);
+      success = mpSubtask->process(true);
 
       // Refresh all values needed to calculate the objective function.
       it = mRefreshMethods.begin();
@@ -488,7 +498,7 @@ bool COptProblem::calculate()
       for (; it != end; ++it)
         (**it)();
 
-      mCalculateValue = mpFunction->calcValue();
+      mCalculateValue = *mpParmMaximize ? -mpFunction->calcValue() : mpFunction->calcValue();
     }
 
   catch (CCopasiException)
@@ -506,14 +516,16 @@ bool COptProblem::calculate()
       success = false;
     }
 
-  if (mStoreResults && mpTrajectory != NULL)
+  if (mStoreResults &&
+      mpSubtask->getType() == CCopasiTask::timeCourse)
     {
       mStoreResults = false;
-      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       pdelete(pOutputHandler);
     }
 
-  if (!success || isnan(mCalculateValue)) mCalculateValue = mInfinity;
+  if (!success || isnan(mCalculateValue))
+    mCalculateValue = mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
@@ -529,7 +541,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  // Recalcuate the best solution.
+  // Recalculate the best solution.
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
@@ -561,7 +573,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       calculate();
 
-      mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
+      mGradient[i] = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
 
       // Restore the value
       (*mUpdateMethods[i])(Current);
@@ -587,7 +599,7 @@ const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
 bool COptProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)
 {
-  mSolutionValue = value;
+  mSolutionValue = *mpParmMaximize ? -value : value;
   mSolutionVariables = variables;
 
   if (mpCallBack) return mpCallBack->progress(mhSolutionValue);
@@ -597,16 +609,6 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
 
 const C_FLOAT64 & COptProblem::getSolutionValue() const
 {return mSolutionValue;}
-
-// set the type of problem : Steady State OR Trajectory
-void COptProblem::setProblemType(ProblemType type)
-{
-  // :TODO:
-  if (type == SteadyState)
-    mpSteadyState = new CSteadyStateTask(/*this*/NULL);
-  if (type == Trajectory)
-    mpTrajectory = new CTrajectoryTask(/*this*/NULL);
-}
 
 COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
 {return *(*mpOptItems)[index];}
@@ -695,8 +697,54 @@ bool COptProblem::createObjectiveFunction()
   return true;
 }
 
+bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
+{
+  mpSubtask = NULL;
+  *mpParmSubtaskCN = "";
+
+  CCopasiVectorN< CCopasiTask > * pTasks =
+    dynamic_cast< CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
+
+  if (pTasks == NULL && CCopasiDataModel::Global)
+    pTasks = CCopasiDataModel::Global->getTaskList();
+
+  if (pTasks)
+    {
+      unsigned C_INT32 i, imax = pTasks->size();
+
+      for (i = 0; i < imax; i++)
+        if ((*pTasks)[i]->getType() == subtaskType)
+          {
+            mpSubtask = (*pTasks)[i];
+            *mpParmSubtaskCN = mpSubtask->getCN();
+            return true;
+          }
+    }
+
+  return false;
+}
+
+CCopasiTask::Type COptProblem::getSubtaskType() const
+  {
+    std::vector< CCopasiContainer * > ListOfContainer;
+    ListOfContainer.push_back(getObjectAncestor("Vector"));
+    mpSubtask =
+      dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+
+    if (mpSubtask == NULL)
+      return CCopasiTask::unset;
+
+    return mpSubtask->getType();
+  }
+
+void COptProblem::setMaximize(const bool & maximize)
+{*mpParmMaximize = maximize;}
+
+const bool & COptProblem::maximize() const
+  {return *mpParmMaximize;}
+
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
-{return mCounter;}
+  {return mCounter;}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
   {return * (C_FLOAT64 *) mCPUTime.getValuePointer();}
@@ -743,13 +791,9 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 
   os << "Subtask: " << std::endl;
 
-  if (o.mpSteadyState)
-    o.mpSteadyState->getDescription().print(&os);
-
-  if (o.mpTrajectory)
-    o.mpTrajectory->getDescription().print(&os);
-
-  if (!o.mpTrajectory && !o.mpSteadyState)
+  if (o.mpSubtask)
+    o.mpSubtask->getDescription().print(&os);
+  else
     os << "No Subtask specified.";
 
   os << std::endl;
