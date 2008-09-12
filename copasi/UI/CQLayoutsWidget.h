@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 03:41:52 $
+//   $Date: 2008/09/12 08:35:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,8 @@ class CQLayoutsWidget : public CopasiTableWidget
     CQLayoutsWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
         : CopasiTableWidget(parent, false, name, f)
     {init();}
+
+    void deleteLayoutWindows();
 
   protected:
     /**

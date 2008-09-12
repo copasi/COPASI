@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 09:15:16 $
+//   $Date: 2008/09/12 08:35:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -283,4 +283,15 @@ CQShowLayoutButton::CQShowLayoutButton(unsigned int row, QWidget* pParent, const
 {
   this->setTextLabel("Show");
   connect(this, SIGNAL(clicked()), this, SLOT(slot_clicked()));
+}
+
+void CQLayoutsWidget::deleteLayoutWindows()
+{
+  std::map<std::string, CQLayoutMainWindow*>::iterator it = this->mLayoutWindowMap.begin(), endit = this->mLayoutWindowMap.end();
+  while (it != endit)
+    {
+      delete it->second;
+      ++it;
+    }
+  this->mLayoutWindowMap.clear();
 }
