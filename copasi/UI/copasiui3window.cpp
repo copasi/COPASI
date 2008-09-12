@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.229 $
+//   $Revision: 1.230 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/11 10:28:12 $
+//   $Author: shoops $
+//   $Date: 2008/09/12 15:56:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -586,6 +586,9 @@ void CopasiUI3Window::newDoc()
           return;
           break;
         }
+
+      ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+                        CCopasiDataModel::Global->getModel()->getKey());
     }
 
   ListViews::switchAllListViewsToWidget(0, "");
