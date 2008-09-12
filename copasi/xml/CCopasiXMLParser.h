@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/03 13:30:38 $
+//   $Author: shoops $
+//   $Date: 2008/09/12 17:52:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,6 +195,12 @@ struct SCopasiXMLParserCommon
      * Pointer to the currently processed channel.
      */
     CPlotDataChannelSpec* pCurrentChannelSpec;
+
+    /**
+     * Vector of parameters of type key which could not be updated due to missing target objects
+     * at time of read.
+     */
+    std::vector< CCopasiParameter * > UnmappedKeyParameters;
 
 #ifdef WITH_LAYOUT
     /**

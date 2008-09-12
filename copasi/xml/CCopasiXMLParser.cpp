@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.185 $
+//   $Revision: 1.186 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/03 13:30:38 $
+//   $Author: shoops $
+//   $Date: 2008/09/12 17:52:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,6 +181,7 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pGUI = NULL;
 
   mCommon.pPlotList = NULL;
+  mCommon.UnmappedKeyParameters.clear();
 
 #ifdef WITH_LAYOUT
   mCommon.pLayoutList = NULL;
@@ -502,6 +503,21 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
   if (!strcmp(pszName, "COPASI"))
     {
       mCurrentElement = START_ELEMENT;
+
+      // We need to handle the unmapped parameters of type key.
+      std::vector< CCopasiParameter * >::iterator it = mCommon.UnmappedKeyParameters.begin();
+      std::vector< CCopasiParameter * >::iterator end = mCommon.UnmappedKeyParameters.end();
+
+      for (; it != end; ++it)
+        {
+          CCopasiObject * pObject =
+            mCommon.KeyMap.get(*(*it)->getValue().pKEY);
+
+          if (pObject != NULL)
+            (*it)->setValue(pObject->getKey());
+          else
+            (*it)->setValue(std::string(""));
+        }
     }
   else if (!strcmp(pszName, "GUI") && mCommon.pGUI == NULL)
     CCopasiMessage::getLastMessage();
@@ -2276,7 +2292,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                            // Old file format support
+    case MathML:                                             // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2374,7 +2390,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                            // Old file format support
+    case MathML:                                             // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -4985,7 +5001,10 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                     if (pObject)
                       p->setValue(pObject->getKey());
                     else
-                      p->setValue(std::string(""));
+                      {
+                        p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
+                        mCommon.UnmappedKeyParameters.push_back(p);
+                      }
                   }
                   break;
 
@@ -5189,7 +5208,10 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                     if (pObject)
                       p->setValue(pObject->getKey());
                     else
-                      p->setValue(std::string(""));
+                      {
+                        p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
+                        mCommon.UnmappedKeyParameters.push_back(p);
+                      }
                   }
                   break;
 
@@ -7631,11 +7653,15 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
             case CCopasiParameter::KEY:
               {
                 CCopasiObject * pObject =
-                  mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
+                  mCommon.KeyMap.get(*mCommon.pCurrentParameter->getValue().pKEY);
+
                 if (pObject)
                   p->setValue(pObject->getKey());
                 else
-                  p->setValue(std::string(""));
+                  {
+                    p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
+                    mCommon.UnmappedKeyParameters.push_back(p);
+                  }
               }
               break;
 
@@ -8177,7 +8203,10 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
                 if (pObject)
                   p->setValue(pObject->getKey());
                 else
-                  p->setValue(std::string(""));
+                  {
+                    p->setValue(*mCommon.pCurrentParameter->getValue().pKEY);
+                    mCommon.UnmappedKeyParameters.push_back(p);
+                  }
               }
               break;
 
