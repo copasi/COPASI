@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/11 10:31:33 $
+//   $Date: 2008/09/12 11:33:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,6 +134,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   l.push_back("40%");
   l.push_back("50%");
   l.push_back("100%");
+  l.push_back("150%");
   l.push_back("200%");
   l.push_back("300%");
   l.push_back("400%");
@@ -380,6 +381,8 @@ void CQLayoutMainWindow::createMenus()
   mpZoomMenu->setItemChecked(id, false);
   id = mpZoomMenu->insertItem("100%", 100);
   mpZoomMenu->setItemChecked(id, true);
+  id = mpZoomMenu->insertItem("150%", 100);
+  mpZoomMenu->setItemChecked(id, false);
   id = mpZoomMenu->insertItem("200%", 200);
   mpZoomMenu->setItemChecked(id, false);
   id = mpZoomMenu->insertItem("300%", 300);
@@ -787,7 +790,7 @@ void CQLayoutMainWindow::slotActivated(int index)
   QString item = this->mpZoomComboBox->text(index);
   this->setZoomFactor(item.latin1());
   // update menu items
-  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
+  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
   if (index >= 0 && index < 15)
     {
       unsigned int id = ids[index];
@@ -803,6 +806,7 @@ void CQLayoutMainWindow::slotActivated(int index)
       this->mpZoomMenu->setItemChecked(40, false);
       this->mpZoomMenu->setItemChecked(50, false);
       this->mpZoomMenu->setItemChecked(100, false);
+      this->mpZoomMenu->setItemChecked(150, false);
       this->mpZoomMenu->setItemChecked(200, false);
       this->mpZoomMenu->setItemChecked(300, false);
       this->mpZoomMenu->setItemChecked(400, false);
@@ -836,6 +840,7 @@ void CQLayoutMainWindow::slotResetView()
   this->mpZoomMenu->setItemChecked(40, false);
   this->mpZoomMenu->setItemChecked(50, false);
   this->mpZoomMenu->setItemChecked(100, true);
+  this->mpZoomMenu->setItemChecked(150, false);
   this->mpZoomMenu->setItemChecked(200, false);
   this->mpZoomMenu->setItemChecked(300, false);
   this->mpZoomMenu->setItemChecked(400, false);
@@ -862,6 +867,7 @@ void CQLayoutMainWindow::slotZoomItemActivated(int id)
       this->mpZoomMenu->setItemChecked(40, false);
       this->mpZoomMenu->setItemChecked(50, false);
       this->mpZoomMenu->setItemChecked(100, false);
+      this->mpZoomMenu->setItemChecked(150, false);
       this->mpZoomMenu->setItemChecked(200, false);
       this->mpZoomMenu->setItemChecked(300, false);
       this->mpZoomMenu->setItemChecked(400, false);
@@ -879,7 +885,7 @@ void CQLayoutMainWindow::slotZoomItemActivated(int id)
 
 void CQLayoutMainWindow::slotZoomIn()
 {
-  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
+  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
   int checkedItem = 0;
   unsigned int i, iMax = 15;
   for (i = 0;i < iMax;++i)
@@ -898,7 +904,7 @@ void CQLayoutMainWindow::slotZoomIn()
 
 void CQLayoutMainWindow::slotZoomOut()
 {
-  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
+  int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
   int checkedItem = 0;
   unsigned int i, iMax = 15;
   for (i = 0;i < iMax;++i)
@@ -1045,7 +1051,7 @@ void CQLayoutMainWindow::slotViewActivated(int id)
     default:
       break;
     }
-  // if all object in the info box are hidden, we hise the info box
+  // if all object in the info box are hidden, we hide the info box
   if (this->mpViewMenu->isItemChecked(1001) == FALSE && this->mpViewMenu->isItemChecked(1002) == FALSE && this->mpViewMenu->isItemChecked(1003) == FALSE)
     {
       this->mpInfoBox->hide();
