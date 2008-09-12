@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.249 $
+//   $Revision: 1.250 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/08 08:33:53 $
+//   $Date: 2008/09/12 10:07:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1112,6 +1112,21 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
     CCopasiDataModel::Global->changed();
 
   bool success = true;
+#ifdef WITH_LAYOUT
+  // delete the layout windows when the current model is added
+  // actually it would have been better to do this when a model is deleted, but
+  // the deletion notification is only sent to the listviews if the deleted
+  // model had been changed.
+  if (objectType == ListViews::MODEL && action == ListViews::ADD)
+    {
+      std::set<ListViews *>::iterator it = mListOfListViews.begin();
+      std::set<ListViews *>::iterator ende = mListOfListViews.end();
+      for (; it != ende; ++it)
+        {
+          (*it)->mpLayoutsWidget->deleteLayoutWindows();
+        }
+    }
+#endif // WITH_LAYOUT
 
   // update all initial value
   if (action != RENAME)
@@ -1124,7 +1139,9 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
   for (; it != ende; ++it)
-    if (! (*it)->updateCurrentWidget(objectType, action, key)) success = false;
+    {
+      if (! (*it)->updateCurrentWidget(objectType, action, key)) success = false;
+    }
 
   notifyAllChildWidgets(objectType, action, key);
 
