@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: ssahle $
+//   $Date: 2008/09/14 01:04:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,31 +142,58 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMax(QColor(0, 255, 0));
 
   // mVslow_metab widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget->setColorCoding(tcs);
   pArrayWidget->setColorScalingAutomatic(true);
   // mVslow widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget2->setColorCoding(tcs);
   pArrayWidget2->setColorScalingAutomatic(true);
   // mVslow_space widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget3->setColorCoding(tcs);
   pArrayWidget3->setColorScalingAutomatic(true);
   // mVslow_space widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget4->setColorCoding(tcs);
   pArrayWidget4->setColorScalingAutomatic(true);
 
   // Amplitude widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget_3->setColorCoding(tcs);
   pArrayWidget_3->setColorScalingAutomatic(true);
   // Radical Pointer widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget2_3->setColorCoding(tcs);
   pArrayWidget2_3->setColorScalingAutomatic(true);
   // Fast Reaction Pointer widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget3_3->setColorCoding(tcs);
   pArrayWidget3_3->setColorScalingAutomatic(true);
   // Participation Index widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget4_3->setColorCoding(tcs);
   pArrayWidget4_3->setColorScalingAutomatic(true);
   // Participation Index widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget4_3_2->setColorCoding(tcs);
   pArrayWidget4_3_2->setColorScalingAutomatic(true);
 
