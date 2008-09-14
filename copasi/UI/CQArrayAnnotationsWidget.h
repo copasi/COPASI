@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/03/14 10:38:18 $
+//   $Author: ssahle $
+//   $Date: 2008/09/14 01:03:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,8 @@ class QLabel;
 class CColorScale
   {
   public:
+    CColorScale(): mIsUsed(false){};
+
     virtual ~CColorScale(){};
 
     /**
@@ -68,6 +70,24 @@ class CColorScale
      * this finishes the calculation of the scaling parameters.
      */
     virtual void finishAutomaticParameterCalculation() {};
+
+    /**
+     * this is called by the array annotation widget to indicate that the scaler is in use
+     */
+    void setIsUsed(bool f) {mIsUsed = f;};
+
+    /**
+     * if setIsUsed() was used isUsed() can be called to find out if the scaler is
+     * already in use. One scaler must not be used in several widgets.
+     */
+    bool isUsed() const {return mIsUsed;};
+
+  private:
+    /**
+     * This flag indicates whether the scaler is in use. The widget using the scaler must
+     * call setIsUsed() to keep this up to date.
+     */
+    bool mIsUsed;
   };
 
 /**
@@ -221,7 +241,9 @@ class CQArrayAnnotationsWidget : public QVBox
     void setArrayAnnotation(const CArrayAnnotation * pArray);
 
     /**
-     * set an algorithm for color coding. If cs=NULL no color coding is performed
+     * set an algorithm for color coding. If cs=NULL no color coding is performed. The widget assumes
+     * ownership of the scaler and will delete it in its destructor. This means a CColorScale
+     * can only be used in one widget.
      */
     void setColorCoding(CColorScale * cs);
 
