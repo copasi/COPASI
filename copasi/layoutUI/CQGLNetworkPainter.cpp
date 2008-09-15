@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.128 $
+//   $Revision: 1.129 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/12 13:16:26 $
+//   $Date: 2008/09/15 11:55:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -304,12 +304,9 @@ void CQGLNetworkPainter::drawGraph()
           itCurve++;
         }
 
-      if (this->mLabelShape == CIRCLE)
-        {
-          //draw node as a circle
-          if (itNode != nodeMap.end())
-            drawNode((*itNode).second);
-        }
+      //draw node as a circle
+      if (itNode != nodeMap.end())
+        drawNode((*itNode).second);
     }
 
   glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
@@ -328,7 +325,10 @@ void CQGLNetworkPainter::drawGraph()
       QFontInfo fontInfo = QFontInfo (mfRef);
       // debug end
       for (i = 0;i < viewerLabels.size();i++)
-        drawLabel(viewerLabels[i]);
+        {
+          //drawLabel(viewerLabels[i]);
+          RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(viewerLabels[i].getX()), static_cast<C_INT32>(viewerLabels[i].getY()), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
+        }
     }
   else
     {// draw string next to circle (to the right) or in the center if there is enough space
@@ -418,64 +418,99 @@ void CQGLNetworkPainter::drawColorLegend()
 // draw node as circle
 void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
 {
-  float scaledValue = CVisParameters::DEFAULT_NODE_SIZE * mCurrentZoom;
-  C_INT16 mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
-  if (pParentLayoutWindow != NULL)
+  if (this->mLabelShape == CIRCLE)
     {
-      mappingMode = pParentLayoutWindow->getMappingMode();
+      float scaledValue = CVisParameters::DEFAULT_NODE_SIZE * mCurrentZoom;
+      C_INT16 mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+      if (pParentLayoutWindow != NULL)
+        {
+          mappingMode = pParentLayoutWindow->getMappingMode();
+          if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
+              (mappingMode == CVisParameters::SIZE_AREA_MODE))
+            scaledValue = n.getSize(); // change of node size only for size mode
+        }
+      glColor3f(1.0f, 0.0f, 0.0f); // red
+      GLUquadricObj *qobj;
+      qobj = gluNewQuadric();
+
+      double tx = n.getX() + (n.getWidth() / 2.0);
+      double ty = n.getY() + (n.getHeight() / 2.0);
+      glTranslatef((float)tx, (float)ty, 0.0f);
+
       if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
           (mappingMode == CVisParameters::SIZE_AREA_MODE))
-        scaledValue = n.getSize(); // change of node size only for size mode
-    }
-  glColor3f(1.0f, 0.0f, 0.0f); // red
-  GLUquadricObj *qobj;
-  qobj = gluNewQuadric();
-
-  double tx = n.getX() + (n.getWidth() / 2.0);
-  double ty = n.getY() + (n.getHeight() / 2.0);
-  glTranslatef((float)tx, (float)ty, 0.0f);
-
-  if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
-      (mappingMode == CVisParameters::SIZE_AREA_MODE))
-    if (setOfConstantMetabolites.find(n.getOrigNodeKey()) == setOfConstantMetabolites.end())
-      {
-        if (setOfDisabledMetabolites.find(n.getOrigNodeKey()) == setOfDisabledMetabolites.end())
-          // red as default color for all nodes in non-color modes
-          // which have a substantial range of values (max - min > epsilon)
-          // and which are not disabled
-          glColor3f(1.0f, 0.0f, 0.0f);
-        else
+        if (setOfConstantMetabolites.find(n.getOrigNodeKey()) == setOfConstantMetabolites.end())
           {
-            glColor3f(0.75f, 0.75f, 1.0f); // color for disabled nodes (not to be animated)
+            if (setOfDisabledMetabolites.find(n.getOrigNodeKey()) == setOfDisabledMetabolites.end())
+              // red as default color for all nodes in non-color modes
+              // which have a substantial range of values (max - min > epsilon)
+              // and which are not disabled
+              glColor3f(1.0f, 0.0f, 0.0f);
+            else
+              {
+                glColor3f(0.75f, 0.75f, 1.0f); // color for disabled nodes (not to be animated)
+              }
           }
-      }
-    else
-      glColor3f(0.7f, 0.7f, 0.7f); // reactants with a smaller range of values (e.g. constant)
-  // are not scaled and marked in grey
-  else
-    {// color mapping
-      QColor col = QColor();
-      double v = n.getSize() * 455.0; // there are 456 colors in the current gradient and the node sizes are scaled from 0.0 to 1.0 in color mode
-      if (v < 200.0)
-        {
-          col.setRgb((int)v, 0, 0);
-        }
-      else if (v < 400)
-        {
-          col.setRgb(200, (int)(v - 200.0), 0);
-        }
+        else
+          glColor3f(0.7f, 0.7f, 0.7f); // reactants with a smaller range of values (e.g. constant)
+      // are not scaled and marked in grey
       else
-        {
-          col.setRgb(200 + (int)(v - 400), 200 + (int)(v - 400), 0);
+        {// color mapping
+          QColor col = QColor();
+          double v = n.getSize() * 455.0; // there are 456 colors in the current gradient and the node sizes are scaled from 0.0 to 1.0 in color mode
+          if (v < 200.0)
+            {
+              col.setRgb((int)v, 0, 0);
+            }
+          else if (v < 400)
+            {
+              col.setRgb(200, (int)(v - 200.0), 0);
+            }
+          else
+            {
+              col.setRgb(200 + (int)(v - 400), 200 + (int)(v - 400), 0);
+            }
+          QGLWidget::qglColor(col);
         }
-      QGLWidget::qglColor(col);
-    }
 
-  gluDisk(qobj, 0.0, scaledValue / 2.0, 25, 2);
-  glColor3f(0.0f, 0.0f, 0.0f); // black
-  gluDisk(qobj, scaledValue / 2.0 - 1.0, scaledValue / 2.0, 25, 2);
-  glTranslatef(-(float)tx, -(float)ty, 0.0f);
-  gluDeleteQuadric(qobj);
+      gluDisk(qobj, 0.0, scaledValue / 2.0, 25, 2);
+      glColor3f(0.0f, 0.0f, 0.0f); // black
+      gluDisk(qobj, scaledValue / 2.0 - 1.0, scaledValue / 2.0, 25, 2);
+      glTranslatef(-(float)tx, -(float)ty, 0.0f);
+      gluDeleteQuadric(qobj);
+    }
+  else
+    {
+      // draw blue rectangle
+      glColor3f(0.7f, 0.8f, 1.0f); // label background color (61,237,181)
+      // draw rectangle as background for text
+      double CORNER_RADIUS_FRACTION = 0.1;
+      double cornerRadius = (n.getWidth() > n.getHeight()) ? n.getHeight() * CORNER_RADIUS_FRACTION : n.getWidth() * CORNER_RADIUS_FRACTION;
+      glBegin(GL_POLYGON);
+      glVertex2d(n.getX() + cornerRadius, n.getY());
+      glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY());
+      glVertex2d(n.getX() + n.getWidth(), n.getY() + cornerRadius);
+      glVertex2d(n.getX() + n.getWidth(), n.getY() + n.getHeight() - cornerRadius);
+      glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY() + n.getHeight());
+      glVertex2d(n.getX() + cornerRadius, n.getY() + n.getHeight());
+      glVertex2d(n.getX(), n.getY() + n.getHeight() - cornerRadius);
+      glVertex2d(n.getX(), n.getY() + cornerRadius);
+      glEnd();
+      GLUquadricObj* qobj = NULL;
+      qobj = gluNewQuadric();
+      gluQuadricDrawStyle(qobj, GLU_FILL);
+      glPushMatrix();
+      glTranslatef(n.getX() + cornerRadius, n.getY() + cornerRadius , 0.0f);
+      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 180, 90);
+      glTranslatef(n.getWidth() - 2.0 * cornerRadius, 0.0f , 0.0f);
+      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 90, 90);
+      glTranslatef(0.0f, n.getHeight() - 2.0 * cornerRadius, 0.0f);
+      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 0, 90);
+      glTranslatef(-n.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
+      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
+      glPopMatrix();
+      gluDeleteQuadric(qobj);
+    }
 }
 
 // draw a curve: at the moment just a line from the start point to the end point (for each segment)
