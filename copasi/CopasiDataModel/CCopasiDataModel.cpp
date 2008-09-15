@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/10 15:02:44 $
+//   $Author: shoops $
+//   $Date: 2008/09/15 14:00:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,9 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
     std::set<CRegisteredObjectName*>::const_iterator it, itEnd = nameSet.end();
     for (it = nameSet.begin(); it != itEnd; ++it)
       {
-        if (oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
+        // We need to make sure that we not change partial names
+        if (((*it)->size() == oldCN.size() || (**it)[oldCN.size()] == ',') &&
+            oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
           {
             //std::cout << "   match:   " << **it << std::endl;
             (**it).replace(0, oldCN.size(), newCN);
