@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/11 10:31:33 $
+//   $Date: 2008/09/15 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -320,6 +320,10 @@ void CQPlayerControlWidget::updateButtons()
           if (!this->mPlaying)
             {
               this->mpPlayButton->setIconSet(QPixmap(play_xpm));
+            }
+          else
+            {
+              this->mpPlayButton->setIconSet(QPixmap(pause_xpm));
             }
           if (this->mpBackwardButton->isEnabled())
             {

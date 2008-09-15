@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/12 13:16:26 $
+//   $Date: 2008/09/15 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@
 #include "copasi/layoutUI/CDataEntity.h"
 #include "copasi/layoutUI/CGraphCurve.h"
 #include "copasi/layoutUI/CGraphNode.h"
+#include "copasi/layoutUI/CCompartmentGraphNode.h"
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/RGTextureSpec.h"
 
@@ -83,9 +84,9 @@ class CQGLNetworkPainter : public QGLWidget
     const CLPoint& getGraphMax();
     void createGraph(CLayout *lP); // create local data structures
     void drawGraph(); // create OpenGL display list with graph objects
+    void drawNode(CCompartmentGraphNode &n); // draw comaprtment node as a green rectangle
     void drawNode(CGraphNode &n);
     void drawEdge(CGraphCurve &c);
-    void drawLabel(CLabel l);
     void drawArrow(CArrow a, CLMetabReferenceGlyph::Role role);
 
     bool createDataSets();
@@ -158,6 +159,7 @@ class CQGLNetworkPainter : public QGLWidget
     static const C_INT32 MIN_HEIGHT = 10; // min height for bounding boxes of labels (-> min font pt size)
 
     std::vector<std::string> viewerNodes; // contains node keys
+    std::vector<std::string> viewerCompartmentNodes; // contains node keys
     std::vector<CGraphCurve> viewerCurves; // contains curves defining a reaction (not directly associated with a node)
     std::vector<CLabel> viewerLabels;
     std::vector<CGraphCurve> curvesWithArrow;
@@ -173,6 +175,7 @@ class CQGLNetworkPainter : public QGLWidget
 
     std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;
+    std::map<std::string, CCompartmentGraphNode> compartmentNodeMap;
     std::map<std::string, std::string>labelNodeMap; // maps label keys to node keys
 
     std::map<std::string, RGTextureSpec*>labelTextureMap; // maps label texts to texture info

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.129 $
+//   $Revision: 1.130 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/15 11:55:15 $
+//   $Date: 2008/09/15 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,6 +112,8 @@ void CQGLNetworkPainter::draw()
 void CQGLNetworkPainter::createGraph(CLayout *lP)
 {
   keyMap.clear();
+  compartmentNodeMap.clear();
+  nodeMap.clear();
   labelNodeMap.clear();
   nodeArrowMap.clear();
   nodeCurveMap.clear();
@@ -121,10 +123,24 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   curvesWithArrow.clear();
   int numberOfInvertedCurves = 0;
   // copy graph to local variables
+  CCopasiVector<CLCompartmentGlyph> compartmentNodes = lP->getListOfCompartmentGlyphs();
+  viewerCompartmentNodes = std::vector<std::string>();
+  unsigned int i;
+  for (i = 0;i < compartmentNodes.size();i++)
+    {
+      std::string nKey = (*compartmentNodes[i]).getKey();
+      std::string oKey = (*compartmentNodes[i]).getModelObjectKey();
+      viewerCompartmentNodes.push_back(nKey);
+      compartmentNodeMap.insert(std::pair<std::string, CCompartmentGraphNode>
+                                (nKey,
+                                 CCompartmentGraphNode(*compartmentNodes[i])));
+      keyMap.insert(std::pair<std::string, std::string>
+                    (oKey, nKey));
+    }
+
   CCopasiVector<CLMetabGlyph> nodes;
   nodes = lP->getListOfMetaboliteGlyphs();
   viewerNodes = std::vector<std::string>();
-  unsigned int i;
   for (i = 0;i < nodes.size();i++)
     {
       std::string nKey = (*nodes[i]).getKey();
@@ -232,7 +248,9 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
       viewerLabels.push_back(CLabel(*labels[i]));
       itNode = nodeMap.find(labels[i]->getGraphicalObjectKey());
       if (itNode != nodeMap.end())
-        (*itNode).second.setLabelText(labels[i]->getText());
+        {
+          (*itNode).second.setLabelText(labels[i]->getText());
+        }
     }
   CLPoint p1 = CLPoint(0.0, 0.0);
   CLPoint p2 = CLPoint(lP->getDimensions().getWidth(), lP->getDimensions().getHeight());
@@ -285,11 +303,22 @@ void CQGLNetworkPainter::drawGraph()
     } // end color mode
 
   // draw curves to (reactant) nodes and arrows and circular nodes when in appropriate mode
+  std::map<std::string, CCompartmentGraphNode>::iterator itCompartmentNode;
   std::map<std::string, CGraphNode>::iterator itNode;
   std::multimap<std::string, CGraphCurve>::iterator itCurve;
   std::multimap<std::string, CArrow>::iterator itArrow;
   std::pair<std::multimap<std::string, CGraphCurve>::iterator, std::multimap<std::string, CGraphCurve>::iterator> curveRangeIt;;
   std::pair<std::multimap<std::string, CArrow>::iterator, std::multimap<std::string, CArrow>::iterator> arrowRangeIt;
+
+  for (i = 0;i < viewerCompartmentNodes.size();i++)
+    {
+      itCompartmentNode = compartmentNodeMap.find(viewerCompartmentNodes[i]);
+      // draw node as rectangle
+      if (itCompartmentNode != compartmentNodeMap.end())
+        {
+          drawNode((*itCompartmentNode).second);
+        }
+    }
 
   for (i = 0;i < viewerNodes.size();i++)
     {
@@ -306,7 +335,9 @@ void CQGLNetworkPainter::drawGraph()
 
       //draw node as a circle
       if (itNode != nodeMap.end())
-        drawNode((*itNode).second);
+        {
+          drawNode((*itNode).second);
+        }
     }
 
   glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
@@ -326,7 +357,6 @@ void CQGLNetworkPainter::drawGraph()
       // debug end
       for (i = 0;i < viewerLabels.size();i++)
         {
-          //drawLabel(viewerLabels[i]);
           RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(viewerLabels[i].getX()), static_cast<C_INT32>(viewerLabels[i].getY()), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
@@ -396,15 +426,15 @@ void CQGLNetworkPainter::drawColorLegend()
       val = i * ratio;
       if (val < 200.0)
         {
-          col.setRgb((int)val, 0, 0);
+          col.setRgb(0, 0, (int)val);
         }
       else if (val < 400.0)
         {
-          col.setRgb(200, (int)(val - 200.0), 0);
+          col.setRgb(0, (int)(val - 200.0), 200);
         }
       else
         {
-          col.setRgb(200 + (int)(val - 400.0), 200 + (int)(val - 400.0), 0);
+          col.setRgb(0, 200 + (int)(val - 400.0), 200 + (int)(val - 400.0));
         }
       QGLWidget::qglColor(col);
       // draw colored line in rectangle
@@ -413,6 +443,40 @@ void CQGLNetworkPainter::drawColorLegend()
       glVertex2d(i + sx, sy + h);
       glEnd();
     }
+}
+
+// draw compartment node as rectangle
+void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n) // draw node as filled circle
+{
+  // draw blue rectangle
+  glColor3f(0.891f, 1.0f, 0.84f);
+  // draw rectangle as background for text
+  double CORNER_RADIUS_FRACTION = 0.1;
+  double cornerRadius = (n.getWidth() > n.getHeight()) ? n.getHeight() * CORNER_RADIUS_FRACTION : n.getWidth() * CORNER_RADIUS_FRACTION;
+  glBegin(GL_POLYGON);
+  glVertex2d(n.getX() + cornerRadius, n.getY());
+  glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY());
+  glVertex2d(n.getX() + n.getWidth(), n.getY() + cornerRadius);
+  glVertex2d(n.getX() + n.getWidth(), n.getY() + n.getHeight() - cornerRadius);
+  glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY() + n.getHeight());
+  glVertex2d(n.getX() + cornerRadius, n.getY() + n.getHeight());
+  glVertex2d(n.getX(), n.getY() + n.getHeight() - cornerRadius);
+  glVertex2d(n.getX(), n.getY() + cornerRadius);
+  glEnd();
+  GLUquadricObj* qobj = NULL;
+  qobj = gluNewQuadric();
+  gluQuadricDrawStyle(qobj, GLU_FILL);
+  glPushMatrix();
+  glTranslatef(n.getX() + cornerRadius, n.getY() + cornerRadius , 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 180, 90);
+  glTranslatef(n.getWidth() - 2.0 * cornerRadius, 0.0f , 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 90, 90);
+  glTranslatef(0.0f, n.getHeight() - 2.0 * cornerRadius, 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 0, 90);
+  glTranslatef(-n.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
+  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
+  glPopMatrix();
+  gluDeleteQuadric(qobj);
 }
 
 // draw node as circle
@@ -460,15 +524,15 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
           double v = n.getSize() * 455.0; // there are 456 colors in the current gradient and the node sizes are scaled from 0.0 to 1.0 in color mode
           if (v < 200.0)
             {
-              col.setRgb((int)v, 0, 0);
+              col.setRgb(0, 0, (int)v);
             }
           else if (v < 400)
             {
-              col.setRgb(200, (int)(v - 200.0), 0);
+              col.setRgb(0, (int)(v - 200.0), 200);
             }
           else
             {
-              col.setRgb(200 + (int)(v - 400), 200 + (int)(v - 400), 0);
+              col.setRgb(0, 200 + (int)(v - 400), 200 + (int)(v - 400));
             }
           QGLWidget::qglColor(col);
         }
@@ -654,40 +718,6 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
           glEnd();
         }
     }
-}
-
-// draws label as a rectangular filled shape with a border and the text inside
-void CQGLNetworkPainter::drawLabel(CLabel l)
-{
-  glColor3f(0.7f, 0.8f, 1.0f); // label background color (61,237,181)
-  // draw rectangle as background for text
-  double CORNER_RADIUS_FRACTION = 0.1;
-  double cornerRadius = (l.getWidth() > l.getHeight()) ? l.getHeight() * CORNER_RADIUS_FRACTION : l.getWidth() * CORNER_RADIUS_FRACTION;
-  glBegin(GL_POLYGON);
-  glVertex2d(l.getX() + cornerRadius, l.getY());
-  glVertex2d(l.getX() + l.getWidth() - cornerRadius, l.getY());
-  glVertex2d(l.getX() + l.getWidth(), l.getY() + cornerRadius);
-  glVertex2d(l.getX() + l.getWidth(), l.getY() + l.getHeight() - cornerRadius);
-  glVertex2d(l.getX() + l.getWidth() - cornerRadius, l.getY() + l.getHeight());
-  glVertex2d(l.getX() + cornerRadius, l.getY() + l.getHeight());
-  glVertex2d(l.getX(), l.getY() + l.getHeight() - cornerRadius);
-  glVertex2d(l.getX(), l.getY() + cornerRadius);
-  glEnd();
-  GLUquadricObj* qobj = NULL;
-  qobj = gluNewQuadric();
-  gluQuadricDrawStyle(qobj, GLU_FILL);
-  glPushMatrix();
-  glTranslatef(l.getX() + cornerRadius, l.getY() + cornerRadius , 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 180, 90);
-  glTranslatef(l.getWidth() - 2.0 * cornerRadius, 0.0f , 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 90, 90);
-  glTranslatef(0.0f, l.getHeight() - 2.0 * cornerRadius, 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 0, 90);
-  glTranslatef(-l.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
-  glPopMatrix();
-  gluDeleteQuadric(qobj);
-  RG_drawStringAt(l.getText(), static_cast<C_INT32>(l.getX()), static_cast<C_INT32>(l.getY()), static_cast<C_INT32>(l.getWidth()), static_cast<C_INT32>(l.getHeight()));
 }
 
 // uses QT
@@ -1953,7 +1983,7 @@ void CQGLNetworkPainter::initializeGL()
   CLPoint p1 = this->getGraphMin();
   CLPoint p2 = this->getGraphMax();
   glNewList(mDisplayLists, GL_COMPILE);
-  glColor3f(1.0f, 1.0f, 0.94);
+  glColor3f(0.98f, 0.98f, 0.96f);
   glBegin(GL_POLYGON);
   glVertex3d(p1.getX(), p1.getY(), CQGLNetworkPainter::PLANE_DEPTH);
   glVertex3d(p2.getX(), p1.getY(), CQGLNetworkPainter::PLANE_DEPTH);

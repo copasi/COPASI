@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/12 13:16:26 $
+//   $Date: 2008/09/15 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -593,7 +593,7 @@ void CQLayoutMainWindow::endOfAnimationReached()
 {
   if (this->mLooping)
     {
-      this->backwardAnimation();
+      this->mpControlWidget->getBackwardAction()->activate();
     }
   else
     {
@@ -1049,7 +1049,7 @@ void CQLayoutMainWindow::slotViewActivated(int id)
       break;
     }
   // if all object in the info box are hidden, we hide the info box
-  if (this->mpViewMenu->isItemChecked(1001) == FALSE && this->mpViewMenu->isItemChecked(1002) == FALSE && this->mpViewMenu->isItemChecked(1003) == FALSE)
+  if (this->mpViewMenu->isItemChecked(1001) == FALSE && this->mpViewMenu->isItemChecked(1002) == FALSE /*&& this->mpViewMenu->isItemChecked(1003) == FALSE*/)
     {
       this->mpInfoBox->hide();
     }
