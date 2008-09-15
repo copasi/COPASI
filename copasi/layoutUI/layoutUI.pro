@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.24 $
+#   $Revision: 1.25 $
 #   $Name:  $
 #   $Author: gauges $
-#   $Date: 2008/09/09 03:40:04 $
+#   $Date: 2008/09/15 15:03:39 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@ CONFIG += qt
 
 HEADERS = CQGLNetworkPainter.h \
           CArrow.h \
+          CCompartmentGraphNode.h \
           CGraphNode.h \
           CGraphCurve.h \
           CQGLViewport.h \
@@ -40,6 +41,7 @@ HEADERS = CQGLNetworkPainter.h \
 
 SOURCES = CQLayoutMainWindow.cpp \
           CArrow.cpp \
+          CCompartmentGraphNode.cpp \
           CGraphNode.cpp \
           CGraphCurve.cpp \
           CQGLNetworkPainter.cpp \
