@@ -1,23 +1,28 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dScale.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Author: shoops $
+//   $Date: 2008/09/16 15:24:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef SCALE_H
 #define SCALE_H
 
-#include "qwt3d_scale.h"
-
 #include <qstring.h>
-#include "qwt3d_types.h"
-#include "qwt3d_autoptr.h"
+#include <qwt3d_scale.h>
+#include <qwt3d_types.h>
+#include <qwt3d_autoptr.h>
+#include <qwt3d_axis.h>
 
 //! Automatic beautifying of linear scales
 class LinearAutoScaler2 : public Qwt3D::LinearAutoScaler
