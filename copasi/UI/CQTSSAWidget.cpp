@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:41:02 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 10:10:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAWidget.ui'
  **
- ** Created: Fri Mar 7 13:03:41 2008
- **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.6 2008/06/30 11:41:02 nsimus Exp $)
+ ** Created: Tue Sep 16 12:03:16 2008
+ **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.7 2008/09/16 10:10:31 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -127,7 +127,7 @@ CQTSSAWidget::~CQTSSAWidget()
 void CQTSSAWidget::languageChange()
 {
   setCaption(tr("Time Scale Separation Analysis"));
-  mpLbDeuflTol->setText(tr("Deufelhard Tolerance"));
+  mpLbDeuflTol->setText(tr("Deuflhard Tolerance"));
   mpLblIntervals->setText(tr("Intervals"));
   mpLblDuration->setText(tr("Duration"));
   mpLblIntervalSize->setText(tr("Interval Size"));

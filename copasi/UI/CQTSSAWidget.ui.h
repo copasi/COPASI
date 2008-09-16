@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/09/16 09:56:06 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 10:10:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ void CQTSSAWidget::init()
   mpValidatorIntervalSize->setRange(0, DBL_MAX);
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
 
-  mpLbDeuflTol->setText("Deuflhard Tolerance");
+  //mpLbDeuflTol->setText("Deuflhard Tolerance");
 
   connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(disableDeuflhard(int)));
 }
