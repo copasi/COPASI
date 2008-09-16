@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_yacc.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:34 $
+//   $Date: 2008/09/16 18:37:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ enum yytokentype {
 #endif
 #define yyerror(__str) \
   if (yychar != YYERRCODE) correctErrorPosition(); \
-  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
+  CCopasiMessage(CCopasiMessage::ERRoR, MCFunction + 1, mPosition)
 
 #include "copasi.h"
 #include "CChemEqParser.h"
