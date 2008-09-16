@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/14 01:03:22 $
+//   $Author: shoops $
+//   $Date: 2008/09/16 19:36:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -971,7 +971,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
             if (!mOneDimensional)
               mIndex[mColIndex] = j;
             if (isnan((double)(*mpArray->array())[mIndex]) ||
-                isinf((double)(*mpArray->array())[mIndex]))
+                !finite((double)(*mpArray->array())[mIndex]))
               {
                 data[j][i] = 0;
                 if (0 > maxValue) maxValue = 0;
