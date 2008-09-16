@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.26 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 16:20:09 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
+  $Revision: 1.27 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/09/16 18:30:09 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -464,14 +469,14 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 {
   if (!pParm)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 2);
       return NULL;
     }
 
   ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
   if (!pFrom)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 3);
       return NULL;
     }
 
@@ -493,7 +498,7 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 
       if (it == end)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
+          CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 5);
           return NULL;
         }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/03 12:46:44 $
+//   $Date: 2008/09/16 18:30:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,7 +206,7 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
       if (mType == CCopasiTask::timeCourse && mSubType == CCopasiMethod::deterministic)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Course with deterministic method (LSODA)");
+          CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiMethod + 4, "Time Course with deterministic method (LSODA)");
           return false;
         }
 
@@ -218,14 +218,14 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
       if (mType == CCopasiTask::lyap)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Lyapunov Exponents");
+          CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiMethod + 4, "Lyapunov Exponents");
           return false;
         }
 
 #ifdef COPASI_TSSA
       if (mType == CCopasiTask::tssAnalysis)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
+          CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
           return false;
         }
 #endif // COPASI_TSSA

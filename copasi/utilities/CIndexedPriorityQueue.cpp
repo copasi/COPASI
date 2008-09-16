@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:17 $
+//   $Date: 2008/09/16 18:30:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,7 +103,7 @@ C_INT32 CIndexedPriorityQueue::pushPair(const C_INT32 index, const C_FLOAT64 key
   // First check that the index corresponds to the heap size before insertion
   if (static_cast<unsigned int>(index) != mHeap.size())
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "Error inserting pair into priority queue");
+      CCopasiMessage(CCopasiMessage::ERRoR, "Error inserting pair into priority queue");
       return - 1;
     }
   PQNode heap_node(index, key);

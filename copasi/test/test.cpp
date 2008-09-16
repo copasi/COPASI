@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.108 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/01 16:14:07 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
+  $Revision: 1.109 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/09/16 18:30:12 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -206,7 +211,7 @@ C_INT32 TestException()
   try
     {
       cout << "Entering exception test." << endl;
-      CCopasiMessage Error(CCopasiMessage::ERROR, "Fatal Error");
+      CCopasiMessage Error(CCopasiMessage::ERRoR, "Fatal Error");
       cout << "Leaving exception test." << endl;
     }
 
@@ -748,14 +753,8 @@ C_INT32 TestOptimization(void)
 
 /*
 
-
-
-
     C_INT32 size = 0;
     C_INT32 i;
-
-
-
 
     //CReadConfig inbuf("gps/BakkerComp.gps");
     //CReadConfig inbuf("gps/NewtonTest.gps");
@@ -763,19 +762,10 @@ C_INT32 TestOptimization(void)
     //model.load(inbuf);
     //model.compile();
 
-
-
-
     //model.getReactions().size();
-
-
-
 
     COptimizer * opt = new COptimizer();
     opt->Optimise();
-
-
-
 
     //polymorphism, late binding
     CGA ga;
@@ -784,17 +774,11 @@ C_INT32 TestOptimization(void)
     opt->Optimise();
     optPtr->Optimise();
 
-
-
-
     //CGA ga;
     //opt.Set_nparam (100);
     //opt.Set_mn(-10.0);
     //opt.Set_mx(10.0);
     //ga.Optimise();
-
-
-
 
  */
 
@@ -887,16 +871,10 @@ InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
 {
   vector < CMetab * > Metabolites;
 
-
-
-
   for (unsigned C_INT32 i = 0; i < compartments.size(); i++)
     for (unsigned C_INT32 j = 0;
          j < compartments[i]->getMetabolites().size(); j++)
       Metabolites.push_back(compartments[i]->getMetabolites()[j]);
-
-
-
 
   return Metabolites;
 }
@@ -1814,7 +1792,7 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 
   if (repeats)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
+      CCopasiMessage(CCopasiMessage::ERRoR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
     }
   else
     {
@@ -1828,13 +1806,6 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 /* //-- commented out because of error...8/22
 =======
 
-
-
-
-
-
-
-
 C_INT32 TestDependencyGraph()
 {
   cout << "Testing dependency graph\n";
@@ -1847,16 +1818,10 @@ C_INT32 TestDependencyGraph()
   CDependencyGraph dg;
   unsigned C_INT32 i = 0, j = 0;
 
-
-
-
   for (i = 0; i < NNODES; i++)
     {
       cout << "Adding node " << i << " with dependents ";
       dg.addNode(i);
-
-
-
 
       for (j = 0; j < NDEPS; j++)
         {
@@ -1864,14 +1829,8 @@ C_INT32 TestDependencyGraph()
           dg.addDependent(i, inarr[i][j]);
         }
 
-
-
-
       cout << endl;
     }
-
-
-
 
   // Display the vector of dependents for each node
   for (i = 0; i < NNODES; i++)
@@ -1881,30 +1840,18 @@ C_INT32 TestDependencyGraph()
       const set <C_INT32> depvec = dg.getDependents(i);
       set <C_INT32>::const_iterator jit = depvec.begin();
 
-
-
-
       while (jit != depvec.end())
         {
           cout << *jit << " ";
           jit++;
         }
 
-
-
-
       cout << endl;
     }
-
-
-
 
   cout << "Done testing dependency graph\n\n";
   return 0;
 }
-
-
-
 
  */
 
@@ -2072,7 +2019,7 @@ C_INT32 TestCopasiXML()
   pM = new CMetab();
 
   string tmp = CCopasiXMLInterface::encode("a&sdhjkl<>\"'");
-  tmp = CCopasiXMLInterface::encode("ÜÝÞßà");
+  tmp = CCopasiXMLInterface::encode("ï¿½ï¿½ï¿½ï¿½ï¿½");
 
   return 0;
 }

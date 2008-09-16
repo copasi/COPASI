@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/12 18:04:11 $
+//   $Date: 2008/09/16 18:30:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ bool CQOptimizationWidget::saveTask()
       //      if (!pProblem->setObjectiveFunction(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression()))
       if (!pProblem->setObjectiveFunction(mpExpressionEMW->mpExpressionWidget->getExpression()))
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+          CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 5);
           return false;
         }
 
@@ -248,5 +248,4 @@ void CQOptimizationWidget::slotEditExpression()
 }
 
 void CQOptimizationWidget::slotSubtaskChanged(const QString & /* subtask */)
-{
-}
+{}

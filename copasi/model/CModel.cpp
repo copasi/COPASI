@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.346 $
+//   $Revision: 1.347 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/05 19:51:57 $
+//   $Author: shoops $
+//   $Date: 2008/09/16 18:30:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2737,7 +2737,7 @@ bool CModel::convert2NonReversible()
             if ((tmp.first == NULL) || (tmp.second == NULL))
               {
                 // Create a message that the conversion for this reaction failed.
-                CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 12,
+                CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 12,
                                reac0->getObjectName().c_str(), fn.c_str());
                 success = false;
 

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 14:51:38 $
+//   $Date: 2008/09/16 18:30:09 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,16 +73,16 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:      // non-integer stoichometry
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
+      /*    case - 3:      // non-integer stoichiometry
+      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 1);
       break;
       case - 2:      // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 2);
       break;
       case - 1:      // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 3);
       break;*/
-      // Everything alright: Hybrid simulation possible
+      // Everything all right: Hybrid simulation possible
     case 1:
     default:
       method = new CTauLeapMethod();

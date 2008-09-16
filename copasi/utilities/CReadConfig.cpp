@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 15:55:09 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
+  $Revision: 1.19 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/09/16 18:30:09 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -158,7 +163,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
         }
 
       // We should never reach this line!!!
-      CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 1, name.c_str(),
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 1, name.c_str(),
                      mFilename.c_str(), mLineNumber);
     }
 
@@ -225,7 +230,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 5, type.c_str(),
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 5, type.c_str(),
                      name.c_str());
       mFail = 1; //Error
     }
@@ -258,7 +263,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 5, type.c_str(),
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 5, type.c_str(),
                      name.c_str());
       mFail = 1; //Error
     }
@@ -274,7 +279,7 @@ C_INT32 CReadConfig::initInputBuffer()
   std::ifstream File(utf8ToLocale(mFilename).c_str());
 
   if (File.fail())
-    CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
+    CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 2,
                    mFilename.c_str());
 
   while (true)
@@ -285,7 +290,7 @@ C_INT32 CReadConfig::initInputBuffer()
         break;
 
       if (File.fail())
-        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 3,
+        CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 3,
                        mFilename.c_str());
 
       mBuffer << c;
@@ -296,7 +301,7 @@ C_INT32 CReadConfig::initInputBuffer()
   File.close();
 
   if (File.fail())
-    CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 4,
+    CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 4,
                    mFilename.c_str());
 
   return mFail;

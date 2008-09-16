@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.124 $
+//   $Revision: 1.125 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:30:46 $
+//   $Date: 2008/09/16 18:30:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,7 +165,7 @@ bool SBMLExporter::exportSBML(CCopasiDataModel* pDataModel,
       if (testInfile && !overwriteFile)
         {
           // create a CCopasiMessage with the appropriate error
-          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, sbmlFilename.c_str());
+          CCopasiMessage(CCopasiMessage::ERRoR, MCDirEntry + 1, sbmlFilename.c_str());
           return false;
         }
       /* write the document to a file */
@@ -2709,7 +2709,7 @@ void SBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataMode
           if (pCompartment->getStatus() != CModelValue::FIXED)
             {
               result.push_back("The species \"" + (*it)->getObjectName() + "\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does.");
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, (*it)->getObjectName().c_str());
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 52, (*it)->getObjectName().c_str());
             }
         }
       ++it;

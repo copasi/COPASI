@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:19 $
+//   $Date: 2008/09/16 18:30:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -550,13 +550,13 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   unsigned C_INT32 i, imax = mpObjectMap->getLastNotIgnoredColumn();
   if (*mpNumColumns <= imax)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
       return false; // More column types specified than we have data columns
     }
 
   if (LastMappedColumn < imax || LastMappedColumn == C_INVALID_INDEX)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, imax + 1);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 5, imax + 1);
       return false; // More column types specified than we have mapped columns
     }
 
@@ -584,12 +584,12 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
       case independent:
         if (!Objects[i]) // Object not found
           {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+            CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 5, i + 1);
             return false;
           }
         if (!Objects[i]->isValueDbl())
           {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+            CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
             return false;
           }
         IdependentObjects.insert(Objects[i]);
@@ -605,12 +605,12 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
       case dependent:
         if (!Objects[i]) // Object not found
           {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+            CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 5, i + 1);
             return false;
           }
         if (!Objects[i]->isValueDbl())
           {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+            CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
             return false;
           }
         mDependentValues[DependentCount] =
@@ -672,7 +672,7 @@ bool CExperiment::read(std::istream & in,
   unsigned C_INT32 i, imax = mpObjectMap->size();
   if (*mpNumColumns < imax)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 4, imax, *mpNumColumns);
       return false; // More column types specified than we have data columns
     }
 
@@ -717,19 +717,19 @@ bool CExperiment::read(std::istream & in,
 
   if (!TimeCount && *mpTaskType == CCopasiTask::timeCourse)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 3);
       return false;
     }
 
   if (DependentCount == 0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 10, getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 10, getObjectName().c_str());
       return false;
     }
 
   if (mNumDataRows == 0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 9, getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 9, getObjectName().c_str());
       return false;
     }
 
@@ -775,7 +775,7 @@ bool CExperiment::read(std::istream & in,
             case independent:
               if (!Cells[i].isValue())
                 {
-                  CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
+                  CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 11,
                                  getObjectName().c_str(), currentLine);
                   return false;
                 }
@@ -791,7 +791,7 @@ bool CExperiment::read(std::istream & in,
             case time:
               if (!Cells[i].isValue())
                 {
-                  CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
+                  CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 11,
                                  getObjectName().c_str(), currentLine);
                   return false;
                 }
@@ -803,13 +803,13 @@ bool CExperiment::read(std::istream & in,
 
   if ((in.fail() && !in.eof()))
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, mpFileName->c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 8, mpFileName->c_str());
       return false;
     }
 
   if (j != mNumDataRows)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 7, mNumDataRows, j - 1);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 7, mNumDataRows, j - 1);
       return false;
     }
 

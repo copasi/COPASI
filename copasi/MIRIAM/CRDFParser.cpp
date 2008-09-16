@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/09/16 18:30:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -210,7 +210,7 @@ void CRDFParser::NameSpaceHandler(void * pGraph, raptor_namespace * pNameSpace)
 // static
 void CRDFParser::FatalErrorHandler(void *, raptor_locator * pLocator, const char * message)
 {
-  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 1,
+  CCopasiMessage(CCopasiMessage::ERRoR, MCMiriam + 1,
                  raptor_locator_line(pLocator),
                  raptor_locator_column(pLocator),
                  message);
@@ -219,7 +219,7 @@ void CRDFParser::FatalErrorHandler(void *, raptor_locator * pLocator, const char
 // static
 void CRDFParser::ErrorHandler(void *, raptor_locator * pLocator, const char * message)
 {
-  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 1,
+  CCopasiMessage(CCopasiMessage::ERRoR, MCMiriam + 1,
                  raptor_locator_line(pLocator),
                  raptor_locator_column(pLocator),
                  message);

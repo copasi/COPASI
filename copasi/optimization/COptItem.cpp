@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2008/09/16 18:30:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 
   if (pObject == NULL || !pObject->isValueDbl())
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, objectCN.c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 1, objectCN.c_str());
       return false;
     }
 
@@ -156,7 +156,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
       ((pObject = RootContainer.getObject(lowerBound)) == NULL ||
        !pObject->isValueDbl()))
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, lowerBound.c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 2, lowerBound.c_str());
       return false;
     }
 
@@ -189,7 +189,7 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
       ((pObject = RootContainer.getObject(upperBound)) == NULL ||
        !pObject->isValueDbl()))
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, upperBound.c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 3, upperBound.c_str());
       return false;
     }
 
@@ -342,7 +342,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
   if (mpObjectValue == &NaN)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 1, getObjectCN().c_str());
       return false;
     }
 
@@ -373,7 +373,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   if (!mpLowerBound)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 2, Bound.c_str());
       return false;
     }
 
@@ -401,13 +401,13 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   if (!mpUpperBound)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, Bound.c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 3, Bound.c_str());
       return false;
     }
 
   if (!mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 4, *mpLowerBound, *mpUpperBound);
       return false;
     }
 

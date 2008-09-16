@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: shoops $
+//   $Date: 2008/09/16 18:30:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ bool CTSSATask::process(const bool & useInitialValues)
 
   if (StepSize == 0.0 && mpTSSAProblem->getDuration() != 0.0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTSSAProblem + 1, StepSize);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCTSSAProblem + 1, StepSize);
       return false;
     }
 

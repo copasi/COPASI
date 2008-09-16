@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 03:31:04 $
+//   $Date: 2008/09/16 18:30:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ class CCopasiMessage
 #ifdef ERROR
 # undef ERROR
 #endif
-      ERROR = 4,
+      ERRoR = 4,
       EXCEPTION = 5,
       RAW_FILTERED = 128,
       TRACE_FILTERED = 129,

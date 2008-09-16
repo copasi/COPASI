@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/05 20:13:09 $
+//   $Author: shoops $
+//   $Date: 2008/09/16 18:30:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -729,7 +729,7 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
         || (* getValue("Use Back Integration").pBOOL)))
     {
       //would do nothing
-      CCopasiMessage(CCopasiMessage::ERROR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
+      CCopasiMessage(CCopasiMessage::ERRoR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
       return false;
     }
 

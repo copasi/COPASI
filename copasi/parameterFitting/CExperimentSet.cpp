@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.25 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/04 15:43:44 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
+  $Revision: 1.26 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/09/16 18:30:11 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -99,7 +104,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
           in.open(utf8ToLocale(CurrentFileName).c_str(), std::ios::binary);
           if (in.fail())
             {
-              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, CurrentFileName.c_str());
+              CCopasiMessage(CCopasiMessage::ERRoR, MCFitting + 8, CurrentFileName.c_str());
               return false; // File can not be opened.
             }
         }

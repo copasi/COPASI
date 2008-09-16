@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.176 $
+//   $Revision: 1.177 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Date: 2008/09/16 18:30:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -233,7 +233,7 @@ bool CReaction::setFunction(const std::string & functionName)
   CFunction * pFunction =
     dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findLoadFunction(functionName));
   if (!pFunction)
-    CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+    CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 1, functionName.c_str());
 
   return setFunction(pFunction);
 }
@@ -779,9 +779,9 @@ void CReaction::setScalingFactor()
         {
           unsigned C_INT32 nr = Exc.getMessage().getNumber();
           if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
+            CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 2, getObjectName().c_str());
           if (MCChemEq + 1 == nr)
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getObjectName().c_str());
+            CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 3, getObjectName().c_str());
           throw;
         }
     }
@@ -997,7 +997,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               else
                 {
                   // error
-                  CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
+                  CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 4);
                 }
             }
         }
@@ -1031,7 +1031,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
       else
         {
           // error
-          CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
+          CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 4);
         }
     }
   return pVariableNode;
@@ -1165,7 +1165,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       break;
     case CEvaluationNode::VARIABLE:
       // error variables may not be in an expression
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 6);
       break;
     case CEvaluationNode::WHITESPACE:
       pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
@@ -1196,10 +1196,10 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       break;
     case CEvaluationNode::MV_FUNCTION:
       // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1407,10 +1407,10 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       break;
     case CEvaluationNode::MV_FUNCTION:
       // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
+      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:

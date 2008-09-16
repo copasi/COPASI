@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 17:01:31 $
+//   $Date: 2008/09/16 18:30:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,7 +209,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   if (StepSize == 0.0 && mpTrajectoryProblem->getDuration() != 0.0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 1, StepSize);
+      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryProblem + 1, StepSize);
       return false;
     }
 

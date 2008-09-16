@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/07 15:59:49 $
+//   $Date: 2008/09/16 18:30:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,23 +212,23 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   if (!mpProblem)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 1, getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiTask + 1, getObjectName().c_str());
       return false;
     }
   if (!mpProblem->getModel())
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 2, getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiTask + 2, getObjectName().c_str());
       return false;
     }
   if (!mpMethod)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 3, getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiTask + 3, getObjectName().c_str());
       return false;
     }
 
   if (!mpProblem->getModel()->compileIfNecessary(mpCallBack))
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 4, mpProblem->getModel()->getObjectName().c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCCopasiTask + 4, mpProblem->getModel()->getObjectName().c_str());
       return false;
     }
 

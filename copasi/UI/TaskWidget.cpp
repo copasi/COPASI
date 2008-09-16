@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/09/16 18:30:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -428,7 +428,7 @@ bool TaskWidget::commonRunTask()
         }
     }
 
-  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::ERROR)
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::ERRoR)
     {
       mProgressBar->finish();
       CQMessageBox::critical(this, "Initialization Error",

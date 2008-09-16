@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.117 $
+//   $Revision: 1.118 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/15 15:45:45 $
+//   $Author: shoops $
+//   $Date: 2008/09/16 18:30:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -203,7 +203,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       CReadConfig inbuf(FileName.c_str());
       if (inbuf.getVersion() >= "4")
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          "Can't handle Gepasi Files with Version>=4.");
           return false;
         }
@@ -310,7 +310,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCXML + 13, FileName.c_str());
+      CCopasiMessage(CCopasiMessage::ERRoR, MCXML + 13, FileName.c_str());
       return false;
     }
 
@@ -344,7 +344,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
     {
       if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          MCDirEntry + 1,
                          FileName.c_str());
           return false;
@@ -352,7 +352,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
       if (!CDirEntry::isWritable(FileName))
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          MCDirEntry + 2,
                          FileName.c_str());
           return false;
@@ -681,7 +681,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     {
       if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          MCDirEntry + 1,
                          FileName.c_str());
           return false;
@@ -689,7 +689,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
       if (!CDirEntry::isWritable(FileName))
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          MCDirEntry + 2,
                          FileName.c_str());
           return false;
@@ -731,7 +731,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
     {
       if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          MCDirEntry + 1,
                          fileName.c_str());
           return false;
@@ -739,7 +739,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
       if (!CDirEntry::isWritable(fileName))
         {
-          CCopasiMessage(CCopasiMessage::ERROR,
+          CCopasiMessage(CCopasiMessage::ERRoR,
                          MCDirEntry + 2,
                          fileName.c_str());
           return false;
