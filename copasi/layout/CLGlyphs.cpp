@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/05/28 11:48:59 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,14 @@ CLMetabGlyph & CLMetabGlyph::operator= (const CLMetabGlyph & rhs)
   return *this;
 }
 
+void CLMetabGlyph::exportToSBML(SpeciesGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!g) return;
+
+    //call the coresponding method of the base class
+    CLGraphicalObject::exportToSBML(g, copasimodelmap);
+  }
+
 std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g)
 {
   os << "MetabGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
@@ -109,6 +117,14 @@ CLCompartmentGlyph & CLCompartmentGlyph::operator= (const CLCompartmentGlyph & r
 
   return *this;
 }
+
+void CLCompartmentGlyph::exportToSBML(CompartmentGlyph * cg, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!cg) return;
+
+    //call the coresponding method of the base class
+    CLGraphicalObject::exportToSBML(cg, copasimodelmap);
+  }
 
 std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g)
 {
@@ -201,6 +217,14 @@ void CLTextGlyph::clearText()
 CLGraphicalObject* CLTextGlyph::getGraphicalObject() const
   {
     return dynamic_cast<CLGraphicalObject*>(GlobalKeys.get(mGraphicalObjectKey));
+  }
+
+void CLTextGlyph::exportToSBML(TextGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!g) return;
+
+    //call the coresponding method of the base class
+    CLGraphicalObject::exportToSBML(g, copasimodelmap);
   }
 
 std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g)

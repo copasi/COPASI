@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:17 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -108,6 +113,14 @@ CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
     return dynamic_cast<CLMetabGlyph*>(tmp);
   }
 
+void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!g) return;
+
+    //call the coresponding method of the base class
+    CLGraphicalObject::exportToSBML(g, copasimodelmap);
+  }
+
 std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
 {
   os << "    MetabReferenceGlyph: " << dynamic_cast<const CLGraphicalObject&>(g);
@@ -196,6 +209,38 @@ void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
   if (glyph)
     mvMetabReferences.add(glyph, true); //true means vector takes ownership
 }
+
+void CLReactionGlyph::exportToSBML(ReactionGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!g) return;
+
+    //call the coresponding method of the base class
+    CLGraphicalObject::exportToSBML(g, copasimodelmap);
+
+    //Metab reference  glyphs
+    unsigned C_INT32 i, imax = mvMetabReferences.size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLMetabReferenceGlyph * tmp = mvMetabReferences[i];
+
+        //check if the glyph exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        SpeciesReferenceGlyph * pG;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pG = new SpeciesReferenceGlyph;
+            g->getListOfSpeciesReferenceGlyphs()->appendAndOwn(pG);
+          }
+        else
+          {
+            pG = dynamic_cast<SpeciesReferenceGlyph*>(it->second);
+          }
+
+        tmp->exportToSBML(pG, copasimodelmap);
+      }
+  }
 
 std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g)
 {

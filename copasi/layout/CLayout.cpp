@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:33 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,7 +220,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
     if (!layout) return;
 
     //Dimensions
-    //layout->setDimensions(mDimensions.getSBMLDimensions());
+    layout->setDimensions(&mDimensions.getSBMLDimensions());
 
     //Compartment glyphs
     unsigned C_INT32 i, imax = mvCompartments.size();
@@ -236,13 +236,109 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
         if (it == copasimodelmap.end()) //not found
           {
             pCG = new CompartmentGlyph;
-            layout->getListOfCompartmentGlyphs()->append(pCG);
+            layout->getListOfCompartmentGlyphs()->appendAndOwn(pCG);
           }
         else
           {
             pCG = dynamic_cast<CompartmentGlyph*>(it->second);
           }
 
-        //tmp->exportToSBML(pCG, copasimodelmap);
+        tmp->exportToSBML(pCG, copasimodelmap);
+      }
+
+    //Species glyphs
+    imax = mvMetabs.size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLMetabGlyph * tmp = mvMetabs[i];
+
+        //check if the glyph exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        SpeciesGlyph * pG;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pG = new SpeciesGlyph;
+            layout->getListOfSpeciesGlyphs()->appendAndOwn(pG);
+          }
+        else
+          {
+            pG = dynamic_cast<SpeciesGlyph*>(it->second);
+          }
+
+        tmp->exportToSBML(pG, copasimodelmap);
+      }
+
+    //Reaction glyphs
+    imax = mvReactions.size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLReactionGlyph * tmp = mvReactions[i];
+
+        //check if the glyph exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        ReactionGlyph * pG;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pG = new ReactionGlyph;
+            layout->getListOfReactionGlyphs()->appendAndOwn(pG);
+          }
+        else
+          {
+            pG = dynamic_cast<ReactionGlyph*>(it->second);
+          }
+
+        tmp->exportToSBML(pG, copasimodelmap);
+      }
+
+    //Text glyphs
+    imax = mvLabels.size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLTextGlyph * tmp = mvLabels[i];
+
+        //check if the glyph exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        TextGlyph * pG;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pG = new TextGlyph;
+            layout->getListOfTextGlyphs()->appendAndOwn(pG);
+          }
+        else
+          {
+            pG = dynamic_cast<TextGlyph*>(it->second);
+          }
+
+        tmp->exportToSBML(pG, copasimodelmap);
+      }
+
+    //generic glyphs
+    imax = mvGraphicalObjects.size();
+    for (i = 0; i < imax; ++i)
+      {
+        CLGraphicalObject * tmp = mvGraphicalObjects[i];
+
+        //check if the glyph exists in the libsbml data
+        std::map<CCopasiObject*, SBase*>::const_iterator it;
+        it = copasimodelmap.find(tmp);
+
+        GraphicalObject * pG;
+        if (it == copasimodelmap.end()) //not found
+          {
+            pG = new GraphicalObject;
+            layout->getListOfAdditionalGraphicalObjects()->appendAndOwn(pG);
+          }
+        else
+          {
+            pG = dynamic_cast<GraphicalObject*>(it->second);
+          }
+
+        tmp->exportToSBML(pG, copasimodelmap);
       }
   }

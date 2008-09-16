@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/29 13:17:17 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,15 +28,39 @@ CLPoint::CLPoint(const Point& p)
     mY(p.getYOffset())
 {}
 
+Point CLPoint::getSBMLPoint() const
+  {
+    Point p(mX, mY);
+    return p;
+  }
+
+//***********************************************************
+
 CLDimensions::CLDimensions(const Dimensions& d)
     : mWidth(d.getWidth()),
     mHeight(d.getHeight())
 {}
 
+Dimensions CLDimensions::getSBMLDimensions() const
+  {
+    Dimensions d(mWidth, mHeight);
+    return d;
+  }
+
+//***********************************************************
+
 CLBoundingBox::CLBoundingBox(const BoundingBox & bb)
     : mPosition(*bb.getPosition()),
     mDimensions(*bb.getDimensions())
 {}
+
+BoundingBox CLBoundingBox::getSBMLBoundingBox() const
+  {
+    return BoundingBox("", mPosition.getX(), mPosition.getY(),
+                       mDimensions.getWidth(), mDimensions.getHeight());
+  }
+
+//***********************************************************
 
 std::ostream & operator<<(std::ostream &os, const CLPoint & p)
 {

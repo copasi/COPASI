@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/03/26 10:55:06 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -81,6 +86,11 @@ class CLPoint : public CLBase
       };
 
     /**
+     * convert to sbml point
+     */
+    Point getSBMLPoint() const;
+
+    /**
       * insert operator
       */
     friend std::ostream & operator<<(std::ostream &os, const CLPoint & p);
@@ -121,6 +131,11 @@ class CLDimensions : public CLBase
     void scale (const double & scaleFactor){mWidth *= scaleFactor;mHeight *= scaleFactor;}
 
     /**
+     * convert to sbml dimension
+     */
+    Dimensions getSBMLDimensions() const;
+
+    /**
       * insert operator
       */
     friend std::ostream & operator<<(std::ostream &os, const CLDimensions & d);
@@ -158,6 +173,11 @@ class CLBoundingBox : public CLBase
 
     void setPosition(const CLPoint & p) {mPosition = p;};
     void setDimensions(const CLDimensions & d) {mDimensions = d;};
+
+    /**
+     * convert to sbml bounding box
+     */
+    BoundingBox getSBMLBoundingBox() const;
 
     void scale (const double & scaleFactor){mPosition.scale(scaleFactor);mDimensions.scale(scaleFactor);}
 

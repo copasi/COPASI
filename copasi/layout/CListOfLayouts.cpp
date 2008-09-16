@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/22 17:52:22 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,13 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
   {
     if (!lol) return;
 
+    //debug output
+    //     std::map<CCopasiObject*, SBase*>::const_iterator it;
+    //     for (it=copasimodelmap.begin(); it != copasimodelmap.end(); ++it)
+    //       {
+    //         std::cout << it->first->getObjectDisplayName() << " -> " << it->second->getId() << " . " << it->second->getName() << std::endl;
+    //}
+
     //this will contain the SBML objects that were touched by this method.
     std::set<SBase*> writtenToSBML;
 
@@ -70,10 +77,10 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
           {
             //create new object and add to libsbml data structures
             pLayout = new Layout;
-            lol->append(pLayout);
+            lol->appendAndOwn(pLayout);
 
             //add object to map
-            copasimodelmap[tmp] = pLayout;
+            //copasimodelmap[tmp] = pLayout; should not really be done in export
           }
         else
           {

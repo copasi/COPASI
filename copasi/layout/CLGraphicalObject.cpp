@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/22 17:52:22 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
 
   //warning: in this place we should call the assignment operator of
   //CCopasiContainer (which does not exist).
-  //We handle this explicitly instead.(common_0)
+  //We handle this explicitly instead.
   setObjectName(rhs.getObjectName());
   //object flag cannot be accessed, it is private.
 
@@ -98,6 +98,14 @@ std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, boo
       return tmp->getObjectName();
     else
       return "";
+  }
+
+void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!sbmlobject) return;
+
+    //Bounding box
+    sbmlobject->setBoundingBox(&mBBox.getSBMLBoundingBox());
   }
 
 std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)

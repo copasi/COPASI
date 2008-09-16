@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/05/28 11:48:59 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,14 @@ class CLMetabGlyph : public CLGraphicalObject
      */
     CLMetabGlyph & operator= (const CLMetabGlyph & rhs);
 
-    virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+    //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    virtual void exportToSBML(SpeciesGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+
     /**
      * insert operator
      */
@@ -80,7 +87,7 @@ class CLCompartmentGlyph : public CLGraphicalObject
                        std::map<std::string, std::string> & layoutmap,
                        const CCopasiContainer * pParent = NULL);
 
-    virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+    //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 
     /**
      * assignment operator
@@ -92,6 +99,12 @@ class CLCompartmentGlyph : public CLGraphicalObject
      */
     friend std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g);
     void print(std::ostream * ostream) const;
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    virtual void exportToSBML(CompartmentGlyph * cg, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
   };
 
 /**
@@ -146,7 +159,13 @@ class CLTextGlyph : public CLGraphicalObject
     CLGraphicalObject* getGraphicalObject() const;
     void setGraphicalObjectKey(const std::string & k) {mGraphicalObjectKey = k;};
 
-    virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+    //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    virtual void exportToSBML(TextGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
 
     /**
      * insert operator

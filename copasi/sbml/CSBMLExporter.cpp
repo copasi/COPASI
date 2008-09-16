@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:08 $
+//   $Author: ssahle $
+//   $Date: 2008/09/16 22:31:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,10 @@
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 #include "MIRIAM/CRDFUtilities.h"
+
+#ifdef WITH_LAYOUT
+#include "layout/CListOfLayouts.h"
+#endif //WITH_LAYOUT
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false)
 {}
@@ -1814,6 +1818,13 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   this->mSBMLVersion = sbmlVersion;
   mHandledSBMLObjects.clear();
   createSBMLDocument(dataModel);
+
+#ifdef WITH_LAYOUT
+  if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
+    dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
+        dataModel.getCopasi2SBMLMap());
+#endif //WITH_LAYOUT
+
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
   removeUnusedObjects();

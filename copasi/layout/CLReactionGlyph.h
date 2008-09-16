@@ -1,20 +1,22 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/08/05 12:24:11 $
+//   $Date: 2008/09/16 22:29:58 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CLREACG_H_
 #define CLREACG_H_
-
-//#include<string>
-//#include"utils.h"
 
 #include "utilities/CCopasiVector.h"
 
@@ -109,11 +111,18 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
     const std::string & getRoleDisplayName() const
       {return RoleName[mRole];};
 
-    virtual void scale (const double & scaleFactor)
-    {
-      this->mCurve.scale(scaleFactor);
-      this->mBBox.scale(scaleFactor);
-    }
+    /*    virtual void scale (const double & scaleFactor)
+        {
+          this->mCurve.scale(scaleFactor);
+          this->mBBox.scale(scaleFactor);
+        }*/
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    virtual void exportToSBML(SpeciesReferenceGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+
     /**
      * insert operator
      */
@@ -132,7 +141,7 @@ class CLReactionGlyph : public CLGraphicalObject
     CCopasiVector<CLMetabReferenceGlyph> mvMetabReferences;
 
   public:
-    CLReactionGlyph(const std::string & name = "MetabGlyph",
+    CLReactionGlyph(const std::string & name = "ReactionGlyph",
                     const CCopasiContainer * pParent = NULL);
 
     CLReactionGlyph(const CLReactionGlyph & src,
@@ -164,16 +173,22 @@ class CLReactionGlyph : public CLGraphicalObject
     CLCurve & getCurve() {return mCurve;};
     void setCurve(const CLCurve & c) {mCurve = c;};
 
-    virtual void scale (const double & scaleFactor)
-    {
-      this->mBBox.scale(scaleFactor);
-      this->mCurve.scale(scaleFactor);
-      unsigned int i;
-      for (i = 0;i < mvMetabReferences.size();i++)
-        {
-          (mvMetabReferences[i])->scale(scaleFactor);
-        }
-    }
+    //     virtual void scale (const double & scaleFactor)
+    //     {
+    //       this->mBBox.scale(scaleFactor);
+    //       this->mCurve.scale(scaleFactor);
+    //       unsigned int i;
+    //       for (i = 0;i < mvMetabReferences.size();i++)
+    //         {
+    //           (mvMetabReferences[i])->scale(scaleFactor);
+    //}
+    //}
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    virtual void exportToSBML(ReactionGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
 
     /**
      * insert operator
