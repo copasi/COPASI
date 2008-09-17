@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/16 22:29:58 $
+//   $Date: 2008/09/17 15:59:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,7 +220,8 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
     if (!layout) return;
 
     //Dimensions
-    layout->setDimensions(&mDimensions.getSBMLDimensions());
+    Dimensions tmpDim = mDimensions.getSBMLDimensions();
+    layout->setDimensions(&tmpDim);
 
     //Compartment glyphs
     unsigned C_INT32 i, imax = mvCompartments.size();

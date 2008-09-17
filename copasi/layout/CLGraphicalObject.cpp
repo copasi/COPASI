@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/16 22:29:58 $
+//   $Date: 2008/09/17 15:59:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,8 @@ void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject, const std::ma
     if (!sbmlobject) return;
 
     //Bounding box
-    sbmlobject->setBoundingBox(&mBBox.getSBMLBoundingBox());
+    BoundingBox tmpbox = mBBox.getSBMLBoundingBox();
+    sbmlobject->setBoundingBox(&tmpbox);
   }
 
 std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)
