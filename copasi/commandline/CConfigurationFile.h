@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 16:17:58 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
+  $Revision: 1.4 $
+  $Name:  $
+  $Author: aruff $
+  $Date: 2008/09/17 17:26:29 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,11 +19,13 @@
 #define COPASI_CConfigurationFile
 
 #include "utilities/CCopasiParameterGroup.h"
+#include "MIRIAM/CMIRIAMResource.h"
 #include "xml/CCopasiXMLInterface.h"
 
 #ifdef COPASI_LICENSE_COM
 class CRegistration;
 #endif // COPASI_LICENSE_COM
+class CMIRIAMResources;
 
 class CRecentFiles : public CCopasiParameterGroup
   {
@@ -143,6 +150,14 @@ class CConfigurationFile : public CCopasiParameterGroup
      */
     CRecentFiles & getRecentSBMLFiles();
 
+    /**
+     * Retreive the list of recent MIRIAM Resources
+     * @return CMIRIAMResources & recentMIRIAMResources
+     */
+    CMIRIAMResources & getRecentMIRIAMResources();
+
+    void setRecentMIRIAMResources(const CMIRIAMResources & miriamResources);
+
   private:
     /**
      * Allocates all group parameters and assures that they are
@@ -217,6 +232,11 @@ class CConfigurationFile : public CCopasiParameterGroup
      * A pointer to the list of recent files
      */
     CRecentFiles * mpRecentSBMLFiles;
+
+    /**
+     * A pointer to the list of MIRIAM Resources
+     */
+    CMIRIAMResources * mpRecentMIRIAMResources;
 
 #ifdef COPASI_LICENSE_COM
     /**

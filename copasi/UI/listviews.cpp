@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.251 $
+//   $Revision: 1.252 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/12 18:04:11 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:23:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,7 @@
 #include "CQReportDefinition.h"
 #include "PlotWidget.h"
 #include "CQMathMatrixWidget.h"
+#include "MIRIAMUI/CBiologicalDescriptionsWidget.h"
 
 #include "CTabWidget.h"
 
@@ -1218,7 +1219,32 @@ void ListViews::setChildWidgetsFramework(int framework)
 
   while ((pCopasiWidget = static_cast< CopasiWidget * >(it.current())) != NULL)
     {
-      pCopasiWidget->setFramework(framework);;
+      pCopasiWidget->setFramework(framework);
+      ++it;
+    }
+
+  delete pList; // delete the list, not the CopasiWidgets
+}
+
+// static
+void ListViews::updateMIRIAMResourceContents()
+{
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator end = mListOfListViews.end();
+
+  for (; it != end; ++it)
+    (*it)->updateBiologicalDescriptionContents();
+}
+
+void ListViews::updateBiologicalDescriptionContents()
+{
+  QObjectList * pList = queryList("CBiologicalDescriptionsWidget");
+  QObjectListIt it(*pList); // iterate over the CopasiWidgets
+  CBiologicalDescriptionsWidget * pBiologicalDescriptionsWidget;
+
+  while ((pBiologicalDescriptionsWidget = static_cast< CBiologicalDescriptionsWidget * >(it.current())) != NULL)
+    {
+      pBiologicalDescriptionsWidget->updateResourcesList();
       ++it;
     }
 

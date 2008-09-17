@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.230 $
+//   $Revision: 1.231 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/12 15:56:30 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:23:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,6 +64,7 @@ extern const char * CopasiLicense;
 #include "wizard/wizard.h"
 #include "report/CKeyFactory.h"
 #include "sbml/SBMLIncompatibility.h"
+#include "MIRIAM/CConstants.h"
 
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
@@ -72,6 +73,7 @@ extern const char * CopasiLicense;
 #include "./icons/showSliders.xpm"
 #include "./icons/Copasi16-Alpha.xpm"
 #include "./icons/checkModel.xpm"
+#include "./icons/MIRIAM.xpm"
 #include "./icons/istos.xpm"
 #include "./icons/stois.xpm"
 #include "./icons/photo.xpm"
@@ -199,7 +201,8 @@ CopasiUI3Window::CopasiUI3Window():
     mpAutoSaveTimer(NULL),
     mSuspendAutoSave(false),
     mpMenuRecentFiles(NULL),
-    mpMenuRecentSBMLFiles(NULL)
+    mpMenuRecentSBMLFiles(NULL),
+    mpMIRIAMResources(NULL)
 {
   // set destructive close
   WFlags f = this->getWFlags();
@@ -321,6 +324,9 @@ void CopasiUI3Window::createActions()
   mpaCheckModel = new QAction(QPixmap(checkModel_xpm), "Check model", 0, this, "checkmodel");
   connect(mpaCheckModel, SIGNAL(activated()), this, SLOT(slotCheckModel()));
 
+  mpaUpdateMIRIAM = new QAction(QPixmap(MIRIAM_xpm), "Update MIRIAM", 0, this, "updatemiriam");
+  connect(mpaUpdateMIRIAM, SIGNAL(activated()), this, SLOT(slotUpdateMIRIAM()));
+
   mpaApplyInitialState = new QAction(QPixmap(istos_xpm), "Apply initial state", 0, this, "applyinitialstate");
   connect(mpaApplyInitialState, SIGNAL(activated()), this, SLOT(slotApplyInitialState()));
 
@@ -361,6 +367,7 @@ void CopasiUI3Window::createToolBar()
   mpaApplyInitialState->addTo(tbMain);
   mpaUpdateInitialState->addTo(tbMain);
 
+  mpaUpdateMIRIAM->addTo(tbMain);
   tbMain->addSeparator();
 
   mpBoxSelectFramework = new QComboBox(tbMain);
@@ -463,8 +470,11 @@ void CopasiUI3Window::createMenuBar()
   mpaSliders->addTo(tools);
 
   mpaCheckModel->addTo(tools);
+
   mpaApplyInitialState->addTo(tools);
   mpaUpdateInitialState->addTo(tools);
+
+  mpaUpdateMIRIAM->addTo(tools);
 
   tools->insertSeparator();
   tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
@@ -1574,6 +1584,55 @@ void CopasiUI3Window::slotCheckModel()
   pTE->setReadOnly(true);
   pTE->resize(512, 640);
   pTE->show();
+}
+
+void CopasiUI3Window::slotUpdateMIRIAM()
+{
+  bool success = true;
+
+  QCursor oldCursor = cursor();
+  setCursor(Qt::WaitCursor);
+
+  CCopasiMessage::clearDeque();
+  if (!dataModel)
+    dataModel = new DataModelGUI; // create a new data model
+
+  try
+    {
+      success = dataModel->updateMIRIAM(
+                  CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources());
+    }
+  catch (...)
+    {
+      success = false;
+    }
+
+  if (!success)
+    {
+      setCursor(oldCursor);
+      QString Message = "Error while updating MIRIAM" + QString("!\n\n");
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+      CQMessageBox::critical(this, QString("MIRIAM Error"), Message,
+                             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  /* still check for warnings.
+   * Maybe events or rules were ignored while reading
+   * the file.
+   */
+  if (success)
+    {
+      CCopasiDataModel::Global->getConfiguration()->save();
+      CMIRIAMResourceObject::setMIRIAMResources(
+        &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources());
+      ListViews::updateMIRIAMResourceContents();
+      this->checkPendingMessages();
+    }
+
+  CCopasiMessage::clearDeque();
+  ListViews::switchAllListViewsToWidget(0, "");
+  setCursor(oldCursor);
 }
 
 void CopasiUI3Window::slotApplyInitialState()

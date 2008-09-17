@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:23:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 
 //class CMathModel;
 class QTimer;
+class CMIRIAMResources;
 
 class DataModelGUI
   {
@@ -60,6 +61,8 @@ class DataModelGUI
     bool loadModel(const std::string & fileName);
     bool createModel();
     bool saveModel(const std::string & fileName, bool overwriteFile = false);
+
+    bool updateMIRIAM(CMIRIAMResources & miriamResources);
 
     bool importSBMLFromString(const std::string & sbmlDocumentText);
     bool importSBML(const std::string & fileName);

@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
- $Revision: 1.8 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/09/01 16:55:50 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
+$Revision: 1.9 $
+$Name:  $
+$Author: aruff $
+$Date: 2008/09/17 17:26:29 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,6 +29,7 @@
 #include "utilities/utility.h"
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXMLParser.h"
+#include "MIRIAM/CConstants.h"
 
 CRecentFiles::CRecentFiles(const std::string & name,
                            const CCopasiContainer * pParent):
@@ -107,7 +108,9 @@ void CRecentFiles::addFile(const std::string & file)
 CConfigurationFile::CConfigurationFile(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiParameterGroup(name, pParent),
-    mpRecentFiles(NULL)
+    mpRecentFiles(NULL),
+    mpRecentSBMLFiles(NULL),
+    mpRecentMIRIAMResources(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -116,7 +119,9 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
                                        const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
-    mpRecentFiles(NULL)
+    mpRecentFiles(NULL),
+    mpRecentSBMLFiles(NULL),
+    mpRecentMIRIAMResources(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -125,7 +130,9 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
                                        const CCopasiContainer * pParent):
     CCopasiParameterGroup(group, pParent),
-    mpRecentFiles(NULL)
+    mpRecentFiles(NULL),
+    mpRecentSBMLFiles(NULL),
+    mpRecentMIRIAMResources(NULL)
 #ifdef COPASI_LICENSE_COM
     , mpRegistration(NULL)
 #endif // COPASI_LICENSE_COM
@@ -146,6 +153,11 @@ bool CConfigurationFile::elevateChildren()
     elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent SBML Files"));
   if (!mpRecentSBMLFiles) success = false;
 
+  mpRecentMIRIAMResources =
+    elevate<CMIRIAMResources, CCopasiParameterGroup>(getGroup("MIRIAM Resources"));
+  CMIRIAMResourceObject::setMIRIAMResources(mpRecentMIRIAMResources);
+  if (!mpRecentMIRIAMResources) success = false;
+
 #ifdef COPASI_LICENSE_COM
   mpRegistration =
     elevate<CRegistration, CCopasiParameterGroup>(getGroup("Registration"));
@@ -161,6 +173,8 @@ void CConfigurationFile::initializeParameter()
 #ifdef COPASI_LICENSE_COM
   assertGroup("Registration");
 #endif // COPASI_LICENSE_COM
+
+  assertGroup("MIRIAM Resources");
 
   elevateChildren();
 }
@@ -202,6 +216,12 @@ CRecentFiles & CConfigurationFile::getRecentFiles()
 
 CRecentFiles & CConfigurationFile::getRecentSBMLFiles()
 {return *mpRecentSBMLFiles;}
+
+CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
+{return *mpRecentMIRIAMResources;}
+
+void CConfigurationFile::setRecentMIRIAMResources(const CMIRIAMResources & miriamResources)
+{* mpRecentMIRIAMResources = miriamResources;}
 
 CConfigurationFile::CXML::CXML():
     CCopasiXMLInterface(),

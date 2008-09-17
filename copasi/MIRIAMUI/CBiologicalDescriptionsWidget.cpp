@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 18:08:05 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:25:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,8 @@
 #include "report/CKeyFactory.h"
 #include "UI/qtUtilities.h"
 #include "UI/CQMessageBox.h"
+#include "MIRIAM/CMIRIAMResource.h"
+#include "utilities/CCopasiParameterGroup.h"
 
 #define COL_MARK               0
 #define COL_DUMMY              1
@@ -101,10 +103,24 @@ void CBiologicalDescriptionsWidget::init()
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
 
   // Build the list of known resources
-  const CMIRIAMResourceObject::sResource * pResource = CMIRIAMResourceObject::getResourceList();
+  updateResourcesList();
+}
+
+void CBiologicalDescriptionsWidget::updateResourcesList()
+{
+  mResources.clear();
+  // Build the list of known resources
+  const CMIRIAMResources * pResource = &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources();
   mResources.push_back("-- select --");
-  for (; pResource->MiriamId != ""; ++pResource)
-    mResources.push_back(FROM_UTF8(pResource->DisplayName));
+
+  CCopasiParameterGroup::index_iterator it = pResource->getResourceList().beginIndex();
+  CCopasiParameterGroup::index_iterator end = pResource->getResourceList().endIndex();
+  unsigned C_INT32 Index = 0;
+  for (; it != end; ++it)
+    {
+      mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(Index).getMIRIAMDisplayName()));
+      Index++;
+    }
 }
 
 void CBiologicalDescriptionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)

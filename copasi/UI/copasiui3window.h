@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/03 09:44:12 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:23:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include <qdialog.h>
 #include <qtoolbar.h>
 #include "qvariant.h"
+#include "../MIRIAM/CMIRIAMResource.h"
 
 class QToolButton;
 class QListViewItem;
@@ -37,6 +38,8 @@ class QScrollView;
 class QAction;
 class ObjectBrowserDialog;
 class QComboBox;
+class CMIRIAMResources;
+class CMIRIAMResourceObject;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -102,6 +105,7 @@ class CopasiUI3Window : public QMainWindow
     void slotUpdateInitialState();
     void slotFrameworkChanged(int index);
     void slotCapture();
+    void slotUpdateMIRIAM();
 
     /**
      * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
@@ -139,6 +143,7 @@ class CopasiUI3Window : public QMainWindow
     QAction* mpaApplyInitialState;
     QAction* mpaUpdateInitialState;
     QAction *mpaCapture;
+    QAction* mpaUpdateMIRIAM;
 
     void CleanUp();
 
@@ -155,6 +160,8 @@ class CopasiUI3Window : public QMainWindow
 
     QPopupMenu * mpMenuRecentSBMLFiles;
     void refreshRecentSBMLFileMenu();
+
+    CMIRIAMResources * mpMIRIAMResources;
 
 #ifdef COPASI_LICENSE_COM
     bool checkRegistration();

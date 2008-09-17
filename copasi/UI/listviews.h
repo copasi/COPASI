@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/12 18:04:11 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:23:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,7 @@ class CQLyapWidget;
 class CQLyapResultWidget;
 class CQModelValue;
 class CQMathMatrixWidget;
+//class CBiologicalDescriptionsWidget;
 
 #ifdef WITH_LAYOUT
 class CQLayoutsWidget;
@@ -209,6 +210,9 @@ class ListViews : public QSplitter
     void setChildWidgetsFramework(int framework);
 
     static void setFramework(int framework);
+
+    void updateBiologicalDescriptionContents();
+    static void updateMIRIAMResourceContents();
 
     //the widgets
     QListView *folders;

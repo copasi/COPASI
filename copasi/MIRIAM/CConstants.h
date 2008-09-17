@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 18:08:05 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:27:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,43 +17,26 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "CMIRIAMResource.h"
 
 class CRDFNode;
 
+class CMIRIAMResources;
+
 class CMIRIAMResourceObject
   {
-  public:
-    struct sResource
-      {
-        std::string MiriamId;
-        std::string DisplayName;
-        std::string URL;
-        std::string URI;
-        std::string Deprecated[4];
-        std::string Regexp;
-        bool Citation;
-      };
-
-  private:
-    static sResource Resources[];
-
-    static bool Initialized;
-    static std::map< std::string, unsigned C_INT32 > DisplayName2Resource;
-    // TODO when the URIBase is no longer unique we need to introduce a multi map.
-    static std::map< std::string, unsigned C_INT32 > URI2Resource;
-
-  private:
-    static void createDisplayNameMap();
-    static void createURIMap();
-
-  public:
-    static unsigned C_INT32 getResource(const std::string & URI);
-    static const sResource * getResourceList();
 
   private:
     CMIRIAMResourceObject();
 
+    void extractId(const std::string & URI);
+
   public:
+
+    unsigned C_INT32 getResource(const std::string & URI);
+
+    static const CMIRIAMResources & getResourceList();
+
     CMIRIAMResourceObject(CRDFNode * pNode);
 
     CMIRIAMResourceObject(const std::string & displayName, const std::string & id);
@@ -80,10 +63,16 @@ class CMIRIAMResourceObject
 
     bool isValid(const std::string & URI) const;
 
-  private:
-    void extractId(const std::string & URI);
+    static void setMIRIAMResources(const CMIRIAMResources * pResources);
+
+    /**
+     * Destructor
+     */
+    virtual ~CMIRIAMResourceObject();
 
   private:
+    static const CMIRIAMResources * mpResources;
+
     unsigned C_INT32 mResource;
     std::string mId;
     CRDFNode * mpNode;

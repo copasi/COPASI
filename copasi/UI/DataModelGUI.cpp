@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: aruff $
+//   $Date: 2008/09/17 17:23:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -456,6 +456,23 @@ bool DataModelGUI::exportMathModel(const std::string & fileName, const std::stri
 {
   CProgressBar* pProgressBar = new CProgressBar();
   bool success = CCopasiDataModel::Global->exportMathModel(fileName, pProgressBar, filter, overwriteFile);
+
+  pdelete(pProgressBar);
+  return success;
+}
+
+bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
+{
+  bool success = true;
+  CProgressBar* pProgressBar = new CProgressBar();
+  //try
+  //{
+  success = miriamResources.updateMIRIAMResources(pProgressBar);
+  //}
+  //catch (...)
+  //{
+  //success = false;
+  //}
 
   pdelete(pProgressBar);
   return success;
