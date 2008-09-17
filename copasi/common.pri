@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.85 $ 
+#   $Revision: 1.86 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/09/16 22:36:52 $ 
+#   $Date: 2008/09/17 16:38:08 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.85 $ $Author: shoops $ $Date: 2008/09/16 22:36:52 $  
+# $Revision: 1.86 $ $Author: shoops $ $Date: 2008/09/17 16:38:08 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -94,12 +94,6 @@ contains(STATIC_LINKAGE, yes) {
   contains(HASH, \\043){
     HASH = $$system(echo -e "\\043")
   }
-
-  myLex = \
-          $(LEX) -t $< | \
-          sed -e 's/class istream;/$${HASH}include "copasi.h"/' \
-              -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-              -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
 }
 
 
@@ -127,12 +121,6 @@ contains(BUILD_OS, Darwin) {
     LIBS += -lexpat
   }
 
-  !isEmpty(QWT3D_PATH){
-    LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
-    INCLUDEPATH += $${QWT3D_PATH}/include
-    DEFINES += WITH_QWT3D
-  }
- 
   !isEmpty(RAPTOR_PATH){
     LIBS+=  $${RAPTOR_PATH}/lib/libraptor.a
     INCLUDEPATH += $${RAPTOR_PATH}/include
@@ -149,11 +137,18 @@ contains(BUILD_OS, Darwin) {
       LIBS += -lqwt
     }
     
+    !isEmpty(QWT3D_PATH){
+	  DEFINES += WITH_QWT3D
+	  LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
+	  INCLUDEPATH += $${QWT3D_PATH}/include
+	} else {
+      contains(DEFINES, WITH_QWT3D) {
+	    LIBS += $(QTDIR)/lib/libqwtplot3d.a
+	  }
+	}
+ 
     LIBS += $(QTDIR)/lib/libqt-mt.a
     
-    contains(DEFINES, WITH_QWT3D) {
-      LIBS += $(QTDIR)/lib/libqwtplot3d.a
-    }
     
     QMAKE_LIBS_QT =
     QMAKE_LIBS_QT_THREAD = 
@@ -322,9 +317,16 @@ contains(STATIC_LINKAGE, yes) {
        INCLUDEPATH += $${QWT_PATH}/include
     }
     LIBS += -lqwt
+    
+    !isEmpty(QWT3D_PATH){
+	  DEFINES += WITH_QWT3D
+	  LIBS += -L$${QWT3D_PATH}/lib/
+	  INCLUDEPATH += $${QWT3D_PATH}/include
+	}
     contains(DEFINES, WITH_QWT3D) {
       LIBS += -lqwtplot3d
     }
+    
     LIBS += -lSM
   } else {
     QMAKE_LIBS_THREAD -= -lpthread
@@ -457,9 +459,15 @@ contains(BUILD_OS, Linux) {
     }
     LIBS += -lqwt
 
+    !isEmpty(QWT3D_PATH){
+	  DEFINES += WITH_QWT3D
+	  LIBS += -L$${QWT3D_PATH}/lib/
+	  INCLUDEPATH += $${QWT3D_PATH}/include
+	}
     contains(DEFINES, WITH_QWT3D) {
       LIBS += -lqwtplot3d
     }
+    
   }
 
 }
