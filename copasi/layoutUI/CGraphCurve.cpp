@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/02/08 11:47:09 $
+//   $Author: ssahle $
+//   $Date: 2008/09/17 14:23:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,9 +44,9 @@ CGraphCurve::CGraphCurve(const CGraphCurve & c)
 void CGraphCurve::scale (const double & scaleFactor)
 {
   unsigned int i; // scale all segments
-  for (i = 0;i < mCurveSegments.size();i++)
+  for (i = 0;i < mvCurveSegments.size();i++)
     {
-      mCurveSegments[i].scale(scaleFactor);
+      mvCurveSegments[i].scale(scaleFactor);
     }
 
   if (mHasArrow)
@@ -55,28 +55,28 @@ void CGraphCurve::scale (const double & scaleFactor)
 
 void CGraphCurve::invertOrderOfPoints()
 {
-  //std::cout << " invertOrderOfPoints for " << mCurveSegments.size() << " segments" << std::endl;
+  //std::cout << " invertOrderOfPoints for " << mvCurveSegments.size() << " segments" << std::endl;
   unsigned int i; // invert order of points in each segment
   CLPoint h; // puffer variable
-  for (i = 0;i < mCurveSegments.size();i++)
+  for (i = 0;i < mvCurveSegments.size();i++)
     {
-      h = mCurveSegments[i].getStart();
-      mCurveSegments[i].setStart(mCurveSegments[i].getEnd());
-      mCurveSegments[i].setEnd(h);
-      if (mCurveSegments[i].isBezier())
+      h = mvCurveSegments[i].getStart();
+      mvCurveSegments[i].setStart(mvCurveSegments[i].getEnd());
+      mvCurveSegments[i].setEnd(h);
+      if (mvCurveSegments[i].isBezier())
         {
-          h = mCurveSegments[i].getBase1();
-          mCurveSegments[i].setBase1(mCurveSegments[i].getBase2());
-          mCurveSegments[i].setBase2(h);
+          h = mvCurveSegments[i].getBase1();
+          mvCurveSegments[i].setBase1(mvCurveSegments[i].getBase2());
+          mvCurveSegments[i].setBase2(h);
         }
     }
 
   // now invert order of segments
-  reverse(mCurveSegments.begin(), mCurveSegments.end());
+  reverse(mvCurveSegments.begin(), mvCurveSegments.end());
 
   if (mHasArrow)
     {// exchange line segment and end point
-      CLLineSegment lastSeg = mCurveSegments[mCurveSegments.size() - 1];
+      CLLineSegment lastSeg = mvCurveSegments[mvCurveSegments.size() - 1];
       CLPoint p = lastSeg.getEnd();
       if (lastSeg.isBezier())
         {
