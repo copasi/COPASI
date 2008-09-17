@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/17 09:29:13 $
+//   $Date: 2008/09/17 13:30:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,7 @@ class CNormalTranslation
     /**
      * This method evaluates operators acting on two numbers
      */
-    static CEvaluationNode* evaluateNumbers(const CEvaluationNode* pOrig);
+    static CEvaluationNode* evaluateNumbers(CEvaluationNode* pOrig);
 
     /**
      * Neutral element for an addition chain.
