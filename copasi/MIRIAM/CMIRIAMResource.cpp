@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:29:42 $
+//   $Author: shoops $
+//   $Date: 2008/09/17 18:55:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,9 +111,9 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
           pMIRIAMResource = new CMIRIAMResource(pName, NULL);
 
           if ((pProxy->getDataTypeURI(NULL, &*pName, *&pURI) == SOAP_OK)
-               && (pProxy->getDataTypeURLs(&*pName, *pDataTypeURLs) == SOAP_OK)
-               && (pProxy->getDataTypePattern(&*pName, *&pPattern) == SOAP_OK)
-               && (pProxy->checkRegExp(&*pName, NULL, *&pRegExp) == SOAP_OK))
+              && (pProxy->getDataTypeURLs(&*pName, *pDataTypeURLs) == SOAP_OK)
+              && (pProxy->getDataTypePattern(&*pName, *&pPattern) == SOAP_OK)
+              && (pProxy->checkRegExp(&*pName, NULL, *&pRegExp) == SOAP_OK))
             {
               sizeURLs = pDataTypeURLs->_getDataTypeURLsReturn->__size;
               if (sizeURLs != 0)
@@ -156,10 +156,10 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 
   if (!success)
     {
-      CCopasiMessage::CCopasiMessage Message(CCopasiMessage::ERRoR,
-                                             "Connection to MIRIRAM Web Services failed.\n%s\n%s",
-                                             pProxy->soap_fault_string(),
-                                             pProxy->soap_fault_detail());
+      CCopasiMessage(CCopasiMessage::ERRoR,
+                     "Connection to MIRIRAM Web Services failed.\n%s\n%s",
+                     pProxy->soap_fault_string(),
+                     pProxy->soap_fault_detail());
     }
   else
     {

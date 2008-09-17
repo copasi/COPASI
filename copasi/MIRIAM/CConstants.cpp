@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:27:36 $
+//   $Author: shoops $
+//   $Date: 2008/09/17 18:55:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #include "commandline/CConfigurationFile.h"
 
 //static
-CMIRIAMResources::CMIRIAMResources const *CMIRIAMResourceObject::mpResources = NULL;
+const CMIRIAMResources * CMIRIAMResourceObject::mpResources = NULL;
 
 unsigned C_INT32 CMIRIAMResourceObject::getResource(const std::string & URI)
 {return mpResources->getMIRIAMResourceIndex(URI);}
