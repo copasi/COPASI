@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/24 21:54:48 $
+//   $Date: 2008/09/17 09:29:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1772,7 +1772,7 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
  */
 std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::matchPowerBases(const std::vector<const CEvaluationNode*>& multiplications, const std::vector<const CEvaluationNode*>& divisions)
 {
-  std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > > matchMap;
+  std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > > matchMap;
   std::vector<const CEvaluationNode*>::const_iterator vit = multiplications.begin(), vendit = multiplications.end();
   while (vit != vendit)
     {
@@ -1790,31 +1790,28 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       // check if a base with the same infix is already in the map.
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
-      std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
+      std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
+      CNormalFraction* pBase2 = createNormalRepresentation(pBase);
+      std::string base2String = pBase2->toString();
+      delete pBase2;
       while (mapIt != mapEndit)
         {
-          CNormalFraction* base1 = createNormalRepresentation(mapIt->first);
-          CNormalFraction* base2 = createNormalRepresentation(pBase);
-          if (base1->toString() == base2->toString())
+          if (mapIt->first.second == base2String)
             {
               mapIt->second.push_back(pExponent);
-              delete base1;
-              delete base2;
               break;
             }
-          delete base1;
-          delete base2;
           ++mapIt;
         }
       if (mapIt == mapEndit)
         {
           std::vector<CEvaluationNode*> v;
           v.push_back(pExponent);
-          matchMap.push_back(std::make_pair(pBase, v));
+          matchMap.push_back(std::make_pair(std::pair<const CEvaluationNode*, std::string>(pBase, base2String), v));
         }
       ++vit;
     }
-  std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > > matchMap2;
+  std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > > matchMap2;
   vit = divisions.begin(), vendit = divisions.end();
   while (vit != vendit)
     {
@@ -1832,38 +1829,35 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       // check if a base with the same infix is already in the map.
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
-      std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
+      std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
+      CNormalFraction* pBase2 = createNormalRepresentation(pBase);
+      std::string base2String = pBase2->toString();
+      delete pBase2;
       while (mapIt != mapEndit)
         {
-          CNormalFraction* base1 = createNormalRepresentation(mapIt->first);
-          CNormalFraction* base2 = createNormalRepresentation(pBase);
-          if (base1->toString() == base2->toString())
+          if (mapIt->first.second == base2String)
             {
               mapIt->second.push_back(pExponent);
-              delete base1;
-              delete base2;
               break;
             }
-          delete base1;
-          delete base2;
           ++mapIt;
         }
       if (mapIt == mapEndit)
         {
           std::vector<CEvaluationNode*> v;
           v.push_back(pExponent);
-          matchMap2.push_back(std::make_pair(pBase, v));
+          matchMap2.push_back(std::make_pair(std::pair<const CEvaluationNode*, std::string>(pBase, base2String), v));
         }
       ++vit;
     }
   // now combine the two maps
-  std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > result;
-  std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
+  std::vector<std::pair<CEvaluationNode*, std::pair<CEvaluationNode*, std::string> > > result;
+  std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
   while (mapIt != mapEndit)
     {
       CEvaluationNode* pNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, mapIt->second);
       assert(pNode != NULL);
-      result.push_back(std::make_pair(pNode, mapIt->first->copyBranch()));
+      result.push_back(std::make_pair(pNode, std::pair<CEvaluationNode*, std::string>(mapIt->first.first->copyBranch(), mapIt->first.second)));
       ++mapIt;
     }
   mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
@@ -1877,20 +1871,14 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       unsigned int i, iMax = result.size();
       for (i = 0;i < iMax;++i)
         {
-          CNormalFraction* base1 = createNormalRepresentation(result[i].second);
-          CNormalFraction* base2 = createNormalRepresentation(mapIt->first);
-          if (base1->toString() == base2->toString())
+          if (result[i].second.second == mapIt->first.second)
             {
               CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
               pTmpNode->addChild(result[i].first);
               pTmpNode->addChild(pNode);
               result[i] = std::make_pair(pTmpNode, result[i].second);
-              delete base1;
-              delete base2;
               break;
             }
-          delete base1;
-          delete base2;
         }
       if (i == iMax)
         {
@@ -1901,14 +1889,14 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
               os << static_cast<CEvaluationNodeNumber*>(pNode)->value() * -1.0;
               CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
               delete pNode;
-              result.push_back(std::make_pair(pTmpNumber, mapIt->first->copyBranch()));
+              result.push_back(std::make_pair(pTmpNumber, std::pair<CEvaluationNode*, std::string>(mapIt->first.first->copyBranch(), mapIt->first.second)));
             }
           else
             {
               CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
               pTmpNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
               pTmpNode->addChild(pNode);
-              result.push_back(std::make_pair(pTmpNode, mapIt->first->copyBranch()));
+              result.push_back(std::make_pair(pTmpNode, std::pair<CEvaluationNode*, std::string>(mapIt->first.first->copyBranch(), mapIt->first.second)));
             }
         }
       // delete the obsolete nodes
@@ -1919,7 +1907,17 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
         }
       ++mapIt;
     }
-  return result;
+  // copy the result vector into the return data structure
+  std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > tmp;
+  unsigned int i, iMax = result.size();
+  // since we know how many elements will end up in tmp, we can already reserve
+  // the space
+  tmp.reserve(iMax);
+  for (i = 0;i < iMax;++i)
+    {
+      tmp.push_back(std::pair<CEvaluationNode*, CEvaluationNode*>(result[i].first, result[i].second.first));
+    }
+  return tmp;
 }
 
 /**
@@ -1934,7 +1932,8 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
   // consider only those multiplication chains the contain a number node and
   // something else, everything else is ambiguous anyway and depends on
   // the order of the nodes in the chain
-  std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > > matchMap;
+  std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > > matchMap;
+
   std::vector<CEvaluationNode*>::const_iterator vit = additions.begin(), vendit = additions.end();
   while (vit != vendit)
     {
@@ -1969,31 +1968,28 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       // check if a node with the same infix is already in the map.
       // if not, add the base
       // if yes, add the exponent to the vector associated with the base
-      std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
+      CNormalFraction* pBase2 = createNormalRepresentation(pNode);
+      std::string base2String = pBase2->toString();
+      std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
       while (mapIt != mapEndit)
         {
-          CNormalFraction* base1 = createNormalRepresentation(mapIt->first);
-          CNormalFraction* base2 = createNormalRepresentation(pNode);
-          if (base1->toString() == base2->toString())
+          if (mapIt->first.second == base2String)
             {
               mapIt->second.push_back(pFactor);
-              delete base1;
-              delete base2;
               break;
             }
-          delete base1;
-          delete base2;
           ++mapIt;
         }
+      delete pBase2;
       if (mapIt == mapEndit)
         {
           std::vector<CEvaluationNode*> v;
           v.push_back(pFactor);
-          matchMap.push_back(std::make_pair(pNode, v));
+          matchMap.push_back(std::make_pair(std::pair<const CEvaluationNode*, std::string>(pNode, base2String), v));
         }
       ++vit;
     }
-  std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > > matchMap2;
+  std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > > matchMap2;
   vit = subtractions.begin(), vendit = subtractions.end();
   while (vit != vendit)
     {
@@ -2028,39 +2024,35 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       // check if a node with the same infix is already in the map.
       // if not, add the node
       // if yes, add the 1 to the vector associated with the base
-      std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
+      std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
+      CNormalFraction* pBase2 = createNormalRepresentation(pNode);
+      std::string base2String = pBase2->toString();
       while (mapIt != mapEndit)
         {
-          CNormalFraction* base1 = createNormalRepresentation(mapIt->first);
-          CNormalFraction* base2 = createNormalRepresentation(pNode);
-          if (base1->toString() == base2->toString())
+          if (mapIt->first.second == base2String)
             {
               mapIt->second.push_back(pFactor);
-              delete base1;
-              delete base2;
               break;
             }
-          delete base1;
-          delete base2;
           ++mapIt;
         }
+      delete pBase2;
       if (mapIt == mapEndit)
         {
           std::vector<CEvaluationNode*> v;
           v.push_back(pFactor);
-          matchMap2.push_back(std::make_pair(pNode, v));
+          matchMap2.push_back(std::make_pair(std::pair<const CEvaluationNode*, std::string>(pNode, base2String), v));
         }
       ++vit;
     }
   // now combine the two maps
-  std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > result;
-  std::vector<std::pair<const CEvaluationNode*, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
+  std::vector<std::pair<CEvaluationNode*, std::pair<CEvaluationNode*, std::string> > > result;
+  std::vector<std::pair<std::pair<const CEvaluationNode*, std::string>, std::vector<CEvaluationNode*> > >::iterator mapIt = matchMap.begin(), mapEndit = matchMap.end();
   while (mapIt != mapEndit)
     {
       CEvaluationNode* pNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, mapIt->second);
       assert(pNode != NULL);
-      result.push_back(std::make_pair(pNode, mapIt->first->copyBranch()));
-      // delete the obsolete nodes
+      result.push_back(std::make_pair(pNode, std::pair<CEvaluationNode*, std::string>(mapIt->first.first->copyBranch(), mapIt->first.second)));
       ++mapIt;
     }
   mapIt = matchMap2.begin(), mapEndit = matchMap2.end();
@@ -2074,20 +2066,14 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       unsigned int i, iMax = result.size();
       for (i = 0;i < iMax;++i)
         {
-          CNormalFraction* base1 = createNormalRepresentation(result[i].second);
-          CNormalFraction* base2 = createNormalRepresentation(mapIt->first);
-          if (base1->toString() == base2->toString())
+          if (result[i].second.second == mapIt->first.second)
             {
               CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
               pTmpNode->addChild(result[i].first);
               pTmpNode->addChild(pNode);
               result[i] = std::make_pair(pTmpNode, result[i].second);
-              delete base1;
-              delete base2;
               break;
             }
-          delete base1;
-          delete base2;
         }
       if (i == iMax)
         {
@@ -2106,7 +2092,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
               pTmpNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0"));
               pTmpNode->addChild(pNode);
             }
-          result.push_back(std::make_pair(pTmpNode, mapIt->first->copyBranch()));
+          result.push_back(std::make_pair(pTmpNode, std::pair<CEvaluationNode*, std::string>(mapIt->first.first->copyBranch(), mapIt->first.second)));
         }
       // delete the obsolete nodes
       iMax = mapIt->second.size();
@@ -2116,7 +2102,17 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
         }
       ++mapIt;
     }
-  return result;
+  std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > tmp;
+  // copy the result vector into the expected return data type
+  unsigned int i, iMax = result.size();
+  // since we know how many item will end up in the vector we can already
+  // reserve the space
+  tmp.reserve(iMax);
+  for (i = 0;i < iMax;++i)
+    {
+      tmp.push_back(std::pair<CEvaluationNode*, CEvaluationNode*>(result[i].first, result[i].second.first));
+    }
+  return tmp;
 }
 
 /**

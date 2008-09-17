@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/24 21:54:48 $
+//   $Date: 2008/09/17 09:29:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,6 +119,11 @@ class CNormalTranslation
      * This method expands products. (A+B)*(C+D) -> (A*C)+(A*D)+(B*C)+(B*D)
      */
     static CEvaluationNode* expandProducts(const CEvaluationNode* pOrig);
+
+    /**
+     * This method splits a product into the individual elements
+     */
+    static void splitProduct(CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& multiplications, std::vector<CEvaluationNode*>& divisions, bool division);
 
     /**
      * This method splits a product into the individual elements
