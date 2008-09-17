@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/16 22:29:58 $
+//   $Date: 2008/09/17 14:22:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,6 +119,9 @@ void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g, const std::m
 
     //call the coresponding method of the base class
     CLGraphicalObject::exportToSBML(g, copasimodelmap);
+
+    //curve
+    mCurve.exportToSBML(g->getCurve(), copasimodelmap);
   }
 
 std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
@@ -216,6 +219,9 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g, const std::map<CCopasiObje
 
     //call the coresponding method of the base class
     CLGraphicalObject::exportToSBML(g, copasimodelmap);
+
+    //curve
+    mCurve.exportToSBML(g->getCurve(), copasimodelmap);
 
     //Metab reference  glyphs
     unsigned C_INT32 i, imax = mvMetabReferences.size();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/01 13:46:18 $
+//   $Date: 2008/09/17 14:23:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,26 @@ CLLineSegment::CLLineSegment(const LineSegment & ls)
     }
 }
 
+void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!c) return;
+
+    //first the part that is inherited from line segment
+    exportToSBMLLineSegment(c, copasimodelmap);
+
+    //now the rest
+    c->setBasePoint1(this->getBase1().getX(), this->getBase1().getY());
+    c->setBasePoint2(this->getBase2().getX(), this->getBase2().getY());
+  }
+
+void CLLineSegment::exportToSBMLLineSegment(LineSegment * l, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!l) return;
+
+    l->setStart(this->getStart().getX(), this->getStart().getY());
+    l->setEnd(this->getEnd().getX(), this->getEnd().getY());
+  }
+
 std::ostream & operator<<(std::ostream &os, const CLLineSegment & ls)
 {
   os << "[" << ls.mStart << "->" << ls.mEnd << "]";
@@ -52,12 +72,12 @@ std::ostream & operator<<(std::ostream &os, const CLLineSegment & ls)
 
 CLCurve::CLCurve(const CLCurve & c)
     : CLBase(c),
-    mCurveSegments(c.mCurveSegments)
+    mvCurveSegments(c.mvCurveSegments)
 {}
 
 CLCurve::CLCurve(const Curve & sbmlcurve)
     : CLBase(sbmlcurve),
-    mCurveSegments()
+    mvCurveSegments()
 {
   //TODO
   C_INT32 i, imax = sbmlcurve.getListOfCurveSegments()->size();
@@ -66,7 +86,7 @@ CLCurve::CLCurve(const Curve & sbmlcurve)
       const LineSegment* tmp
       = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments()->get(i));
       if (tmp)
-        mCurveSegments.push_back(CLLineSegment(*tmp));
+        mvCurveSegments.push_back(CLLineSegment(*tmp));
       //addCurveSegment(CLLineSegment(*tmp));
     }
 }
@@ -76,27 +96,27 @@ CLCurve::~CLCurve()
 
 void CLCurve::addCurveSegment(CLLineSegment & ls)
 {
-  mCurveSegments.push_back(ls);
+  mvCurveSegments.push_back(ls);
 }
 
 void CLCurve::addCurveSegment(CLLineSegment * pLs)
 {
   if (pLs)
-    mCurveSegments.push_back(*pLs);
+    mvCurveSegments.push_back(*pLs);
 }
 
 void CLCurve::clear()
 {
-  mCurveSegments.clear();
+  mvCurveSegments.clear();
 }
 
 bool CLCurve::isContinuous() const
   {
-    if (mCurveSegments.size() <= 1) return true;
+    if (mvCurveSegments.size() <= 1) return true;
 
-    C_INT32 i, imax = mCurveSegments.size() - 1;
+    C_INT32 i, imax = mvCurveSegments.size() - 1;
     for (i = 0; i < imax; ++i)
-      if (!(mCurveSegments[i].getEnd() == mCurveSegments[i + 1].getStart()))
+      if (!(mvCurveSegments[i].getEnd() == mvCurveSegments[i + 1].getStart()))
         return false;
     return true;
   }
@@ -104,15 +124,38 @@ bool CLCurve::isContinuous() const
 std::vector <CLPoint> CLCurve::getListOfPoints() const
   {
     std::vector <CLPoint> ret;
-    if (mCurveSegments.size() == 0) return ret;
+    if (mvCurveSegments.size() == 0) return ret;
     if (!isContinuous()) return ret;
 
-    C_INT32 i, imax = mCurveSegments.size();
+    C_INT32 i, imax = mvCurveSegments.size();
     for (i = 0; i < imax; ++i)
-      ret.push_back(mCurveSegments[i].getStart());
-    ret.push_back(mCurveSegments[i - 1].getEnd());
+      ret.push_back(mvCurveSegments[i].getStart());
+    ret.push_back(mvCurveSegments[i - 1].getEnd());
 
     return ret;
+  }
+
+void CLCurve::exportToSBML(Curve * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+  {
+    if (!c) return;
+
+    //we will reconstruct the curve completely without checking the existing curve
+    unsigned C_INT32 i, imax = c->getListOfCurveSegments()->size();
+    for (i = 0; i < imax; ++i) delete c->getListOfCurveSegments()->remove(0);
+
+    //curve segments
+    imax = mvCurveSegments.size();
+    for (i = 0; i < imax; ++i)
+      {
+        if (mvCurveSegments[i].isBezier())
+          {
+            mvCurveSegments[i].exportToSBMLBezier(c->createCubicBezier(), copasimodelmap);
+          }
+        else
+          {
+            mvCurveSegments[i].exportToSBMLLineSegment(c->createLineSegment(), copasimodelmap);
+          }
+      }
   }
 
 std::ostream & operator<<(std::ostream &os, const CLCurve & c)

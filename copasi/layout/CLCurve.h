@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2007/09/20 17:51:16 $
+//   $Author: ssahle $
+//   $Date: 2008/09/17 14:23:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,11 +19,16 @@
 #define CLCURVE_H_
 
 #include <vector>
+#include <map>
+//#include "report/CCopasiContainer.h"
 
 #include "CLBase.h"
 
+class CCopasiObject;
 class LineSegment;
 class Curve;
+class CubicBezier;
+class LineSegment;
 
 /**
  * This class describes a line segment.
@@ -95,6 +105,21 @@ class CLLineSegment : public CLBase
       mStart.scale(scaleFactor);mEnd.scale(scaleFactor);
       if (mIsBezier) {mBase1.scale(scaleFactor);mBase2.scale(scaleFactor);}
     }
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object. This is only guaranteed to work if
+     * isBezier() is true.
+     */
+    void exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object. This is only guaranteed to work if
+     * isBezier() is false.
+     */
+    void exportToSBMLLineSegment(LineSegment * l, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+
     /**
       * insert operator
       */
@@ -105,12 +130,12 @@ class CLCurve : public CLBase
   {
   protected:
 
-    std::vector<CLLineSegment> mCurveSegments;
+    std::vector<CLLineSegment> mvCurveSegments;
 
   public:
 
     CLCurve()
-        : CLBase(), mCurveSegments() {};
+        : CLBase(), mvCurveSegments() {};
 
     /**
      * copy constructor (should make deep copy)
@@ -124,15 +149,15 @@ class CLCurve : public CLBase
 
     ~CLCurve();
 
-    const std::vector<CLLineSegment> & getCurveSegments() const {return mCurveSegments;};
+    const std::vector<CLLineSegment> & getCurveSegments() const {return mvCurveSegments;};
 
     CLLineSegment* getSegmentAt(C_INT32 i)
     {
-      if ((i >= 0) && ((unsigned C_INT32)i < mCurveSegments.size()))return &(mCurveSegments[i]);
+      if ((i >= 0) && ((unsigned C_INT32)i < mvCurveSegments.size()))return &(mvCurveSegments[i]);
       else return NULL;
     }
 
-  C_INT32 getNumCurveSegments() const {return mCurveSegments.size();};
+  C_INT32 getNumCurveSegments() const {return mvCurveSegments.size();};
 
     void clear();
 
@@ -162,9 +187,9 @@ class CLCurve : public CLBase
       {
         bool result = true;
         unsigned int i;
-        for (i = 0;i < mCurveSegments.size();i++)
+        for (i = 0;i < mvCurveSegments.size();i++)
           {
-            result = result && (mCurveSegments[i] == rhs.mCurveSegments[i]);
+            result = result && (mvCurveSegments[i] == rhs.mvCurveSegments[i]);
           }
         return result;
       }
@@ -172,11 +197,18 @@ class CLCurve : public CLBase
     void scale (const double & scaleFactor)
     {
       unsigned int i; // scale all segments
-      for (i = 0;i < mCurveSegments.size();i++)
+      for (i = 0;i < mvCurveSegments.size();i++)
         {
-          mCurveSegments[i].scale(scaleFactor);
+          mvCurveSegments[i].scale(scaleFactor);
         }
     }
+
+    /**
+     * This method writes the information of the copasi layout object into the
+     * corresponding sbml object
+     */
+    void exportToSBML(Curve * c, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+
     /**
       * insert operator
       */
