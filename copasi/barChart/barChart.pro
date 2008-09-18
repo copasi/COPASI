@@ -1,21 +1,27 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/barChart.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
-#   $Author: akoenig $ 
-#   $Date: 2007/11/12 17:01:06 $ 
+#   $Author: gauges $ 
+#   $Date: 2008/09/18 07:22:27 $ 
 # End CVS Header 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 LIB = barChart
 
+
 include(../lib.pri)
+CONFIG += qt 
 include(../common.pri)
 
-CONFIG += qt 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 INCLUDEPATH += $${QWT3D_PATH}/include
