@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/17 13:30:05 $
+//   $Date: 2008/09/18 11:10:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,7 +94,7 @@ class CNormalTranslation
     static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes);
 
     /**
-     * Given a root node, this method traverses the tree and expands produtcs in
+     * Given a root node, this method traverses the tree and expands products in
      * power bases to multiplications of power items.
      * It is the responsibility of the caller to delete the returned node.
      */
@@ -131,9 +131,16 @@ class CNormalTranslation
     static void splitProduct(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& multiplications, std::vector<const CEvaluationNode*>& divisions, bool division);
 
     /**
-     * This method splits a sum into the individual elements
+     * This method splits a sum into the individual elements.
+     * The returned nodes are copies of the original.
      */
     static void splitSum(const CEvaluationNode* pRoot, std::vector<CEvaluationNode*>& additions, std::vector<CEvaluationNode*>& substractions, bool minus);
+
+    /**
+     * This method splits a sum into the individual elements.
+     * The returned nodes are part of the original node and not copies.
+     */
+    static void splitSum(const CEvaluationNode* pRoot, std::vector<const CEvaluationNode*>& additions, std::vector<const CEvaluationNode*>& substractions, bool minus);
 
     /**
      * This method evaluates operators acting on two numbers
@@ -181,6 +188,12 @@ class CNormalTranslation
     static const CEvaluationNode TIMES_NODE;
 
   protected:
+    /**
+     * This routine moves all negative numbers from vector v1 to v2
+     * and changes the number to a positive number.
+     */
+    static void swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, std::vector<CEvaluationNode*>& v2);
+
     /**
      * This routine is responsible for recursively simplifying a given
      * CEvaluationNode based tree.
