@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.212 $
+//   $Revision: 1.213 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:08 $
+//   $Author: gauges $
+//   $Date: 2008/09/18 12:22:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4051,7 +4051,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
       // not found
       if (it == endit)
         {
-          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 74, name.c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 74, name.c_str());
         }
     }
   else
