@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/17 13:30:05 $
+//   $Date: 2008/09/18 07:47:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1068,7 +1068,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(CEvaluationNode* pOrig)
       switch ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrig->getType()))
         {
         case CEvaluationNodeOperator::POWER:
-          if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER && CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
+          if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER && CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
             {
               std::ostringstream os;
               const CEvaluationNodeNumber* pNumberNode1 = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
@@ -1086,7 +1086,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(CEvaluationNode* pOrig)
               const CEvaluationNodeNumber* pNumberNode1 = dynamic_cast<const CEvaluationNodeNumber*>(pChild1);
               assert(pNumberNode1 != NULL);
               const CEvaluationNodeNumber* pNumberNode2 = dynamic_cast<const CEvaluationNodeNumber*>(pChild2);
-              assert(pNumberNode1 != NULL);
+              assert(pNumberNode2 != NULL);
               os << ((int)pNumberNode1->value()) % ((int)pNumberNode2->value());
               pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
             }
