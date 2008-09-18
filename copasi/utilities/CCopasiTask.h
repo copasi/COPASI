@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/03 12:46:44 $
+//   $Author: gauges $
+//   $Date: 2008/09/18 12:16:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,7 @@ class CCopasiTask : public CCopasiContainer
       FINISH = 0x04,
       REPORT = 0x10,
       PLOT = 0x20,
-      TIME_SERIES = 0x40,
+      TIME_SERIES = 0x40
     };
 
     enum OutputFlag
