@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/05 13:59:55 $
+//   $Date: 2008/09/18 12:29:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,7 @@ class CCopasiVectorInterface: public CCopasiAbstractArray
     const index_type & size() const
       {
         //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-        /*tmp->*/mSizes[0] =      mVector->size();
+        /*tmp->*/mSizes[0] =       mVector->size();
         return mSizes;
       }
 
@@ -351,6 +351,17 @@ class CArrayAnnotation: public CCopasiContainer
      * adjust the dimensionality and size to that of the array
      */
     void resize();
+
+    /**
+     * an object that will act as a reference to one element of an array
+     * will be created and inserted as a child of the array annotation
+     */
+    CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index);
+
+    /**
+     * a convenience function for 2-dimensional arrays.
+     */
+    CCopasiObject* addElementReference(C_INT32 u, C_INT32 v);
 
   private:
     /**
