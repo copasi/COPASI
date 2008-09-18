@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:23:39 $
+//   $Author: aekamal $
+//   $Date: 2008/09/18 23:15:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,7 @@ class CopasiUI3Window : public QMainWindow
 
   protected slots:
     void slotFileOpen(QString file = QString::null);
+    void slotFileExamples(QString file = QString::null);
     bool slotFileSave();
     bool slotFileSaveAs(QString str = QString::null);
     void newDoc();
@@ -132,6 +133,7 @@ class CopasiUI3Window : public QMainWindow
 
     QAction* mpaNew;
     QAction* mpaOpen;
+    QAction* mpaExamples;
     QAction* mpaSave;
     QAction* mpaSaveAs;
     QAction* mpaImportSBML;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.231 $
+//   $Revision: 1.232 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:23:39 $
+//   $Author: aekamal $
+//   $Date: 2008/09/18 23:15:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -298,6 +298,9 @@ void CopasiUI3Window::createActions()
   mpaOpen = new QAction(QPixmap(fileopen), "&Open...", CTRL + Key_O, this, "open");
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
 
+  mpaExamples = new QAction(QPixmap(fileopen), "Exa&mples...", CTRL + Key_M, this, "examples");
+  connect(mpaExamples, SIGNAL(activated()), this, SLOT(slotFileExamples()));
+
   mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
 
@@ -397,27 +400,31 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Open</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[2] = "<p>Click this button to save the file you "
+  toolTip[2] = "Click this button to open a <em>file</em>. <br>"
+               "You can also select the <b>Open</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[3] = "<p>Click this button to save the file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Save</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[3] = "<p>Click this button to save the file you are editing "
+  toolTip[4] = "<p>Click this button to save the file you are editing "
                "under a new name. You will be prompted for a file name.\n"
                "You can also select the <b>Save As</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[4] = "<p>Click this button to import a SBML file you "
+  toolTip[5] = "<p>Click this button to import a SBML file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Import SBML</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[5] = "<p>Click this button to export a SBML file you "
+  toolTip[6] = "<p>Click this button to export a SBML file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Export SBML</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[6] = "<p>Click this button to export the ODEs of the Mathematical Model. "
+  toolTip[7] = "<p>Click this button to export the ODEs of the Mathematical Model. "
                "You will be prompted for a file name.\n"
                "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
@@ -427,6 +434,7 @@ void CopasiUI3Window::createMenuBar()
 
   mpaNew->addTo(pFileMenu);
   mpaOpen->addTo(pFileMenu);
+  mpaExamples->addTo(pFileMenu);
   mpaSave->addTo(pFileMenu);
   mpaSaveAs->addTo(pFileMenu);
 
@@ -745,6 +753,38 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       refreshRecentFileMenu();
     }
+}
+
+/***************CopasiUI3Window::slotFileExamples()******
+ **
+ ** Parameters:- QString file. Example file.
+ ** Returns  :- void
+ ** Descripton:- This method is called when the users clicks on Open
+ **              option in the menu File
+ *******************************************************************************************/
+void CopasiUI3Window::slotFileExamples(QString file)
+{
+  if (file == "")
+    {
+      std::string ExampleDir = "";
+      COptions::getValue("ExampleDir", ExampleDir);
+
+      if (CDirEntry::isDir(ExampleDir))
+        {
+          file = QFileDialog::getOpenFileName(FROM_UTF8(ExampleDir),
+                                              "COPASI Files (*.gps *.cps);;All Files (*.*);;",
+                                              this,
+                                              "Examples File Dialog",
+                                              "Choose a file");
+        }
+      else
+        {
+          CQMessageBox::information(this, "Directory Not Found", FROM_UTF8(ExampleDir),
+                                    QMessageBox::Ok, 0);
+        }
+    }
+  if (file)
+  {slotFileOpen(file);}
 }
 
 /***************CopasiUI3Window::slotFileSave()*****************
