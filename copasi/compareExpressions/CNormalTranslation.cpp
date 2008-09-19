@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/18 11:10:10 $
+//   $Date: 2008/09/19 19:07:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1295,7 +1295,7 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(CEvaluationNode* pOrig)
                 endit2 = subtractions.end();
                 while (it2 != endit2)
                   {
-                    // if the node is not in additionNumberNodes, we copy
+                    // if the node is not in subtractionNumberNodes, we copy
                     // it
                     it = subtractionNumberNodes.find(*it2);
                     if (it == subtractionNumberNodes.end())
@@ -1349,6 +1349,20 @@ CEvaluationNode* CNormalTranslation::evaluateNumbers(CEvaluationNode* pOrig)
                         pTmpNode = CNormalTranslation::createChain(&CNormalTranslation::PLUS_NODE, &CNormalTranslation::ZERO_NODE, newSubtractions);
                         pResult->addChild(pTmpNode);
                       }
+                  }
+              }
+            else
+              {
+                // delete all nodes in additions and subtractions
+                unsigned int i, iMax = additions.size();
+                for (i = 0;i < iMax;++i)
+                  {
+                    delete additions[i];
+                  }
+                iMax = subtractions.size();
+                for (i = 0;i < iMax;++i)
+                  {
+                    delete subtractions[i];
                   }
               }
           }
@@ -1851,150 +1865,6 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<cons
     {
       additions.push_back(pRoot);
     }
-  // check for negative numbers in additions and add them to subtractions
-  // likewise check for negative numbers in substractions and add them to
-  // additions
-  // do the same for multiplications with a negative number
-  /*
-  std::vector<const CEvaluationNode*>::iterator it = additions.begin(),endit=additions.end();
-  while (it != endit)
-    {
-      if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER && (*it)->value() < 0.0)
-        {
-          std::ostringstream os;
-          os.precision(18);
-          os << (*it)->value() * -1.0;
-          CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-          subtractions.push_back(pTmpNumber);
-          delete *it;
-          it = additions.erase(it);
-        }
-      else if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeOperator::MULTIPLY)
-        {
-          // actually there should be code that tests if both are negative
-          // numbers
-          if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() < 0.0))
-            {
-              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value()) - 1.0 < ZERO)
-                {
-                  subtractions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  delete *it;
-                  it = additions.erase(it);
-                }
-              else
-                {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  subtractions.push_back(pTmp);
-                  delete *it;
-                  it = additions.erase(it);
-                }
-            }
-          else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() < 0.0)
-            {
-              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value()) - 1.0 < ZERO)
-                {
-                  subtractions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  delete *it;
-                  it = additions.erase(it);
-                }
-              else
-                {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  subtractions.push_back(pTmp);
-                  delete *it;
-                  it = additions.erase(it);
-                }
-            }
-          else
-            {
-              ++it;
-            }
-        }
-      else
-        {
-          ++it;
-        }
-    }
-  it = subtractions.begin();
-  while (it != subtractions.end())
-    {
-      if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>(*it)->value() < 0.0)
-        {
-          std::ostringstream os;
-          os.precision(18);
-          os << static_cast<CEvaluationNodeNumber*>(*it)->value() * -1.0;
-          CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
-          additions.push_back(pTmpNumber);
-          delete *it;
-          it = subtractions.erase(it);
-        }
-      else if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeOperator::MULTIPLY)
-        {
-          // actually there should be code that tests if both are negative
-          // numbers
-          if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() < 0.0))
-            {
-              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value()) - 1.0 < ZERO)
-                {
-                  additions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  delete *it;
-                  it = subtractions.erase(it);
-                }
-              else
-                {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
-                  additions.push_back(pTmp);
-                  delete *it;
-                  it = subtractions.erase(it);
-                }
-            }
-          else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() < 0.0)
-            {
-              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value()) - 1.0 < ZERO)
-                {
-                  additions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  delete *it;
-                  it = subtractions.erase(it);
-                }
-              else
-                {
-                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
-                  std::ostringstream os;
-                  os.precision(18);
-                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() * -1.0;
-                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
-                  additions.push_back(pTmp);
-                  delete *it;
-                  it = subtractions.erase(it);
-                }
-            }
-          else
-            {
-              ++it;
-            }
-        }
-      else
-        {
-          ++it;
-        }
-    }
-  */
 }
 
 /**
@@ -2016,6 +1886,179 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
   for (i = 0;i < iMax;++i)
     {
       subtractions.push_back(tmpSubtractions[i]->copyBranch());
+    }
+
+  // TODO the code below was part of the old splitSum method that has largely
+  // TODO been replaced by the new method that doesn't copy the nodes and is
+  // TODO therefor faster
+  // TODO If this code below is removed, the expression comparison for ordered
+  // TODO bi bi goes into an endless loop, so I know there is still a bug somewhere
+  // TODO in another routine which has to be fixed.
+  // TODO actually the code below should be obsolete since swapNegativeNumbers
+  // does this now.
+
+  // check for negative numbers in additions and add them to subtractions
+  // likewise check for negative numbers in substractions and add them to
+  // additions
+  // do the same for multiplications with a negative number
+  std::vector<CEvaluationNode*>::iterator it = additions.begin(), endit = additions.end();
+  while (it != endit)
+    {
+      if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER && (*it)->value() < 0.0)
+        {
+          std::ostringstream os;
+          os.precision(18);
+          os << (*it)->value() * -1.0;
+          CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
+          subtractions.push_back(pTmpNumber);
+          delete *it;
+          it = additions.erase(it);
+          endit = additions.end();
+          continue;
+        }
+      else if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeOperator::MULTIPLY)
+        {
+          // actually there should be code that tests if both are negative
+          // numbers
+          if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() < 0.0))
+            {
+              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value()) - 1.0 < ZERO)
+                {
+                  subtractions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
+                  delete *it;
+                  it = additions.erase(it);
+                  endit = additions.end();
+                  continue;
+                }
+              else
+                {
+                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                  std::ostringstream os;
+                  os.precision(18);
+                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() * -1.0;
+                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
+                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
+                  subtractions.push_back(pTmp);
+                  delete *it;
+                  it = additions.erase(it);
+                  endit = additions.end();
+                  continue;
+                }
+            }
+          else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() < 0.0)
+            {
+              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value()) - 1.0 < ZERO)
+                {
+                  subtractions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
+                  delete *it;
+                  it = additions.erase(it);
+                  endit = additions.end();
+                  continue;
+                }
+              else
+                {
+                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
+                  std::ostringstream os;
+                  os.precision(18);
+                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() * -1.0;
+                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
+                  subtractions.push_back(pTmp);
+                  delete *it;
+                  it = additions.erase(it);
+                  endit = additions.end();
+                  continue;
+                }
+            }
+          else
+            {
+              ++it;
+            }
+        }
+      else
+        {
+          ++it;
+        }
+    }
+  it = subtractions.begin();
+  endit = subtractions.end();
+  while (it != endit)
+    {
+      if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>(*it)->value() < 0.0)
+        {
+          std::ostringstream os;
+          os.precision(18);
+          os << (*it)->value() * -1.0;
+          CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str());
+          additions.push_back(pTmpNumber);
+          delete *it;
+          it = subtractions.erase(it);
+          endit = subtractions.end();
+          continue;
+        }
+      else if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeOperator::MULTIPLY)
+        {
+          // actually there should be code that tests if both are negative
+          // numbers
+          if ((CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() < 0.0))
+            {
+              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value()) - 1.0 < ZERO)
+                {
+                  additions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
+                  delete *it;
+                  it = subtractions.erase(it);
+                  endit = subtractions.end();
+                  continue;
+                }
+              else
+                {
+                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                  std::ostringstream os;
+                  os.precision(18);
+                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild())->value() * -1.0;
+                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
+                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->copyBranch());
+                  additions.push_back(pTmp);
+                  delete *it;
+                  it = subtractions.erase(it);
+                  endit = subtractions.end();
+                  continue;
+                }
+            }
+          else if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>((*it)->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER && dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() < 0.0)
+            {
+              if(fabs(dynamic_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value()) - 1.0 < ZERO)
+                {
+                  additions.push_back(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
+                  delete *it;
+                  it = subtractions.erase(it);
+                  endit = subtractions.end();
+                  continue;
+                }
+              else
+                {
+                  CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                  pTmp->addChild(dynamic_cast<const CEvaluationNode*>((*it)->getChild())->copyBranch());
+                  std::ostringstream os;
+                  os.precision(18);
+                  os << static_cast<const CEvaluationNodeNumber*>((*it)->getChild()->getSibling())->value() * -1.0;
+                  pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str().c_str()));
+                  additions.push_back(pTmp);
+                  delete *it;
+                  it = subtractions.erase(it);
+                  endit = subtractions.end();
+                  continue;
+                }
+            }
+          else
+            {
+              ++it;
+            }
+        }
+      else
+        {
+          ++it;
+        }
     }
 }
 
