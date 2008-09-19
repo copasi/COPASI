@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/18 12:29:50 $
+//   $Date: 2008/09/19 12:02:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,10 +297,10 @@ void CArrayAnnotation::resize()
 }
 
 CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index)
-{}
+{return NULL;}
 
 CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
-{}
+{return NULL;}
 
 void CArrayAnnotation::print(std::ostream * ostream) const
   {*ostream << *this;}
