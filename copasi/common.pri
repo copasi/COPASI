@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.86 $ 
+#   $Revision: 1.87 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/09/17 16:38:08 $ 
+#   $Author: gauges $ 
+#   $Date: 2008/09/22 11:20:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.86 $ $Author: shoops $ $Date: 2008/09/17 16:38:08 $  
+# $Revision: 1.87 $ $Author: gauges $ $Date: 2008/09/22 11:20:32 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -56,7 +56,7 @@ debug {
   isEmpty(COPASI_SRC_PACKAGE) {
     # DEFINES += COPASI_TSS
     # DEFINES += COPASI_TSSA
-    # DEFINES += WITH_LAYOUT
+    DEFINES += WITH_LAYOUT
 
     #  stoichiometric stability analysis:
     # DEFINES += COPASI_SSA
@@ -127,7 +127,14 @@ contains(BUILD_OS, Darwin) {
   } else {
     LIBS += -lraptor
   }
-  
+
+  !isEmpty(SBW_PATH){
+    LIBS+=  $${SBW_PATH}/lib/libSBW-static.a
+    INCLUDEPATH += $${SBW_PATH}/include
+    DEFINES += COPASI_SBW_INTEGRATION
+    DEFINES += LINUX DARWIN 
+  } 
+   
   contains(CONFIG, qt) {
   
     !isEmpty(QWT_PATH){
@@ -257,6 +264,14 @@ contains(BUILD_OS, WIN32) {
       debug: LIBS += -lqwtplot3dD
     }
   }
+
+  !isEmpty(SBW_PATH){
+    LIBS+=  $${SBW_PATH}/lib/SBW.lib
+    INCLUDEPATH += $${SBW_PATH}/include
+    DEFINES += COPASI_SBW_INTEGRATION
+    DEFINES += WIN32
+  } 
+
 } 
 
 contains(BUILD_OS, SunOS) {
@@ -332,6 +347,13 @@ contains(STATIC_LINKAGE, yes) {
     QMAKE_LIBS_THREAD -= -lpthread
     QMAKE_LIBS_THREAD -= -lrt
   }
+
+  !isEmpty(SBW_PATH){
+    LIBS+=  $${SBW_PATH}/lib/libSBW-static.a
+    INCLUDEPATH += $${SBW_PATH}/include
+    DEFINES += COPASI_SBW_INTEGRATION
+    DEFINES += LINUX SOLARIS
+  } 
 }
  
 contains(BUILD_OS, Linux) {
@@ -469,6 +491,13 @@ contains(BUILD_OS, Linux) {
     }
     
   }
+
+!isEmpty(SBW_PATH){
+    LIBS+=  $${SBW_PATH}/lib/libSBW-static.a
+    INCLUDEPATH += $${SBW_PATH}/include
+    DEFINES += COPASI_SBW_INTEGRATION
+    DEFINES += LINUX 
+  } 
 
 }
 
