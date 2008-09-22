@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:30 $
+//   $Author: ssahle $
+//   $Date: 2008/09/22 22:15:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,8 +120,13 @@ CCopasiObjectName CCopasiObject::getCN() const
   }
 
 const CCopasiObject *
-CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
-  {return NULL;}
+CCopasiObject::getObject(const CCopasiObjectName & cn) const
+  {
+    if (cn == "")
+      return this;
+    else  //a CCopasiObject has no child objects
+      return NULL;
+  }
 
 bool CCopasiObject::setObjectName(const std::string & name)
 {
@@ -448,6 +453,9 @@ bool CCopasiObject::isValueString() const
 
 bool CCopasiObject::isSeparator() const
   {return (0 < (mObjectFlag & Separator));}
+
+bool CCopasiObject::isArray() const
+  {return (0 < (mObjectFlag & Array));}
 
 const std::string & CCopasiObject::getKey() const
   {

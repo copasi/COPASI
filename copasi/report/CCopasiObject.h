@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/04 07:57:34 $
+//   $Date: 2008/09/22 22:15:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,7 +176,8 @@ class CCopasiObject
       StaticString = 0x200,
       ValueString = 0x400,
       Separator = 0x800,
-      ModelEntity = 0x1000
+      ModelEntity = 0x1000,
+      Array = 0x2000  //the object represents an n-dimensional array
     };
 
   private:
@@ -347,6 +348,7 @@ class CCopasiObject
     bool isStaticString() const;
     bool isValueString() const;
     bool isSeparator() const;
+    bool isArray() const;
 
     virtual void * getValuePointer() const;
 

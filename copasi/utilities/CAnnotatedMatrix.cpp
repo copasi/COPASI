@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/19 12:02:57 $
+//   $Date: 2008/09/22 22:16:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,77 +26,11 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
 
-CCopasiArray::CCopasiArray()
-    : mDim(0) {mData.resize(1);}
-
-CCopasiArray::CCopasiArray(const index_type & sizes)
-{
-  resize(sizes);
-}
-
-void CCopasiArray::resize(const index_type & sizes)
-{
-  mDim = sizes.size();
-  mSizes = sizes;
-  mFactors.resize(mDim);
-
-  unsigned int tmpDataSize = 1;
-  index_type::const_reverse_iterator it, itEnd = sizes.rend();
-  index_type::reverse_iterator itFaktor;
-  for (it = sizes.rbegin(), itFaktor = mFactors.rbegin(); it != itEnd; ++it, ++itFaktor)
-    {
-      *itFaktor = tmpDataSize;
-      tmpDataSize *= *it;
-    }
-  mData.resize(tmpDataSize);
-}
-
-CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & index)
-{
-#ifdef COPASI_DEBUG
-  assert(index.size() == mDim);
-#endif
-
-  unsigned int tmpindex = 0;
-  index_type::const_iterator itIndex, it, itEnd = mFactors.end();
-  for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
-    tmpindex += *itIndex * *it;
-
-  return mData[tmpindex];
-}
-
-const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & index) const
-  {
-#ifdef COPASI_DEBUG
-    assert(index.size() == mDim);
-#endif
-
-    unsigned int tmpindex = 0;
-    index_type::const_iterator itIndex, it, itEnd = mFactors.end();
-    for (itIndex = index.begin(), it = mFactors.begin(); it != itEnd; ++it, ++itIndex)
-      tmpindex += *itIndex * *it;
-
-    return mData[tmpindex];
-  }
-
-//
-//*******************************************************
-
-/*void CCopasiMatrixInterface::resize(const index_type & sizes)
-{
-  assert(sizes.size() == 2);
-  mSizes = sizes;
-  mMatrix->resize(mSizes[0], mSizes[1]);
-}*/
-
-//
-//*******************************************************
-
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array,
                                    const bool & adopt)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */), //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" , CCopasiObject::Array),
     mpArray(array),
     mDestructArray(adopt),
     mDefaultMode(OBJECTS)
@@ -302,8 +236,48 @@ CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index
 CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
 {return NULL;}
 
+const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
+  {
+    std::cout << "CArrayAnnotation::getObject() " << cn << std::endl;
+
+    if (cn == "")
+      {
+        return this;
+      }
+
+    //if there are no indices there could still be other children. This can be handled
+    //by the container base class
+    if (cn.getElementName(0, false) == "") //no indices
+      return this->CCopasiContainer::getObject(cn);
+
+    //now get the array indices. At the moment only numerical indices...
+    C_INT32 ii = 0;
+    CCopasiArray::index_type index;
+    while (cn.getElementName(ii, false) != "")
+      {
+        index.push_back(cn.getElementIndex(ii));
+        ++ii;
+      }
+    if (index.size() != dimensionality())  //wrong number of indices for this array
+      return NULL;
+
+    unsigned C_INT32 i;
+    for (i = 0; i < dimensionality(); ++i)
+      if (index[i] >= size()[i]) //out of range
+        return NULL;
+
+    return new CCopasiObjectReference< CCopasiAbstractArray::data_type >
+    (getObjectName() + cn,
+     this,
+     (*mpArray)[index], CCopasiObject::ValueDbl);
+
+    //TODO remove element children after resize
+    //TODO first look if the element is already existent
+    //TODO check optimization expression widget...
+  }
+
 void CArrayAnnotation::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 #define SPC(level) std::string(level, ' ')
 

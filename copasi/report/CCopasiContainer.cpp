@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:30 $
+//   $Author: ssahle $
+//   $Date: 2008/09/22 22:15:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,6 +181,45 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
           return pObject->getObject(cn.getRemainder());
       }
 
+    //handle objects where the array flag is set. Currently this applies to the
+    //CArrayAnnotation object. Since this is also a container, we have to do this
+    //before handling general containers.
+    if (it->second->isArray())
+      {
+        //we need to call the getObject() method of the child array with the
+        //remainder of the cn, with the indices in square brackets, or with an empty string
+
+        //if there are no indices there could still be a remainder (since the array can also be
+        //a container)
+        if (cn.getElementName(0, false) == "") //no indices
+          return it->second->getObject(cn.getRemainder());
+
+        //get the indices from the CN
+        std::string indices;
+        std::string tmp;
+        C_INT32 ii = 0;
+        while ((tmp = cn.getElementName(ii, false)) != "")
+          {
+            indices += "[" + tmp + "]";
+            ++ii;
+          }
+        //try to get the array element from the indices
+        pObject = it->second->getObject(indices);
+
+        //if the element could not be resolved, just return NULL. If there is no
+        //remainder, just return the array element.
+        //In all other cases we call getObject() on the array element with the remainder
+        //of the CN. The special treatment of the empty remainder is probably necessary
+        //since not all implementations of getObject(cn) handle the case of empty CN.
+        if (!pObject)
+          return NULL;
+        if (cn.getRemainder() == "")
+          return pObject;
+        else
+          return pObject->getObject(cn.getRemainder());
+      }
+
+    //handle generic containers.
     if (it->second->isContainer())
       return it->second->getObject(cn.getRemainder());
 
