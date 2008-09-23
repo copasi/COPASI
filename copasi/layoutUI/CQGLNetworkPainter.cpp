@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.130 $
+//   $Revision: 1.131 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/15 15:04:58 $
+//   $Date: 2008/09/23 15:46:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1469,7 +1469,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
   while (curveIt != curveRangeIt.second)
     {
       CGraphCurve *pCurve = & (*curveIt).second;
-      if (pCurve != NULL)
+      if (pCurve != NULL && pCurve->getNumCurveSegments() != 0)
         {
           CLLineSegment* pLastSeg = pCurve->getSegmentAt(pCurve->getNumCurveSegments() - 1); // get pointer to last segment
           // move end point of segment along the line from the circle center(=from) to the current end point of the last segment
