@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/08 16:36:55 $
+//   $Author: gauges $
+//   $Date: 2008/09/23 15:40:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,12 +65,15 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   if (pObject)
     mpValue = (C_FLOAT64 *) pObject->getValuePointer();
   else
+    mpValue = NULL;
+
+  if (mpValue == NULL)
     {
       mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       mpValue = &mValue;
+      return false;
     }
 
-  if (mpValue == NULL) return false;
   if (!pObject->isValueDbl()) return false;
 
   mData = "<" + mRegisteredObjectCN + ">";
