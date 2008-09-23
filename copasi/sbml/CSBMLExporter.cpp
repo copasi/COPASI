@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/16 22:31:28 $
+//   $Author: gauges $
+//   $Date: 2008/09/23 14:20:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,12 +57,15 @@
 #include "layout/CListOfLayouts.h"
 #endif //WITH_LAYOUT
 
-CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false)
+CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false)
 {}
 
 CSBMLExporter::~CSBMLExporter()
 {
-  pdelete(mpSBMLDocument);
+  if (this->mDocumentDisowned == false)
+    {
+      pdelete(mpSBMLDocument);
+    }
 };
 
 /**
@@ -2630,7 +2633,7 @@ void CSBMLExporter::checkForEvents(const CCopasiDataModel& dataModel, std::vecto
 
 void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 {
-  // make sure the idMap is already uptodate
+  // make sure the idMap is already up to date
   // go through the existing map and create a new one with all SBML
   // objects updated with objects from the copied
   // model
@@ -5470,4 +5473,15 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
         }
     }
 }
+
+void CSBMLExporter::disownSBMLDocument()
+{
+  this->mDocumentDisowned = true;
+}
+
+const std::map<const CCopasiObject*, SBase*>& CSBMLExporter::getCOPASI2SBMLMap() const
+  {
+    return this->mCOPASI2SBMLMap;
+  }
+
 #endif // COPASI_DEBUG

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/06 17:02:00 $
+//   $Date: 2008/09/23 14:20:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,7 @@ class CSBMLExporter
     std::map<std::string, const SBase*> mMetaIdMap;
     bool mMIRIAMWarning;
     std::map<std::string, const CEvaluationTree*> mFunctionIdMap;
+    bool mDocumentDisowned;
 
   public:
     /**
@@ -104,7 +105,19 @@ class CSBMLExporter
      * contain a number of messages that specify why it can't be exported.
      */
     static const std::vector<SBMLIncompatibility> isModelSBMLCompatible(const CCopasiDataModel& pDataModel, int sbmlLevel, int sbmlVersion);
+
+    /**
+     * This method assures that the SBMLDocument is not deleted by the destructor of the exporter.
+     * This allows us to get the SBMLDocument from the exporter and store it in the data model without having to copy it.
+     */
+    void disownSBMLDocument();
+
+    /**
+     * Returns a const pointer to the COPASI2SBMLMap.
+     */
+    const std::map<const CCopasiObject*, SBase*>& getCOPASI2SBMLMap() const;
   protected:
+
     /**
      * Creates the units for the SBML model.
      */
