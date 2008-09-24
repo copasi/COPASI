@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.119 $
+//   $Revision: 1.120 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/23 14:23:22 $
+//   $Date: 2008/09/24 10:21:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -656,8 +656,19 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
-
-  mpCurrentSBMLDocument = new SBMLDocument(*exporter.getSBMLDocument());
+  // disown the SBML Document from the exporter so we don't have to copy it
+  exporter.disownSBMLDocument();
+  mpCurrentSBMLDocument = exporter.getSBMLDocument();
+  // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
+  // since the objects
+  this->mCopasi2SBMLMap.clear();
+  std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
+  std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+  while (it != endit)
+    {
+      this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
+      ++it;
+    }
 
   return str;
 }
