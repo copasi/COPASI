@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.237 $
+//   $Revision: 1.238 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/24 19:20:24 $
+//   $Date: 2008/09/24 19:25:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1963,4 +1963,6 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiology
 }
 #else
 void CopasiUI3Window::startSBWAnalyzer(int /* nId */) {}
+void CopasiUI3Window::customEvent(QCustomEvent * /* event */) {}
+
 #endif // COPASI_SBW_INTEGRATION
