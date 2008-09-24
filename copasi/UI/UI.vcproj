@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="UI"
 	ProjectGUID="{F6F52B26-93F4-4905-AA79-627093632CB4}"
+	RootNamespace="UI"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -27,7 +28,7 @@
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile"
 				ReBuildCommandLine="nmake /f Makefile clean all"
-				CleanCommandLine=""
+				CleanCommandLine="nmake /f Makefile clean"
 				Output="../tmp/UI.lib"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
