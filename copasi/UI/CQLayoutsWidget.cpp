@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/12 08:35:18 $
+//   $Date: 2008/09/24 13:02:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
           }
 
         for (i = 0; i < imax; i++)
-          protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, keys[i]);
+          protectedNotify(ListViews::LAYOUT, ListViews::DELETE, keys[i]);
 
         mChanged = true;
         break;

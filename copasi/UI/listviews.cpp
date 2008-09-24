@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.252 $
+//   $Revision: 1.253 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:23:39 $
+//   $Author: gauges $
+//   $Date: 2008/09/24 13:02:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1111,7 +1111,7 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   // actually it would have been better to do this when a model is deleted, but
   // the deletion notification is only sent to the listviews if the deleted
   // model had been changed.
-  if (objectType == ListViews::MODEL && action == ListViews::ADD)
+  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
     {
       std::set<ListViews *>::iterator it = mListOfListViews.begin();
       std::set<ListViews *>::iterator ende = mListOfListViews.end();
