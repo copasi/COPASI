@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.235 $
+//   $Revision: 1.236 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/24 13:40:21 $
+//   $Author: shoops $
+//   $Date: 2008/09/24 14:11:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1863,7 +1863,6 @@ void CopasiUI3Window::startSBWAnalyzer(int nId)
     }
   catch (...)
   {}
-
 #endif // COPASI_SBW_INTEGRATION}
 
 #ifdef COPASI_SBW_INTEGRATION
