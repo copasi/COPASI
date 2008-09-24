@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.236 $
+//   $Revision: 1.237 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/24 14:11:01 $
+//   $Date: 2008/09/24 19:20:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1828,9 +1828,9 @@ bool CopasiUI3Window::slotRegistration()
 {return true;}
 #endif // not COPASI_LICENSE_COM
 
+#ifdef COPASI_SBW_INTEGRATION
 void CopasiUI3Window::customEvent(QCustomEvent * event)
 {
-#ifdef COPASI_SBW_INTEGRATION
   // handle the file event, that is import the sbml file
   if (event->type() == 65433)
     {
@@ -1846,12 +1846,11 @@ void CopasiUI3Window::customEvent(QCustomEvent * event)
     {
       slotQuit();
     }
-#endif // COPASI_SBW_INTEGRATION
 }
+
 // start the selected analyzer
 void CopasiUI3Window::startSBWAnalyzer(int nId)
 {
-#ifdef COPASI_SBW_INTEGRATION
   try
     {
 
@@ -1862,107 +1861,106 @@ void CopasiUI3Window::startSBWAnalyzer(int nId)
       SBWLowLevel::methodSend(nModule, nService, nMethod, args);
     }
   catch (...)
-  {}
-#endif // COPASI_SBW_INTEGRATION}
+    {}}
 
-#ifdef COPASI_SBW_INTEGRATION
-  // get a list of all SBW analyzers and stick them into a menu
-  void CopasiUI3Window::refreshSBWMenu()
-  {
-    mpMenuSBW->clear();
-    try
-      {
+// get a list of all SBW analyzers and stick them into a menu
+void CopasiUI3Window::refreshSBWMenu()
+{
+  mpMenuSBW->clear();
+  try
+    {
 
-        std::vector<DataBlockReader> oModules = findServices("Analysis", true);
-        QStringList oNameList;
-        QStringList oModuleList;
-        QStringList oServiceList;
+      std::vector<DataBlockReader> oModules = findServices("Analysis", true);
+      QStringList oNameList;
+      QStringList oModuleList;
+      QStringList oServiceList;
 
-        QStringList oSortedNameList;
-        QStringList oSortedModuleList;
-        QStringList oSortedServiceList;
-        unsigned int i;
-        for (i = 0; i < oModules.size(); i++)
-          {
-            std::string sModuleName;
-            std::string sServiceName;
-            std::string sMenuName;
-            DataBlockReader oTemp = oModules[i];
-            oTemp >> sModuleName >> sServiceName >> sMenuName;
+      QStringList oSortedNameList;
+      QStringList oSortedModuleList;
+      QStringList oSortedServiceList;
+      unsigned int i;
+      for (i = 0; i < oModules.size(); i++)
+        {
+          std::string sModuleName;
+          std::string sServiceName;
+          std::string sMenuName;
+          DataBlockReader oTemp = oModules[i];
+          oTemp >> sModuleName >> sServiceName >> sMenuName;
 
-            oNameList.append(sMenuName.c_str());
-            oSortedNameList.append(sMenuName.c_str());
-            oModuleList.append(sModuleName.c_str());
-            oServiceList.append(sServiceName.c_str());
-          }
+          oNameList.append(sMenuName.c_str());
+          oSortedNameList.append(sMenuName.c_str());
+          oModuleList.append(sModuleName.c_str());
+          oServiceList.append(sServiceName.c_str());
+        }
 
-        oSortedNameList.sort();
+      oSortedNameList.sort();
 
-        // TODO: this is backwards again, in QT4 sorting was easier
+      // TODO: this is backwards again, in QT4 sorting was easier
 
-        for (unsigned int i = 0; i < oSortedNameList.size(); i++)
-          {
-            // find old index
-            int nIndex = oNameList.findIndex(oSortedNameList[i]);
-            oSortedModuleList.append(oModuleList[nIndex]);
-            oSortedServiceList.append(oServiceList[nIndex]);
+      for (unsigned int i = 0; i < oSortedNameList.size(); i++)
+        {
+          // find old index
+          int nIndex = oNameList.findIndex(oSortedNameList[i]);
+          oSortedModuleList.append(oModuleList[nIndex]);
+          oSortedServiceList.append(oServiceList[nIndex]);
 
-            mpMenuSBW->insertItem(oSortedNameList[i], i);
-          }
-        _oAnalyzerModules = oSortedModuleList;
-        _oAnalyzerServices = oSortedServiceList;
+          mpMenuSBW->insertItem(oSortedNameList[i], i);
+        }
+      _oAnalyzerModules = oSortedModuleList;
+      _oAnalyzerServices = oSortedServiceList;
 
-        if (!oNameList.empty())
-          {
-            connect(mpMenuSBW, SIGNAL(activated(int)) , this, SLOT(startSBWAnalyzer(int)));
-          }
-        else
-          {
-            int index = mpMenuSBW->insertItem(QString("Please install SBW."));
-            mpMenuSBW->setItemEnabled(index, false);
-          }
+      if (!oNameList.empty())
+        {
+          connect(mpMenuSBW, SIGNAL(activated(int)) , this, SLOT(startSBWAnalyzer(int)));
+        }
+      else
+        {
+          int index = mpMenuSBW->insertItem(QString("Please install SBW."));
+          mpMenuSBW->setItemEnabled(index, false);
+        }
 
-        SBWLowLevel::disconnect();
-      }
-    catch (...)
-      {}}
+      SBWLowLevel::disconnect();
+    }
+  catch (...)
+    {}}
 
-  // Here we get an SBML document
-  SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::doAnalysis(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader)
-  {
-    try
-      {
+// Here we get an SBML document
+SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::doAnalysis(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader)
+{
+  try
+    {
 
-        std::string sSBMLModel;
-        reader >> sSBMLModel;
+      std::string sSBMLModel;
+      reader >> sSBMLModel;
 
-        QSBWSBMLEvent *event = new QSBWSBMLEvent(sSBMLModel);
-        QApplication::postEvent(this, event);
+      QSBWSBMLEvent *event = new QSBWSBMLEvent(sSBMLModel);
+      QApplication::postEvent(this, event);
 
-        // and yes ... every SBW method has to return something
-        SystemsBiologyWorkbench::DataBlockWriter result;
-        return result;
-      }
-    catch (...)
-      {
-        throw new SystemsBiologyWorkbench::SBWApplicationException("Error in doAnalysis");
-      }
-  }
+      // and yes ... every SBW method has to return something
+      SystemsBiologyWorkbench::DataBlockWriter result;
+      return result;
+    }
+  catch (...)
+    {
+      throw new SystemsBiologyWorkbench::SBWApplicationException("Error in doAnalysis");
+    }
+}
 
-  SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)
-  {
-    try
-      {
-        // write the current model as SBML and return it
-        std::string sSBMLModel = exportSBMLToString();
-        SystemsBiologyWorkbench::DataBlockWriter result;
-        result << sSBMLModel;
-        return result;
-      }
-    catch (...)
-      {
-        throw new SystemsBiologyWorkbench::SBWApplicationException("Error getting the SBML.");
-      }
-  }
-
+SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::getSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)
+{
+  try
+    {
+      // write the current model as SBML and return it
+      std::string sSBMLModel = exportSBMLToString();
+      SystemsBiologyWorkbench::DataBlockWriter result;
+      result << sSBMLModel;
+      return result;
+    }
+  catch (...)
+    {
+      throw new SystemsBiologyWorkbench::SBWApplicationException("Error getting the SBML.");
+    }
+}
+#else
+void CopasiUI3Window::startSBWAnalyzer(int /* nId */) {}
 #endif // COPASI_SBW_INTEGRATION
