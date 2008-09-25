@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: isurovts $
+//   $Date: 2008/09/25 12:12:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,12 +195,12 @@ class CTSSAMethod : public CCopasiMethod
      *
      */
     CMatrix <C_FLOAT64> mQ;
-
+    CMatrix <C_FLOAT64> mQ_desc;
     /**
      *
      */
     CMatrix <C_FLOAT64> mR;
-
+    CMatrix <C_FLOAT64> mR_desc;
     /**
      *
      */
@@ -378,6 +378,7 @@ class CTSSAMethod : public CCopasiMethod
      *
      */
     void schur(C_INT &info);
+    void schur_desc(C_INT &info);
 
     /**
      *
@@ -389,6 +390,7 @@ class CTSSAMethod : public CCopasiMethod
      **/
     void map_index(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim);
 
+    void map_index_desc(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim);
     /**
      *
      **/
@@ -425,7 +427,7 @@ class CTSSAMethod : public CCopasiMethod
      **/
     void mat_anal_mod_space(C_INT & slow);
     void mat_anal_fast_space(C_INT & slow);
-
+    void mat_anal_fast_space_thomas(C_INT & slow);
     /**
          *
        **/
