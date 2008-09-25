@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/22 22:16:06 $
+//   $Date: 2008/09/25 22:40:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 /*!
     \file CAnnotatedMatrix.h
-    \brief Header file of class CCopasiArray and CArrayAnnotation
+    \brief Header file of class CArrayAnnotation
  */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -186,15 +186,21 @@ class CArrayAnnotation: public CCopasiContainer
 
     /**
      * an object that will act as a reference to one element of an array
-     * will be created and inserted as a child of the array annotation
+     * will be created and inserted as a child of the array annotation. Basically
+     * most of the work will be done by getObject(). If the element already
+     * exists, the existing element will be returned.
      */
-    CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index);
+    const CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index);
 
     /**
      * a convenience function for 2-dimensional arrays.
      */
-    CCopasiObject* addElementReference(C_INT32 u, C_INT32 v);
+    const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v);
 
+    /**
+     * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
+     * Since this is also a container, this is not necessarily the case.
+     */
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
   private:
@@ -226,7 +232,5 @@ class CArrayAnnotation: public CCopasiContainer
 
     friend std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o);
   };
-
-//**********************************************************************
 
 #endif

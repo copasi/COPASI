@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/22 22:16:06 $
+//   $Date: 2008/09/25 22:40:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,11 +20,12 @@
     \brief Implementation file of class CCopasiArray and CArrayAnnotation
  */
 
+#include <sstream>
 #include "CAnnotatedMatrix.h"
 #include "CCopasiVector.h"
 
 #include "report/CKeyFactory.h"
-#include "report/CCopasiObjectReference.h"
+#include "report/CArrayElementReference.h"
 
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
@@ -39,7 +40,7 @@ CArrayAnnotation::CArrayAnnotation(const std::string & name,
 
   resize();
 
-  addObjectReference("Annotated Matrix", *this, CCopasiObject::ValueDbl);
+  //addObjectReference("Annotated Matrix", *this, CCopasiObject::ValueDbl);
 }
 
 CArrayAnnotation::~CArrayAnnotation()
@@ -230,11 +231,27 @@ void CArrayAnnotation::resize()
     resizeOneDimension(i);
 }
 
-CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index)
-{return NULL;}
+const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index)
+{
+  //generate the index string
+  std::string tmp;
+  std::ostringstream indexString;
+  unsigned C_INT32 ii = 0;
+  for (ii = 0; ii < index.size(); ++ii)
+    {
+      indexString << "[" << index[ii] << "]";
+    }
 
-CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
-{return NULL;}
+  return this->getObject(indexString.str());
+}
+
+const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
+{
+  CCopasiAbstractArray::index_type index;
+  index.push_back(u);
+  index.push_back(v);
+  return addElementReference(index);
+}
 
 const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
   {
@@ -250,14 +267,54 @@ const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) 
     if (cn.getElementName(0, false) == "") //no indices
       return this->CCopasiContainer::getObject(cn);
 
-    //now get the array indices. At the moment only numerical indices...
+    //so now we know we have indices. So we check if the array element reference
+    //exists, if not we create it. Then getObject() of the element reference is called
+    //with the remainder TODO
+
+    /*
+        //first get the array indices. At the moment only numerical indices...
+        C_INT32 ii = 0;
+        CCopasiArray::index_type index;
+        while (cn.getElementName(ii, false) != "")
+          {
+            index.push_back(cn.getElementIndex(ii));
+            ++ii;
+          }
+    */
+    //first get the index string
+    std::string tmp;
+    std::string indexString;
     C_INT32 ii = 0;
-    CCopasiArray::index_type index;
-    while (cn.getElementName(ii, false) != "")
+    while ((tmp = cn.getElementName(ii, false)) != "")
       {
-        index.push_back(cn.getElementIndex(ii));
+        indexString += "[" + tmp + "]";
         ++ii;
       }
+
+    const CCopasiObject* pObject = NULL; //this will contain the element reference
+
+    //if the reference object already exists, its name will be identical to the index
+    std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
+      mObjects.equal_range(indexString);
+    objectMap::const_iterator it = range.first;
+    while (it != range.second && it->second->getObjectType() != "ElementReference") ++it;
+
+    if (it == range.second) //not found
+      {
+        //create new element reference
+        pObject = new CArrayElementReference(cn, this);
+      }
+    else
+      {
+        pObject = it->second;
+      }
+
+    if (pObject)
+      return pObject->getObject(cn.getRemainder());
+    else
+      return NULL;
+
+    /*
     if (index.size() != dimensionality())  //wrong number of indices for this array
       return NULL;
 
@@ -265,14 +322,9 @@ const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) 
     for (i = 0; i < dimensionality(); ++i)
       if (index[i] >= size()[i]) //out of range
         return NULL;
-
-    return new CCopasiObjectReference< CCopasiAbstractArray::data_type >
-    (getObjectName() + cn,
-     this,
-     (*mpArray)[index], CCopasiObject::ValueDbl);
+    */
 
     //TODO remove element children after resize
-    //TODO first look if the element is already existent
     //TODO check optimization expression widget...
   }
 
