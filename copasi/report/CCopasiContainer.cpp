@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/22 22:15:11 $
+//   $Date: 2008/09/25 22:36:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,6 +136,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     if (getObjectName() == Name && getObjectType() == Type)
       return getObject(cn.getRemainder());
 
+    //check if the first part of the cn matches one of the children (by name and type)
     std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
       mObjects.equal_range(Name);
 
@@ -154,7 +155,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
       std::cout << " * " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
     */
 
-    if (it == range.second)
+    if (it == range.second) //not found in the list of children
       {
         if (Type == "String")
           return new CCopasiStaticString(Name, this);
