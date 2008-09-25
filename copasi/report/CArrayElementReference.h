@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/23 06:22:25 $
+//   $Date: 2008/09/25 22:36:03 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,96 +21,56 @@
 /**
  * Class CArrayElementReference
  *
- * This class is the is used to make an existing object gobally accesible.
+ * This class is the is used to make an element of an array accesible.
  *
  */
 class CArrayElementReference: public CCopasiObject
   {
 
-    //Attributes
   private:
     CCopasiAbstractArray::data_type * mpReference;
 
-    //Operations
-  private:
-    CArrayElementReference() {};
-
-    void updateMethod(const CCopasiAbstractArray::data_type & value)
-    {*mpReference = value;}
-
-  public:
-    CArrayElementReference(const std::string & name,
-                           const CCopasiContainer * pParent,
-                           CCopasiAbstractArray::data_type & reference,
-                           const unsigned C_INT32 & flag = CCopasiObject::ValueDbl);
+    /**
+     * this contains the index in string format, e.g. "[2][7]"
+     */
+    std::string mIndex;
 
   private:
+    /**
+     * make the default constructor unaccessible
+     */
+    CArrayElementReference();
+
+    /**
+     * make the copy constructor unaccessible
+     */
     CArrayElementReference(const CArrayElementReference & src);
-    //: CCopasiObject(src),
-    //    mpReference(src.mpReference)
-    //{}
+
+    void updateMethod(const CCopasiAbstractArray::data_type & value);
 
   public:
+    /**
+     * create an element reference with a given index. The index
+     * is passed as a string, e.g. "[3][2]"
+     */
+    CArrayElementReference(const std::string & index,
+                           const CCopasiContainer * pParent);
+
     virtual ~CArrayElementReference() {}
 
-    virtual void * getValuePointer() const {return mpReference;}
+    /**
+     * returns a pointer to the numerical values of the array element
+     * this will be a *C_FLOAT64 for this class.
+     */
+    virtual void * getValuePointer() const;
 
     virtual const CCopasiObject * getValueObject() const {return this;}
-
-    //virtual void setReference(CCopasiAbstractArray::data_type & reference)
-    // {mpReference = &reference;}
 
     virtual void print(std::ostream * ostream) const
       {(*ostream) << *mpReference;};
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+    virtual CCopasiObjectName getCN() const;
   };
-
-#ifdef xxxx
-template<> inline
-CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & name,
-    const CCopasiContainer * pParent,
-    referenceType & reference,
-    const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, "Reference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  flag),
-    mpReference(&reference)
-{
-  assert(pParent != NULL);
-  setUpdateMethod(this, &CCopasiObjectReference<C_FLOAT64>::updateMethod);
-}
-
-template<> inline
-CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name,
-    const CCopasiContainer * pParent,
-    referenceType & reference,
-    const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, "Reference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  flag),
-    mpReference(&reference)
-{
-  assert(pParent != NULL);
-  setUpdateMethod(this, &CCopasiObjectReference<C_INT32>::updateMethod);
-}
-
-template<> inline
-CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
-    const CCopasiContainer * pParent,
-    referenceType & reference,
-    const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, "Reference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  flag),
-    mpReference(&reference)
-{
-  assert(pParent != NULL);
-  setUpdateMethod(this, &CCopasiObjectReference<bool>::updateMethod);
-}
-#endif
 
 #endif

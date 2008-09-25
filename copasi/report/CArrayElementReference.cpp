@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/23 06:22:25 $
+//   $Date: 2008/09/25 22:36:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,53 +14,42 @@
 #include "CArrayElementReference.h"
 #include "CCopasiContainer.h"
 
-CArrayElementReference::CArrayElementReference(const std::string & name,
-    const CCopasiContainer * pParent,
-    CCopasiAbstractArray::data_type & reference,
-    const unsigned C_INT32 & flag)
-    : CCopasiObject(name, pParent, "Reference",
+CArrayElementReference::CArrayElementReference(const std::string & index, const CCopasiContainer * pParent)
+    : CCopasiObject(index, pParent, "ElementReference",
                     CCopasiObject::Reference |
                     CCopasiObject::NonUniqueName |
-                    CCopasiObject::ValueDbl |
-                    flag),
-    mpReference(&reference)
+                    CCopasiObject::ValueDbl),
+    mpReference(NULL),
+    mIndex(index)
 {
   assert(pParent != NULL);
 }
 
+void CArrayElementReference::updateMethod(const CCopasiAbstractArray::data_type & value)
+{
+  if (mpReference)
+    *mpReference = value;
+}
+
+void * CArrayElementReference::getValuePointer() const
+  {
+    //TODO
+
+    return mpReference;
+  }
+
 std::string CArrayElementReference::getObjectDisplayName(bool regular, bool richtext) const
   {
-    //supress "Value"
-    if (getObjectParent() && getObjectName() == "Value")
-      return getObjectParent()->getObjectDisplayName(regular, richtext);
+    if (getObjectParent())
+      return getObjectParent()->getObjectDisplayName(regular, richtext) + mIndex;
+    else
+      return "Array" + mIndex;
+  }
 
-    //special treatment of metab children
-    if (getObjectParent()->getObjectType() == "Metabolite")
-      {
-        if (getObjectName() == "Concentration")
-          {
-            if (richtext)
-              {
-                return "<font color=\"#2222cc\">[</font>"
-                + getObjectParent()->getObjectDisplayName(regular, richtext)
-                + "<font color=\"#2222cc\">]</font>";
-              }
-            else
-            {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]";}
-          }
-
-        if (getObjectName() == "InitialConcentration")
-          {
-            if (richtext)
-              {
-                return "<font color=\"#2222cc\">[</font>"
-                + getObjectParent()->getObjectDisplayName(regular, richtext)
-                + "<font color=\"#2222cc\">]<sub>0</sub></font>";
-              }
-            else
-            {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]_0";}
-          }
-      }
-
-    return CCopasiObject::getObjectDisplayName(regular, richtext);
+CCopasiObjectName CArrayElementReference::getCN() const
+  {
+    if (getObjectParent())
+      return getObjectParent()->getCN() + mIndex;
+    else
+      return "Array" + mIndex;
   }
