@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Author: gauges $
+//   $Date: 2008/09/25 19:20:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -756,7 +756,7 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       convertedNode->addChild(convertedChildNode);
       return convertedNode;
   }
-  else*/ if     (subType !=     INVALID)
+  else*/ if      (subType !=      INVALID)
     {
       CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
@@ -906,8 +906,20 @@ ASTNode* CEvaluationNodeFunction::toAST() const
            child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
            node->addChild(child->toAST());
        }
-       else*/ if     (subType !=     INVALID)
+       else*/ if      (subType !=      INVALID)
       {
+        // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
+        // where libsbml does not handle the case correctly that a root
+        // function can have one or two children (MathML.cpp in function
+        // writeFunctionRoot)
+        if (subType == SQRT)
+          {
+            // add a degree node of value 2 as the first child
+            ASTNode* pDegreeNode = new ASTNode();
+            pDegreeNode->setType(AST_INTEGER);
+            pDegreeNode->setValue(2);
+            node->addChild(pDegreeNode);
+          }
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         node->addChild(child->toAST());
       }
