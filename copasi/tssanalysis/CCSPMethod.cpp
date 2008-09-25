@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/12 14:16:38 $
+//   $Date: 2008/09/25 12:49:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -832,7 +832,7 @@ cspiteration:
   return;
 }
 
-#ifdef XXXXX
+#ifdef xxxxx
 /*  compute  the norm C  of the off-diagonal blocks   */
 bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:31 $
+//   $Author: ssahle $
+//   $Date: 2008/09/25 12:49:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,7 +114,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   mTd_save.resize(dim, dim);
 
-  //CMatrix<C_FLOAT64> TdInverse_save;
   mTdInverse_save.resize(dim, dim);
 
   mpModel->updateSimulatedValues(mReducedModel);
@@ -227,7 +226,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
   CMatrix<C_FLOAT64> orthog_prove;
   orthog_prove.resize(dim, dim);
 
-  C_INT flag_orthog = 1;   // set flag_orthog = 0 to print the prove of orthogonality of matrix mQ
   C_INT info;
 
   CVector<C_INT> index_metab;
@@ -235,8 +233,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   /** Schur transformation of Jacobian */
   schur(info_schur);
-
-  std::cout << "info_schur: " << info_schur << std::endl;
 
   if (info_schur)
     {
@@ -246,19 +242,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
-      {
-        mTdInverse(i, j) = mQ(j, i);
-      }
-
-  // Prove of orthogonality of mQ
-  for (i = 0; i < dim; i++)
-    for (j = 0; j < dim; j++)
-      {
-        orthog_prove(i, j) = orthog(i, j);
-      }
-
-  if (flag_orthog == 0)
-    std::cout << "Proof of  matrix Q:" << orthog_prove << std::endl;
+      mTdInverse(i, j) = mQ(j, i);
 
   C_INT flag_schur;
 
@@ -278,18 +262,11 @@ void CILDMModifiedMethod::step(const double & deltaT)
   /* If complex eigenvalues */
   //BUG 873
   if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
-    {
-      if (dim == 2)
-        {
-          slow = dim;
-          goto integration;
-        }
-      else
-        {
-          //  fast = fast + 1;
-          //  slow = dim - fast;
-        }
-    }
+    if (dim == 2)
+      {
+        slow = dim;
+        goto integration;
+      }
 
   // If positive eigenvalues
 
@@ -305,186 +282,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
   /** till this point the ILDM and ILDMModified are similar
        The difference is in the type of iterations to define slow modes */
 
-  /** Begin of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
-
-  std::cout << std::endl;
-  std::cout << "Prove every metabolite for DAE" << std::endl;
-  std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
-
-  C_INT temp;
-  temp = dim - 1;
-
-  // Mode Analysis to find the dominant metabolites in the modes
-  mat_anal_mod(temp);
-
-  //index_metab = -1, if there is no dominant metabolites in corresponding mode, and is equal
-  // to the number of dominant metabolite in opposite case
-
-  for (j = 0; j < dim; j++)
-    index_metab[j] = -1;
-
-  for (i = 0; i < dim ; i ++)
-    for (j = 0; j < dim; j++)
-      {
-        if (mVslow(dim - i - 1, j) > 70)
-          index_metab[i] = j;
-      }
-
-  std::cout << "Dominance of metabolites in the mode:" << std::endl;
-
-  for (i = 0; i < dim; i++)
-    {
-      j = index_metab[i];
-      std::cout << " Mode number: " << dim - i << " TS: " << - 1 / mR(dim - i - 1, dim - i - 1) << " : ";
-      if (j > - 1)
-        std::cout << "  Metabolite : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
-      else
-        std::cout << "   There is no dominant metabolite in this mode" << std::endl;
-    }
-
-  C_FLOAT64 y_cons;
-
-  info = 0;
-  k = 0;
-  number = index_metab[k];
-
-  if (number > - 1)
-    {
-      newton_for_timestep(number, y_cons, info);
-      //  std::cout << "y_cons for metabolite number " << number << ": " << y_cons << std::endl;
-    }
-  else
-    std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
-
-  while (k < dim - 1)
-    {
-      if (number > -1)
-        {
-          dxdt.resize(dim);
-          for (j = 0; j < dim; j++)
-            dxdt[j] = 0.;
-
-          //CVector<C_FLOAT64> x_help;
-          x_help.resize(dim);
-
-          for (j = 0; j < dim; j++)
-            {
-              x_help[j] = mY_initial[j] * number2conc;
-              if (flag_deufl == 0)
-                std::cout << "x_help: " << x_help[j] << std::endl;
-            }
-
-          // mpModel->calculateDerivativesX(dxdt.array());
-          calculateDerivativesX(x_help.array(), dxdt.array());
-
-          info = 0;
-
-          //NEWTON: Looking for consistent initial value for DAE system
-          //Output:  y_cons, info
-
-          newton_for_timestep(number, y_cons, info);
-
-          if (info)
-            {
-              // TODO
-              std::cout << "info: newton iteration stop" << std::endl;
-            }
-
-          if (info == 0)
-            {
-              // CVector<C_FLOAT64> x_relax;
-              x_relax.resize(dim);
-
-              for (i = 0; i < dim; i ++)
-                {
-                  if (i == number)
-                    x_relax[i] = y_cons;
-                  else
-                    x_relax[i] = x_help[i];
-                }
-
-              //CVector<C_FLOAT64> dxdt_relax;
-              dxdt_relax.resize(dim);
-
-              if (flag_deufl == 0)
-                for (i = 0; i < dim; i++)
-                  {
-                    std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
-                    std::cout << std::endl;
-                  }
-
-              calculateDerivativesX(x_relax.array(), dxdt_relax.array());
-
-              if (flag_deufl == 0)
-                {
-                  std::cout << "Two right hand side for deuflhard " << std::endl;
-                  for (i = 0; i < dim; i++)
-                    {
-                      std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
-                      std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
-                    }
-                  std::cout << std::endl;
-                }
-
-              //CVector<C_FLOAT64> re;
-              re.resize(dim);
-
-              C_FLOAT64 eps;
-              eps = 1 / fabs(mR(dim - k - 1 , dim - k - 1));
-              std::cout << "Time Scale corresponding to metabolite " << mpModel->getMetabolitesX()[number]->getObjectName() << ": " << eps << std::endl;
-
-              // stop criterion for slow reaction modes
-
-              for (i = 0; i < dim; i++)
-                {
-                  if (i == number)
-                    re[i] = 0;
-                  else
-                    {
-                      re[i] = fabs(dxdt_relax[i] - dxdt[i]);
-                      re[i] = re[i] * eps;
-                    }
-                  if (flag_deufl == 0)
-                    std::cout << " re[" << i << "] = " << re[i] << std::endl;
-                }
-
-              //C_FLOAT64 max = 0.;
-              for (i = 0; i < dim; i++)
-                if (max < re[i])
-                  max = re[i];
-
-              if (max >= mDtol)
-                info = 1;
-              else
-                info = 0;
-
-              std::cout << "Prove of Deuflhard criterium for metabolite  " << mpModel->getMetabolitesX()[number]->getObjectName() << " : ";
-
-              if (info == 0)
-                {
-                  std::cout << "IS SATISFIED" << std::endl;
-                  std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
-                }
-              else
-                {
-                  std::cout << "NOT SATISFIED." << std::endl;
-                  std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
-                }
-              std::cout << std::endl;
-            }
-        }
-      k = k + 1;
-      number = index_metab[k];
-      max = 0;
-    }
-
-  std::cout << "********** end of block to prove every metabolite for DAE" << std::endl;
-  std::cout << std::endl;
-
-  /** end of the of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
-  /** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
-
-  /** Begin of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /** Begin of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
   std::cout << std::endl;
   std::cout << "Begin of deuflhard iterations" << std::endl;
   std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
@@ -509,9 +307,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
           failed_while = 1;
           goto integration;
         }
-
-      std::cout << "slow2 = " << slow2 << std::endl;
-      std::cout << std::endl;
     }
 
   //end of iterations to determine the number of slow metabolites
@@ -538,74 +333,195 @@ integration:
 
   mSlow = slow;
 
-  std::cout << "slow " << mSlow << std::endl;
-  std::cout << "fast " << fast << std::endl;
-
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
+      // mTdInverse(i,j) = mQ(i,j);
       mTd(i, j) = mQ(i, j);
 
   // Flag for print Tabs
-
-  C_INT flag_tab;
-  flag_tab = 1;    //change flag_tab=0 to print the Analysis Tabs  in the file
 
   mat_anal_mod(slow);
   mat_anal_metab(slow);
   mat_anal_mod_space(slow);
   mat_anal_fast_space(slow);
 
-  if (flag_tab == 0)
+  // This block proves which metabolite could be considered as QSS. In development
+  /** Begin of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+
+  C_INT flag_dev;
+  flag_dev = 1;
+
+  if (flag_dev == 0)
     {
-      for (i = 0 ; i < dim; i++)
-        {
-          std::cout << "Contribution to slow space:" << mpModel->getMetabolitesX()[i]->getObjectName() << "  " << mVslow_space[i] << std::endl;
-        }
       std::cout << std::endl;
+      std::cout << "Prove every metabolite for DAE" << std::endl;
+      std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 
-      for (i = 0 ; i < dim; i++)
+      C_INT temp;
+      temp = dim - 1;
+
+      // Mode Analysis to find the dominant metabolites in the modes
+      mat_anal_mod(temp);
+
+      //index_metab = -1, if there is no dominant metabolites in corresponding mode,
+      //and is equal
+      // to the number of dominant metabolite in opposite case
+      // Dominant metabolite - its contribution to the mode is larger as 70%
+
+      for (j = 0; j < dim; j++)
+        index_metab[j] = -1;
+
+      for (i = 0; i < dim ; i ++)
+        for (j = 0; j < dim; j++)
+          if (mVslow(dim - i - 1, j) > 70)
+            index_metab[i] = j;
+
+      std::cout << "Dominance of metabolites in the mode:" << std::endl;
+
+      for (i = 0; i < dim; i++)
         {
-          std::cout << "Contribution to mode number " << i + 1 << ". Time scale: " << -(1 / mR(i, i)) << std::endl;
-          for (j = 0; j < dim; j++)
-            std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << "  " << mVslow(i, j) << std::endl;
-          std::cout << std::endl;
+          j = index_metab[i];
+          std::cout << " Mode number: " << dim - i << " TS: " << - 1 / mR(dim - i - 1, dim - i - 1) << " : ";
+          if (j > - 1)
+            std::cout << "  Metabolite : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
+          else
+            std::cout << "   There is no dominant metabolite in this mode" << std::endl;
         }
 
-      std::cout << std::endl;
+      C_FLOAT64 y_cons;
 
-      for (i = 0 ; i < dim; i++)
+      info = 0;
+      k = 0;
+      number = index_metab[k];
+
+      if (number > - 1)
+        newton_for_timestep(number, y_cons, info);
+      else
+        std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
+
+      while (k < dim - 1)
         {
-          std::cout << "Metabolite: " << mpModel->getMetabolitesX()[i]->getObjectName() << std::endl;
-          for (j = 0; j < dim; j++)
-            std::cout << "Mode number" << j + 1 << ": " << mVslow_metab(i, j) << std::endl;
-          std::cout << std::endl;
+          if (number > -1)
+            {
+              dxdt.resize(dim);
+              for (j = 0; j < dim; j++)
+                dxdt[j] = 0.;
+
+              //CVector<C_FLOAT64> x_help;
+              x_help.resize(dim);
+
+              for (j = 0; j < dim; j++)
+                {
+                  x_help[j] = mY_initial[j] * number2conc;
+                  if (flag_deufl == 0)
+                    std::cout << "x_help: " << x_help[j] << std::endl;
+                }
+
+              calculateDerivativesX(x_help.array(), dxdt.array());
+              info = 0;
+
+              //NEWTON: Looking for consistent initial value for DAE system
+              //Output:  y_cons, info
+
+              newton_for_timestep(number, y_cons, info);
+
+              if (info)
+                {
+                  // TODO
+                  std::cout << "info: newton iteration stop" << std::endl;
+                }
+
+              if (info == 0)
+                {
+                  // CVector<C_FLOAT64> x_relax;
+                  x_relax.resize(dim);
+
+                  for (i = 0; i < dim; i ++)
+                    if (i == number)
+                      x_relax[i] = y_cons;
+                    else
+                      x_relax[i] = x_help[i];
+
+                  //CVector<C_FLOAT64> dxdt_relax;
+                  dxdt_relax.resize(dim);
+
+                  if (flag_deufl == 0)
+                    for (i = 0; i < dim; i++)
+                      {
+                        std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
+                        std::cout << std::endl;
+                      }
+
+                  calculateDerivativesX(x_relax.array(), dxdt_relax.array());
+
+                  if (flag_deufl == 0)
+                    {
+                      std::cout << "Two right hand side for deuflhard " << std::endl;
+                      for (i = 0; i < dim; i++)
+                        {
+                          std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
+                          std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
+                        }
+                      std::cout << std::endl;
+                    }
+
+                  //CVector<C_FLOAT64> re;
+                  re.resize(dim);
+
+                  C_FLOAT64 eps;
+                  eps = 1 / fabs(mR(dim - k - 1 , dim - k - 1));
+                  std::cout << "Time Scale corresponding to metabolite " << mpModel->getMetabolitesX()[number]->getObjectName() << ": " << eps << std::endl;
+
+                  // stop criterion for slow reaction modes
+
+                  for (i = 0; i < dim; i++)
+                    {
+                      if (i == number)
+                        re[i] = 0;
+                      else
+                        {
+                          re[i] = fabs(dxdt_relax[i] - dxdt[i]);
+                          re[i] = re[i] * eps;
+                        }
+                      if (flag_deufl == 0)
+                        std::cout << " re[" << i << "] = " << re[i] << std::endl;
+                    }
+
+                  //C_FLOAT64 max = 0.;
+                  for (i = 0; i < dim; i++)
+                    if (max < re[i])
+                      max = re[i];
+
+                  if (max >= mDtol)
+                    info = 1;
+                  else
+                    info = 0;
+
+                  std::cout << "Prove of Deuflhard criterium for metabolite  " << mpModel->getMetabolitesX()[number]->getObjectName() << " : ";
+
+                  if (info == 0)
+                    {
+                      std::cout << "IS SATISFIED" << std::endl;
+                      std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
+                    }
+                  else
+                    {
+                      std::cout << "NOT SATISFIED." << std::endl;
+                      std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
+                    }
+                  std::cout << std::endl;
+                }
+            }
+          k = k + 1;
+          number = index_metab[k];
+          max = 0;
         }
 
-      for (i = 0 ; i < dim; i++)
-        std::cout << "Contribution to fast space:" << mpModel->getMetabolitesX()[i]->getObjectName() << "  " << mVfast_space[i] << std::endl;
-
+      std::cout << "********** end of block to prove every metabolite for DAE" << std::endl;
       std::cout << std::endl;
     }
-
-  if (slow == dim)
-    {
-      std::cout << "No reduction is possible at this time point " << std::endl;
-      std::cout << std::endl;
-    }
-
-  C_INT flag_Td;
-
-  flag_Td = 1;  // set flag_Td = 0 to print transforation matrices mTd and mTdInverse
-
-  if (flag_Td == 0)
-    {
-      std::cout << "Transformation matrix mTd: " << std::endl;
-      std::cout << mTd << std::endl;
-      std::cout << std::endl;
-      std::cout << "Inverse of transformation matrix: mTdInvesre: " << std::endl;
-      std::cout << mTdInverse << std::endl;
-      std::cout << std::endl;
-    }
+  /** end of the of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
 
   mpModel->updateSimulatedValues(mReducedModel);
   // TO REMOVE : mpModel->applyAssignments();
@@ -631,11 +547,6 @@ void CILDMModifiedMethod::evalsort(C_FLOAT64 *reval, C_INT *index, const C_INT &
 {
   C_INT i, j, min, tmp_ind;
   C_FLOAT64 tmp1r;
-  // CVector<C_INT> index;
-  //index.resize(dim);
-
-  //for (i = 0; i < dim; i++)
-  // index[i] = i;
 
   for (i = 0; i < dim - 1; i++)
     {
@@ -652,24 +563,7 @@ void CILDMModifiedMethod::evalsort(C_FLOAT64 *reval, C_INT *index, const C_INT &
       index[min] = index[i];
       reval[i] = tmp1r;
       index[i] = tmp_ind;
-
-      //for (j = 0; j < dim; j++)
-      //   std::cout << index[j] << std::endl;
     }
-
-  //std::cout << "re_sort:" << std::endl;
-
-  //for (i = 0; i < dim; i++)
-  // std::cout << reval[i] << std::endl;
-
-  // std::cout << std::endl;
-
-  //std::cout << "index:" << std::endl;
-
-  //for (i = 0; i < dim; i++)
-  //std::cout << index[i] << std::endl;
-
-  // std::cout << std::endl;
 
   return;
 }
@@ -704,13 +598,9 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
 
   C_FLOAT64 eps;
   eps = 1 / fabs(mR(dim - fast , dim - fast));
+  //eps = fabs(mR(dim - fast - 1, dim - fast - 1)) / fabs(mR(dim - fast , dim - fast));
 
-  if (flag_deufl == 0)
-    {
-      std::cout << "slow fast from deuflhard_metab " << slow << "," << fast << std::endl;
-      std::cout << "EPS: " << eps << std::endl;
-      std::cout << std::endl;
-    }
+  std::cout << "Mode number " << slow + 1 << " with time scale: " << eps << std::endl;
 
   mat_anal_fast_space(slow);
 
