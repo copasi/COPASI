@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/25 22:36:03 $
+//   $Date: 2008/09/25 22:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,3 +53,9 @@ CCopasiObjectName CArrayElementReference::getCN() const
     else
       return "Array" + mIndex;
   }
+
+void CArrayElementReference::print(std::ostream * ostream) const
+  {
+    if (mpReference)
+      (*ostream) << *mpReference;
+  };
