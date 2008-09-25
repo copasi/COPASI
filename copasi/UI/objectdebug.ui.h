@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Author: ssahle $
+//   $Date: 2008/09/25 22:41:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,13 +82,13 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   if (!(testObj == obj)) flags += "EEE";
 
   QString value;
-  if (obj->isValueDbl())
+  if (obj->isValueDbl() && obj->getValuePointer())
     value = QString::number(*(C_FLOAT64*)obj->getValuePointer());
-  else if (obj->isValueInt())
+  else if (obj->isValueInt() && obj->getValuePointer())
     value = QString::number(*(C_INT32*)obj->getValuePointer());
-  else if (obj->isValueString())
+  else if (obj->isValueString() && obj->getValuePointer())
     value = FROM_UTF8(*(std::string*)obj->getValuePointer());
-  else if (obj->isValueBool())
+  else if (obj->isValueBool() && obj->getValuePointer())
     {
       if (*(bool*)obj->getValuePointer()) value = "true"; else value = "false";
     }
