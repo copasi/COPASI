@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/24 10:21:10 $
+//   $Date: 2008/09/27 12:49:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -652,6 +652,10 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   CCopasiMessage::clearDeque();
 
   CSBMLExporter exporter;
+  // Per default export COPASIs MIRIAM annotation.
+  // This should eventually be determined by a setting in the preferences
+  // dialog.
+  exporter.setExportCOPASIMIRIAM(true);
   std::string str = exporter.exportModelToString(*this, sbmlLevel, sbmlVersion);
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
@@ -719,6 +723,10 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     }
 
   CSBMLExporter exporter;
+  // Per default export COPASIs MIRIAM annotation.
+  // This should eventually be determined by a setting in the preferences
+  // dialog.
+  exporter.setExportCOPASIMIRIAM(true);
   //exporter.setExportHandler(pExportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
 

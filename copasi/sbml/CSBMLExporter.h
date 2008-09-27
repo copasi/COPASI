@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/23 14:20:44 $
+//   $Date: 2008/09/27 12:49:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ class CSBMLExporter
     bool mMIRIAMWarning;
     std::map<std::string, const CEvaluationTree*> mFunctionIdMap;
     bool mDocumentDisowned;
+    bool mExportCOPASIMIRIAM;
 
   public:
     /**
@@ -116,6 +117,18 @@ class CSBMLExporter
      * Returns a const pointer to the COPASI2SBMLMap.
      */
     const std::map<const CCopasiObject*, SBase*>& getCOPASI2SBMLMap() const;
+
+    /**
+     * Returns whether the exporter is supposed to export COPASIs MIRIAM
+     * annotation in addition to SBML MIRIAM.
+     */
+    bool isSetExportCOPASIMIRIAM() const;
+
+    /**
+     * Sets whether the exporter is supposed to export COPASIs MIRIAM
+     * annotation in addition to SBML MIRIAM.
+     */
+    void setExportCOPASIMIRIAM(bool exportMIRIAM);
   protected:
 
     /**

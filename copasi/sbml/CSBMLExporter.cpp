@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/23 14:20:44 $
+//   $Date: 2008/09/27 12:49:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,8 @@
 #include "sbml/SBMLWriter.h"
 #include "sbml/SpeciesReference.h"
 #include "sbml/math/ASTNode.h"
+#include "sbml/annotation/ModelHistory.h"
+#include "sbml/annotation/CVTerm.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "SBMLIncompatibility.h"
 #include "model/CCompartment.h"
@@ -52,12 +54,18 @@
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
 #include "MIRIAM/CRDFUtilities.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "MIRIAM/CReference.h"
+#include "MIRIAM/CBiologicalDescription.h"
+#include "MIRIAM/CConstants.h"
+#include "MIRIAM/CCreator.h"
+#include "MIRIAM/CModified.h"
 
 #ifdef WITH_LAYOUT
 #include "layout/CListOfLayouts.h"
 #endif //WITH_LAYOUT
 
-CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false)
+CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
 {}
 
 CSBMLExporter::~CSBMLExporter()
@@ -4123,119 +4131,441 @@ void CSBMLExporter::findAvogadro(const CCopasiDataModel& dataModel)
     }
 }
 
-bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& /*metaIds*/)
+/**
+ * This method updates the MIRIAM annotation on different model entities like
+ * the model itself, compartments, species, reactions, functions and global
+ * parameters
+ */
+bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, SBase* pSBMLObject, std::map<std::string, const SBase*>& metaIds)
 {
   bool result = true;
   if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
+  const CModelEntity* pModelEntity = dynamic_cast<const CModelEntity*>(pCOPASIObject);
   const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
-  const CCompartment* pCompartment = dynamic_cast<const CCompartment*>(pCOPASIObject);
   const CFunction* pFunction = dynamic_cast<const CFunction*>(pCOPASIObject);
-  const CModelValue* pMV = dynamic_cast<const CModelValue*>(pCOPASIObject);
   const CReaction* pReaction = dynamic_cast<const CReaction*>(pCOPASIObject);
-  const CMetab* pMetab = dynamic_cast<const CMetab*>(pCOPASIObject);
-  std::string miriamAnnotation;
-  if (pMetab != NULL)
+  CMIRIAMInfo miriamInfo;
+  std::string miriamAnnotationString;
+  if (pModelEntity != NULL)
     {
-      miriamAnnotation = pMetab->getMiriamAnnotation();
-    }
-  else if (pMV != NULL)
-    {
-      miriamAnnotation = pMV->getMiriamAnnotation();
+      miriamInfo.load(pModelEntity->getKey());
+      miriamAnnotationString = pModelEntity->getMiriamAnnotation();
     }
   else if (pReaction != NULL)
     {
-      miriamAnnotation = pReaction->getMiriamAnnotation();
-    }
-  else if (pCompartment != NULL)
-    {
-      miriamAnnotation = pCompartment->getMiriamAnnotation();
+      miriamInfo.load(pReaction->getKey());
+      miriamAnnotationString = pReaction->getMiriamAnnotation();
     }
   else if (pFunction != NULL)
     {
-      miriamAnnotation = pFunction->getMiriamAnnotation();
-    }
-  else if (pModel != NULL)
-    {
-      miriamAnnotation = pModel->getMiriamAnnotation();
+      miriamInfo.load(pFunction->getKey());
+      miriamAnnotationString = pFunction->getMiriamAnnotation();
     }
   else
     {
       // we should never end up here
       fatalError();
     }
-  // we have to check if the COPASI object has MIRIAM annotation
-  // if not, we have to delete the MIRIAM annotation in the SBase
-  // object
-  // if it does, we have to check if the SBase object has a MIRIAM annotation
-  // and we have to replace it
-  // if the SBase object has no annotation we have to create one with the
-  // miriam annotation
-  // if the SBase object has an annotation but no MIRIAM annotation, we have
-  // to add the MIRIAM annotation
-  // we have to check if the SBase object has a meta id and if it doesn't we
-  // have to create one
-  // we have to change the meta ids within the MIRIAM annotation
-  /* !!! DISABLED !!!
-  XMLNode* pAnnotation = NULL;
-  if (pSBMLObject->isSetAnnotation())
+  // first we clear the old CVTerms on the object
+  pSBMLObject->unsetCVTerms();
+  // now we have to set the CVTerms on the SBML object
+  // the MIRIAM elements that are valid for all entities are the references (IS
+  // DECRIBED BY) and the biological descriptions
+  const CCopasiVector<CBiologicalDescription>& descriptions = miriamInfo.getBiologicalDescriptions();
+  unsigned int i, iMax = descriptions.size();
+  const CBiologicalDescription* pDescription = NULL;
+  CVTerm cvTerm;
+  // COPASI only uses Biological Qualifiers
+  cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+  for (i = 0;i < iMax;++i)
     {
-      pAnnotation = new XMLNode(*pSBMLObject->getAnnotation());
-      // delete any old rdf annotations
-      // first delete all children
-      pAnnotation->removeChildren();
-      unsigned int i, iMax = pAnnotation->getNumChildren();
-      for (i = 0;i < iMax;++i)
+      pDescription = descriptions[i];
+      assert(pDescription != NULL);
+      switch (pDescription->getTriplet().Predicate)
         {
-          // readd the ones that are not from the rdf namespace
-          if (pSBMLObject->getAnnotation()->getChild(i).getURI() != "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-            {
-              pAnnotation->addChild(pSBMLObject->getAnnotation()->getChild(i));
-            }
+        case CRDFPredicate::bqbiol_encodes:
+        case CRDFPredicate::copasi_encodes:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_ENCODES);
+          break;
+        case CRDFPredicate::bqbiol_hasPart:
+        case CRDFPredicate::copasi_hasPart:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_HAS_PART);
+          break;
+        case CRDFPredicate::bqbiol_hasVersion:
+        case CRDFPredicate::copasi_hasVersion:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_HAS_VERSION);
+          break;
+        case CRDFPredicate::bqbiol_is:
+        case CRDFPredicate::copasi_is:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_IS);
+          break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
+        case CRDFPredicate::bqbiol_isEncodedBy:
+        case CRDFPredicate::copasi_isEncodedBy:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_IS_ENCODED_BY);
+          break;
+        case CRDFPredicate::bqbiol_isHomologTo:
+        case CRDFPredicate::copasi_isHomologTo:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_IS_HOMOLOG_TO);
+          break;
+        case CRDFPredicate::bqbiol_isPartOf:
+        case CRDFPredicate::copasi_isPartOf:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_IS_PART_OF);
+          break;
+        case CRDFPredicate::bqbiol_isVersionOf:
+        case CRDFPredicate::copasi_isVersionOf:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
+          break;
+          // TODO There is no OCCURS IN in libsbml !!!
+          // TODO I also couldn't find one in the spec !!!
+          //case CRDFPredicate::bqbiol_occursIn:
+          //case CRDFPredicate::copasi_occursIn:
+          //    cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          //    // libsbml does not reset the model qualifier type and the
+          //    // biologicasl qualifier type if the qualifier type is set
+          //    cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          //    cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+          //    break;
+        case CRDFPredicate::bqmodel_is:
+          cvTerm.setQualifierType(MODEL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+          cvTerm.setModelQualifierType(BQM_IS);
+          break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
+        default:
+          // there are many qualifiers that start e.g. with copasi_ which are
+          // not handled
+          cvTerm.setQualifierType(UNKNOWN_QUALIFIER);
+          break;
+        }
+      if (cvTerm.getQualifierType() != UNKNOWN_QUALIFIER)
+        {
+          // now we set the ressources
+          // TODO In COPASI there is only one ressource per CBiologicalDescription
+          // TODO object, I will have to check if libsbml puts all ressources with the
+          // TODO same prediucate into one ressource object since in libsbml a CVTerm
+          // TODO can have several ressources.
+          // TODO If this isn't handled automatically by libsbml, I will have to add
+          // TODO code that does this.
+          cvTerm.addResource(pDescription->getResource());
         }
     }
-  */
-  if (miriamAnnotation.find_first_not_of("\t\r\n ") != std::string::npos)
+  const CCopasiVector<CReference>& references = miriamInfo.getReferences();
+  const CReference* pReference = NULL;
+  iMax = references.size();
+  for (i = 0;i < iMax;++i)
     {
-      /* !!! DISABLED !!!
-      std::string metaId;
-      if (pSBMLObject->isSetMetaId())
+      pReference = references[i];
+      assert(pReference != NULL);
+      switch (pReference->getTriplet().Predicate)
         {
-          metaId = pSBMLObject->getMetaId();
+        case CRDFPredicate::bqbiol_isDescribedBy:
+        case CRDFPredicate::copasi_isDescribedBy:
+          cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setModelQualifierType(BQM_UNKNOWN);
+          cvTerm.setBiologicalQualifierType(BQB_IS_DESCRIBED_BY);
+          break;
+        case CRDFPredicate::bqmodel_isDescribedBy:
+          cvTerm.setQualifierType(MODEL_QUALIFIER);
+          // libsbml does not reset the model qualifier type and the
+          // biologicasl qualifier type if the qualifier type is set
+          cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+          cvTerm.setModelQualifierType(BQM_IS_DESCRIBED_BY);
+          break;
+        default:
+          cvTerm.setQualifierType(UNKNOWN_QUALIFIER);
+          break;
+        }
+      // set the ressources which consist of the pubmed id and the DOI
+      if (cvTerm.getQualifierType() != UNKNOWN_QUALIFIER)
+        {
+          cvTerm.addResource(pReference->getPubmedId());
+          cvTerm.addResource(pReference->getDOI());
+        }
+    }
+  // if it is the model, we have to set the model history
+  // in addition to the normal CVTerms
+  if (pModel != NULL)
+    {
+      // the model history consists of the creators, the creation time and the
+      // modification time
+      // create a model history instance
+      ModelHistory modelHistory;
+      // first we add all creators
+      const CCopasiVector<CCreator>& creators = miriamInfo.getCreators();
+      unsigned int i, iMax = creators.size();
+      const CCreator* pCreator = NULL;
+      ModelCreator modelCreator;
+      for (i = 0;i < iMax;++i)
+        {
+          pCreator = creators[i];
+          assert(pCreator != NULL);
+          // a model creator can have a family name, a given name, and email
+          // address and an organisation
+          modelCreator.setFamilyName(pCreator->getFamilyName());
+          modelCreator.setGivenName(pCreator->getGivenName());
+          modelCreator.setEmail(pCreator->getEmail());
+          modelCreator.setOrganisation(pCreator->getORG());
+          modelHistory.addCreator(&modelCreator);
+        }
+
+      // now set the creation date
+      std::string creationDateString = miriamInfo.getCreatedDT();
+      Date creationDate = Date(creationDateString);
+      modelHistory.setCreatedDate(&creationDate);
+
+      // Since SBML can have only one modification time, and we can have several,
+      // we have to take the last one
+      const CCopasiVector <CModification> & modifications = miriamInfo.getModifications();
+      iMax = modifications.size();
+      if (iMax != 0)
+        {
+          const CModification* pModification = modifications[0];
+          assert(pModification != NULL);
+          std::string lastDateString = pModification->getDate();
+          for (i = 1;i < iMax;++i)
+            {
+              pModification = modifications[i];
+              assert(pModification != NULL);
+              std::string dateString = pModification->getDate();
+              // since the date string is in W3CDTF format, a normal string
+              // compare should be enough to find out which date is more recent
+              if (dateString > lastDateString)
+                {
+                  lastDateString = dateString;
+                }
+            }
+          Date modifiedDate(lastDateString);
+          modelHistory.setModifiedDate(&modifiedDate);
+        }
+
+      // set the model history on the model
+      Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
+      assert(pSBMLModel != NULL);
+      pSBMLModel->setModelHistory(&modelHistory);
+    }
+  if (this->mExportCOPASIMIRIAM == true)
+    {
+      // add the copasi RDF stuff as an annotation in the COPASI namespace
+      XMLNode* pCOPASIAnnotation = NULL;
+      XMLNode* pAnnotation = NULL;
+      int COPASIAnnotationIndex = -1;
+      int oldRDFAnnotationIndex = -1;
+      if (pSBMLObject->isSetAnnotation())
+        {
+          pAnnotation = pSBMLObject->getAnnotation();
+          unsigned int i, iMax = pAnnotation->getNumChildren();
+          // find the COPASI annotation if there is one
+          for (i = 0;i < iMax;++i)
+            {
+              if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml")
+                {
+                  pCOPASIAnnotation = new XMLNode(pSBMLObject->getAnnotation()->getChild(i));
+                  COPASIAnnotationIndex = i;
+                  unsigned int j, jMax = pCOPASIAnnotation->getNumChildren();
+                  // find the index of the RDF subtree if there is one
+                  for (j = 0;j < jMax;++j)
+                    {
+                      if (pCOPASIAnnotation->getChild(j).getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                        {
+                          oldRDFAnnotationIndex = j;
+                          break;
+                        }
+                    }
+                  break;
+                }
+            }
+        }
+      // replace the meta ids in the miriam annotation string
+      if (miriamAnnotationString.find_first_not_of("\t\r\n ") != std::string::npos)
+        {
+          std::string metaId;
+          if (pSBMLObject->isSetMetaId())
+            {
+              metaId = pSBMLObject->getMetaId();
+            }
+          else
+            {
+              CSBMLExporter::createUniqueId(metaIds, "metaid");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+              pSBMLObject->setMetaId(metaId);
+            }
+          // now we have to replace the metaid
+          CRDFUtilities::fixLocalFileAboutReference(miriamAnnotationString, metaId, pCOPASIObject->getKey());
+          // the new annotation is not empty, so we have to convert it
+          // the root of the returned tree is a dummy node, so the actual
+          // RDF element is the first child of the returned value
+          XMLNode* pMIRIAMNode = XMLNode::convertStringToXMLNode(miriamAnnotationString);
+          assert(pMIRIAMNode != NULL);
+          if (pCOPASIAnnotation == NULL)
+            {
+              // create a new COPASI annotation
+              // the root of the returned tree is a dummy node, so the actual
+              // COPASI is the first child of the returned value
+              pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<COPASI xmlns=\"http://www.copasi.org/static/sbml\"></COPASI>");
+              // now we have to make an additional copy since otherwise we would
+              // need a const_cast later on.
+              // This is due to a limitiation in the libsbml API.
+              XMLNode* pTmpNode = new XMLNode(pCOPASIAnnotation->getChild(0));
+              delete pCOPASIAnnotation;
+              pCOPASIAnnotation = pTmpNode;
+              // calling unsetEnd is necessary for libsbml 3.1.1 and 3.2.0,
+              // otherwise libsbml will write the opening COPASI element as a
+              // closing element and add another closing element later on which is
+              // incorrect XML
+              pCOPASIAnnotation->unsetEnd();
+              assert(pCOPASIAnnotation != NULL);
+              // add the RDF stuff
+              // we add the first child of the miriam node since it was created
+              // with convertStrngToXMLNode which creates a dummy node as the
+              // root node
+              pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
+              // delete the MIRIAM node since addChild made a copy
+              delete pMIRIAMNode;
+            }
+          else
+            {
+              // replace the old rdf annotation from the COPASI subtree if there
+              // is one, else add the new one
+              if (oldRDFAnnotationIndex != -1)
+                {
+                  //
+                  XMLNode* pNewCOPASIAnnotation = CSBMLExporter::replaceChild(pCOPASIAnnotation, pMIRIAMNode, oldRDFAnnotationIndex);
+                  // delete the old copy of the COPASI node
+                  delete pCOPASIAnnotation;
+                  pCOPASIAnnotation = pNewCOPASIAnnotation;
+                  // delete the MIRIAM node since replaceChild made a copy
+                  delete pMIRIAMNode;
+                }
+              else
+                {
+                  // we add the first child of the miriam node since it was created
+                  // with convertStrngToXMLNode which creates a dummy node as the
+                  // root node
+                  pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
+                  // delete the MIRIAM node since addChild made a copy
+                  delete pMIRIAMNode;
+                }
+            }
+          if (pAnnotation == NULL)
+            {
+              pAnnotation = XMLNode::convertStringToXMLNode("<annotation></annotation>");
+              // the libsbml convertStringToXMLNode doesn't seem to work in the
+              // same way when we create an annotation node as opposed to the
+              // COPASI node above.
+              // For the COPASI node, we get a dummy node as the root whereas here
+              // we don't
+              assert(pAnnotation != NULL);
+              // add the COPASI annotation
+              // if we created the COPASI element with convertStringTOXMLNode, we
+              // have to use the first child since the root is a dummy node
+              pAnnotation->addChild(*pCOPASIAnnotation);
+              // pCOPASIAnnotation is always a copy, so we have to delete it
+              delete pCOPASIAnnotation;
+              pSBMLObject->setAnnotation(pAnnotation);
+              delete pAnnotation;
+            }
+          else
+            {
+              // if there is a COPASI node, if yes replace it else add it
+              if (COPASIAnnotationIndex != -1)
+                {
+                  pAnnotation = CSBMLExporter::replaceChild(pAnnotation, pCOPASIAnnotation, COPASIAnnotationIndex);
+                  // we have to delete pCOPASIAnnotation since replaceChild makes a copy
+                  delete pCOPASIAnnotation;
+                  pSBMLObject->setAnnotation(pAnnotation);
+                }
+              else
+                {
+                  pAnnotation->addChild(*pCOPASIAnnotation);
+                  // we have to delete pCOPASIAnnotation since replaceChild made a copy
+                  delete pCOPASIAnnotation;
+                }
+            }
         }
       else
         {
-          CSBMLExporter::createUniqueId(metaIds, "metaid");
-          metaIds.insert(std::pair<const std::string,const SBase*>(metaId, pSBMLObject));
-          pSBMLObject->setMetaId(metaId);
-        }
-      // now we have to replace the metaid
-      CRDFUtilities::fixLocalFileAboutReference(miriamAnnotation, metaId, pCOPASIObject->getKey());
-      // the new annotation is not empty, so we have to convert it
-      XMLNode* pMIRIAMNode = XMLNode::convertStringToXMLNode(miriamAnnotation);
-      assert(pMIRIAMNode != NULL);
-      if (pAnnotation == NULL)
-        {
-          pAnnotation = XMLNode::convertStringToXMLNode("<annotation/>");
-          assert(pAnnotation != NULL);
-        }
-      pAnnotation->addChild(*pMIRIAMNode);
-      // delete pMIRIAMNode since addChild made a copy
-      delete pMIRIAMNode;
-      */
-      if (this->mMIRIAMWarning == false)
-        {
-          this->mMIRIAMWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 69);
+          // if there is an RDF annotation in the COPASI annotation already, we
+          // have to delete it.
+          // if this rdf annotation is the only child of the COPASI annotation,
+          // we delete the whole COPASI annotation
+          if (pAnnotation && COPASIAnnotationIndex != -1 && oldRDFAnnotationIndex != -1)
+            {
+              if (pCOPASIAnnotation->getNumChildren() == 1)
+                {
+                  if (pAnnotation->getNumChildren() == 1)
+                    {
+                      // delete the complete annotation
+                      pSBMLObject->unsetAnnotation();
+                    }
+                  else
+                    {
+                      // only delete the COPASI subtree
+                      pAnnotation = CSBMLExporter::replaceChild(pAnnotation, NULL, COPASIAnnotationIndex);
+                      assert(pAnnotation != NULL);
+                      pSBMLObject->setAnnotation(pAnnotation);
+                      // delete the annotation object since it has been created by
+                      // replaceChild and setAnnotation made a copy
+                      delete pAnnotation;
+                    }
+                }
+              else
+                {
+                  // delete the RDF annotation from the COPASI tree
+                  // replace the COPASI tree in pAnnotation
+                  pCOPASIAnnotation = CSBMLExporter::replaceChild(pCOPASIAnnotation, NULL, oldRDFAnnotationIndex);
+                  assert(pCOPASIAnnotation != NULL);
+                  pAnnotation = CSBMLExporter::replaceChild(pAnnotation, pCOPASIAnnotation, COPASIAnnotationIndex);
+                  // delete pCOPASIAnnotation since replaceChild made a copy
+                  delete pCOPASIAnnotation;
+                  pSBMLObject->setAnnotation(pAnnotation);
+                  // delete the annotation object since it has been created by
+                  // replaceChild and setAnnotation made a copy
+                  delete pAnnotation;
+                }
+            }
         }
     }
-  /*  !!! DISABLED !!!
-  if (pAnnotation != NULL)
-    {
-      pSBMLObject->setAnnotation(pAnnotation);
-      // delete the old annotation since it has been copied by setAnnotation
-      delete pAnnotation;
-    }
-  */
   return result;
 }
 
@@ -4243,6 +4573,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
  * This method creates a copy of parent where the child with the given index is
  * replaced by the new child given as the second argument.
  * If index is greater than the number of children - 1, NULL is returned.
+ * If the new child is a null pointer, this method deleted the old node at
+ * the given index.
  */
 XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNewChild, unsigned int index)
 {
@@ -4257,7 +4589,7 @@ XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNew
           // make a deep copy of each child, but if the index of child is the
           // given index, we add pNewChild instead of making a copy of the
           // current child
-          if (i == index)
+          if (i == index && pNewChild != NULL)
             {
               pResult->addChild(*pNewChild);
             }
@@ -5363,6 +5695,26 @@ void CSBMLExporter::outputIncompatibilities() const
       }
   }
 
+void CSBMLExporter::disownSBMLDocument()
+{
+  this->mDocumentDisowned = true;
+}
+
+const std::map<const CCopasiObject*, SBase*>& CSBMLExporter::getCOPASI2SBMLMap() const
+  {
+    return this->mCOPASI2SBMLMap;
+  }
+
+bool CSBMLExporter::isSetExportCOPASIMIRIAM() const
+  {
+    return this->mExportCOPASIMIRIAM;
+  }
+
+void CSBMLExporter::setExportCOPASIMIRIAM(bool exportMiriam)
+{
+  this->mExportCOPASIMIRIAM = exportMiriam;
+}
+
 #ifdef COPASI_DEBUG
 void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
 {
@@ -5473,15 +5825,5 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
         }
     }
 }
-
-void CSBMLExporter::disownSBMLDocument()
-{
-  this->mDocumentDisowned = true;
-}
-
-const std::map<const CCopasiObject*, SBase*>& CSBMLExporter::getCOPASI2SBMLMap() const
-  {
-    return this->mCOPASI2SBMLMap;
-  }
 
 #endif // COPASI_DEBUG
