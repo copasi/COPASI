@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/30 16:20:17 $
+//   $Date: 2008/09/28 11:54:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,7 @@ class SBMLImporter
     bool mDelayFound;
     std::set<const Parameter*> mPotentialAvogadroNumbers;
     bool mAvogadroCreated;
+    bool mImportCOPASIMIRIAM;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -482,6 +483,18 @@ class SBMLImporter
     static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
 
     CProcessReport* getImportHandlerAddr();
+
+    /**
+     * Returns the flag that determines whether COPASI MIRIAM annotation is
+     * imported if it is present.
+     */
+    bool getImportCOPASIMIRIAM() const;
+
+    /**
+     * Sets the flag that determines whether COPASI MIRIAM annotation is
+     * imported if it is present.
+     */
+    void setImportCOPASIMIRIAM(bool import);
   };
 
 #endif

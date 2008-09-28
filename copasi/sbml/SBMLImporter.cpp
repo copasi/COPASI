@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.213 $
+//   $Revision: 1.214 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/18 12:22:17 $
+//   $Date: 2008/09/28 11:54:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1506,7 +1506,7 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
 /**
  * Constructor that initializes speciesMap and the FunctionDB object
  */
-SBMLImporter::SBMLImporter()
+SBMLImporter::SBMLImporter(): mImportCOPASIMIRIAM(false)
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -5394,6 +5394,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
   if (pSBMLObject == NULL || pCOPASIObject == NULL) return false;
   // search for the MIRIAM annotation
   const XMLNode* pMIRIAMNode = NULL;
+  const XMLNode* pCOPASIMIRIAMNode = NULL;
   // this const cast is needed because getAnnotation only works on non-const
   // objects.
   const XMLNode* pAnnotation = const_cast<SBase*>(pSBMLObject)->getAnnotation();
@@ -5409,6 +5410,70 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
           if (pAnnotation->getChild(i).getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
             {
               pMIRIAMNode = &pAnnotation->getChild(i);
+              break;
+            }
+          // maybe import the COPASI MIRIAM annotation
+          else if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml" && this->mImportCOPASIMIRIAM == true)
+            {
+              const XMLNode* pCOPASINode = &pAnnotation->getChild(i);
+              unsigned int j, jMax = pCOPASINode->getNumChildren();
+              for (j = 0;j < jMax;++j)
+                {
+                  if (pCOPASINode->getChild(j).getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    {
+                      pCOPASIMIRIAMNode = &pCOPASINode->getChild(j);
+                      break;
+                    }
+                }
+            }
+        }
+      // If the COPASI MIRIAM annotation was found, import it before the SBML
+      // MIRIAM annotation so that the SBML MIRIAM annotation can overwrite
+      // things from the COPASI MIRIAM annotation.
+      if (pCOPASIMIRIAMNode != NULL)
+        {
+          std::string metaid = "";
+          if (pSBMLObject->isSetMetaId())
+            {
+              metaid = pSBMLObject->getMetaId();
+            }
+          std::string miriamString = XMLNode::convertXMLNodeToString(pCOPASIMIRIAMNode);
+          CRDFGraphConverter::SBML2Copasi(miriamString);
+
+          switch (pSBMLObject->getTypeCode())
+            {
+            case SBML_MODEL:
+              assert(dynamic_cast<const Model*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CModel*>(pCOPASIObject) != NULL);
+              dynamic_cast<CModel*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
+              break;
+            case SBML_COMPARTMENT:
+              assert(dynamic_cast<const Compartment*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CCompartment*>(pCOPASIObject) != NULL);
+              dynamic_cast<CCompartment*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
+              break;
+            case SBML_SPECIES:
+              assert(dynamic_cast<const Species*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CMetab*>(pCOPASIObject) != NULL);
+              dynamic_cast<CMetab*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
+              break;
+            case SBML_PARAMETER:
+              assert(dynamic_cast<const Parameter*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CModelValue*>(pCOPASIObject) != NULL);
+              dynamic_cast<CModelValue*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
+              break;
+            case SBML_REACTION:
+              assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CReaction*>(pCOPASIObject) != NULL);
+              dynamic_cast<CReaction*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
+              break;
+            case SBML_FUNCTION_DEFINITION:
+              assert(dynamic_cast<const FunctionDefinition*>(pSBMLObject) != NULL);
+              assert(dynamic_cast<CFunction*>(pCOPASIObject) != NULL);
+              dynamic_cast<CFunction*>(pCOPASIObject)->setMiriamAnnotation(miriamString, metaid);
+              break;
+            default:
+              result = false;
               break;
             }
         }
@@ -5512,6 +5577,24 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
         }
     }
   return pObject;
+}
+
+/**
+ * Returns the flag that determines whether COPASI MIRIAM annotation is
+ * imported if it is present.
+ */
+bool SBMLImporter::getImportCOPASIMIRIAM() const
+  {
+    return this->mImportCOPASIMIRIAM;
+  }
+
+/**
+ * Sets the flag that determines whether COPASI MIRIAM annotation is
+ * imported if it is present.
+ */
+void SBMLImporter::setImportCOPASIMIRIAM(bool import)
+{
+  this->mImportCOPASIMIRIAM = import;
 }
 
 #ifdef COPASI_DEBUG

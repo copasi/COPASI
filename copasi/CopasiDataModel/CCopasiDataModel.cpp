@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/27 12:49:19 $
+//   $Date: 2008/09/28 11:54:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -530,6 +530,9 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   CCopasiMessage::clearDeque();
 
   SBMLImporter importer;
+  // Right now we always import the COPASI MIRIAM annotation if it is there.
+  // Later this will be settable by the user in the preferences dialog
+  importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
   //mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
@@ -590,6 +593,9 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   std::ifstream File(utf8ToLocale(FileName).c_str());
 
   SBMLImporter importer;
+  // Right now we always import the COPASI MIRIAM annotation if it is there.
+  // Later this will be settable by the user in the preferences dialog
+  importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
   //mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
