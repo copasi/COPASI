@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/17 18:55:57 $
+//   $Date: 2008/09/29 18:49:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ CMIRIAMResources::CMIRIAMResources(const CCopasiParameterGroup & group,
 void CMIRIAMResources::initializeParameter()
 {
   mpLastUpdateDate = assertParameter("LastUpdateDate", CCopasiParameter::UINT,
-                                     getActDateInSeconds())->getValue().pUINT;
+                                     (unsigned C_INT32) getActDateInSeconds())->getValue().pUINT;
   mpUpdateFrequency = assertParameter("Frequency", CCopasiParameter::UINT,
                                       (unsigned C_INT32) 604800)->getValue().pUINT;
   mpMIRIAMResources = assertGroup("Resources");
@@ -181,12 +181,12 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 }
 
 void CMIRIAMResources::setMIRIAMLastUpdateDate()
-{*mpLastUpdateDate = getActDateInSeconds();}
+{*mpLastUpdateDate = (unsigned C_INT32) getActDateInSeconds();}
 
 void CMIRIAMResources::setMIRIAMUpdateFrequency(const unsigned C_INT32 updateFrequency)
 {*mpUpdateFrequency = updateFrequency * 24 * 60 * 60;}
 
-unsigned C_INT32 CMIRIAMResources::getActDateInSeconds()
+time_t CMIRIAMResources::getActDateInSeconds()
 {return time(NULL);}
 
 bool CMIRIAMResources::autoUpdateMIRIAMResources(CProcessReport * pProcessReport)

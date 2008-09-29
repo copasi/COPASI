@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:29:42 $
+//   $Author: shoops $
+//   $Date: 2008/09/29 18:49:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -258,7 +258,7 @@ class CMIRIAMResources : public CCopasiParameterGroup
 
     void setMIRIAMLastUpdateDate();
 
-    unsigned C_INT32 getActDateInSeconds();
+    time_t getActDateInSeconds();
 
     void createDisplayNameMap();
 
