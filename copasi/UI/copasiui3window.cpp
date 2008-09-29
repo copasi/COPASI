@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.238 $
+//   $Revision: 1.239 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/24 19:25:04 $
+//   $Date: 2008/09/29 21:36:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1332,12 +1332,9 @@ void CopasiUI3Window::slotExportMathModel()
         = FROM_UTF8(CDirEntry::dirName(CCopasiDataModel::Global->getFileName())
                     + CDirEntry::Separator
                     + CDirEntry::baseName(CCopasiDataModel::Global->getFileName()));
-      //+ ".c");
 
-      // QString newFilter;
       tmp =
-        CopasiFileDialog::getSaveFileNameAndFilter(newFilter,
-            this, "Save File Dialog",
+        CopasiFileDialog::getSaveFileNameAndFilter(newFilter, this, "Save File Dialog",
             Default,
             "C Files (*.c);;Berkeley Madonna Files (*.mmd);;XPPAUT (*.ode)",
             "Choose an export format.");

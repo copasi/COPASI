@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/08/04 18:48:37 $
+//   $Date: 2008/09/29 21:36:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,63 +131,87 @@ void CopasiFileDialog::slotHomeDir()
     }
 }
 
+// static
+void CopasiFileDialog::openExampleDir()
+{
+  std::string ExampleDir;
+  COptions::getValue("ExampleDir", ExampleDir);
+
+  if (CDirEntry::isDir(ExampleDir))
+    mLastDir = FROM_UTF8(ExampleDir);
+  else
+    CQMessageBox::information(NULL, "Directory Not Found", FROM_UTF8(ExampleDir),
+                              QMessageBox::Ok, 0);
+}
+
+// static
 QString CopasiFileDialog::getOpenFileName(QWidget * parent,
     const char * name,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
-    QString selectedFilter)
+    QString * pSelectedFilter)
 {
-  CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
+  QString newFile = QFileDialog::getOpenFileName(mLastDir.path(),
+                    filter,
+                    parent,
+                    name,
+                    caption,
+                    pSelectedFilter,
+                    true);
+  if (newFile != "")
+    mLastDir = FROM_UTF8(CDirEntry::dirName((const char *)newFile.utf8()));
 
-  QString File = pDialog->getOpenFileName(startWith, filter, caption, selectedFilter);
-  delete pDialog;
-
-  return File;
+  return newFile;
 }
 
+// static
 QString CopasiFileDialog::getSaveFileName(QWidget * parent,
     const char * name,
     const QString & startWith,
     const QString & filter,
     const QString & caption,
-    QString selectedFilter)
+    QString * pSelectedFilter)
 {
-  CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
+  QString newFile = QFileDialog::getSaveFileName(mLastDir.path(),
+                    filter,
+                    parent,
+                    name,
+                    caption,
+                    pSelectedFilter,
+                    true);
+  if (newFile != "")
+    mLastDir = FROM_UTF8(CDirEntry::dirName((const char *)newFile.utf8()));
 
-  QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
-  delete pDialog;
-
-  return File;
+  return newFile;
 }
 
-QString CopasiFileDialog::getSaveFileNameAndFilter(QString & newFilter,
+// static
+QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selectedFilter,
     QWidget * parent,
     const char * name,
     const QString & startWith,
     const QString & filter,
-    const QString & caption,
-    QString selectedFilter)
+    const QString & caption)
 {
-  CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
+  QString File =
+    CopasiFileDialog::getSaveFileName(parent, name, startWith,
+                                      filter, caption, & selectedFilter);
 
-  QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
   if (!File) return "";
-
-  newFilter = pDialog->selectedFilter();
 
   // check the extension and replace the uncorrect extension with the correct one according to the filter
   QString Filter;
 
-  if (newFilter.contains("png"))
+  if (selectedFilter.contains("png"))
     Filter = "png";
-  else if (newFilter.contains("svg"))
+  else if (selectedFilter.contains("svg"))
     Filter = "svg";
-  else if (newFilter.contains("tex"))
+  else if (selectedFilter.contains("tex"))
     Filter = "tex";
-  else if (newFilter.contains("mml"))
+  else if (selectedFilter.contains("mml"))
     Filter = "mml";
-  else if (newFilter.contains("xml"))
+  else if (selectedFilter.contains("xml"))
     Filter = "xml";
 
   if (!File.endsWith("." + Filter))
@@ -200,8 +224,6 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & newFilter,
 
       File += "." + Filter;
     }
-
-  delete pDialog;
 
   return File;
 }

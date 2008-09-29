@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/09/03 13:11:52 $
+//   $Author: shoops $
+//   $Date: 2008/09/29 21:36:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -438,8 +438,7 @@ void Plot3d::saveDataToFile()
   while (Answer == QMessageBox::No)
     {
       fileName =
-        CopasiFileDialog::getSaveFileNameAndFilter(newFilter,
-            this, "Save File Dialog",
+        CopasiFileDialog::getSaveFileNameAndFilter(newFilter, this, "Save File Dialog",
             "ILDMResults-barsPrint", "BMP Files (*.bmp);;PS Files (*.ps);;PDF Files (*.pdf);;", "Save to");
 
       if (!fileName) return;

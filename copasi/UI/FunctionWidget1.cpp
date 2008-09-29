@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.158 $
+//   $Revision: 1.159 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Date: 2008/09/29 21:36:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1431,7 +1431,8 @@ void FunctionWidget1::slotSave()
   while (Answer == QMessageBox::No)
     {
       outfilename =
-        CopasiFileDialog::getSaveFileNameAndFilter(filter, this,
+        CopasiFileDialog::getSaveFileNameAndFilter(filter,
+            this,
             "Save File Dialog",
             QString::null,
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
