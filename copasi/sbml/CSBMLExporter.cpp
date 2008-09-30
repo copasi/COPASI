@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/27 12:49:18 $
+//   $Date: 2008/09/30 13:06:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1935,6 +1935,18 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       while (i > 0)
         {
           --i;
+          // fix for bug 1086
+          // remove the object from the COPASI2SBML Map
+          std::map<const CCopasiObject*, SBase*>::iterator it = this->mCOPASI2SBMLMap.begin(), endit = this->mCOPASI2SBMLMap.end();
+          while (it != endit)
+            {
+              if (it->second == pSBMLModel->getFunctionDefinition(i))
+                {
+                  this->mCOPASI2SBMLMap.erase(it);
+                  break;
+                }
+              ++it;
+            }
           delete pSBMLModel->getListOfFunctionDefinitions()->remove(i);
         }
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/28 11:54:01 $
+//   $Date: 2008/09/30 13:06:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -664,22 +664,33 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   exporter.setExportCOPASIMIRIAM(true);
   std::string str = exporter.exportModelToString(*this, sbmlLevel, sbmlVersion);
 
-  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
-    pdelete(mpCurrentSBMLDocument);
-  // disown the SBML Document from the exporter so we don't have to copy it
-  exporter.disownSBMLDocument();
-  mpCurrentSBMLDocument = exporter.getSBMLDocument();
-  // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
-  // since the objects
-  this->mCopasi2SBMLMap.clear();
-  std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
-  std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
-  while (it != endit)
+  // only get the new model if it is not a Level 1 model
+  // During export to Level 1 the function definitions have been deleted and therefore
+  // all information assiociated with the function definitions will be gone if the user exports
+  // to Level 2 after having exported to Level 1
+  // This is actual vital to get around Bug 1086 as well.
+  // Once I have a Level 1 model, all calls to setName on an
+  // SBML object in that model also resets the id, which does not work with the current exporter
+  if (sbmlLevel != 1 || mpCurrentSBMLDocument == NULL)
     {
-      this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
-      ++it;
+      if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+        {
+          pdelete(mpCurrentSBMLDocument);
+        }
+      // disown the SBML Document from the exporter so we don't have to copy it
+      exporter.disownSBMLDocument();
+      mpCurrentSBMLDocument = exporter.getSBMLDocument();
+      // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
+      // since the objects
+      this->mCopasi2SBMLMap.clear();
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
+      std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+      while (it != endit)
+        {
+          this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
+          ++it;
+        }
     }
-
   return str;
 }
 
@@ -735,22 +746,32 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   exporter.setExportCOPASIMIRIAM(true);
   //exporter.setExportHandler(pExportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
-
-  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
-    pdelete(mpCurrentSBMLDocument);
-
-  // disown the SBML Document from the exporter so we don't have to copy it
-  exporter.disownSBMLDocument();
-  mpCurrentSBMLDocument = exporter.getSBMLDocument();
-  // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
-  // since the objects
-  this->mCopasi2SBMLMap.clear();
-  std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
-  std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
-  while (it != endit)
+  // only get the new model if it is not a Level 1 model
+  // During export to Level 1 the function definitions have been deleted and therefore
+  // all information assiociated with the function definitions will be gone if the user exports
+  // to Level 2 after having exported to Level 1
+  // This is actual vital to get around Bug 1086 as well.
+  // Once I have a Level 1 model, all calls to setName on an
+  // SBML object in that model also resets the id, which does not work with the current exporter
+  if (sbmlLevel != 1 || mpCurrentSBMLDocument == NULL)
     {
-      this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
-      ++it;
+
+      if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+        pdelete(mpCurrentSBMLDocument);
+
+      // disown the SBML Document from the exporter so we don't have to copy it
+      exporter.disownSBMLDocument();
+      mpCurrentSBMLDocument = exporter.getSBMLDocument();
+      // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
+      // since the objects
+      this->mCopasi2SBMLMap.clear();
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
+      std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+      while (it != endit)
+        {
+          this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
+          ++it;
+        }
     }
   mSBMLFileName = FileName;
   return true;
