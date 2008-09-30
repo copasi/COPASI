@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/28 11:54:01 $
+//   $Date: 2008/09/30 13:13:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@ class SBMLImporter
     bool mUnsupportedRateRuleFound;
     bool mUnsupportedAssignmentRuleFound;
     unsigned int mLevel;
+    unsigned int mOriginalLevel;
     unsigned int mVersion;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
     std::set<std::string> mUsedFunctions;

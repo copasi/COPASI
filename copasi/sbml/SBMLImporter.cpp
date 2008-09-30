@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.214 $
+//   $Revision: 1.215 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/28 11:54:01 $
+//   $Date: 2008/09/30 13:13:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1724,6 +1724,11 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       delete reader;
       pSBMLDocument = sbmlDoc;
       this->mLevel = pSBMLDocument->getLevel();
+      // remember the original level of the document because we convert Level 1 documents to Level 2
+      // For the import of rules, we need to remember that is was actually a level 1 document
+      // because otherwise we throw error mesages on rules on parameters since the parameters
+      //  have been set to constant by the converstion to Level 2
+      this->mOriginalLevel = this->mLevel;
       this->mVersion = pSBMLDocument->getVersion();
       if (mLevel == 1)
         {
@@ -3669,7 +3674,12 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           pC = dynamic_cast<Compartment*>(it->second);
           if (pC->getId() == sbmlId)
             {
-              if (pC->getConstant())
+              // On import we convert L1 files to L2V1 files to simplify things.
+              // This means that suddenly all parameters are set to constant by libsbml
+              // since the constant flag did not exist prior to L2
+              // If we find a rule on a constant object, this is only an error
+              // if the file is not a level 1 file
+              if (this->mOriginalLevel > 1 && pC->getConstant())
                 {
                   if (ruleType == CModelEntity::ASSIGNMENT)
                     {
@@ -3695,7 +3705,12 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           if (pS->getId() == sbmlId)
             {
               // make sure the species is not declared constant
-              if (pS->getConstant())
+              // On import we convert L1 files to L2V1 files to simplify things.
+              // This means that suddenly all parameters are set to constant by libsbml
+              // since the constant flag did not exist prior to L2
+              // If we find a rule on a constant object, this is only an error
+              // if the file is not a level 1 file
+              if (this->mOriginalLevel > 1 && pS->getConstant())
                 {
                   if (ruleType == CModelEntity::ASSIGNMENT)
                     {
@@ -3721,7 +3736,13 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
           if (pP->getId() == sbmlId)
             {
               // make sure the parameter is not declared constant
-              if (pP->getConstant())
+              // On import we convert L1 files to L2V1 files to simplify things.
+              // This means that suddenly all parameters are set to constant by libsbml
+              // since the constant flag did not exist prior to L2
+              // If we find a rule on a constant object, this is only an error
+              // if the file is not a level 1 file
+              if (this->mOriginalLevel > 1 && pP->getConstant())
+
                 {
                   if (ruleType == CModelEntity::ASSIGNMENT)
                     {
