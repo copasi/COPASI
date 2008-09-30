@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 13:06:00 $
+//   $Date: 2008/09/30 15:11:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -694,7 +694,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
   return str;
 }
 
-bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool /*exportIncomplete*/, CProcessReport* pExportHandler)
+bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -740,10 +740,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     }
 
   CSBMLExporter exporter;
-  // Per default export COPASIs MIRIAM annotation.
-  // This should eventually be determined by a setting in the preferences
-  // dialog.
-  exporter.setExportCOPASIMIRIAM(true);
+  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   //exporter.setExportHandler(pExportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
   // only get the new model if it is not a Level 1 model
