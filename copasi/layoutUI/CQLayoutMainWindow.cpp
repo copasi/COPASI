@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/15 15:04:58 $
+//   $Date: 2008/09/30 07:53:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 #include <qpushbutton.h>
 #include <qsplitter.h>
 #include <qvbox.h>
-
+#include <qfiledialog.h>
 #include <qwt_slider.h>
 
 #include <iostream>
@@ -36,7 +36,6 @@
 
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
-#include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "CQCurrentValueTable.h"
 #include "CQGLNetworkPainter.h"
@@ -571,7 +570,7 @@ void CQLayoutMainWindow::startAnimation()
 void CQLayoutMainWindow::saveImage()
 {
   QImage img = mpGLViewport->getPainter()->getImage();
-  QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", "Choose a filename to save the image under");
+  QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
   if (filename)
     {
       img.save(filename, "PNG");
