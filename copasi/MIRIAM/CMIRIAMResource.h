@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 18:49:46 $
+//   $Date: 2008/09/30 18:17:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
  *  This class is used to describe parameters. This class is C_INT32ended
  *  to be used with C_INT32egration or optimization methods or reactions.
  *
- *  Created for Copasi by Anton Ruff 2008
+ *  Created for COPASI by Anton Ruff 2008
  */
 
 #ifndef COPASI_CMIRIAMResource
@@ -73,7 +73,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     virtual bool elevateChildren();
 
     /**
-     * Retreive the list of MIRIAM Resource
+     * Retrieve the list of MIRIAM Resource
      * @return CMIRIAMResource & MIRIAMResource
      */
     const CMIRIAMResource & getMIRIAMMIRIAMResource() const;
@@ -81,7 +81,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void setMIRIAMDisplayName(const std::string & displayName);
 
     /**
-     * Retreive the Display Name of the MIRIAM Resource
+     * Retrieve the Display Name of the MIRIAM Resource
      * @return std::string & DisplayName
      */
     const std::string & getMIRIAMDisplayName() const;
@@ -89,7 +89,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void setMIRIAMURL(const std::string & URL);
 
     /**
-     * Retreive the URL of the MIRIAM Resource
+     * Retrieve the URL of the MIRIAM Resource
      * @return std::string & URL
      */
     const std::string & getMIRIAMURL() const;
@@ -97,7 +97,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void setMIRIAMURI(const std::string & URI);
 
     /**
-     * Retreive the URI of the MIRIAM Resource
+     * Retrieve the URI of the MIRIAM Resource
      * @return std::string & URI
      */
     const std::string & getMIRIAMURI() const;
@@ -105,7 +105,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void setMIRIAMPattern(const std::string & pattern);
 
     /**
-     * Retreive the Pattern of the MIRIAM Resource
+     * Retrieve the Pattern of the MIRIAM Resource
      * @return std::string & Pattern
      */
     const std::string & getMIRIAMPattern() const;
@@ -113,7 +113,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void setMIRIAMRegExp(const bool & regExp);
 
     /**
-     * Retreive the Reg Exp of the MIRIAM Resource
+     * Retrieve the RegExp of the MIRIAM Resource
      * @return bool & RegExp
      */
     const bool & getMIRIAMRegExp() const;
@@ -121,7 +121,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void setMIRIAMCitation(const bool & citation);
 
     /**
-     * Retreive the Citation of the MIRIAM Resource
+     * Retrieve the Citation of the MIRIAM Resource
      * @return bool & Citation
      */
     const bool & getMIRIAMCitation() const;
@@ -129,7 +129,7 @@ class CMIRIAMResource : public CCopasiParameterGroup
     void addDeprecatedURL(const std::string & URL);
 
     /**
-     * Retreive the Deprecated of the MIRIAM Resource
+     * Retrieve the deprecated of the MIRIAM Resource
      * @return CCopasiParameterGroup & Deprecated
      */
     const CCopasiParameterGroup & getMIRIAMDeprecated() const;
@@ -202,19 +202,19 @@ class CMIRIAMResources : public CCopasiParameterGroup
     void addMIRIAMResource(CMIRIAMResource * pMIRIAMResource);
 
     /**
-     * Retreive the list of MIRIAM Resources
+     * Retrieve the list of MIRIAM Resources
      * @return CMIRIAMResources & MIRIAMResources
      */
     const CMIRIAMResources & getMIRIAMResources() const;
 
     /**
-     * Retreive the list of Last Update Day
+     * Retrieve the list of Last Update Day
      * @return C_INT32 & lastUpdateDay
      */
     const unsigned C_INT32 & getMIRIAMLastUpdateDate() const;
 
     /**
-     * Retreive the list of Update Frequency
+     * Retrieve the list of Update Frequency
      * @return C_INT32 & updateFrequency
      */
     const unsigned C_INT32 & getMIRIAMUpdateFrequency() const;
@@ -258,7 +258,7 @@ class CMIRIAMResources : public CCopasiParameterGroup
 
     void setMIRIAMLastUpdateDate();
 
-    time_t getActDateInSeconds();
+    unsigned C_INT32 getActDateInSeconds();
 
     void createDisplayNameMap();
 

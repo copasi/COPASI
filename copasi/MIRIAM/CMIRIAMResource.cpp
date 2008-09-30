@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 18:49:46 $
+//   $Date: 2008/09/30 18:17:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,8 +186,8 @@ void CMIRIAMResources::setMIRIAMLastUpdateDate()
 void CMIRIAMResources::setMIRIAMUpdateFrequency(const unsigned C_INT32 updateFrequency)
 {*mpUpdateFrequency = updateFrequency * 24 * 60 * 60;}
 
-time_t CMIRIAMResources::getActDateInSeconds()
-{return time(NULL);}
+unsigned C_INT32 CMIRIAMResources::getActDateInSeconds()
+{return (unsigned C_INT32) time(NULL);}
 
 bool CMIRIAMResources::autoUpdateMIRIAMResources(CProcessReport * pProcessReport)
 {
