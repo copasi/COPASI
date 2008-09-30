@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/tssanalysis.pro,v $
-#   $Revision: 1.7 $
+#   $Revision: 1.8 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:30 $
+#   $Date: 2008/09/30 18:16:27 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2008/07/08 16:06:30 $
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2008/09/30 18:16:27 $
 ######################################################################
 
 LIB = tssanalysis
@@ -27,17 +27,20 @@ include(../common.pri)
 # Input
 HEADERS += CILDMMethod.h \
            CILDMModifiedMethod.h \
-           CCSPMethod.h \
-	       CTSSAMethod.h \
+	         CTSSAMethod.h \
            CTSSAProblem.h \
            CTSSATask.h
 
 SOURCES += CILDMMethod.cpp \
            CILDMModifiedMethod.cpp \
-           CCSPMethod.cpp \
-	       CTSSAMethod.cpp \
+	         CTSSAMethod.cpp \
            CTSSAProblem.cpp \
            CTSSATask.cpp
 
+
+contains(DEFINES, "WITH_CSPMETHOD") {
+  HEADERS += CCSPMethod.h
+  SOURCES += CCSPMethod.cpp
+}
 
 DISTFILES += tssanalysis.vcproj

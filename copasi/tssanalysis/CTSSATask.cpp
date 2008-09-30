@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/25 13:52:15 $
+//   $Date: 2008/09/30 18:16:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,9 +57,9 @@ const unsigned C_INT32 CTSSATask::ValidMethods[] =
   {
     CCopasiMethod::tssILDM,
     CCopasiMethod::tssILDMModified,
-#ifdef COPASI_DEBUG
+#ifdef WITH_CSPMETHOD
     CCopasiMethod::tssCSP,
-#endif // COPASI_DEBUG
+#endif // WITH_CSPMETHOD
     CCopasiMethod::unset
   };
 

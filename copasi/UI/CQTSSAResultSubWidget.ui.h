@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/14 01:04:12 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 18:18:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -240,6 +240,7 @@ void CQTSSAResultSubWidget::setStepNumber()
       mSlider->setValue(mSlider->minValue());
       changeILDMInterval();
     }
+#ifdef WITH_CSPMETHOD
   else
     {
       pCSPMethod = dynamic_cast<CCSPMethod*>(pTSSTask->getMethod());
@@ -251,6 +252,7 @@ void CQTSSAResultSubWidget::setStepNumber()
       mSlider_3->setValue(mSlider_3->minValue());
       changeCSPInterval();
     }
+#endif // WITH_CSPMETHOD
 }
 
 /**
@@ -339,7 +341,7 @@ void CQTSSAResultSubWidget::changeILDMInterval()
  **/
 void CQTSSAResultSubWidget::changeCSPInterval()
 {
-
+#ifdef WITH_CSPMETHOD
   int step = mSlider_3->value();
 
   if (step == 1)
@@ -363,6 +365,7 @@ void CQTSSAResultSubWidget::changeCSPInterval()
   pArrayWidget4_3->setArrayAnnotation(pResult4CSP);
   pArrayWidget4_3_2->setArrayAnnotation(pResult5CSP);
 
+#endif // WITH_CSPMETHOD
   //  mpTimeScaleWidgetILDM->paintTimeScale(pCSPMethod->getVec_TimeScale(step));
 }
 /**
