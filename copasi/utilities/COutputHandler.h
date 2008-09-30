@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/29 13:17:19 $
+//   $Date: 2008/09/30 18:14:08 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -73,18 +78,18 @@ class COutputInterface
     virtual void output(const Activity & /* activity */) {};
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & /* activity */) {};
 
     /**
-     * Finsh the output
+     * Finish the output
      */
     virtual void finish() {};
 
     /**
-     * Retreive the list of objects handled by the interface
+     * Retrieve the list of objects handled by the interface
      * @return const std::set< const CCopasiObject * > & objects
      */
     virtual const std::set< const CCopasiObject * > & getObjects() const
@@ -99,7 +104,7 @@ class COutputInterface
   };
 
 /**
- *  This is the lass which drives all otuput of COPASI.
+ *  This is the lass which drives all output of COPASI.
  */
 class COutputHandler: public COutputInterface
   {
@@ -136,13 +141,13 @@ class COutputHandler: public COutputInterface
     virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & activity);
 
     /**
-     * Finsh the output
+     * Finish the output
      */
     virtual void finish();
 
@@ -191,7 +196,7 @@ class COutputHandler: public COutputInterface
     std::set<COutputInterface *> mInterfaces;
 
     /**
-     * Points to the master handler. The master handler is reponsible for the
+     * Points to the master handler. The master handler is responsible for the
      * and object updates and all the output.
      */
     COutputHandler * mpMaster;
