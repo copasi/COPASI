@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000070.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/24 09:51:11 $
+//   $Date: 2008/09/30 12:58:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ void test000070::tearDown()
   CCopasiContainer::Root = NULL;
 }
 
-void test000070::test_bug1070()
+void test000070::test_bug1084()
 {
   CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));

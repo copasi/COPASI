@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000068.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/30 15:21:47 $
+//   $Date: 2008/09/30 12:58:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,11 +27,6 @@
 #include "sbml/Model.h"
 #include "sbml/Reaction.h"
 
-/**
- * These tests are supposed to make sure that assignments on a species with the
- * hasOnlySubstanceUnits flag set are exported correctly.
- * It tests rules and event assignments with and without the flag set.
- */
 void test000068::setUp()
 {
   // Create the root container.
@@ -244,12 +239,22 @@ void test000068::test_bug1068()
   CPPUNIT_ASSERT(pRoot != NULL);
 
   // export to SBML
-  CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 1, 2).empty() == false);
+  std::string s = pDataModel->exportSBMLToString(NULL, 1, 2);
+  CPPUNIT_ASSERT(s.empty() == false);
+  // due to the bugfix for Bug 1086 and some issues with libsbml and the current exporter,
+  // we now no longer have a L1 document in the datamodel if there was an SBMLDocument prior
+  // to exporting to L1 already.
+  // To test now, we have to call newModel on the datamodel to delete the old sbml document,
+  // and reimport the exported model
+  // This will also lead to a Level 2 Version 1 model since we convert all Level 1 model to
+  //  Level 2 Version 1 on import, but we can at least test if the export worked.
+  CCopasiDataModel::Global->newModel(NULL, NULL, NULL);
+  CPPUNIT_ASSERT(CCopasiDataModel::Global->importSBMLFromString(s));
   // check the sbml model
   const SBMLDocument* pDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
-  CPPUNIT_ASSERT(pDocument->getLevel() == 1);
-  CPPUNIT_ASSERT(pDocument->getVersion() == 2);
+  CPPUNIT_ASSERT(pDocument->getLevel() == 2);
+  CPPUNIT_ASSERT(pDocument->getVersion() == 1);
   const Model* pSBMLModel = pDocument->getModel();
   CPPUNIT_ASSERT(pSBMLModel != NULL);
 
