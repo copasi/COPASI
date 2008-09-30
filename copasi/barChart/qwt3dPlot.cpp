@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:27 $
+//   $Date: 2008/09/30 18:17:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -298,17 +298,17 @@ void Plot3d::setSlider()
       {
         mpSliderColumn->setMinValue(0);
         if (mData.columns == 1)
-          mpSliderColumn->setMaxValue(mData.columns - 1);
+          mpSliderColumn->setMaxValue((mData.columns - 1) * 1000);
         else
-          mpSliderColumn->setMaxValue(mData.columns);
+          mpSliderColumn->setMaxValue(mData.columns * 1000);
 
         mpSliderRow->setMinValue(0);
         if (mData.rows == 1)
-          mpSliderRow->setMaxValue(mData.rows - 1);
+          mpSliderRow->setMaxValue((mData.rows - 1) * 1000);
         else
-          mpSliderRow->setMaxValue(mData.rows);
+          mpSliderRow->setMaxValue(mData.rows * 1000);
 
-        sliderMoved(mpSliderColumn->value(), mpSliderRow->value());
+        sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
       }
 }
 

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/13 14:20:55 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 18:17:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -102,7 +107,7 @@ void BaseWidget::activateSlider()
 void BaseWidget::setSlider()
 {
   if (!mpSlider) return;
-  sliderMoved(mpSliderColumn->value(), mpSliderRow->value());
+  sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
 }
 
 void BaseWidget::sliderMoved(int column, int row)
