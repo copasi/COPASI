@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/09 07:43:07 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 19:49:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,13 +40,11 @@ class CEvaluationTree;
 class CCopasiTask;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
-#ifdef WITH_LAYOUT
 class CListOfLayouts;
 class CLPoint;
 class CLDimensions;
 class CLBoundingBox;
 class CLCurve;
-#endif
 
 class CCopasiParameter;
 class CCopasiParameterGroup;
@@ -242,7 +240,6 @@ class CCopasiXML : public CCopasiXMLInterface
      */
     bool freeGUI();
 
-#ifdef WITH_LAYOUT
     /**
      * Set the layout list.
      * @param const CListOfLayouts & reportList
@@ -267,7 +264,6 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool freeLayoutList();
-#endif
 
   private:
     /**
@@ -306,7 +302,6 @@ class CCopasiXML : public CCopasiXMLInterface
      */
     bool saveGUI();
 
-#ifdef WITH_LAYOUT
     /**
      * Save the list of reports.
      * @return bool success
@@ -320,7 +315,6 @@ class CCopasiXML : public CCopasiXMLInterface
     void saveBoundingBox(const CLBoundingBox& bb);
 
     void saveCurve(const CLCurve& c);
-#endif
 
     /**
      * Save the SBML reference information
@@ -386,13 +380,11 @@ class CCopasiXML : public CCopasiXMLInterface
      */
     SCopasiXMLGUI * mpGUI;
 
-#ifdef WITH_LAYOUT
     /**
      * Pointer to a vector of plots which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
     CListOfLayouts * mpLayoutList;
-#endif
 
     /**
      * SBML Reference

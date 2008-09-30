@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/30 15:11:54 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 19:49:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,10 +35,7 @@ class SBase;
 class CProcessReport;
 class CConfigurationFile;
 class SBMLIncompatibility;
-
-#ifdef WITH_LAYOUT
 class CListOfLayouts;
-#endif
 
 // :TODO: remove
 class CMetabOld;
@@ -79,11 +76,7 @@ class CCopasiDataModel: public COutputHandler
                    const bool & autoSave = false);
     bool autoSave();
 
-    bool newModel(CModel * pModel, CProcessReport* pProcessReport
-#ifdef WITH_LAYOUT
-                  , CListOfLayouts * pLol = NULL
-#endif
-);
+    bool newModel(CModel * pModel, CProcessReport* pProcessReport, CListOfLayouts * pLol = NULL);
 
     bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
     bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
@@ -105,10 +98,8 @@ class CCopasiDataModel: public COutputHandler
 
     COutputDefinitionVector * getPlotDefinitionList();
 
-#ifdef WITH_LAYOUT
     CListOfLayouts * getListOfLayouts();
     bool removeLayout(const std::string& key);
-#endif
 
     CFunctionDB * getFunctionList();
     SCopasiXMLGUI * getGUI();
@@ -142,9 +133,7 @@ class CCopasiDataModel: public COutputHandler
 
     COutputDefinitionVector * mpPlotDefinitionList;
 
-#ifdef WITH_LAYOUT
     CListOfLayouts * mpListOfLayouts;
-#endif
 
     bool mWithGUI;
     SCopasiXMLGUI * mpGUI;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/utilities.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:38:21 $
+//   $Date: 2008/09/30 19:49:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,13 +65,11 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
         }
 
       //TODO: layouts
-#ifdef WITH_LAYOUT
       if (XML.getLayoutList())
         {
           CListOfLayouts* pListOfLayouts = dataModel.getListOfLayouts();
           *pListOfLayouts = *XML.getLayoutList();
         }
-#endif
     }
   else
     {

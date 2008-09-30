@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.143 $
+#   $Revision: 1.144 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 22:51:00 $
+#   $Date: 2008/09/30 19:49:51 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.143 $ $Author: shoops $ $Date: 2008/07/08 22:51:00 $
+# $Revision: 1.144 $ $Author: shoops $ $Date: 2008/09/30 19:49:51 $
 ######################################################################
 
 TEMPLATE = app
@@ -44,10 +44,8 @@ contains(BUILD_OS, WIN32) {
 }
 
 contains(BUILD_OS, Linux) {
-  contains(DEFINES, WITH_LAYOUT) {
-    CONFIG += opengl
-    LIBS += -lfreetype
-  }
+  CONFIG += opengl
+  LIBS += -lfreetype
 
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
@@ -111,14 +109,7 @@ contains(BUILD_OS, SunOS) {
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
 
-  contains(DEFINES, WITH_QWT3D) {
-    CONFIG += opengl
-  }
-
-  contains(DEFINES, WITH_LAYOUT) {
-    CONFIG += opengl
-  }
-
+  CONFIG += opengl
 
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS

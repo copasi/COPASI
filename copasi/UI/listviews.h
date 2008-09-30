@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:23:39 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 19:49:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,11 +89,7 @@ class CQLyapWidget;
 class CQLyapResultWidget;
 class CQModelValue;
 class CQMathMatrixWidget;
-//class CBiologicalDescriptionsWidget;
-
-#ifdef WITH_LAYOUT
 class CQLayoutsWidget;
-#endif
 
 //*********************************************************************************
 
@@ -139,9 +135,7 @@ class ListViews : public QSplitter
                      , MODELVALUE
                      , EVENT
                      , MIRIAM
-#ifdef WITH_LAYOUT
                      , LAYOUT
-#endif // WITH_LAYOUT
                     };
 
     static void setDataModel(DataModelGUI* dm);
@@ -267,9 +261,7 @@ class ListViews : public QSplitter
 #ifdef COPASI_DEBUG
     CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
-#ifdef WITH_LAYOUT
     CQLayoutsWidget * mpLayoutsWidget;
-#endif
     CQMathMatrixWidget * mpMathMatrixWidget;
   };
 

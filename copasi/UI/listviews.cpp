@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.254 $
+//   $Revision: 1.255 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/24 18:56:12 $
+//   $Date: 2008/09/30 19:49:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,9 +91,7 @@
 
 #include "CTabWidget.h"
 
-#ifdef WITH_LAYOUT
 #include "UI/CQLayoutsWidget.h"
-#endif
 
 #include "copasi.h"
 
@@ -264,9 +262,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
 #ifdef COPASI_DEBUG
     mpUpdatesWidget(NULL),
 #endif
-#ifdef WITH_LAYOUT
     mpLayoutsWidget(NULL),
-#endif
     mpMathMatrixWidget(NULL)
 {
 
@@ -494,10 +490,8 @@ void ListViews::ConstructNodeWidgets()
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
   mpMathMatrixWidget->hide();
 
-#ifdef WITH_LAYOUT
   if (!mpLayoutsWidget) mpLayoutsWidget = new CQLayoutsWidget(this);
   mpLayoutsWidget->hide();
-#endif
 }
 
 /**
@@ -599,11 +593,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return mpUpdatesWidget;
         break;
 #endif
-#ifdef WITH_LAYOUT
       case 13:
         return mpLayoutsWidget;
         break;
-#endif // WITH_LAYOUT
       case 21:
         return steadystateWidget;
         break;
@@ -1106,7 +1098,6 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
     CCopasiDataModel::Global->changed();
 
   bool success = true;
-#ifdef WITH_LAYOUT
   // delete the layout windows when the current model is added
   // actually it would have been better to do this when a model is deleted, but
   // the deletion notification is only sent to the listviews if the deleted
@@ -1120,7 +1111,6 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
           (*it)->mpLayoutsWidget->deleteLayoutWindows();
         }
     }
-#endif // WITH_LAYOUT
 
   // update all initial value
   if (action != RENAME)

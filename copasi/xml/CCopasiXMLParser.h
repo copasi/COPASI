@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/12 17:52:49 $
+//   $Date: 2008/09/30 19:49:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,6 @@ class CSlider;
 class SCopasiXMLGUI;
 class CReportDefinition;
 class CCopasiTask;
-#ifdef WITH_LAYOUT
 class CListOfLayouts;
 class CLayout;
 class CLCompartmentGlyph;
@@ -69,7 +68,6 @@ class CLGraphicalObject;
 class CLCurve;
 class CLLineSegment;
 class CLMetabReferenceGlyph;
-#endif //WITH_LAYOUT
 
 struct SCopasiXMLParserCommon
   {
@@ -202,7 +200,6 @@ struct SCopasiXMLParserCommon
      */
     std::vector< CCopasiParameter * > UnmappedKeyParameters;
 
-#ifdef WITH_LAYOUT
     /**
      * Pointer to a list of Layouts which has been loaded or is to be saved.
      * The ownership is handed to the user.
@@ -222,7 +219,6 @@ struct SCopasiXMLParserCommon
     CLCurve *pCurve;
     CLLineSegment *pLineSegment;
     CLMetabReferenceGlyph* pMetaboliteReferenceGlyph;
-#endif //WITH_LAYOUT
 
     /**
      * Nesting level of the currently processed parameter group
@@ -2777,9 +2773,7 @@ class CCopasiXMLParser : public CExpat
           ListOfReports,
           ListOfPlots,
           GUI,
-#ifdef WITH_LAYOUT
           ListOfLayouts,
-#endif //WITH_LAYOUT
           SBMLReference
         };
 
@@ -3232,7 +3226,6 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
-#ifdef WITH_LAYOUT
   class CurveElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
       private:
@@ -3608,7 +3601,6 @@ class CCopasiXMLParser : public CExpat
          */
         virtual void end(const XML_Char *pszName);
       };
-#endif //WITH_LAYOUT
 
   class SBMLReferenceElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -3845,7 +3837,6 @@ class CCopasiXMLParser : public CExpat
      */
     SCopasiXMLGUI * getGUI() const;
 
-#ifdef WITH_LAYOUT
     /**
      * Set the list of loaded layouts
      * @param CListOfLayouts * pLayoutList
@@ -3857,7 +3848,6 @@ class CCopasiXMLParser : public CExpat
      * @return CListOfLayouts * pLayoutList
      */
     CListOfLayouts * getLayoutList() const;
-#endif //WITH_LAYOUT
 
     /**
      * Retreive a pointer to the current group if available

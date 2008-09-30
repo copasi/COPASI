@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:30:46 $
+//   $Date: 2008/09/30 19:49:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,9 +38,7 @@ class SBase;
 
 // COPASI Classes:
 class CCopasiDataModel;
-#ifdef WITH_LAYOUT
 class CListOfLayouts;
-#endif //WITH_LAYOUT
 
 class SBMLExporter
   {
@@ -306,13 +304,11 @@ class SBMLExporter
      */
     static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME, const CCopasiDataModel* pDataModel);
 
-#ifdef WITH_LAYOUT
     /**
      * Add layouts to the libsbml document. The libsbml document needs to be created before,
      * so this should be called after createSBMLDocumentFromCModel().
      */
     void addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts, CCopasiDataModel* pDataModel);
-#endif //WITH_LAYOUT
 
   public:
 

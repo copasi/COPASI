@@ -1,22 +1,22 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $ 
-#   $Revision: 1.52 $ 
-#   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/07/25 07:08:30 $ 
-# End CVS Header 
+# Begin CVS Header
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
+#   $Revision: 1.53 $
+#   $Name:  $
+#   $Author: shoops $
+#   $Date: 2008/09/30 19:49:50 $
+# End CVS Header
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+# and The University of Manchester.
+# All rights reserved.
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+# Properties, Inc. and EML Research, gGmbH.
+# All rights reserved.
 
 ######################################################################
-# $Revision: 1.52 $ $Author: pwilly $ $Date: 2008/07/25 07:08:30 $
+# $Revision: 1.53 $ $Author: shoops $ $Date: 2008/09/30 19:49:50 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -37,6 +37,7 @@ COPASISE_DIRS += CopasiDataModel
 COPASISE_DIRS += compareExpressions
 COPASISE_DIRS += elementaryFluxModes
 COPASISE_DIRS += function
+COPASISE_DIRS += layout
 COPASISE_DIRS += lyap
 COPASISE_DIRS += model
 COPASISE_DIRS += moieties
@@ -61,12 +62,8 @@ contains(DEFINES, COPASI_TSSA) {
   COPASISE_DIRS += tssanalysis
 }
 
-contains(DEFINES, WITH_LAYOUT) {
-  COPASISE_DIRS += layout
-  COPASIUI_DIRS += layoutUI
-}
-
 # Now the UI libraries
+COPASIUI_DIRS += layoutUI
 COPASIUI_DIRS += MIRIAMUI
 COPASIUI_DIRS += plotUI
 COPASIUI_DIRS += tex

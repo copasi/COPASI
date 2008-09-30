@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/30 13:06:00 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 19:49:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,10 +60,7 @@
 #include "MIRIAM/CConstants.h"
 #include "MIRIAM/CCreator.h"
 #include "MIRIAM/CModified.h"
-
-#ifdef WITH_LAYOUT
 #include "layout/CListOfLayouts.h"
-#endif //WITH_LAYOUT
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
 {}
@@ -1216,7 +1213,6 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
       idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getEvent(i)->getId(), sbmlModel.getEvent(i)));
     }
   // if COPASI is compiled with layout, we have to add those ids as well
-#ifdef WITH_LAYOUT
   if (sbmlModel.getListOfLayouts()->isSetId())
     {
       idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfLayouts()->getId(), sbmlModel.getListOfLayouts()));
@@ -1233,7 +1229,6 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
             }
         }
     }
-#endif // WITH_LAYOUT
   return idMap;
 }
 
@@ -1830,11 +1825,9 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   mHandledSBMLObjects.clear();
   createSBMLDocument(dataModel);
 
-#ifdef WITH_LAYOUT
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
     dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
         dataModel.getCopasi2SBMLMap());
-#endif //WITH_LAYOUT
 
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();

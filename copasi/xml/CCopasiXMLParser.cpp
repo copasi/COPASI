@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.186 $
+//   $Revision: 1.187 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/12 17:52:49 $
+//   $Date: 2008/09/30 19:49:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,10 +60,7 @@
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-
-#ifdef WITH_LAYOUT
 #include "layout/CListOfLayouts.h"
-#endif //WITH_LAYOUT
 
 #define START_ELEMENT   -1
 #define UNKNOWN_ELEMENT -2
@@ -183,7 +180,6 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pPlotList = NULL;
   mCommon.UnmappedKeyParameters.clear();
 
-#ifdef WITH_LAYOUT
   mCommon.pLayoutList = NULL;
   mCommon.pCurrentLayout = NULL;
   mCommon.pCompartmentGlyph = NULL;
@@ -194,8 +190,6 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pCurve = NULL;
   mCommon.pLineSegment = NULL;
   mCommon.pMetaboliteReferenceGlyph = NULL;
-
-#endif //WITH_LAYOUT
 
   enableElementHandler(true);
 }
@@ -325,13 +319,11 @@ void CCopasiXMLParser::setGUI(SCopasiXMLGUI * pGUI)
 SCopasiXMLGUI * CCopasiXMLParser::getGUI() const
   {return mCommon.pGUI;}
 
-#ifdef WITH_LAYOUT
 void CCopasiXMLParser::setLayoutList(CListOfLayouts * pLayoutList)
 {mCommon.pLayoutList = pLayoutList;}
 
 CListOfLayouts * CCopasiXMLParser::getLayoutList() const
   {return mCommon.pLayoutList;}
-#endif //WITH_LAYOUT
 
 const CCopasiParameterGroup * CCopasiXMLParser::getCurrentGroup() const
   {return dynamic_cast< const CCopasiParameterGroup * >(mCommon.pCurrentParameter);}
@@ -473,12 +465,10 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
           mParser.pushElementHandler(&mParser.mUnknownElement);
       break;
 
-#ifdef WITH_LAYOUT
     case ListOfLayouts:
       if (!strcmp(pszName, "ListOfLayouts"))
         mpCurrentHandler = new ListOfLayoutsElement(mParser, mCommon);
       break;
-#endif //WITH_LAYOUT
 
     case SBMLReference:
       if (!strcmp(pszName, "SBMLReference"))
@@ -2292,7 +2282,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                             // Old file format support
+    case MathML:                                              // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2390,7 +2380,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                             // Old file format support
+    case MathML:                                              // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -5312,8 +5302,6 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
   return;
 }
 
-#ifdef WITH_LAYOUT
-
 //******** Curve **********
 
 CCopasiXMLParser::CurveElement::CurveElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -7162,7 +7150,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
     }
   return;
 }
-#endif //WITH_LAYOUT
 
 CCopasiXMLParser::ListOfTasksElement::ListOfTasksElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):

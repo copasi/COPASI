@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.124 $
+//   $Revision: 1.125 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/30 15:11:54 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 19:49:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,9 +15,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifdef WITH_LAYOUT
-# define USE_LAYOUT 1
-#endif // WITH_LAYOUT
+#define USE_LAYOUT 1
 
 #include <sbml/SBMLDocument.h>
 
@@ -64,10 +62,8 @@
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
 
-#ifdef WITH_LAYOUT
-# include "layout/CListOfLayouts.h"
-# include "layout/CLayoutInitializer.h"
-#endif
+#include "layout/CListOfLayouts.h"
+#include "layout/CLayoutInitializer.h"
 
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
     : mpDataModel(dm)
@@ -116,9 +112,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mpTaskList(NULL),
     mpReportDefinitionList(NULL),
     mpPlotDefinitionList(NULL),
-#ifdef WITH_LAYOUT
     mpListOfLayouts(NULL),
-#endif
     mWithGUI(withGUI),
     mpGUI(NULL),
     mpConfiguration(new CConfigurationFile),
@@ -163,9 +157,7 @@ CCopasiDataModel::~CCopasiDataModel()
   pdelete(mpTaskList);
   pdelete(mpReportDefinitionList);
   pdelete(mpPlotDefinitionList);
-#ifdef WITH_LAYOUT
   pdelete(mpListOfLayouts);
-#endif
   pdelete(mpGUI);
   pdelete(mpCurrentSBMLDocument);
   pdelete(pOldMetabolites);
@@ -253,9 +245,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           XML.freeReportList();
           XML.freePlotList();
           XML.freeGUI();
-#ifdef WITH_LAYOUT
           XML.freeLayoutList();
-#endif //WITH_LAYOUT
 
           // restore the copasi2sbml map
           mCopasi2SBMLMap = mapBackup;
@@ -289,7 +279,6 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         }
 
       //TODO: layouts
-#ifdef WITH_LAYOUT
       if (XML.getLayoutList())
         {
           pdelete(mpListOfLayouts);
@@ -298,7 +287,6 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       // for debugging create a template layout
       //mpListOfLayouts->add(CLayoutInitializer::createLayoutFromCModel(mpModel), true);
-#endif
 
       if (mWithGUI)
         {
@@ -377,9 +365,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
   XML.setReportList(mpReportDefinitionList);
   XML.setPlotList(mpPlotDefinitionList);
   XML.setGUI(mpGUI);
-#ifdef WITH_LAYOUT
   XML.setLayoutList(*mpListOfLayouts);
-#endif //WITH_LAYOUT
   bool success = true;
 
   if (!autoSave)
@@ -464,11 +450,7 @@ bool CCopasiDataModel::autoSave()
   return true;
 }
 
-bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport
-#ifdef WITH_LAYOUT
-                                , CListOfLayouts * pLol
-#endif
-)
+bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport, CListOfLayouts * pLol)
 {
   //deal with the CModel
   pdelete(mpModel);
@@ -486,7 +468,6 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport
       this->mCopasi2SBMLMap.clear();
     }
 
-#ifdef WITH_LAYOUT
   //now do the same for the ListOfLayouts
   pdelete(mpListOfLayouts);
 
@@ -494,7 +475,6 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport
     mpListOfLayouts = pLol;
   else
     mpListOfLayouts = new CListOfLayouts();
-#endif
 
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
@@ -540,18 +520,12 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   SBMLDocument * pSBMLDocument = NULL;
   std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
 
-#ifdef WITH_LAYOUT
   CListOfLayouts * pLol = NULL; //
-#endif
 
   try
     {
       pModel = importer.parseSBML(sbmlDocumentText, mpFunctionList,
-                                  pSBMLDocument, Copasi2SBMLMap
-#ifdef WITH_LAYOUT
-                                  , pLol
-#endif
-);
+                                  pSBMLDocument, Copasi2SBMLMap, pLol);
     }
   catch (CCopasiException except)
     {
@@ -570,11 +544,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel, pImportHandler
-#ifdef WITH_LAYOUT
-                  , pLol
-#endif
-);
+  return newModel(pModel, pImportHandler, pLol);
 }
 
 bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
@@ -603,18 +573,12 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   SBMLDocument * pSBMLDocument = NULL;
   std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
 
-#ifdef WITH_LAYOUT
   CListOfLayouts * pLol = NULL; //
-#endif
 
   try
     {
       pModel = importer.readSBML(FileName, mpFunctionList,
-                                 pSBMLDocument, Copasi2SBMLMap
-#ifdef WITH_LAYOUT
-                                 , pLol
-#endif
-);
+                                 pSBMLDocument, Copasi2SBMLMap, pLol);
 
       //pModel = importer.readSBML(FileName, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
     }
@@ -646,11 +610,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   mpCurrentSBMLDocument = pSBMLDocument;
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
-  return newModel(pModel, pImportHandler
-#ifdef WITH_LAYOUT
-                  , pLol
-#endif
-);
+  return newModel(pModel, pImportHandler, pLol);
 }
 
 std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandler*/, int sbmlLevel, int sbmlVersion)
@@ -1136,10 +1096,8 @@ CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
 COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
 
-#ifdef WITH_LAYOUT
 CListOfLayouts * CCopasiDataModel::getListOfLayouts()
 {return mpListOfLayouts;}
-#endif
 
 CFunctionDB * CCopasiDataModel::getFunctionList()
 {return mpFunctionList;}
@@ -1222,7 +1180,6 @@ CFunction * CCopasiDataModel::getUnsupportedDelay()
   return mpUnsupportedDelay;
 }
 
-#ifdef WITH_LAYOUT
 bool CCopasiDataModel::removeLayout(const std::string & key)
 {
   CLayout *pLayout =
@@ -1241,4 +1198,3 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
 
   return true;
 }
-#endif //WITH_LAYOUT

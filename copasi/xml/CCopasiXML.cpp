@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:59:31 $
+//   $Date: 2008/09/30 19:49:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,10 +54,7 @@
 #include "utilities/utility.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotItem.h"
-
-#ifdef WITH_LAYOUT
 #include "layout/CListOfLayouts.h"
-#endif
 
 // class CCopasiTask;
 // class CCopasiReport;
@@ -69,10 +66,8 @@ CCopasiXML::CCopasiXML():
     mpTaskList(NULL),
     mpReportList(NULL),
     mpPlotList(NULL),
-    mpGUI(NULL)
-#ifdef WITH_LAYOUT
-    , mpLayoutList(NULL)
-#endif
+    mpGUI(NULL),
+    mpLayoutList(NULL)
 {
   mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
                       COPASI_XML_VERSION_MINOR,
@@ -127,9 +122,7 @@ bool CCopasiXML::save(std::ostream & os,
   if (!saveReportList()) success = false;
   if (!savePlotList()) success = false;
   if (!saveGUI()) success = false;
-#ifdef WITH_LAYOUT
   if (!saveLayoutList()) success = false;
-#endif //WITH_LAYOUT
   if (!saveSBMLReference()) success = false;
 
   endSaveElement("COPASI");
@@ -158,9 +151,7 @@ bool CCopasiXML::load(std::istream & is,
   Parser.setTaskList(mpTaskList);
   Parser.setPlotList(mpPlotList);
   Parser.setGUI(mpGUI);
-#ifdef WITH_LAYOUT
   Parser.setLayoutList(mpLayoutList);
-#endif //WITH_LAYOUT
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -192,9 +183,7 @@ bool CCopasiXML::load(std::istream & is,
       mpReportList = Parser.getReportList();
       mpTaskList = Parser.getTaskList();
       mpPlotList = Parser.getPlotList();
-#ifdef WITH_LAYOUT
       mpLayoutList = Parser.getLayoutList();
-#endif //WITH_LAYOUT
 
       CFixLocalReactionParameters FixLocalReactionParameters;
       FixLocalReactionParameters.fixModel(mpModel);
@@ -322,7 +311,6 @@ bool CCopasiXML::freeGUI()
 
 //************
 
-#ifdef WITH_LAYOUT
 bool CCopasiXML::setLayoutList(const CListOfLayouts & layoutList)
 {
   mpLayoutList = const_cast<CListOfLayouts *>(&layoutList);
@@ -340,7 +328,6 @@ bool CCopasiXML::freeLayoutList()
   pdelete(mpLayoutList);
   return true;
 }
-#endif
 
 bool CCopasiXML::saveModel()
 {
@@ -1162,7 +1149,6 @@ bool CCopasiXML::saveReportList()
   return success;
 }
 
-#ifdef WITH_LAYOUT
 void CCopasiXML::savePosition(const CLPoint& p, const std::string & tag)
 {
   CXMLAttributeList Attributes;
@@ -1399,7 +1385,6 @@ bool CCopasiXML::saveLayoutList()
 
   return success;
 }
-#endif //WITH_LAYOUT
 
 bool CCopasiXML::saveGUI()
 {

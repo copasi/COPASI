@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/30 13:13:24 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 19:49:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,9 +44,7 @@ class FunctionDefinition;
 class SBase;
 class CProcessReport;
 class Rule;
-#ifdef WITH_LAYOUT
 class CListOfLayouts;
-#endif // WITH_LAYOUT
 
 class SBMLImporter
   {
@@ -448,22 +446,16 @@ class SBMLImporter
     CModel* readSBML(std::string filename,
                      CFunctionDB* funDB,
                      SBMLDocument*& pSBMLDocument,
-                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
-#ifdef WITH_LAYOUT
-                     , CListOfLayouts *& prLol
-#endif
-);
+                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                     CListOfLayouts *& prLol);
 
     //CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     CModel* parseSBML(const std::string& sbmlDocumentText,
                       CFunctionDB* funDB,
                       SBMLDocument *& pSBMLDocument,
-                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap
-#ifdef WITH_LAYOUT
-                      , CListOfLayouts *& prLol
-#endif
-);
+                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                      CListOfLayouts *& prLol);
 
     //CModel* parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 #ifdef COPASI_DEBUG

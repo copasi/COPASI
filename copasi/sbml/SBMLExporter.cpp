@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.126 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:08 $
+//   $Date: 2008/09/30 19:49:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,9 +15,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifdef WITH_LAYOUT
-# define USE_LAYOUT 1
-#endif // WITH_LAYOUT
+#define USE_LAYOUT 1
 
 #include <math.h>
 #include <list>
@@ -59,10 +57,7 @@
 #include "utilities/CCopasiTree.h"
 #include "function/CFunctionDB.h"
 #include "function/CExpression.h"
-
-#ifdef WITH_LAYOUT
 #include "layout/CListOfLayouts.h"
-#endif //WITH_LAYOUT
 
 #include "xml/CCopasiXMLInterface.h"
 
@@ -114,9 +109,7 @@ std::string SBMLExporter::exportSBMLToString(CCopasiDataModel* pDataModel,
       /* create the SBMLDocument from the copasi model */
       this->createSBMLDocumentFromCModel(pDataModel, sbmlLevel, sbmlVersion, incompleteExport);
 
-#ifdef WITH_LAYOUT
       this->addLayoutsToSBMLDocument(pDataModel->getListOfLayouts(), pDataModel);
-#endif //WITH_LAYOUT
 
       this->removeUnusedObjects(pDataModel);
 
@@ -2686,14 +2679,12 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
   return result;
 }
 
-#ifdef WITH_LAYOUT
 void SBMLExporter::addLayoutsToSBMLDocument(const CListOfLayouts * copasiLayouts, CCopasiDataModel* pDataModel)
 {
   if (this->sbmlDocument && sbmlDocument->getModel())
     copasiLayouts->exportToSBML(this->sbmlDocument->getModel()->getListOfLayouts(),
                                 pDataModel->getCopasi2SBMLMap());
 }
-#endif //WITH_LAYOUT
 
 void SBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel* pDataModel, std::vector<std::string> result)
 {

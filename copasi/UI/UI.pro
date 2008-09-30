@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.176 $
+#   $Revision: 1.177 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2008/09/08 08:33:53 $
+#   $Author: shoops $
+#   $Date: 2008/09/30 19:49:53 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.176 $ $Author: gauges $ $Date: 2008/09/08 08:33:53 $
+# $Revision: 1.177 $ $Author: shoops $ $Date: 2008/09/30 19:49:53 $
 ######################################################################
 
 LIB = UI
@@ -54,6 +54,7 @@ HEADERS	+= \
 	CQEventsWidget.h \
 #	CQEventWidget1.h \
 	CQExpressionWidget.h \
+  CQLayoutsWidget.h \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
@@ -120,6 +121,7 @@ SOURCES	+= \
 	CQEventsWidget.cpp \
 #	CQEventWidget1.cpp \
 	CQExpressionWidget.cpp \
+  CQLayoutsWidget.cpp \
 	CQLyapResultWidget.cpp \
 	CQMathMatrixWidget.cpp \
 	CQMatrixDialog.cpp \
@@ -170,12 +172,6 @@ SOURCES	+= \
 !contains(DEFINES, WITH_QWT3D) {
   HEADERS -= CQBarChart.h
   SOURCES -= CQBarChart.cpp
-}
-
-
-contains(DEFINES, WITH_LAYOUT) {
-  HEADERS += CQLayoutsWidget.h
-  SOURCES += CQLayoutsWidget.cpp
 }
 
 
