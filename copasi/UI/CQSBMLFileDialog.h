@@ -1,42 +1,37 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/16 20:22:15 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 13:50:03 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CQSBML_FILE_DIALOG
 #define CQSBML_FILE_DIALOG
 
-#include "UI/CopasiFileDialog.h"
+#include <qstring.h>
+
 #include <vector>
-#include <utility>
-#include "copasi.h"
 
-class QComboBox;
-class QLabel;
+class QWidget;
 
-class CQSBMLFileDialog : public CopasiFileDialog
+class CQSBMLFileDialog
   {
-    Q_OBJECT
-  private:
-    QComboBox* mpSBMLVersionBox;
-    QLabel* mpSBMLVersionLabel;
-    std::vector<std::pair<unsigned C_INT32, unsigned C_INT32> > mSBMLVersions;
-
   public:
-    CQSBMLFileDialog(QWidget * parent , const char * name , bool modal);
-
-    std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> >
-    getSaveFileName(const QString & startWith = QString::null,
-                    const QString & filter = QString::null,
-                    const QString & caption = QString::null,
-                    QString selectedFilter = QString::null);
+    static
+    std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > getSaveFileName(QWidget * parent,
+        const char * name,
+        const QString & startWith,
+        const QString & caption);
   };
 
 #endif // CQSBML_FILE_DIALOG

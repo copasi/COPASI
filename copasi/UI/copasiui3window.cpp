@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.239 $
+//   $Revision: 1.240 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/09/30 13:50:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -801,11 +801,11 @@ void CopasiUI3Window::slotFileExamples(QString file)
 
       if (CDirEntry::isDir(ExampleDir))
         {
-          file = QFileDialog::getOpenFileName(FROM_UTF8(ExampleDir),
-                                              "COPASI Files (*.gps *.cps);;All Files (*.*);;",
-                                              this,
-                                              "Examples File Dialog",
-                                              "Choose a file");
+          file = CopasiFileDialog::getOpenFileName(this,
+                 "Examples File Dialog",
+                 FROM_UTF8(ExampleDir),
+                 "COPASI Files (*.gps *.cps);;All Files (*.*);;",
+                 "Choose a file");
         }
       else
         {
@@ -1254,11 +1254,9 @@ void CopasiUI3Window::slotExportSBML()
 
       // we need a new dialog the lets the user choose different levels of sbml as soon as support for export to those versions
       // has been implemented.
-      CQSBMLFileDialog sbmlFileDialog(this, "Save SBML File Dialog", true);
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
-        sbmlFileDialog.getSaveFileName(Default,
-                                       "XML Files (*.xml);;All Files (*.*);;",
-                                       "Choose a filename and SBML version for SBML export.");
+        CQSBMLFileDialog::getSaveFileName(this, "Export SBML Dialog", Default,
+                                          "Choose a filename and SBML version for SBML export.");
       tmp = nameAndVersion.first;
       sbmlLevel = nameAndVersion.second.first;
       sbmlVersion = nameAndVersion.second.second;

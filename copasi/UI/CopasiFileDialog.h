@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/09/30 13:50:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,34 +18,12 @@
 #ifndef COPASI_FILE_DIALOG
 #define COPASI_FILE_DIALOG
 
-#include <qfiledialog.h>
+#include <qstring.h>
 #include <qdir.h>
-#include <qpushbutton.h>
 
-#include "UI/CQFileDialogBtnGrp.h"
-
-class CopasiFileDialog : public QFileDialog
+class CopasiFileDialog
   {
-    Q_OBJECT
-  private:
-    CQFileDialogBtnGrp * mpGrp;
-    static QDir mLastDir;
-
   public:
-    CopasiFileDialog(QWidget * parent , const char * name , bool modal);
-
-    ~CopasiFileDialog();
-
-    QString getOpenFileName(const QString & startWith = QString::null,
-                            const QString & filter = QString::null,
-                            const QString & caption = QString::null,
-                            QString selectedFilter = QString::null);
-
-    QString getSaveFileName(const QString & startWith = QString::null,
-                            const QString & filter = QString::null,
-                            const QString & caption = QString::null,
-                            QString selectedFilter = QString::null);
-
     static void openExampleDir();
 
     static QString getOpenFileName(QWidget * parent = 0,
@@ -69,9 +47,8 @@ class CopasiFileDialog : public QFileDialog
                                             const QString & filter = QString::null,
                                             const QString & caption = QString::null);
 
-  public slots:
-    virtual void slotExampleDir();
-    virtual void slotHomeDir();
+  private:
+    static QDir LastDir;
   };
 
 #endif

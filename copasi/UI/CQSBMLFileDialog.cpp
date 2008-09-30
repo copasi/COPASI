@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 11:08:35 $
+//   $Author: shoops $
+//   $Date: 2008/09/30 13:50:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,45 +15,50 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "copasi.h"
+
 #include "CQSBMLFileDialog.h"
-#include <qcombobox.h>
-#include <qlabel.h>
 
-CQSBMLFileDialog::CQSBMLFileDialog(QWidget * parent ,
-                                   const char * name ,
-                                   bool modal)
-    : CopasiFileDialog(parent , name , modal)
+#include "CopasiFileDialog.h"
+
+// static
+std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSBMLFileDialog::getSaveFileName(QWidget * parent,
+    const char * name,
+    const QString & startWith,
+    const QString & caption)
 {
-  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 3));
-  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 2));
-  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 1));
-  this->mSBMLVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(1, 2));
-  this->mpSBMLVersionBox = new QComboBox(this);
-  this->mpSBMLVersionBox->setEditable(false);
-  std::vector<std::pair<unsigned C_INT32, unsigned C_INT32> >::const_iterator it = this->mSBMLVersions.begin();
-  std::vector<std::pair<unsigned C_INT32, unsigned C_INT32> >::const_iterator endit = this->mSBMLVersions.end();
-  while (it != endit)
+  std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > NameAndVersion;
+
+  QString Filter = "Level 1 Version 2 (*.xml);;"
+                   "Level 2 Version 1 (*.xml);;"
+                   "Level 2 Version 2 (*.xml);;"
+                   "Level 2 Version 3 (*.xml)";
+
+  QString SelectedFilter = "Level 2 Version 3 (*.xml)";
+
+  NameAndVersion.first =
+    CopasiFileDialog::getSaveFileName(parent, name, startWith, Filter, caption, &SelectedFilter);
+
+  if (SelectedFilter == "Level 1 Version 2 (*.xml)")
     {
-      this->mpSBMLVersionBox->insertItem(QString("Level %1 Version %2").arg((*it).first).arg((*it).second));
-      ++it;
+      NameAndVersion.second.first = 1;
+      NameAndVersion.second.second = 2;
     }
-  this->mpSBMLVersionBox->setCurrentItem(0);
-  this->mpSBMLVersionBox->hide();
-  this->mpSBMLVersionLabel = new QLabel("SBML Version: ", this);
-  this->mpSBMLVersionLabel->hide();
-  this->addWidgets(this->mpSBMLVersionLabel, this->mpSBMLVersionBox, NULL);
-}
+  else if (SelectedFilter == "Level 2 Version 1 (*.xml)")
+    {
+      NameAndVersion.second.first = 2;
+      NameAndVersion.second.second = 1;
+    }
+  else if (SelectedFilter == "Level 2 Version 2 (*.xml)")
+    {
+      NameAndVersion.second.first = 2;
+      NameAndVersion.second.second = 2;
+    }
+  else if (SelectedFilter == "Level 2 Version 3 (*.xml)")
+    {
+      NameAndVersion.second.first = 2;
+      NameAndVersion.second.second = 3;
+    }
 
-std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> >
-CQSBMLFileDialog::getSaveFileName(const QString & startWith ,
-                                  const QString & filter ,
-                                  const QString & caption ,
-                                  QString selectedFilter)
-{
-  this->mpSBMLVersionLabel->show();
-  this->mpSBMLVersionBox->show();
-  QString filename = CopasiFileDialog::getSaveFileName(startWith, filter, caption, selectedFilter);
-  this->mpSBMLVersionLabel->hide();
-  this->mpSBMLVersionBox->hide();
-  return std::make_pair(filename, this->mSBMLVersions.at(this->mpSBMLVersionBox->currentItem()));
+  return NameAndVersion;
 }
