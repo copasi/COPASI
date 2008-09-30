@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:23:39 $
+//   $Author: gauges $
+//   $Date: 2008/09/30 15:13:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ class DataModelGUI
     bool importSBMLFromString(const std::string & sbmlDocumentText);
     bool importSBML(const std::string & fileName);
     std::string exportSBMLToString();
-    bool exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete);
+    bool exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
     bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
     COutputDefinitionVector & getPlotDefinitionList();
