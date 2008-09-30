@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 10:24:40 $
+//   $Date: 2008/09/30 12:54:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,7 @@
 #include "test000070.h"
 #include "test000071.h"
 #include "test000072.h"
+#include "test000073.h"
 
 #define COPASI_MAIN
 
@@ -165,6 +166,7 @@ int main(int /*argc*/, char ** /*argv*/)
   runner.addTest(test000070::suite());
   runner.addTest(test000071::suite());
   runner.addTest(test000072::suite());
+  runner.addTest(test000073::suite());
   runner.run();
   return 0;
 }
