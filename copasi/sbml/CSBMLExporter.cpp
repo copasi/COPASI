@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:49 $
+//   $Author: gauges $
+//   $Date: 2008/10/01 07:55:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4405,7 +4405,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             {
               if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml")
                 {
-                  pCOPASIAnnotation = new XMLNode(pSBMLObject->getAnnotation()->getChild(i));
+                  pCOPASIAnnotation = pSBMLObject->getAnnotation()->getChild(i).clone();
                   COPASIAnnotationIndex = i;
                   unsigned int j, jMax = pCOPASIAnnotation->getNumChildren();
                   // find the index of the RDF subtree if there is one
@@ -4451,7 +4451,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               // now we have to make an additional copy since otherwise we would
               // need a const_cast later on.
               // This is due to a limitiation in the libsbml API.
-              XMLNode* pTmpNode = new XMLNode(pCOPASIAnnotation->getChild(0));
+              XMLNode* pTmpNode = pCOPASIAnnotation->getChild(0).clone();
               delete pCOPASIAnnotation;
               pCOPASIAnnotation = pTmpNode;
               // calling unsetEnd is necessary for libsbml 3.1.1 and 3.2.0,
@@ -4492,7 +4492,10 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   delete pMIRIAMNode;
                 }
             }
-          if (pAnnotation == NULL)
+          // I don't think that getAnnotation will every return NULL because it is
+          // created on the fly by libsbml if there isn't one already.
+          // This is just a safety net in cast the libsbml API changes
+          if (pSBMLObject->getAnnotation() == NULL)
             {
               pAnnotation = XMLNode::convertStringToXMLNode("<annotation></annotation>");
               // the libsbml convertStringToXMLNode doesn't seem to work in the
@@ -4515,14 +4518,22 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               // if there is a COPASI node, if yes replace it else add it
               if (COPASIAnnotationIndex != -1)
                 {
-                  pAnnotation = CSBMLExporter::replaceChild(pAnnotation, pCOPASIAnnotation, COPASIAnnotationIndex);
+                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // the annotation we got above because libsbml deletes the annotation
+                  //  object when it syncs the annotation. So the annotation object we
+                  //  got above is most likely deleted already
+                  pAnnotation = CSBMLExporter::replaceChild(pSBMLObject->getAnnotation(), pCOPASIAnnotation, COPASIAnnotationIndex);
                   // we have to delete pCOPASIAnnotation since replaceChild makes a copy
                   delete pCOPASIAnnotation;
                   pSBMLObject->setAnnotation(pAnnotation);
                 }
               else
                 {
-                  pAnnotation->addChild(*pCOPASIAnnotation);
+                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // the annotation we got above because libsbml deletes the annotation
+                  //  object when it syncs the annotation. So the annotation object we
+                  //  got above is most likely deleted already
+                  pSBMLObject->getAnnotation()->addChild(*pCOPASIAnnotation);
                   // we have to delete pCOPASIAnnotation since replaceChild made a copy
                   delete pCOPASIAnnotation;
                 }
@@ -4534,11 +4545,15 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // have to delete it.
           // if this rdf annotation is the only child of the COPASI annotation,
           // we delete the whole COPASI annotation
-          if (pAnnotation && COPASIAnnotationIndex != -1 && oldRDFAnnotationIndex != -1)
+          if (pSBMLObject->getAnnotation() != NULL && COPASIAnnotationIndex != -1 && oldRDFAnnotationIndex != -1)
             {
               if (pCOPASIAnnotation->getNumChildren() == 1)
                 {
-                  if (pAnnotation->getNumChildren() == 1)
+                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // the annotation we got above because libsbml deletes the annotation
+                  //  object when it syncs the annotation. So the annotation object we
+                  //  got above is most likely deleted already
+                  if (pSBMLObject->getAnnotation()->getNumChildren() == 1)
                     {
                       // delete the complete annotation
                       pSBMLObject->unsetAnnotation();
@@ -4546,7 +4561,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   else
                     {
                       // only delete the COPASI subtree
-                      pAnnotation = CSBMLExporter::replaceChild(pAnnotation, NULL, COPASIAnnotationIndex);
+                      // we have to call getAnnotation on the SBML object instead of resuing
+                      // the annotation we got above because libsbml deletes the annotation
+                      //  object when it syncs the annotation. So the annotation object we
+                      //  got above is most likely deleted already
+                      pAnnotation = CSBMLExporter::replaceChild(pSBMLObject->getAnnotation(), NULL, COPASIAnnotationIndex);
                       assert(pAnnotation != NULL);
                       pSBMLObject->setAnnotation(pAnnotation);
                       // delete the annotation object since it has been created by
@@ -4560,7 +4579,11 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   // replace the COPASI tree in pAnnotation
                   pCOPASIAnnotation = CSBMLExporter::replaceChild(pCOPASIAnnotation, NULL, oldRDFAnnotationIndex);
                   assert(pCOPASIAnnotation != NULL);
-                  pAnnotation = CSBMLExporter::replaceChild(pAnnotation, pCOPASIAnnotation, COPASIAnnotationIndex);
+                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // the annotation we got above because libsbml deletes the annotation
+                  //  object when it syncs the annotation. So the annotation object we
+                  //  got above is most likely deleted already
+                  pAnnotation = CSBMLExporter::replaceChild(pSBMLObject->getAnnotation(), pCOPASIAnnotation, COPASIAnnotationIndex);
                   // delete pCOPASIAnnotation since replaceChild made a copy
                   delete pCOPASIAnnotation;
                   pSBMLObject->setAnnotation(pAnnotation);
