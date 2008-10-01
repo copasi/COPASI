@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/01 07:55:12 $
+//   $Date: 2008/10/01 08:39:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4291,6 +4291,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
           cvTerm.addResource(pDescription->getResource());
+          pSBMLObject->addCVTerm(&cvTerm);
         }
     }
   const CCopasiVector<CReference>& references = miriamInfo.getReferences();
@@ -4326,6 +4327,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         {
           cvTerm.addResource(pReference->getPubmedId());
           cvTerm.addResource(pReference->getDOI());
+          pSBMLObject->addCVTerm(&cvTerm);
         }
     }
   // if it is the model, we have to set the model history
@@ -4518,7 +4520,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               // if there is a COPASI node, if yes replace it else add it
               if (COPASIAnnotationIndex != -1)
                 {
-                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // we have to call getAnnotation on the SBML object instead of resulting
                   // the annotation we got above because libsbml deletes the annotation
                   //  object when it syncs the annotation. So the annotation object we
                   //  got above is most likely deleted already
@@ -4529,7 +4531,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                 }
               else
                 {
-                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // we have to call getAnnotation on the SBML object instead of resulting
                   // the annotation we got above because libsbml deletes the annotation
                   //  object when it syncs the annotation. So the annotation object we
                   //  got above is most likely deleted already
@@ -4610,7 +4612,9 @@ XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNew
   if (index < pParent->getNumChildren())
     {
       // make a shallow copy of pParent
-      pResult = new XMLNode(*pParent);
+      // The copy constructor makes a deep copy, so we have to use the
+      // constructor that takes an XMLToken
+      pResult = new XMLNode(XMLToken(*pParent));
       unsigned int i, iMax = pParent->getNumChildren();
       for (i = 0;i < iMax;++i)
         {
