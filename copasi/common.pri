@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.88 $ 
+#   $Revision: 1.89 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/09/30 19:49:50 $ 
+#   $Date: 2008/10/01 14:25:19 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.88 $ $Author: shoops $ $Date: 2008/09/30 19:49:50 $  
+# $Revision: 1.89 $ $Author: shoops $ $Date: 2008/10/01 14:25:19 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -143,14 +143,12 @@ contains(BUILD_OS, Darwin) {
       LIBS += -lqwt
     }
     
+    DEFINES += WITH_QWT3D
     !isEmpty(QWT3D_PATH){
-	  DEFINES += WITH_QWT3D
 	  LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
 	  INCLUDEPATH += $${QWT3D_PATH}/include
 	} else {
-      contains(DEFINES, WITH_QWT3D) {
-	    LIBS += $(QTDIR)/lib/libqwtplot3d.a
-	  }
+      LIBS += $(QTDIR)/lib/libqwtplot3d.a
 	}
  
     LIBS += $(QTDIR)/lib/libqt-mt.a
@@ -258,10 +256,9 @@ contains(BUILD_OS, WIN32) {
   contains(CONFIG, qt) {
     LIBS += -lqwt
     
-    contains(DEFINES, WITH_QWT3D) {
-      release: LIBS += -lqwtplot3d
-      debug: LIBS += -lqwtplot3dD
-    }
+    DEFINES += WITH_QWT3D
+    release: LIBS += -lqwtplot3d
+    debug: LIBS += -lqwtplot3dD
   }
 
   !isEmpty(SBW_PATH){
@@ -332,12 +329,11 @@ contains(STATIC_LINKAGE, yes) {
     }
     LIBS += -lqwt
     
+    DEFINES += WITH_QWT3D
     !isEmpty(QWT3D_PATH){
-	  DEFINES += WITH_QWT3D
 	  LIBS += -L$${QWT3D_PATH}/lib/
 	  INCLUDEPATH += $${QWT3D_PATH}/include
-	}
-    contains(DEFINES, WITH_QWT3D) {
+	} else {
       LIBS += -lqwtplot3d
     }
     
@@ -480,12 +476,11 @@ contains(BUILD_OS, Linux) {
     }
     LIBS += -lqwt
 
+    DEFINES += WITH_QWT3D
     !isEmpty(QWT3D_PATH){
-	  DEFINES += WITH_QWT3D
 	  LIBS += -L$${QWT3D_PATH}/lib/
 	  INCLUDEPATH += $${QWT3D_PATH}/include
-	}
-    contains(DEFINES, WITH_QWT3D) {
+	} else {
       LIBS += -lqwtplot3d
     }
     

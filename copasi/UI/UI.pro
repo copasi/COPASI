@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.178 $
+#   $Revision: 1.179 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2008/10/01 12:05:34 $
+#   $Author: shoops $
+#   $Date: 2008/10/01 14:25:19 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.178 $ $Author: gauges $ $Date: 2008/10/01 12:05:34 $
+# $Revision: 1.179 $ $Author: shoops $ $Date: 2008/10/01 14:25:19 $
 ######################################################################
 
 LIB = UI
@@ -54,13 +54,12 @@ HEADERS	+= \
 	CQEventsWidget.h \
 #	CQEventWidget1.h \
 	CQExpressionWidget.h \
-        CQLayoutsWidget.h \
+  CQLayoutsWidget.h \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
-	CQSBMLSaveOptionsDialog.h \
 	CQSensResultWidget.h \
 	CQUpdatesWidget.h \
 	CQValidator.h \
@@ -122,14 +121,13 @@ SOURCES	+= \
 	CQEventsWidget.cpp \
 #	CQEventWidget1.cpp \
 	CQExpressionWidget.cpp \
-        CQLayoutsWidget.cpp \
+  CQLayoutsWidget.cpp \
 	CQLyapResultWidget.cpp \
 	CQMathMatrixWidget.cpp \
 	CQMatrixDialog.cpp \
 	CQPreferenceDialog.cpp \
 	CQReportListItem.cpp \
 	CQSBMLFileDialog.cpp \
-	CQSBMLSaveOptionsDialog.cpp \
 	CQSensResultWidget.cpp \
 	CQUpdatesWidget.cpp \
 	CQValidator.cpp \
@@ -170,13 +168,6 @@ SOURCES	+= \
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
-
-!contains(DEFINES, WITH_QWT3D) {
-  HEADERS -= CQBarChart.h
-  SOURCES -= CQBarChart.cpp
-}
-
-
 
 # FORMS += CMCAResultSubwidget.ui
 # FORMS += CQCompartment.ui
