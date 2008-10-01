@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLSaveOptionsDialog.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 15:13:03 $
+//   $Date: 2008/10/01 09:11:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,7 @@ CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char 
   pLayout->addSpacing(5);
   // the compression feature is disabled for now since the libsbml we use
   // does not have the dependencies
+  //this->mpLayout->addSpacing(8);
   //this->mpLayout->addWidget(this->mpCompressionGroup);
   // add the buttons to the compression group
   this->mpCompressionGroup->setRadioButtonExclusive(true);
@@ -65,6 +66,7 @@ CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char 
   new QRadioButton("bzip2", this->mpCompressionGroup);
   this->mpCompressionGroup->setButton(this->mCompressionType);
   this->mpCompressionGroup->hide();
+  this->mpLayout->addSpacing(8);
   pLayout = new QHBoxLayout();
   this->mpLayout->addLayout(pLayout);
   QToolTip::add(this->mpMIRIAMCheckbox, "Export additional MIRIAM annotation in the COPASI namespace.");
@@ -72,6 +74,7 @@ CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char 
   pLayout->addStretch();
   pLayout->addWidget(this->mpMIRIAMCheckbox);
   pLayout->addStretch();
+  this->mpLayout->addSpacing(8);
   pLayout = new QHBoxLayout();
   this->mpLayout->addLayout(pLayout);
   // make OK button the default
@@ -82,6 +85,7 @@ CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char 
   pLayout->addWidget(this->mpCancelButton);
   pLayout->addStretch();
   this->mpOKButton->setDefault(true);
+  this->mpLayout->addSpacing(5);
   // set the tab order
   this->setTabOrder(this->mpVersionBox, this->mpCompressionGroup);
   this->setTabOrder(this->mpCompressionGroup, this->mpMIRIAMCheckbox);
