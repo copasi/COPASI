@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/12 18:04:11 $
+//   $Date: 2008/10/01 16:31:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,36 +159,9 @@ void CFitProblem::initializeParameter()
   *mpParmMaximize = false;
 
   mpParmSteadyStateCN =
-    assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pKEY;
+    assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
   mpParmTimeCourseCN =
-    assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pKEY;
-
-  CCopasiVectorN< CCopasiTask > * pTasks = NULL;
-  if (CCopasiDataModel::Global)
-    pTasks = CCopasiDataModel::Global->getTaskList();
-  if (pTasks == NULL)
-    dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
-
-  if (pTasks)
-    {
-      unsigned C_INT32 i, imax = pTasks->size();
-
-      if (*mpParmSteadyStateCN == "")
-        for (i = 0; i < imax; i++)
-          if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
-            {
-              *mpParmSteadyStateCN = (*pTasks)[i]->getCN();
-              break;
-            }
-
-      if (*mpParmTimeCourseCN == "")
-        for (i = 0; i < imax; i++)
-          if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
-            {
-              *mpParmTimeCourseCN = (*pTasks)[i]->getCN();
-              break;
-            }
-    }
+    assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
 
   assertGroup("Experiment Set");
 
@@ -201,8 +174,37 @@ void CFitProblem::initializeParameter()
 
 bool CFitProblem::elevateChildren()
 {
-  // This call is necessarry since CFitProblem is derived from COptProblem.
+  // This call is necessary since CFitProblem is derived from COptProblem.
   if (!COptProblem::elevateChildren()) return false;
+
+  CCopasiVectorN< CCopasiTask > * pTasks = NULL;
+  if (CCopasiDataModel::Global)
+    pTasks = CCopasiDataModel::Global->getTaskList();
+  if (pTasks == NULL)
+    pTasks = dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
+
+  if (pTasks)
+    {
+      unsigned C_INT32 i, imax = pTasks->size();
+
+      if (!mpParmSteadyStateCN->compare(0, 5 , "Task_") ||
+          *mpParmSteadyStateCN == "")
+        for (i = 0; i < imax; i++)
+          if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
+            {
+              *mpParmSteadyStateCN = (*pTasks)[i]->getCN();
+              break;
+            }
+
+      if (!mpParmTimeCourseCN->compare(0, 5 , "Task_") ||
+          *mpParmTimeCourseCN == "")
+        for (i = 0; i < imax; i++)
+          if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
+            {
+              *mpParmTimeCourseCN = (*pTasks)[i]->getCN();
+              break;
+            }
+    }
 
   std::map<std::string, std::string> ExperimentMap;
   CCopasiParameterGroup * pGroup;
