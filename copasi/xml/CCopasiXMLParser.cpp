@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.187 $
+//   $Revision: 1.188 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Date: 2008/10/01 14:59:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2282,7 +2282,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                              // Old file format support
+    case MathML:                                               // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2380,7 +2380,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                              // Old file format support
+    case MathML:                                               // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -4958,7 +4958,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
           p = mCommon.pCurrentPlotItem->getParameter(mCommon.pCurrentParameter->getObjectName());
           if (p)
             {
-              switch (mCommon.pCurrentParameter->getType())
+              switch (p->getType())
                 {
                 case CCopasiParameter::INT:
                   p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
@@ -5165,7 +5165,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
           p = mCommon.pCurrentPlot->getParameter(mCommon.pCurrentParameter->getObjectName());
           if (p)
             {
-              switch (mCommon.pCurrentParameter->getType())
+              switch (p->getType())
                 {
                 case CCopasiParameter::INT:
                   p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
@@ -5239,7 +5239,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
           p = mCommon.pCurrentPlot->getParameter(mCommon.pCurrentParameter->getObjectName());
           if (p)
             {
-              switch (mCommon.pCurrentParameter->getType())
+              switch (p->getType())
                 {
                 case CCopasiParameter::GROUP:
                   * (CCopasiParameterGroup *) p =
@@ -7174,7 +7174,7 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
                        pszName, "ListOfTasks", mParser.getCurrentLineNumber());
       if (!mCommon.pTaskList)
         {
-          mCommon.pTaskList = new CCopasiVectorN<CCopasiTask>;
+          mCommon.pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
         }
       break;
 
@@ -7293,6 +7293,8 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           break;
         case CCopasiTask::optimization:
           mCommon.pCurrentTask = new COptTask(Type, mCommon.pTaskList);
+          mCommon.pCurrentTask->getProblem()->assertParameter("Steady-State", CCopasiParameter::STRING, std::string(""));
+          mCommon.pCurrentTask->getProblem()->assertParameter("Time-Course", CCopasiParameter::STRING, std::string(""));
           break;
         case CCopasiTask::parameterFitting:
           mCommon.pCurrentTask = new CFitTask(Type, mCommon.pTaskList);
@@ -7611,7 +7613,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
       if (p)
         {
-          switch (mCommon.pCurrentParameter->getType())
+          switch (p->getType())
             {
             case CCopasiParameter::INT:
               p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
@@ -7688,7 +7690,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
       if (p)
         {
-          switch (mCommon.pCurrentParameter->getType())
+          switch (p->getType())
             {
             case CCopasiParameter::GROUP:
               * (CCopasiParameterGroup *) p =
@@ -8157,7 +8159,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
       p = mCommon.pCurrentTask->getMethod()->getParameter(mCommon.pCurrentParameter->getObjectName());
       if (p)
         {
-          switch (mCommon.pCurrentParameter->getType())
+          switch (p->getType())
             {
             case CCopasiParameter::INT:
               p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
@@ -8232,7 +8234,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
       p = mCommon.pCurrentTask->getProblem()->getParameter(mCommon.pCurrentParameter->getObjectName());
       if (p)
         {
-          switch (mCommon.pCurrentParameter->getType())
+          switch (p->getType())
             {
             case CCopasiParameter::GROUP:
               * (CCopasiParameterGroup *) p =
