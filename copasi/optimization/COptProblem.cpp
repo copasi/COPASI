@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:08 $
+//   $Date: 2008/10/01 14:53:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,22 +164,12 @@ bool COptProblem::elevateChildren()
       CCopasiParameter * pParameter;
       if ((pParameter = getParameter("Steady-State")) != NULL)
         {
-          mpSubtask =
-            dynamic_cast< CCopasiTask * >(GlobalKeys.get(*pParameter->getValue().pKEY));
-
-          if (mpSubtask != NULL)
-            *mpParmSubtaskCN = mpSubtask->getCN();
-
+          setSubtaskType(CCopasiTask::steadyState);
           removeParameter("Steady-State");
         }
       else if ((pParameter = getParameter("Time-Course")) != NULL)
         {
-          mpSubtask =
-            dynamic_cast< CCopasiTask * >(GlobalKeys.get(*pParameter->getValue().pKEY));
-
-          if (mpSubtask != NULL)
-            *mpParmSubtaskCN = mpSubtask->getCN();
-
+          setSubtaskType(CCopasiTask::timeCourse);
           removeParameter("Time-Course");
         }
 
