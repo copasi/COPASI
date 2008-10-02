@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.132 $
+//   $Revision: 1.133 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/24 07:24:03 $
+//   $Date: 2008/10/02 10:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,6 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 
 // TODO Antialias Nodes and arrowheads, right now it looks as if only the edges
 // do get antialiasing
-const double CQGLNetworkPainter::PLANE_DEPTH = 1.0;
 
 CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent, const char *name)
     : QGLWidget(format, parent, name)
@@ -79,7 +78,7 @@ CQGLNetworkPainter::~CQGLNetworkPainter()
       ++it;
     }
   // delete the node display list
-  glDeleteLists(this->mDisplayLists, 2);
+  glDeleteLists(this->mDisplayLists, 6);
 }
 
 const CLPoint& CQGLNetworkPainter::getGraphMin()
@@ -295,7 +294,6 @@ void CQGLNetworkPainter::drawGraph()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   unsigned int i;
-  glCallList(this->mDisplayLists);
   if ((pParentLayoutWindow != NULL) && this->mLabelShape == CIRCLE &&
       (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)) // draw color legend
     {
@@ -326,7 +324,7 @@ void CQGLNetworkPainter::drawGraph()
       // draw curves of node
       curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
       itCurve = curveRangeIt.first;
-      glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
+      glColor3f(0.3f, 0.3f, 0.3f); // edges in dark blue
       while (itCurve != curveRangeIt.second)
         {
           drawEdge((*itCurve).second);
@@ -340,7 +338,7 @@ void CQGLNetworkPainter::drawGraph()
         }
     }
 
-  glColor3f(0.0f, 0.0f, 0.5f); // edges in dark blue
+  glColor3f(0.3f, 0.3f, 0.3f); // edges in dark blue
   for (i = 0;i < viewerCurves.size();i++) // draw edges that do not directly belong to a node (reaction curves)
     {
       drawEdge(viewerCurves[i]);
@@ -446,8 +444,9 @@ void CQGLNetworkPainter::drawColorLegend()
 }
 
 // draw compartment node as rectangle
-void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n) // draw node as filled circle
+void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
 {
+  /*
   // draw blue rectangle
   glColor3f(0.891f, 1.0f, 0.84f);
   // draw rectangle as background for text
@@ -477,6 +476,44 @@ void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n) // draw node as fill
   gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
   glPopMatrix();
   gluDeleteQuadric(qobj);
+  */
+  float width = n.getWidth();
+  float height = n.getHeight();
+  float x = n.getX();
+  float y = n.getY();
+  GLfloat mirrorY[] = {-1.0f, 0.0f, 0.0f, 0.0f
+                        , 0.0f, 1.0f, 0.0f, 0.0f
+                        , 0.0f, 0.0f, 1.0f, 0.0f
+                        , 0.0f, 0.0f, 0.0f, 1.0f};
+  glPushMatrix();
+  // draw one end
+  glLoadIdentity();
+  float translateX = x;
+  glPushMatrix();
+  // additional translation 0.1*width needed because we mirror the
+  // element
+  glTranslatef(translateX + height*0.1, y, 0.0f);
+  glScalef(height, height, 1.0f);
+  // mirror it at the y axis
+  glMultMatrixf(mirrorY);
+  glCallList(mDisplayLists + 1);
+  glPopMatrix();
+  // draw the center
+  // scale it to the correct width
+  translateX += 0.1 * height;
+  glTranslatef(translateX, y, 0.0f);
+  // the scaling has to be different
+  float scaledWidth = width - (0.2f * height);
+  glScalef(scaledWidth, height, 1.0f);
+  glCallList(mDisplayLists + 2);
+  // draw the other end
+  glLoadIdentity();
+  translateX += scaledWidth;
+  glTranslatef(translateX, y, 0.0f);
+  glScalef(height, height, 1.0f);
+  glCallList(mDisplayLists + 1);
+  // scale the object the the correct size
+  glPopMatrix();
 }
 
 // draw node as circle
@@ -545,6 +582,44 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
     }
   else
     {
+      float width = n.getWidth();
+      float height = n.getHeight();
+      float x = n.getX();
+      float y = n.getY();
+      GLfloat mirrorY[] = {-1.0f, 0.0f, 0.0f, 0.0f
+                            , 0.0f, 1.0f, 0.0f, 0.0f
+                            , 0.0f, 0.0f, 1.0f, 0.0f
+                            , 0.0f, 0.0f, 0.0f, 1.0f};
+      glPushMatrix();
+      // draw one end
+      glLoadIdentity();
+      float translateX = x;
+      glPushMatrix();
+      // additional translation 0.1*width needed because we mirror the
+      // element
+      glTranslatef(translateX + height*0.1, y, 0.0f);
+      glScalef(height, height, 1.0f);
+      // mirror it at the y axis
+      glMultMatrixf(mirrorY);
+      glCallList(mDisplayLists + 4);
+      glPopMatrix();
+      // draw the center
+      // scale it to the correct width
+      translateX += 0.1 * height;
+      glTranslatef(translateX, y, 0.0f);
+      // the scaling has to be different
+      float scaledWidth = width - (0.2f * height);
+      glScalef(scaledWidth, height, 1.0f);
+      glCallList(mDisplayLists + 5);
+      // draw the other end
+      glLoadIdentity();
+      translateX += scaledWidth;
+      glTranslatef(translateX, y, 0.0f);
+      glScalef(height, height, 1.0f);
+      glCallList(mDisplayLists + 4);
+      // scale the object the the correct size
+      glPopMatrix();
+      /*
       // draw blue rectangle
       glColor3f(0.7f, 0.8f, 1.0f); // label background color (61,237,181)
       // draw rectangle as background for text
@@ -574,12 +649,21 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
       glPopMatrix();
       gluDeleteQuadric(qobj);
+      */
     }
 }
 
 // draw a curve: at the moment just a line from the start point to the end point (for each segment)
 void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
 {
+  glLineWidth(2.0);
+  // Depth test has to be disabled when drawing lines,
+  // especially if the lines have a thinkness greater 1
+  // otherwise they look ugly because break appear at the end of the lines and
+  // they seem to be disconnected.
+  // This seems to be a feature of OpenGL rather than a bug. (See
+  // http://www.3dsource.de/faq/rasterization.htm)
+  glDisable(GL_DEPTH_TEST);
   std::vector<CLLineSegment> segments = c.getCurveSegments();
   unsigned int i;
   for (int k = 0;k < c.getNumCurveSegments();k++)
@@ -597,16 +681,16 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
           //now paint bezier as line strip
           // use an evaluator since this is probably a lot more efficient
           GLfloat controlPts[4][3] = {
-                                       {startPoint.getX(), startPoint.getY(), 0.0},
-                                       {base1.getX(), base1.getY(), 0.0},
-                                       {base2.getX(), base2.getY(), 0.0},
-                                       {endPoint.getX(), endPoint.getY(), 0.0}
+                                       {startPoint.getX(), startPoint.getY(), 0.004},
+                                       {base1.getX(), base1.getY(), 0.004},
+                                       {base2.getX(), base2.getY(), 0.004},
+                                       {endPoint.getX(), endPoint.getY(), 0.004}
                                      };
           // enable the evaluator to draw the cubic beziers
-          glMap1f(GL_MAP1_VERTEX_3, 0.0f, 100.0f, 3, 4, &controlPts[0][0]);
+          glMap1f(GL_MAP1_VERTEX_3, 0.0f, 20.0f, 3, 4, &controlPts[0][0]);
           glEnable(GL_MAP1_VERTEX_3);
           glBegin(GL_LINE_STRIP);
-          for (i = 0;i <= 100;++i)
+          for (i = 0;i <= 20;++i)
             {
               // evaluate the function
               glEvalCoord1f((GLfloat)i);
@@ -617,17 +701,17 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
       else
         {// just draw a straight line
           glBegin(GL_LINE_STRIP);
-          double x = startPoint.getX();
-          double y = startPoint.getY();
-          glVertex2d(x, y);
-          x = endPoint.getX();
-          y = endPoint.getY();
-          glVertex2d(x, y);
+          glVertex3d(startPoint.getX(), startPoint.getY(), 0.004);
+          glVertex3d(endPoint.getX(), endPoint.getY(), 0.004);
           glEnd();
         }
     }
+  glLineWidth(1.0);
   if (c.hasArrowP())
-    drawArrow(c.getArrow(), c.getRole());
+    {
+      drawArrow(c.getArrow(), c.getRole());
+    }
+  glEnable(GL_DEPTH_TEST);
 }
 
 void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
@@ -1962,65 +2046,179 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
 
 void CQGLNetworkPainter::initializeGL()
 {
-  qglClearColor(QColor(255, 255, 240, QColor::Rgb));
+  qglClearColor(QColor(255, 255, 255, QColor::Rgb));
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
   glEnable(GL_LINE_SMOOTH);
-  glDisable(GL_ALPHA_TEST);
-  glEnable(GL_POINT_SMOOTH);
-  glEnable(GL_POLYGON_SMOOTH);
-
+  //glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+  glEnable(GL_ALPHA_TEST);
+  //glEnable(GL_POINT_SMOOTH);
+  //glEnable(GL_POLYGON_SMOOTH);
+  glDisable(GL_LINE_STIPPLE);
   glShadeModel(GL_SMOOTH);
 
   glGenTextures(1, textureNames);
   // convert the node into a display list that is created once and call once
   // for each node.
   // this might safe some cpu cycles, especially when the nodes get more fancy.
-  this->mDisplayLists = glGenLists(2);
-  GLUquadricObj* qobj = NULL;
+  this->mDisplayLists = glGenLists(6);
   // the first display list if for a background plane that allows us to create
   // nice shadows
   CLPoint p1 = this->getGraphMin();
   CLPoint p2 = this->getGraphMax();
+  // this list is for the rectangular nodes
+  GLfloat mirrorX[] = {1.0f, 0.0f, 0.0f, 0.0f
+                       , 0.0f, -1.0f, 0.0f, 0.0f
+                       , 0.0f, 0.0f, 1.0f, 0.0f
+                       , 0.0f, 0.0f, 0.0f, 1.0f};
+  GLfloat compartmentColor[] = {0.737f, 0.792f, 0.729f};
+  GLfloat compartmentColor_080[] = {compartmentColor[0] + (1.0f - compartmentColor[0]) * 0.8f, compartmentColor[1] + (1.0f - compartmentColor[1]) * 0.8f, compartmentColor[2] + (1.0f - compartmentColor[2]) * 0.8f};
+  GLfloat speciesColor[] = {0.824f, 0.824f, 0.902f};
+  GLfloat speciesColor_080[] = {speciesColor[0] + (1.0f - speciesColor[0]) * 0.8f, speciesColor[1] + (1.0f - speciesColor[1]) * 0.8f, speciesColor[2] + (1.0f - speciesColor[2]) * 0.8f};
   glNewList(mDisplayLists, GL_COMPILE);
-  glColor3f(0.98f, 0.98f, 0.96f);
+  // approximate a quarter circle by a triangle fan with 3 triangles
+  glColor3f(0.1f, 0.1f, 0.1f);
+  glLineWidth(1.0f);
+  // raise the line strip a bit to circumvent clipping errors
+  glBegin(GL_LINE_STRIP);
+  glVertex3f(0.0f, 0.5f, 0.001f);
+  glVertex3f(0.05f, 0.4866f, 0.001f);
+  glVertex3f(0.0866f, 0.45f, 0.001f);
+  glVertex3f(0.1f, 0.4f, 0.001f);
+  glVertex3f(0.1f, 0.0f, 0.001f);
+  glEnd();
+  glBegin(GL_TRIANGLE_FAN);
+  glColor3fv(compartmentColor_080);
+  glVertex2f(0.0f, 0.4f);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glVertex2f(0.0f, 0.5f);
+  glColor3f(speciesColor[0] + (1.0f - speciesColor[0])*0.9f, speciesColor[1] + (1.0f - speciesColor[1])*0.9f, speciesColor[2] + (1.0f - speciesColor[2])*0.9f); // 90% value
+  glVertex2f(0.05f, 0.4866f);
+  glColor3f(speciesColor[0] + (1.0f - speciesColor[0])*0.973f, speciesColor[1] + (1.0f - speciesColor[1])*0.973f, speciesColor[2] + (1.0f - speciesColor[2])*0.973f);  // 97.32% value
+  glVertex2f(0.0866f, 0.45f);
+  glColor3fv(compartmentColor_080);
+  glVertex2f(0.1f, 0.4f);
+  glEnd();
   glBegin(GL_POLYGON);
-  glVertex3d(p1.getX(), p1.getY(), CQGLNetworkPainter::PLANE_DEPTH);
-  glVertex3d(p2.getX(), p1.getY(), CQGLNetworkPainter::PLANE_DEPTH);
-  glVertex3d(p2.getX(), p2.getY(), CQGLNetworkPainter::PLANE_DEPTH);
-  glVertex3d(p1.getX(), p2.getY(), CQGLNetworkPainter::PLANE_DEPTH);
+  glColor3fv(compartmentColor_080);
+  glVertex2f(0.0f, 0.4f);
+  glVertex2f(0.1f, 0.4f);
+  glColor3fv(compartmentColor);
+  glVertex2f(0.1f, 0.0f);
+  glVertex2f(0.0f, 0.0f);
+  glEnd();
+  glEndList();
+  // now copy the first call list and mirror the copy at the x-axis
+  glNewList(mDisplayLists + 1, GL_COMPILE);
+  glPushMatrix();
+  glTranslatef(0.0f, 0.5f, 0.0f);
+  glCallList(mDisplayLists);
+  // mirror transformation
+  glMultMatrixf(mirrorX);
+  glCallList(mDisplayLists);
+  glPopMatrix();
+  glEndList();
+  // next list is the center piece for the compartment glyph
+  glNewList(mDisplayLists + 2, GL_COMPILE);
+  glColor3f(0.1f, 0.1f, 0.1f);
+  glLineWidth(1.0f);
+  // raise the lines  a bit to circumvent clipping errors
+  glBegin(GL_LINES);
+  glVertex3f(0.0f, 1.0f, 0.001f);
+  glVertex3f(1.0f, 1.0f, 0.001f);
+  glVertex3f(0.0f, 0.0f, 0.001f);
+  glVertex3f(1.0f, 0.0f, 0.001f);
+  glEnd();
+  glBegin(GL_POLYGON);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glVertex2f(0.0f, 1.0f);
+  glVertex2f(1.0f, 1.0f);
+  glColor3fv(compartmentColor);
+  glVertex2f(1.0f, 0.5f);
+  glVertex2f(0.0f, 0.5f);
+  glEnd();
+  glBegin(GL_POLYGON);
+  glColor3fv(compartmentColor);
+  glVertex2f(0.0f, 0.5f);
+  glVertex2f(1.0f, 0.5f);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glVertex2f(1.0f, 0.0f);
+  glVertex2f(0.0f, 0.0f);
   glEnd();
   glEndList();
 
-  // second list is for the rectangular nodes
-  glNewList(mDisplayLists + 1, GL_COMPILE);
-  glBegin(GL_POLYGON);
-  glVertex2d(0.05, 0.0);
-  glVertex2d(0.95, 0.0);
-  glVertex2d(0.95, 0.05);
-  glVertex2d(1.0 , 0.05);
-  glVertex2d(1.0 , 0.95);
-  glVertex2d(0.95, 0.95);
-  glVertex2d(0.95, 1.0);
-  glVertex2d(0.05, 1.0);
-  glVertex2d(0.05, 0.95);
-  glVertex2d(0.0 , 0.95);
-  glVertex2d(0.0 , 0.05);
-  glVertex2d(0.05, 0.05);
+  // call lists for the species nodes
+  glNewList(mDisplayLists + 3, GL_COMPILE);
+  // approximate a quarter circle by a triangle fan with 3 triangles
+  glColor3f(0.1f, 0.1f, 0.1f);
+  glLineWidth(1.0f);
+  // raise the line strip a bit to circumvent clipping errors
+  glBegin(GL_LINE_STRIP);
+  glVertex3f(0.0f, 0.5f, 0.01f);
+  glVertex3f(0.05f, 0.4866f, 0.01f);
+  glVertex3f(0.0866f, 0.45f, 0.01f);
+  glVertex3f(0.1f, 0.4f, 0.01f);
+  glVertex3f(0.1f, 0.0f, 0.01f);
   glEnd();
-  qobj = gluNewQuadric();
-  gluQuadricDrawStyle(qobj, GLU_FILL);
+  glBegin(GL_TRIANGLE_FAN);
+  glColor3fv(speciesColor_080);
+  glVertex3f(0.0f, 0.4f, 0.005f);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(0.0f, 0.5f, 0.005f);
+  glColor3f(speciesColor[0] + (1.0f - speciesColor[0])*0.9f, speciesColor[1] + (1.0f - speciesColor[1])*0.9f, speciesColor[2] + (1.0f - speciesColor[2])*0.9f); // 90% value
+  glVertex3f(0.05f, 0.4866f, 0.005f);
+  glColor3f(speciesColor[0] + (1.0f - speciesColor[0])*0.973f, speciesColor[1] + (1.0f - speciesColor[1])*0.973f, speciesColor[2] + (1.0f - speciesColor[2])*0.973f);  // 97.32% value
+  glVertex3f(0.0866f, 0.45f, 0.005f);
+  glColor3fv(speciesColor_080);
+  glVertex3f(0.1f, 0.4f, 0.005f);
+  glEnd();
+  glBegin(GL_POLYGON);
+  glColor3fv(speciesColor_080);
+  glVertex3f(0.0f, 0.4f, 0.005f);
+  glVertex3f(0.1f, 0.4f, 0.005f);
+  glColor3fv(speciesColor);
+  glVertex3f(0.1f, 0.0f, 0.005f);
+  glVertex3f(0.0f, 0.0f, 0.005f);
+  glEnd();
+  glEndList();
+  // now copy the first call list and mirror the copy at the x-axis
+  glNewList(mDisplayLists + 4, GL_COMPILE);
   glPushMatrix();
-  glTranslatef(0.05f, 0.05f , 0.0f);
-  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 180, 90);
-  glTranslatef(0.90f, 0.0f , 0.0f);
-  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 90, 90);
-  glTranslatef(0.0f, 0.90f, 0.0f);
-  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 0, 90);
-  glTranslatef(-0.90f , 0.0f , 0.0f);
-  gluPartialDisk(qobj, 0.0, 0.05, 10, 10, 270, 90);
+  glTranslatef(0.0f, 0.5f, 0.0f);
+  glCallList(mDisplayLists);
+  // mirror transformation
+  glMultMatrixf(mirrorX);
+  glCallList(mDisplayLists);
   glPopMatrix();
-  gluDeleteQuadric(qobj);
+  glEndList();
+  // next list is the center piece for the species glyph
+  glNewList(mDisplayLists + 5, GL_COMPILE);
+  glColor3f(0.1f, 0.1f, 0.1f);
+  glLineWidth(1.0f);
+  // raise the lines  a bit to circumvent clipping errors
+  glBegin(GL_LINES);
+  glVertex3f(0.0f, 1.0f, 0.01f);
+  glVertex3f(1.0f, 1.0f, 0.01f);
+  glVertex3f(0.0f, 0.0f, 0.01f);
+  glVertex3f(1.0f, 0.0f, 0.01f);
+  glEnd();
+  glBegin(GL_POLYGON);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(0.0f, 1.0f, 0.005f);
+  glVertex3f(1.0f, 1.0f, 0.005f);
+  glColor3fv(speciesColor);
+  glVertex3f(1.0f, 0.5f, 0.005f);
+  glVertex3f(0.0f, 0.5f, 0.005f);
+  glEnd();
+  glBegin(GL_POLYGON);
+  glColor3fv(speciesColor);
+  glVertex3f(0.0f, 0.5f, 0.005f);
+  glVertex3f(1.0f, 0.5f, 0.005f);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(1.0f, 0.0f, 0.005f);
+  glVertex3f(0.0f, 0.0f, 0.005f);
+  glEnd();
   glEndList();
 }
 
@@ -2031,10 +2229,6 @@ void CQGLNetworkPainter::resizeGL(int w, int h)
 
   glMatrixMode(GL_PROJECTION);    // Select The Projection Matrix
   glLoadIdentity();             // Reset The Projection Matrix
-  //  gluOrtho2D((GLdouble)mgraphMin.getX(),
-  //             (GLdouble)mgraphMax.getX(),
-  //             (GLdouble)mgraphMax.getY(),
-  //             (GLdouble)mgraphMin.getY()); // y: 0.0 is bottom left instead of top left as in SBML
   gluOrtho2D((GLdouble)mCurrentPositionX,
              (GLdouble)(mCurrentPositionX + w / mCurrentZoom),
              (GLdouble)(mCurrentPositionY + h / mCurrentZoom),
