@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.133 $
+//   $Revision: 1.134 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/02 10:34:38 $
+//   $Date: 2008/10/02 14:58:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2004,7 +2004,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
 {
   mCurrentZoom = 1.0;
   mCurrentPositionX = 0.0;
-  mCurrentPositionX = 0.0;
+  mCurrentPositionY = 0.0;
   mLabelShape = RECTANGLE;
   mgraphMin = CLPoint(0.0, 0.0);
   mgraphMax = CLPoint(250.0, 250.0);
@@ -2055,7 +2055,6 @@ void CQGLNetworkPainter::initializeGL()
   glEnable(GL_ALPHA_TEST);
   //glEnable(GL_POINT_SMOOTH);
   //glEnable(GL_POLYGON_SMOOTH);
-  glDisable(GL_LINE_STIPPLE);
   glShadeModel(GL_SMOOTH);
 
   glGenTextures(1, textureNames);
@@ -2186,7 +2185,7 @@ void CQGLNetworkPainter::initializeGL()
   glNewList(mDisplayLists + 4, GL_COMPILE);
   glPushMatrix();
   glTranslatef(0.0f, 0.5f, 0.0f);
-  glCallList(mDisplayLists);
+  glCallList(mDisplayLists + 3);
   // mirror transformation
   glMultMatrixf(mirrorX);
   glCallList(mDisplayLists);
