@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.241 $
+//   $Revision: 1.242 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/10/02 16:32:34 $
+//   $Author: shoops $
+//   $Date: 2008/10/02 18:40:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,7 +322,7 @@ void CopasiUI3Window::createActions()
   mpaOpen = new QAction(QPixmap(fileopen), "&Open...", CTRL + Key_O, this, "open");
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
 
-  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "Cop&asi Files...", CTRL + Key_A, this, "copasifiles");
+  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "COP&ASI Files...", CTRL + Key_A, this, "copasifiles");
   connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
 
   mpaOpenSBMLFiles = new QAction(QPixmap(fileopen), "S&BML Files...", CTRL + Key_B, this, "sbmlfiles");
@@ -798,53 +798,33 @@ void CopasiUI3Window::slotFileOpen(QString file)
  **
  ** Parameters:- QString file. Example file.
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on
- **              Files->Examples->Copasi Files
+ ** Description:- This method is called when the users clicks on
+ **              Files->Examples->COPASI Files
  *******************************************************************************************/
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
 {
-  if (file.isNull())
-    {
-      CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
-      //Following uses CopasiFileDialog::LastDir set above.
-      file = CopasiFileDialog::getOpenFileName(this,
-             "Examples File Dialog",
-             QString::null,
-             "COPASI Files (*.gps *.cps);;All Files (*.*);;",
-             "Choose a file");
-    }
-  if (QFile::exists(file))
-  {slotFileOpen(file);}
+  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  slotFileOpen(file);
 }
 
 /***************CopasiUI3Window::slotFileExamplesSBMLFiles()******
  **
  ** Parameters:- QString file. Example file.
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on Open
+ ** Description:- This method is called when the users clicks on Open
  **              Files->Examples->SBML Files
  *******************************************************************************************/
 void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 {
-  if (file.isNull())
-    {
-      CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
-      //Following uses CopasiFileDialog::LastDir set above.
-      file = CopasiFileDialog::getOpenFileName(this,
-             "Examples File Dialog",
-             QString::null,
-             "SBML Files (*.xml);;All Files (*.*);;",
-             "Choose a file");
-    }
-  if (QFile::exists(file))
-  {slotImportSBML(file);}
+  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  slotImportSBML(file);
 }
 
 /***************CopasiUI3Window::slotFileSave()*****************
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the save as
+ ** Description:- This method is called when the users clicks on the save as
  **              option in the menu File and it is used to save the document information
  *******************************************************************************************/
 bool CopasiUI3Window::slotFileSave()
@@ -996,7 +976,7 @@ void CopasiUI3Window::CleanUp()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the print as
+ ** Description:- This method is called when the users clicks on the print as
  **              option in the menu File and is used to send the document ro
  **              printing
  *******************************************************************************************/
@@ -1007,7 +987,7 @@ void CopasiUI3Window::slotFilePrint()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is just to display the message
+ ** Description:- This method is just to display the message
  **
  *******************************************************************************************/
 void CopasiUI3Window::about()
@@ -1030,7 +1010,7 @@ void CopasiUI3Window::license()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is help about the QT application
+ ** Description:- This method is help about the QT application
  *******************************************************************************************/
 void CopasiUI3Window::aboutQt()
 {
