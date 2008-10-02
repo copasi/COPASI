@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/15 15:04:58 $
+//   $Date: 2008/10/02 20:03:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,9 +145,26 @@ class CQGLNetworkPainter : public QGLWidget
     void signalZoomOut();
 
   private:
-    static const double PLANE_DEPTH;
-
     static const C_FLOAT64 DEFAULT_NODE_SIZE;
+    static const double COMPARTMENT_DEPTH;
+    static const double COMPARTMENT_SHADOW_DEPTH;
+    static const double COMPARTMENT_FRAME_DEPTH;
+
+    static const double SPECIES_DEPTH;
+    static const double SPECIES_SHADOW_DEPTH;
+    static const double SPECIES_FRAME_DEPTH;
+
+    static const double SPECIESREFERENCE_DEPTH;
+
+    static const GLfloat MIRROR_X[16];
+    static const GLfloat MIRROR_Y[16];
+
+    GLfloat mSpeciesColor[4];
+    GLfloat mCompartmentColor[4];
+    GLfloat mShadowColor[4];
+    GLfloat mSpeciesReferenceColor[4];
+    GLfloat mTextColor[4];
+    GLfloat mFrameColor[4];
 
     CLPoint mgraphMin;
     CLPoint mgraphMax;
