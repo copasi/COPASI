@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 19:36:55 $
+//   $Date: 2008/10/02 18:38:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,28 +288,15 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
 //******************************************************************
 //******************************************************************
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl, bool
-#ifdef WITH_QWT3D
-    barChart
-#endif
-    , bool
-#ifdef WITH_QWT3D
-    slider
-#endif
-    , bool
-#ifdef WITH_QWT3D
-    barChartFirst
-#endif
-)
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl,
+    bool barChart, bool slider, bool barChartFirst)
     : QVBox(parent, name, fl),
     mpColorScale(NULL)
 {
   showBarChart = false;
   mBarChartFilled = false;
 
-#ifdef WITH_QWT3D
   showBarChart = barChart;
-#endif
   mpHBoxSelection = new QHBox(this);
   mpSelectionTable = new QTable(mpHBoxSelection);
   mpSelectionTable->verticalHeader()->hide();
@@ -329,7 +316,6 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpContentTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   mpStack->addWidget(mpContentTable, 0);
 
-#ifdef WITH_QWT3D
   if (showBarChart)
     {
       plot3d = new CQBarChart(mpStack);
@@ -345,9 +331,6 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
       else
         mpButton->setText("bars");
     }
-#else
-  disableBarChart();
-#endif
 
   connect(mpContentTable, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(tableDoubleClicked()));
   connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
@@ -486,13 +469,12 @@ void CQArrayAnnotationsWidget::clearWidget()
   mpSelectionTable->setNumRows(0);
   mpContentTable->setNumCols(0);
   mpContentTable->setNumRows(0);
-#ifdef WITH_QWT3D
+
   if (showBarChart && mBarChartFilled)
     {
       plot3d->emptyPlot();
       mBarChartFilled = false;
     }
-#endif
 }
 
 void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
@@ -810,8 +792,6 @@ void CQArrayAnnotationsWidget::disableBarChart()
 
 void CQArrayAnnotationsWidget::disableSlider()
 {
-#ifdef WITH_QWT3D
-
   if (plot3d->sliderActive())
     {
       plot3d->mpPlot->mpSliderColumn->hide();
@@ -820,12 +800,10 @@ void CQArrayAnnotationsWidget::disableSlider()
       plot3d->mpPlot->mpLabelRow->clear();
       plot3d->mpPlot->mpSlider = false;
     }
-#endif
 }
 
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
-#ifdef WITH_QWT3D
   if (showBarChart && plot3d->sliderActive())
     {
       int col = plot3d->mpPlot->mpSliderColumn->value();
@@ -859,12 +837,10 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
             }
         }
     }
-#endif
 }
 
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
-#ifdef WITH_QWT3D
   if (showBarChart && plot3d->sliderActive())
     {
       int col = mpContentTable->currentColumn();
@@ -898,15 +874,12 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
               }
           }
     }
-#endif
 }
 
 void CQArrayAnnotationsWidget::tableDoubleClicked()
 {
-#ifdef WITH_QWT3D
   if (plot3d->sliderActive())
     switchToBarChart();
-#endif
 }
 
 void CQArrayAnnotationsWidget::setColumnSize(int /* dummy1 */, int /* dummy2 */, int size)
@@ -918,8 +891,6 @@ void CQArrayAnnotationsWidget::setColumnSize(int /* dummy1 */, int /* dummy2 */,
 
 void CQArrayAnnotationsWidget::fillBarChart()
 {
-
-#ifdef WITH_QWT3D
   mBarChartFilled = true;
 
   if (!mpArray) return;
@@ -1039,5 +1010,4 @@ void CQArrayAnnotationsWidget::fillBarChart()
           enableBarChart(true);
         }
     }
-#endif
 }

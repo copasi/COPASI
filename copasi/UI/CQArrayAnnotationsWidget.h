@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/14 01:03:22 $
+//   $Author: shoops $
+//   $Date: 2008/10/02 18:38:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,16 +19,13 @@
 #define CQARRAYANN_H
 
 #include <qvbox.h>
-#include "utilities/CAnnotatedMatrix.h"
-#include "mathematics.h"
-
 #include <qhbox.h>
 #include <qpushbutton.h>
 #include <qwidgetstack.h>
 
-#ifdef WITH_QWT3D
-#include "CQBarChart.h"
-#endif
+#include "copasi/UI/CQBarChart.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/mathematics.h"
 
 class QGridLayout;
 class QTable;
@@ -314,9 +311,7 @@ class CQArrayAnnotationsWidget : public QVBox
 
     void clearWidget();
 
-#ifdef WITH_QWT3D
     CQBarChart* plot3d;
-#endif
 
     QHBox* mpHBoxSelection;
     QHBox* mpHBoxContents;

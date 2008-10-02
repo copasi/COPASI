@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.89 $ 
+#   $Revision: 1.90 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/10/01 14:25:19 $ 
+#   $Date: 2008/10/02 18:38:41 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.89 $ $Author: shoops $ $Date: 2008/10/01 14:25:19 $  
+# $Revision: 1.90 $ $Author: shoops $ $Date: 2008/10/02 18:38:41 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -143,7 +143,6 @@ contains(BUILD_OS, Darwin) {
       LIBS += -lqwt
     }
     
-    DEFINES += WITH_QWT3D
     !isEmpty(QWT3D_PATH){
 	  LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
 	  INCLUDEPATH += $${QWT3D_PATH}/include
@@ -256,7 +255,6 @@ contains(BUILD_OS, WIN32) {
   contains(CONFIG, qt) {
     LIBS += -lqwt
     
-    DEFINES += WITH_QWT3D
     release: LIBS += -lqwtplot3d
     debug: LIBS += -lqwtplot3dD
   }
@@ -329,7 +327,6 @@ contains(STATIC_LINKAGE, yes) {
     }
     LIBS += -lqwt
     
-    DEFINES += WITH_QWT3D
     !isEmpty(QWT3D_PATH){
 	  LIBS += -L$${QWT3D_PATH}/lib/
 	  INCLUDEPATH += $${QWT3D_PATH}/include
@@ -476,7 +473,6 @@ contains(BUILD_OS, Linux) {
     }
     LIBS += -lqwt
 
-    DEFINES += WITH_QWT3D
     !isEmpty(QWT3D_PATH){
 	  LIBS += -L$${QWT3D_PATH}/lib/
 	  INCLUDEPATH += $${QWT3D_PATH}/include
