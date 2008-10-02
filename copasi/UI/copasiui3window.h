@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/21 14:11:01 $
+//   $Author: aekamal $
+//   $Date: 2008/10/02 16:32:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,8 +85,7 @@ class CopasiUI3Window : public QMainWindow
   class QSBWShutdownEvent: public QCustomEvent
       {
       public:
-        QSBWShutdownEvent() : QCustomEvent(65434) {}
-      };
+        QSBWShutdownEvent() : QCustomEvent(65434) {}};
   public:
 
     // We expose to methods to SBW, one to load an SBML file
@@ -142,7 +141,8 @@ class CopasiUI3Window : public QMainWindow
 
   protected slots:
     void slotFileOpen(QString file = QString::null);
-    void slotFileExamples(QString file = QString::null);
+    void slotFileExamplesCopasiFiles(QString file = QString::null);
+    void slotFileExamplesSBMLFiles(QString file = QString::null);
     bool slotFileSave();
     bool slotFileSaveAs(QString str = QString::null);
     void newDoc();
@@ -214,7 +214,8 @@ class CopasiUI3Window : public QMainWindow
 
     QAction* mpaNew;
     QAction* mpaOpen;
-    QAction* mpaExamples;
+    QAction* mpaOpenCopasiFiles;
+    QAction* mpaOpenSBMLFiles;
     QAction* mpaSave;
     QAction* mpaSaveAs;
     QAction* mpaImportSBML;
@@ -237,6 +238,8 @@ class CopasiUI3Window : public QMainWindow
     void updateTitle();
     QTimer *mpAutoSaveTimer;
     bool mSuspendAutoSave;
+
+    QPopupMenu * mpMenuExamples;
 
     QPopupMenu * mpMenuRecentFiles;
     void refreshRecentFileMenu();

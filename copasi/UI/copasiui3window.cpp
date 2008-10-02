@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.240 $
+//   $Revision: 1.241 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 13:50:03 $
+//   $Author: aekamal $
+//   $Date: 2008/10/02 16:32:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include <qaction.h>
 #include <qtextedit.h>
 #include <qcombobox.h>
+#include <qfile.h>
 
 #include <vector>
 #include <sstream>
@@ -321,8 +322,11 @@ void CopasiUI3Window::createActions()
   mpaOpen = new QAction(QPixmap(fileopen), "&Open...", CTRL + Key_O, this, "open");
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
 
-  mpaExamples = new QAction(QPixmap(fileopen), "Exa&mples...", CTRL + Key_M, this, "examples");
-  connect(mpaExamples, SIGNAL(activated()), this, SLOT(slotFileExamples()));
+  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "Cop&asi Files...", CTRL + Key_A, this, "copasifiles");
+  connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
+
+  mpaOpenSBMLFiles = new QAction(QPixmap(fileopen), "S&BML Files...", CTRL + Key_B, this, "sbmlfiles");
+  connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
 
   mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
@@ -457,7 +461,12 @@ void CopasiUI3Window::createMenuBar()
 
   mpaNew->addTo(pFileMenu);
   mpaOpen->addTo(pFileMenu);
-  mpaExamples->addTo(pFileMenu);
+
+  mpMenuExamples = new QPopupMenu(this);
+  pFileMenu->insertItem("Examples", mpMenuExamples);
+  mpaOpenCopasiFiles->addTo(mpMenuExamples);
+  mpaOpenSBMLFiles->addTo(mpMenuExamples);
+
   mpaSave->addTo(pFileMenu);
   mpaSaveAs->addTo(pFileMenu);
 
@@ -785,36 +794,50 @@ void CopasiUI3Window::slotFileOpen(QString file)
     }
 }
 
-/***************CopasiUI3Window::slotFileExamples()******
+/***************CopasiUI3Window::slotFileExamplesCopasiFiles()******
+ **
+ ** Parameters:- QString file. Example file.
+ ** Returns  :- void
+ ** Descripton:- This method is called when the users clicks on
+ **              Files->Examples->Copasi Files
+ *******************************************************************************************/
+void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
+{
+  if (file.isNull())
+    {
+      CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+      //Following uses CopasiFileDialog::LastDir set above.
+      file = CopasiFileDialog::getOpenFileName(this,
+             "Examples File Dialog",
+             QString::null,
+             "COPASI Files (*.gps *.cps);;All Files (*.*);;",
+             "Choose a file");
+    }
+  if (QFile::exists(file))
+  {slotFileOpen(file);}
+}
+
+/***************CopasiUI3Window::slotFileExamplesSBMLFiles()******
  **
  ** Parameters:- QString file. Example file.
  ** Returns  :- void
  ** Descripton:- This method is called when the users clicks on Open
- **              option in the menu File
+ **              Files->Examples->SBML Files
  *******************************************************************************************/
-void CopasiUI3Window::slotFileExamples(QString file)
+void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 {
-  if (file == "")
+  if (file.isNull())
     {
-      std::string ExampleDir = "";
-      COptions::getValue("ExampleDir", ExampleDir);
-
-      if (CDirEntry::isDir(ExampleDir))
-        {
-          file = CopasiFileDialog::getOpenFileName(this,
-                 "Examples File Dialog",
-                 FROM_UTF8(ExampleDir),
-                 "COPASI Files (*.gps *.cps);;All Files (*.*);;",
-                 "Choose a file");
-        }
-      else
-        {
-          CQMessageBox::information(this, "Directory Not Found", FROM_UTF8(ExampleDir),
-                                    QMessageBox::Ok, 0);
-        }
+      CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+      //Following uses CopasiFileDialog::LastDir set above.
+      file = CopasiFileDialog::getOpenFileName(this,
+             "Examples File Dialog",
+             QString::null,
+             "SBML Files (*.xml);;All Files (*.*);;",
+             "Choose a file");
     }
-  if (file)
-  {slotFileOpen(file);}
+  if (QFile::exists(file))
+  {slotImportSBML(file);}
 }
 
 /***************CopasiUI3Window::slotFileSave()*****************
