@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.135 $
+//   $Revision: 1.136 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/02 20:03:53 $
+//   $Date: 2008/10/03 12:42:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include <qfontdatabase.h>
 
 #include <iostream>
+#include <limits>
 #include <math.h>
 #include <float.h>
 #include <utility>
@@ -106,7 +107,7 @@ CQGLNetworkPainter::~CQGLNetworkPainter()
       ++it;
     }
   // delete the node display list
-  glDeleteLists(this->mDisplayLists, 6);
+  glDeleteLists(this->mDisplayLists, 10);
 }
 
 const CLPoint& CQGLNetworkPainter::getGraphMin()
@@ -214,7 +215,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
           CLMetabReferenceGlyph::Role r = edgesToNodesOfReaction[j2]->getRole();
           curve.setRole(r);
-          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)  // if there is an associated scpecies node look, whether an arrow has to be created
+          if (edgesToNodesOfReaction[j2]->getMetabGlyph() != NULL)  // if there is an associated species node look whether an arrow has to be created
             {
               // if role is product or sideproduct, create arrow for line
               if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT) || (r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
@@ -227,17 +228,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                       CArrow *ar;
                       if (lastSeg.isBezier())
                         {
-                          BezierCurve *bezier = new BezierCurve();
-                          std::vector<CLPoint> pts = std::vector<CLPoint>();
-                          pts.push_back(lastSeg.getStart());
-                          pts.push_back(lastSeg.getBase1());
-                          pts.push_back(lastSeg.getBase2());
-                          pts.push_back(lastSeg.getEnd());
-                          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-                          C_INT32 num = bezierPts.size();
-                          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-                          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->mCurrentZoom);
-                          delete bezier;
+                          CLLineSegment segForArrow = CLLineSegment(lastSeg.getBase2(), lastSeg.getEnd());
+                          ar = new CArrow(segForArrow, lastSeg.getEnd().getX(), lastSeg.getEnd().getY(), this->mCurrentZoom);
                         }
                       else
                         {
@@ -352,7 +344,7 @@ void CQGLNetworkPainter::drawGraph()
       // draw curves of node
       curveRangeIt = nodeCurveMap.equal_range(viewerNodes[i]);
       itCurve = curveRangeIt.first;
-      glColor4fv(mSpeciesReferenceColor); // edges in dark blue
+      glColor4fv(mSpeciesReferenceColor);
       while (itCurve != curveRangeIt.second)
         {
           drawEdge((*itCurve).second);
@@ -366,7 +358,7 @@ void CQGLNetworkPainter::drawGraph()
         }
     }
 
-  glColor4fv(mSpeciesReferenceColor); // edges in dark blue
+  glColor4fv(mSpeciesReferenceColor);
   for (i = 0;i < viewerCurves.size();i++) // draw edges that do not directly belong to a node (reaction curves)
     {
       drawEdge(viewerCurves[i]);
@@ -474,37 +466,6 @@ void CQGLNetworkPainter::drawColorLegend()
 // draw compartment node as rectangle
 void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
 {
-  /*
-  // draw blue rectangle
-  glColor3f(0.891f, 1.0f, 0.84f);
-  // draw rectangle as background for text
-  double CORNER_RADIUS_FRACTION = 0.1;
-  double cornerRadius = (n.getWidth() > n.getHeight()) ? n.getHeight() * CORNER_RADIUS_FRACTION : n.getWidth() * CORNER_RADIUS_FRACTION;
-  glBegin(GL_POLYGON);
-  glVertex2d(n.getX() + cornerRadius, n.getY());
-  glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY());
-  glVertex2d(n.getX() + n.getWidth(), n.getY() + cornerRadius);
-  glVertex2d(n.getX() + n.getWidth(), n.getY() + n.getHeight() - cornerRadius);
-  glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY() + n.getHeight());
-  glVertex2d(n.getX() + cornerRadius, n.getY() + n.getHeight());
-  glVertex2d(n.getX(), n.getY() + n.getHeight() - cornerRadius);
-  glVertex2d(n.getX(), n.getY() + cornerRadius);
-  glEnd();
-  GLUquadricObj* qobj = NULL;
-  qobj = gluNewQuadric();
-  gluQuadricDrawStyle(qobj, GLU_FILL);
-  glPushMatrix();
-  glTranslatef(n.getX() + cornerRadius, n.getY() + cornerRadius , 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 180, 90);
-  glTranslatef(n.getWidth() - 2.0 * cornerRadius, 0.0f , 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 90, 90);
-  glTranslatef(0.0f, n.getHeight() - 2.0 * cornerRadius, 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 0, 90);
-  glTranslatef(-n.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
-  gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
-  glPopMatrix();
-  gluDeleteQuadric(qobj);
-  */
   float width = n.getWidth();
   float height = n.getHeight();
   float x = n.getX();
@@ -639,37 +600,6 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       glCallList(mDisplayLists + 4);
       // scale the object the the correct size
       glPopMatrix();
-      /*
-      // draw blue rectangle
-      glColor3f(0.7f, 0.8f, 1.0f); // label background color (61,237,181)
-      // draw rectangle as background for text
-      double CORNER_RADIUS_FRACTION = 0.1;
-      double cornerRadius = (n.getWidth() > n.getHeight()) ? n.getHeight() * CORNER_RADIUS_FRACTION : n.getWidth() * CORNER_RADIUS_FRACTION;
-      glBegin(GL_POLYGON);
-      glVertex2d(n.getX() + cornerRadius, n.getY());
-      glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY());
-      glVertex2d(n.getX() + n.getWidth(), n.getY() + cornerRadius);
-      glVertex2d(n.getX() + n.getWidth(), n.getY() + n.getHeight() - cornerRadius);
-      glVertex2d(n.getX() + n.getWidth() - cornerRadius, n.getY() + n.getHeight());
-      glVertex2d(n.getX() + cornerRadius, n.getY() + n.getHeight());
-      glVertex2d(n.getX(), n.getY() + n.getHeight() - cornerRadius);
-      glVertex2d(n.getX(), n.getY() + cornerRadius);
-      glEnd();
-      GLUquadricObj* qobj = NULL;
-      qobj = gluNewQuadric();
-      gluQuadricDrawStyle(qobj, GLU_FILL);
-      glPushMatrix();
-      glTranslatef(n.getX() + cornerRadius, n.getY() + cornerRadius , 0.0f);
-      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 180, 90);
-      glTranslatef(n.getWidth() - 2.0 * cornerRadius, 0.0f , 0.0f);
-      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 90, 90);
-      glTranslatef(0.0f, n.getHeight() - 2.0 * cornerRadius, 0.0f);
-      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 0, 90);
-      glTranslatef(-n.getWidth() + 2 * cornerRadius , 0.0 , 0.0f);
-      gluPartialDisk(qobj, 0.0, cornerRadius, 10, 10, 270, 90);
-      glPopMatrix();
-      gluDeleteQuadric(qobj);
-      */
     }
 }
 
@@ -734,94 +664,135 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
   glEnable(GL_DEPTH_TEST);
 }
 
+double CQGLNetworkPainter::calculateAngle(const CLPoint& endPoint, const CLPoint& startPoint)
+{
+  double deltaX = endPoint.getX() - startPoint.getX();
+  double deltaY = endPoint.getY() - startPoint.getY();
+  double angle = 0.0;
+  if (deltaY == 0.0)
+    {
+      if (deltaX == 0.0)
+        {
+          return std::numeric_limits<double>::quiet_NaN();
+        }
+      // we have a horizontal line
+      if (deltaX < 0.0)
+        {
+          angle = 180.0;
+        }
+    }
+  else if (deltaX == 0.0)
+    {
+      if (deltaY == 0.0)
+        {
+          return std::numeric_limits<double>::quiet_NaN();
+        }
+      // we have a vertical line
+      if (deltaX < 0.0)
+        {
+          angle = 270.0;
+        }
+      else
+        {
+          angle = 90.0f;
+        }
+    }
+  else
+    {
+      double slope = deltaY / deltaX;
+      angle = 180.0 * atan(slope) / M_PI;
+      if (angle < 0.0)
+        {
+          angle += 360.0;
+        }
+      // now we have to find out in which quadrant the angle really is
+      if (deltaX < 0.0)
+        {
+          if (deltaY > 0.0) // 2.quadrant; subtract 180
+            {
+              angle -= 180;
+            }
+          else // 3. quadrant; add 180
+            {
+              angle += 180.0;
+            }
+        }
+    }
+  return angle;
+}
+
 void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
 {
+  // here we draw the arrow heads depending on the passed in role, a different
+  // head is drawn
+  // Since right now the edge width is fixed to a value of 2.0 and does not
+  // scale with the rest of the diagram, it probably does not makesense to
+  // scale the arrow heads.
+
+  // we need to calculate the slope of the line at the attachement point
+
   // first get the two points defining the line segment (curve)
   CLPoint p2 = a.getStartOfLine();
   CLPoint p1 = a.getEndOfLine();
   // p1 and p2 define a line where the arrow peak can be placed onto,
   // peak should be at p1, the arrow peak is just a triangle
 
+  // calculate the angle of the line from the x axis
+  // since all arrow heads go along the y axis, we have to subtract 90° from
+  // the angle to get the correct rotation angle
+  double angle = calculateAngle(p1, p2);
+  if (angle != angle) return; // we got NaN
+  angle -= 90.0;
+
+  // so we need to rotate the head by angle degrees and move it to
+  // p1.getX(),p1.getY()
+
   // first compute parameters of equation of line and point on line where arrow intersects line
-  C_FLOAT64 d1 = p2.getX() - p1.getX();
-  C_FLOAT64 d2 = p2.getY() - p1.getY();
-  C_FLOAT64 norm = sqrt((d1 * d1) + (d2 * d2));
-  C_FLOAT64 qX = p1.getX() + (a.getArrowLength() / norm * (p2.getX() - p1.getX()));
-  C_FLOAT64 qY = p1.getY() + (a.getArrowLength() / norm * (p2.getY() - p1.getY()));
-
-  // now compute second and third point of triangle
-  // first compute direction vector of orthogonal line (= norm vector of line)
-  // if (x2-x1,y2-y1) is the direction vector of the line, then (y1-y2,x2-x1) is a norm vector of the line
-  // to get a certain length, use the unit norm vector
-  C_FLOAT64 unX = (p1.getY() - p2.getY()) / norm;
-  C_FLOAT64 unY = (p2.getX() - p1.getX()) / norm;
-
   // now draw polygon, using vertices from triangle
   // now create triangle;
+  glPushMatrix();
+  glColor4fv(mSpeciesReferenceColor);
   if ((role == CLMetabReferenceGlyph::PRODUCT) || (role == CLMetabReferenceGlyph::SIDEPRODUCT))
     {
-      glBegin(GL_POLYGON);
-      glVertex2d(p1.getX(), p1.getY()); // peak of arrow
-      glVertex2d(qX + (unX * a.getArrowWidth()), qY + (unY * a.getArrowWidth()));
-      glVertex2d(qX - (unX * a.getArrowWidth()), qY - (unY * a.getArrowWidth()));
-      glEnd();
+      glTranslatef(p1.getX(), p1.getY(), 0.0f);
+      glRotatef(angle, 0.0f, 0.0f, 1.0f);
+      glScalef(3.0f, 3.0f, 1.0f);
+      glCallList(mDisplayLists + 7);
     }
   else
     {
-      GLfloat params[4];
-      glGetFloatv(GL_CURRENT_COLOR, params);
-      GLfloat lineWidth[1];
-      glGetFloatv(GL_LINE_WIDTH, lineWidth);
-
       if (role == CLMetabReferenceGlyph::MODIFIER)
         {
           if (this->mLabelShape == CIRCLE)
             {
-              glBegin(GL_LINES);
-              glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
-                         p1.getY() + (unY * a.getArrowWidth()));
-              glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
-                         p1.getY() - (unY * a.getArrowWidth()));
-              glEnd();
+              glTranslatef(p1.getX(), p1.getY(), 0.0f);
             }
           else
             {
-              glBegin(GL_LINES);
-              glVertex2d(qX + (unX * a.getArrowWidth()),
-                         qY + (unY * a.getArrowWidth()));
-              glVertex2d(qX - (unX * a.getArrowWidth()),
-                         qY - (unY * a.getArrowWidth()));
-              glEnd();
+              glTranslatef(p1.getX(), p1.getY(), 0.0f);
             }
-          glColor3f(params[0], params[1], params[2]);
+          glRotatef(angle, 0.0f, 0.0f, 1.0f);
+          glScalef(3.0f, 3.0f, 1.0f);
+          glCallList(mDisplayLists + 9);
         }
       else if (role == CLMetabReferenceGlyph::ACTIVATOR)
         {
-          glColor3f(0.0f, 0.66f, 0.0f); // kind of green
-          glLineWidth(2.0f);
-          glBegin(GL_LINES);
-          glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
-                     p1.getY() + (unY * a.getArrowWidth()));
-          glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
-                     p1.getY() - (unY * a.getArrowWidth()));
-          glEnd();
-
-          glColor3f(params[0], params[1], params[2]);
-          glLineWidth(lineWidth[0]);
+          glTranslatef(p1.getX(), p1.getY(), 0.0f);
+          glRotatef(angle, 0.0f, 0.0f, 1.0f);
+          glScalef(3.0f, 3.0f, 1.0f);
+          glCallList(mDisplayLists + 6);
         }
       else if (role == CLMetabReferenceGlyph::INHIBITOR)
         {
-          glColor3f(1.0f, 0.0f, 0.0f); // red
-          glLineWidth(2.0f);
-          glBegin(GL_LINES);
-          glVertex2d(p1.getX() + (unX * a.getArrowWidth()),
-                     p1.getY() + (unY * a.getArrowWidth()));
-          glVertex2d(p1.getX() - (unX * a.getArrowWidth()),
-                     p1.getY() - (unY * a.getArrowWidth()));
-          glLineWidth(lineWidth[0]);
-          glEnd();
+          glTranslatef(p1.getX(), p1.getY(), 0.0f);
+          glRotatef(angle, 0.0f, 0.0f, 1.0f);
+          glScalef(3.0f, 3.0f, 1.0f);
+          glCallList(mDisplayLists + 8);
         }
     }
+  // reset the color since some of the call lists change the color
+  glColor4fv(mSpeciesReferenceColor);
+  glPopMatrix();
 }
 
 // uses QT
@@ -1580,9 +1551,13 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           // so that it lies on the border of the circle
           CLPoint to;
           if (pLastSeg->isBezier())
-            to = pLastSeg->getBase2();
+            {
+              to = pLastSeg->getBase2();
+            }
           else
-            to = pLastSeg->getStart();
+            {
+              to = pLastSeg->getStart();
+            }
           CLPoint from = CLPoint((*nodeIt).second.getX() + ((*nodeIt).second.getWidth() / 2.0), (*nodeIt).second.getY() + ((*nodeIt).second.getHeight() / 2.0)); // center of bounding box and also of circle
           C_FLOAT64 distance = sqrt(((to.getX() - from.getX()) * (to.getX() - from.getX())) + ((to.getY() - from.getY()) * (to.getY() - from.getY())));
 
@@ -1590,21 +1565,13 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           C_FLOAT64 newX = from.getX() + ((to.getX() - from.getX()) / distance * circleDist);
           C_FLOAT64 newY = from.getY() + ((to.getY() - from.getY()) / distance * circleDist);
 
-          //C_FLOAT64 dx, dy;
-          //dx = to.getX() - newX;
-          //dy = to.getY() - newY;
           pLastSeg->setEnd(CLPoint(newX, newY));
-          // std::cout << "2. last segment: " << *pLastSeg << std::endl;
           // now insert new arrow in map
-          if (pLastSeg->isBezier())
-            {// for bezier curves, move base points too
-              //pLastSeg->setBase1(CLPoint(pLastSeg->getBase1().getX() + dx,pLastSeg->getBase1().getY() + dy));
-              //pLastSeg->setBase2(CLPoint(pLastSeg->getBase2().getX() + dx,pLastSeg->getBase2().getY() + dy));
-            }
           CLPoint p = pLastSeg->getEnd();
           if (pCurve->hasArrowP())
             {
-              CArrow *ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+              CLLineSegment ls(to, pLastSeg->getEnd());
+              CArrow *ar = new CArrow(ls, p.getX(), p.getY(), this->mCurrentZoom);
               nodeArrowMap.insert(std::pair<std::string, CArrow>
                                   (key, *ar));
               pCurve->setArrow(*ar);
@@ -1744,19 +1711,13 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
       CArrow *ar;
       if (pLastSeg->isBezier())
         {
-          BezierCurve *bezier = new BezierCurve();
-          std::vector<CLPoint> pts = std::vector<CLPoint>();
-          pts.push_back(pLastSeg->getStart());
-          pts.push_back(pLastSeg->getBase1());
-          pts.push_back(pLastSeg->getBase2());
-          pts.push_back(pLastSeg->getEnd());
-          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-          C_INT32 num = bezierPts.size();
-          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->mCurrentZoom);
+          CLLineSegment segForArrow = CLLineSegment(pLastSeg->getBase2(), pLastSeg->getEnd());
+          ar = new CArrow(segForArrow, pLastSeg->getEnd().getX(), pLastSeg->getEnd().getY(), this->mCurrentZoom);
         }
       else
-        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+        {
+          ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+        }
 
       nodeArrowMap.insert(std::pair<std::string, CArrow>
                           ((*it).first, *ar));
@@ -1785,19 +1746,13 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
       CArrow *ar;
       if (pLastSeg->isBezier())
         {
-          BezierCurve *bezier = new BezierCurve();
-          std::vector<CLPoint> pts = std::vector<CLPoint>();
-          pts.push_back(pLastSeg->getStart());
-          pts.push_back(pLastSeg->getBase1());
-          pts.push_back(pLastSeg->getBase2());
-          pts.push_back(pLastSeg->getEnd());
-          std::vector<CLPoint> bezierPts = bezier->curvePts(pts);
-          C_INT32 num = bezierPts.size();
-          CLLineSegment segForArrow = CLLineSegment(bezierPts[num - 2], bezierPts[num - 1]);
-          ar = new CArrow(segForArrow, bezierPts[num - 1].getX(), bezierPts[num - 1].getY(), this->mCurrentZoom);
+          CLLineSegment segForArrow = CLLineSegment(pLastSeg->getBase2(), pLastSeg->getEnd());
+          ar = new CArrow(segForArrow, pLastSeg->getEnd().getX(), pLastSeg->getEnd().getY(), this->mCurrentZoom);
         }
       else
-        ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+        {
+          ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+        }
 
       nodeArrowMap.insert(std::pair<std::string, CArrow>
                           ((*it).first, *ar));
@@ -2052,6 +2007,11 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
   mFrameColor[2] = 0.1f;
   mFrameColor[3] = 1.0f;
 
+  mBackgroundColor[0] = 1.0f;
+  mBackgroundColor[1] = 1.0f;
+  mBackgroundColor[2] = 1.0f;
+  mBackgroundColor[3] = 1.0f;
+
   mCurrentZoom = 1.0;
   mCurrentPositionX = 0.0;
   mCurrentPositionY = 0.0;
@@ -2094,28 +2054,13 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
   createActions();
 }
 
-void CQGLNetworkPainter::initializeGL()
+void CQGLNetworkPainter::initializeDisplayLists()
 {
-  qglClearColor(QColor(255, 255, 255, QColor::Rgb));
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_BLEND);
-  glEnable(GL_LINE_SMOOTH);
-  //glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-  glEnable(GL_ALPHA_TEST);
-  //glEnable(GL_POINT_SMOOTH);
-  //glEnable(GL_POLYGON_SMOOTH);
-  glShadeModel(GL_SMOOTH);
-
-  glGenTextures(1, textureNames);
+  glClearColor(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2], mBackgroundColor[3]);
   // convert the node into a display list that is created once and call once
   // for each node.
   // this might safe some cpu cycles, especially when the nodes get more fancy.
-  this->mDisplayLists = glGenLists(6);
-  // the first display list if for a background plane that allows us to create
-  // nice shadows
-  CLPoint p1 = this->getGraphMin();
-  CLPoint p2 = this->getGraphMax();
+  this->mDisplayLists = glGenLists(10);
   // this list is for the rectangular nodes
   GLfloat compartmentColor_080[] = {mCompartmentColor[0] + (1.0f - mCompartmentColor[0]) * 0.8f, mCompartmentColor[1] + (1.0f - mCompartmentColor[1]) * 0.8f, mCompartmentColor[2] + (1.0f - mCompartmentColor[2]) * 0.8f};
   GLfloat speciesColor_080[] = {mSpeciesColor[0] + (1.0f - mSpeciesColor[0]) * 0.8f, mSpeciesColor[1] + (1.0f - mSpeciesColor[1]) * 0.8f, mSpeciesColor[2] + (1.0f - mSpeciesColor[2]) * 0.8f};
@@ -2271,6 +2216,85 @@ void CQGLNetworkPainter::initializeGL()
   glVertex3f(0.0f, 0.0f, SPECIES_DEPTH);
   glEnd();
   glEndList();
+
+  // display lists for arrow heads (try to be SBGN like)
+
+  // head for stimulation (unfilled arrow)
+  glNewList(mDisplayLists + 6, GL_COMPILE);
+  glDisable(GL_DEPTH_TEST);
+  glLineWidth(2.0f);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(0.0f, 2.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -1.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glLineWidth(1.0f);
+  glEnable(GL_DEPTH_TEST);
+  glColor4fv(mBackgroundColor);
+  glBegin(GL_POLYGON);
+  glVertex3f(0.0f, 2.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -1.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glEndList();
+
+  // head for transition (filled arrow head)
+  glNewList(mDisplayLists + 7, GL_COMPILE);
+  glBegin(GL_POLYGON);
+  glVertex3f(0.0f, 2.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -1.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glEndList();
+
+  // head for inhibition (perpendicular bar)
+  glNewList(mDisplayLists + 8, GL_COMPILE);
+  glBegin(GL_POLYGON);
+  glVertex3f(-3.0f, 0.5f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(3.0f, 0.5f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(3.0f, -0.5f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-3.0f, -0.5f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glEndList();
+
+  // head for modulation (unfilled diamond)
+  glNewList(mDisplayLists + 9, GL_COMPILE);
+  glDisable(GL_DEPTH_TEST);
+  glLineWidth(2.0f);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(0.0f, 3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glLineWidth(1.0f);
+  glEnable(GL_DEPTH_TEST);
+  glColor4fv(mBackgroundColor);
+  glBegin(GL_POLYGON);
+  glVertex3f(0.0f, 3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glEndList();
+}
+
+void CQGLNetworkPainter::initializeGL()
+{
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_ALPHA_TEST);
+  //glEnable(GL_POINT_SMOOTH);
+  glEnable(GL_POLYGON_SMOOTH);
+  glShadeModel(GL_SMOOTH);
+
+  glGenTextures(1, textureNames);
+  this->initializeDisplayLists();
 }
 
 void CQGLNetworkPainter::resizeGL(int w, int h)

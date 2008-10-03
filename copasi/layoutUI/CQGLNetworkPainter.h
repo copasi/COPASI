@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/02 20:03:53 $
+//   $Date: 2008/10/03 12:42:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,6 +165,7 @@ class CQGLNetworkPainter : public QGLWidget
     GLfloat mSpeciesReferenceColor[4];
     GLfloat mTextColor[4];
     GLfloat mFrameColor[4];
+    GLclampf mBackgroundColor[4];
 
     CLPoint mgraphMin;
     CLPoint mgraphMax;
@@ -245,6 +246,17 @@ class CQGLNetworkPainter : public QGLWidget
     GLuint textureNames[1];
 
   protected:
+    /**
+     * Calculates the angle of the given line and the positive x axis.
+     * The returned value is in degrees.
+     */
+    static double calculateAngle(const CLPoint& endPoint, const CLPoint& startPoint);
+
+    /**
+     * This method creates all display lists and sets the clear color.
+     * This should be called whenever a color is changed.
+     */
+    void initializeDisplayLists();
     void initializeGraphPainter(QWidget *viewportWidget);
     void draw();
     void contextMenuEvent(QContextMenuEvent *event);
