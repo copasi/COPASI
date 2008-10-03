@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/03 13:29:50 $
+//   $Date: 2008/10/03 19:17:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,6 +165,9 @@ class CQGLNetworkPainter : public QGLWidget
     GLfloat mSpeciesReferenceColor[4];
     GLfloat mTextColor[4];
     GLfloat mFrameColor[4];
+    GLfloat mAnimatedSpeciesColor[4];
+    GLfloat mInanimatedSpeciesColor[4];
+    GLfloat mConstantSpeciesColor[4];
     GLclampf mBackgroundColor[4];
 
     // offset values for the shadows
@@ -175,6 +178,9 @@ class CQGLNetworkPainter : public QGLWidget
 
     // determines if shadows are drawn or not
     bool mDrawShadows;
+
+    unsigned int mNumCirclePoints;
+    std::vector<std::pair<float, float> > mCirclePoints;
 
     CLPoint mgraphMin;
     CLPoint mgraphMax;
@@ -255,6 +261,13 @@ class CQGLNetworkPainter : public QGLWidget
     GLuint textureNames[1];
 
   protected:
+    /**
+     * Calculates a circle with n points.
+     * The points are returned as pairs of x,y values in a vector.
+     * The points are calculated for a circle with diameter 1.
+     */
+    static std::vector<std::pair<float, float> > calculateCirclePoints(unsigned int n);
+
     /**
      * Calculates the angle of the given line and the positive x axis.
      * The returned value is in degrees.
