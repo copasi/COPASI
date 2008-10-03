@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.137 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/03 12:42:28 $
+//   $Date: 2008/10/03 13:29:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ CQGLNetworkPainter::~CQGLNetworkPainter()
       ++it;
     }
   // delete the node display list
-  glDeleteLists(this->mDisplayLists, 10);
+  glDeleteLists(this->mDisplayLists, 11);
 }
 
 const CLPoint& CQGLNetworkPainter::getGraphMin()
@@ -470,10 +470,49 @@ void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
   float height = n.getHeight();
   float x = n.getX();
   float y = n.getY();
+  float translateX = 0.0f;
+  float scaledWidth = width - (0.2f * height);
+  if (mDrawShadows == true)
+    {
+      // first we draw the shadow which we move a bit to the left and somewhat up
+      // and into the correct depth
+      glPushMatrix();
+      // draw one end
+      glLoadIdentity();
+      glTranslatef(mCompartmentShadowXOffset, mCompartmentShadowYOffset, COMPARTMENT_SHADOW_DEPTH);
+      translateX = x;
+      glPushMatrix();
+      // additional translation 0.1*width needed because we mirror the
+      // element
+      glTranslatef(translateX + height*0.1, y, 0.0f);
+      glScalef(height, height, 1.0f);
+      // mirror it at the y axis
+      glMultMatrixf(MIRROR_Y);
+      glCallList(mDisplayLists + 11);
+      glPopMatrix();
+      // draw the center
+      // scale it to the correct width
+      translateX += 0.1 * height;
+      glTranslatef(translateX, y, 0.0f);
+      // the scaling has to be different
+      glScalef(scaledWidth, height, 1.0f);
+      glCallList(mDisplayLists + 12);
+      // draw the other end
+      glLoadIdentity();
+      glTranslatef(mCompartmentShadowXOffset, mCompartmentShadowYOffset, COMPARTMENT_SHADOW_DEPTH);
+      translateX += scaledWidth;
+      glTranslatef(translateX, y, 0.0f);
+      glScalef(height, height, 1.0f);
+      glCallList(mDisplayLists + 11);
+      // scale the object the the correct size
+      glPopMatrix();
+    }
+
+  // now draw the real glyph
   glPushMatrix();
   // draw one end
   glLoadIdentity();
-  float translateX = x;
+  translateX = x;
   glPushMatrix();
   // additional translation 0.1*width needed because we mirror the
   // element
@@ -488,7 +527,6 @@ void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
   translateX += 0.1 * height;
   glTranslatef(translateX, y, 0.0f);
   // the scaling has to be different
-  float scaledWidth = width - (0.2f * height);
   glScalef(scaledWidth, height, 1.0f);
   glCallList(mDisplayLists + 2);
   // draw the other end
@@ -571,10 +609,50 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       float height = n.getHeight();
       float x = n.getX();
       float y = n.getY();
+      float scaledWidth = width - (0.2f * height);
+      float translateX = 0.0f;
+      // first draw shadow if enabled
+      if (mDrawShadows == true)
+        {
+          // first we draw the shadow which we move a bit to the left and somewhat up
+          // and into the correct depth
+          glPushMatrix();
+          // draw one end
+          glLoadIdentity();
+          glTranslatef(mSpeciesShadowXOffset, mSpeciesShadowYOffset, SPECIES_SHADOW_DEPTH);
+          translateX = x;
+          glPushMatrix();
+          // additional translation 0.1*width needed because we mirror the
+          // element
+          glTranslatef(translateX + height*0.1, y, 0.0f);
+          glScalef(height, height, 1.0f);
+          // mirror it at the y axis
+          glMultMatrixf(MIRROR_Y);
+          glCallList(mDisplayLists + 11);
+          glPopMatrix();
+          // draw the center
+          // scale it to the correct width
+          translateX += 0.1 * height;
+          glTranslatef(translateX, y, 0.0f);
+          // the scaling has to be different
+          glScalef(scaledWidth, height, 1.0f);
+          glCallList(mDisplayLists + 12);
+          // draw the other end
+          glLoadIdentity();
+          glTranslatef(mSpeciesShadowXOffset, mSpeciesShadowYOffset, SPECIES_SHADOW_DEPTH);
+          translateX += scaledWidth;
+          glTranslatef(translateX, y, 0.0f);
+          glScalef(height, height, 1.0f);
+          glCallList(mDisplayLists + 11);
+          // scale the object the the correct size
+          glPopMatrix();
+        }
+
+      // now draw the realy glyph
       glPushMatrix();
       // draw one end
       glLoadIdentity();
-      float translateX = x;
+      translateX = x;
       glPushMatrix();
       // additional translation 0.1*width needed because we mirror the
       // element
@@ -589,7 +667,6 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       translateX += 0.1 * height;
       glTranslatef(translateX, y, 0.0f);
       // the scaling has to be different
-      float scaledWidth = width - (0.2f * height);
       glScalef(scaledWidth, height, 1.0f);
       glCallList(mDisplayLists + 5);
       // draw the other end
@@ -1990,7 +2067,7 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
   mShadowColor[0] = 0.2f;
   mShadowColor[1] = 0.2f;
   mShadowColor[2] = 0.2f;
-  mShadowColor[3] = 0.8f;
+  mShadowColor[3] = 0.6f;
 
   mSpeciesReferenceColor[0] = 0.3f;
   mSpeciesReferenceColor[1] = 0.3f;
@@ -2011,6 +2088,15 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
   mBackgroundColor[1] = 1.0f;
   mBackgroundColor[2] = 1.0f;
   mBackgroundColor[3] = 1.0f;
+
+  mCompartmentShadowXOffset = 6.0f;
+  mCompartmentShadowYOffset = 6.0f;
+
+  // the species probably need a smaller shadow offset
+  mSpeciesShadowXOffset = 4.0f;
+  mSpeciesShadowYOffset = 4.0f;
+
+  mDrawShadows = true;
 
   mCurrentZoom = 1.0;
   mCurrentPositionX = 0.0;
@@ -2060,7 +2146,7 @@ void CQGLNetworkPainter::initializeDisplayLists()
   // convert the node into a display list that is created once and call once
   // for each node.
   // this might safe some cpu cycles, especially when the nodes get more fancy.
-  this->mDisplayLists = glGenLists(10);
+  this->mDisplayLists = glGenLists(13);
   // this list is for the rectangular nodes
   GLfloat compartmentColor_080[] = {mCompartmentColor[0] + (1.0f - mCompartmentColor[0]) * 0.8f, mCompartmentColor[1] + (1.0f - mCompartmentColor[1]) * 0.8f, mCompartmentColor[2] + (1.0f - mCompartmentColor[2]) * 0.8f};
   GLfloat speciesColor_080[] = {mSpeciesColor[0] + (1.0f - mSpeciesColor[0]) * 0.8f, mSpeciesColor[1] + (1.0f - mSpeciesColor[1]) * 0.8f, mSpeciesColor[2] + (1.0f - mSpeciesColor[2]) * 0.8f};
@@ -2278,6 +2364,45 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glVertex3f(2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
   glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
   glVertex3f(-2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glEnd();
+  glEndList();
+
+  // display lists for the shadows of the glyphs
+  glNewList(mDisplayLists + 10, GL_COMPILE);
+  // approximate a quarter circle by a triangle fan with 3 triangles
+  glColor4fv(mShadowColor);
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex3f(0.0f, 0.4f, 0.0f);
+  glVertex3f(0.0f, 0.5f, 0.0f);
+  glVertex3f(0.05f, 0.4866f, 0.0f);
+  glVertex3f(0.0866f, 0.45f, 0.0f);
+  glVertex3f(0.1f, 0.4f, 0.0f);
+  glEnd();
+  glBegin(GL_POLYGON);
+  glVertex3f(0.0f, 0.4f, 0.0f);
+  glVertex3f(0.1f, 0.4f, 0.0f);
+  glVertex3f(0.1f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glEnd();
+  glEndList();
+  // now copy the first call list and mirror the copy at the x-axis
+  glNewList(mDisplayLists + 11, GL_COMPILE);
+  glPushMatrix();
+  glTranslatef(0.0f, 0.5f, 0.0f);
+  glCallList(mDisplayLists + 10);
+  // mirror transformation
+  glMultMatrixf(MIRROR_X);
+  glCallList(mDisplayLists + 10);
+  glPopMatrix();
+  glEndList();
+  // next list is the center piece for the shadow
+  glNewList(mDisplayLists + 12, GL_COMPILE);
+  glColor4fv(mShadowColor);
+  glBegin(GL_POLYGON);
+  glVertex3f(0.0f, 1.0f, 0.0f);
+  glVertex3f(1.0f, 1.0f, 0.0f);
+  glVertex3f(1.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 0.0f, 0.0f);
   glEnd();
   glEndList();
 }

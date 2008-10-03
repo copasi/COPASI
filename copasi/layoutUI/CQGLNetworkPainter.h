@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/03 12:42:28 $
+//   $Date: 2008/10/03 13:29:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,6 +166,15 @@ class CQGLNetworkPainter : public QGLWidget
     GLfloat mTextColor[4];
     GLfloat mFrameColor[4];
     GLclampf mBackgroundColor[4];
+
+    // offset values for the shadows
+    float mCompartmentShadowXOffset;
+    float mCompartmentShadowYOffset;
+    float mSpeciesShadowXOffset;
+    float mSpeciesShadowYOffset;
+
+    // determines if shadows are drawn or not
+    bool mDrawShadows;
 
     CLPoint mgraphMin;
     CLPoint mgraphMax;
