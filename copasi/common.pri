@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.91 $ 
+#   $Revision: 1.92 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/10/03 15:22:10 $ 
+#   $Date: 2008/10/03 19:44:11 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.91 $ $Author: shoops $ $Date: 2008/10/03 15:22:10 $  
+# $Revision: 1.92 $ $Author: shoops $ $Date: 2008/10/03 19:44:11 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -128,7 +128,7 @@ contains(BUILD_OS, Darwin) {
   }
 
   !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW-static.a
+    LIBS+=  $${SBW_PATH}/lib/libSBW.a
     INCLUDEPATH += $${SBW_PATH}/include
     DEFINES += COPASI_SBW_INTEGRATION
     DEFINES += LINUX DARWIN 
@@ -341,7 +341,7 @@ contains(STATIC_LINKAGE, yes) {
   }
 
   !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW-static.a
+    LIBS+=  $${SBW_PATH}/lib/libSBW.a
     INCLUDEPATH += $${SBW_PATH}/include
     DEFINES += COPASI_SBW_INTEGRATION
     DEFINES += LINUX SOLARIS
@@ -482,7 +482,7 @@ contains(BUILD_OS, Linux) {
   }
 
 !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW-static.a
+    LIBS+=  $${SBW_PATH}/lib/libSBW.a
     INCLUDEPATH += $${SBW_PATH}/include
     DEFINES += COPASI_SBW_INTEGRATION
     DEFINES += LINUX 
