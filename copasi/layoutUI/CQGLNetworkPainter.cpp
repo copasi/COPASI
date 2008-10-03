@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.138 $
+//   $Revision: 1.139 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/03 19:17:57 $
+//   $Date: 2008/10/03 19:24:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -283,18 +283,18 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glNewList(mDisplayLists + 6, GL_COMPILE);
   glColor4fv(mBackgroundColor);
   glBegin(GL_POLYGON);
-  glVertex3f(0.0f, 2.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(0.0f, -1.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
   glEnd();
   glDisable(GL_DEPTH_TEST);
   glLineWidth(2.0f);
   glBegin(GL_LINE_LOOP);
-  glVertex3f(0.0f, 2.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(0.0f, -1.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
   glEnd();
   glLineWidth(1.0f);
   glEnable(GL_DEPTH_TEST);
@@ -303,10 +303,10 @@ void CQGLNetworkPainter::initializeDisplayLists()
   // head for transition (filled arrow head)
   glNewList(mDisplayLists + 7, GL_COMPILE);
   glBegin(GL_POLYGON);
-  glVertex3f(0.0f, 2.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(0.0f, -1.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
   glEnd();
   glEndList();
 
@@ -324,18 +324,18 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glNewList(mDisplayLists + 9, GL_COMPILE);
   glColor4fv(mBackgroundColor);
   glBegin(GL_POLYGON);
-  glVertex3f(0.0f, 3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(-2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -6.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
   glEnd();
   glDisable(GL_DEPTH_TEST);
   glLineWidth(2.0f);
   glBegin(GL_LINE_LOOP);
-  glVertex3f(0.0f, 3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(0.0f, -3.0f, SPECIESREFERENCE_DEPTH);
-  glVertex3f(-2.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(0.0f, -6.0f, SPECIESREFERENCE_DEPTH);
+  glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
   glEnd();
   glLineWidth(1.0f);
   glEnable(GL_DEPTH_TEST);
