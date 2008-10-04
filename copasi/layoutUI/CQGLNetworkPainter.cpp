@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/04 18:51:38 $
+//   $Date: 2008/10/04 19:36:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,8 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-// TODO fix the bug in color animation mode if species are deactivated
+// TODO fix the bug in color animation mode if species are deactivated and
+// activated again, they are drawn incorrectly (wrong color)
 //
 // TODO check why the arrow heads are off when switching back from size
 // animation to rectangular view
@@ -972,11 +973,11 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
           mappingMode = pParentLayoutWindow->getMappingMode();
           if ((mappingMode == CVisParameters::SIZE_DIAMETER_MODE) ||
               (mappingMode == CVisParameters::SIZE_AREA_MODE))
-            scaledValue = n.getSize(); // change of node size only for size mode
+            {
+              scaledValue = n.getSize(); // change of node size only for size mode
+            }
         }
       glColor4fv(mAnimatedSpeciesColor); // red
-      GLUquadricObj *qobj;
-      qobj = gluNewQuadric();
 
       double tx = n.getX() + (n.getWidth() / 2.0);
       double ty = n.getY() + (n.getHeight() / 2.0);
@@ -1042,19 +1043,47 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       // are not scaled and marked in grey
       else
         {// color mapping
-          QColor col = QColor();
-          double v = n.getSize() * 455.0; // there are 456 colors in the current gradient and the node sizes are scaled from 0.0 to 1.0 in color mode
-          if (v < 200.0)
+          GLfloat color[3] = {1.0f, 1.0f, 1.0f};
+          if (setOfConstantMetabolites.find(n.getOrigNodeKey()) == setOfConstantMetabolites.end())
             {
-              col.setRgb(0, 0, (int)v);
+              if (setOfDisabledMetabolites.find(n.getOrigNodeKey()) == setOfDisabledMetabolites.end())
+                {
+                  float v = (float)n.getSize() * 455.0f; // there are 456 colors in the current gradient and the node sizes are scaled from 0.0 to 1.0 in color mode
+                  if (v < 200.0)
+                    {
+                      color[0] = 0.0f;
+                      color[1] = 0.0f;
+                      color[2] = v / 255.0f;
+                    }
+                  else if (v < 400)
+                    {
+                      color[0] = 0.0f;
+                      color[1] = (v - 200.0f) / 255.0f;
+                      color[2] = 200.0f / 255.0f;
+                    }
+                  else
+                    {
+                      color[0] = 0.0f;
+                      color[1] = (200.0f + (v - 400.0f)) / 255.0f;
+                      color[2] = (200.0f + (v - 400.0f)) / 255.0f;
+                    }
+                }
+              // is disabled
+              else
+                {
+                  // set color to white
+                  color[0] = 1.0f;
+                  color[1] = 1.0f;
+                  color[2] = 1.0f;
+                }
             }
-          else if (v < 400)
-            {
-              col.setRgb(0, (int)(v - 200.0), 200);
-            }
+          // is constant
           else
             {
-              col.setRgb(0, 200 + (int)(v - 400), 200 + (int)(v - 400));
+              // set color to light gray
+              color[0] = mConstantSpeciesColor[0];
+              color[1] = mConstantSpeciesColor[1];
+              color[2] = mConstantSpeciesColor[2];
             }
           if (mDrawShadows == true)
             {
@@ -1064,14 +1093,35 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
               glCallList(mDisplayLists + 16);
               glPopMatrix();
             }
-          QGLWidget::qglColor(col);
+          // use out own circle points to draw the circle instead of using glut
+          // this makes it easier to have color gradients.
           glPushMatrix();
-          glTranslatef((float)tx, (float)ty, SPECIES_DEPTH);
-          gluDisk(qobj, 0.0, scaledValue / 2.0, 25, 2);
-          glColor3f(0.0f, 0.0f, 0.0f); // black
-          gluDisk(qobj, scaledValue / 2.0 - 1.0, scaledValue / 2.0, 25, 2);
+          glTranslatef((float)tx, (float)ty, 0.0f);
+          glScalef(scaledValue, scaledValue, 1.0f);
+          float lowerBound = 0.5;
+          std::vector<std::pair<float, float> >::const_iterator it = mCirclePoints.begin(), endit = mCirclePoints.end();
+          glBegin(GL_TRIANGLE_FAN);
+          glColor3fv(color);
+          glVertex3f(0.0f, 0.0f, SPECIES_DEPTH);
+          // on the edge we have 50% of the color value
+          glColor4f(color[0]*lowerBound, color[1]*lowerBound, color[2]*lowerBound, 1.0f);
+          while (it != endit)
+            {
+              glVertex3f(it->first, it->second, SPECIES_DEPTH);
+              ++it;
+            }
+          glEnd();
+          glColor4fv(mFrameColor);
+          glDisable(GL_DEPTH_TEST);
+          it = mCirclePoints.begin();
+          glBegin(GL_LINE_LOOP);
+          while (it != endit)
+            {
+              glVertex3f(it->first, it->second, SPECIES_FRAME_DEPTH);
+              ++it;
+            }
+          glEnd();
           glPopMatrix();
-          gluDeleteQuadric(qobj);
         }
     }
   else
