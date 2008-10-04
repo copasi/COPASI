@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.139 $
+//   $Revision: 1.140 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/03 19:24:26 $
+//   $Date: 2008/10/04 08:13:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,22 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CVisParameters.h"
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
+
+// TODO check why zooming from the menu doesn't work any more
+//
+// TODO make sure that an animation is stopped if the layout window is closed.
+//
+// TODO check why the arrow heads are off when switching back from size
+// animation to rectangular view
+//
+// TODO fix the bug in color animation mode if species are deactivated
+//
+// TODO implement the possibility to make screenshots of the visible area as
+// well as the whole network and let the user choose the resolution
+//
+// TODO improve zooming (no clue how to do that best)
+//
+// TODO fix arrow positioning problems in size animation
 
 // TODO change the text rendering or the texture creation. Right now it seems
 // to work reasonably well under Mac OS X, but under Linux it doesn't.
@@ -290,6 +306,7 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glEnd();
   glDisable(GL_DEPTH_TEST);
   glLineWidth(2.0f);
+  glColor4fv(mSpeciesReferenceColor);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
   glVertex3f(2.0f, -5.0f, SPECIESREFERENCE_DEPTH);
@@ -330,6 +347,7 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glVertex3f(-2.0f, -3.0f, SPECIESREFERENCE_DEPTH);
   glEnd();
   glDisable(GL_DEPTH_TEST);
+  glColor4fv(mSpeciesReferenceColor);
   glLineWidth(2.0f);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0.0f, 0.0f, SPECIESREFERENCE_DEPTH);
