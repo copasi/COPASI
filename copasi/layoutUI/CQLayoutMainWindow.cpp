@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 07:53:55 $
+//   $Date: 2008/10/04 18:51:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,6 +147,11 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
   this->mLooping = false;
+
+  this->setTabOrder(this->mpGLViewport, this->mpToolbar);
+  this->setTabOrder(this->mpToolbar, this->mpParaPanel);
+  this->setTabOrder(this->mpParaPanel, this->mpValTable);
+  this->setTabOrder(this->mpValTable, this->mpControlWidget);
   this->show();
 }
 
@@ -380,7 +385,7 @@ void CQLayoutMainWindow::createMenus()
   mpZoomMenu->setItemChecked(id, false);
   id = mpZoomMenu->insertItem("100%", 100);
   mpZoomMenu->setItemChecked(id, true);
-  id = mpZoomMenu->insertItem("150%", 100);
+  id = mpZoomMenu->insertItem("150%", 150);
   mpZoomMenu->setItemChecked(id, false);
   id = mpZoomMenu->insertItem("200%", 200);
   mpZoomMenu->setItemChecked(id, false);
@@ -682,13 +687,14 @@ void CQLayoutMainWindow::setFontSizeForLabels(C_INT32 size)
 
 void CQLayoutMainWindow::closeApplication()
 {
-  close();
+  this->close();
 }
 
 void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
 {
   if (maybeSave())
     {
+      this->mpControlWidget->getPauseAction()->activate();
       event->accept();
     }
   else
@@ -846,6 +852,10 @@ void CQLayoutMainWindow::slotResetView()
   this->mpZoomMenu->setItemChecked(400, false);
   this->mpZoomMenu->setItemChecked(500, false);
   connect(mpZoomMenu, SIGNAL(activated(int)), this, SLOT(slotZoomItemActivated(int)));
+  // update toolbar
+  disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  this->mpZoomComboBox->setCurrentItem(this->mpZoomMenu->indexOf(100));
+  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
   this->mpGLViewport->resetView();
 }
 

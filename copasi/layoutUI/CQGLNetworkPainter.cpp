@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.140 $
+//   $Revision: 1.141 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/04 08:13:45 $
+//   $Date: 2008/10/04 18:51:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,14 +57,10 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-// TODO check why zooming from the menu doesn't work any more
-//
-// TODO make sure that an animation is stopped if the layout window is closed.
+// TODO fix the bug in color animation mode if species are deactivated
 //
 // TODO check why the arrow heads are off when switching back from size
 // animation to rectangular view
-//
-// TODO fix the bug in color animation mode if species are deactivated
 //
 // TODO implement the possibility to make screenshots of the visible area as
 // well as the whole network and let the user choose the resolution
@@ -74,10 +70,12 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 // TODO fix arrow positioning problems in size animation
 
 // TODO change the text rendering or the texture creation. Right now it seems
-// to work reasonably well under Mac OS X, but under Linux it doesn't.
+// to work reasonably well, but it could be improved since the text is
+// sometimes longer or higher than reported by Qt.
 
 // TODO Antialias Nodes and arrowheads, right now it looks as if only the edges
-// do get antialiasing
+// do get antialiasing. This already has been improved, but it still loks as if
+// not everything would get antialiasing.
 
 // below species and speciesreference
 const double CQGLNetworkPainter::COMPARTMENT_DEPTH = 0.001;

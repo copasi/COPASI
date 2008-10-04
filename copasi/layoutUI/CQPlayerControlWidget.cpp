@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/15 15:04:58 $
+//   $Date: 2008/10/04 18:51:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,11 @@ CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent, const char* name)
   this->createActions();
   this->updateButtons();
   this->updateActions();
+  this->setTabOrder(this->mpPlayButton, this->mpStopButton);
+  this->setTabOrder(this->mpStopButton, this->mpStepForwardButton);
+  this->setTabOrder(this->mpStepForwardButton, this->mpStepBackwardButton);
+  this->setTabOrder(this->mpStepBackwardButton, this->mpForwardButton);
+  this->setTabOrder(this->mpForwardButton, this->mpBackwardButton);
   connect(this->mpPlayButton, SIGNAL(clicked()), this, SLOT(slot_play_clicked()));
   connect(this->mpStopButton, SIGNAL(clicked()), this, SLOT(slot_stop_clicked()));
   connect(this->mpForwardButton, SIGNAL(clicked()), this, SLOT(slot_forward_clicked()));
