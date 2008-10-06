@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 09:16:26 $
+//   $Date: 2008/10/06 13:28:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ void CQCurrentValueTable::init()
   pLayout->addWidget(pHBox);
   this->mpCheckAllButton = new QPushButton("Check all", pHBox);
   this->mpUncheckAllButton = new QPushButton("Uncheck all", pHBox);
-  connect(this->mpTable, SIGNAL(valueChanged(int, int)), this, SLOT(valChanged(int, int)));
+  connect(this->mpTable, SIGNAL(valueChanged(int, int)), this, SLOT(tableValueChanged(int, int)));
   connect(this->mpCheckAllButton, SIGNAL(clicked()), this, SLOT(slotCheckAllClicked()));
   connect(this->mpUncheckAllButton, SIGNAL(clicked()), this, SLOT(slotUncheckAllClicked()));
   resize(QSize(202, 153).expandedTo(minimumSizeHint()));
@@ -108,32 +108,6 @@ void CQCurrentValueTable::setAllBoxesUnchecked()
   this->setAllBoxesChecked(false);
 }
 
-void CQCurrentValueTable::valChanged(int row, int col)
-{
-  if (col == 0)
-    {
-      QTableItem *pCell = this->mpTable->item(row, 0);
-      if (pCell->rtti() == 2)
-        {// is cell a QCheckTableItem?
-          QCheckTableItem *pCheckItem = dynamic_cast<QCheckTableItem *> (pCell);
-          CQLayoutMainWindow * pTmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
-          assert(pTmp);
-          if (pTmp)
-            {
-              if (pCheckItem->isChecked())
-                {
-                  pTmp->addItemInAnimation(this->getKeyForRow(row));
-                }
-              else
-                {
-                  pTmp->removeItemInAnimation(this->getKeyForRow(row));
-                }
-            }
-        }
-    }
-  emit changed();
-}
-
 //store row index for every node key
 void CQCurrentValueTable::setKeyIndex(std::string key, int row)
 {
@@ -142,17 +116,26 @@ void CQCurrentValueTable::setKeyIndex(std::string key, int row)
                           key));
 }
 
-std::string CQCurrentValueTable::getKeyForRow(int row)
-{
-  std::string s = "";
+std::string CQCurrentValueTable::getKeyForRow(int row) const
+  {
+    std::string s = "";
 
-  std::map<int, std::string>::iterator itIndexObj = this->mIndexMap.find(row);
-  if (itIndexObj != this->mIndexMap.end())
-    {
-      s = (*itIndexObj).second;
-    }
-  return s;
-}
+    std::map<int, std::string>::const_iterator itIndexObj = this->mIndexMap.find(row);
+    if (itIndexObj != this->mIndexMap.end())
+      {
+        s = (*itIndexObj).second;
+      }
+    return s;
+  }
+
+bool CQCurrentValueTable::getValueForRow(int row) const
+  {
+    QTableItem *pCell = this->mpTable->item(row, 0);
+    assert(pCell != NULL);
+    QCheckTableItem *pCheckItem = dynamic_cast<QCheckTableItem *> (pCell);
+    assert(pCheckItem != NULL);
+    return pCheckItem->isChecked();
+  }
 
 void CQCurrentValueTable::slotCheckAllClicked()
 {
@@ -182,4 +165,14 @@ int CQCurrentValueTable::numRows() const
 QHeader* CQCurrentValueTable::verticalHeader()
 {
   return this->mpTable->verticalHeader();
+}
+
+/**
+ * This slot is caled whenever a value in the table changes, i.e. whenever
+ * a species is activated or deactived by it's checkbox.
+ * This information is broadcasted by emitting another signal which contains the row number.
+ */
+void CQCurrentValueTable::tableValueChanged(int row, int /*column*/)
+{
+  emit valueChanged(row);
 }

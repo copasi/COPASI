@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/04 18:51:38 $
+//   $Date: 2008/10/06 13:28:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,7 +143,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   this->mpZoomComboBox->setEditable(FALSE);
   this->mpZoomComboBox->show();
   connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
-  connect(this->mpValTable , SIGNAL(changed()), this->mpGLViewport, SLOT(updateWidget()));
+  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
   this->mLooping = false;
@@ -153,6 +153,20 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   this->setTabOrder(this->mpParaPanel, this->mpValTable);
   this->setTabOrder(this->mpValTable, this->mpControlWidget);
   this->show();
+}
+
+void CQLayoutMainWindow::parameterTableValueChanged(int row)
+{
+  std::string key = this->mpValTable->getKeyForRow(row);
+  bool value = this->mpValTable->getValueForRow(row);
+  if (value == true)
+    {
+      this->addItemInAnimation(key);
+    }
+  else
+    {
+      this->removeItemInAnimation(key);
+    }
 }
 
 bool CQLayoutMainWindow::getAnimationRunning()

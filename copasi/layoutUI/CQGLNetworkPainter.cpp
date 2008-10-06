@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.143 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/04 19:36:12 $
+//   $Date: 2008/10/06 13:28:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1650,85 +1650,22 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
-  for (s = 0; s < dataSets.size(); s++) // for all steps
+  for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      if (iter != dataSets.end())
-        {
-          dataSet = (*iter).second;
-          unsigned int i;
-          for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
-            {
-              // get old value
-              val = dataSet.getValueForSpecies(viewerNodes[i]);
-              C_FLOAT64 a = 0.0, b = 1.0;
-              if (pParentLayoutWindow != NULL)
-                {
-                  if (scaleMode == CVisParameters::INDIVIDUAL_SCALING)
-                    {
-                      a = pSummaryInfo->getMinForSpecies(viewerNodes[i]);
-                      b = pSummaryInfo->getMaxForSpecies(viewerNodes[i]);
-                    }
-                  else // scaleMode == CVisParameters::GLOBAL_SCALING
-                    {
-                      a = pSummaryInfo->getMinOverallConcentration();
-                      b = pSummaryInfo->getMaxOverallConcentration();
-                    }
-                }
-              C_FLOAT64 val_orig;
-              if ((b - a) > CVisParameters::EPSILON)
-                {
-                  val_orig = dataSet.getOrigValueForSpecies(viewerNodes[i]); // get original value
-                  // now scale value
-                  val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
-                }
-              else
-                {// no scaling if differences are too small, just set mid value
-                  val_new = (newMax + newMin) / 2.0;
-                  if (s == 0) // only insert once into set
-                    setOfConstantMetabolites.insert(viewerNodes[i]);
-                }
-              dataSet.putValueForSpecies(viewerNodes[i], val_new);
-            }
-          dataSets.erase(s);
-          dataSets.insert (std::pair<C_INT32, CDataEntity>
-                           (s, dataSet));
-        }
-    }
-  // if there is no time course data, we set all values to 0.0
-  if (dataSets.size() == 0)
-    {
-      CDataEntity dataSet;
+      // TODO we can probably ommit the copying here
+      dataSet = mDataSets[s];
       unsigned int i;
       for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
         {
-          dataSet.putValueForSpecies(viewerNodes[i], 0.0);
-        }
-      dataSets.insert (std::pair<C_INT32, CDataEntity> (s, dataSet));
-    }
-}
-
-void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
-{
-  CDataEntity dataSet;
-  unsigned int s; // step number
-  C_FLOAT64 val, val_new;
-  setOfConstantMetabolites.clear();
-  for (s = 0; s < dataSets.size(); s++) // for all steps
-    {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      if (iter != dataSets.end())
-        {
-          dataSet = (*iter).second;
           // get old value
-          val = dataSet.getValueForSpecies(key);
+          val = dataSet.getValueForSpecies(viewerNodes[i]);
           C_FLOAT64 a = 0.0, b = 1.0;
           if (pParentLayoutWindow != NULL)
             {
               if (scaleMode == CVisParameters::INDIVIDUAL_SCALING)
                 {
-                  a = pSummaryInfo->getMinForSpecies(key);
-                  b = pSummaryInfo->getMaxForSpecies(key);
+                  a = pSummaryInfo->getMinForSpecies(viewerNodes[i]);
+                  b = pSummaryInfo->getMaxForSpecies(viewerNodes[i]);
                 }
               else // scaleMode == CVisParameters::GLOBAL_SCALING
                 {
@@ -1739,7 +1676,7 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
           C_FLOAT64 val_orig;
           if ((b - a) > CVisParameters::EPSILON)
             {
-              val_orig = dataSet.getOrigValueForSpecies(key); // get original value
+              val_orig = dataSet.getOrigValueForSpecies(viewerNodes[i]); // get original value
               // now scale value
               val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
             }
@@ -1747,13 +1684,67 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
             {// no scaling if differences are too small, just set mid value
               val_new = (newMax + newMin) / 2.0;
               if (s == 0) // only insert once into set
-                setOfConstantMetabolites.insert(key);
+                setOfConstantMetabolites.insert(viewerNodes[i]);
             }
-          dataSet.putValueForSpecies(key, val_new);
+          dataSet.putValueForSpecies(viewerNodes[i], val_new);
         }
-      dataSets.erase(s);
-      dataSets.insert (std::pair<C_INT32, CDataEntity>
-                       (s, dataSet));
+      mDataSets[s] = dataSet;
+    }
+  // if there is no time course data, we set all values to 0.0
+  if (mDataSets.size() == 0)
+    {
+      CDataEntity dataSet;
+      unsigned int i;
+      for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
+        {
+          dataSet.putValueForSpecies(viewerNodes[i], 0.0);
+        }
+      mDataSets.push_back(dataSet);
+    }
+}
+
+void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
+{
+  // this is called if a species which has been disabled in the animation is reenabled
+  CDataEntity dataSet;
+  unsigned int s; // step number
+  C_FLOAT64 val, val_new;
+  setOfConstantMetabolites.clear();
+  for (s = 0; s < mDataSets.size(); s++) // for all steps
+    {
+      // TODO we can probably ommit the copying here
+      dataSet = mDataSets[s];
+      // get old value
+      val = dataSet.getValueForSpecies(key);
+      C_FLOAT64 a = 0.0, b = 1.0;
+      if (pParentLayoutWindow != NULL)
+        {
+          if (scaleMode == CVisParameters::INDIVIDUAL_SCALING)
+            {
+              a = pSummaryInfo->getMinForSpecies(key);
+              b = pSummaryInfo->getMaxForSpecies(key);
+            }
+          else // scaleMode == CVisParameters::GLOBAL_SCALING
+            {
+              a = pSummaryInfo->getMinOverallConcentration();
+              b = pSummaryInfo->getMaxOverallConcentration();
+            }
+        }
+      C_FLOAT64 val_orig;
+      if ((b - a) > CVisParameters::EPSILON)
+        {
+          val_orig = dataSet.getOrigValueForSpecies(key); // get original value
+          // now scale value
+          val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
+        }
+      else
+        {// no scaling if differences are too small, just set mid value
+          val_new = (newMax + newMin) / 2.0;
+          if (s == 0) // only insert once into set
+            setOfConstantMetabolites.insert(key);
+        }
+      dataSet.putValueForSpecies(key, val_new);
+      mDataSets[s] = dataSet;
     }
 }
 
@@ -1762,17 +1753,12 @@ void CQGLNetworkPainter::setConstantNodeSizeForAllSteps(std::string key, C_FLOAT
   CDataEntity dataSet;
   unsigned int s; // step number
 
-  for (s = 0; s < dataSets.size(); s++) // for all steps
+  for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      if (iter != dataSets.end())
-        {
-          dataSet = (*iter).second;
-          dataSet.putValueForSpecies(key, val);
-        }
-      dataSets.erase(s);
-      dataSets.insert (std::pair<C_INT32, CDataEntity>
-                       (s, dataSet));
+      // TODO we can probably ommit the copying here
+      dataSet = mDataSets[s];
+      dataSet.putValueForSpecies(key, val);
+      mDataSets[s] = dataSet;
     }
 }
 
@@ -1781,18 +1767,13 @@ void CQGLNetworkPainter::setConstantNodeSize(std::string key, C_FLOAT64 val)
   CDataEntity dataSet;
   unsigned int s; // step number
   setOfConstantMetabolites.clear();
-  for (s = 0; s < dataSets.size(); s++) // for all steps
+  for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      if (iter != dataSets.end())
-        {
-          dataSet = (*iter).second;
-          // get old value
-          dataSet.putValueForSpecies(key, val);
-        }
-      dataSets.erase(s);
-      dataSets.insert (std::pair<C_INT32, CDataEntity>
-                       (s, dataSet));
+      // TODO we can probably ommit the copying here
+      dataSet = mDataSets[s];
+      // get old value
+      dataSet.putValueForSpecies(key, val);
+      mDataSets[s] = dataSet;
     }
 }
 
@@ -1805,76 +1786,71 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
-  for (s = 0; s < dataSets.size(); s++)
+  for (s = 0; s < mDataSets.size(); s++)
     {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(s);
-      if (iter != dataSets.end())
+      // TODO don't copy the dataset
+      dataSet = mDataSets[s];
+      unsigned int i;
+      // try to get VisParameters from parent (CQLayoutMainWindow)
+      C_FLOAT64 minNodeSize = 10;
+      C_FLOAT64 maxNodeSize = 100;
+      if (pParentLayoutWindow != NULL)
         {
-          dataSet = (*iter).second;
-          unsigned int i;
-          // try to get VisParameters from parent (CQLayoutMainWindow)
-          C_FLOAT64 minNodeSize = 10;
-          C_FLOAT64 maxNodeSize = 100;
-          if (pParentLayoutWindow != NULL)
+          if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
             {
-              if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
-                {
-                  minNodeSize = 0.0;
-                  maxNodeSize = 1.0; // 456 color values from black to red to yellow
-                }
-              else
-                {
-                  minNodeSize = pParentLayoutWindow->getMinNodeSize();
-                  maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
-                }
+              minNodeSize = 0.0;
+              maxNodeSize = 1.0; // 456 color values from black to red to yellow
             }
-          for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
+          else
             {
-              // get old value
-              val = dataSet.getValueForSpecies(viewerNodes[i]);
-              if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
-                  (pParentLayoutWindow != NULL))
-                {// global mode -> individual mode
-                  // first get to original value
-                  C_FLOAT64 orig_value = dataSet.getOrigValueForSpecies(viewerNodes[i]);
-                  // recalculation of original value
-                  if ((pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) > CVisParameters::EPSILON)
-                    {
-                      // now rescale
-                      val_new = ((orig_value - pSummaryInfo->getMinForSpecies(viewerNodes[i])) *
-                                 (maxNodeSize - minNodeSize) /
-                                 (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
-                                + minNodeSize;
-                    }
-                  else
-                    {
-                      val_new = (maxNodeSize + minNodeSize) / 2.0;
-                      if (s == 0) // only insert once into set
-                        setOfConstantMetabolites.insert(viewerNodes[i]);
-                    }
-                }
-              else
-                {// individual mode -> global mode
-                  C_FLOAT64 orig_value = dataSet.getOrigValueForSpecies(viewerNodes[i]);
-                  // first calculate original value
-                  if ((pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()) > CVisParameters::EPSILON)
-                    {
-                      // now rescale
-                      val_new = ((orig_value - pSummaryInfo->getMinOverallConcentration()) *
-                                 (maxNodeSize - minNodeSize) /
-                                 (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
-                                + minNodeSize;
-                    }
-                  else
-                    val_new = (maxNodeSize + minNodeSize) / 2.0;
-                }
-
-              dataSet.putValueForSpecies(viewerNodes[i], val_new);
+              minNodeSize = pParentLayoutWindow->getMinNodeSize();
+              maxNodeSize = pParentLayoutWindow->getMaxNodeSize();
             }
-          dataSets.erase(s);
-          dataSets.insert (std::pair<C_INT32, CDataEntity>
-                           (s, dataSet));
         }
+      for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
+        {
+          // get old value
+          val = dataSet.getValueForSpecies(viewerNodes[i]);
+          if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
+              (pParentLayoutWindow != NULL))
+            {// global mode -> individual mode
+              // first get to original value
+              C_FLOAT64 orig_value = dataSet.getOrigValueForSpecies(viewerNodes[i]);
+              // recalculation of original value
+              if ((pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])) > CVisParameters::EPSILON)
+                {
+                  // now rescale
+                  val_new = ((orig_value - pSummaryInfo->getMinForSpecies(viewerNodes[i])) *
+                             (maxNodeSize - minNodeSize) /
+                             (pSummaryInfo->getMaxForSpecies(viewerNodes[i]) - pSummaryInfo->getMinForSpecies(viewerNodes[i])))
+                            + minNodeSize;
+                }
+              else
+                {
+                  val_new = (maxNodeSize + minNodeSize) / 2.0;
+                  if (s == 0) // only insert once into set
+                    setOfConstantMetabolites.insert(viewerNodes[i]);
+                }
+            }
+          else
+            {// individual mode -> global mode
+              C_FLOAT64 orig_value = dataSet.getOrigValueForSpecies(viewerNodes[i]);
+              // first calculate original value
+              if ((pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()) > CVisParameters::EPSILON)
+                {
+                  // now rescale
+                  val_new = ((orig_value - pSummaryInfo->getMinOverallConcentration()) *
+                             (maxNodeSize - minNodeSize) /
+                             (pSummaryInfo->getMaxOverallConcentration() - pSummaryInfo->getMinOverallConcentration()))
+                            + minNodeSize;
+                }
+              else
+                val_new = (maxNodeSize + minNodeSize) / 2.0;
+            }
+
+          dataSet.putValueForSpecies(viewerNodes[i], val_new);
+        }
+      mDataSets[s] = dataSet;
     }
 }
 
@@ -1901,7 +1877,7 @@ bool CQGLNetworkPainter::createDataSets()
         }
       if (pTimeSer->getNumVariables() > 0)
         {
-          dataSets.clear(); // remove old data sets
+          mDataSets.clear(); // remove old data sets
           pSummaryInfo = new CSimSummaryInfo(pTimeSer->getRecordedSteps(), pTimeSer->getNumVariables(),
                                              pTimeSer->getConcentrationData(pTimeSer->getRecordedSteps() - 1, 0) - pTimeSer->getConcentrationData(0, 0));
           unsigned int i;
@@ -1984,8 +1960,7 @@ bool CQGLNetworkPainter::createDataSets()
                     }
                 }
               // now collect data set
-              dataSets.insert(std::pair<C_INT32, CDataEntity>
-                              (t, dataSet));
+              mDataSets.push_back(dataSet);
               counter++;
             }
           loadDataSuccessful = true;
@@ -1996,23 +1971,26 @@ bool CQGLNetworkPainter::createDataSets()
   this->mDataPresentP = loadDataSuccessful;
   if (loadDataSuccessful)
     {// if loading was successful, parent should create data table to show it in its window
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(0); // get data for first step
-      if (iter != dataSets.end())
-        pParentLayoutWindow->insertValueTable((*iter).second);
+      if (!mDataSets.empty())
+        {
+          pParentLayoutWindow->insertValueTable(mDataSets[0]);
+        }
     }
   return loadDataSuccessful;
 }
 
 C_INT32 CQGLNetworkPainter::getNumberOfSteps()
 {
-  return dataSets.size();
+  return mDataSets.size();
 }
 
 void CQGLNetworkPainter::runAnimation()
 {
   this->mLabelShape = CIRCLE;
-  if (dataSets.size() == 0)
-    this->createDataSets(); // load data if this was not done before
+  if (mDataSets.empty())
+    {
+      this->createDataSets(); // load data if this was not done before
+    }
 
   // try to get VisParameters from parent (CQLayoutMainWindow)
 
@@ -2054,13 +2032,9 @@ void CQGLNetworkPainter::triggerAnimationStep()
 CDataEntity* CQGLNetworkPainter::getDataSetAt(C_INT32 stepNumber)
 {
   CDataEntity* pDataSet = NULL;
-  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < dataSets.size()))
+  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < mDataSets.size()))
     {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
-      if (iter != dataSets.end())
-        {
-          pDataSet = &((*iter).second);
-        }
+      pDataSet = &(mDataSets[stepNumber]);
     }
   return pDataSet;
 }
@@ -2070,46 +2044,42 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
   this->stepShown = stepNumber;
   if (this->mLabelShape != CIRCLE)
     this->mLabelShape = CIRCLE;
-  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < dataSets.size()))
+  if ((0 <= stepNumber) && (static_cast<unsigned int>(stepNumber) < mDataSets.size()))
     {
-      std::map<C_INT32, CDataEntity>::iterator iter = dataSets.find(stepNumber);
-      if (iter != dataSets.end())
+      CDataEntity dataSet = mDataSets[stepNumber];
+      unsigned int i;
+      for (i = 0; i < viewerNodes.size();i++)
         {
-          CDataEntity dataSet = (*iter).second;
-          unsigned int i;
-          for (i = 0; i < viewerNodes.size();i++)
+          if (pParentLayoutWindow != NULL)
             {
-              if (pParentLayoutWindow != NULL)
+              C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
+              if (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)
+                {// no color mode
+
+                  if (val != -DBL_MAX)
+                    if (isnan(val)) // test for nan
+                      {
+                        std::cout << "nan value found for " << viewerNodes[i] << std::endl;
+
+                        std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
+                        if (itNodeObj != nodeMap.end())
+                          std::cout << (*itNodeObj).second << std::endl;
+                        setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
+                      }
+                    else
+                      setNodeSize(viewerNodes[i], val);
+                }
+              else // COLOR_MODE
                 {
-                  C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
-                  if (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)
-                    {// no color mode
-
-                      if (val != -DBL_MAX)
-                        if (isnan(val)) // test for nan
-                          {
-                            std::cout << "nan value found for " << viewerNodes[i] << std::endl;
-
-                            std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
-                            if (itNodeObj != nodeMap.end())
-                              std::cout << (*itNodeObj).second << std::endl;
-                            setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
-                          }
-                        else
-                          setNodeSize(viewerNodes[i], val);
-                    }
-                  else // COLOR_MODE
-                    {
-                      setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
-                      if (val != -DBL_MAX)
-                        if (isnan(val)) // test for nan
-                          {
-                            std::cout << "nan value found: " << viewerNodes[i] << std::endl;
-                            setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
-                          }
-                        else
-                          setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
-                    }
+                  setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
+                  if (val != -DBL_MAX)
+                    if (isnan(val)) // test for nan
+                      {
+                        std::cout << "nan value found: " << viewerNodes[i] << std::endl;
+                        setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
+                      }
+                    else
+                      setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
                 }
             }
         }

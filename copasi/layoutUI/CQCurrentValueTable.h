@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/09 09:16:26 $
+//   $Date: 2008/10/06 13:28:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,23 +47,24 @@ class CQCurrentValueTable : public QWidget
     void setRowInTable(int row, std::string key, std::string s, C_FLOAT64 val);
     int numRows() const;
     QHeader* verticalHeader();
+    std::string getKeyForRow(int row) const;
+    bool getValueForRow(int row) const;
 
   protected:
     void setValue(int row, C_FLOAT64 val);
     void setKeyIndex(std::string key, int row);
-    std::string getKeyForRow(int row);
     void setAllBoxesChecked(bool checked = true);
     void setAllBoxesUnchecked();
     void init();
 
   private slots:
     //void mouseClickedOverTable(int row, int col , int button, const QPoint & mousepos);
-    void valChanged(int row, int col);
     void slotCheckAllClicked();
     void slotUncheckAllClicked();
+    void tableValueChanged(int row, int column);
 
   signals:
-    void changed();
+    void valueChanged(int row);
   };
 
 #endif /*CQCURRENTVALUETABLE_H_*/

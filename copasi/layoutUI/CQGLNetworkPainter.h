@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/03 19:17:57 $
+//   $Date: 2008/10/06 13:28:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,7 +204,7 @@ class CQGLNetworkPainter : public QGLWidget
     double mFontsizeDouble;
     QFont mf;
 
-    std::map<C_INT32, CDataEntity> dataSets;
+    std::vector<CDataEntity> mDataSets;
 
     std::map<std::string, std::string> keyMap; // maps Copasi SBML object keys to layout node keys
     std::map<std::string, CGraphNode>nodeMap;
