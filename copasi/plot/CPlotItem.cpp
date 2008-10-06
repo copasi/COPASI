@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/06 19:13:07 $
+//   $Date: 2008/10/06 19:40:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,7 +183,6 @@ void CPlotItem::setActivity(const COutputInterface::Activity & activity)
 
 const COutputInterface::Activity & CPlotItem::getActivity() const
   {
-    const char ** pActivity = XMLRecordingActivity;
     COutputInterface::Activity Activity;
 
     switch (mType)
@@ -194,10 +193,7 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
           const_cast<CPlotItem *>(this)->mpXMLActivity =
             getParameter("Recording Activity")->getValue().pSTRING;
 
-        while (*pActivity && mpXMLActivity->compare(*pActivity)) pActivity++;
-
-        Activity =
-          (COutputInterface::Activity) (pActivity - XMLRecordingActivity);
+        Activity = (COutputInterface::Activity) toEnum(mpXMLActivity->c_str(), XMLRecordingActivity);
 
         if (Activity < COutputInterface::BEFORE ||
             (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER) < Activity)
