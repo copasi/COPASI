@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 13:28:37 $
+//   $Date: 2008/10/06 15:51:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include <string>
 
 #include "CDataEntity.h"
+#include "CVisParameters.h"
 #include "copasi.h"
 
 class QwtSlider;
@@ -72,8 +73,8 @@ class CQLayoutMainWindow : public QMainWindow
     C_FLOAT64 getMaxNodeSize();
     C_INT32 getStepsPerSecond();
     void setStepsPerSecond(C_INT16 val);
-    C_INT16 getScalingMode();
-    C_INT16 getMappingMode();
+    CVisParameters::SCALING_MODE getScalingMode();
+    CVisParameters::MAPPING_MODE getMappingMode();
     C_INT16 getFontSize();
     C_INT32 getCurrentStep();
     void addItemInAnimation (std::string s);

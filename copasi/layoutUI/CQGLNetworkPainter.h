@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 13:28:37 $
+//   $Date: 2008/10/06 15:51:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,9 +109,9 @@ class CQGLNetworkPainter : public QGLWidget
     void runAnimation();
     void showStep(C_INT32 i);
 
-    void rescaleDataSets(C_INT16 scaleMode);
-    void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
-    void rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode);
+    void rescaleDataSets(CVisParameters::SCALING_MODE scaleMode);
+    void rescaleDataSetsWithNewMinMax(C_FLOAT64 oldMin, C_FLOAT64 oldMax, C_FLOAT64 newMin, C_FLOAT64 newMax, CVisParameters::SCALING_MODE scaleMode);
+    void rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, CVisParameters::SCALING_MODE scaleMode);
     void setConstantNodeSizeForAllSteps(std::string key, C_FLOAT64 midValue);
 
     void setConstantNodeSize(std::string key, C_FLOAT64 val);
@@ -129,6 +129,11 @@ class CQGLNetworkPainter : public QGLWidget
     void resetView();
 
     void pauseAnimation();
+
+    /**
+     * Sets the scaling mode to either global or individual scaling.
+     */
+    void setScaleMode(CVisParameters::SCALING_MODE scaleMode);
 
   private slots:
     void zoomIn();
@@ -259,6 +264,7 @@ class CQGLNetworkPainter : public QGLWidget
     void printNodeMap();
     void printAvailableFonts();
     GLuint textureNames[1];
+    CVisParameters::SCALING_MODE mScaleMode;
 
   protected:
     /**

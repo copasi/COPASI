@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 13:28:37 $
+//   $Date: 2008/10/06 15:51:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,8 +57,9 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-// TODO fix the bug in color animation mode if species are deactivated and
-// activated again, they are drawn incorrectly (wrong color)
+// TODO check why the modifier ends are not drawn in rectangle mode
+//
+// TODO connect label to model objects.
 //
 // TODO check why the arrow heads are off when switching back from size
 // animation to rectangular view
@@ -967,7 +968,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
   if (this->mLabelShape == CIRCLE)
     {
       float scaledValue = CVisParameters::DEFAULT_NODE_SIZE * mCurrentZoom;
-      C_INT16 mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+      CVisParameters::MAPPING_MODE mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
       if (pParentLayoutWindow != NULL)
         {
           mappingMode = pParentLayoutWindow->getMappingMode();
@@ -1008,6 +1009,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
                 }
               else
                 {
+                  scaledValue = CVisParameters::DEFAULT_NODE_SIZE; // default node size
                   if (mDrawShadows == true)
                     {
                       glPushMatrix();
@@ -1025,6 +1027,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
             }
           else
             {
+              scaledValue = CVisParameters::DEFAULT_NODE_SIZE; // node size for disabled nodes
               if (mDrawShadows == true)
                 {
                   glPushMatrix();
@@ -1644,16 +1647,14 @@ void CQGLNetworkPainter::setItemAnimated(std::string key, bool animatedP)
   this->showStep(pParentLayoutWindow->getCurrentStep());
 }
 
-void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_FLOAT64 /* oldMax */, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
+void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_FLOAT64 /* oldMax */, C_FLOAT64 newMin, C_FLOAT64 newMax, CVisParameters::SCALING_MODE scaleMode)
 {
-  CDataEntity dataSet;
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
   for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      // TODO we can probably ommit the copying here
-      dataSet = mDataSets[s];
+      CDataEntity& dataSet = mDataSets[s];
       unsigned int i;
       for (i = 0; i < viewerNodes.size();i++) // iterate over string values (node keys)
         {
@@ -1688,7 +1689,6 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_
             }
           dataSet.putValueForSpecies(viewerNodes[i], val_new);
         }
-      mDataSets[s] = dataSet;
     }
   // if there is no time course data, we set all values to 0.0
   if (mDataSets.size() == 0)
@@ -1703,17 +1703,15 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_
     }
 }
 
-void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, C_INT16 scaleMode)
+void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT64 newMax, CVisParameters::SCALING_MODE scaleMode)
 {
   // this is called if a species which has been disabled in the animation is reenabled
-  CDataEntity dataSet;
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
   for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      // TODO we can probably ommit the copying here
-      dataSet = mDataSets[s];
+      CDataEntity& dataSet = mDataSets[s];
       // get old value
       val = dataSet.getValueForSpecies(key);
       C_FLOAT64 a = 0.0, b = 1.0;
@@ -1744,52 +1742,43 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
             setOfConstantMetabolites.insert(key);
         }
       dataSet.putValueForSpecies(key, val_new);
-      mDataSets[s] = dataSet;
     }
 }
 
 void CQGLNetworkPainter::setConstantNodeSizeForAllSteps(std::string key, C_FLOAT64 val)
 {
-  CDataEntity dataSet;
   unsigned int s; // step number
 
   for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      // TODO we can probably ommit the copying here
-      dataSet = mDataSets[s];
+      CDataEntity& dataSet = mDataSets[s];
       dataSet.putValueForSpecies(key, val);
-      mDataSets[s] = dataSet;
     }
 }
 
 void CQGLNetworkPainter::setConstantNodeSize(std::string key, C_FLOAT64 val)
 {
-  CDataEntity dataSet;
   unsigned int s; // step number
   setOfConstantMetabolites.clear();
   for (s = 0; s < mDataSets.size(); s++) // for all steps
     {
-      // TODO we can probably ommit the copying here
-      dataSet = mDataSets[s];
+      CDataEntity& dataSet = mDataSets[s];
       // get old value
       dataSet.putValueForSpecies(key, val);
-      mDataSets[s] = dataSet;
     }
 }
 
 // INFO: to rescale an inteval [a..b] to another interval [x..y] the following formula is used: (val_old in [a..b]
 // val_new = x + ((val_old - a) * (y - x) / (b - a))
 
-void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
+void CQGLNetworkPainter::rescaleDataSets(CVisParameters::SCALING_MODE scaleMode)
 {
-  CDataEntity dataSet;
   unsigned int s; // step number
   C_FLOAT64 val, val_new;
   setOfConstantMetabolites.clear();
   for (s = 0; s < mDataSets.size(); s++)
     {
-      // TODO don't copy the dataset
-      dataSet = mDataSets[s];
+      CDataEntity& dataSet = mDataSets[s];
       unsigned int i;
       // try to get VisParameters from parent (CQLayoutMainWindow)
       C_FLOAT64 minNodeSize = 10;
@@ -1850,7 +1839,6 @@ void CQGLNetworkPainter::rescaleDataSets(C_INT16 scaleMode)
 
           dataSet.putValueForSpecies(viewerNodes[i], val_new);
         }
-      mDataSets[s] = dataSet;
     }
 }
 
@@ -2052,25 +2040,57 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
         {
           if (pParentLayoutWindow != NULL)
             {
-              C_FLOAT64 val = dataSet.getValueForSpecies(viewerNodes[i]);
+              double val = dataSet.getOrigValueForSpecies(viewerNodes[i]);
+              // do the scaling here instead of elsewhere
+              double a, b;
+              if (mScaleMode == CVisParameters::INDIVIDUAL_SCALING)
+                {
+                  a = pSummaryInfo->getMinForSpecies(viewerNodes[i]);
+                  b = pSummaryInfo->getMaxForSpecies(viewerNodes[i]);
+                }
+              else // mScaleMode == CVisParameters::GLOBAL_SCALING
+                {
+                  a = pSummaryInfo->getMinOverallConcentration();
+                  b = pSummaryInfo->getMaxOverallConcentration();
+                }
+              if ((b - a) > CVisParameters::EPSILON)
+                {
+                  val = (val - a) / (b - a);
+                }
+              else
+                {// no scaling if differences are too small, just set mid value
+                  val = 0.5;
+                  setOfConstantMetabolites.insert(viewerNodes[i]);
+                }
+
               if (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)
                 {// no color mode
 
                   if (val != -DBL_MAX)
-                    if (isnan(val)) // test for nan
-                      {
-                        std::cout << "nan value found for " << viewerNodes[i] << std::endl;
+                    {
+                      if (isnan(val)) // test for nan
+                        {
+                          std::cout << "nan value found for " << viewerNodes[i] << std::endl;
 
-                        std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
-                        if (itNodeObj != nodeMap.end())
-                          std::cout << (*itNodeObj).second << std::endl;
-                        setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
-                      }
-                    else
-                      setNodeSize(viewerNodes[i], val);
+                          std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
+                          if (itNodeObj != nodeMap.end())
+                            {
+                              std::cout << (*itNodeObj).second << std::endl;
+                            }
+                          setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
+                        }
+                      else
+                        {
+                          double min = pParentLayoutWindow->getMinNodeSize();
+                          double max = pParentLayoutWindow->getMaxNodeSize();
+                          setNodeSize(viewerNodes[i], min + val*(max - min));
+                        }
+                    }
                 }
               else // COLOR_MODE
                 {
+                  // TODO the call to setNodeSize should not be necessary since the nodes don't change in size during a color coded
+                  // TODO animation, so the arrow heads don't have to be recalculated
                   setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                   if (val != -DBL_MAX)
                     if (isnan(val)) // test for nan
@@ -2079,7 +2099,9 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                         setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                       }
                     else
-                      setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
+                      {
+                        setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
+                      }
                 }
             }
         }
@@ -2545,6 +2567,8 @@ bool CQGLNetworkPainter::isCircleMode()
 
 void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
 {
+  mScaleMode = CVisParameters::INDIVIDUAL_SCALING;
+
   mSpeciesColor[0] = 0.824f;
   mSpeciesColor[1] = 0.824f;
   mSpeciesColor[2] = 0.902f;
@@ -2595,12 +2619,12 @@ void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)
   mConstantSpeciesColor[2] = 0.7f;
   mConstantSpeciesColor[3] = 1.0f;
 
-  mCompartmentShadowXOffset = 6.0f;
-  mCompartmentShadowYOffset = 6.0f;
+  mCompartmentShadowXOffset = 3.0f;
+  mCompartmentShadowYOffset = 3.0f;
 
   // the species probably need a smaller shadow offset
-  mSpeciesShadowXOffset = 4.0f;
-  mSpeciesShadowYOffset = 4.0f;
+  mSpeciesShadowXOffset = 2.0f;
+  mSpeciesShadowYOffset = 2.0f;
 
   mDrawShadows = true;
 
@@ -2797,4 +2821,12 @@ std::vector<std::pair<float, float> > CQGLNetworkPainter::calculateCirclePoints(
       result.push_back(std::pair<float, float>(cos(angle)*0.5, sin(angle)*0.5));
     }
   return result;
+}
+
+/**
+ * Sets the scaling mode to either global or individual scaling.
+ */
+void CQGLNetworkPainter::setScaleMode(CVisParameters::SCALING_MODE scaleMode)
+{
+  this->mScaleMode = scaleMode;
 }

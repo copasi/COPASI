@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 13:28:37 $
+//   $Date: 2008/10/06 15:51:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,6 @@
 #include "CQCurrentValueTable.h"
 #include "CQGLNetworkPainter.h"
 #include "CQGLViewport.h"
-#include "CVisParameters.h"
 #include "FontChooser.h"
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
@@ -173,7 +172,7 @@ bool CQLayoutMainWindow::getAnimationRunning()
 {
   if (mpVisParameters != NULL)
     {
-      return mpVisParameters->animationRunning;
+      return mpVisParameters->mAnimationRunning;
     }
   else
     return false;
@@ -183,7 +182,7 @@ void CQLayoutMainWindow::setAnimationRunning(bool animationRunningP)
 {
   if (mpVisParameters != NULL)
     {
-      mpVisParameters->animationRunning = animationRunningP;
+      mpVisParameters->mAnimationRunning = animationRunningP;
     }
 }
 
@@ -193,7 +192,7 @@ C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
   if (mpVisParameters != NULL)
     {
 
-      minNodeSize = mpVisParameters->minNodeSize;
+      minNodeSize = mpVisParameters->mMinNodeSize;
     }
   return minNodeSize;
 }
@@ -203,7 +202,7 @@ C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
   C_FLOAT64 maxNodeSize = 100.0;
   if (mpVisParameters != NULL)
     {
-      maxNodeSize = mpVisParameters->maxNodeSize;
+      maxNodeSize = mpVisParameters->mMaxNodeSize;
     }
   return maxNodeSize;
 }
@@ -211,13 +210,13 @@ C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
 void CQLayoutMainWindow::setMinNodeSize(C_FLOAT64 minNdSize)
 {
   if (mpVisParameters != NULL)
-    mpVisParameters->minNodeSize = minNdSize;
+    mpVisParameters->mMinNodeSize = minNdSize;
 }
 
 void CQLayoutMainWindow::setMaxNodeSize(C_FLOAT64 maxNdSize)
 {
   if (mpVisParameters != NULL)
-    mpVisParameters->maxNodeSize = maxNdSize;
+    mpVisParameters->mMaxNodeSize = maxNdSize;
 }
 
 C_INT16 CQLayoutMainWindow::getFontSize()
@@ -229,7 +228,7 @@ C_INT32 CQLayoutMainWindow::getStepsPerSecond()
 {
   if (mpVisParameters != NULL)
     {
-      return mpVisParameters->stepsPerSecond;
+      return mpVisParameters->mStepsPerSecond;
     }
   else
     return 2;
@@ -239,7 +238,7 @@ void CQLayoutMainWindow::setStepsPerSecond(C_INT16 val)
 {
   if (mpVisParameters != NULL)
     {
-      mpVisParameters->stepsPerSecond = val;
+      mpVisParameters->mStepsPerSecond = val;
     }
 }
 
@@ -248,21 +247,21 @@ C_INT32 CQLayoutMainWindow::getCurrentStep()
   return (C_INT32) this->mpTimeSlider->value();
 }
 
-C_INT16 CQLayoutMainWindow::getScalingMode()
+CVisParameters::SCALING_MODE CQLayoutMainWindow::getScalingMode()
 {
   if (mpVisParameters != NULL)
     {
-      return mpVisParameters->scalingMode;
+      return mpVisParameters->mScalingMode;
     }
   else
     return CVisParameters::INDIVIDUAL_SCALING;
 }
 
-C_INT16 CQLayoutMainWindow::getMappingMode()
+CVisParameters::MAPPING_MODE CQLayoutMainWindow::getMappingMode()
 {
   if (mpVisParameters != NULL)
     {
-      return mpVisParameters->mappingMode;
+      return mpVisParameters->mMappingMode;
     }
   else
     return CVisParameters::SIZE_DIAMETER_MODE; // default mode
@@ -573,7 +572,7 @@ void CQLayoutMainWindow::startAnimation()
     this->loadData(); // look for data
   if (this->mDataPresent)
     {// only if time series data present
-      this->mpVisParameters->animationRunning = true;
+      this->mpVisParameters->mAnimationRunning = true;
       this->mpTimeSlider->setEnabled(false);
       this->mpGLViewport->getPainter()->runAnimation();
       this->mpControlWidget->setNumSteps(this->mpGLViewport->getPainter()->getNumberOfSteps());
@@ -601,7 +600,7 @@ void CQLayoutMainWindow::pauseAnimation()
 {
   // tell the painter that the anmation is paused
   this->mpGLViewport->getPainter()->pauseAnimation();
-  this->mpVisParameters->animationRunning = false;
+  this->mpVisParameters->mAnimationRunning = false;
   this->mpTimeSlider->setEnabled(true);
   mpParaPanel->enableParameterChoice();
   mpParaPanel->enableStepNumberChoice();
@@ -639,29 +638,29 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 
 void CQLayoutMainWindow::setIndividualScaling()
 {
-  mpVisParameters->scalingMode = mpVisParameters->INDIVIDUAL_SCALING;
+  mpVisParameters->mScalingMode = mpVisParameters->INDIVIDUAL_SCALING;
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->INDIVIDUAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setGlobalScaling()
 {
-  mpVisParameters->scalingMode = mpVisParameters->GLOBAL_SCALING;
+  mpVisParameters->mScalingMode = mpVisParameters->GLOBAL_SCALING;
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->GLOBAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setSizeMode()
 {
-  mpVisParameters->mappingMode = CVisParameters::SIZE_DIAMETER_MODE;
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 1.0, getMinNodeSize(), getMaxNodeSize(), mpVisParameters->scalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpVisParameters->mMappingMode = CVisParameters::SIZE_DIAMETER_MODE;
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(0.0, 1.0, getMinNodeSize(), getMaxNodeSize(), mpVisParameters->mScalingMode); // only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setColorMode()
 {
-  mpVisParameters->mappingMode = CVisParameters::COLOR_MODE;
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 1.0, mpVisParameters->scalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
+  mpVisParameters->mMappingMode = CVisParameters::COLOR_MODE;
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), 0.0, 1.0, mpVisParameters->mScalingMode); // rescaling, because min and max node size changed (interpretation as color value takes place elsewhere),only [0.240] of possible HSV values (not fill circle in order to get good color range)
   showStep(this->mpTimeSlider->value());
 }
 
@@ -673,7 +672,7 @@ void CQLayoutMainWindow::setValueOnSlider(C_INT32 val)
 // set minimum possible node size for animation
 void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
 {
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), mpVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, getMaxNodeSize(), mpVisParameters->mScalingMode);
   setMinNodeSize(minNdSize);
   showStep(this->mpTimeSlider->value());
 }
@@ -681,14 +680,14 @@ void CQLayoutMainWindow::setMinValue(C_INT32 minNdSize)
 // set maximum possible node size for animation
 void CQLayoutMainWindow::setMaxValue(C_INT32 maxNdSize)
 {
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, mpVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), getMinNodeSize(), maxNdSize, mpVisParameters->mScalingMode);
   setMaxNodeSize(maxNdSize);
   showStep(this->mpTimeSlider->value());
 }
 
 void CQLayoutMainWindow::setMinAndMaxValue(C_INT32 minNdSize, C_INT32 maxNdSize)
 {
-  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, mpVisParameters->scalingMode);
+  mpGLViewport->getPainter()->rescaleDataSetsWithNewMinMax(getMinNodeSize(), getMaxNodeSize(), minNdSize, maxNdSize, mpVisParameters->mScalingMode);
   setMinNodeSize(minNdSize);
   setMaxNodeSize(maxNdSize);
   showStep(this->mpTimeSlider->value());
