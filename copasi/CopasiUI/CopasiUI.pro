@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.144 $
+#   $Revision: 1.145 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/09/30 19:49:51 $
+#   $Date: 2008/10/06 18:04:24 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.144 $ $Author: shoops $ $Date: 2008/09/30 19:49:51 $
+# $Revision: 1.145 $ $Author: shoops $ $Date: 2008/10/06 18:04:24 $
 ######################################################################
 
 TEMPLATE = app
@@ -45,6 +45,7 @@ contains(BUILD_OS, WIN32) {
 
 contains(BUILD_OS, Linux) {
   CONFIG += opengl
+
   LIBS += -lfreetype
 
   LIBS = -L../lib \
@@ -53,11 +54,15 @@ contains(BUILD_OS, Linux) {
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
-  LIBS += -Wl,-lqt-mt \
-          -Wl,-lXcursor \
-          -Wl,-lXft \
-          -Wl,-lfontconfig \
-          -Wl,-lpthread
+  contains(QMAKE_LFLAGS, -static) {
+   LIBS += -Wl,-lqt-mt \
+           -Wl,-lGL \
+           -Wl,-lXxf86vm \
+           -Wl,-lXcursor \
+           -Wl,-lXft \
+           -Wl,-lfontconfig \
+           -Wl,-lpthread
+  }
 
   release {
     dynamic_LFLAGS = $${QMAKE_LFLAGS}
