@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 15:51:45 $
+//   $Date: 2008/10/07 11:18:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,6 +165,11 @@ void CQLayoutMainWindow::parameterTableValueChanged(int row)
   else
     {
       this->removeItemInAnimation(key);
+    }
+  // redraw the layout if we are in animation mode
+  if (this->mpGLViewport->isCircleMode())
+    {
+      this->mpGLViewport->updateWidget();
     }
 }
 

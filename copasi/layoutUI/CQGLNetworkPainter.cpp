@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.144 $
+//   $Revision: 1.145 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 15:51:45 $
+//   $Date: 2008/10/07 11:18:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,10 +57,6 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
-// TODO check why the modifier ends are not drawn in rectangle mode
-//
-// TODO connect label to model objects.
-//
 // TODO check why the arrow heads are off when switching back from size
 // animation to rectangular view
 //
@@ -74,10 +70,6 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 // TODO change the text rendering or the texture creation. Right now it seems
 // to work reasonably well, but it could be improved since the text is
 // sometimes longer or higher than reported by Qt.
-
-// TODO Antialias Nodes and arrowheads, right now it looks as if only the edges
-// do get antialiasing. This already has been improved, but it still loks as if
-// not everything would get antialiasing.
 
 // below species and speciesreference
 const double CQGLNetworkPainter::COMPARTMENT_DEPTH = 0.001;
@@ -651,7 +643,21 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                       CArrow *ar;
                       if (lastSeg.isBezier())
                         {
-                          CLLineSegment segForArrow = CLLineSegment(lastSeg.getBase2(), lastSeg.getEnd());
+                          CLPoint to = lastSeg.getBase2();
+                          CLPoint p = lastSeg.getEnd();
+                          // check if the second base point and the endpoint are identical
+                          if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+                            {
+                              // if yes, take the first basepoint
+                              to = lastSeg.getBase1();
+                              // if they are still identical take the start point because
+                              // it is a straight line
+                              if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+                                {
+                                  to = lastSeg.getStart();
+                                }
+                            }
+                          CLLineSegment segForArrow = CLLineSegment(to, lastSeg.getEnd());
                           ar = new CArrow(segForArrow, lastSeg.getEnd().getX(), lastSeg.getEnd().getY(), this->mCurrentZoom);
                         }
                       else
@@ -665,9 +671,11 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                     }
                 }
               if (nodeKey != "")
-                nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
-                                    (nodeKey,
-                                     curve));
+                {
+                  nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
+                                      (nodeKey,
+                                       curve));
+                }
             }
           else
             {// if no species node is associated with the curve: just store curve
@@ -760,7 +768,6 @@ void CQGLNetworkPainter::drawGraph()
           drawNode((*itCompartmentNode).second);
         }
     }
-
   for (i = 0;i < viewerNodes.size();i++)
     {
       itNode = nodeMap.find(viewerNodes[i]);
@@ -780,7 +787,6 @@ void CQGLNetworkPainter::drawGraph()
           drawNode((*itNode).second);
         }
     }
-
   glColor4fv(mSpeciesReferenceColor);
   for (i = 0;i < viewerCurves.size();i++) // draw edges that do not directly belong to a node (reaction curves)
     {
@@ -798,48 +804,55 @@ void CQGLNetworkPainter::drawGraph()
       // debug end
       for (i = 0;i < viewerLabels.size();i++)
         {
-          RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(viewerLabels[i].getX()), static_cast<C_INT32>(viewerLabels[i].getY()), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
+          // only draw the text if there actually is text
+          if (!viewerLabels[i].getText().empty())
+            {
+              RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(viewerLabels[i].getX()), static_cast<C_INT32>(viewerLabels[i].getY()), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
+            }
         }
     }
   else
     {// draw string next to circle (to the right) or in the center if there is enough space
       for (i = 0;i < viewerLabels.size();i++)
         {
-          C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
-          C_FLOAT64 nDiam = 0.0;
-          C_FLOAT64 x, y;
-
-          const std::string& nodeKey = viewerLabels[i].getGraphicalObjectKey();
-          if (!nodeKey.empty())
+          if (!viewerLabels[i].getText().empty())
             {
-              std::map<std::string, CGraphNode>::iterator itNodeObj;
-              itNodeObj = nodeMap.find(nodeKey);
-              if (itNodeObj != nodeMap.end())
-                nDiam = (*itNodeObj).second.getSize();
-              C_INT32 xNdCenter = (C_INT32) ((*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0));
-              C_INT32 yNdCenter = (C_INT32) (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
-              if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
+              C_FLOAT64 tWid = getTextWidth(viewerLabels[i].getText(), mFontname, static_cast<int>(floor(viewerLabels[i].getHeight())));
+              C_FLOAT64 nDiam = 0.0;
+              C_FLOAT64 x, y;
+
+              const std::string& nodeKey = viewerLabels[i].getGraphicalObjectKey();
+              if (!nodeKey.empty())
                 {
-                  x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->mCurrentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
-                  y = yNdCenter;
-                }
-              else if ((tWid + 4) > nDiam)
-                {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
-                  x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
-                  y = yNdCenter;
+                  std::map<std::string, CGraphNode>::iterator itNodeObj;
+                  itNodeObj = nodeMap.find(nodeKey);
+                  if (itNodeObj != nodeMap.end())
+                    nDiam = (*itNodeObj).second.getSize();
+                  C_INT32 xNdCenter = (C_INT32) ((*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0));
+                  C_INT32 yNdCenter = (C_INT32) (*itNodeObj).second.getY(); // + ((*itNodeObj).second.getHeight() / 2.0);
+                  if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
+                    {
+                      x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->mCurrentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
+                      y = yNdCenter;
+                    }
+                  else if ((tWid + 4) > nDiam)
+                    {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
+                      x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
+                      y = yNdCenter;
+                    }
+                  else
+                    {// place in center of circle
+                      x = xNdCenter - (viewerLabels[i].getWidth() / 2.0); // - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0);
+                      y = yNdCenter;
+                    }
                 }
               else
-                {// place in center of circle
-                  x = xNdCenter - (viewerLabels[i].getWidth() / 2.0); // - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0);
-                  y = yNdCenter;
+                {// if there is no node associated, just take label position
+                  x = viewerLabels[i].getX();
+                  y = viewerLabels[i].getY();
                 }
+              RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
             }
-          else
-            {// if there is no node associated, just take label position
-              x = viewerLabels[i].getX();
-              y = viewerLabels[i].getY();
-            }
-          RG_drawStringAt(viewerLabels[i].getText(), static_cast<C_INT32>(x), static_cast<C_INT32>(y), static_cast<C_INT32>(viewerLabels[i].getWidth()), static_cast<C_INT32>(viewerLabels[i].getHeight()));
         }
     }
 }
@@ -1342,7 +1355,10 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
   // since all arrow heads go along the y axis, we have to subtract 90° from
   // the angle to get the correct rotation angle
   double angle = calculateAngle(p1, p2);
-  if (angle != angle) return; // we got NaN
+  if (angle != angle)
+    {
+      return; // we got NaN
+    }
   angle -= 90.0;
 
   // so we need to rotate the head by angle degrees and move it to
@@ -1364,14 +1380,7 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
     {
       if (role == CLMetabReferenceGlyph::MODIFIER)
         {
-          if (this->mLabelShape == CIRCLE)
-            {
-              glTranslatef(p1.getX(), p1.getY(), 0.0f);
-            }
-          else
-            {
-              glTranslatef(p1.getX(), p1.getY(), 0.0f);
-            }
+          glTranslatef(p1.getX(), p1.getY(), 0.0f);
           glRotatef(angle, 0.0f, 0.0f, 1.0f);
           glScalef(3.0f, 3.0f, 1.0f);
           glCallList(mDisplayLists + 9);
@@ -1954,7 +1963,9 @@ bool CQGLNetworkPainter::createDataSets()
           loadDataSuccessful = true;
         }
       else
-        std::cout << "empty time series: no variables present" << std::endl;
+        {
+          std::cout << "empty time series: no variables present" << std::endl;
+        }
     }
   this->mDataPresentP = loadDataSuccessful;
   if (loadDataSuccessful)
@@ -2081,9 +2092,16 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                         }
                       else
                         {
-                          double min = pParentLayoutWindow->getMinNodeSize();
-                          double max = pParentLayoutWindow->getMaxNodeSize();
-                          setNodeSize(viewerNodes[i], min + val*(max - min));
+                          if (setOfDisabledMetabolites.find(viewerNodes[i]) == setOfDisabledMetabolites.end())
+                            {
+                              double min = pParentLayoutWindow->getMinNodeSize();
+                              double max = pParentLayoutWindow->getMaxNodeSize();
+                              setNodeSize(viewerNodes[i], min + val*(max - min));
+                            }
+                          else
+                            {
+                              setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
+                            }
                         }
                     }
                 }
@@ -2143,6 +2161,19 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
           if (pLastSeg->isBezier())
             {
               to = pLastSeg->getBase2();
+              CLPoint p = pLastSeg->getEnd();
+              // check if the second base point and the endpoint are identical
+              if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+                {
+                  // if yes, take the first basepoint
+                  to = pLastSeg->getBase1();
+                  // if they are still identical take the start point because
+                  // it is a straight line
+                  if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+                    {
+                      to = pLastSeg->getStart();
+                    }
+                }
             }
           else
             {
@@ -2301,7 +2332,21 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
       CArrow *ar;
       if (pLastSeg->isBezier())
         {
-          CLLineSegment segForArrow = CLLineSegment(pLastSeg->getBase2(), pLastSeg->getEnd());
+          CLPoint to = pLastSeg->getBase2();
+          CLPoint p = pLastSeg->getEnd();
+          // check if the second base point and the endpoint are identical
+          if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+            {
+              // if yes, take the first basepoint
+              to = pLastSeg->getBase1();
+              // if they are still identical take the start point because
+              // it is a straight line
+              if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+                {
+                  to = pLastSeg->getStart();
+                }
+            }
+          CLLineSegment segForArrow = CLLineSegment(to, pLastSeg->getEnd());
           ar = new CArrow(segForArrow, pLastSeg->getEnd().getX(), pLastSeg->getEnd().getY(), this->mCurrentZoom);
         }
       else
@@ -2336,7 +2381,21 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
       CArrow *ar;
       if (pLastSeg->isBezier())
         {
-          CLLineSegment segForArrow = CLLineSegment(pLastSeg->getBase2(), pLastSeg->getEnd());
+          CLPoint to = pLastSeg->getBase2();
+          CLPoint p = pLastSeg->getEnd();
+          // check if the second base point and the endpoint are identical
+          if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+            {
+              // if yes, take the first basepoint
+              to = pLastSeg->getBase1();
+              // if they are still identical take the start point because
+              // it is a straight line
+              if (fabs(p.getX() - to.getX() + p.getY() - to.getY()) < 1e-8)
+                {
+                  to = pLastSeg->getStart();
+                }
+            }
+          CLLineSegment segForArrow = CLLineSegment(to, pLastSeg->getEnd());
           ar = new CArrow(segForArrow, pLastSeg->getEnd().getX(), pLastSeg->getEnd().getY(), this->mCurrentZoom);
         }
       else
@@ -2561,8 +2620,13 @@ void CQGLNetworkPainter::testOpenGL()
 bool CQGLNetworkPainter::isCircleMode()
 {
   if (this->mLabelShape == CIRCLE)
-    return true;
-  else return false;
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 void CQGLNetworkPainter::initializeGraphPainter(QWidget *parent)

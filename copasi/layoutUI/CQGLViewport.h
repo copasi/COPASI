@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/05 09:29:03 $
+//   $Date: 2008/10/07 11:18:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,13 @@ class CQGLViewport : public QFrame
     void setZoomFactor(double zoom);
 
     void resetView();
+
+    /**
+     * Returns whether the layout window is in circle (animation mode) or not.
+     * This method only calls the corresponding method in the contained network
+     * painter.
+     */
+    bool isCircleMode() const;
 
   protected:
     virtual void resizeEvent(QResizeEvent* e);
