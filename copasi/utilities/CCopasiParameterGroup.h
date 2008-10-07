@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-  $Revision: 1.27 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/09/16 18:30:09 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
+ $Revision: 1.28 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/10/07 15:31:45 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -29,7 +29,7 @@
  *  This class is used to describe parameters. This class is intended
  *  to be used with integration or optimization methods or reactions.
  *
- *  Created for Copasi by Stefan Hoops 2002
+ *  Created for COPASI by Stefan Hoops 2002
  */
 class CCopasiParameterGroup: public CCopasiParameter
   {
@@ -77,7 +77,7 @@ class CCopasiParameterGroup: public CCopasiParameter
     virtual bool elevateChildren();
 
     /**
-     * Assignement operator
+     * Assignment operator
      * @param const CCopasiParameterGroup & rhs
      * @return CCopasiParameterGroup & lhs
      */
@@ -93,7 +93,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * Retrieve the end of an alphabetically sorted iterator
      * @return name_iterator end
      */
-    name_iterator nameEnd() const;
+    name_iterator endName() const;
 
     /**
      * Retrieve the begin of unsorted iterator
@@ -283,63 +283,63 @@ class CCopasiParameterGroup: public CCopasiParameter
     const CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index) const;
 
     /**
-     * Retreive a pointer to the value of a parameter or subgroup
+     * Retrieve a pointer to the value of a parameter or subgroup
      * @param const std::string & name
      * @return const CCopasiParameter::Value & Value
      */
     const CCopasiParameter::Value & getValue(const std::string & name) const;
 
     /**
-     * Retreive a pointer to the value of a parameter or subgroup
+     * Retrieve a pointer to the value of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return const CCopasiParameter::Value & Value
      */
     const CCopasiParameter::Value & getValue(const unsigned C_INT32 & index) const;
 
     /**
-     * Retreive a pointer to the value of a parameter or subgroup
+     * Retrieve a pointer to the value of a parameter or subgroup
      * @param const std::string & name
      * @return CCopasiParameter::Value & Value
      */
     CCopasiParameter::Value & getValue(const std::string & name);
 
     /**
-     * Retreive a pointer to the value of a parameter or subgroup
+     * Retrieve a pointer to the value of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return CCopasiParameter::Value & Value
      */
     CCopasiParameter::Value & getValue(const unsigned C_INT32 & index);
 
     /**
-     * Retreive the type of a parameter or subgroup
+     * Retrieve the type of a parameter or subgroup
      * @param const std::string & name
      * @return CCopasiParameter::Type
      */
     CCopasiParameter::Type getType(const std::string & name) const;
 
     /**
-     * Retreive the type of a parameter or subgroup
+     * Retrieve the type of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return CCopasiParameter::Type
      */
     CCopasiParameter::Type getType(const unsigned C_INT32 & index) const;
 
     /**
-     * Retreive the key of a parameter or subgroup
+     * Retrieve the key of a parameter or subgroup
      * @param const std::string & name
      * @return std::string key
      */
     std::string getKey(const std::string & name) const;
 
     /**
-     * Retreive the key of a parameter or subgroup
+     * Retrieve the key of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return std::string key
      */
     std::string getKey(const unsigned C_INT32 & index) const;
 
     /**
-     * Retreive the name of a parameter or subgroup
+     * Retrieve the name of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return std::string name
      *
@@ -423,7 +423,7 @@ class CCopasiParameterGroup: public CCopasiParameter
     /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
+     * to print the object.To override this default behavior one needs to
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */

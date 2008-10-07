@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/05/30 16:31:05 $
+//   $Author: shoops $
+//   $Date: 2008/10/07 15:31:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,40 +70,99 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   if (getObjectName() != rhs.getObjectName())
     setObjectName(rhs.getObjectName());
 
-  parameterGroup::const_iterator itRHS = rhs.mValue.pGROUP->begin();
-  parameterGroup::const_iterator endRHS = rhs.mValue.pGROUP->end();
+  name_iterator itRHS = rhs.beginName();
+  name_iterator endRHS = rhs.endName();
 
-  parameterGroup::iterator itLHS = mValue.pGROUP->begin();
-  parameterGroup::iterator endLHS = mValue.pGROUP->end();
+  name_iterator itLHS = beginName();
+  name_iterator endLHS = endName();
 
-  for (; itRHS != endRHS && itLHS != endLHS; ++itRHS, ++itLHS)
-    **itLHS = **itRHS;
+  std::vector< std::string > ToBeRemoved;
+  std::vector< CCopasiParameter * > ToBeAdded;
 
+  CCopasiParameter * pLHS;
+  CCopasiParameter * pRHS;
+
+  while (itRHS != endRHS && itLHS != endLHS)
+    {
+      // We only assign parameters
+      if ((pRHS = dynamic_cast< CCopasiParameter * >(itRHS->second)) == NULL)
+        {
+          ++itRHS;
+          continue;
+        }
+
+      // We only assign parameters
+      if ((pLHS = dynamic_cast< CCopasiParameter * >(itLHS->second)) == NULL)
+        {
+          ++itLHS;
+          continue;
+        }
+
+      const std::string & NameLHS = pLHS->getObjectName();
+      const std::string & NameRHS = pRHS->getObjectName();
+
+      // The LHS parameter is missing on the RHS thus we need to remove it
+      if (NameLHS < NameRHS)
+        {
+          ToBeRemoved.push_back(NameLHS);
+          ++itLHS;
+          continue;
+        }
+
+      // The RHS parameter is missing on the LHS thus we need to add it
+      if (NameLHS > NameRHS)
+        {
+          ToBeAdded.push_back(pRHS);
+          ++itRHS;
+          continue;
+        }
+
+      // The names are equal it suffices to use the assignment operator of the parameter
+      *pLHS = *pRHS;
+      ++itLHS;
+      ++itRHS;
+    }
+
+  // All remaining parameters of the LHS need to be removed
+  while (itLHS != endLHS)
+    {
+      // We only assign parameters
+      if ((pLHS = dynamic_cast< CCopasiParameter * >(itLHS->second)) != NULL)
+        ToBeRemoved.push_back(pLHS->getObjectName());
+
+      ++itLHS;
+    }
+
+  // All remaining paramter of the RHS need to be added
+  while (itRHS != endRHS)
+    {
+      // We only assign parameters
+      if ((pRHS = dynamic_cast< CCopasiParameter * >(itRHS->second)) != NULL)
+        ToBeAdded.push_back(pRHS);
+
+      ++itRHS;
+    }
+
+  // We remove the parameters
+  std::vector< std::string >::const_iterator itToBeRemoved = ToBeRemoved.begin();
+  std::vector< std::string >::const_iterator endToBeRemoved = ToBeRemoved.end();
+  for (; itToBeRemoved != endToBeRemoved; ++itToBeRemoved)
+    this->removeParameter(*itToBeRemoved);
+
+  // We add the missing parameters
   CCopasiParameter * pParameter;
-
-  if (itRHS != endRHS)
+  std::vector< CCopasiParameter * >::const_iterator itToBeAdded = ToBeAdded.begin();
+  std::vector< CCopasiParameter * >::const_iterator endToBeAdded = ToBeAdded.end();
+  for (; itToBeAdded != endToBeAdded; ++itToBeAdded)
     {
-      for (; itRHS != endRHS; ++itRHS)
-        {
-          if ((*itRHS)->getType() == GROUP)
-            pParameter = new CCopasiParameterGroup(* (CCopasiParameterGroup *) * itRHS);
-          else
-            pParameter = new CCopasiParameter(**itRHS);
+      if ((*itToBeAdded)->getType() == GROUP)
+        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(*itToBeAdded));
+      else
+        pParameter = new CCopasiParameter(**itToBeAdded);
 
-          addParameter(pParameter);
-        }
+      addParameter(pParameter);
     }
-  else
-    {
-      if (itLHS != endLHS)
-        {
-          parameterGroup::iterator itTmp;
-          for (itTmp = itLHS; itTmp != endLHS; ++itTmp)
-            pdelete(*itTmp);
 
-          mValue.pGROUP->erase(itLHS, endLHS);
-        }
-    }
   return *this;
 }
 
@@ -170,7 +234,7 @@ void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
 CCopasiParameterGroup::name_iterator CCopasiParameterGroup::beginName() const
   {return const_cast< CCopasiContainer::objectMap * >(&getObjects())->begin();}
 
-CCopasiParameterGroup::name_iterator CCopasiParameterGroup::nameEnd() const
+CCopasiParameterGroup::name_iterator CCopasiParameterGroup::endName() const
   {return const_cast< CCopasiContainer::objectMap * >(&getObjects())->end();}
 
 CCopasiParameterGroup::index_iterator CCopasiParameterGroup::beginIndex() const
