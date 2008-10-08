@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/30 15:57:27 $
+//   $Date: 2008/10/08 15:50:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include "CNormalGeneralPower.h"
 #include "CNormalItemPower.h"
 #include "CNormalItem.h"
+#include "CNormalTranslation.h"
 #include "ConvertToCEvaluationNode.h"
 #include "copasi/utilities/CCopasiTree.h"
 #include "copasi/function/CEvaluationTree.h"
@@ -349,6 +350,48 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
           ++it2;
         }
     }
+}
+
+CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
+{
+  CNormalFraction* pFraction = NULL;
+  // translate the ASTNode based tree into an CEvaluationNode based tree and
+  CEvaluationNode* pEvaluationNode = CEvaluationTree::convertASTNode(*pSource);
+  // all variable nodes in this tree are objects nodes so we have to convert
+  // them
+  CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;
+  // if the root node already is an object node, this has to be dealt with separately
+  if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
+    {
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+      delete pEvaluationNode;
+      pEvaluationNode = pVariableNode;
+    }
+  else
+    {
+      while (treeIt != NULL)
+        {
+          if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
+            {
+              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+              if ((*treeIt).getParent())
+                {
+                  (*treeIt).getParent()->addChild(pVariableNode, &(*treeIt));
+                  (*treeIt).getParent()->removeChild(&(*treeIt));
+                }
+              delete &(*treeIt);
+              treeIt = pVariableNode;
+            }
+          ++treeIt;
+        }
+    }
+  if (pEvaluationNode != NULL)
+    {
+      // create the normalform from that
+      pFraction = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(pEvaluationNode));
+      delete pEvaluationNode;
+    }
+  return pFraction;
 }
 
 CNormalFraction* create_normalform(const ASTNode* pSource)

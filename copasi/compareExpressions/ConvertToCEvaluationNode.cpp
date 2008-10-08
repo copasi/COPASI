@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/26 05:33:44 $
+//   $Date: 2008/10/08 15:50:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -471,11 +471,30 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
     }
   else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::FUNCTION)
     {
-      CNormalFunction* pFunction = createFunction(node);
-      assert(pFunction != NULL);
-      pItemPower->setItem(*pFunction);
-      delete pFunction;
-      pItemPower->setExp(1.0);
+      if (((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(node->getType())) == CEvaluationNodeFunction::MINUS)
+        {
+          // multiply the second node by -1 and call createItempower with the
+          // result
+          CEvaluationNodeNumber* pNumberNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "-1.0");
+          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+          pOperatorNode->addChild(pNumberNode);
+          pOperatorNode->addChild(dynamic_cast<const CEvaluationNode*>(node->getChild())->copyBranch());
+          // delete the old item power object
+          delete pItemPower;
+          // create a new item power object by calling this method again with
+          // the newly created multiplication node
+          pItemPower = createItemPower(pOperatorNode);
+          // delete the multiplication node
+          delete pOperatorNode;
+        }
+      else
+        {
+          CNormalFunction* pFunction = createFunction(node);
+          assert(pFunction != NULL);
+          pItemPower->setItem(*pFunction);
+          delete pFunction;
+          pItemPower->setExp(1.0);
+        }
     }
   else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::CALL)
     {
@@ -576,6 +595,9 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
             }
           empty = tmp.empty();
           CEvaluationNode* pTmpNode1 = NULL;
+          // if we have non number nodes, we need to combine those again into a
+          // multiplication chain
+          // otherwise the numerator is 1
           if (!empty)
             {
               pTmpNode1 = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, tmp);
@@ -607,9 +629,17 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
           empty = (empty & tmp.empty());
           if (!empty)
             {
-              pTmpNode1 = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, tmp);
-              pTmpOperator->addChild(pTmpNode1);
-              CNormalItemPower* pItemPower = createItemPower(pTmpOperator);
+              CNormalItemPower* pItemPower = NULL;
+              if (!tmp.empty())
+                {
+                  pTmpNode1 = CNormalTranslation::createChain(&CNormalTranslation::TIMES_NODE, &CNormalTranslation::ONE_NODE, tmp);
+                  pTmpOperator->addChild(pTmpNode1);
+                  pItemPower = createItemPower(pTmpOperator);
+                }
+              else
+                {
+                  pItemPower = createItemPower(pTmpNode1);
+                }
               assert(pItemPower != NULL);
               pProduct->multiply(*pItemPower);
               delete pItemPower;
@@ -752,14 +782,13 @@ CNormalSum* createSum(const CEvaluationNode* node)
     {
       // find a summation chain and create a product node for each addition and
       // subtraction node
-      std::vector<CEvaluationNode*> additions, subtractions;
+      std::vector<const CEvaluationNode*> additions, subtractions;
       CNormalTranslation::splitSum(node, additions, subtractions, false);
-      std::vector<CEvaluationNode*>::iterator it = additions.begin(), endit = additions.end();
+      std::vector<const CEvaluationNode*>::iterator it = additions.begin(), endit = additions.end();
       CNormalProduct* pProduct = NULL;
       while (it != endit)
         {
           pProduct = createProduct(*it);
-          delete *it;
           assert(pProduct != NULL);
           pSum->add(*pProduct);
           delete pProduct;
@@ -769,7 +798,6 @@ CNormalSum* createSum(const CEvaluationNode* node)
       while (it != endit)
         {
           pProduct = createProduct(*it);
-          delete *it;
           assert(pProduct != NULL);
           // since these are subtractions, we need to set the factor the -1.0
           // times the old factor
@@ -941,8 +969,13 @@ CNormalChoice * createChoice(const CEvaluationNode* node)
 CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
 {
   CNormalFraction* pFrac = NULL;
-  CEvaluationNode* pTmp = CNormalTranslation::expandProducts(node);
-  CEvaluationNode* pTmp2 = CNormalTranslation::evaluateNumbers(pTmp);
+  CEvaluationNode* pTmp2 = node->copyBranch();
+  CEvaluationNode* pTmp = CNormalTranslation::expandProducts(pTmp2);
+  if (pTmp != pTmp2)
+    {
+      delete pTmp2;
+    }
+  pTmp2 = CNormalTranslation::evaluateNumbers(pTmp);
   if (pTmp2 != pTmp)
     {
       delete pTmp;
@@ -956,9 +989,11 @@ CNormalFraction * createNormalRepresentation(const CEvaluationNode* node)
     case CEvaluationNode::CHOICE:
     case CEvaluationNode::LOGICAL:
     case CEvaluationNode::FUNCTION:
+    case CEvaluationNode::CALL:
       pFrac = createFraction(pTmp2);
       break;
     default:
+      assert(false);
       break;
     }
   delete pTmp2;
@@ -1448,6 +1483,7 @@ CNormalFunction * createFunction(const CEvaluationNode* node)
           break;
         case CEvaluationNodeFunction::INVALID:
         default:
+          assert(false);
           break;
         }
       if (type != CNormalFunction::INVALID)
