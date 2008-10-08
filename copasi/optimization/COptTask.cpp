@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:54 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 23:32:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,11 @@ bool COptTask::initialize(const OutputFlag & of,
 
   //initialize reporting
   bool success = true;
+
+  //do the part of the initialization of the subtask that needs to be
+  //performed before the output is initialized. This is kind of a hack,
+  //we need to find a more general solution for this
+  if (!pProblem->initializeSubtaskBeforeOutput()) success = false;
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
   //if (!mReport.open(pOstream)) success = false;

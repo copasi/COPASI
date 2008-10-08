@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/03 18:28:12 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 23:32:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,6 +255,27 @@ void COptProblem::initObjects()
 # pragma warning (disable: 4056 4756)
 #endif
 
+bool COptProblem::initializeSubtaskBeforeOutput()
+{
+  if (mpParmSubtaskCN != NULL)
+    {
+      std::vector< CCopasiContainer * > ListOfContainer;
+      ListOfContainer.push_back(getObjectAncestor("Vector"));
+      mpSubtask =
+        dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+    }
+  else
+    mpSubtask = NULL;
+
+  if (mpSubtask != NULL)
+    {
+      return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      //      ContainerList.push_back(mpSubtask);
+    }
+  else
+    return false;
+}
+
 bool COptProblem::initialize()
 {
   mInfinity = (*mpParmMaximize ? -2.0 : 2.0) * DBL_MAX;
@@ -283,19 +304,19 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  if (mpParmSubtaskCN != NULL)
-    {
-      std::vector< CCopasiContainer * > ListOfContainer;
-      ListOfContainer.push_back(getObjectAncestor("Vector"));
-      mpSubtask =
-        dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
-    }
-  else
-    mpSubtask = NULL;
+  //   if (mpParmSubtaskCN != NULL)
+  //     {
+  //       std::vector< CCopasiContainer * > ListOfContainer;
+  //       ListOfContainer.push_back(getObjectAncestor("Vector"));
+  //       mpSubtask =
+  //         dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+  //}
+  //   else
+  //     mpSubtask = NULL;
 
   if (mpSubtask != NULL)
     {
-      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      //      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       ContainerList.push_back(mpSubtask);
     }
   else

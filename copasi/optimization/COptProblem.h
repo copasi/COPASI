@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/12 18:04:12 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 23:32:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,6 +104,12 @@ class COptProblem : public CCopasiProblem
      * @result bool success
      */
     virtual bool initialize();
+
+    /**
+     * perform at least the initializations of the subtask that
+     * must be done before the output is initialized.
+     */
+    virtual bool initializeSubtaskBeforeOutput();
 
     /**
      * Do the calculating based on CalculateVariables and fill
