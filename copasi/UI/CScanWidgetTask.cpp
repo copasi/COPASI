@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 12:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Thu Jul 31 17:06:27 2008
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.11 2008/09/01 16:55:49 shoops Exp $)
+ ** Created: Wed Oct 8 02:15:46 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.12 2008/10/08 12:53:03 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -79,7 +79,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   frameLayout->addLayout(layout2);
   CScanWidgetTaskLayout->addWidget(frame);
   languageChange();
-  resize(QSize(374, 76).expandedTo(minimumSizeHint()));
+  resize(QSize(419, 76).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -106,9 +106,10 @@ void CScanWidgetTask::languageChange()
   comboType->clear();
   comboType->insertItem(tr("Steady State"));
   comboType->insertItem(tr("Time course"));
+  comboType->insertItem(tr("Metabolic control analysis"));
   comboType->insertItem(tr("Lyapunov exponents"));
   comboType->insertItem(tr("Optimization"));
-  comboType->insertItem(tr("Prameter Estimation"));
+  comboType->insertItem(tr("Parameter Estimation"));
   comboType->insertItem(tr("Sensitivities"));
   comboType->setCurrentItem(1);
   checkInitialConditions->setText(tr("always use initial conditions"));

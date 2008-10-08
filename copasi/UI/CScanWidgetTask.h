@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 12:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Thu Jul 31 16:58:54 2008
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.10 2008/09/01 16:55:49 shoops Exp $)
+ ** Created: Wed Oct 8 02:15:43 2008
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.11 2008/10/08 12:53:03 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
