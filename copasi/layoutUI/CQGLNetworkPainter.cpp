@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.146 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/07 11:18:17 $
+//   $Author: shoops $
+//   $Date: 2008/10/08 00:42:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,10 +36,11 @@
 #include <float.h>
 #include <utility>
 
-#include "copasi/utilities/COutputHandler.h"
-
 #include "copasi.h"
 
+#include "copasi/utilities/COutputHandler.h"
+
+#include "mathematics.h"
 #include "FontChooser.h"
 
 #if (defined WIN32 && !defined log2)
