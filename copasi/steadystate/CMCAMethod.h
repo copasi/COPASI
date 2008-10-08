@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
+  $Revision: 1.20 $
+  $Name:  $
+  $Author: ssahle $
+  $Date: 2008/10/08 23:30:27 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -142,6 +147,15 @@ class CMCAMethod: public CCopasiMethod
       {return mUnscaledFluxCCAnn;}
     const CArrayAnnotation* getScaledFluxCCAnn() const
       {return mScaledFluxCCAnn;}
+
+    /**
+     * Resizes all result matrices and updates the corresponding array annotations.
+     * This needs to be called before output initialization (in case the output references
+     * parts of the matrix) from the task initialization, but it also needs to be called
+     * before selecting elements of the matrices in the object selection dialog.
+     * The model needs to be set before calling this.
+     */
+    virtual void resizeAllMatrices();
 
     /**
      * Scales the coefficients (i.e. Kacser format, rather than Reder)

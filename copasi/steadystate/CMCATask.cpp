@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:31:45 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 23:31:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,12 @@ bool CMCATask::initialize(const OutputFlag & of,
 
   bool success = true;
 
+  //we need to resize an initialize the result matrices before initializing the output
+  CMCAMethod * pMethod = dynamic_cast<CMCAMethod*>(mpMethod);
+  if (!pMethod) return false;
+  pMethod->setModel(mpProblem->getModel());
+  pMethod->resizeAllMatrices();
+
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
   if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
@@ -107,7 +113,7 @@ bool CMCATask::process(const bool & useInitialValues)
 
   CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
   assert(pMethod);
-  pMethod->setModel(mpProblem->getModel());
+  //  pMethod->setModel(mpProblem->getModel());
 
   CSteadyStateTask *pSubTask =
     dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
