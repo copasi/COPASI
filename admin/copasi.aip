@@ -41,6 +41,7 @@
     <ROW Component="LICENSE.txt" ComponentId="{87B4EA4F-8063-4F76-BDF7-99350150AEE3}" Directory_="APPDIR" Attributes="0" KeyPath="LICENSE.txt" Type="0"/>
     <ROW Component="PerceivedType_1" ComponentId="{DF030F8B-A766-45B8-A8AE-D3AB00BEC798}" Directory_="APPDIR" Attributes="4" KeyPath="PerceivedType_1"/>
     <ROW Component="README.txt" ComponentId="{4F9D3A12-77E9-41D2-AC58-E4684E63A4EE}" Directory_="APPDIR" Attributes="0" KeyPath="README.txt" Type="0"/>
+    <ROW Component="SBW.dll" ComponentId="{EA794F50-8F7C-4DD5-84DB-C70CA0917DAC}" Directory_="bin_DIR" Attributes="0" KeyPath="SBW.dll"/>
     <ROW Component="TutWiz_Step1.html" ComponentId="{D9A58644-F85B-4FC5-A53E-B849BF79FE00}" Directory_="html_DIR" Attributes="0" KeyPath="TutWiz_Step1.html" Type="0"/>
     <ROW Component="brusselator.cps" ComponentId="{D7ED136C-BB0F-4739-9B7B-89F12B8627EE}" Directory_="examples_DIR" Attributes="0" KeyPath="brusselator.cps" Type="0"/>
     <ROW Component="command" ComponentId="{5A07C51A-1D21-4DF6-A6DA-050E5C32BAB2}" Directory_="APPDIR" Attributes="4" KeyPath="__4"/>
@@ -55,7 +56,7 @@
     <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon raptor.dll libexpat.dll libsbml.dll msvcp80.dll msvcr80.dll qt_mt338.dll"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon raptor.dll libexpat.dll libsbml.dll msvcp80.dll msvcr80.dll qt_mt338.dll SBW.dll"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -83,6 +84,7 @@
     <ROW File="ReactionOverview.png" Component_="DefaultPlotAdded.jpg" FileName="Reacti~2.png|ReactionOverview.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReactionOverview.png" SelfReg="false" Sequence="30"/>
     <ROW File="ReactionOverviewEmpty.png" Component_="DefaultPlotAdded.jpg" FileName="Reacti~3.png|ReactionOverviewEmpty.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReactionOverviewEmpty.png" SelfReg="false" Sequence="31"/>
     <ROW File="ReportDefinitionDialog.png" Component_="DefaultPlotAdded.jpg" FileName="Report~1.png|ReportDefinitionDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReportDefinitionDialog.png" SelfReg="false" Sequence="32"/>
+    <ROW File="SBW.dll" Component_="SBW.dll" FileName="SBW.dll" Attributes="0" SourcePath="..\setup\copasi\bin\SBW.dll" SelfReg="false" Sequence="40"/>
     <ROW File="TimeCourseDialog.png" Component_="DefaultPlotAdded.jpg" FileName="TimeCo~1.png|TimeCourseDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\TimeCourseDialog.png" SelfReg="false" Sequence="21"/>
     <ROW File="TutWiz_Step1.html" Component_="TutWiz_Step1.html" FileName="TutWiz~1.htm|TutWiz-Step1.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step1.html" SelfReg="false" Sequence="4"/>
     <ROW File="TutWiz_Step2.html" Component_="TutWiz_Step1.html" FileName="TutWiz~2.htm|TutWiz-Step2.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step2.html" SelfReg="false" Sequence="5"/>

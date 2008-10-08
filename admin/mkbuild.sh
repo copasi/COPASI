@@ -18,7 +18,7 @@ if [ x"$#" = x1 ]; then
 
   case x"$1" in 
   xWIN32)
-    productcode=${build}{$minor}${major}32DDC6BEE41C
+    productcode=${build}${minor}${major}32DDC6BEE41C
     productcode=${productcode:0:12}
 
     productversion=${major}.${minor}.${build}
