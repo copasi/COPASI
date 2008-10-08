@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:17 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 23:27:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,9 @@ bool CScanTask::initialize(const OutputFlag & of,
   mpMethod->isValidProblem(mpProblem);
 
   bool success = true;
+
+  initSubtask(pOutputHandler);
+
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
@@ -98,7 +101,7 @@ bool CScanTask::process(const bool & /* useInitialValues */)
 
   bool success = true;
 
-  initSubtask();
+  //initSubtask();
 
   pMethod->setProblem(pProblem);
 
@@ -163,7 +166,7 @@ bool CScanTask::outputSeparatorCallback(bool isLast)
   return true;
 }
 
-bool CScanTask::initSubtask()
+bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
 {
   if (!mpProblem) fatalError();
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
@@ -213,16 +216,6 @@ bool CScanTask::initSubtask()
       mpSubtask = NULL;
     }
 
-  /*
-  if (type == CCopasiTask::steadyState)
-    {
-      mpSubtask=const_cast<CCopasiTask*>
-                   (dynamic_cast<const CCopasiTask*>
-                     (CCopasiContainer::Root->getObject(CCopasiObjectName("Task=Steady-State"))));
-    }
-  else
-    {mpSubtask=NULL;}*/
-
   mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
   //if (type != CCopasiTask::timeCourse)
   //  mOutputInSubtask = false;
@@ -231,13 +224,13 @@ bool CScanTask::initSubtask()
 
   if (!mpSubtask) return false;
 
-  mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+  mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel()); //TODO
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    mpSubtask->initialize(OUTPUT, mpOutputHandler, NULL);
+    mpSubtask->initialize(OUTPUT, pOutputHandler, NULL);
   else
-    mpSubtask->initialize(NO_OUTPUT, mpOutputHandler, NULL);
+    mpSubtask->initialize(NO_OUTPUT, pOutputHandler, NULL);
 
   return true;
 }

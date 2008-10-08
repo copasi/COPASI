@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:31:44 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 23:27:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,6 +131,6 @@ class CScanTask : public CCopasiTask
     /**
      * Init the subtask
      */
-    bool initSubtask();
+    bool initSubtask(COutputHandler * pOutputHandler);
   };
 #endif // COPASI_CScanTask
