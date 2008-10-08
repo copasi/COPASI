@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.92 $ 
+#   $Revision: 1.93 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/10/03 19:44:11 $ 
+#   $Date: 2008/10/08 00:44:02 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.92 $ $Author: shoops $ $Date: 2008/10/03 19:44:11 $  
+# $Revision: 1.93 $ $Author: shoops $ $Date: 2008/10/08 00:44:02 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -260,7 +260,8 @@ contains(BUILD_OS, WIN32) {
   }
 
   !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/SBW.lib
+    release: LIBS += $${SBW_PATH}/lib/SBW.lib
+    debug: LIBS += $${SBW_PATH}/lib/SBWD.lib
     INCLUDEPATH += $${SBW_PATH}/include
     DEFINES += COPASI_SBW_INTEGRATION
     DEFINES += WIN32
