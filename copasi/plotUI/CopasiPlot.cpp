@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:01:30 $
+//   $Author: ssahle $
+//   $Date: 2008/10/08 12:48:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -425,10 +425,12 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
               // Allocate the data buffer
               mData[ItemActivity].push_back(new QMemArray<double>(500));
 
-              // Store the pointer to the current object value.
-              if (pObj && (pObj->isValueInt() || pObj->isValueDbl()))
+              // Store the pointer to the current object value. (Only if it has a double or integer value
+              // and the value pointer actually exists. If not, use a dummy value.)
+              void * tmp;
+              if ((pObj && (pObj->isValueInt() || pObj->isValueDbl())) && (tmp = pObj->getValuePointer()))
                 {
-                  mObjectValues[ItemActivity].push_back((C_FLOAT64 *) pObj->getValuePointer());
+                  mObjectValues[ItemActivity].push_back((C_FLOAT64 *) tmp); //pObj->getValuePointer());
                   mObjectInteger[ItemActivity].push_back(pObj->isValueInt());
                 }
               else
