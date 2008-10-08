@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/25 22:56:51 $
+//   $Date: 2008/10/08 12:54:32 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -35,7 +35,7 @@ class CArrayElementReference: public CCopasiObject
     /**
      * this contains the index in string format, e.g. "[2][7]"
      */
-    std::string mIndex;
+    CCopasiObjectName mIndex;
 
   private:
     /**
