@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/08 23:31:18 $
+//   $Date: 2008/10/09 10:57:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,24 @@ void CMCATask::load(CReadConfig & configBuffer)
   ((CMCAMethod *) mpMethod)->load(configBuffer);
 }
 
+bool CMCATask::updateMatrices()
+{
+  assert(mpProblem && mpMethod);
+
+  CMCAProblem* pProblem =
+    dynamic_cast<CMCAProblem *>(mpProblem);
+  assert(pProblem);
+
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
+
+  CMCAMethod * pMethod = dynamic_cast<CMCAMethod*>(mpMethod);
+  if (!pMethod) return false;
+  pMethod->setModel(mpProblem->getModel());
+  pMethod->resizeAllMatrices();
+
+  return true;
+}
+
 bool CMCATask::initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
                           std::ostream * pOstream)
@@ -84,13 +102,10 @@ bool CMCATask::initialize(const OutputFlag & of,
 
   if (!mpMethod->isValidProblem(mpProblem)) return false;
 
-  bool success = true;
-
   //we need to resize an initialize the result matrices before initializing the output
-  CMCAMethod * pMethod = dynamic_cast<CMCAMethod*>(mpMethod);
-  if (!pMethod) return false;
-  pMethod->setModel(mpProblem->getModel());
-  pMethod->resizeAllMatrices();
+  if (!updateMatrices()) return false;
+
+  bool success = true;
 
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
