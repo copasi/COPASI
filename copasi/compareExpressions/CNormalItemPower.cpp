@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItemPower.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/02 14:09:17 $
+//   $Date: 2008/10/09 15:26:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,8 +192,10 @@ bool CNormalItemPower::operator==(const CNormalItemPower & rhs) const
             break;
           case CNormalItemPower::CHOICE:
             result = (dynamic_cast<CNormalChoice&>(*this->mpItem) == dynamic_cast<CNormalChoice&>(*rhs.mpItem));
+            break;
           case CNormalItemPower::CALL:
             result = (dynamic_cast<CNormalCall&>(*this->mpItem) == dynamic_cast<CNormalCall&>(*rhs.mpItem));
+            break;
           case CNormalItemPower::INVALID:
             result = true;
             break;
