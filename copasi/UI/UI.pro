@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.179 $
+#   $Revision: 1.180 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/10/01 14:25:19 $
+#   $Author: akoenig $
+#   $Date: 2008/10/09 15:36:55 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,15 +16,14 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.179 $ $Author: shoops $ $Date: 2008/10/01 14:25:19 $
+# $Revision: 1.180 $ $Author: akoenig $ $Date: 2008/10/09 15:36:55 $
 ######################################################################
 
 LIB = UI
-
 include(../lib.pri)
-include(../common.pri)
 
 CONFIG	+= qt
+include(../common.pri)
 
 DEPENDPATH += ..
 INCLUDEPATH	+= ..
@@ -34,6 +33,7 @@ INCLUDEPATH	+= ..
 HEADERS	+= \
         AboutDialog.h \
 	CCopasiPlotSelectionDialog.h \
+#	CCopasi3dPlotSelectionDialog.h \
 	CCopasiSelectionDialog.h \
 	CCopasiSelectionWidget.h \
 	CCopasiSimpleSelectionTree.h \
@@ -58,6 +58,7 @@ HEADERS	+= \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
+#	CQQwt3dSurfacePlot.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
 	CQSensResultWidget.h \
@@ -101,6 +102,7 @@ HEADERS	+= \
 SOURCES	+= \
         AboutDialog.cpp \
 	CCopasiPlotSelectionDialog.cpp \
+#	CCopasi3dPlotSelectionDialog.cpp \
 	CCopasiSelectionDialog.cpp \
 	CCopasiSelectionWidget.cpp \
 	CCopasiSimpleSelectionTree.cpp \
@@ -125,6 +127,7 @@ SOURCES	+= \
 	CQLyapResultWidget.cpp \
 	CQMathMatrixWidget.cpp \
 	CQMatrixDialog.cpp \
+#	CQQwt3dSurfacePlot.cpp \
 	CQPreferenceDialog.cpp \
 	CQReportListItem.cpp \
 	CQSBMLFileDialog.cpp \
