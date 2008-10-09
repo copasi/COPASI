@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/12 01:12:25 $
+//   $Date: 2008/10/09 00:16:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,12 +73,18 @@ bool CSensTask::initialize(const OutputFlag & of,
     dynamic_cast<CSensProblem *>(mpProblem);
   assert(pProblem);
 
+  CSensMethod* pMethod =
+    dynamic_cast<CSensMethod *>(mpMethod);
+  assert(pMethod);
+
   bool success = true;
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
-
   if (!pProblem->getModel()->compileIfNecessary(mpCallBack)) success = false;
-  //pProblem->setInitialState(pProblem->getModel()->getInitialState());
+
+  //this needs to be done before the initialization of the output
+  if (!pMethod->initialize(pProblem)) success = false;
+
+  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
 }
@@ -100,7 +106,7 @@ bool CSensTask::process(const bool & useInitialValues)
     pProblem->getModel()->applyInitialValues();
 
   //TODO: move to Task::initialize() ?
-  pMethod->initialize(pProblem);
+  //  pMethod->initialize(pProblem);
 
   mReport.output(COutputInterface::BEFORE);
 
