@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 12:46:18 $
+//   $Date: 2008/10/09 14:39:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,19 @@
 #include "copasi/function/CEvaluationNodeCall.h"
 #include "copasi/function/CEvaluationNodeObject.h"
 #include "copasi/report/CKeyFactory.h"
+#include "copasi/function/CFunctionDB.h"
+
+#include "sbml/SBMLDocument.h"
+#include "sbml/Model.h"
+#include "sbml/FunctionDefinition.h"
+#include "sbml/math/ASTNode.h"
+#include "sbml/Rule.h"
+#include "sbml/KineticLaw.h"
+#include "sbml/Reaction.h"
+#include "sbml/InitialAssignment.h"
+#include "sbml/Event.h"
+#include "sbml/Trigger.h"
+#include "sbml/EventAssignment.h"
 
 /**
  * Test if importing function definitions which are explicitely time dependent
@@ -142,12 +155,13 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
-  CPPUNIT_ASSERT(pCModel->getModelValues().size() == 4);
+  CPPUNIT_ASSERT(pCModel->getModelValues().size() == 5);
   // check parameter_1 and parameter_2 which have rules defined
-  // also check parameter_4 which has an initial assignment
+  // also check parameter_4 und parameter_5 which have initial assignments
   const CModelValue* pCModelValue1 = NULL;
   const CModelValue* pCModelValue2 = NULL;
   const CModelValue* pCModelValue4 = NULL;
+  const CModelValue* pCModelValue5 = NULL;
   iMax = pCModel->getModelValues().size();
   for (i = 0;i < iMax;++i)
     {
@@ -162,6 +176,10 @@ void test000075::test_import_time_dependent_function_definition()
       else if (pCModel->getModelValues()[i]->getObjectName() == std::string("parameter_4"))
         {
           pCModelValue4 = pCModel->getModelValues()[i];
+        }
+      else if (pCModel->getModelValues()[i]->getObjectName() == std::string("parameter_5"))
+        {
+          pCModelValue5 = pCModel->getModelValues()[i];
         }
     }
   CPPUNIT_ASSERT(pCModelValue1 != NULL);
@@ -233,6 +251,34 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCChild1 != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pCChild1->getType()) == CEvaluationNode::NUMBER);
   // the second node must be an object node that points to the model
+  pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
+  CPPUNIT_ASSERT(pCChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCChild2->getType()) == CEvaluationNode::OBJECT);
+  pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
+  CPPUNIT_ASSERT(pCObjectNode != NULL);
+  pCObjectName = &pCObjectNode->getObjectCN();
+  pCObject = CCopasiContainer::ObjectFromName(listOfContainers, *pCObjectName);
+  CPPUNIT_ASSERT(pCObject != NULL);
+  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
+  CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
+
+  CPPUNIT_ASSERT(pCModelValue5 != NULL);
+  CPPUNIT_ASSERT(pCModelValue5->getStatus() == CModelEntity::FIXED);
+  pCExpression = pCModelValue5->getInitialExpressionPtr();
+  CPPUNIT_ASSERT(pCExpression != NULL);
+  pCRoot = pCExpression->getRoot();
+  CPPUNIT_ASSERT(pCRoot != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCRoot->getType()) == CEvaluationNode::CALL);
+  pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
+  CPPUNIT_ASSERT(pCCallNode != NULL);
+  // the first child is a number node
+  CPPUNIT_ASSERT(pCCallNode->getData() == std::string("indirectly_time_dependent"));
+  pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
+  CPPUNIT_ASSERT(pCChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCChild1->getType()) == CEvaluationNode::NUMBER);
+
+  // the second child is the time object
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pCChild2->getType()) == CEvaluationNode::OBJECT);
@@ -347,8 +393,182 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
+  // check if the function definitions are imported correctly
+  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CPPUNIT_ASSERT(pFunctionDB != NULL);
+  const CEvaluationTree* pCTree = pFunctionDB->findFunction("time_dependent");
+  CPPUNIT_ASSERT(pCTree != NULL);
+  pCFunction = dynamic_cast<const CFunction*>(pCTree);
+  CPPUNIT_ASSERT(pCFunction != NULL);
+  // should have two parameters instead of one
+  CPPUNIT_ASSERT(pCFunction->getVariables().size() == 2);
+  pCRoot = pCFunction->getRoot();
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCRoot->getType()) == CEvaluationNode::OPERATOR);
+  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pCRoot->getType())) == CEvaluationNodeOperator::MULTIPLY);
+  pCChild1 = dynamic_cast<const CEvaluationNode*>(pCRoot->getChild());
+  CPPUNIT_ASSERT(pCChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCChild1->getType()) == CEvaluationNode::VARIABLE);
+  pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
+  CPPUNIT_ASSERT(pCChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCChild2->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pCChild2->getSibling() == NULL);
+
+  pCTree = pFunctionDB->findFunction("indirectly_time_dependent");
+  CPPUNIT_ASSERT(pCTree != NULL);
+  pCFunction = dynamic_cast<const CFunction*>(pCTree);
+  CPPUNIT_ASSERT(pCFunction != NULL);
+  // should have two parameters instead of one
+  CPPUNIT_ASSERT(pCFunction->getVariables().size() == 2);
+  pCRoot = pCFunction->getRoot();
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCRoot->getType()) == CEvaluationNode::CALL);
+  pCChild1 = dynamic_cast<const CEvaluationNode*>(pCRoot->getChild());
+  CPPUNIT_ASSERT(pCChild1 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCChild1->getType()) == CEvaluationNode::VARIABLE);
+  pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
+  CPPUNIT_ASSERT(pCChild2 != NULL);
+  CPPUNIT_ASSERT(CEvaluationNode::type(pCChild2->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pCChild2->getSibling() == NULL);
+
   // make sure that the function definitions and all function calls in the
   // original SBML model are unmodified
+  //
+  const SBMLDocument* pSBMLDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(pSBMLDocument != NULL);
+  const Model* pModel = pSBMLDocument->getModel();
+  CPPUNIT_ASSERT(pModel != NULL);
+  iMax = pModel->getNumFunctionDefinitions();
+  CPPUNIT_ASSERT(iMax == 2);
+  const FunctionDefinition* pFunctionDefinition1 = NULL;
+  const FunctionDefinition* pFunctionDefinition2 = NULL;
+  for (i = 0;i < iMax;++i)
+    {
+      if (pModel->getFunctionDefinition(i)->getId() == std::string("functionDefinition_1"))
+        {
+          pFunctionDefinition1 = pModel->getFunctionDefinition(i);
+        }
+      else if (pModel->getFunctionDefinition(i)->getId() == std::string("functionDefinition_2"))
+        {
+          pFunctionDefinition2 = pModel->getFunctionDefinition(i);
+        }
+    }
+  CPPUNIT_ASSERT(pFunctionDefinition1 != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition1->getNumArguments() == 1);
+  const ASTNode* pRoot = pFunctionDefinition1->getMath();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  // the expression is the last child
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 2);
+  pRoot = pRoot->getChild(1);
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(pRoot->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_NAME_TIME);
+  CPPUNIT_ASSERT(pRoot->getChild(1)->getType() == AST_NAME);
+  // second function definition
+  CPPUNIT_ASSERT(pFunctionDefinition2 != NULL);
+  CPPUNIT_ASSERT(pFunctionDefinition2->getNumArguments() == 1);
+  pRoot = pFunctionDefinition2->getMath();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  // the expression is the last child
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 2);
+  pRoot = pRoot->getChild(1);
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getName() == std::string("n"));
+
+  // initial assignment
+  iMax = pModel->getListOfInitialAssignments()->size();
+  CPPUNIT_ASSERT(iMax == 2);
+  const InitialAssignment* pInitialAssignment1 = NULL;
+  const InitialAssignment* pInitialAssignment2 = NULL;
+  for (i = 0;i < iMax;++i)
+    {
+      if (pModel->getInitialAssignment(i)->getSymbol() == std::string("parameter_4"))
+        {
+          pInitialAssignment1 = pModel->getInitialAssignment(i);
+        }
+      else if (pModel->getInitialAssignment(i)->getSymbol() == std::string("parameter_5"))
+        {
+          pInitialAssignment2 = pModel->getInitialAssignment(i);
+        }
+    }
+  CPPUNIT_ASSERT(pInitialAssignment1 != NULL);
+  pRoot = pInitialAssignment1->getMath();
+  CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
+  CPPUNIT_ASSERT(pRoot->getName() == std::string("functionDefinition_1"));
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_REAL);
+
+  CPPUNIT_ASSERT(pInitialAssignment2 != NULL);
+  pRoot = pInitialAssignment2->getMath();
+  CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
+  CPPUNIT_ASSERT(pRoot->getName() == std::string("functionDefinition_2"));
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_REAL);
+
+  // rules
+  iMax = pModel->getListOfRules()->size();
+  CPPUNIT_ASSERT(iMax == 4);
+  for (i = 0;i < iMax;++i)
+    {
+      // only check the expression
+      // in this test we don't care if the variable is correct and if the rule
+      // type is correct
+      const Rule* pRule = pModel->getRule(i);
+      CPPUNIT_ASSERT(pRule != NULL);
+      pRoot = pRule->getMath();
+      CPPUNIT_ASSERT(pRoot != NULL);
+      CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
+      CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+      CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_REAL);
+    }
+
+  // reaction
+  CPPUNIT_ASSERT(pModel->getListOfReactions()->size() == 1);
+  const Reaction* pReaction = pModel->getReaction(0);
+  CPPUNIT_ASSERT(pReaction != NULL);
+  const KineticLaw* pKineticLaw = pReaction->getKineticLaw();
+  CPPUNIT_ASSERT(pKineticLaw != NULL);
+  pRoot = pKineticLaw->getMath();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  // multiplication by compartment volume
+  CPPUNIT_ASSERT(pRoot->getType() == AST_TIMES);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_NAME);
+  CPPUNIT_ASSERT(pRoot->getChild(1)->getType() == AST_FUNCTION);
+  pRoot = pRoot->getChild(1);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_REAL);
+
+  // event
+  CPPUNIT_ASSERT(pModel->getListOfEvents()->size() == 1);
+  const Event* pEvent = pModel->getEvent(0);
+  CPPUNIT_ASSERT(pEvent != NULL);
+  const Trigger* pTrigger = pEvent->getTrigger();
+  CPPUNIT_ASSERT(pTrigger != NULL);
+  pRoot = pTrigger->getMath();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  // functionDefinition_1(5.0) > 2.0
+  CPPUNIT_ASSERT(pRoot->getType() == AST_RELATIONAL_GT);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 2);
+  CPPUNIT_ASSERT(pRoot->getChild(1) != NULL);
+  CPPUNIT_ASSERT(pRoot->getChild(1)->getType() == AST_REAL);
+  CPPUNIT_ASSERT(pRoot->getChild(0) != NULL);
+  pRoot = pRoot->getChild(0);
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_REAL);
+
+  CPPUNIT_ASSERT(pEvent->getListOfEventAssignments()->size() == 1);
+  const EventAssignment* pEventAssignment = pEvent->getEventAssignment(0);
+  CPPUNIT_ASSERT(pEventAssignment != NULL);
+  pRoot = pEventAssignment->getMath();
+  CPPUNIT_ASSERT(pRoot != NULL);
+  CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
+  CPPUNIT_ASSERT(pRoot->getNumChildren() == 1);
+  CPPUNIT_ASSERT(pRoot->getChild(0)->getType() == AST_REAL);
 }
 
 const char* test000075::MODEL_STRING1 =
@@ -377,16 +597,19 @@ const char* test000075::MODEL_STRING1 =
   "          </lambda>\n"
   "        </math>\n"
   "      </functionDefinition>\n"
-  "      <!--<functionDefinition id=\"functionDefinition_2\" name=\"indirectly_time_dependent\">\n"
+  "      <functionDefinition id=\"functionDefinition_2\" name=\"indirectly_time_dependent\">\n"
   "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
   "          <lambda>\n"
+  "            <bvar>\n"
+  "              <ci>n</ci>\n"
+  "            </bvar>\n"
   "            <apply>\n"
   "              <ci> functionDefinition_1 </ci>\n"
-  "              <cn> 5.0 </cn>\n"
+  "              <ci> n </ci>\n"
   "            </apply>\n"
   "          </lambda>\n"
   "        </math>\n"
-  "      </functionDefinition>-->\n"
+  "      </functionDefinition>\n"
   "    </listOfFunctionDefinitions>\n"
   "    <listOfCompartments>\n"
   "      <compartment id=\"compartment_1\" name=\"compartment_1\" size=\"1\" />\n"
@@ -401,7 +624,8 @@ const char* test000075::MODEL_STRING1 =
   "      <parameter id=\"parameter_1\" name=\"parameter_1\" constant=\"false\"/>\n"
   "      <parameter id=\"parameter_2\" name=\"parameter_2\" constant=\"false\"/>\n"
   "      <parameter id=\"parameter_3\" name=\"parameter_3\" constant=\"false\"/>\n"
-  "      <parameter id=\"parameter_4\" name=\"parameter_4\" constant=\"false\"/>\n"
+  "      <parameter id=\"parameter_4\" name=\"parameter_4\" constant=\"true\"/>\n"
+  "      <parameter id=\"parameter_5\" name=\"parameter_5\" constant=\"true\"/>\n"
   "    </listOfParameters>\n"
   "    <listOfInitialAssignments>\n"
   "      <initialAssignment symbol=\"parameter_4\">\n"
@@ -409,6 +633,14 @@ const char* test000075::MODEL_STRING1 =
   "          <apply>\n"
   "            <ci> functionDefinition_1 </ci>\n"
   "            <cn> 5.0 </cn>\n"
+  "          </apply>\n"
+  "        </math>\n"
+  "      </initialAssignment>\n"
+  "      <initialAssignment symbol=\"parameter_5\">\n"
+  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+  "          <apply>\n"
+  "            <ci> functionDefinition_2 </ci>\n"
+  "            <cn> 3.2 </cn>\n"
   "          </apply>\n"
   "        </math>\n"
   "      </initialAssignment>\n"
