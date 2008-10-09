@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/08 15:50:43 $
+//   $Date: 2008/10/09 15:27:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,12 @@
 #include "copasi/sbml/ConverterASTNode.h"
 #include "sbml/FunctionDefinition.h"
 
+/**
+ * Creates an expanded expression from the given expression.
+ * This method expands all function calls.
+ * On failure NULL is returned, otherwise an expanded copy of the original node
+ * is returned.
+ */
 ASTNode* create_expression(const ASTNode* pSource, const Model* pModel)
 {
   // expand all function calls
@@ -56,15 +62,27 @@ ASTNode* create_expression(const ASTNode* pSource, const Model* pModel)
   return pResult;
 }
 
+/**
+ * This method expands the function calls in the given expression.
+ * On failure NULL is returned, otherwise a copy of the original node
+ * is returned where all function calls have been expanded.
+ */
 ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
 {
   ASTNode* pResult = NULL;
   if (pNode->getType() == AST_FUNCTION)
     {
       pResult = expand_function_call(pNode, pModel);
-      assert(pResult != NULL);
+      if (pResult == NULL)
+        {
+          return NULL;
+        }
       ASTNode* pTmp = expand_function_calls(pResult, pModel);
-      assert(pTmp != NULL);
+      if (pTmp == NULL)
+        {
+          delete pResult;
+          return NULL;
+        }
       delete pResult;
       pResult = pTmp;
     }
@@ -81,7 +99,12 @@ ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
           pChild = pNode->getChild(i);
           assert(pChild != NULL);
           pNewChild = expand_function_calls(pChild, pModel);
-          assert(pNewChild != NULL);
+          if (pNewChild == NULL)
+            {
+              delete pResult;
+              pResult = NULL;
+              break;
+            }
           pResult->addChild(pNewChild);
           ++i;
         }
@@ -89,6 +112,11 @@ ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel)
   return pResult;
 }
 
+/**
+ * This method expands the given function call.
+ * On failure NULL is returned, otherwise on expression of the expanded
+ * function call is returned.
+ */
 ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
 {
   // find the function that belongs to the call
@@ -104,7 +132,7 @@ ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel)
         }
       ++i;
     }
-
+  if (pFunctionDefinition == NULL) return NULL;
   // create the mapping
   iMax = pFunctionDefinition->getNumArguments();
   if (pFunctionDefinition != NULL && iMax == pCall->getNumChildren())
@@ -163,6 +191,12 @@ ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string
   return pResult;
 }
 
+/**
+ * This method takes two normalforms and normalizes the variable names in both
+ * expressions.
+ * Afterwards the two expressions are compared. If they are equal true is
+ * returned.
+ */
 bool are_equal(const CNormalFraction* pLHS, const CNormalFraction* pRHS)
 {
   bool result = true;
@@ -180,6 +214,11 @@ bool are_equal(const CNormalFraction* pLHS, const CNormalFraction* pRHS)
   return result;
 }
 
+/**
+ * This method normalizes the variable names in a given normalform expression.
+ * The first variable found in the expression is named "variable1", the second
+ * "variable2" and so on.
+ */
 void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::string>& variableMap)
 {
   CNormalChoice* pChoice = NULL;
@@ -352,6 +391,11 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     }
 }
 
+/**
+ * This method converts a given ASTNode into a CNormalFraction.
+ * The expression is simplified in the process to create the "final"
+ * normalform.
+ */
 CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
 {
   CNormalFraction* pFraction = NULL;
@@ -394,6 +438,10 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
   return pFraction;
 }
 
+/**
+ * This method converts a given ASTNode into a CNormalFraction.
+ * The resulting normalform is not necessarily simplified.
+ */
 CNormalFraction* create_normalform(const ASTNode* pSource)
 {
   CNormalFraction* pFraction = NULL;
