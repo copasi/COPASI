@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:31:44 $
+//   $Author: ssahle $
+//   $Date: 2008/10/09 00:15:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,6 +96,10 @@ class CSensMethod : public CCopasiMethod
      */
     bool process(CProcessReport * handler);
 
+    /**
+     * initializes the subtask, creates the internal data structures of the method,
+     * resizes the result arrays and creates the array annotations
+     */
     bool initialize(CSensProblem* problem);
 
     /**
