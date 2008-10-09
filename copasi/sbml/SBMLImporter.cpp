@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.216 $
+//   $Revision: 1.217 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:49 $
+//   $Author: gauges $
+//   $Date: 2008/10/09 14:40:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,77 +246,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // try to find global parameters that represent avogadros number
   this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
 
-  // now we go through all initial assignments, rules, constraints, kinetic
-  // laws and events and replace function calls to functions in mExplicitelyTimeDependentFunctionDefinitions
-  // by a call with the extra parameter that is the time.
-  if (mExplicitelyTimeDependentFunctionDefinitions.size() != 0)
-    {
-      std::ostringstream sstream;
-      std::set<std::string>::const_iterator it = mExplicitelyTimeDependentFunctionDefinitions.begin(), endit = mExplicitelyTimeDependentFunctionDefinitions.end();
-      while (it != endit)
-        {
-          sstream << ", " << *it;
-          ++it;
-        }
-      std::string reactionNames = sstream.str();
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 46 , reactionNames.substr(2, reactionNames.size()).c_str());
-      ASTNode* pMathNode = NULL;
-      if (sbmlDocument->getLevel() == 2 && sbmlDocument->getVersion() > 1)
-        {
-          num = sbmlModel->getNumInitialAssignments();
-          for (counter = 0;counter < num;++counter)
-            {
-              pMathNode = const_cast<ASTNode*>(sbmlModel->getInitialAssignment(counter)->getMath());
-              this->replaceTimeDependentFunctionCalls(pMathNode);
-            }
-          num = sbmlModel->getNumConstraints();
-          for (counter = 0;counter < num;++counter)
-            {
-              pMathNode = const_cast<ASTNode*>(sbmlModel->getConstraint(counter)->getMath());
-              this->replaceTimeDependentFunctionCalls(pMathNode);
-            }
-        }
-
-      num = sbmlModel->getNumRules();
-      for (counter = 0;counter < num;++counter)
-        {
-          pMathNode = const_cast<ASTNode*>(sbmlModel->getRule(counter)->getMath());
-          this->replaceTimeDependentFunctionCalls(pMathNode);
-        }
-      num = sbmlModel->getNumReactions();
-      for (counter = 0;counter < num;++counter)
-        {
-          KineticLaw* kLaw = sbmlModel->getReaction(counter)->getKineticLaw();
-          if (kLaw)
-            {
-              pMathNode = const_cast<ASTNode*>(kLaw->getMath());
-              this->replaceTimeDependentFunctionCalls(pMathNode);
-            }
-        }
-      num = sbmlModel->getNumEvents();
-      for (counter = 0;counter < num;++counter)
-        {
-          Event* pEvent = sbmlModel->getEvent(counter);
-          const Trigger* pTrigger = pEvent->getTrigger();
-          if (pTrigger != NULL)
-            {
-              pMathNode = const_cast<ASTNode*>(pTrigger->getMath());
-              this->replaceTimeDependentFunctionCalls(pMathNode);
-            }
-          EventAssignment* pEventAssignment = NULL;
-          unsigned int j, jMax = pEvent->getNumEventAssignments();
-          for (j = 0;j < jMax;++j)
-            {
-              pEvent->getEventAssignment(j);
-              if (pEventAssignment != NULL)
-                {
-                  pMathNode = const_cast<ASTNode*>(pEventAssignment->getMath());
-                  this->replaceTimeDependentFunctionCalls(pMathNode);
-                }
-            }
-        }
-    }
-
   std::map<std::string, CCompartment*> compartmentMap;
 
   /* Create the compartments */
@@ -469,6 +398,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 49);
     }
+  // TODO Create all contraints
+  // TODO Since we don't have constraints yet, there is no code here.
+  // TODO When implementing import of constraints, don't forget to replace calls to
+  // TODO explicitely time dependent functions in the constraints math exptression.
+
   /* Create all reactions */
   num = sbmlModel->getNumReactions();
   if (mpImportHandler)
@@ -2390,6 +2324,9 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
 {
   // this function goes through the tree three times.
   // this can probably be handled more intelligently
+
+  // first replace the calls to explicitely time depenent functions
+  this->replaceTimeDependentFunctionCalls(pNode);
   if (!this->mDelayFound)
     {
       this->isDelayFunctionUsed(pNode);
