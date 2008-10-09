@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:48 $
+//   $Date: 2008/10/09 16:22:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,8 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
   CRDFGraph * pGraph = CRDFParser::graphFromXml(XML);
   if (pGraph == NULL)
     return false;
+
+  // TODO Fix the the broken RDF
 
   // Convert the graph.
   bool success = convert(pGraph, SBML2CopasiChanges);
