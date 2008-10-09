@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.93 $ 
+#   $Revision: 1.93.2.1 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/10/08 00:44:02 $ 
+#   $Date: 2008/10/09 18:10:00 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.93 $ $Author: shoops $ $Date: 2008/10/08 00:44:02 $  
+# $Revision: 1.93.2.1 $ $Author: shoops $ $Date: 2008/10/09 18:10:00 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -127,14 +127,13 @@ contains(BUILD_OS, Darwin) {
     LIBS += -lraptor
   }
 
-  !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW.a
-    INCLUDEPATH += $${SBW_PATH}/include
-    DEFINES += COPASI_SBW_INTEGRATION
-    DEFINES += LINUX DARWIN 
-  } 
-   
   contains(CONFIG, qt) {
+    !isEmpty(SBW_PATH){
+      LIBS+=  $${SBW_PATH}/lib/libSBW.a
+      INCLUDEPATH += $${SBW_PATH}/include
+      DEFINES += COPASI_SBW_INTEGRATION
+      DEFINES += LINUX DARWIN 
+    } 
   
     !isEmpty(QWT_PATH){
        LIBS+=  $${QWT_PATH}/lib/libqwt.a
@@ -253,20 +252,20 @@ contains(BUILD_OS, WIN32) {
   }
   
   contains(CONFIG, qt) {
+    !isEmpty(SBW_PATH){
+      release: LIBS += $${SBW_PATH}/lib/SBW.lib
+      debug: LIBS += $${SBW_PATH}/lib/SBWD.lib
+      
+      INCLUDEPATH += $${SBW_PATH}/include
+      DEFINES += COPASI_SBW_INTEGRATION
+      DEFINES += WIN32
+    }
+     
     LIBS += -lqwt
     
     release: LIBS += -lqwtplot3d
     debug: LIBS += -lqwtplot3dD
   }
-
-  !isEmpty(SBW_PATH){
-    release: LIBS += $${SBW_PATH}/lib/SBW.lib
-    debug: LIBS += $${SBW_PATH}/lib/SBWD.lib
-    INCLUDEPATH += $${SBW_PATH}/include
-    DEFINES += COPASI_SBW_INTEGRATION
-    DEFINES += WIN32
-  } 
-
 } 
 
 contains(BUILD_OS, SunOS) {
@@ -322,6 +321,13 @@ contains(STATIC_LINKAGE, yes) {
   }
   
   contains(CONFIG, qt) {
+    !isEmpty(SBW_PATH){
+      LIBS+=  $${SBW_PATH}/lib/libSBW.a
+      INCLUDEPATH += $${SBW_PATH}/include
+      DEFINES += COPASI_SBW_INTEGRATION
+      DEFINES += LINUX SOLARIS
+    } 
+
     !isEmpty(QWT_PATH){
        LIBS+=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
@@ -340,13 +346,6 @@ contains(STATIC_LINKAGE, yes) {
     QMAKE_LIBS_THREAD -= -lpthread
     QMAKE_LIBS_THREAD -= -lrt
   }
-
-  !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW.a
-    INCLUDEPATH += $${SBW_PATH}/include
-    DEFINES += COPASI_SBW_INTEGRATION
-    DEFINES += LINUX SOLARIS
-  } 
 }
  
 contains(BUILD_OS, Linux) {
@@ -468,6 +467,13 @@ contains(BUILD_OS, Linux) {
   }
 
   contains(CONFIG, qt) {
+    !isEmpty(SBW_PATH){
+      LIBS+=  $${SBW_PATH}/lib/libSBW.a
+      INCLUDEPATH += $${SBW_PATH}/include
+      DEFINES += COPASI_SBW_INTEGRATION
+      DEFINES += LINUX 
+    }
+     
     !isEmpty(QWT_PATH){
        LIBS +=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
@@ -481,14 +487,6 @@ contains(BUILD_OS, Linux) {
       LIBS += -lqwtplot3d
     }
   }
-
-!isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW.a
-    INCLUDEPATH += $${SBW_PATH}/include
-    DEFINES += COPASI_SBW_INTEGRATION
-    DEFINES += LINUX 
-  } 
-
 }
 
 DEP1.target   = depend
