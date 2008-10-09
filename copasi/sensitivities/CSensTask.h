@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/12 01:12:25 $
+//   $Date: 2008/10/09 15:53:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,15 @@ class CSensTask : public CCopasiTask
      * Destructor
      */
     virtual ~CSensTask();
+
+    /**
+     * Resizes result matrices and updates array annotations.
+     * This is used when we need to know about the data structures of a task result
+     * without actually performing the task, e.g. when selecting objects for output.
+     * For now we assume that this functionality is also performed when
+     * initialize() is called.
+     */
+    virtual bool updateMatrices();
 
     /**
      * Initialize the task. If an ostream is given this ostream is used
