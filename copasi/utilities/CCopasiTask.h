@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/18 12:16:58 $
+//   $Author: ssahle $
+//   $Date: 2008/10/09 09:39:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -346,6 +346,17 @@ class CCopasiTask : public CCopasiContainer
     virtual bool setCallBack(CProcessReport * pCallBack);
 
     CProcessReport * getCallBack() const;
+
+    /**
+     * Resizes result matrices and updates array annotations for a specific task.
+     * For now this will be hardcoded in the respective derived classes.
+     * We may introduce a more generic mechanism for this in the future.
+     * This is used when we need to know about the data structures of a task result
+     * without actually performing the task, e.g. when selecting objects for output.
+     * For now we assume that this functionality is also performed when
+     * initialize() is called.
+     */
+    virtual bool updateMatrices() {return true;};
 
     /**
      * Initialize the task. If an ostream is given this ostream is used
