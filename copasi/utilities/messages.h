@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/09 03:43:48 $
+//   $Author: ssahle $
+//   $Date: 2008/10/10 09:53:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,6 +306,15 @@ const MESSAGES Messages[] =
     {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separation analysis problem."},
     {MCTSSAMethod + 3, "CTSSAMethod (3): Internal step limit exceeded."},
     {MCTSSAMethod + 4, "CTSSAMethod (4): Numerical Error encountered."},
+    {MCTSSAMethod + 5, "CILDMMethod (5): Problems with calculation of Jacobi matrix at time t='%f'."},
+    {MCTSSAMethod + 6, "CILDMMethod (6): At time t='%f' all eigen values are positive. No reduction is possible."},
+    {MCTSSAMethod + 7, "CILDMMethod (7): Problems with calculation of Sylvester equation for the mode number '%d' at time t='%f'."},
+    {MCTSSAMethod + 8, "CILDMMethod (8): At time t='%f' no reduction is possible"},
+    {MCTSSAMethod + 9, "CILDMModifiedMethod (9): Problems with calculation of Jacobi matrix at time t='%f'."},
+    {MCTSSAMethod + 10, "CILDMModifiedMethod (10): At time t='%f'  all eigen values are positive. No reduction is possible."},
+    {MCTSSAMethod + 11, "CILDMModifiedMethod (11): At time t='%f'  no reduction is possible."},
+    {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
+    {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
 
     // CTSSAProblem
     {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},
