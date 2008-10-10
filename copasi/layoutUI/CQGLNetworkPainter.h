@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/06 15:51:45 $
+//   $Date: 2008/10/10 16:25:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,7 +194,7 @@ class CQGLNetworkPainter : public QGLWidget
     C_FLOAT64 mCurrentPositionX;
     C_FLOAT64 mCurrentPositionY;
     bool preserveMinLabelHeightP;
-    static const C_INT32 MIN_HEIGHT = 10; // min height for bounding boxes of labels (-> min font pt size)
+    static const C_INT32 MIN_HEIGHT;  // min height for bounding boxes of labels (-> min font pt size)
 
     std::vector<std::string> viewerNodes; // contains node keys
     std::vector<std::string> viewerCompartmentNodes; // contains node keys

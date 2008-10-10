@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/10 15:47:59 $
+//   $Date: 2008/10/10 16:25:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,8 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 // TODO change the text rendering or the texture creation. Right now it seems
 // to work reasonably well, but it could be improved since the text is
 // sometimes longer or higher than reported by Qt.
+
+const C_INT32 CQGLNetworkPainter::MIN_HEIGHT = 10;
 
 // below species and speciesreference
 const double CQGLNetworkPainter::COMPARTMENT_DEPTH = 0.001;
