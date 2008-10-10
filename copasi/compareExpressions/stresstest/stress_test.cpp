@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 06:29:41 $
+//   $Date: 2008/10/10 13:54:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@
 /**
  * Constructor.
  */
-stress_test::stress_test()
+stress_test::stress_test(): mNumFunctionDefinitions(0), mNumExpressions(0), mNumCOPASIFunctionDefinitions(0)
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -98,9 +98,9 @@ void stress_test::run(const std::vector<std::string>& filenames)
       ++it;
     }
   // output some statistics
-  std::cout << "number of function definitions: " << mNormalizedFunctionDefinitions.size() << std::endl;
-  std::cout << "number of COPASI function definitions: " << mNormalizedCOPASIFunctionDefinitions.size() << std::endl;
-  std::cout << "number of expressions: " << mNormalizedExpressions.size() << std::endl;
+  std::cout << "number of function definitions: " << mNumFunctionDefinitions << std::endl;
+  std::cout << "number of COPASI function definitions: " << mNumCOPASIFunctionDefinitions << std::endl;
+  std::cout << "number of expressions: " << mNumExpressions << std::endl;
 }
 
 /**
@@ -120,10 +120,225 @@ void stress_test::normalizeMath(const std::string& filename)
               const Model* pModel = pDocument->getModel();
               if (pModel != NULL)
                 {
-                  this->normalizeFunctionDefinitions(pModel);
-                  this->normalizeExpressions(pModel);
+                  //this->normalizeFunctionDefinitions(pModel);
+                  //this->normalizeExpressions(pModel);
+                  this->normalizeAndSimplifyFunctionDefinitions(pModel);
+                  this->normalizeAndSimplifyExpressions(pModel);
                 }
             }
+        }
+    }
+}
+
+/**
+ * Normalizes all expressions but the function definitions in the given
+ * model.
+ */
+void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
+{
+  // expressions can occur in assignments, initial assignments, kinetic laws event triggers,
+  // event delays, event assignments and stiochiometric expressions
+  const InitialAssignment* pInitialAssignment = NULL;
+  const ASTNode* pMath = NULL;
+  ASTNode* pNewMath = NULL;
+  CNormalFraction* pFraction = NULL;
+  // initial assignments
+  unsigned int i, iMax = pModel->getListOfInitialAssignments()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      pInitialAssignment = pModel->getInitialAssignment(i);
+      assert(pInitialAssignment != NULL);
+      pMath = pInitialAssignment->getMath();
+      if (pMath != NULL)
+        {
+          pNewMath = create_expression(pMath, pModel);
+          assert(pNewMath != NULL);
+          pFraction = create_simplified_normalform(pNewMath);
+          ++mNumExpressions;
+          delete pNewMath;
+          assert(pFraction != NULL);
+          //            this->mNormalizedExpressions.push_back(pFraction);
+        }
+    }
+  // rules
+  const Rule* pRule = NULL;
+  iMax = pModel->getListOfRules()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      pRule = pModel->getRule(i);
+      assert(pRule != NULL);
+      pMath = pRule->getMath();
+      if (pMath != NULL)
+        {
+          pNewMath = create_expression(pMath, pModel);
+          assert(pNewMath != NULL);
+          pFraction = create_simplified_normalform(pNewMath);
+          ++mNumExpressions;
+          delete pNewMath;
+          assert(pFraction != NULL);
+          //            this->mNormalizedExpressions.push_back(pFraction);
+        }
+    }
+  // kinetic laws + stoichiometric expressions
+  const Reaction* pReaction = NULL;
+  iMax = pModel->getListOfReactions()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      pReaction = pModel->getReaction(i);
+      assert(pReaction != NULL);
+      const KineticLaw* pLaw = pReaction->getKineticLaw();
+      if (pLaw != NULL)
+        {
+          pMath = pLaw->getMath();
+          if (pMath != NULL)
+            {
+              pNewMath = create_expression(pMath, pModel);
+              assert(pNewMath != NULL);
+              pFraction = create_simplified_normalform(pNewMath);
+              ++mNumExpressions;
+              delete pNewMath;
+              assert(pFraction != NULL);
+              //                this->mNormalizedExpressions.push_back(pFraction);
+            }
+        }
+      const SpeciesReference* pSpeciesReference = NULL;
+      // substrates
+      unsigned j, jMax = pReaction->getListOfReactants()->size();
+      for (j = 0;j < jMax;++j)
+        {
+          pSpeciesReference = pReaction->getReactant(j);
+          assert(pSpeciesReference != NULL);
+          if (pSpeciesReference->isSetStoichiometryMath())
+            {
+              const StoichiometryMath* pSMath = pSpeciesReference->getStoichiometryMath();
+              assert(pSMath != NULL);
+              pMath = pSMath->getMath();
+              if (pMath != NULL)
+                {
+                  pNewMath = create_expression(pMath, pModel);
+                  assert(pNewMath != NULL);
+                  pFraction = create_simplified_normalform(pNewMath);
+                  ++mNumExpressions;
+                  delete pNewMath;
+                  assert(pFraction != NULL);
+                  //                    this->mNormalizedExpressions.push_back(pFraction);
+                }
+            }
+        }
+      // products
+      jMax = pReaction->getListOfProducts()->size();
+      for (j = 0;j < jMax;++j)
+        {
+          pSpeciesReference = pReaction->getProduct(j);
+          assert(pSpeciesReference != NULL);
+          if (pSpeciesReference->isSetStoichiometryMath())
+            {
+              const StoichiometryMath* pSMath = pSpeciesReference->getStoichiometryMath();
+              assert(pSMath != NULL);
+              pMath = pSMath->getMath();
+              if (pMath != NULL)
+                {
+                  pNewMath = create_expression(pMath, pModel);
+                  assert(pNewMath != NULL);
+                  pFraction = create_simplified_normalform(pNewMath);
+                  ++mNumExpressions;
+                  delete pNewMath;
+                  assert(pFraction != NULL);
+                  //                    this->mNormalizedExpressions.push_back(pFraction);
+                }
+            }
+        }
+    }
+  // events
+  const Event* pEvent = NULL;
+  const Trigger* pTrigger = NULL;
+  const Delay* pDelay = NULL;
+  iMax = pModel->getListOfEvents()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      pEvent = pModel->getEvent(i);
+      assert(pEvent != NULL);
+      // trigger
+      pTrigger = pEvent->getTrigger();
+      assert(pTrigger != NULL);
+      pMath = pTrigger->getMath();
+      if (pMath != NULL)
+        {
+          pNewMath = create_expression(pMath, pModel);
+          assert(pNewMath != NULL);
+          pFraction = create_simplified_normalform(pNewMath);
+          ++mNumExpressions;
+          delete pNewMath;
+          assert(pFraction != NULL);
+          //            this->mNormalizedExpressions.push_back(pFraction);
+        }
+
+      // delay
+      if (pEvent->isSetDelay())
+        {
+          pDelay = pEvent->getDelay();
+          assert(pDelay != NULL);
+          pMath = pDelay->getMath();
+          if (pMath != NULL)
+            {
+              pNewMath = create_expression(pMath, pModel);
+              assert(pNewMath != NULL);
+              pFraction = create_simplified_normalform(pNewMath);
+              ++mNumExpressions;
+              delete pNewMath;
+              assert(pFraction != NULL);
+              //                this->mNormalizedExpressions.push_back(pFraction);
+            }
+        }
+
+      // event assignments
+      unsigned int j, jMax = pEvent->getListOfEventAssignments()->size();
+      const EventAssignment* pEventAssignment = NULL;
+      for (j = 0;j < jMax;++j)
+        {
+          pEventAssignment = pEvent->getEventAssignment(j);
+          assert(pEventAssignment != NULL);
+          pMath = pEventAssignment->getMath();
+          if (pMath != NULL)
+            {
+              pNewMath = create_expression(pMath, pModel);
+              assert(pNewMath != NULL);
+              pFraction = create_simplified_normalform(pNewMath);
+              ++mNumExpressions;
+              delete pNewMath;
+              assert(pFraction != NULL);
+              //                this->mNormalizedExpressions.push_back(pFraction);
+            }
+        }
+    }
+}
+
+/**
+ * Normalizes the function definitions in the given model.
+ */
+void stress_test::normalizeAndSimplifyFunctionDefinitions(const Model* pModel)
+{
+  const FunctionDefinition* pFunDef = NULL;
+  const ASTNode* pRoot = NULL;
+  ASTNode* pNewRoot = NULL;
+  CNormalFraction* pFraction = NULL;
+  unsigned int i, iMax = pModel->getListOfFunctionDefinitions()->size();
+  for (i = 0;i < iMax;++i)
+    {
+      pFunDef = pModel->getFunctionDefinition(i);
+      pRoot = pFunDef->getMath();
+      // the actual function is the last child
+      if (pRoot != NULL && pRoot->getNumChildren() > 0)
+        {
+          // function definitons have to be expanded
+          const ASTNode* pMath = pRoot->getChild(pRoot->getNumChildren() - 1);
+          assert(pMath != NULL);
+          pNewRoot = expand_function_calls(pMath, pModel);
+          assert(pNewRoot != NULL);
+          pFraction = create_simplified_normalform(pNewRoot);
+          ++mNumFunctionDefinitions;
+          assert(pFraction != NULL);
+          //          mNormalizedFunctionDefinitions.push_back(pFraction);
         }
     }
 }

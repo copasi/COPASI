@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 06:29:42 $
+//   $Date: 2008/10/10 13:54:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,11 +63,25 @@ class stress_test
     void normalizeFunctionDefinitions(const Model* pModel);
 
     /**
+     * Normalizes all expressions but the function definitions in the given
+     * model.
+     */
+    void normalizeAndSimplifyExpressions(const Model* pModel);
+
+    /**
+     * Normalizes the function definitions in the given model.
+     */
+    void normalizeAndSimplifyFunctionDefinitions(const Model* pModel);
+
+    /**
      * Normalizes COPASIs function database.
      */
     void normalizeFunctionDB();
 
   protected:
+    unsigned int mNumFunctionDefinitions;
+    unsigned int mNumExpressions;
+    unsigned int mNumCOPASIFunctionDefinitions;
     std::vector<CNormalFraction*> mNormalizedExpressions;
     std::vector<CNormalFraction*> mNormalizedFunctionDefinitions;
     std::vector<CNormalFraction*> mNormalizedCOPASIFunctionDefinitions;
