@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.10 $
+$Revision: 1.10.2.1 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/09/30 19:49:50 $
+$Date: 2008/10/10 20:43:56 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,11 +170,10 @@ void CConfigurationFile::initializeParameter()
 {
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
-  assertGroup("MIRIAM Resources");
-
 #ifdef COPASI_LICENSE_COM
   assertGroup("Registration");
 #endif // COPASI_LICENSE_COM
+  assertGroup("MIRIAM Resources");
 
   elevateChildren();
 }
@@ -225,8 +224,15 @@ void CConfigurationFile::setRecentMIRIAMResources(const CMIRIAMResources & miria
 
 CConfigurationFile::CXML::CXML():
     CCopasiXMLInterface(),
-    mConfiguration("Configuration File")
-{}
+    mConfiguration("Configuration")
+{
+  mConfiguration.assertGroup("Recent Files");
+  mConfiguration.assertGroup("Recent SBML Files");
+#ifdef COPASI_LICENSE_COM
+  mConfiguration.assertGroup("Registration");
+#endif // COPASI_LICENSE_COM
+  mConfiguration.assertGroup("MIRIAM Resources");
+}
 
 CConfigurationFile::CXML::~CXML()
 {}
