@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Tue May 27 12:42:54 2008
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
+ ** Created: Fri Oct 10 11:13:28 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -56,16 +56,18 @@ class CQTSSAResultSubWidget : public QWidget
     QTextEdit* optimizationResultText;
     QWidget* tab_2;
     CTimeSeriesTable* dataTable;
-    QWidget* TabPage;
+    QWidget* TabPage_ILDM;
     QTabWidget* mTabWidget;
     QWidget* tab_3;
     CQArrayAnnotationsWidget* pArrayWidget;
     QWidget* tab_4;
     CQArrayAnnotationsWidget* pArrayWidget2;
-    QWidget* TabPage_2;
+    QWidget* TabPage;
     CQArrayAnnotationsWidget* pArrayWidget3;
-    QWidget* TabPage_3;
+    QWidget* TabPage_2;
     CQArrayAnnotationsWidget* pArrayWidget4;
+    QWidget* TabPage_3;
+    CQArrayAnnotationsWidget* pArrayWidget_3_2;
     QSlider* mSlider;
     QLabel* mLabel7;
     QLabel* pLabel1;
@@ -74,17 +76,34 @@ class CQTSSAResultSubWidget : public QWidget
     QLabel* mLabel4;
     QLabel* mLabel5;
     QLabel* mLabel6;
-    QWidget* TabPage_4;
-    QTabWidget* mTabWidget_3;
+    QWidget* TabPage_ILDMM;
+    QLabel* pLabel1_6;
+    QLabel* mLabel6_6;
+    QLabel* mLabel4_6;
+    QLabel* mLabel2_6;
+    QLabel* mLabel3_6;
+    QLabel* mLabel5_6;
+    QSlider* mSlider_4;
+    QTabWidget* mTabWidget_4;
     QWidget* tab_5;
-    CQArrayAnnotationsWidget* pArrayWidget_3;
+    CQArrayAnnotationsWidget* pArrayWidget_5;
     QWidget* tab_6;
-    CQArrayAnnotationsWidget* pArrayWidget2_3;
+    CQArrayAnnotationsWidget* pArrayWidget2_5;
+    QWidget* TabPage_4;
+    CQArrayAnnotationsWidget* pArrayWidget3_5;
     QWidget* TabPage_5;
-    CQArrayAnnotationsWidget* pArrayWidget3_3;
+    CQArrayAnnotationsWidget* pArrayWidget4_5;
+    QWidget* TabPage_CSP;
+    QTabWidget* mTabWidget_3;
+    QWidget* tab_7;
+    CQArrayAnnotationsWidget* pArrayWidget_3;
+    QWidget* tab_8;
+    CQArrayAnnotationsWidget* pArrayWidget2_3;
     QWidget* TabPage_6;
-    CQArrayAnnotationsWidget* pArrayWidget4_3;
+    CQArrayAnnotationsWidget* pArrayWidget3_3;
     QWidget* TabPage_7;
+    CQArrayAnnotationsWidget* pArrayWidget4_3;
+    QWidget* TabPage_8;
     CQArrayAnnotationsWidget* pArrayWidget4_3_2;
     QLabel* pLabel1_3;
     QLabel* mLabel2_3;
@@ -101,13 +120,15 @@ class CQTSSAResultSubWidget : public QWidget
     void activateTab(int tab);
     void changeToCSP();
     void changeToILDM();
+    virtual void changeToILDMModified();
+    void displayCSPDevelopment(bool displayCSPTab);
 
   public slots:
     virtual CTimeSeriesTable * table();
     void changeILDMInterval();
     void changeCSPInterval();
     void hideButtons();
-    void changeToILDMModified();
+    virtual void changeILDMModifiedInterval();
 
   protected:
     QGridLayout* CQTSSAResultSubWidgetLayout;
@@ -115,19 +136,26 @@ class CQTSSAResultSubWidget : public QWidget
     QSpacerItem* spacer;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
-    QGridLayout* TabPageLayout;
+    QGridLayout* TabPage_ILDMLayout;
     QSpacerItem* mSpacer;
     QGridLayout* tabLayout_3;
     QGridLayout* tabLayout_4;
+    QGridLayout* TabPageLayout;
     QGridLayout* TabPageLayout_2;
-    QGridLayout* TabPageLayout_3;
-    QGridLayout* TabPageLayout_4;
-    QSpacerItem* mSpacer_3;
+    QVBoxLayout* TabPageLayout_3;
+    QGridLayout* TabPage_ILDMMLayout;
+    QSpacerItem* mSpacer_6;
     QGridLayout* tabLayout_5;
     QGridLayout* tabLayout_6;
+    QGridLayout* TabPageLayout_4;
     QGridLayout* TabPageLayout_5;
+    QGridLayout* TabPage_CSPLayout;
+    QSpacerItem* mSpacer_3;
+    QGridLayout* tabLayout_7;
+    QGridLayout* tabLayout_8;
     QGridLayout* TabPageLayout_6;
     QGridLayout* TabPageLayout_7;
+    QGridLayout* TabPageLayout_8;
 
   protected slots:
     virtual void languageChange();

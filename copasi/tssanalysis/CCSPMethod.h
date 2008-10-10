@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: ssahle $
+//   $Date: 2008/10/10 09:54:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,9 +67,9 @@ class CCSPMethod : public CTSSAMethod
     C_FLOAT64 mAerror;
 
     /**
-     *  Number of the refinement iterations
+     *  Max number of the refinement iterations
      */
-    C_INT nIter;
+    C_INT mIter;
 
     /**
      *  A vector of the current right hand side
@@ -80,6 +80,17 @@ class CCSPMethod : public CTSSAMethod
      *  An error vector build on the basis of the solution vector
      */
     CVector<C_FLOAT64> mYerror;
+
+    /**
+    *  The basis vectors B from the time step (T - delta T)
+    */
+    CMatrix<C_FLOAT64> mB;
+
+    C_INT mTStep;
+    /**
+    *  indicates whether the basis vectors B were computed on the time step (T - delta T)
+    */
+    C_INT mCSPbasis;
 
     /**
      * CSP Output
@@ -193,6 +204,12 @@ class CCSPMethod : public CTSSAMethod
     void smnorm(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, C_INT & n1);
 
     /**
+     *   TEST: perturbate basis vectors A
+     */
+
+    void perturbateA(C_INT & n, CMatrix< C_FLOAT64 > & A, C_FLOAT64 delta);
+
+    /**
      *   Inverse  submatrix
      */
 
@@ -244,16 +261,27 @@ class CCSPMethod : public CTSSAMethod
     void findTimeScaleSeparation(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & tsc, C_INT & info);
 
     /**
-     * enforce the criterion to classify
+     * find  the number of candidates to fast  according to the time-scale separation ratio
      **/
-    void classifyModes(C_INT & N, C_INT & M, C_INT & exhausted, C_FLOAT64 & tauM, C_FLOAT64 & tauM1 , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
+    void findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 > & tsc, C_INT & info);
+
+    /**
+     * check : whether each of the analysed M modes is exhausted
+     **/
+
+    bool modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLOAT64 & tauM1 , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
+
+    /**
+     * compute  the norm C  of the off-diagonal blocks
+     **/
+    bool isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small);
 
     /**
      *  Start procedure of the CSP algorithm.
      *  S.H. Lam and D.A. Gaussis, International Journal of Chemical Kinetics,
      *  26, pp. 461-486, 1994
      */
-    void cspstep(C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+    void cspstep(const double & deltaT, C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
     /**
      * CSP output

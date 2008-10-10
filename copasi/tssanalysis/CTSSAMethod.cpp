@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 18:16:27 $
+//   $Author: ssahle $
+//   $Date: 2008/10/10 09:54:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,11 +56,9 @@ CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
       pMethod = new CILDMModifiedMethod();
       break;
 
-#ifdef WITH_CSPMETHOD
     case tssCSP:
       pMethod = new CCSPMethod();
       break;
-#endif // WITH_CSPMETHOD
 
     default:
       fatalError();
@@ -142,6 +140,12 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!pTP)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 2);
+      return false;
+    }
+
+  if (pTP->getModel()->getCompartments().size() != 1)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 13);
       return false;
     }
 
@@ -724,7 +728,7 @@ void CTSSAMethod::schur(C_INT &info)
 
   if (info)
     {
-      std::cout << "Problems with schur decomposition " << std::endl;
+      //  std::cout << "Problems with schur decomposition " << std::endl;
 
       return;
     }
@@ -1152,7 +1156,7 @@ void CTSSAMethod::schur_desc(C_INT &info)
 
   if (info)
     {
-      std::cout << "Problems with schur decomposition " << std::endl;
+      //   std::cout << "Problems with schur decomposition " << std::endl;
 
       return;
     }
@@ -1524,7 +1528,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   /*  if (info) TODO*/
   if (info)
     {
-      std::cout << "Problems with the solution of sylvester equation" << std::endl;
+      //    std::cout << "Problems with the solution of sylvester equation" << std::endl;
       return;
     }
 

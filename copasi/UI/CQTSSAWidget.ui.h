@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/16 10:10:32 $
+//   $Date: 2008/10/10 09:55:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,6 +218,8 @@ bool CQTSSAWidget::loadTask()
   loadCommon();
   loadMethod();
 
+  disableDeuflhard(mpBoxMethod->currentItem());
+
   CTSSAProblem* tssaproblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
@@ -325,7 +327,7 @@ void CQTSSAWidget::checkTimeSeries()
 
 void CQTSSAWidget::disableDeuflhard(int i)
 {
-  if (i == 2) // || (i == 1))
+  if ((i == 2) || (i == 1))
     {
       mpEditDeufelTol->setDisabled(true);
       mpLbDeuflTol->setDisabled(true);
