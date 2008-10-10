@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/25 12:49:15 $
+//   $Date: 2008/10/10 19:44:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,12 +120,12 @@ void CILDMModifiedMethod::step(const double & deltaT)
   // TO REMOVE : mpModel->applyAssignments();
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
-  std::cout << std::endl;
-  std::cout << "****************************************************************" << std::endl;
-  std::cout << "****************************************************************" << std::endl;
-  std::cout << "Next step t=: " << mTime << std::endl;
-  std::cout << "****************************************************************" << std::endl;
-  std::cout << "****************************************************************" << std::endl;
+  // std::cout << std::endl;
+  // std::cout << "****************************************************************" << std::endl;
+  // std::cout << "****************************************************************" << std::endl;
+  // std::cout << "Next step t=: " << mTime << std::endl;
+  // std::cout << "****************************************************************" << std::endl;
+  // std::cout << "****************************************************************" << std::endl;
 
   C_INT flag_jacob;
   flag_jacob = 1;  // Set flag_jacob=0 to print Jacobian
@@ -236,7 +236,10 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   if (info_schur)
     {
-      std::cout << " There are problems with calculation of Jacobi matrix. Please check  the problem is specified suitable. " << std::endl;
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     MCTSSAMethod + 9, mTime - deltaT);
+
+      //std::cout << "  WARNING:  There are problems with calculation of Jacobi matrix. Please check  the problem. " << std::endl;
       goto integration;
     }
 
@@ -274,7 +277,10 @@ void CILDMModifiedMethod::step(const double & deltaT)
     {
       slow = dim;
       fast = 0;
-      std::cout << "positive eigenvalues" << std::endl;
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     MCTSSAMethod + 10, mTime - deltaT);
+
+      //std::cout << "WARNING.  All eigenvalues are positive. No reduction is possible." << std::endl;
       failed = 1;
       goto integration;
     }
@@ -283,9 +289,9 @@ void CILDMModifiedMethod::step(const double & deltaT)
        The difference is in the type of iterations to define slow modes */
 
   /** Begin of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
-  std::cout << std::endl;
-  std::cout << "Begin of deuflhard iterations" << std::endl;
-  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
+  //std::cout << std::endl;
+  //std::cout << "Begin of deuflhard iterations" << std::endl;
+  //std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
 
   // Iterations to determine the number of slow metabolites
 
@@ -295,7 +301,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
       fast2 = dim - slow2;
       if (mR(dim - fast2, dim - fast2) >= 0)
         {
-          std::cout << "there are positive eigenvalues " << mR(dim - fast2, dim - fast2) << " for slow = " << slow2 << std::endl;
+          // std::cout << "there are positive eigenvalues " << mR(dim - fast2, dim - fast2) << " for slow = " << slow2 << std::endl;
           failed = 1;
           goto integration;
         }
@@ -303,7 +309,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
       if (info)
         {
-          std::cout << "The last metabolite does not satisfy the Deuflhard criterium" << std::endl;
+          // std::cout << "The last metabolite does not satisfy the Deuflhard criterium" << std::endl;
           failed_while = 1;
           goto integration;
         }
@@ -332,6 +338,10 @@ integration:
     }
 
   mSlow = slow;
+
+  if (slow == dim)
+    CCopasiMessage(CCopasiMessage::WARNING,
+                   MCTSSAMethod + 11, mTime);
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
@@ -600,7 +610,7 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   eps = 1 / fabs(mR(dim - fast , dim - fast));
   //eps = fabs(mR(dim - fast - 1, dim - fast - 1)) / fabs(mR(dim - fast , dim - fast));
 
-  std::cout << "Mode number " << slow + 1 << " with time scale: " << eps << std::endl;
+  // std::cout << "Mode number " << slow + 1 << " with time scale: " << eps << std::endl;
 
   mat_anal_fast_space(slow);
 
@@ -662,16 +672,16 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
     {
       // TODO
       info = 1;
-      std::cout << "info: newton iteration stop" << std::endl;
-      if (info_newton == 1)
-        std::cout << "Newton does not converge" << std::endl;
-      else
-        {
-          if (info_newton == 2)
-            std::cout << "Problems with inverse of Jacobian " << std::endl;
-          else
-            std::cout << " The are no dominant metabolites " << std::endl;
-        }
+      //    std::cout << "info: newton iteration stop" << std::endl;
+      // if (info_newton == 1)
+      //       std::cout << "Newton does not converge" << std::endl;
+      // else
+      //{
+      //   if (info_newton == 2)
+      // std::cout << "Problems with inverse of Jacobian " << std::endl;
+      // else
+      //   std::cout << " The are no dominant metabolites " << std::endl;
+      //}
       return;
     }
 
@@ -783,12 +793,12 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
 
-  std::cout << "Candidates for fast metabolites" << std::endl;
+  //  std::cout << "Candidates for fast metabolites" << std::endl;
 
   for (i = 0; i < fast; i++)
     {
       m = index_metab[i];
-      std::cout << mpModel->getMetabolitesX()[m]->getObjectName() << ", ";
+      //    std::cout << mpModel->getMetabolitesX()[m]->getObjectName() << ", ";
       for (j = 0; j < fast; j++)
         {
           k = index_metab[ j];
@@ -828,7 +838,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
       if (iter > itermax)
         {
           info = 1;
-          std::cout << "iter > itermax" << iter << std::endl;
+          // std::cout << "iter > itermax" << iter << std::endl;
           return;
         }
 
@@ -951,7 +961,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
       if (g2 / g1 > 1.0)
         {
           info = 1;
-          std::cout << "info : newton stop criterion" << std::endl;
+          //   std::cout << "info : newton stop criterion" << std::endl;
           return;
         }
     } /* end while */

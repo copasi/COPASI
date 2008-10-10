@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.6.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: ssahle $
+//   $Date: 2008/10/10 19:44:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,10 +97,14 @@ class CILDMMethod : public CTSSAMethod
     /**
        *vectors contain whole data for all calculation steps
        **/
+
+    CVector<C_FLOAT64> mReacSlowSpace; // NEW TAB
+
     std::vector< CMatrix<C_FLOAT64> > mVec_mVslow;
     std::vector< CMatrix<C_FLOAT64> > mVec_mVslowMetab;
     std::vector< CVector<C_FLOAT64> > mVec_mVslowSpace;
     std::vector< CVector<C_FLOAT64> > mVec_mVfastSpace;
+    std::vector< CVector<C_FLOAT64> > mVec_mReacSlowSpace;
 
     /**
      *CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
@@ -109,6 +113,7 @@ class CILDMMethod : public CTSSAMethod
     CArrayAnnotation* pVslowMetabPrintAnn;
     CArrayAnnotation* pVslowSpacePrintAnn;
     CArrayAnnotation* pVfastSpacePrintAnn;
+    CArrayAnnotation* pReacSlowSpacePrintAnn;
 
     /**
     *required for creation of above listed CArrayAnnotation
@@ -117,6 +122,7 @@ class CILDMMethod : public CTSSAMethod
     CArrayAnnotation* pTmp2;
     CArrayAnnotation* pTmp3;
     CArrayAnnotation* pTmp4;
+    CArrayAnnotation* pTmp5;
 
     /**
     *input for every CArraAnnotations
@@ -126,6 +132,7 @@ class CILDMMethod : public CTSSAMethod
     CMatrix<C_FLOAT64> mVslowSpacePrint;
     CMatrix<C_FLOAT64> mVfastSpacePrint;
     CMatrix<C_FLOAT64> mVslowMetabPrint;
+    CMatrix<C_FLOAT64> mReacSlowSpacePrint;
 
     /**
     * return CArrayAnnotation for visualization in ILDM-tab
@@ -139,6 +146,8 @@ class CILDMMethod : public CTSSAMethod
       {return pVfastSpacePrintAnn;}
     const CArrayAnnotation* getVslowMetabPrintAnn() const
       {return pVslowMetabPrintAnn;}
+    const CArrayAnnotation* getReacSlowSpacePrintAnn() const
+      {return pReacSlowSpacePrintAnn;}
 
     /**
     * upgrade all vectors with values from actually calculalion for current step
