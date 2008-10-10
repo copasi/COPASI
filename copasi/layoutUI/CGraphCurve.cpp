@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/17 14:23:37 $
+//   $Author: gauges $
+//   $Date: 2008/10/10 15:48:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ void CGraphCurve::invertOrderOfPoints()
     }
 
   // now invert order of segments
-  reverse(mvCurveSegments.begin(), mvCurveSegments.end());
+  std::reverse(mvCurveSegments.begin(), mvCurveSegments.end());
 
   if (mHasArrow)
     {// exchange line segment and end point
