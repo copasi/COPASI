@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/08 00:42:51 $
+//   $Author: gauges $
+//   $Date: 2008/10/10 15:47:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -673,7 +673,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                 }
               if (nodeKey != "")
                 {
-                  nodeCurveMap.insert(std::pair<std::string, CGraphCurve>
+                  nodeCurveMap.insert(std::make_pair<const std::string, CGraphCurve>
                                       (nodeKey,
                                        curve));
                 }
@@ -2194,7 +2194,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
             {
               CLLineSegment ls(to, pLastSeg->getEnd());
               CArrow *ar = new CArrow(ls, p.getX(), p.getY(), this->mCurrentZoom);
-              nodeArrowMap.insert(std::pair<std::string, CArrow>
+              nodeArrowMap.insert(std::make_pair<const std::string, CArrow>
                                   (key, *ar));
               pCurve->setArrow(*ar);
               delete ar;
@@ -2355,7 +2355,7 @@ void CQGLNetworkPainter::adaptCurveForCircle(std::multimap<std::string, CGraphCu
           ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
         }
 
-      nodeArrowMap.insert(std::pair<std::string, CArrow>
+      nodeArrowMap.insert(std::make_pair<const std::string, CArrow>
                           ((*it).first, *ar));
       ((*it).second).setArrowP(true);
       ((*it).second).setArrow(*ar);
@@ -2404,7 +2404,7 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
           ar = new CArrow(*pLastSeg, p.getX(), p.getY(), this->mCurrentZoom);
         }
 
-      nodeArrowMap.insert(std::pair<std::string, CArrow>
+      nodeArrowMap.insert(std::make_pair<const std::string, CArrow>
                           ((*it).first, *ar));
       ((*it).second).setArrowP(true);
       ((*it).second).setArrow(*ar);
