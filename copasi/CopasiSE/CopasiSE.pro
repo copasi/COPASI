@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.36.6.1 $
+#   $Revision: 1.36.6.2 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/10/10 16:38:18 $
+#   $Date: 2008/10/10 17:34:28 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.36.6.1 $ $Author: shoops $ $Date: 2008/10/10 16:38:18 $
+# $Revision: 1.36.6.2 $ $Author: shoops $ $Date: 2008/10/10 17:34:28 $
 ######################################################################
 
 TEMPLATE = app
@@ -74,6 +74,7 @@ contains(BUILD_OS, SunOS) {
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
+  LIBS += -lxnet -lnsl -ldl
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
