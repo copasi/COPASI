@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/02 18:38:42 $
+//   $Author: gauges $
+//   $Date: 2008/10/10 16:04:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,12 @@
 #include <qlayout.h>
 #include <qtable.h>
 #include <qlabel.h>
+
+#ifdef __SUNPRO_CC
+#include <ieeefp.h>
+#else
+#include <math.h>
+#endif
 
 #include "copasi.h"
 
