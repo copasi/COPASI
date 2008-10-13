@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:14 $
+//   $Date: 2008/10/13 15:36:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,9 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
 
     //this will contain the SBML objects that were touched by this method.
     std::set<SBase*> writtenToSBML;
+
+    //some of the following code is currently useless: Layouts are never part of
+    //the copasimodelmap.
 
     //write all copasi object to corresponding libsbml objects
     unsigned C_INT32 i, imax = this->size();

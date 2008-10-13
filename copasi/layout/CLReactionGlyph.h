@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:14 $
+//   $Date: 2008/10/13 15:36:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,10 +114,13 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
     /**
      * This method writes the information of the copasi layout object into the
      * corresponding sbml object
+     * layoutmap contains a map from copasi layout objects to libsbml layout objects.
+     * this is needed for resolving the reference to the metab glyph.
      */
     virtual void exportToSBML(SpeciesReferenceGlyph * g,
                               const std::map<CCopasiObject*, SBase*> & copasimodelmap,
-                              std::map<std::string, const SBase*>& sbmlIDs) const;
+                              std::map<std::string, const SBase*>& sbmlIDs,
+                              const std::map<const CLBase*, const SBase*> layoutmap) const;
 
     /**
      * insert operator
@@ -172,10 +175,13 @@ class CLReactionGlyph : public CLGraphicalObject
     /**
      * This method writes the information of the copasi layout object into the
      * corresponding sbml object
+     * layoutmap contains a map from copasi layout objects to libsbml layout objects.
+     * the exported metab reference glyphs will be added.
      */
     virtual void exportToSBML(ReactionGlyph * g,
                               const std::map<CCopasiObject*, SBase*> & copasimodelmap,
-                              std::map<std::string, const SBase*>& sbmlIDs) const;
+                              std::map<std::string, const SBase*>& sbmlIDs,
+                              std::map<const CLBase*, const SBase*> layoutmap) const;
 
     /**
      * insert operator

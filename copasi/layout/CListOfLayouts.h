@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.5.16.1 $
+//   $Revision: 1.5.16.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:14 $
+//   $Date: 2008/10/13 15:36:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,12 +48,11 @@ class CListOfLayouts : public CCopasiVector<CLayout>
 
     /**
      * This method writes the information of the copasi layout object into the
-     * corresponding sbml object
-     * copasimodelmap maps the copasi objects to libsbml objects in case the
-     * model was imported from an sbml file. This is not used extensively for
-     * the layout export
+     * corresponding sbml object.
+     * copasimodelmap maps the copasi model objects to libsbml objects.
+     * At the moment we don´t assume layout objects are in the copasimodelmap.
      * idSet should contain all sbml IDs that are used in the currently exported
-     * model (not including the layout part of the sbml file).
+     * model (including the layouts, but not the objects inside the layout).
      */
     void exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap,
                       const std::map<std::string, const SBase*>& idMap) const;

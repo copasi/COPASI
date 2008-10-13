@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:21 $
+//   $Date: 2008/10/13 15:36:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,6 +234,16 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
     Dimensions tmpDim = mDimensions.getSBMLDimensions();
     layout->setDimensions(&tmpDim);
 
+    //some of the following code is not used at the moment:  the copasi model map
+    //does not contain glyphs. Since this may change in the future I leave the code
+    //below.
+
+    // create a map from copasi layout object to sbml objects. We do not put
+    //the layout objects into the global map (copasimodelmap) but we need to have
+    //access to all objects in the current layout since speciesReferenceGlyph and
+    //textGlyph need to reference other graphical objects.
+    std::map<const CLBase*, const SBase*> layoutmap;
+
     //Compartment glyphs
     unsigned C_INT32 i, imax = mvCompartments.size();
     for (i = 0; i < imax; ++i)
@@ -255,6 +265,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pCG = dynamic_cast<CompartmentGlyph*>(it->second);
           }
 
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pCG));
         tmp->exportToSBML(pCG, copasimodelmap, sbmlIDs);
       }
 
@@ -279,6 +290,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<SpeciesGlyph*>(it->second);
           }
 
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
@@ -303,7 +315,11 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<ReactionGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
+        //we need to pass the layoutmap here for 2 reasons:
+        //1. the metabreferenceglyphs need to be added
+        //2. the metabreferenceglyphs need to resolve the reference to the metabglyph
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs, layoutmap);
       }
 
     //Text glyphs
@@ -327,6 +343,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<TextGlyph*>(it->second);
           }
 
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
@@ -351,6 +368,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<GraphicalObject*>(it->second);
           }
 
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
   }
