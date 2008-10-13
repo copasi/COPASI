@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/17 15:59:26 $
+//   $Date: 2008/10/13 09:48:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include "CLGraphicalObject.h"
 
 #include "report/CKeyFactory.h"
+#include "sbml/CSBMLExporter.h"
 
 CLGraphicalObject::CLGraphicalObject(const std::string & name,
                                      const CCopasiContainer * pParent)
@@ -100,9 +101,16 @@ std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, boo
       return "";
   }
 
-void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
+                                     const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                     std::map<std::string, const SBase*>& sbmlIDs) const
   {
     if (!sbmlobject) return;
+
+    //Name and ID
+    std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_glyph_");
+    sbmlobject->setId(id);
+    sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, sbmlobject));
 
     //Bounding box
     BoundingBox tmpbox = mBBox.getSBMLBoundingBox();

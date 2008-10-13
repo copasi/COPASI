@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/17 14:22:50 $
+//   $Date: 2008/10/13 09:48:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,15 +113,21 @@ CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
     return dynamic_cast<CLMetabGlyph*>(tmp);
   }
 
-void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g,
+    const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+    std::map<std::string, const SBase*>& sbmlIDs) const
   {
     if (!g) return;
 
     //call the coresponding method of the base class
-    CLGraphicalObject::exportToSBML(g, copasimodelmap);
+    CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
 
     //curve
     mCurve.exportToSBML(g->getCurve(), copasimodelmap);
+
+    //Role
+    g->setRole((SpeciesReferenceRole_t)mRole);
+    //this depends on the copasi role enum being synchronous to the sbml one
   }
 
 std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
@@ -213,12 +219,26 @@ void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
     mvMetabReferences.add(glyph, true); //true means vector takes ownership
 }
 
-void CLReactionGlyph::exportToSBML(ReactionGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
+                                   const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                   std::map<std::string, const SBase*>& sbmlIDs) const
   {
     if (!g) return;
 
     //call the coresponding method of the base class
-    CLGraphicalObject::exportToSBML(g, copasimodelmap);
+    CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
+
+    //reference to model objects
+    CCopasiObject* tmp = getModelObject();
+    if (tmp)
+      {
+        std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+        if (it != copasimodelmap.end())
+          {
+            if (it->second)
+              g->setReactionId(it->second->getId());
+          }
+      }
 
     //curve
     mCurve.exportToSBML(g->getCurve(), copasimodelmap);
@@ -244,7 +264,7 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g, const std::map<CCopasiObje
             pG = dynamic_cast<SpeciesReferenceGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
   }
 

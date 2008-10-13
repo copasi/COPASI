@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:51 $
+//   $Author: ssahle $
+//   $Date: 2008/10/13 09:48:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,15 +48,21 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
   //TODO: store map
 }
 
-void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                  const std::map<std::string, const SBase*>& idMap) const
   {
     if (!lol) return;
 
+    // we will generate sbml ids that are unique within the sbml file (although
+    // this may not be strictly necessary for the layouts). Therefore we will keep only
+    // one set of IDs:
+    std::map<std::string, const SBase*> sbmlIDs = idMap;
+
     //debug output
-    //     std::map<CCopasiObject*, SBase*>::const_iterator it;
-    //     for (it=copasimodelmap.begin(); it != copasimodelmap.end(); ++it)
-    //       {
-    //         std::cout << it->first->getObjectDisplayName() << " -> " << it->second->getId() << " . " << it->second->getName() << std::endl;
+    //         std::map<CCopasiObject*, SBase*>::const_iterator it;
+    //         for (it=copasimodelmap.begin(); it != copasimodelmap.end(); ++it)
+    //           {
+    //             std::cout << it->first->getObjectDisplayName() << " -> " << it->second->getId() << " . " << it->second->getName() << std::endl;
     //}
 
     //this will contain the SBML objects that were touched by this method.
@@ -87,7 +93,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<CCopasiObject*, SBase*>
             pLayout = dynamic_cast<Layout*>(it->second);
           }
 
-        tmp->exportToSBML(pLayout, copasimodelmap);
+        tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs);
         writtenToSBML.insert(pLayout);
       }
 

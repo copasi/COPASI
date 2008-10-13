@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/17 15:59:18 $
+//   $Date: 2008/10/13 09:48:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,9 +21,11 @@
 #include "sbml/layout/Layout.h"
 
 #include "copasi.h"
-#include "report/CKeyFactory.h"
 
 #include "CLayout.h"
+
+#include "report/CKeyFactory.h"
+#include "sbml/CSBMLExporter.h"
 
 CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)
@@ -215,9 +217,18 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
     os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
   }
 
-void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                           std::map<std::string, const SBase*>& sbmlIDs) const
   {
     if (!layout) return;
+
+    //Name and ID
+    std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_");
+    layout->setId(id);
+    sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, layout));
+    //we do not check if the layout is already present in the libsbml data
+    //structures. This is no big deal since at the moment no software
+    //relies on persistent IDs for layout elements.
 
     //Dimensions
     Dimensions tmpDim = mDimensions.getSBMLDimensions();
@@ -244,7 +255,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pCG = dynamic_cast<CompartmentGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pCG, copasimodelmap);
+        tmp->exportToSBML(pCG, copasimodelmap, sbmlIDs);
       }
 
     //Species glyphs
@@ -268,7 +279,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<SpeciesGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
     //Reaction glyphs
@@ -292,7 +303,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<ReactionGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
     //Text glyphs
@@ -316,7 +327,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<TextGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
     //generic glyphs
@@ -340,6 +351,6 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<GraphicalObject*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
   }

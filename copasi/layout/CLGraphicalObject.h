@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/16 22:29:58 $
+//   $Date: 2008/10/13 09:48:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,13 +121,13 @@ class CLGraphicalObject : public CLBase, public CCopasiContainer
       */
     std::string getModelObjectDisplayName(bool regular = true, bool richtext = false) const;
 
-    //virtual void scale (const double & scaleFactor){mBBox.scale(scaleFactor);}
-
     /**
      * This method writes the information of the copasi layout object into the
      * corresponding sbml object
      */
-    virtual void exportToSBML(GraphicalObject * sbmlobject, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+    virtual void exportToSBML(GraphicalObject * sbmlobject,
+                              const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                              std::map<std::string, const SBase*>& sbmlIDs) const;
 
     /**
       * insert operator

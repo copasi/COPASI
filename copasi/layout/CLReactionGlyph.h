@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/16 22:29:58 $
+//   $Date: 2008/10/13 09:48:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,17 +111,13 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
     const std::string & getRoleDisplayName() const
       {return RoleName[mRole];};
 
-    /*    virtual void scale (const double & scaleFactor)
-        {
-          this->mCurve.scale(scaleFactor);
-          this->mBBox.scale(scaleFactor);
-        }*/
-
     /**
      * This method writes the information of the copasi layout object into the
      * corresponding sbml object
      */
-    virtual void exportToSBML(SpeciesReferenceGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+    virtual void exportToSBML(SpeciesReferenceGlyph * g,
+                              const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                              std::map<std::string, const SBase*>& sbmlIDs) const;
 
     /**
      * insert operator
@@ -173,22 +169,13 @@ class CLReactionGlyph : public CLGraphicalObject
     CLCurve & getCurve() {return mCurve;};
     void setCurve(const CLCurve & c) {mCurve = c;};
 
-    //     virtual void scale (const double & scaleFactor)
-    //     {
-    //       this->mBBox.scale(scaleFactor);
-    //       this->mCurve.scale(scaleFactor);
-    //       unsigned int i;
-    //       for (i = 0;i < mvMetabReferences.size();i++)
-    //         {
-    //           (mvMetabReferences[i])->scale(scaleFactor);
-    //}
-    //}
-
     /**
      * This method writes the information of the copasi layout object into the
      * corresponding sbml object
      */
-    virtual void exportToSBML(ReactionGlyph * g, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const;
+    virtual void exportToSBML(ReactionGlyph * g,
+                              const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                              std::map<std::string, const SBase*>& sbmlIDs) const;
 
     /**
      * insert operator

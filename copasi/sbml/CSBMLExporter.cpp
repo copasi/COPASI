@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.50.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/01 08:39:28 $
+//   $Author: ssahle $
+//   $Date: 2008/10/13 09:49:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1827,7 +1827,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
 
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
     dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
-        dataModel.getCopasi2SBMLMap());
+        dataModel.getCopasi2SBMLMap(), mIdMap);
 
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
