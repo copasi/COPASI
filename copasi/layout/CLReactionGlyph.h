@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.13.2.2 $
+//   $Revision: 1.13.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 15:36:52 $
+//   $Date: 2008/10/13 16:25:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ class CLMetabReferenceGlyph : public CLGraphicalObject
     virtual void exportToSBML(SpeciesReferenceGlyph * g,
                               const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                               std::map<std::string, const SBase*>& sbmlIDs,
-                              const std::map<const CLBase*, const SBase*> layoutmap) const;
+                              const std::map<const CLBase*, const SBase*> & layoutmap) const;
 
     /**
      * insert operator
@@ -181,7 +181,7 @@ class CLReactionGlyph : public CLGraphicalObject
     virtual void exportToSBML(ReactionGlyph * g,
                               const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                               std::map<std::string, const SBase*>& sbmlIDs,
-                              std::map<const CLBase*, const SBase*> layoutmap) const;
+                              std::map<const CLBase*, const SBase*> & layoutmap) const;
 
     /**
      * insert operator

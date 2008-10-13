@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.18.2.2 $
+//   $Revision: 1.18.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 15:36:52 $
+//   $Date: 2008/10/13 16:25:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,31 +116,12 @@ CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
 void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g,
     const std::map<CCopasiObject*, SBase*> & copasimodelmap,
     std::map<std::string, const SBase*>& sbmlIDs,
-    const std::map<const CLBase*, const SBase*> layoutmap) const
+    const std::map<const CLBase*, const SBase*> & layoutmap) const
   {
     if (!g) return;
 
     //call the coresponding method of the base class
     CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
-
-    //get the copasi key corresponding to the sbml id for the species glyph
-    //   if (sbml.getSpeciesGlyphId() != "")
-    //     {
-    //       std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getSpeciesGlyphId());
-    //       if (it != layoutmap.end())
-    //         mMetabGlyphKey = it->second;
-    //}
-    //reference to model objects
-    //     CCopasiObject* tmp = getModelObject();
-    //     if (tmp)
-    //       {
-    //         std::map<CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
-    //         if (it != copasimodelmap.end())
-    //           {
-    //             if (it->second)
-    //               g->setOriginOfTextId(it->second->getId());
-    //}
-    //}
 
     //reference to species glyph
     CLMetabGlyph* tmp = getMetabGlyph();
@@ -260,7 +241,7 @@ void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
 void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
                                    const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                                    std::map<std::string, const SBase*>& sbmlIDs,
-                                   std::map<const CLBase*, const SBase*> layoutmap) const
+                                   std::map<const CLBase*, const SBase*> & layoutmap) const
   {
     if (!g) return;
 
