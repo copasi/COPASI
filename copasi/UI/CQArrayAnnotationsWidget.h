@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/02 18:38:42 $
+//   $Date: 2008/10/13 16:45:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,13 +23,15 @@
 #include <qpushbutton.h>
 #include <qwidgetstack.h>
 
-#include "copasi/UI/CQBarChart.h"
+#include <vector>
+
 #include "copasi/utilities/CAnnotatedMatrix.h"
-#include "copasi/mathematics.h"
 
 class QGridLayout;
 class QTable;
 class QLabel;
+
+class CQBarChart;
 
 /**
  * Base class for color scales. The derived classes provide algorithms
@@ -200,12 +202,12 @@ class CColorScaleBiLog : public CColorScale
     /**
     *
     */
-    void setWhitepoint(const C_FLOAT64 & n) {m1 = log(n);};
+    void setWhitepoint(const C_FLOAT64 & n);
 
     /**
     *
     */
-    void setMaxIntensityPoint(const C_FLOAT64 & n) {m2 = log(n);};
+    void setMaxIntensityPoint(const C_FLOAT64 & n);
 
     virtual QColor getColor(const C_FLOAT64 & number);
 
@@ -320,7 +322,7 @@ class CQArrayAnnotationsWidget : public QVBox
     bool showBarChart;
     QPushButton* mpButton;
     double** data;
-    std::vector<QColor> mColors;
+    std::vector< QColor > mColors;
     void enableBarChart(bool enable);
     void switchToTable();
     void switchToBarChart();

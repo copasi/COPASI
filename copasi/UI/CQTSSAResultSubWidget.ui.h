@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.1 $
+//   $Revision: 1.18.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/13 09:45:28 $
+//   $Author: shoops $
+//   $Date: 2008/10/13 16:45:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual

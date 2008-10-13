@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.1 $
+//   $Revision: 1.32.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/10 17:34:29 $
+//   $Date: 2008/10/13 16:45:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,9 @@
 
 #include "parametertable.h" //for color table item
 #include <iostream>
+
+#include "copasi/UI/CQBarChart.h"
+#include "copasi/mathematics.h"
 
 CColorScale1::CColorScale1()
     : m1(1e-4)
@@ -1015,3 +1018,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
         }
     }
 }
+
+void CColorScaleBiLog::setWhitepoint(const C_FLOAT64 & n) {m1 = log(n);}
+
+void CColorScaleBiLog::setMaxIntensityPoint(const C_FLOAT64 & n) {m2 = log(n);}

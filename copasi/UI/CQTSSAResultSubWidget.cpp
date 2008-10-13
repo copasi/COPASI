@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:54:48 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Oct 10 11:13:33 2008
- **      by: The User Interface Compiler ($Id: CQTSSAResultSubWidget.cpp,v 1.11 2008/10/10 09:54:48 ssahle Exp $)
+ ** Created: Mon Oct 13 12:43:57 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +23,8 @@
 #include "CQTSSAResultSubWidget.h"
 
 #include <qvariant.h>
+#include <qmessagebox.h>
+#include <qfiledialog.h>
 #include <qregexp.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
@@ -33,8 +35,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "qmessagebox.h"
-#include "qfiledialog.h"
 #include "CTimeSeriesTable.h"
 #include "CQArrayAnnotationsWidget.h"
 #include "CQTSSAResultSubWidget.ui.h"

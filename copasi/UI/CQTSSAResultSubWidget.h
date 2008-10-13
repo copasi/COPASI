@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.h,v $
-//   $Revision: 1.10 $
+//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:54:48 $
+//   $Author: shoops $
+//   $Date: 2008/03/12 01:53:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Oct 10 11:13:28 2008
- **      by: The User Interface Compiler ($Id: CQTSSAResultSubWidget.h,v 1.10 2008/10/10 09:54:48 ssahle Exp $)
+ ** Created: Mon Oct 13 12:43:56 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,14 +26,13 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <qwidget.h>
-#include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class CTimeSeriesTable;
 class CQArrayAnnotationsWidget;
+class CTimeSeriesTable;
 class QComboBox;
 class QPushButton;
 class QTabWidget;
@@ -166,6 +165,7 @@ class CQTSSAResultSubWidget : public QWidget
 
   private:
     QPixmap image0;
+    QPixmap image1;
   };
 
 #endif // CQTSSARESULTSUBWIDGET_H
