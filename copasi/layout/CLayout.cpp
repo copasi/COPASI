@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.13.2.2 $
+//   $Revision: 1.13.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 15:36:41 $
+//   $Date: 2008/10/13 16:24:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -370,5 +370,20 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
 
         layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
+      }
+
+    //now that we have all graphical objects in the layoutmap we can resolve the references
+    //in the text glyphs
+    imax = mvLabels.size();
+    for (i = 0; i < imax; ++i)
+      {
+        const CLTextGlyph * tmp = mvLabels[i];
+
+        //find the corresponding sbml object
+        std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
+        if (it != layoutmap.end() && it->second && dynamic_cast<const TextGlyph*>(it->second))
+          {
+            tmp->exportReferenceToSBML(const_cast<TextGlyph*>(dynamic_cast<const TextGlyph*>(it->second)), layoutmap);
+          }
       }
   }

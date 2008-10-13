@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.12.2.1 $
+//   $Revision: 1.12.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:14 $
+//   $Date: 2008/10/13 16:24:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,11 +167,21 @@ class CLTextGlyph : public CLGraphicalObject
 
     /**
      * This method writes the information of the copasi layout object into the
-     * corresponding sbml object
+     * corresponding sbml object.
+     * The reference to other graphical objects cannot be done in this method
+     * since when this method is called not necessarily all other graphical objects
+     * have been created.
      */
     virtual void exportToSBML(TextGlyph * g,
                               const std::map<CCopasiObject*, SBase*> & copasimodelmap,
                               std::map<std::string, const SBase*>& sbmlIDs) const;
+
+    /**
+     * handle the reference to another graphical object for sbml export.
+     * This should only be called after all other graphical objects are in the
+     * layout map.
+     */
+    void exportReferenceToSBML(TextGlyph * g, const std::map<const CLBase*, const SBase*> & layoutmap) const;
 
     /**
      * insert operator

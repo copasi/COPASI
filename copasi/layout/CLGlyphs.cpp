@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.11.2.1 $
+//   $Revision: 1.11.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:14 $
+//   $Date: 2008/10/13 16:24:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,31 @@ void CLTextGlyph::exportToSBML(TextGlyph * g,
           }
       }
 
-    //TODO
+    //explicit text
+    if (isTextSet())
+      {
+        g->setText(mText);
+      }
+  }
+
+void CLTextGlyph::exportReferenceToSBML(TextGlyph * g, const std::map<const CLBase*, const SBase*> & layoutmap) const
+  {
+    if (!g) return;
+
+    //reference to layout object
+    CLGraphicalObject* tmp = getGraphicalObject();
+    if (tmp)
+      {
+        std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
+        if (it != layoutmap.end() && it->second)
+          {
+            //we need to cast here since layout objects in libsbml don´t inherit the getId() method
+            //from SBase
+            const GraphicalObject* pGO = dynamic_cast<const GraphicalObject*>(it->second);
+            if (pGO)
+              g->setGraphicalObjectId(pGO->getId());
+          }
+      }
   }
 
 std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g)
