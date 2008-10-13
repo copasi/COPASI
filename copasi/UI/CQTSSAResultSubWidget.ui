@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.8.6.2 $ </comment>
+<comment>   $Revision: 1.8.6.3 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2008/10/13 16:45:29 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2008/10/13 22:39:35 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -182,7 +182,7 @@
                                 <cstring>tab</cstring>
                             </property>
                             <attribute name="title">
-                                <string>Metabolites</string>
+                                <string>Species</string>
                             </attribute>
                             <grid>
                                 <property name="name">
@@ -641,7 +641,7 @@
                                 <cstring>tab</cstring>
                             </property>
                             <attribute name="title">
-                                <string>Metabolites</string>
+                                <string>Species</string>
                             </attribute>
                             <grid>
                                 <property name="name">

@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Mon Oct 13 12:43:57 2008
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
+ ** Created: Tue Oct 14 00:19:25 2008
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.7   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,8 +35,8 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "CTimeSeriesTable.h"
 #include "CQArrayAnnotationsWidget.h"
+#include "CTimeSeriesTable.h"
 #include "CQTSSAResultSubWidget.ui.h"
 
 /*
@@ -410,7 +410,7 @@ void CQTSSAResultSubWidget::languageChange()
   ButtonSaveData->setText(tr("Save data to file"));
   tabWidget2->changeTab(tab, tr("OptimizationResult"));
   tabWidget2->changeTab(tab_2, tr("TimeSeries"));
-  mTabWidget->changeTab(tab_3, tr("Metabolites"));
+  mTabWidget->changeTab(tab_3, tr("Species"));
   mTabWidget->changeTab(tab_4, tr("Modes"));
   mTabWidget->changeTab(TabPage, tr("Slow space"));
   mTabWidget->changeTab(TabPage_2, tr("Fast space"));
@@ -433,7 +433,7 @@ void CQTSSAResultSubWidget::languageChange()
   mLabel5_6->setText(tr("of"));
   QToolTip::add(mSlider_4, tr("move mouse-cursor over slider and use scrollwheel to adjust required step accurately"));
   QWhatsThis::add(mSlider_4, tr("use slider to adjust required step"));
-  mTabWidget_4->changeTab(tab_5, tr("Metabolites"));
+  mTabWidget_4->changeTab(tab_5, tr("Species"));
   mTabWidget_4->changeTab(tab_6, tr("Modes"));
   mTabWidget_4->changeTab(TabPage_4, tr("Slow space"));
   mTabWidget_4->changeTab(TabPage_5, tr("Fast space"));
