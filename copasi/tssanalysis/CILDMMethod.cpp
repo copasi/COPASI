@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.1 $
+//   $Revision: 1.22.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/10 19:44:47 $
+//   $Date: 2008/10/13 22:38:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ CILDMMethod::~CILDMMethod()
 void CILDMMethod::initializeParameter()
 {
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
+  addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   initializeIntegrationsParameter();
 
@@ -1065,8 +1065,8 @@ void CILDMMethod::createAnnotationsM()
   pTmp1->setMode(1, pTmp1->VECTOR);
   pTmp1->setDescription("mVslowPrintAnn matrix");
   //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
-  pTmp1->setDimensionDescription(0, "contribution to  mode (TS - corresponding timescale)");
-  pTmp1->setDimensionDescription(1, "metabolites");
+  pTmp1->setDimensionDescription(0, "Contribution to  mode (TS - corresponding timescale)");
+  pTmp1->setDimensionDescription(1, "Species");
   pVslowPrintAnn = pTmp1;
 
   CArrayAnnotation *
@@ -1075,9 +1075,9 @@ void CILDMMethod::createAnnotationsM()
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription("mVslowMetabPrint matrix");
-  pTmp2->setDimensionDescription(0, "mode distribution for each metabolite");
+  pTmp2->setDimensionDescription(0, "Mode distribution for each species");
   //pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
-  pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
+  pTmp2->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
 
   CArrayAnnotation *
@@ -1086,8 +1086,8 @@ void CILDMMethod::createAnnotationsM()
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setDescription("mVslowSpacePrint matrix");
-  pTmp3->setDimensionDescription(0, "metabolites");
-  pTmp3->setDimensionDescription(1, "contribution to slow space");
+  pTmp3->setDimensionDescription(0, "Species");
+  pTmp3->setDimensionDescription(1, "Contribution to slow space");
   pVslowSpacePrintAnn = pTmp3;
 
   CArrayAnnotation *
@@ -1096,8 +1096,8 @@ void CILDMMethod::createAnnotationsM()
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription("mVfastSpacePrint matrix");
-  pTmp4->setDimensionDescription(0, "metabolites");
-  pTmp4->setDimensionDescription(1, "contribution to fast space");
+  pTmp4->setDimensionDescription(0, "Species");
+  pTmp4->setDimensionDescription(1, "Contribution to fast space");
   pVfastSpacePrintAnn = pTmp4;
 
   // NEW TAB
@@ -1108,8 +1108,8 @@ void CILDMMethod::createAnnotationsM()
   pTmp5->setMode(1, pTmp5->STRINGS);
   pTmp5->setMode(0, pTmp5->VECTOR);
   pTmp5->setDescription("mReacSlowSpacePrint matrix");
-  pTmp5->setDimensionDescription(0, "reactions");
-  pTmp5->setDimensionDescription(1, "contribution to slow space");
+  pTmp5->setDimensionDescription(0, "Reactions");
+  pTmp5->setDimensionDescription(1, "Contribution to slow space");
   pReacSlowSpacePrintAnn = pTmp5;
 }
 /**

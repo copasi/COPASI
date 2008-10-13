@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.7.2.1 $
+//   $Revision: 1.7.2.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/10 19:44:47 $
+//   $Date: 2008/10/13 22:38:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ CILDMModifiedMethod::~CILDMModifiedMethod()
 void CILDMModifiedMethod::initializeParameter()
 {
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  addMatrixReference("Contribution of Metabolites to Slow Space", mVslow, CCopasiObject::ValueDbl);
+  addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   initializeIntegrationsParameter();
 
@@ -130,11 +130,11 @@ void CILDMModifiedMethod::step(const double & deltaT)
   C_INT flag_jacob;
   flag_jacob = 1;  // Set flag_jacob=0 to print Jacobian
 
-  if (flag_jacob == 0)
-    {
-      std::cout << "Jacobian-initial:" << std::endl;
-      std::cout << mJacobian << std::endl;
-    }
+  //   if (flag_jacob == 0)
+  //     {
+  //       std::cout << "Jacobian-initial:" << std::endl;
+  //       std::cout << mJacobian << std::endl;
+  //}
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
                           / mpModel->getCompartments()[0]->getInitialValue();
@@ -171,11 +171,11 @@ void CILDMModifiedMethod::step(const double & deltaT)
   // Calculate Jacobian for time step control
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
-  if (flag_jacob == 0)
-    {
-      std::cout << "Jacobian_next:" << std::endl;
-      std::cout << mJacobian << std::endl;
-    }
+  //   if (flag_jacob == 0)
+  //     {
+  //       std::cout << "Jacobian_next:" << std::endl;
+  //       std::cout << mJacobian << std::endl;
+  //}
 
   //CMatrix<C_FLOAT64> mTd_save;
   for (i = 0; i < dim; i++)
@@ -251,14 +251,14 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   flag_schur = 1;  // set flag_schur = 0 to print Schur decomposition of jacobian (matrices mR and transformation mQ)
 
-  if (flag_schur == 0)
-    {
-      std::cout << "Schur Decomposition" << std::endl;
-      std::cout << "mR - block upper triangular matrix :" << std::endl;
-      std::cout << mR << std::endl;
-      std::cout << "mQ - transformation matrix" << std::endl;
-      std::cout << mQ << std::endl;
-    }
+  //   if (flag_schur == 0)
+  //     {
+  //       std::cout << "Schur Decomposition" << std::endl;
+  //       std::cout << "mR - block upper triangular matrix :" << std::endl;
+  //       std::cout << mR << std::endl;
+  //       std::cout << "mQ - transformation matrix" << std::endl;
+  //       std::cout << mQ << std::endl;
+  //}
 
   mY_cons.resize(dim);  // consistent initial vector for DAE
 
@@ -363,9 +363,9 @@ integration:
 
   if (flag_dev == 0)
     {
-      std::cout << std::endl;
-      std::cout << "Prove every metabolite for DAE" << std::endl;
-      std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+      //       std::cout << std::endl;
+      //       std::cout << "Prove every metabolite for DAE" << std::endl;
+      //       std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 
       C_INT temp;
       temp = dim - 1;
@@ -386,17 +386,17 @@ integration:
           if (mVslow(dim - i - 1, j) > 70)
             index_metab[i] = j;
 
-      std::cout << "Dominance of metabolites in the mode:" << std::endl;
+      //      std::cout << "Dominance of metabolites in the mode:" << std::endl;
 
-      for (i = 0; i < dim; i++)
-        {
-          j = index_metab[i];
-          std::cout << " Mode number: " << dim - i << " TS: " << - 1 / mR(dim - i - 1, dim - i - 1) << " : ";
-          if (j > - 1)
-            std::cout << "  Metabolite : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
-          else
-            std::cout << "   There is no dominant metabolite in this mode" << std::endl;
-        }
+      //      for (i = 0; i < dim; i++)
+      //        {
+      //          j = index_metab[i];
+      //          std::cout << " Mode number: " << dim - i << " TS: " << - 1 / mR(dim - i - 1, dim - i - 1) << " : ";
+      //          if (j > - 1)
+      //            std::cout << "  Metabolite : " << mpModel->getMetabolitesX()[j]->getObjectName() << std::endl;
+      //          else
+      //            std::cout << "   There is no dominant metabolite in this mode" << std::endl;
+      //}
 
       C_FLOAT64 y_cons;
 
@@ -406,8 +406,8 @@ integration:
 
       if (number > - 1)
         newton_for_timestep(number, y_cons, info);
-      else
-        std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
+      //      else
+      //        std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
 
       while (k < dim - 1)
         {
@@ -423,8 +423,8 @@ integration:
               for (j = 0; j < dim; j++)
                 {
                   x_help[j] = mY_initial[j] * number2conc;
-                  if (flag_deufl == 0)
-                    std::cout << "x_help: " << x_help[j] << std::endl;
+                  //                  if (flag_deufl == 0)
+                  //                    std::cout << "x_help: " << x_help[j] << std::endl;
                 }
 
               calculateDerivativesX(x_help.array(), dxdt.array());
@@ -438,7 +438,7 @@ integration:
               if (info)
                 {
                   // TODO
-                  std::cout << "info: newton iteration stop" << std::endl;
+                  //                  std::cout << "info: newton iteration stop" << std::endl;
                 }
 
               if (info == 0)
@@ -455,32 +455,32 @@ integration:
                   //CVector<C_FLOAT64> dxdt_relax;
                   dxdt_relax.resize(dim);
 
-                  if (flag_deufl == 0)
-                    for (i = 0; i < dim; i++)
-                      {
-                        std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
-                        std::cout << std::endl;
-                      }
+                  //                   if (flag_deufl == 0)
+                  //                     for (i = 0; i < dim; i++)
+                  //                       {
+                  //                         std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
+                  //                         std::cout << std::endl;
+                  //}
 
                   calculateDerivativesX(x_relax.array(), dxdt_relax.array());
 
-                  if (flag_deufl == 0)
-                    {
-                      std::cout << "Two right hand side for deuflhard " << std::endl;
-                      for (i = 0; i < dim; i++)
-                        {
-                          std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
-                          std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
-                        }
-                      std::cout << std::endl;
-                    }
+                  //                   if (flag_deufl == 0)
+                  //                     {
+                  //                       std::cout << "Two right hand side for deuflhard " << std::endl;
+                  //                       for (i = 0; i < dim; i++)
+                  //                         {
+                  //                           std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
+                  //                           std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
+                  //}
+                  //                       std::cout << std::endl;
+                  //}
 
                   //CVector<C_FLOAT64> re;
                   re.resize(dim);
 
                   C_FLOAT64 eps;
                   eps = 1 / fabs(mR(dim - k - 1 , dim - k - 1));
-                  std::cout << "Time Scale corresponding to metabolite " << mpModel->getMetabolitesX()[number]->getObjectName() << ": " << eps << std::endl;
+                  //                  std::cout << "Time Scale corresponding to metabolite " << mpModel->getMetabolitesX()[number]->getObjectName() << ": " << eps << std::endl;
 
                   // stop criterion for slow reaction modes
 
@@ -493,8 +493,8 @@ integration:
                           re[i] = fabs(dxdt_relax[i] - dxdt[i]);
                           re[i] = re[i] * eps;
                         }
-                      if (flag_deufl == 0)
-                        std::cout << " re[" << i << "] = " << re[i] << std::endl;
+                      /*                      if (flag_deufl == 0)
+                                              std::cout << " re[" << i << "] = " << re[i] << std::endl;*/
                     }
 
                   //C_FLOAT64 max = 0.;
@@ -507,19 +507,19 @@ integration:
                   else
                     info = 0;
 
-                  std::cout << "Prove of Deuflhard criterium for metabolite  " << mpModel->getMetabolitesX()[number]->getObjectName() << " : ";
+                  //                  std::cout << "Prove of Deuflhard criterium for metabolite  " << mpModel->getMetabolitesX()[number]->getObjectName() << " : ";
 
-                  if (info == 0)
-                    {
-                      std::cout << "IS SATISFIED" << std::endl;
-                      std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
-                    }
-                  else
-                    {
-                      std::cout << "NOT SATISFIED." << std::endl;
-                      std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
-                    }
-                  std::cout << std::endl;
+                  /*                  if (info == 0)
+                                      {
+                                        std::cout << "IS SATISFIED" << std::endl;
+                                        std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
+                                      }
+                                    else
+                                      {
+                                        std::cout << "NOT SATISFIED." << std::endl;
+                                        std::cout << " max error of slow metabolites : " << max << " with user defined tolerance: " << mDtol << std::endl;
+                                      }
+                                    std::cout << std::endl;*/
                 }
             }
           k = k + 1;
@@ -527,8 +527,8 @@ integration:
           max = 0;
         }
 
-      std::cout << "********** end of block to prove every metabolite for DAE" << std::endl;
-      std::cout << std::endl;
+      /*      std::cout << "********** end of block to prove every metabolite for DAE" << std::endl;
+            std::cout << std::endl;*/
     }
   /** end of the of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
   /** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
@@ -623,8 +623,8 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     {
       help[i] = mVfast_space[i];
-      if (flag_deufl == 0)
-        std::cout << "mVfast[ " << i << "]: " << mVfast_space[i] << std::endl;
+      /*      if (flag_deufl == 0)
+              std::cout << "mVfast[ " << i << "]: " << mVfast_space[i] << std::endl;*/
     }
 
   evalsort(help.array(), index.array(), dim);
@@ -632,16 +632,16 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     index_temp[i] = index[i];
 
-  if (flag_deufl == 0)
-    {
-      std::cout << std::endl;
-      std::cout << "index after evalsort" << std::endl;
-    }
+  /*  if (flag_deufl == 0)
+      {
+        std::cout << std::endl;
+        std::cout << "index after evalsort" << std::endl;
+      }*/
   for (i = 0; i < dim; i++)
     {
       index[i] = index_temp[dim - i - 1];
-      if (flag_deufl == 0)
-        std::cout << "index[" << i << "]: " << index[i] << std::endl;
+      /*      if (flag_deufl == 0)
+              std::cout << "index[" << i << "]: " << index[i] << std::endl;*/
     }
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
@@ -657,8 +657,8 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   for (j = 0; j < dim; j++)
     {
       x_help[j] = mY_initial[j] * number2conc;
-      if (flag_deufl == 0)
-        std::cout << "x_help: " << x_help[j] << std::endl;
+      /*      if (flag_deufl == 0)
+              std::cout << "x_help: " << x_help[j] << std::endl;*/
     }
 
   // mpModel->calculateDerivativesX(dxdt.array());
@@ -693,22 +693,22 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   //CVector<C_FLOAT64> dxdt_relax;
   dxdt_relax.resize(dim);
 
-  if (flag_deufl == 0)
-    for (i = 0; i < dim; i++)
-      std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
+  //   if (flag_deufl == 0)
+  //     for (i = 0; i < dim; i++)
+  //       std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
 
   calculateDerivativesX(x_relax.array(), dxdt_relax.array());
 
-  if (flag_deufl == 0)
-    {
-      std::cout << "Two right hand side for deuflhard " << std::endl;
-      for (i = 0; i < dim; i++)
-        {
-          std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
-          std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
-        }
-      std::cout << std::endl;
-    }
+  //   if (flag_deufl == 0)
+  //     {
+  //       std::cout << "Two right hand side for deuflhard " << std::endl;
+  //       for (i = 0; i < dim; i++)
+  //         {
+  //           std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
+  //           std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
+  //}
+  //       std::cout << std::endl;
+  //}
 
   //CVector<C_FLOAT64> re;
   re.resize(dim);
@@ -722,8 +722,8 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
       for (j = 0; j < fast; j ++)
         if (i == index[j])
           re[i] = 0;
-      if (flag_deufl == 0)
-        std::cout << " re[" << i << "] = " << re[i] << std::endl;
+      /*      if (flag_deufl == 0)
+              std::cout << " re[" << i << "] = " << re[i] << std::endl;*/
     }
 
   for (i = 0; i < dim; i++)
@@ -735,7 +735,7 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   else
     info = 0;
 
-  std::cout << std::endl;
+  //  std::cout << std::endl;
 
   return;
 }
@@ -812,14 +812,14 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
         }
     }
 
-  std::cout << std::endl;
+  //  std::cout << std::endl;
 
-  if (flag_newton == 0)
-    {
-      for (i = 0; i < fast; i++)
-        for (j = 0; j < fast; j++)
-          std::cout << "Jac_fast(" << i << "," << j << "): " << Jac_fast(i, j) << std::endl;
-    }
+  //   if (flag_newton == 0)
+  //     {
+  //       for (i = 0; i < fast; i++)
+  //         for (j = 0; j < fast; j++)
+  //           std::cout << "Jac_fast(" << i << "," << j << "): " << Jac_fast(i, j) << std::endl;
+  //}
 
   for (i = 0; i < dim; i++)
     y_newton[i] = mY_initial[i] * number2conc;
@@ -921,7 +921,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
       if (ok != 0)
         {
           info = 2;
-          std::cout << "info : dgesv_ ok != 0" << std::endl;
+          //          std::cout << "info : dgesv_ ok != 0" << std::endl;
           return;
         }
 
@@ -966,16 +966,16 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
         }
     } /* end while */
 
-  if (flag_newton == 0)
-    {
-      for (i = 0; i < dim; i++)
-        {
-          std::cout << "dyf[" << i << "]: " << d_yf[i] << std::endl;
-          std::cout << "y_newton[ " << i << "]: " << y_newton[i] << std::endl;
-        }
-      std::cout << " end of Newton" << std::endl;
-      std::cout << std::endl;
-    }
+  //   if (flag_newton == 0)
+  //     {
+  //       for (i = 0; i < dim; i++)
+  //         {
+  //           std::cout << "dyf[" << i << "]: " << d_yf[i] << std::endl;
+  //           std::cout << "y_newton[ " << i << "]: " << y_newton[i] << std::endl;
+  //}
+  //       std::cout << " end of Newton" << std::endl;
+  //       std::cout << std::endl;
+  //}
 
   for (i = 0; i < dim; i++)
     mY_cons[i] = y_newton[i];
@@ -1008,16 +1008,16 @@ void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64
   d_y = 0;
   deriv = mJacobian_initial(metabolite_number, metabolite_number);
 
-  if (flag_newton == 0)
-    {
-      std::cout << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " - metabolite number: " << metabolite_number << std::endl;
-      std::cout << "corresponding term in Jacobian:" << deriv << std::endl;
-    }
+  //   if (flag_newton == 0)
+  //     {
+  //       std::cout << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " - metabolite number: " << metabolite_number << std::endl;
+  //       std::cout << "corresponding term in Jacobian:" << deriv << std::endl;
+  //}
 
   if (deriv == 0)
     {
       //  y_consistent = y_newton[metabolite_number];
-      std::cout << "Metabolite: " << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " seems to be constant " << std::endl;
+      //      std::cout << "Metabolite: " << mpModel->getMetabolitesX()[metabolite_number]->getObjectName() << " seems to be constant " << std::endl;
       return;
     }
 
@@ -1045,7 +1045,7 @@ void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64
       if (iter > itermax)
         {
           info = 1;
-          std::cout << "iter > itermax " << iter << std::endl;
+          //          std::cout << "iter > itermax " << iter << std::endl;
           break;
         }
 
@@ -1055,8 +1055,8 @@ void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64
 
       d_y = - 1 / deriv * dydt[metabolite_number];
 
-      if (flag_newton == 0)
-        std::cout << "iteration number: " << iter << " d_y = " << d_y << std::endl;
+      //       if (flag_newton == 0)
+      //         std::cout << "iteration number: " << iter << " d_y = " << d_y << std::endl;
 
       if (err > fabs(d_y))
         err = fabs(d_y);
@@ -1128,8 +1128,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp1->setMode(1, pTmp1->VECTOR);
   pTmp1->setDescription("mVslowPrintAnn matrix");
   //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
-  pTmp1->setDimensionDescription(0, "contribution to  mode (TS - corresponding timescale)");
-  pTmp1->setDimensionDescription(1, "metabolites");
+  pTmp1->setDimensionDescription(0, "Contribution to  mode (TS - corresponding timescale)");
+  pTmp1->setDimensionDescription(1, "Species");
   pVslowPrintAnn = pTmp1;
 
   CArrayAnnotation *
@@ -1138,7 +1138,7 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription("mVslowMetabPrint matrix");
-  pTmp2->setDimensionDescription(0, "mode distribution for each metabolite");
+  pTmp2->setDimensionDescription(0, "Mode distribution for each metabolite");
   //pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
   pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
@@ -1149,8 +1149,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setDescription("mVslowSpacePrint matrix");
-  pTmp3->setDimensionDescription(0, "metabolites");
-  pTmp3->setDimensionDescription(1, "contribution to slow space");
+  pTmp3->setDimensionDescription(0, "Species");
+  pTmp3->setDimensionDescription(1, "Contribution to slow space");
   pVslowSpacePrintAnn = pTmp3;
 
   CArrayAnnotation *
@@ -1159,8 +1159,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription("mVfastSpacePrint matrix");
-  pTmp4->setDimensionDescription(0, "metabolites");
-  pTmp4->setDimensionDescription(1, "contribution to fast space");
+  pTmp4->setDimensionDescription(0, "Species");
+  pTmp4->setDimensionDescription(1, "Contribution to fast space");
   pVfastSpacePrintAnn = pTmp4;
 }
 /**

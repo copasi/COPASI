@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.2 $
+//   $Revision: 1.8.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/13 14:52:21 $
+//   $Author: ssahle $
+//   $Date: 2008/10/13 22:38:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1625,7 +1625,7 @@ void CCSPMethod::createAnnotationsM()
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setDescription("Radical Pointer Table");
-  pTmp2->setDimensionDescription(0, "metabolites");
+  pTmp2->setDimensionDescription(0, "Species");
   pTmp2->setDimensionDescription(1, "Radical Pointer");
   pRadicalPointerAnn = pTmp2;
 
@@ -1656,7 +1656,7 @@ void CCSPMethod::createAnnotationsM()
   pTmp5->setMode(0, pTmp5->VECTOR);
   pTmp5->setDescription("Importance Index Table");
   pTmp5->setDimensionDescription(0, "Reactions");
-  pTmp5->setDimensionDescription(1, "Metabolites");
+  pTmp5->setDimensionDescription(1, "Species");
   pImportanceIndexAnn = pTmp5;
 }
 /**
