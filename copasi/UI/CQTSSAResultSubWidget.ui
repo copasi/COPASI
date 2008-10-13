@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.8.6.1 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: nsimus $ </comment>
-<comment>   $Date: 2008/06/30 11:41:02 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2008/10/13 09:45:28 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -22,8 +22,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>725</width>
-            <height>411</height>
+            <width>612</width>
+            <height>473</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -161,7 +161,7 @@
             </widget>
             <widget class="QWidget">
                 <property name="name">
-                    <cstring>TabPage</cstring>
+                    <cstring>TabPage_ILDM</cstring>
                 </property>
                 <attribute name="title">
                     <string>ILDM</string>
@@ -248,6 +248,24 @@
                                     </property>
                                 </widget>
                             </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabPage</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Reactions slow space</string>
+                            </attribute>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="CQArrayAnnotationsWidget">
+                                    <property name="name">
+                                        <cstring>pArrayWidget_3_2</cstring>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
                     </widget>
                     <widget class="QSlider" row="1" column="0" rowspan="1" colspan="8">
@@ -436,7 +454,266 @@
             </widget>
             <widget class="QWidget">
                 <property name="name">
-                    <cstring>TabPage</cstring>
+                    <cstring>TabPage_ILDMM</cstring>
+                </property>
+                <attribute name="title">
+                    <string>ILDM Modified</string>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>pLabel1_6</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>ILDM operation behavior at timepoint:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="5">
+                        <property name="name">
+                            <cstring>mLabel6_6</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>0</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="3">
+                        <property name="name">
+                            <cstring>mLabel4_6</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>0</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="1">
+                        <property name="name">
+                            <cstring>mLabel2_6</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>0</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="2">
+                        <property name="name">
+                            <cstring>mLabel3_6</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>or step:</string>
+                        </property>
+                    </widget>
+                    <spacer row="0" column="6">
+                        <property name="name">
+                            <cstring>mSpacer_6</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>309</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLabel" row="0" column="4">
+                        <property name="name">
+                            <cstring>mLabel5_6</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>of</string>
+                        </property>
+                    </widget>
+                    <widget class="QSlider" row="1" column="0" rowspan="1" colspan="7">
+                        <property name="name">
+                            <cstring>mSlider_4</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>1</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="mouseTracking">
+                            <bool>true</bool>
+                        </property>
+                        <property name="acceptDrops">
+                            <bool>true</bool>
+                        </property>
+                        <property name="maxValue">
+                            <number>0</number>
+                        </property>
+                        <property name="pageStep">
+                            <number>1</number>
+                        </property>
+                        <property name="tracking">
+                            <bool>true</bool>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="tickmarks">
+                            <enum>NoMarks</enum>
+                        </property>
+                        <property name="tickInterval">
+                            <number>1</number>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>move mouse-cursor over slider and use scrollwheel to adjust required step accurately</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>use slider to adjust required step</string>
+                        </property>
+                    </widget>
+                    <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="7">
+                        <property name="name">
+                            <cstring>mTabWidget_4</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>tab</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Metabolites</string>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="CQArrayAnnotationsWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pArrayWidget_5</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>tab</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Modes</string>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="CQArrayAnnotationsWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pArrayWidget2_5</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabPage</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Slow space</string>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="CQArrayAnnotationsWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pArrayWidget3_5</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabPage</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Fast space</string>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="CQArrayAnnotationsWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>pArrayWidget4_5</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage_CSP</cstring>
                 </property>
                 <attribute name="title">
                     <string>CSP</string>
@@ -766,6 +1043,7 @@
     <include location="local" impldecl="in implementation">qmessagebox.h</include>
     <include location="local" impldecl="in implementation">qfiledialog.h</include>
     <include location="global" impldecl="in implementation">qregexp.h</include>
+    <include location="local" impldecl="in implementation">CQTSSAResultSubWidget.ui.h</include>
 </includes>
 <slots>
     <slot access="protected" specifier="non virtual">saveDataToFile()</slot>
@@ -775,7 +1053,7 @@
     <slot specifier="non virtual">changeILDMInterval()</slot>
     <slot specifier="non virtual">changeCSPInterval()</slot>
     <slot specifier="non virtual">hideButtons()</slot>
-    <slot specifier="non virtual">changeToILDMModified()</slot>
+    <slot>changeILDMModifiedInterval()</slot>
 </slots>
 <functions>
     <function specifier="non virtual">displayOptimizationTab( bool displayOptTab )</function>
@@ -785,10 +1063,17 @@
     <function specifier="non virtual">activateTab( int tab )</function>
     <function specifier="non virtual">changeToCSP()</function>
     <function specifier="non virtual">changeToILDM()</function>
+    <function>changeToILDMModified()</function>
+    <function specifier="non virtual">displayCSPDevelopment( bool displayCSPTab )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>CTimeSeriesTable.h</includehint>
+    <includehint>CQArrayAnnotationsWidget.h</includehint>
+    <includehint>CQArrayAnnotationsWidget.h</includehint>
+    <includehint>CQArrayAnnotationsWidget.h</includehint>
+    <includehint>CQArrayAnnotationsWidget.h</includehint>
+    <includehint>CQArrayAnnotationsWidget.h</includehint>
     <includehint>CQArrayAnnotationsWidget.h</includehint>
     <includehint>CQArrayAnnotationsWidget.h</includehint>
     <includehint>CQArrayAnnotationsWidget.h</includehint>

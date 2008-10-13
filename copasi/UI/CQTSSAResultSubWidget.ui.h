@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.18.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 18:18:13 $
+//   $Author: ssahle $
+//   $Date: 2008/10/13 09:45:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,7 @@ CILDMMethod *pILDMMethod;
 CILDMModifiedMethod *pILDMModifiedMethod;
 
 CQTSSATimeScaleWidget* mpTimeScaleWidgetILDM;
+CQTSSATimeScaleWidget* mpTimeScaleWidgetILDMModified;
 
 CModel* pModel;
 
@@ -58,6 +59,12 @@ const CArrayAnnotation * pResult;
 const CArrayAnnotation * pResult2;
 const CArrayAnnotation * pResult3;
 const CArrayAnnotation * pResult4;
+const CArrayAnnotation * pResult5; //NEW TAB
+
+const CArrayAnnotation * pResult_M;
+const CArrayAnnotation * pResult2_M;
+const CArrayAnnotation * pResult3_M;
+const CArrayAnnotation * pResult4_M;
 
 const CArrayAnnotation * pResultCSP;
 const CArrayAnnotation * pResult2CSP;
@@ -141,6 +148,7 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMin(QColor(240, 240, 240));
   tcs->setColorMax(QColor(0, 255, 0));
 
+  // ILDM
   // mVslow_metab widget
   tcs = new CColorScaleAdvanced();
   tcs->setColorMin(QColor(240, 240, 240));
@@ -165,6 +173,43 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget4->setColorCoding(tcs);
   pArrayWidget4->setColorScalingAutomatic(true);
+  //NEW TAB
+  // mReacSlowSpace widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
+  pArrayWidget_3_2->setColorCoding(tcs);
+  pArrayWidget_3_2->setColorScalingAutomatic(true);
+
+  // ILDM Modified
+
+  mpTimeScaleWidgetILDMModified = new CQTSSATimeScaleWidget();
+  mTabWidget_4->addTab(mpTimeScaleWidgetILDMModified, "Timescale");
+
+  // mVslow_metab widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
+  pArrayWidget_5->setColorCoding(tcs);
+  pArrayWidget_5->setColorScalingAutomatic(true);
+  // mVslow widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
+  pArrayWidget2_5->setColorCoding(tcs);
+  pArrayWidget2_5->setColorScalingAutomatic(true);
+  // mVslow_space widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
+  pArrayWidget3_5->setColorCoding(tcs);
+  pArrayWidget3_5->setColorScalingAutomatic(true);
+  // mVslow_space widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
+  pArrayWidget4_5->setColorCoding(tcs);
+  pArrayWidget4_5->setColorScalingAutomatic(true);
 
   // Amplitude widget
   tcs = new CColorScaleAdvanced();
@@ -198,12 +243,16 @@ void CQTSSAResultSubWidget::init()
   pArrayWidget4_3_2->setColorScalingAutomatic(true);
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeILDMInterval()));
+  connect(mSlider_4, SIGNAL(valueChanged(int)), this, SLOT(changeILDMModifiedInterval()));
   connect(mSlider_3, SIGNAL(valueChanged(int)), this, SLOT(changeCSPInterval()));
 
   connect(tabWidget2, SIGNAL(currentChanged(QWidget *)), this, SLOT(hideButtons()));
 
   dataTable->setNumRows(10);
   displayOptimizationTab(false);
+#ifndef WITH_CSPMETHOD
+  displayCSPDevelopment(false);
+#endif
 }
 
 CTimeSeriesTable* CQTSSAResultSubWidget::table()
@@ -226,12 +275,10 @@ void CQTSSAResultSubWidget::setStepNumber()
 
   pProblem = dynamic_cast<CTSSAProblem*>(pTSSTask->getProblem());
   CModel* pModel = pProblem->getModel();
+
   if (mILDM)
     {
-      if (mILDMModified)
-        pILDMModifiedMethod = dynamic_cast<CILDMModifiedMethod*>(pTSSTask->getMethod());
-      else
-        pILDMMethod = dynamic_cast<CILDMMethod*>(pTSSTask->getMethod());
+      pILDMMethod = dynamic_cast<CILDMMethod*>(pTSSTask->getMethod());
 
       QString a = FROM_UTF8(pModel->getTimeUnitName());
       // mLabel7->setText(a);
@@ -240,19 +287,32 @@ void CQTSSAResultSubWidget::setStepNumber()
       mSlider->setValue(mSlider->minValue());
       changeILDMInterval();
     }
-#ifdef WITH_CSPMETHOD
   else
-    {
-      pCSPMethod = dynamic_cast<CCSPMethod*>(pTSSTask->getMethod());
+    if (mILDMModified)
+      {
+        pILDMModifiedMethod = dynamic_cast<CILDMModifiedMethod*>(pTSSTask->getMethod());
 
-      QString a = FROM_UTF8(pModel->getTimeUnitName());
-      // mLabel7_3->setText(a);
-      mLabel6_3->setNum((double)pProblem->getStepNumber());
-      mSlider_3->setRange(1, pProblem->getStepNumber());
-      mSlider_3->setValue(mSlider_3->minValue());
-      changeCSPInterval();
-    }
-#endif // WITH_CSPMETHOD
+        QString a = FROM_UTF8(pModel->getTimeUnitName());
+        // mLabel7->setText(a);
+
+        mLabel6_6->setNum((double)pProblem->getStepNumber());
+        mSlider_4->setRange(1, pProblem->getStepNumber());
+        mSlider_4->setValue(mSlider_4->minValue());
+        changeILDMModifiedInterval();
+      }
+    else
+      {
+        pCSPMethod = dynamic_cast<CCSPMethod*>(pTSSTask->getMethod());
+
+        QString a = FROM_UTF8(pModel->getTimeUnitName());
+        // mLabel7_3->setText(a);
+        mLabel6_3->setNum((double)pProblem->getStepNumber());
+        mSlider_3->setRange(1, pProblem->getStepNumber());
+        mSlider_3->setValue(mSlider_3->minValue());
+        //mSlider->setRange(1, pProblem->getStepNumber());
+        //mSlider->setValue(mSlider->minValue());
+        changeCSPInterval();
+      }
 }
 
 /**
@@ -264,6 +324,12 @@ void CQTSSAResultSubWidget::discardOldResults()
   pArrayWidget2->setArrayAnnotation(NULL);
   pArrayWidget3->setArrayAnnotation(NULL);
   pArrayWidget4->setArrayAnnotation(NULL);
+  pArrayWidget_3_2->setArrayAnnotation(NULL); //NEW TAB
+
+  pArrayWidget_5->setArrayAnnotation(NULL);
+  pArrayWidget2_5->setArrayAnnotation(NULL);
+  pArrayWidget3_5->setArrayAnnotation(NULL);
+  pArrayWidget4_5->setArrayAnnotation(NULL);
 
   pArrayWidget_3->setArrayAnnotation(NULL);
   pArrayWidget2_3->setArrayAnnotation(NULL);
@@ -275,14 +341,23 @@ void CQTSSAResultSubWidget::discardOldResults()
   mLabel4->setNum(0);
   mLabel6->setNum(0);
 
+  mLabel2_6->setNum(0);
+  mLabel4_6->setNum(0);
+  mLabel6_6->setNum(0);
+
   mLabel2_3->setNum(0);
   mLabel4_3->setNum(0);
   mLabel6_3->setNum(0);
 
   mpTimeScaleWidgetILDM->clearWidget();
+  mpTimeScaleWidgetILDMModified->clearWidget();
 
-  tabWidget2->setTabEnabled(TabPage, false);
-  tabWidget2->setTabEnabled(TabPage_4, false);
+  tabWidget2->setTabEnabled(TabPage_ILDM, false);
+  tabWidget2->setTabEnabled(TabPage_ILDMM, false);
+  tabWidget2->setTabEnabled(TabPage_CSP, false);
+
+  //tabWidget2->setTabEnabled(TabPage, false);
+  //tabWidget2->setTabEnabled(TabPage_4, false);
 }
 
 /**
@@ -293,46 +368,25 @@ void CQTSSAResultSubWidget::changeILDMInterval()
 {
   int step = mSlider->value();
 
-  if (mILDMModified)
-    {
-      if (step == 1)
-        mLabel2->setNum(0);
-      else
-        mLabel2->setNum((double)pILDMModifiedMethod->returnCurrentTime(step - 2));
-
-      mLabel4->setNum(step);
-
-      pILDMModifiedMethod->setAnnotationM(step);
-      pResult = pILDMModifiedMethod->getVslowPrintAnn();
-      pResult2 = pILDMModifiedMethod->getVslowMetabPrintAnn();
-      pResult3 = pILDMModifiedMethod->getVslowSpacePrintAnn();
-      pResult4 = pILDMModifiedMethod->getVfastSpacePrintAnn();
-      pArrayWidget->setArrayAnnotation(pResult);
-      pArrayWidget2->setArrayAnnotation(pResult2);
-      pArrayWidget3->setArrayAnnotation(pResult3);
-      pArrayWidget4->setArrayAnnotation(pResult4);
-      mpTimeScaleWidgetILDM->paintTimeScale(pILDMModifiedMethod->getVec_TimeScale(step));
-    }
+  if (step == 1)
+    mLabel2->setNum(0);
   else
-    {
-      if (step == 1)
-        mLabel2->setNum(0);
-      else
-        mLabel2->setNum((double)pILDMMethod->returnCurrentTime(step - 2));
+    mLabel2->setNum((double)pILDMMethod->returnCurrentTime(step - 2));
 
-      mLabel4->setNum(step);
+  mLabel4->setNum(step);
 
-      pILDMMethod->setAnnotationM(step);
-      pResult = pILDMMethod->getVslowPrintAnn();
-      pResult2 = pILDMMethod->getVslowMetabPrintAnn();
-      pResult3 = pILDMMethod->getVslowSpacePrintAnn();
-      pResult4 = pILDMMethod->getVfastSpacePrintAnn();
-      pArrayWidget->setArrayAnnotation(pResult);
-      pArrayWidget2->setArrayAnnotation(pResult2);
-      pArrayWidget3->setArrayAnnotation(pResult3);
-      pArrayWidget4->setArrayAnnotation(pResult4);
-      mpTimeScaleWidgetILDM->paintTimeScale(pILDMMethod->getVec_TimeScale(step));
-    }
+  pILDMMethod->setAnnotationM(step);
+  pResult = pILDMMethod->getVslowPrintAnn();
+  pResult2 = pILDMMethod->getVslowMetabPrintAnn();
+  pResult3 = pILDMMethod->getVslowSpacePrintAnn();
+  pResult4 = pILDMMethod->getVfastSpacePrintAnn();
+  pResult5 = pILDMMethod->getReacSlowSpacePrintAnn(); // NEW TAB
+  pArrayWidget->setArrayAnnotation(pResult);
+  pArrayWidget2->setArrayAnnotation(pResult2);
+  pArrayWidget3->setArrayAnnotation(pResult3);
+  pArrayWidget4->setArrayAnnotation(pResult4);
+  pArrayWidget_3_2->setArrayAnnotation(pResult5); //NEW TAB
+  mpTimeScaleWidgetILDM->paintTimeScale(pILDMMethod->getVec_TimeScale(step));
 }
 
 /**
@@ -341,8 +395,9 @@ void CQTSSAResultSubWidget::changeILDMInterval()
  **/
 void CQTSSAResultSubWidget::changeCSPInterval()
 {
-#ifdef WITH_CSPMETHOD
+
   int step = mSlider_3->value();
+  //int step = mSlider->value();
 
   if (step == 1)
     mLabel2_3->setNum(0);
@@ -364,16 +419,13 @@ void CQTSSAResultSubWidget::changeCSPInterval()
   pArrayWidget3_3->setArrayAnnotation(pResult3CSP);
   pArrayWidget4_3->setArrayAnnotation(pResult4CSP);
   pArrayWidget4_3_2->setArrayAnnotation(pResult5CSP);
-
-#endif // WITH_CSPMETHOD
-  //  mpTimeScaleWidgetILDM->paintTimeScale(pCSPMethod->getVec_TimeScale(step));
 }
 /**
  * Hide the above buttons if ILDM-tab is currently active.
  **/
 void CQTSSAResultSubWidget::hideButtons()
 {
-  if ((tabWidget2->currentPageIndex() == 1) || (tabWidget2->currentPageIndex() == 2))
+  if ((tabWidget2->currentPageIndex() == 1) || (tabWidget2->currentPageIndex() == 2) || (tabWidget2->currentPageIndex() == 3))
     {
       ButtonSaveData->setDisabled(true);
       comboBox->setDisabled(true);
@@ -391,6 +443,7 @@ void CQTSSAResultSubWidget::setStepSelectionDisabled(bool set)
 {
   mSlider->setDisabled(set);
   mSlider_3->setDisabled(set);
+  mSlider_4->setDisabled(set);
 }
 
 void CQTSSAResultSubWidget::activateTab(int tab)
@@ -402,25 +455,59 @@ void CQTSSAResultSubWidget::changeToCSP()
 {
   mILDM = false;
   mILDMModified = false;
-  tabWidget2->setTabEnabled(TabPage, false); //false);
-  tabWidget2->setTabEnabled(TabPage_4, true); //true);
-  activateTab(2);
+  tabWidget2->setTabEnabled(TabPage_ILDM, false);
+  tabWidget2->setTabEnabled(TabPage_ILDMM, false);
+  tabWidget2->setTabEnabled(TabPage_CSP, true);
+  activateTab(3);
 }
 
 void CQTSSAResultSubWidget::changeToILDM()
 {
   mILDM = true;
   mILDMModified = false;
-  tabWidget2->setTabEnabled(TabPage, true);
-  tabWidget2->setTabEnabled(TabPage_4, false);
+  tabWidget2->setTabEnabled(TabPage_ILDM, true);
+  tabWidget2->setTabEnabled(TabPage_ILDMM, false);
+  tabWidget2->setTabEnabled(TabPage_CSP, false);
+
+  //tabWidget2->setTabEnabled(TabPage, true);
+  //tabWidget2->setTabEnabled(TabPage_4, false);
   activateTab(1);
 }
 
 void CQTSSAResultSubWidget::changeToILDMModified()
 {
-  mILDM = true;
+  mILDM = false;
   mILDMModified = true;
-  tabWidget2->setTabEnabled(TabPage, true);
-  tabWidget2->setTabEnabled(TabPage_4, false);
-  activateTab(1);
+  tabWidget2->setTabEnabled(TabPage_ILDM, false);
+  tabWidget2->setTabEnabled(TabPage_ILDMM, true);
+  tabWidget2->setTabEnabled(TabPage_CSP, false);
+  activateTab(2);
+}
+
+void CQTSSAResultSubWidget::changeILDMModifiedInterval()
+{
+  int step = mSlider_4->value();
+
+  if (step == 1)
+    mLabel2_6->setNum(0);
+  else
+    mLabel2_6->setNum((double)pILDMModifiedMethod->returnCurrentTime(step - 2));
+
+  mLabel4_6->setNum(step);
+
+  pILDMModifiedMethod->setAnnotationM(step);
+  pResult_M = pILDMModifiedMethod->getVslowPrintAnn();
+  pResult2_M = pILDMModifiedMethod->getVslowMetabPrintAnn();
+  pResult3_M = pILDMModifiedMethod->getVslowSpacePrintAnn();
+  pResult4_M = pILDMModifiedMethod->getVfastSpacePrintAnn();
+  pArrayWidget_5->setArrayAnnotation(pResult_M);
+  pArrayWidget2_5->setArrayAnnotation(pResult2_M);
+  pArrayWidget3_5->setArrayAnnotation(pResult3_M);
+  pArrayWidget4_5->setArrayAnnotation(pResult4_M);
+  mpTimeScaleWidgetILDMModified->paintTimeScale(pILDMModifiedMethod->getVec_TimeScale(step));
+}
+
+void CQTSSAResultSubWidget::displayCSPDevelopment(bool displayCSPTab)
+{
+  tabWidget2->removePage(TabPage_CSP);
 }
