@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 18:17:54 $
+//   $Date: 2008/10/14 16:47:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,13 +64,6 @@ class CMIRIAMResource : public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CMIRIAMResource();
-
-    /**
-     * This methods must be called to elevate subgroups to
-     * derived objects. The default implementation does nothing.
-     * @return bool success
-     */
-    virtual bool elevateChildren();
 
     /**
      * Retrieve the list of MIRIAM Resource

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 18:17:54 $
+//   $Date: 2008/10/14 16:47:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -374,17 +374,6 @@ void CMIRIAMResource::initializeParameter()
   mpCitation = assertParameter("Citation", CCopasiParameter::BOOL,
                                false)->getValue().pBOOL;
   mpDeprecated = assertGroup("Deprecated");
-}
-
-bool CMIRIAMResource::elevateChildren()
-{
-  bool success = true;
-
-  mpDeprecated =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("Deprecated"));
-  if (!mpDeprecated) success = false;
-
-  return success;
 }
 
 CMIRIAMResource::~CMIRIAMResource()
