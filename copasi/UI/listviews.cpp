@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.255 $
+//   $Revision: 1.255.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 19:49:53 $
+//   $Date: 2008/10/14 19:47:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@
 #include "SensitivitiesWidget.h"
 #include "CQSensResultWidget.h"
 #include "CQOptimizationWidget.h"
-#include "OptimizationResultWidget.h"
+#include "CQOptimizationResult.h"
 #include "TableDefinition.h"
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
@@ -420,7 +420,7 @@ void ListViews::ConstructNodeWidgets()
   if (!optimizationWidget) optimizationWidget = new CQOptimizationWidget(this);
   optimizationWidget->hide();
 
-  if (!optResultWidget) optResultWidget = new OptimizationResultWidget(this);
+  if (!optResultWidget) optResultWidget = new CQOptimizationResult(this);
   optResultWidget->hide();
 
   if (!paramFittingWidget) paramFittingWidget = new CQFittingWidget(this);

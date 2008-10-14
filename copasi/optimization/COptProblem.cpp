@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101.2.1 $
+//   $Revision: 1.101.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/13 18:37:19 $
+//   $Date: 2008/10/14 19:47:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -598,7 +598,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
   mStoreResults = false;
 
-  // Make sure the timer is acurate.
+  // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
 
   return true;
@@ -609,6 +609,9 @@ const C_FLOAT64 & COptProblem::getCalculateValue() const
 
 const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
   {return mSolutionVariables;}
+
+const CVector< C_FLOAT64 > & COptProblem::getVariableGradients() const
+  {return mGradient;}
 
 bool COptProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)

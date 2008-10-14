@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.58.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 23:32:59 $
+//   $Author: shoops $
+//   $Date: 2008/10/14 19:47:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,6 +179,12 @@ class COptProblem : public CCopasiProblem
      * Retrieve the solution variables
      */
     const CVector< C_FLOAT64 > & getSolutionVariables() const;
+
+    /**
+     * Retrieve the gradients for each solution variable.
+     * @return const CVector< C_FLOAT64 > & variableGradients
+     */
+    const CVector< C_FLOAT64 > & getVariableGradients() const;
 
     /**
      * Set the solution.
