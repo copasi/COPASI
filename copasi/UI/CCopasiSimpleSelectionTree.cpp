@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/03 17:40:33 $
+//   $Author: pwilly $
+//   $Date: 2008/10/14 09:06:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,16 @@
 #include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
+//#include "report/CKeyFactory.h"
+#include "utilities/CAnnotatedMatrix.h"
+#include "utilities/CCopasiTask.h"
+//#include "steadystate/CMCATask.h"
+#include "steadystate/CMCAMethod.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "sensitivities/CSensProblem.h"
+
+/// Standard constructor
 CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const char* name, WFlags fl): QListView(parent, name, fl), mpOutputVector(NULL)
 {
   this->setSelectionMode(QListView::Extended);
@@ -39,7 +49,12 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->mpExpertSubtree = new QListViewItem(this, "Expert");
 
 #ifdef COPASI_DEBUG
-  this->matrixSubtree = new QListViewItem(this, "Matrices");
+  this->mpResultMatrixSubtree = new QListViewItem(this, "Results");
+  this->mpResultSteadyStateSubtree = new QListViewItem(this->mpResultMatrixSubtree, "Steady State");
+  this->mpResultSensitivitySubtree = new QListViewItem(this->mpResultMatrixSubtree, "Sensitivity");
+  this->mpResultMCASubtree = new QListViewItem(this->mpResultMatrixSubtree, "Metabolic Control Analysis");
+
+  this->mpModelMatrixSubtree = new QListViewItem(this, "Matrices");
 #endif // COPASI_DEBUG
 
   this->mpModelQuantitySubtree = new QListViewItem(this, "Global Quantities");
@@ -85,9 +100,13 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   //TODO enable initial values for compartments and global parameters when we need them.
 }
 
+/// Destructor
 CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
 {}
 
+/*
+ * build the population tree
+ */
 void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
     const SelectionFlag & flag)
 {
@@ -95,6 +114,8 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 
   const CCopasiObject * pObject;
   QListViewItem * pItem;
+
+  // find all kinds of time
   pObject = pModel->getObject(CCopasiObjectName("Reference=Time"));
   if (filter(flag, pObject))
     {
@@ -125,7 +146,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 
   removeEmptySubTree(&mpTimeSubtree);
 
-  // find all metabolites and create items in the metabolite subtree
+  // find all species (aka metabolites) and create items in the metabolite subtree
   const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
   unsigned int counter;
   unsigned int maxCount = metabolites.size();
@@ -218,7 +239,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
         }
 
       // create items for the reaction parameters
-
       pItem = new QListViewItem(this->mpReactionParameterSubtree,
                                 FROM_UTF8(react->getObjectName()));
       const CCopasiParameterGroup & Parameters = react->getParameters();
@@ -249,7 +269,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   removeEmptySubTree(&mpReactionParameterSubtree);
   removeEmptySubTree(&mpReactionSubtree);
 
-  // find all global parameters aka pModel variables
+  // find all global parameters (aka model values) variables
   const CCopasiVector<CModelValue>& objects = pModel->getModelValues();
   maxCount = objects.size();
   for (counter = maxCount; counter != 0;--counter)
@@ -325,6 +345,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
   removeEmptySubTree(&mpCompartmentSubtree);
 
+  //
   pObject = pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
   if (filter(flag, pObject))
     {
@@ -334,12 +355,328 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 
 #ifdef COPASI_DEBUG
 
-  // experimental annotated matrix
-  pItem = new QListViewItem(this->matrixSubtree, "stoichiometric matrix");
-  CCopasiObject* object = (CCopasiObject*)pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
-  treeItems[pItem] = object;
+  // find all model matrices
+  /*
+  //  const CCopasiObject* object = pModel->getObject(CCopasiObjectName("Reference=Stoichiometry"));
+    const CCopasiObject* object = pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
+    if (filter(flag, object))  // -> return 'false' since pObject->isValueDbl() == pObject->isValueInt() == false
+      {
+        pItem = new QListViewItem(this->matrixSubtree, "Stoichiometry(ann)");
+        treeItems[pItem] = object;
+      }
+  */
+  const CMatrix<C_FLOAT64> &StoiMatrix = pModel->getStoi();
+  if (StoiMatrix.array())
+    {
+      pObject = pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
+      //      pItem = new QListViewItem(this->matrixSubtree, "Stoichiometry(ann)");
+      pItem = new QListViewItem(this->mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
+      treeItems[pItem] = pObject;
+    }
+
+  const CMatrix<C_FLOAT64> &RedStoiMatrix = pModel->getRedStoi();
+  if (RedStoiMatrix.array())
+    {
+      pObject = pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"));
+      //      pItem = new QListViewItem(this->matrixSubtree, "Reduced stoichiometry(ann)");
+      pItem = new QListViewItem(this->mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
+      treeItems[pItem] = pObject;
+    }
+
+  const CMatrix<C_FLOAT64> &LinkMatrix = pModel->getL0();
+  if (LinkMatrix.array())
+    {
+      pObject = pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"));
+      //      pItem = new QListViewItem(this->matrixSubtree, "Link matrix(ann)");
+      pItem = new QListViewItem(this->mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
+      treeItems[pItem] = pObject;
+    }
+
+  removeEmptySubTree(&mpModelMatrixSubtree);
+
+  // find all result matrices
+  // Metabolic Control Analysis
+  CCopasiTask *task;
+  CCopasiObject *obj;
+
+  // MCA
+  task = (CCopasiTask *) (*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"];
+  if (task)
+    {
+      std::cout << "cn task = " << task->getCN() << std::endl;
+      // CCopasiObject *obj = CCopasiContainer::ObjectFromName(task->getCN());
+      // CCopasiObject *obj;
+      /* CCopasiObject *obj = (CCopasiObject *) task;
+
+          std::cout << task->getType() << " -> " << CCopasiTask::TypeName[task->getType()] << " -vs- "
+           << obj->getObjectName() << std::endl;
+      */
+      if (task->updateMatrices())
+        {
+          CMCAMethod* pMethod = (CMCAMethod *) task->getMethod();
+
+          if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
+            std::cout << "Steady-State exists" << std::endl;
+          else
+            std::cout << "NOT EXISTS" << std::endl;
+
+          //   CCopasiContainer *cont = (CCopasiContainer *) obj;
+          CCopasiContainer *cont = (CCopasiContainer *) task;
+          obj = (CCopasiObject *) cont->getObject(CCopasiObjectName("Method=MCA Method (Reder)"));
+          std::cout << "4 - Name : " << obj->getObjectName() << " - Type : " << obj->getObjectType() << std::endl;
+          cont = (CCopasiContainer *) obj;
+
+          const CCopasiContainer::objectMap * pObjects = & cont->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+          std::string identifier;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+
+              if (its->second->getObjectType() != "Array") continue;
+
+              identifier = its->second->getObjectType() + "=" + its->second->getObjectName();
+              std::cout << "ID = " << identifier << std::endl;
+
+              //     pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName(identifier));
+              ann = (CArrayAnnotation *) its->second;
+
+              std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+              // check the size
+              /*
+                bool add = true;
+
+                int dim = ann->dimensionality();
+                std::cout << "Dimensionality = " << dim << std::endl;
+                if (dim == 0) add = false;
+
+                int idx = 0;
+                for (idx = 0; idx < dim; idx++)
+                {
+                 std::cout << "size of dim " << idx << " = " << ann->getAnnotationsString(idx, true).size()
+                     << " -vs- " << ann->getAnnotationsCN(idx).size() << std::endl;
+                 if (!ann->getAnnotationsCN(idx).size())
+                   add = false;
+                }
+              */
+              /*
+                if (its->second->getObjectName() == "Unscaled elasticities")
+                  ann = (CArrayAnnotation *) (pMethod->getUnscaledElasticitiesAnn());
+                if (its->second->getObjectName() == "Unscaled concentration control coefficients")
+                  ann = (CArrayAnnotation *) (pMethod->getUnscaledConcentrationCCAnn());
+                if (its->second->getObjectName() == "Unscaled flux control coefficients")
+                  ann = (CArrayAnnotation *) (pMethod->getUnscaledFluxCCAnn());
+                if (its->second->getObjectName() == "Scaled elasticities")
+                  ann = (CArrayAnnotation *) (pMethod->getScaledElasticitiesAnn());
+                if (its->second->getObjectName() == "Scaled concentration control coefficients")
+                  ann = (CArrayAnnotation *) (pMethod->getScaledConcentrationCCAnn());
+                if (its->second->getObjectName() == "Scaled flux control coefficients")
+                  ann = (CArrayAnnotation *) (pMethod->getScaledFluxCCAnn());
+              */
+              //  if (ann && ann->array())
+              if (!ann->isEmpty())
+                {
+                  pItem = new QListViewItem(this->mpResultMCASubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = (CCopasiObject *) ann;
+                }
+            }
+        }
+    }
+
+  // Steady State
+  task = (CCopasiTask *) (*CCopasiDataModel::Global->getTaskList())["Steady-State"];
+  if (task)
+    {
+      std::cout << "cn task = " << task->getCN() << std::endl;
+      // CCopasiObject *obj = CCopasiContainer::ObjectFromName(task->getCN());
+
+      //    std::cout << task->getType() << " -> " << CCopasiTask::TypeName[task->getType()] << " -vs- "
+      //     << obj->getObjectName() << std::endl;
+
+      if (task->updateMatrices())
+        {
+          CSteadyStateTask *ssTask = (CSteadyStateTask *) task;
+
+          CCopasiContainer *cont = (CCopasiContainer *) task;
+          const CCopasiContainer::objectMap * pObjects = & cont->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+          std::string identifier;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+
+              if (its->second->getObjectType() != "Array") continue;
+
+              identifier = its->second->getObjectType() + "=" + its->second->getObjectName();
+              std::cout << "ID = " << identifier << std::endl;
+
+              //     pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName(identifier));
+              //  ann = (CArrayAnnotation *) pObject;
+              ann = (CArrayAnnotation *) its->second;
+
+              std::cout << "9 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+              // check the size
+              /*
+                bool add = true;
+
+                int dim = ann->dimensionality();
+                std::cout << "Dimensionality = " << dim << std::endl;
+                if (dim == 0) add = false;
+
+                int idx = 0;
+                for (idx = 0; idx < dim; idx++)
+                {
+                 std::cout << "size of dim " << idx << " = " << ann->getAnnotationsString(idx, true).size()
+                     << " -vs- " << ann->getAnnotationsCN(idx).size() << std::endl;
+                 if (!ann->getAnnotationsCN(idx).size())
+                   add = false;
+                }
+              */
+              /*
+                if (its->second->getObjectName() == "Jacobian (complete system)")
+              //    ann = (CArrayAnnotation *) (((CSteadyStateTask *)task)->getJacobianAnnotated());
+                  ann = (CArrayAnnotation *) (ssTask->getJacobianAnnotated());
+                if (its->second->getObjectName() == "Jacobian (reduced system)")
+              //    ann = (CArrayAnnotation *) (((CSteadyStateTask *)task)->getJacobianXAnnotated());
+                  ann = (CArrayAnnotation *) (ssTask->getJacobianXAnnotated());
+              */
+              //  if (ann && ann->array())
+              if (!ann->isEmpty())
+                {
+                  pItem = new QListViewItem(this->mpResultSteadyStateSubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = (CCopasiObject *) ann;
+                }
+            }
+        }
+    }
+
+  // Sensitivities
+  task = (CCopasiTask *) (*CCopasiDataModel::Global->getTaskList())["Sensitivities"];
+  if (task)
+    {
+      std::cout << "cn task = " << task->getCN() << std::endl;
+      // CCopasiObject *obj = CCopasiContainer::ObjectFromName(task->getCN());
+
+      //    std::cout << task->getType() << " -> " << CCopasiTask::TypeName[task->getType()] << " -vs- "
+      //     << obj->getObjectName() << std::endl;
+
+      if (task->updateMatrices())
+        {
+          CSensProblem *sens = (CSensProblem *) task->getProblem();
+
+          CCopasiContainer *cont = (CCopasiContainer *) task;
+          obj = (CCopasiObject *) cont->getObject(CCopasiObjectName("Problem=Sensitivities"));
+          std::cout << "8 - Name : " << obj->getObjectName() << " - Type : " << obj->getObjectType() << std::endl;
+          cont = (CCopasiContainer *) obj;
+
+          const CCopasiContainer::objectMap * pObjects = & cont->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+          std::string identifier;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+
+              if (its->second->getObjectType() != "Array") continue;
+
+              identifier = its->second->getObjectType() + "=" + its->second->getObjectName();
+              std::cout << "ID = " << identifier << std::endl;
+
+              //     pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName(identifier));
+              //  ann = (CArrayAnnotation *) pObject;
+              ann = (CArrayAnnotation *) its->second;
+
+              std::cout << "10 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+              // check the size
+              /*
+                bool add = true;
+
+                int dim = ann->dimensionality();
+                std::cout << "Dimensionality = " << dim << std::endl;
+                if (dim == 0) add = false;
+
+                int idx = 0;
+                for (idx = 0; idx < dim; idx++)
+                {
+                 std::cout << "size of dim " << idx << " = " << ann->getAnnotationsString(idx, true).size()
+                     << " -vs- " << ann->getAnnotationsCN(idx).size() << std::endl;
+                 if (!ann->getAnnotationsCN(idx).size())
+                   add = false;
+                }
+              */
+              /*
+                if (its->second->getObjectName() == "Sensitivities array")
+                  ann = (CArrayAnnotation *) sens->getResultAnnotated();
+                if (its->second->getObjectName() == "Scaled sensitivities array")
+                  ann = (CArrayAnnotation *) sens->getScaledResultAnnotated();
+                if (its->second->getObjectName() == "Summarized sensitivities array")
+                  ann = (CArrayAnnotation *) sens->getCollapsedResultAnnotated();
+              */
+              //  if (ann && ann->array())
+
+              if (!ann->isEmpty())
+                {
+                  pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = (CCopasiObject *) ann;
+                }
+            }
+
+          /*
+             // Sensitivities array
+             pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName("Array=Sensitivities array"));
+             std::cout << "9a - Name : " << pObject->getObjectName() << " - Type : " << pObject->getObjectType() << std::endl;
+             CArrayAnnotation *ann = dynamic_cast< CArrayAnnotation *> (sens->getResultAnnotated());
+             if (ann->array())
+             {
+          //     pItem = new QListViewItem(this->mpResultMCASubtree, "Unscaled elasticities");
+               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(pObject->getObjectName()));
+                  treeItems[pItem] = pObject;
+             }
+
+             // Scaled Sensitivities array
+             pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName("Array=Scaled sensitivities array"));
+             std::cout << "9a - Name : " << pObject->getObjectName() << " - Type : " << pObject->getObjectType() << std::endl;
+             ann = dynamic_cast< CArrayAnnotation *> (sens->getScaledResultAnnotated());
+             if (ann->array())
+             {
+          //     pItem = new QListViewItem(this->mpResultMCASubtree, "Unscaled elasticities");
+               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(pObject->getObjectName()));
+                  treeItems[pItem] = pObject;
+             }
+
+             // Summarized Sensitivities array
+             pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName("Array=Summarized sensitivities array"));
+             std::cout << "9a - Name : " << pObject->getObjectName() << " - Type : " << pObject->getObjectType() << std::endl;
+             ann = dynamic_cast< CArrayAnnotation *> (sens->getCollapsedResultAnnotated());
+             if (ann->array())
+             {
+          //     pItem = new QListViewItem(this->mpResultMCASubtree, "Unscaled elasticities");
+               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(pObject->getObjectName()));
+                  treeItems[pItem] = pObject;
+             }
+          */
+        }
+    }
+
+  removeEmptySubTree(&mpResultMCASubtree);
+  removeEmptySubTree(&mpResultSensitivitySubtree);
+  removeEmptySubTree(&mpResultSteadyStateSubtree);
+  removeEmptySubTree(&mpResultMatrixSubtree);
+
 #endif // COPASI_DEBUG
 
+  // combine all
   if (this->selectionMode() == QListView::NoSelection)
     {
       // see if some objects are there, if yes set to single selection
@@ -563,15 +900,32 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
     return false;
   else if ((flag & BASE_INTEGER) && !pObject->isValueInt())
     return false;
+  /*
+    std::cout << __FILE__ << " L " << __LINE__ << ": \npObject: Object Name = " << pObject->getObjectName()
+     << " - Object Type = " << pObject->getObjectType() << std::endl;
 
+    if (!pObject->isReference())
+    {
+   std::cout << "NOT REFERENCE" << std::endl;
+
+   std::cout << "Parent: Object Name = " << pObject->getObjectParent()->getObjectName()
+       << " - Object Type = " << pObject->getObjectParent()->getObjectType() << std::endl;
+    }
+  */
   if (pObject->isReference())
     {
       // CModelEntity needs to be check more thoroughly
       const CModelEntity * pEntity =
         dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
-
+      /*
+            if (!pEntity)
+        std::cout << "pEntity is EMPTY" << std::endl;
+      */
       if (pEntity)
         {
+          //   std::cout << "pEntity: Object Name = " << pEntity->getObjectName()
+          //       << " - Object Type = " << pEntity->getObjectType() << std::endl;
+
           // CModelEntity::ASSIGNMENT may have no intitial value or rate
           if (pEntity->getStatus() == CModelEntity::ASSIGNMENT &&
               (pObject->getObjectName().compare(0, 7, "Initial") == 0 ||
@@ -594,6 +948,7 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
                       pObject->getObjectName().compare(0, 7, "Initial") == 0)
                     return false;
                 }
+
               // INITIAL_EXPRESSION
               else if (flag & BASE_INITIAL)
                 {
@@ -607,30 +962,62 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
               return true;
             }
 
+          // TARGET_EVENT -> only Trancient Volumes, Trancient Concentrations, and Trancient Values are allowed
+          if ((flag & BASE_TRANSIENT) && (flag & BASE_MODEL))
+            {
+              if ((pObject->getObjectName().find("Time") != std::string::npos) ||
+                  (pObject->getObjectName().find("Initial") != std::string::npos) ||
+                  (pObject->getObjectName().find("ParticleNumber") != std::string::npos) ||
+                  (pObject->getObjectName().find("Rate") != std::string::npos))
+                return false;
+            }
+
+          // PARAMETER -> Initial Volumes, Initial Concentrations, Initial Particle Number,
+          // Initial Values, and Reaction Parameters are allowed
+          if ((flag & BASE_INITIAL) && (flag & BASE_TASK))
+            {
+              if (pObject->getObjectName().find("Time") != std::string::npos)
+                return false;
+
+              if (pObject->getObjectName().find("Initial") == std::string::npos)
+                return false;
+            }
+
           // INITIAL_VALUE
           if ((flag & BASE_INITIAL)
               && pObject->getObjectName().compare(0, 7, "Initial") != 0)
             return false;
 
           // TRANSIENT_VALUE
-          if ((flag & BASE_TRANSIENT)
-              && pObject->getObjectName().compare(0, 7, "Initial") == 0)
+          if ((flag & BASE_TRANSIENT) &&
+              pObject->getObjectName().compare(0, 7, "Initial") == 0)
             return false;
 
           // This CModelEntity is valid.
           return true;
         }
 
+      // ** Reaction **
       // CReaction needs to be check more thoroughly
       const CReaction * pReaction =
         dynamic_cast< const CReaction * >(pObject->getObjectParent());
 
       if (pReaction)
         {
+          //   std::cout << "pReaction_1: Object Name = " << pReaction->getObjectName()
+          //       << " - Object Type = " << pReaction->getObjectType() << std::endl;
+
           // These are transient values which may be used in expressions.
           if ((flag & BASE_INITIAL) &&
               !(flag & BASE_EXPRESSION))
             return false;
+
+          // TARGET_EVENT -> only Trancient Volumes, Trancient Concentrations, and Trancient Values are allowed
+          if ((flag & BASE_TRANSIENT) && (flag & BASE_MODEL))
+            {
+              if (pObject->getObjectName().find("Flux") != std::string::npos)
+                return false;
+            }
 
           // Every other value of CReaction is valid.
           return true;
@@ -642,15 +1029,31 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
       if (pReaction)
         {
+          //   std::cout << "pReaction_2: Object Name = " << pReaction->getObjectName()
+          //       << " - Object Type = " << pReaction->getObjectType() << std::endl;
+
           // Local reaction parameters may not be used in any expression in the model.
-          if ((flag & BASE_GLOBAL))
-            return false;
+          if ((flag & BASE_MODEL))
+            {
+              //          if ((flag & BASE_GLOBAL))
+              return false;
+            }
 
           // These are initial values which may be used in expressions.
           if (!(flag & BASE_EXPRESSION) &&
               (flag & BASE_TRANSIENT))
             return false;
 
+          return true;
+        }
+
+      const CArrayAnnotation * pArrayElement =
+        dynamic_cast< const CArrayAnnotation * >(pObject->getObjectParent());
+
+      if (pArrayElement)
+        {
+          //    std::cout << "pArrayElement Name = " << pArrayElement->getObjectName()
+          //     << " - Type = " << pArrayElement->getObjectType() << std::endl;
           return true;
         }
     }
@@ -663,6 +1066,9 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
   return true;
 }
 
+/*
+ * remove all empty subtree
+ */
 void CCopasiSimpleSelectionTree::removeEmptySubTree(QListViewItem ** ppSubTree)
 {
   if ((*ppSubTree)->childCount() == 0)
