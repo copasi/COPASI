@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 17:13:43 $
+//   $Date: 2008/10/14 14:48:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,18 +241,10 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
 
 void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
 {
-  QString str = FROM_UTF8(pObject->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectName());
+  const CArrayAnnotation * tmp = dynamic_cast<const CArrayAnnotation *> (pObject);
 
-  if (str == "Reference=Annotated Matrix")
+  if (tmp != NULL)
     {
-      const CArrayAnnotation * tmp;
-
-      QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());
-      //      tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName(strAux)));
-      tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName((const char*) strAux.utf8())));
-      if (!tmp)
-        return;
-
       int nRows = tmp->getAnnotationsCN(0).size();
       int nCols = tmp->getAnnotationsCN(1).size();
 
@@ -268,5 +260,7 @@ void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
         return;
       else if (Result == QDialog::Accepted)
         std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
+
+      // TODO We need to return the selected object.
     }
 }
