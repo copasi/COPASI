@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.1 $
+//   $Revision: 1.26.4.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/10/14 09:06:46 $
+//   $Date: 2008/10/14 09:13:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -356,15 +356,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 #ifdef COPASI_DEBUG
 
   // find all model matrices
-  /*
-  //  const CCopasiObject* object = pModel->getObject(CCopasiObjectName("Reference=Stoichiometry"));
-    const CCopasiObject* object = pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
-    if (filter(flag, object))  // -> return 'false' since pObject->isValueDbl() == pObject->isValueInt() == false
-      {
-        pItem = new QListViewItem(this->matrixSubtree, "Stoichiometry(ann)");
-        treeItems[pItem] = object;
-      }
-  */
   const CMatrix<C_FLOAT64> &StoiMatrix = pModel->getStoi();
   if (StoiMatrix.array())
     {
@@ -403,14 +394,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   task = (CCopasiTask *) (*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"];
   if (task)
     {
-      std::cout << "cn task = " << task->getCN() << std::endl;
-      // CCopasiObject *obj = CCopasiContainer::ObjectFromName(task->getCN());
-      // CCopasiObject *obj;
-      /* CCopasiObject *obj = (CCopasiObject *) task;
-
-          std::cout << task->getType() << " -> " << CCopasiTask::TypeName[task->getType()] << " -vs- "
-           << obj->getObjectName() << std::endl;
-      */
       if (task->updateMatrices())
         {
           CMCAMethod* pMethod = (CMCAMethod *) task->getMethod();
@@ -420,64 +403,26 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
           else
             std::cout << "NOT EXISTS" << std::endl;
 
-          //   CCopasiContainer *cont = (CCopasiContainer *) obj;
           CCopasiContainer *cont = (CCopasiContainer *) task;
           obj = (CCopasiObject *) cont->getObject(CCopasiObjectName("Method=MCA Method (Reder)"));
-          std::cout << "4 - Name : " << obj->getObjectName() << " - Type : " << obj->getObjectType() << std::endl;
+          //          std::cout << "4 - Name : " << obj->getObjectName() << " - Type : " << obj->getObjectType() << std::endl;
           cont = (CCopasiContainer *) obj;
 
           const CCopasiContainer::objectMap * pObjects = & cont->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
-          std::string identifier;
 
           for (; its != pObjects->end(); ++its)
             {
-              std::cout << "Name = " << its->second->getObjectName() << std::endl;
-              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+              //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
 
               if (its->second->getObjectType() != "Array") continue;
 
-              identifier = its->second->getObjectType() + "=" + its->second->getObjectName();
-              std::cout << "ID = " << identifier << std::endl;
-
-              //     pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName(identifier));
               ann = (CArrayAnnotation *) its->second;
 
-              std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+              //              std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
 
-              // check the size
-              /*
-                bool add = true;
-
-                int dim = ann->dimensionality();
-                std::cout << "Dimensionality = " << dim << std::endl;
-                if (dim == 0) add = false;
-
-                int idx = 0;
-                for (idx = 0; idx < dim; idx++)
-                {
-                 std::cout << "size of dim " << idx << " = " << ann->getAnnotationsString(idx, true).size()
-                     << " -vs- " << ann->getAnnotationsCN(idx).size() << std::endl;
-                 if (!ann->getAnnotationsCN(idx).size())
-                   add = false;
-                }
-              */
-              /*
-                if (its->second->getObjectName() == "Unscaled elasticities")
-                  ann = (CArrayAnnotation *) (pMethod->getUnscaledElasticitiesAnn());
-                if (its->second->getObjectName() == "Unscaled concentration control coefficients")
-                  ann = (CArrayAnnotation *) (pMethod->getUnscaledConcentrationCCAnn());
-                if (its->second->getObjectName() == "Unscaled flux control coefficients")
-                  ann = (CArrayAnnotation *) (pMethod->getUnscaledFluxCCAnn());
-                if (its->second->getObjectName() == "Scaled elasticities")
-                  ann = (CArrayAnnotation *) (pMethod->getScaledElasticitiesAnn());
-                if (its->second->getObjectName() == "Scaled concentration control coefficients")
-                  ann = (CArrayAnnotation *) (pMethod->getScaledConcentrationCCAnn());
-                if (its->second->getObjectName() == "Scaled flux control coefficients")
-                  ann = (CArrayAnnotation *) (pMethod->getScaledFluxCCAnn());
-              */
-              //  if (ann && ann->array())
               if (!ann->isEmpty())
                 {
                   pItem = new QListViewItem(this->mpResultMCASubtree, FROM_UTF8(ann->getObjectName()));
@@ -491,12 +436,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   task = (CCopasiTask *) (*CCopasiDataModel::Global->getTaskList())["Steady-State"];
   if (task)
     {
-      std::cout << "cn task = " << task->getCN() << std::endl;
-      // CCopasiObject *obj = CCopasiContainer::ObjectFromName(task->getCN());
-
-      //    std::cout << task->getType() << " -> " << CCopasiTask::TypeName[task->getType()] << " -vs- "
-      //     << obj->getObjectName() << std::endl;
-
       if (task->updateMatrices())
         {
           CSteadyStateTask *ssTask = (CSteadyStateTask *) task;
@@ -505,50 +444,18 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
           const CCopasiContainer::objectMap * pObjects = & cont->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
-          std::string identifier;
 
           for (; its != pObjects->end(); ++its)
             {
-              std::cout << "Name = " << its->second->getObjectName() << std::endl;
-              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+              //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
 
               if (its->second->getObjectType() != "Array") continue;
 
-              identifier = its->second->getObjectType() + "=" + its->second->getObjectName();
-              std::cout << "ID = " << identifier << std::endl;
-
-              //     pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName(identifier));
-              //  ann = (CArrayAnnotation *) pObject;
               ann = (CArrayAnnotation *) its->second;
 
-              std::cout << "9 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+              //              std::cout << "9 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
 
-              // check the size
-              /*
-                bool add = true;
-
-                int dim = ann->dimensionality();
-                std::cout << "Dimensionality = " << dim << std::endl;
-                if (dim == 0) add = false;
-
-                int idx = 0;
-                for (idx = 0; idx < dim; idx++)
-                {
-                 std::cout << "size of dim " << idx << " = " << ann->getAnnotationsString(idx, true).size()
-                     << " -vs- " << ann->getAnnotationsCN(idx).size() << std::endl;
-                 if (!ann->getAnnotationsCN(idx).size())
-                   add = false;
-                }
-              */
-              /*
-                if (its->second->getObjectName() == "Jacobian (complete system)")
-              //    ann = (CArrayAnnotation *) (((CSteadyStateTask *)task)->getJacobianAnnotated());
-                  ann = (CArrayAnnotation *) (ssTask->getJacobianAnnotated());
-                if (its->second->getObjectName() == "Jacobian (reduced system)")
-              //    ann = (CArrayAnnotation *) (((CSteadyStateTask *)task)->getJacobianXAnnotated());
-                  ann = (CArrayAnnotation *) (ssTask->getJacobianXAnnotated());
-              */
-              //  if (ann && ann->array())
               if (!ann->isEmpty())
                 {
                   pItem = new QListViewItem(this->mpResultSteadyStateSubtree, FROM_UTF8(ann->getObjectName()));
@@ -562,12 +469,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   task = (CCopasiTask *) (*CCopasiDataModel::Global->getTaskList())["Sensitivities"];
   if (task)
     {
-      std::cout << "cn task = " << task->getCN() << std::endl;
-      // CCopasiObject *obj = CCopasiContainer::ObjectFromName(task->getCN());
-
-      //    std::cout << task->getType() << " -> " << CCopasiTask::TypeName[task->getType()] << " -vs- "
-      //     << obj->getObjectName() << std::endl;
-
       if (task->updateMatrices())
         {
           CSensProblem *sens = (CSensProblem *) task->getProblem();
@@ -580,50 +481,17 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
           const CCopasiContainer::objectMap * pObjects = & cont->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
-          std::string identifier;
 
           for (; its != pObjects->end(); ++its)
             {
-              std::cout << "Name = " << its->second->getObjectName() << std::endl;
-              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+              //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
 
               if (its->second->getObjectType() != "Array") continue;
 
-              identifier = its->second->getObjectType() + "=" + its->second->getObjectName();
-              std::cout << "ID = " << identifier << std::endl;
-
-              //     pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName(identifier));
-              //  ann = (CArrayAnnotation *) pObject;
               ann = (CArrayAnnotation *) its->second;
 
-              std::cout << "10 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
-
-              // check the size
-              /*
-                bool add = true;
-
-                int dim = ann->dimensionality();
-                std::cout << "Dimensionality = " << dim << std::endl;
-                if (dim == 0) add = false;
-
-                int idx = 0;
-                for (idx = 0; idx < dim; idx++)
-                {
-                 std::cout << "size of dim " << idx << " = " << ann->getAnnotationsString(idx, true).size()
-                     << " -vs- " << ann->getAnnotationsCN(idx).size() << std::endl;
-                 if (!ann->getAnnotationsCN(idx).size())
-                   add = false;
-                }
-              */
-              /*
-                if (its->second->getObjectName() == "Sensitivities array")
-                  ann = (CArrayAnnotation *) sens->getResultAnnotated();
-                if (its->second->getObjectName() == "Scaled sensitivities array")
-                  ann = (CArrayAnnotation *) sens->getScaledResultAnnotated();
-                if (its->second->getObjectName() == "Summarized sensitivities array")
-                  ann = (CArrayAnnotation *) sens->getCollapsedResultAnnotated();
-              */
-              //  if (ann && ann->array())
+              //              std::cout << "10 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
 
               if (!ann->isEmpty())
                 {
@@ -631,41 +499,6 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
                   treeItems[pItem] = (CCopasiObject *) ann;
                 }
             }
-
-          /*
-             // Sensitivities array
-             pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName("Array=Sensitivities array"));
-             std::cout << "9a - Name : " << pObject->getObjectName() << " - Type : " << pObject->getObjectType() << std::endl;
-             CArrayAnnotation *ann = dynamic_cast< CArrayAnnotation *> (sens->getResultAnnotated());
-             if (ann->array())
-             {
-          //     pItem = new QListViewItem(this->mpResultMCASubtree, "Unscaled elasticities");
-               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(pObject->getObjectName()));
-                  treeItems[pItem] = pObject;
-             }
-
-             // Scaled Sensitivities array
-             pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName("Array=Scaled sensitivities array"));
-             std::cout << "9a - Name : " << pObject->getObjectName() << " - Type : " << pObject->getObjectType() << std::endl;
-             ann = dynamic_cast< CArrayAnnotation *> (sens->getScaledResultAnnotated());
-             if (ann->array())
-             {
-          //     pItem = new QListViewItem(this->mpResultMCASubtree, "Unscaled elasticities");
-               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(pObject->getObjectName()));
-                  treeItems[pItem] = pObject;
-             }
-
-             // Summarized Sensitivities array
-             pObject = (CCopasiObject *) cont->getObject(CCopasiObjectName("Array=Summarized sensitivities array"));
-             std::cout << "9a - Name : " << pObject->getObjectName() << " - Type : " << pObject->getObjectType() << std::endl;
-             ann = dynamic_cast< CArrayAnnotation *> (sens->getCollapsedResultAnnotated());
-             if (ann->array())
-             {
-          //     pItem = new QListViewItem(this->mpResultMCASubtree, "Unscaled elasticities");
-               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(pObject->getObjectName()));
-                  treeItems[pItem] = pObject;
-             }
-          */
         }
     }
 
