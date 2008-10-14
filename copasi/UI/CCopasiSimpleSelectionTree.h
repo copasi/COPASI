@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/03 17:40:33 $
+//   $Author: pwilly $
+//   $Date: 2008/10/14 09:04:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,7 @@ class CCopasiSimpleSelectionTree: public QListView
       BASE_TRANSIENT = 0x08,
       BASE_EXPRESSION = 0x10,
       BASE_MODEL = 0x20,
+      BASE_TASK = 0x80,
       BASE_GLOBAL = 0x40
     };
 
@@ -54,6 +55,8 @@ class CCopasiSimpleSelectionTree: public QListView
       INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
       TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
       OBJECTIVE_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION,
+      TARGET_EVENT = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
+      INITIAL_PARAMETER = BASE_DOUBLE | BASE_INITIAL | BASE_TASK,
       NO_RESTRICTION = -1
     };
 
@@ -89,7 +92,11 @@ class CCopasiSimpleSelectionTree: public QListView
     QListViewItem* mpCompartmentRateSubtree;
     QListViewItem* mpExpertSubtree;
 #ifdef COPASI_DEBUG
-    QListViewItem* matrixSubtree;
+    QListViewItem* mpModelMatrixSubtree;
+    QListViewItem* mpResultMatrixSubtree;
+    QListViewItem* mpResultSteadyStateSubtree;
+    QListViewItem* mpResultSensitivitySubtree;
+    QListViewItem* mpResultMCASubtree;
 #endif //COPASI_DEBUG
     std::map< QListViewItem *, const CCopasiObject * > treeItems;
     std::vector< const CCopasiObject * > * mpOutputVector;
