@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/07 16:22:29 $
+//   $Author: pwilly $
+//   $Date: 2008/10/14 08:36:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -403,6 +403,27 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
     }
 
   return os;
+}
+
+bool CArrayAnnotation::isEmpty()
+{
+  // either the dimension itself ...
+  int dim = dimensionality();
+  //  std::cout << "Dimensionality = " << dim << std::endl;
+  if (dim == 0) return true;
+
+  // ... or the size of each dimension should be greater than zero.
+  int idx = 0;
+  for (idx = 0; idx < dim; idx++)
+    {
+      // std::cout << "size of dim " << idx << " = " << getAnnotationsString(idx, true).size()
+      //     << " -vs- " << getAnnotationsCN(idx).size() << " -vs- " << size()[idx] << std::endl;
+      // if (!getAnnotationsCN(idx).size()) // -> incl. 'sink' and 'source'
+      if (!size()[idx])
+        return true;
+    }
+
+  return false;
 }
 
 // void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const

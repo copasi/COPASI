@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/25 22:40:02 $
+//   $Author: pwilly $
+//   $Date: 2008/10/14 08:38:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,6 +202,12 @@ class CArrayAnnotation: public CCopasiContainer
      * Since this is also a container, this is not necessarily the case.
      */
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
+
+    /**
+     * Check whether the size of array is greater than 0 for each dimension.
+     * Return true, if so. Otherwise, false.
+     */
+    bool isEmpty();
 
   private:
     /**
