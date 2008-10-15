@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stresstest.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/10/09 06:29:42 $ 
+#   $Date: 2008/10/15 07:09:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,7 @@ CONFIG -= qt
 
 include(../../common.pri)
 
-LIBS += -lCOPASISE -L../../lib/ 
+LIBS += -L../../lib/ -lCOPASISE 
 
 
 include(../../common.pri)
