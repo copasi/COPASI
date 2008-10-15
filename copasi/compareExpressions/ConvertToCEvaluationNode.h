@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/20 13:45:48 $
+//   $Date: 2008/10/15 07:10:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogical& logical);
 CEvaluationNode* convertToCEvaluationNode(const CNormalBase& base);
 CEvaluationNode* convertToCEvaluationNode(const CNormalGeneralPower& pow);
 CEvaluationNode* convertToCEvaluationNode(const CNormalFunction& fun);
+CEvaluationNode* convertToCEvaluationNode(const CNormalCall& call);
 
 /**
  * Create a fraction from a node. node is necessarily a DIVIDE operator if not the root node of the tree.
