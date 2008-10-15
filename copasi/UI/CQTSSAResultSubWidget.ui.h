@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.2 $
+//   $Revision: 1.18.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/13 16:45:29 $
+//   $Author: ssahle $
+//   $Date: 2008/10/15 01:05:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,9 +144,9 @@ void CQTSSAResultSubWidget::init()
   mTabWidget->addTab(mpTimeScaleWidgetILDM, "Timescale");
 
   //set colorsettings for ArrayAnnotationWidgets
-  CColorScaleAdvanced * tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
+  CColorScaleAdvanced * tcs ; //= new CColorScaleAdvanced();
+  //tcs->setColorMin(QColor(240, 240, 240));
+  //tcs->setColorMax(QColor(0, 255, 0));
 
   // ILDM
   // mVslow_metab widget
@@ -173,12 +173,14 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget4->setColorCoding(tcs);
   pArrayWidget4->setColorScalingAutomatic(true);
+
   //NEW TAB
   // mReacSlowSpace widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget_3_2->setColorCoding(tcs);
+  CColorScaleSimple* pcss = new CColorScaleSimple();
+  //tcs->setColorMin(QColor(240, 240, 240));
+  //tcs->setColorMax(QColor(0, 255, 0));
+  pcss->setSymmetric(true);
+  pArrayWidget_3_2->setColorCoding(pcss);
   pArrayWidget_3_2->setColorScalingAutomatic(true);
 
   // ILDM Modified
