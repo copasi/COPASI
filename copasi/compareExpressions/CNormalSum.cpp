@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/31 13:40:47 $
+//   $Date: 2008/10/15 09:47:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,15 @@
 
 bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2)
 {
+  // first compare the factors
+  if (product1->getFactor() < product2->getFactor())
+    {
+      return true;
+    }
+  else if (product2->getFactor() < product1->getFactor())
+    {
+      return false;
+    }
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = product1->getItemPowers().end();
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
@@ -64,9 +73,12 @@ CNormalSum::CNormalSum(const CNormalSum& src): CNormalBase(src)
 {
   std::set<CNormalProduct*, compareProducts >::const_iterator it;
   std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = src.mProducts.end();
+  const CNormalProduct* pTmpProduct = NULL;
   for (it = src.mProducts.begin(); it != itEnd; ++it)
     {
-      assert(mProducts.insert(new CNormalProduct(**it)).second == true);
+      pTmpProduct = *it;
+      std::string s = pTmpProduct->toString();
+      assert(mProducts.insert(new CNormalProduct(*pTmpProduct)).second == true);
     }
 
   std::set<CNormalFraction*>::const_iterator it2;
