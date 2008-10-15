@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.22.2.2 $
+//   $Revision: 1.22.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/15 20:12:47 $
+//   $Author: ssahle $
+//   $Date: 2008/10/15 21:30:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,6 +234,12 @@ class CArrayAnnotation: public CCopasiContainer
                           const std::vector<std::vector<std::string> > & display) const;
 
   public:
+
+    /**
+     * generate a display name for the array annotation.
+     */
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+
     virtual void print(std::ostream * ostream) const;
 
     friend std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o);

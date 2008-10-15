@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.26.2.2 $
+//   $Revision: 1.26.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/15 20:12:47 $
+//   $Author: ssahle $
+//   $Date: 2008/10/15 21:30:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,6 +255,8 @@ const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
 
 const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
   {
+    //std::cout << "CArrayAnnotation::getObject() " << cn << std::endl;
+
     if (cn == "")
       {
         return this;
@@ -425,6 +427,15 @@ bool CArrayAnnotation::isEmpty()
 
   return false;
 }
+
+std::string CArrayAnnotation::getObjectDisplayName(bool regular, bool richtext) const
+  {
+    std::string part;
+    if (getObjectParent() && getObjectParent()->getObjectType() != "Model")
+      part = getObjectParent()->getObjectDisplayName(regular, richtext) + ".";
+
+    return part + getObjectName() + "[[]]";
+  }
 
 // void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const
 //   {
