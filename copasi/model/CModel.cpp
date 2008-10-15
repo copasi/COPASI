@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347 $
+//   $Revision: 1.347.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Date: 2008/10/15 15:17:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -544,7 +544,7 @@ void CModel::buildStoi()
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
       if (!(*itStep)->getFunction()->isUsable())
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 11,
+        CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 11,
                        (*itStep)->getObjectName().c_str(),
                        (*itStep)->getFunction()->getObjectName().c_str());
 
