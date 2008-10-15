@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.15.4.1 $
+//   $Revision: 1.15.4.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/14 09:04:58 $
+//   $Author: shoops $
+//   $Date: 2008/10/15 17:03:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,13 +91,12 @@ class CCopasiSimpleSelectionTree: public QListView
     QListViewItem* mpCompartmentInitialVolumeSubtree;
     QListViewItem* mpCompartmentRateSubtree;
     QListViewItem* mpExpertSubtree;
-#ifdef COPASI_DEBUG
     QListViewItem* mpModelMatrixSubtree;
     QListViewItem* mpResultMatrixSubtree;
     QListViewItem* mpResultSteadyStateSubtree;
     QListViewItem* mpResultSensitivitySubtree;
     QListViewItem* mpResultMCASubtree;
-#endif //COPASI_DEBUG
+
     std::map< QListViewItem *, const CCopasiObject * > treeItems;
     std::vector< const CCopasiObject * > * mpOutputVector;
 
