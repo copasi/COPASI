@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.180.2.1 $
+#   $Revision: 1.180.2.2 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/10/14 19:47:24 $
+#   $Author: pwilly $
+#   $Date: 2008/10/15 08:50:36 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.180.2.1 $ $Author: shoops $ $Date: 2008/10/14 19:47:24 $
+# $Revision: 1.180.2.2 $ $Author: pwilly $ $Date: 2008/10/15 08:50:36 $
 ######################################################################
 
 LIB = UI
@@ -79,6 +79,7 @@ HEADERS	+= \
 	ObjectBrowserDialog.h \
 	ObjectBrowserItem.h \
 	ObjectBrowserWidget.h \
+        OptimizationResultWidget.h \
 	ParametersWidget.h \
 	parametertable.h \
 	PlotWidget.h \
@@ -146,6 +147,7 @@ SOURCES	+= \
 	ObjectBrowserDialog.cpp \
 	ObjectBrowserItem.cpp \
 	ObjectBrowserWidget.cpp \
+        OptimizationResultWidget.cpp \
 	ParametersWidget.cpp \
 	parametertable.cpp \
 	PlotWidget.cpp \
