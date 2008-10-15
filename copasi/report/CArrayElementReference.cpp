@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/08 12:54:32 $
+//   $Date: 2008/10/15 21:32:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,16 +20,16 @@ CArrayElementReference::CArrayElementReference(const std::string & index, const 
                     CCopasiObject::Reference |
                     CCopasiObject::NonUniqueName |
                     CCopasiObject::ValueDbl),
-    mpReference(NULL),
+    //    mpReference(NULL),
     mIndex(index)
 {
   assert(pParent != NULL);
 }
 
-void CArrayElementReference::updateMethod(const CCopasiAbstractArray::data_type & value)
+void CArrayElementReference::updateMethod(const CCopasiAbstractArray::data_type & /*value*/)
 {
-  if (mpReference)
-    *mpReference = value;
+  //  if (mpReference)
+  //    *mpReference = value;
 }
 
 void * CArrayElementReference::getValuePointer() const
@@ -66,7 +66,19 @@ void * CArrayElementReference::getValuePointer() const
 std::string CArrayElementReference::getObjectDisplayName(bool regular, bool richtext) const
   {
     if (getObjectParent())
-      return getObjectParent()->getObjectDisplayName(regular, richtext) + mIndex;
+      {
+        //if the array has as task as ancestor, use the task (skip the problem/method)
+        CCopasiContainer* pT = getObjectAncestor("Task");
+
+        std::string part;
+        if (pT)
+          part = pT->getObjectDisplayName(regular, richtext) + ".";
+        else if (getObjectParent()->getObjectParent() && getObjectParent()->getObjectParent()->getObjectType() != "Model")
+          part = getObjectParent()->getObjectParent()->getObjectDisplayName(regular, richtext) + ".";
+
+        //now part contains the display name of the task, or the parent of the parent
+        return part + getObjectParent()->getObjectName() + mIndex;
+      }
     else
       return "Array" + mIndex;
   }
