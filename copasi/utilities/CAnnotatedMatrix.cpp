@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.26.2.1 $
+//   $Revision: 1.26.2.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/14 08:36:38 $
+//   $Author: shoops $
+//   $Date: 2008/10/15 20:12:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,27 +231,27 @@ void CArrayAnnotation::resize()
     resizeOneDimension(i);
 }
 
-const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index)
-{
-  //generate the index string
-  std::string tmp;
-  std::ostringstream indexString;
-  unsigned C_INT32 ii = 0;
-  for (ii = 0; ii < index.size(); ++ii)
-    {
-      indexString << "[" << index[ii] << "]";
-    }
+const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index) const
+  {
+    //generate the index string
+    std::string tmp;
+    std::ostringstream indexString;
+    unsigned C_INT32 ii = 0;
+    for (ii = 0; ii < index.size(); ++ii)
+      {
+        indexString << "[" << index[ii] << "]";
+      }
 
-  return this->getObject(indexString.str());
-}
+    return this->getObject(indexString.str());
+  }
 
-const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
-{
-  CCopasiAbstractArray::index_type index;
-  index.push_back(u);
-  index.push_back(v);
-  return addElementReference(index);
-}
+const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
+  {
+    CCopasiAbstractArray::index_type index;
+    index.push_back(u);
+    index.push_back(v);
+    return addElementReference(index);
+  }
 
 const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
   {

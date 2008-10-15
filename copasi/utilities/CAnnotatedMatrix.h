@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.22.2.1 $
+//   $Revision: 1.22.2.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/14 08:38:40 $
+//   $Author: shoops $
+//   $Date: 2008/10/15 20:12:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,12 +190,12 @@ class CArrayAnnotation: public CCopasiContainer
      * most of the work will be done by getObject(). If the element already
      * exists, the existing element will be returned.
      */
-    const CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index);
+    const CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index) const;
 
     /**
      * a convenience function for 2-dimensional arrays.
      */
-    const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v);
+    const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v) const;
 
     /**
      * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
