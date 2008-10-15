@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.11.4.1 $
+//   $Revision: 1.11.4.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/15 09:36:58 $
+//   $Author: shoops $
+//   $Date: 2008/10/15 20:13:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@ class QVBoxLayout;
 class QHBoxLayout;
 class CCopasiObject;
 class CModel;
+class CArrayAnnotation;
 
 class CCopasiSelectionDialog: public QDialog
   {
@@ -73,6 +74,6 @@ class CCopasiSelectionDialog: public QDialog
         const CCopasiSimpleSelectionTree::SelectionFlag & flag,
         const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
 
-    static const CCopasiObject * chooseCellMatrix(const CCopasiObject *pObject);
+    static const CCopasiObject * chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation);
   };
 #endif /* SimpleSelectionDialog_H__ */
