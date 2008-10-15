@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.27.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:11 $
+//   $Date: 2008/10/15 15:15:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,6 @@
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CCopasiSelectionDialog.h"
-#include "UI/OptimizationResultWidget.h"
 #include "UI/qtUtilities.h"
 #include "UI/CQExpressionWidget.h"
 
@@ -100,22 +99,7 @@ bool CQOptimizationWidget::loadTask()
   if (!pProblem) return false;
 
   // expression
-  //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(pProblem->getObjectiveFunction());
   mpExpressionEMW->mpExpressionWidget->setExpression(pProblem->getObjectiveFunction());
-  /*  if (pProblem->getObjectiveFunction().empty())
-      {
-        // empty
-        mpBtnObject->show();
-        mpBtnEdit->hide();
-      }
-    else
-      {
-        // not-empty
-        mpBtnObject->hide();
-        mpBtnEdit->show();
-      }
-  */
-  //  mpEditExpression->updateExpressionWidget();
   mpExpressionEMW->updateWidget();
 
   mpCheckMaximize->setChecked(pProblem->maximize());
@@ -135,11 +119,6 @@ bool CQOptimizationWidget::runTask()
 {
   // --- expression
 
-  // objective function exist !!
-  //  mpBtnObject->hide();
-  //  mpBtnEdit->show();
-
-  //  mpEditExpression->updateExpressionWidget();
   mpExpressionEMW->updateWidget();
 
   // ----
@@ -153,10 +132,6 @@ bool CQOptimizationWidget::runTask()
   bool success = commonRunTask();
 
   commonAfterRunTask();
-
-  OptimizationResultWidget *pResult =
-    dynamic_cast< OptimizationResultWidget * >(mpListView->findWidgetFromId(321));
-  if (pResult) pResult->loadFromBackend();
 
   return success;
 }
@@ -188,7 +163,6 @@ void CQOptimizationWidget::init()
 {
   mpHeaderWidget->setTaskName("Optimization");
 
-  //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
@@ -236,16 +210,7 @@ void CQOptimizationWidget::slotExpressionValid(bool valid)
     for being able to type a new mathematical expression or edit the existing one
  */
 void CQOptimizationWidget::slotEditExpression()
-{
-  /*  // activate editor page of the Expression widget stack
-    //  mpEditFcnExpression->raiseWidget(mpEditExpression);
-    mpEditExpression->raiseWidget(0);
-    // show the button of object selector
-    mpBtnObject->show();
-    // hide the button of going back to the expression editor
-    mpBtnEdit->hide();
-  */
-}
+{}
 
 void CQOptimizationWidget::slotSubtaskChanged(const QString & /* subtask */)
 {}
