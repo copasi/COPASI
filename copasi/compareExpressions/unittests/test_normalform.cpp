@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/29 20:23:58 $
+//   $Date: 2008/10/15 12:08:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -418,11 +418,6 @@ void test_normalform::test_sum_mixed_1()
   CPPUNIT_ASSERT(products.size() == 2);
   const CNormalProduct* pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
-  ++it;
-  pProduct = *(it);
-  CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
@@ -442,6 +437,12 @@ void test_normalform::test_sum_mixed_1()
   pProduct = *(products3.begin());
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 4.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+  ++it;
+  pProduct = *(it);
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
@@ -462,11 +463,6 @@ void test_normalform::test_sum_mixed_1_reversed()
   CPPUNIT_ASSERT(products.size() == 2);
   const CNormalProduct* pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
-  ++it;
-  pProduct = *(it);
-  CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
@@ -486,6 +482,12 @@ void test_normalform::test_sum_mixed_1_reversed()
   pProduct = *(products3.begin());
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 4.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
+
+  ++it;
+  pProduct = *(it);
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 }
 
@@ -2076,11 +2078,6 @@ void test_normalform::test_generalpower_mixed_1()
   ProductIterator it = products2.begin();
   pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
-  ++it;
-  pProduct = *(it);
-  CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
   pItemPower = *(pProduct->getItemPowers().begin());
@@ -2091,6 +2088,11 @@ void test_normalform::test_generalpower_mixed_1()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "X");
+  ++it;
+  pProduct = *(it);
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -2386,11 +2388,6 @@ void test_normalform::test_generalmodulus_mixed_1()
   ProductIterator it = products2.begin();
   pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
-  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
-  ++it;
-  pProduct = *(it);
-  CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 1);
   pItemPower = *(pProduct->getItemPowers().begin());
@@ -2401,6 +2398,11 @@ void test_normalform::test_generalmodulus_mixed_1()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "X");
+  ++it;
+  pProduct = *(it);
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(pProduct->getFactor() == 7.0);
+  CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 0);
 
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -8292,7 +8294,7 @@ void test_normalform::test_product_of_sums_1()
 
 void test_normalform::test_product_of_sums_2()
 {
-  std::string infix("((A+B)*(C-D)*E)"); // -> (A*C*E) + -1.0*(A*D*E) + (B*C*E) + -1.0*(B*D*E)
+  std::string infix("((A+B)*(C-D)*E)"); // -> -1.0*(A*D*E) + -1.0*(B*D*E) + (A*C*E) + (B*C*E)
   CEvaluationTree* pTree = new CEvaluationTree();
   pTree->setInfix(infix);
   CPPUNIT_ASSERT(pTree->getRoot() != NULL);
@@ -8306,17 +8308,16 @@ void test_normalform::test_product_of_sums_2()
   const std::set<CNormalProduct*, compareProducts>* pProducts = &pNumerator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 4);
   ProductIterator productsIt;
-  // first product A*C*E
+  // first product -1.0*A*D*E
   productsIt = pProducts->begin();
   const CNormalProduct* pProduct = (*productsIt);
   CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(fabs((pProduct->getFactor() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(fabs((pProduct->getFactor() + 1.0) / -1.0) < 1e-12);
   const std::set<CNormalItemPower*, compareItemPowers>* pPowerItems = &pProduct->getItemPowers();
   CPPUNIT_ASSERT(pPowerItems != NULL);
   CPPUNIT_ASSERT(pPowerItems->size() == 3);
-  std::set<CNormalItemPower*, compareItemPowers>::const_iterator powerItemIt;
   // first item A
-  powerItemIt = pPowerItems->begin();
+  std::set<CNormalItemPower*, compareItemPowers>::const_iterator powerItemIt = pPowerItems->begin();
   const CNormalItemPower* pItemPower = (*powerItemIt);
   CPPUNIT_ASSERT(pItemPower != NULL);
   CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
@@ -8325,44 +8326,6 @@ void test_normalform::test_product_of_sums_2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "A");
-  // second item C
-  ++powerItemIt;
-  pItemPower = (*powerItemIt);
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
-  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pItem != NULL);
-  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
-  CPPUNIT_ASSERT(pItem->getName() == "C");
-  // third item E
-  ++powerItemIt;
-  pItemPower = (*powerItemIt);
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
-  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pItem != NULL);
-  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
-  CPPUNIT_ASSERT(pItem->getName() == "E");
-  // second product -1.0*A*D*E
-  ++productsIt;
-  pProduct = (*productsIt);
-  CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(fabs((pProduct->getFactor() + 1.0) / -1.0) < 1e-12);
-  pPowerItems = &pProduct->getItemPowers();
-  CPPUNIT_ASSERT(pPowerItems != NULL);
-  CPPUNIT_ASSERT(pPowerItems->size() == 3);
-  // first item A
-  powerItemIt = pPowerItems->begin();
-  pItemPower = (*powerItemIt);
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
-  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pItem != NULL);
-  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
-  CPPUNIT_ASSERT(pItem->getName() == "A");
   // second item D
   ++powerItemIt;
   pItemPower = (*powerItemIt);
@@ -8383,7 +8346,84 @@ void test_normalform::test_product_of_sums_2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "E");
-  // third product B*C*E
+  // second product -1.0*B*D*E
+  ++productsIt;
+  pProduct = (*productsIt);
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(fabs((pProduct->getFactor() + 1.0) / -1.0) < 1e-12);
+  pPowerItems = &pProduct->getItemPowers();
+  CPPUNIT_ASSERT(pPowerItems != NULL);
+  CPPUNIT_ASSERT(pPowerItems->size() == 3);
+  // first item B
+  powerItemIt = pPowerItems->begin();
+  pItemPower = (*powerItemIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "B");
+  // second item D
+  ++powerItemIt;
+  pItemPower = (*powerItemIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "D");
+  // third item E
+  ++powerItemIt;
+  pItemPower = (*powerItemIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "E");
+  // third product A*C*E
+  ++productsIt;
+  pProduct = (*productsIt);
+  CPPUNIT_ASSERT(pProduct != NULL);
+  CPPUNIT_ASSERT(fabs((pProduct->getFactor() - 1.0) / 1.0) < 1e-12);
+  pPowerItems = &pProduct->getItemPowers();
+  CPPUNIT_ASSERT(pPowerItems != NULL);
+  CPPUNIT_ASSERT(pPowerItems->size() == 3);
+  powerItemIt;
+  // first item A
+  powerItemIt = pPowerItems->begin();
+  pItemPower = (*powerItemIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "A");
+  // second item C
+  ++powerItemIt;
+  pItemPower = (*powerItemIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "C");
+  // third item E
+  ++powerItemIt;
+  pItemPower = (*powerItemIt);
+  CPPUNIT_ASSERT(pItemPower != NULL);
+  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
+  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
+  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+  CPPUNIT_ASSERT(pItem != NULL);
+  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
+  CPPUNIT_ASSERT(pItem->getName() == "E");
+  // fourth product B*C*E
   ++productsIt;
   pProduct = (*productsIt);
   CPPUNIT_ASSERT(pProduct != NULL);
@@ -8411,44 +8451,6 @@ void test_normalform::test_product_of_sums_2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "C");
-  // third item E
-  ++powerItemIt;
-  pItemPower = (*powerItemIt);
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
-  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pItem != NULL);
-  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
-  CPPUNIT_ASSERT(pItem->getName() == "E");
-  // fourth product -1.0*B*D*E
-  ++productsIt;
-  pProduct = (*productsIt);
-  CPPUNIT_ASSERT(pProduct != NULL);
-  CPPUNIT_ASSERT(fabs((pProduct->getFactor() + 1.0) / -1.0) < 1e-12);
-  pPowerItems = &pProduct->getItemPowers();
-  CPPUNIT_ASSERT(pPowerItems != NULL);
-  CPPUNIT_ASSERT(pPowerItems->size() == 3);
-  // first item B
-  powerItemIt = pPowerItems->begin();
-  pItemPower = (*powerItemIt);
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
-  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pItem != NULL);
-  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
-  CPPUNIT_ASSERT(pItem->getName() == "B");
-  // second item D
-  ++powerItemIt;
-  pItemPower = (*powerItemIt);
-  CPPUNIT_ASSERT(pItemPower != NULL);
-  CPPUNIT_ASSERT(fabs((pItemPower->getExp() - 1.0) / 1.0) < 1e-12);
-  CPPUNIT_ASSERT(pItemPower->getItemType() == CNormalItemPower::ITEM);
-  pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
-  CPPUNIT_ASSERT(pItem != NULL);
-  CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
-  CPPUNIT_ASSERT(pItem->getName() == "D");
   // third item E
   ++powerItemIt;
   pItemPower = (*powerItemIt);
