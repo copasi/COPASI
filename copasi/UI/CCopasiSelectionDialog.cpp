@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14.4.1 $
+//   $Revision: 1.14.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/14 14:48:28 $
+//   $Author: pwilly $
+//   $Date: 2008/10/15 09:34:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,16 +151,48 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
+  std::cout << "Size = " << Selection.size() << std::endl;
+
   int Result = pDialog->exec();
 
   if (Result == QDialog::Accepted && Selection.size() != 0)
     //    return Selection[0];
     {
-      const CCopasiObject *pObject = Selection[0];
+      const CCopasiObject *pObject;
 
-      chooseCellMatrix(pObject);
+      std::cout << "Name = " << Selection[0]->getObjectName() << " - Type = " << Selection[0]->getObjectType() << std::endl;
+      std::cout << "Parent Name = " << Selection[0]->getObjectParent()->getObjectName() << " - Type = " << Selection[0]->getObjectParent()->getObjectType() << std::endl;
 
-      return Selection[0];
+      if (Selection[0]->getObjectType() == "Array")
+        {
+          pObject = chooseCellMatrix(Selection[0]);
+          if (!pObject) return NULL;
+          C_FLOAT64 *pValue = (C_FLOAT64 *) pObject->getValuePointer();
+          if (pValue != NULL)
+            std::cout << "value = " << *pValue << std::endl;
+        }
+      else if (Selection[0]->getObjectParent()->getObjectType() == "Array")
+        {
+          pObject = chooseCellMatrix(Selection[0]->getObjectParent());
+          if (!pObject) return NULL;
+          C_FLOAT64 *pValue = (C_FLOAT64 *) pObject->getValuePointer();
+          if (pValue != NULL)
+            std::cout << "value = " << *pValue << std::endl;
+        }
+      else
+        pObject = Selection[0];
+
+      if (!pObject)
+        return NULL;
+
+      std::cout << "Name = " << pObject->getObjectName() << " - Type = " << pObject->getObjectType() << std::endl;
+      std::cout << "Parent Name = " << pObject->getObjectParent()->getObjectName() << " - Type = " << pObject->getObjectParent()->getObjectType() << std::endl;
+      std::cout << "CN: " << pObject->getCN() << std::endl;
+      std::cout << "CN Parent: " << pObject->getObjectParent()->getCN() << std::endl;
+      //      chooseCellMatrix(pObject);
+
+      //      return Selection[0];
+      return pObject;
     }
 
   if (Result == QDialog::Rejected && pCurrentObject != NULL)
@@ -239,28 +271,33 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     }
 }
 
-void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
+const CCopasiObject *
+CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
 {
-  const CArrayAnnotation * tmp = dynamic_cast<const CArrayAnnotation *> (pObject);
+  CArrayAnnotation * tmp = (CArrayAnnotation *) pObject;
+  std::string str;
 
-  if (tmp != NULL)
+  CQMatrixDialog *dialog = new CQMatrixDialog();
+  dialog->setCaption(tr("Cell Selection of " + FROM_UTF8(tmp->getDescription())));
+  dialog->setArray(tmp);
+
+  int Result = dialog->exec();
+
+  if (Result == QDialog::Rejected)
+    return NULL;
+  else if (Result == QDialog::Accepted)
     {
-      int nRows = tmp->getAnnotationsCN(0).size();
-      int nCols = tmp->getAnnotationsCN(1).size();
+      QString str = "[" + dialog->mpCBRow->currentText() + "][" + dialog->mpCBColumn->currentText() + "]";
+      std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << " -> " << str << std::endl;
 
-      if (!nRows || !nCols)
-        return;
+      CCopasiAbstractArray::index_type index;
+      index.resize(tmp->dimensionality());
+      index[0] = dialog->mpCBRow->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
+      index[1] = dialog->mpCBColumn->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
 
-      CQMatrixDialog *dialog = new CQMatrixDialog();
-      dialog->setArray(tmp);
+      C_FLOAT64 value = (*tmp->array())[index];
+      std::cout << "its value = " << value << std::endl;
 
-      int Result = dialog->exec();
-
-      if (Result == QDialog::Rejected)
-        return;
-      else if (Result == QDialog::Accepted)
-        std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
-
-      // TODO We need to return the selected object.
+      return tmp->addElementReference(index);
     }
 }
