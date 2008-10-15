@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/08 15:50:43 $
+//   $Date: 2008/10/15 07:11:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1343,6 +1343,8 @@ CNormalCall * createCall(const CEvaluationNode* node)
     {
       // create a call object and add all children
       pCall = new CNormalCall();
+      // set the name
+      pCall->setName(node->getData());
       const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(node->getChild());
       while (pChild != NULL)
         {
