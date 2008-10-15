@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Date: 2008/10/15 16:51:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
  * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Stefan Hoops 2002
+ * Created for COPASI by Stefan Hoops 2002
  */
 
 #ifndef COPASI_CTrajectoryTask
@@ -42,7 +42,7 @@ class CTrajectoryTask : public CCopasiTask
     //Attributes
   public:
     /**
-     * The methods which can be selected for preforming this task.
+     * The methods which can be selected for performing this task.
      */
     static const unsigned C_INT32 ValidMethods[];
 
@@ -67,6 +67,11 @@ class CTrajectoryTask : public CCopasiTask
      * A pointer to the trajectory method
      */
     CTrajectoryMethod * mpTrajectoryMethod;
+
+    /**
+     * Indicates whether we need to update moieties.
+     */
+    bool mUpdateMoieties;
 
     /**
      * A pointer to the current state of the integration.
@@ -132,7 +137,7 @@ class CTrajectoryTask : public CCopasiTask
     bool processStep(const C_FLOAT64 & nextTime);
 
     /**
-     * Perform neccessary cleaup procedures
+     * Perform necessary cleanup procedures
      */
     virtual bool restore();
 

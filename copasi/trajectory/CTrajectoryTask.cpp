@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.94.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Date: 2008/10/15 16:51:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
  * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Stefan Hoops 2002
+ * Created for COPASI by Stefan Hoops 2002
  */
 
 #include <string>
@@ -75,6 +75,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     mTimeSeries(),
     mpTrajectoryProblem(NULL),
     mpTrajectoryMethod(NULL),
+    mUpdateMoieties(false),
     mpCurrentState(NULL),
     mpCurrentTime(NULL)
 {
@@ -83,7 +84,10 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::deterministic,
         (CTrajectoryProblem *) mpProblem);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
 }
 
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
@@ -93,6 +97,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
     mTimeSeries(),
     mpTrajectoryProblem(NULL),
     mpTrajectoryMethod(NULL),
+    mUpdateMoieties(false),
     mpCurrentState(NULL),
     mpCurrentTime(NULL)
 {
@@ -103,9 +108,14 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
     CTrajectoryMethod::createTrajectoryMethod(src.mpMethod->getSubType(),
         static_cast< CTrajectoryProblem *>(mpProblem));
   * mpMethod = * src.mpMethod;
+
   mpMethod->elevateChildren();
 
   this->add(mpMethod, true);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
 }
 
 CTrajectoryTask::~CTrajectoryTask()
@@ -130,7 +140,11 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   pdelete(mpMethod);
   mpMethod = CTrajectoryMethod::createTrajectoryMethod();
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
+
   ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
 
@@ -149,6 +163,10 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   mpTrajectoryMethod->setProblem(mpTrajectoryProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
 
   pdelete(mpCurrentState);
   mpCurrentState = new CState(mpTrajectoryProblem->getModel()->getState());
@@ -261,7 +279,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   catch (int)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateSimulatedValues(true);
+      mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -277,7 +295,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateSimulatedValues(true);
+      mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -330,7 +348,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateSimulatedValues(true);
+      mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       return true;
     }
@@ -352,7 +370,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateSimulatedValues(true);
+      mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       return true;
     }
@@ -370,7 +388,7 @@ bool CTrajectoryTask::restore()
       CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues(true);
+      pModel->updateSimulatedValues(mUpdateMoieties);
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
     }
@@ -390,7 +408,10 @@ bool CTrajectoryTask::setMethodType(const int & type)
     CTrajectoryMethod::createTrajectoryMethod(Type,
         (CTrajectoryProblem *) mpProblem);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
 
   return true;
 }
