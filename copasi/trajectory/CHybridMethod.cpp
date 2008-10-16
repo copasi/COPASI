@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.53.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Author: jpahle $
+//   $Date: 2008/10/16 10:17:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,6 +213,12 @@ void CHybridMethod::step(const double & deltaT)
     }
   mpCurrentState->setTime(time);
 
+  if ((i >= mMaxSteps) && (!mMaxStepsReached))
+    {
+      mMaxStepsReached = true; //only report this message once
+      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
+    }
+
   // get back the particle numbers
 
   /* Set the variable metabolites */
@@ -235,7 +241,12 @@ void CHybridMethod::start(const CState * initialState)
   else
     mDoCorrection = false;
 
+  mHasAssignments = modelHasAssignments(mpModel);
+
   mpProblem->getModel()->setState(*mpCurrentState);
+
+  mpModel->updateSimulatedValues(false); //for assignments
+  //mpModel->updateNonSimulatedValues(); //for assignments
 
   // call init of the simulation method, can be overloaded in derived classes
   initMethod(mpCurrentState->getTime());
@@ -258,7 +269,8 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mAmuOld.clear();
   mAmuOld.resize(mpReactions->size());
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolitesX()));
-  mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
+  //old  mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
+  mNumVariableMetabs = mpCurrentState->getNumVariable(); // mpBeginFixed - mpBeginIndependent
 
   temp.clear();
   temp.resize(mNumVariableMetabs);
@@ -299,6 +311,8 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   setupMetab2React(); // initialize mMetab2React
   setupPartition(); // initialize mReactionFlags
   setupPriorityQueue(start_time); // initialize mPQ
+
+  mMaxStepsReached = false;
 
   //deprecated:  mOutputFileName = string(DEFAULT_OUTPUT_FILE);
   //deprecated:  mOutputFile.open(DEFAULT_OUTPUT_FILE); // DEFAULT_OUTPUT_FILE in CHybridMethod.h
@@ -530,7 +544,9 @@ void CHybridMethod::setState(std::vector <C_FLOAT64> & source)
   for (i = 0; i < mNumVariableMetabs; i++)
     {
       (*mpMetabolites)[i]->setValue(source[i]);
+      (*mpMetabolites)[i]->refreshConcentration();
     }
+  mpModel->updateSimulatedValues(false); //for assignments
   return;
 }
 
@@ -652,8 +668,8 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   C_FLOAT64 amu = 1; // initially
   //C_INT32 total_substrates = 0;
   C_INT32 num_ident = 0;
-  C_INT32 number = 0;
-  C_INT32 lower_bound;
+  C_INT64 number = 0;
+  C_INT64 lower_bound;
   // substrate_factor - The substrates, raised to their multiplicities,
   // multiplied with one another. If there are, e.g. m substrates of type m,
   // and n of type N, then substrate_factor = M^m * N^n.
@@ -674,7 +690,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
       if (num_ident > 1)
         {
           flag = 1;
-          number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
+          number = static_cast<C_INT64>(floor((*mpMetabolites)[substrates[i].mIndex]->getValue()));
           lower_bound = number - num_ident;
           //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
           substrate_factor = substrate_factor * pow((double) number, (int) num_ident - 1); //optimization
@@ -864,7 +880,7 @@ void CHybridMethod::setupDependencyGraph()
       // Get the set of metabolites which are affected when this reaction takes place
       Affects.push_back(getAffects(i));
     }
-
+  mDG.resize(numReactions);
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
   for (i = 0; i < numReactions; i++)
@@ -1007,6 +1023,7 @@ void CHybridMethod::setupPartition()
         {
           mMetabFlags[i] = LOW;
           (*mpMetabolites)[i]->setValue(floor((*mpMetabolites)[i]->getValue()));
+          (*mpMetabolites)[i]->refreshConcentration();
         }
       else
         mMetabFlags[i] = HIGH;
@@ -1122,6 +1139,7 @@ void CHybridMethod::partitionSystem()
         {
           mMetabFlags[i] = LOW;
           (*mpMetabolites)[i]->setValue(floor((*mpMetabolites)[i]->getValue()));
+          (*mpMetabolites)[i]->refreshConcentration();
           // go through all corresponding reactions and update flags
           for (iter = mMetab2React[i].begin(), iterEnd = mMetab2React[i].end(); iter != iterEnd; iter++)
             {
@@ -1676,4 +1694,43 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   // nothing to be done here
 
   return true;
+}
+
+//static
+bool CHybridMethod::modelHasAssignments(const CModel* pModel)
+{
+  C_INT32 i, imax = pModel->getNumModelValues();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getModelValues()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getNumMetabs();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getMetabolites()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getCompartments().size();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getCompartments()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  return false;
 }

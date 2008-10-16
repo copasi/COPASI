@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.22.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/02/20 23:51:28 $
+//   $Author: jpahle $
+//   $Date: 2008/10/16 10:17:29 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -325,6 +330,12 @@ class CHybridMethod : public CTrajectoryMethod
     static C_INT32 checkModel(CModel * model);
 
     /**
+     * tests if the model contains a global value with an assignment rule that is
+     * used in calculations
+     */
+    static bool modelHasAssignments(const CModel* pModel);
+
+    /**
      *   Sets up an internal representation of the balances for each reaction.
      *   This is done in order to be able to deal with fixed metabolites and
      *   to avoid a time consuming search for the indices of metabolites in the
@@ -462,7 +473,7 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   Pointer to the model
      */
-    const CModel * mpModel;
+    CModel * mpModel;
 
     /**
      *   Dimension of the system. Total number of metabolites.
@@ -473,6 +484,8 @@ class CHybridMethod : public CTrajectoryMethod
      *   Max number of doSingleStep() per step()
      */
     unsigned C_INT32 mMaxSteps;
+
+    bool mMaxStepsReached;
 
     /**
      *   Specifies if the mRandomSeed should be used.
@@ -624,6 +637,13 @@ class CHybridMethod : public CTrajectoryMethod
      *   Output counter.
      */
     C_INT32 mOutputCounter;
+
+    /**
+     * Indicates whether the model has global quantities with assignment rules.
+     * If it has, we will use a less efficient way to update the model
+     * state to handle this.
+     */
+    bool mHasAssignments;
 
   private:
   };
