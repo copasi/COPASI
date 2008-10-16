@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.94.2.1 $
+//   $Revision: 1.94.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/15 16:51:53 $
+//   $Date: 2008/10/16 13:08:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,8 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
 }
 
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
@@ -116,6 +118,8 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
 }
 
 CTrajectoryTask::~CTrajectoryTask()
@@ -167,6 +171,8 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
 
   pdelete(mpCurrentState);
   mpCurrentState = new CState(mpTrajectoryProblem->getModel()->getState());
@@ -412,6 +418,8 @@ bool CTrajectoryTask::setMethodType(const int & type)
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
 
   return true;
 }
