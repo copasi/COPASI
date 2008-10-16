@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalProduct.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/01 06:11:48 $
+//   $Date: 2008/10/16 13:47:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -505,17 +505,28 @@ void CNormalProduct::setItemPowers(const std::set<CNormalItemPower*, compareItem
 bool CNormalProduct::simplify()
 {
   bool result = true;
-  std::set<CNormalItemPower*, compareItemPowers>::iterator it = this->mItemPowers.begin(), endit = this->mItemPowers.end();
-
+  // don't work on the items in the set directly
+  // make a copy, otherwise the set will be messed up
+  std::set<CNormalItemPower*, compareItemPowers> itemPowersCopy(this->mItemPowers);
+  std::set<CNormalItemPower*, compareItemPowers>::iterator it = itemPowersCopy.begin(), endit = itemPowersCopy.end();
+  CNormalItemPower* pTmpItemPower = NULL;
+  this->mItemPowers.clear();
   while (it != endit && result == true)
     {
-      result = (*it)->simplify();
+      pTmpItemPower = *it;
+      result = pTmpItemPower->simplify();
+      if (result)
+        {
+          this->multiply(*pTmpItemPower);
+        }
+      delete pTmpItemPower;
       ++it;
     }
   // we should combine all general power items of type power into
   // one large general power item which is again simplified
   // this we only do if the CNormalItemPower parent has an exponent of 1
   it = this->mItemPowers.begin();
+  endit = this->mItemPowers.end();
   std::vector<CNormalItemPower*> tmpV;
   // create a unit CNormalItemPower with one unit CNormalGeneralPower
   // and an exponent of 1

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/15 09:47:58 $
+//   $Date: 2008/10/16 13:47:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,28 +37,28 @@
 
 #include "copasi/utilities/CCopasiMessage.h"
 
-bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2)
-{
-  // first compare the factors
-  if (product1->getFactor() < product2->getFactor())
-    {
-      return true;
-    }
-  else if (product2->getFactor() < product1->getFactor())
-    {
-      return false;
-    }
-  std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
-  std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = product1->getItemPowers().end();
-  std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
-  std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = product2->getItemPowers().end();
-  for (it = product1->getItemPowers().begin(), it2 = product2->getItemPowers().begin(); (it != itEnd) && (it2 != it2End); ++it, ++it2)
-    {
-      if (**it < **it2) return true;
-      if (**it2 < **it) return false;
-    }
-  return (product1->getItemPowers().size() < product2->getItemPowers().size());
-}
+bool compareProducts::operator()(const CNormalProduct* product1, const CNormalProduct* product2) const
+  {
+    // first compare the factors
+    if (product1->getFactor() < product2->getFactor())
+      {
+        return true;
+      }
+    else if (product2->getFactor() < product1->getFactor())
+      {
+        return false;
+      }
+    std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
+    std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = product1->getItemPowers().end();
+    std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2;
+    std::set<CNormalItemPower*, compareItemPowers >::const_iterator it2End = product2->getItemPowers().end();
+    for (it = product1->getItemPowers().begin(), it2 = product2->getItemPowers().begin(); (it != itEnd) && (it2 != it2End); ++it, ++it2)
+      {
+        if (**it < **it2) return true;
+        if (**it2 < **it) return false;
+      }
+    return (product1->getItemPowers().size() < product2->getItemPowers().size());
+  }
 
 /**
  * Default constructor
@@ -77,7 +77,7 @@ CNormalSum::CNormalSum(const CNormalSum& src): CNormalBase(src)
   for (it = src.mProducts.begin(); it != itEnd; ++it)
     {
       pTmpProduct = *it;
-      std::string s = pTmpProduct->toString();
+      //std::string s = pTmpProduct->toString();
       assert(mProducts.insert(new CNormalProduct(*pTmpProduct)).second == true);
     }
 
@@ -139,7 +139,9 @@ int CNormalSum::getSize() const
 bool CNormalSum::add(const CNormalProduct& product)
 {
   if (fabs(product.getFactor()) < 1.0E-100)
-    return true;
+    {
+      return true;
+    }
   std::set<CNormalProduct*, compareProducts >::iterator it;
   std::set<CNormalProduct*, compareProducts >::iterator itEnd = mProducts.end();
   for (it = mProducts.begin(); it != itEnd; ++it)
@@ -147,6 +149,11 @@ bool CNormalSum::add(const CNormalProduct& product)
       if ((*it)->checkSamePowerList(product))
         {
           (*it)->setFactor((*it)->getFactor() + product.getFactor());
+          // if this results in a 0, remove the item
+          if (fabs((*it)->getFactor()) < 1.0E-100)
+            {
+              mProducts.erase(*it);
+            }
           return true;
         }
     }
@@ -283,7 +290,7 @@ bool CNormalSum::multiply(const CNormalSum& sum)
  */
 bool CNormalSum::multiply(const CNormalLcm& lcm)
 {
-  std::string s = lcm.toString();
+  //std::string s = lcm.toString();
   std::set<CNormalProduct*, compareProducts > tmpProducts = mProducts;
   mProducts.clear();
   std::set<CNormalProduct*, compareProducts >::const_iterator it2;
@@ -301,7 +308,7 @@ bool CNormalSum::multiply(const CNormalLcm& lcm)
   for (it = mFractions.begin(); it != itEnd; ++it)
     {
       const CNormalSum* summand2 = (*it)->multiply(lcm);
-      std::string s2 = (*it)->toString();
+      //std::string s2 = (*it)->toString();
       assert(summand2 != NULL);
       add(*summand2);
       delete summand2;
@@ -539,10 +546,19 @@ void CNormalSum::setFractions(const std::set<CNormalFraction*>& set)
 bool CNormalSum::simplify()
 {
   bool result = true;
-  std::set<CNormalFraction*>::iterator it3 = this->mFractions.begin(), endit3 = this->mFractions.end();
+  // it is a bad idea to work directly on the items in the set.
+  // this messes up the set
+  // better copy the set first
+  std::set<CNormalFraction*> fractionsCopy(this->mFractions);
+  this->mFractions.clear();
+  std::set<CNormalFraction*>::iterator it3 = fractionsCopy.begin(), endit3 = fractionsCopy.end();
+  CNormalFraction* pTmpFraction = NULL;
   while (it3 != endit3)
     {
-      (*it3)->simplify();
+      pTmpFraction = *it3;
+      pTmpFraction->simplify();
+      this->add(*pTmpFraction);
+      delete pTmpFraction;
       ++it3;
     }
   std::set<CNormalProduct*, compareProducts>::iterator it = this->mProducts.begin(), endit = this->mProducts.end();
@@ -554,39 +570,41 @@ bool CNormalSum::simplify()
   // afterwards, we have to simplify all products and all fractions again
   std::vector<CNormalBase*> newProducts;
   // go through all products and check the denominators
+  CNormalProduct* pTmpProduct;
   while (it != endit)
     {
-      (*it)->simplify();
-      if ((*it)->getItemPowers().size() == 1 &&
-          fabs(((*(*it)->getItemPowers().begin())->getExp() - 1.0) / 1.0) < 1e-12 &&
-          (*(*it)->getItemPowers().begin())->getItemType() == CNormalItemPower::POWER &&
-          ((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getRight().checkNumeratorOne() &&
-          ((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getRight().checkDenominatorOne()
+      pTmpProduct = *it;
+      pTmpProduct->simplify();
+      if (pTmpProduct->getItemPowers().size() == 1 &&
+          fabs(((*pTmpProduct->getItemPowers().begin())->getExp() - 1.0) / 1.0) < 1e-12 &&
+          (*pTmpProduct->getItemPowers().begin())->getItemType() == CNormalItemPower::POWER &&
+          ((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getRight().checkNumeratorOne() &&
+          ((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getRight().checkDenominatorOne()
 )
         {
-          if (((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().checkDenominatorOne())
+          if (((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().checkDenominatorOne())
             {
-              newProducts.push_back(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().getNumerator().copy());
+              newProducts.push_back(((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().getNumerator().copy());
             }
           else
             {
-              newProducts.push_back(((CNormalGeneralPower&)(*(*it)->getItemPowers().begin())->getItem()).getLeft().copy());
+              newProducts.push_back(((CNormalGeneralPower&)(*pTmpProduct->getItemPowers().begin())->getItem()).getLeft().copy());
             }
-          delete (*it);
+          delete pTmpProduct;
         }
       else
         {
           // if the denominator is not NULL, transform the product to a fraction
-          CNormalGeneralPower* pDenom = (*it)->getDenominator();
+          CNormalGeneralPower* pDenom = pTmpProduct->getDenominator();
           if (pDenom == NULL || pDenom->checkIsOne())
             {
-              newProducts.push_back((*it));
+              newProducts.push_back(pTmpProduct);
             }
           else
             {
               // before creating the product, the denominators of all general items in
               // the product have to be set to 1 by calling setDenominatorsOne on the product
-              (*it)->setDenominatorsOne();
+              pTmpProduct->setDenominatorsOne();
               CNormalFraction* pFraction = NULL;
               if (pDenom->getRight().checkIsOne())
                 {
@@ -606,7 +624,7 @@ bool CNormalSum::simplify()
                   // numerator is the product of all items
                   pFraction = new CNormalFraction();
                   CNormalSum* pSum = new CNormalSum();
-                  pSum->add(**it);
+                  pSum->add(*pTmpProduct);
                   pFraction->setNumerator(*pSum);
                   delete pSum;
                   // now we have to invert the general fraction that is the
@@ -629,7 +647,7 @@ bool CNormalSum::simplify()
                   pFraction->setDenominator(*pTmpSum);
                   delete pTmpSum;
                 }
-              delete (*it);
+              delete pTmpProduct;
               newProducts.push_back(pFraction);
             }
           if (pDenom != NULL) delete pDenom;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/07 18:26:49 $
+//   $Date: 2008/10/16 13:47:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ class CNormalLcm;
 class compareProducts
   {
   public:
-    bool operator()(const CNormalProduct* product1, const CNormalProduct* product2);
+    bool operator()(const CNormalProduct* product1, const CNormalProduct* product2) const;
   };
 
 /**

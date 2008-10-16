@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_simplify.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/15 15:42:33 $
+//   $Date: 2008/10/16 13:47:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,6 +110,7 @@ void test_simplify::test_simplify_1()
   delete pProduct;
   pProduct = new CNormalProduct();
   pProduct->multiply(*pZ);
+  pZ->simplify();
   delete pZ;
   pSum->add(*pProduct);
   delete pProduct;
@@ -181,8 +182,16 @@ void test_simplify::test_simplify_1()
   pProduct->multiply(*pItemD);
   pItemPower = new CNormalItemPower();
   pItemPower->setExp(0.5);
-  pItemPower->setItem(*pY);
+  pGeneralPower = new CNormalGeneralPower();
+  pGeneralPower->setType(CNormalGeneralPower::POWER);
+  pGeneralPower->setLeft(*pY);
+  pY->simplify();
   delete pY;
+  pFraction = CNormalFraction::createUnitFraction();
+  pGeneralPower->setRight(*pFraction);
+  delete pFraction;
+  pItemPower->setItem(*pGeneralPower);
+  delete pGeneralPower;
   pProduct->multiply(*pItemPower);
   pSum->add(*pProduct);
   delete pProduct;
@@ -199,7 +208,7 @@ void test_simplify::test_simplify_1()
   pSum = &pW->getNumerator();
   // (-8) * B * C * D * E
   pProduct = new CNormalProduct();
-  pProduct->multiply(8.0);
+  pProduct->multiply(-8.0);
   pProduct->multiply(*pItemB);
   pProduct->multiply(*pItemC);
   pProduct->multiply(*pItemD);
@@ -208,6 +217,7 @@ void test_simplify::test_simplify_1()
   delete pProduct;
 
   pSum->add(*pX);
+  pX->simplify();
   delete pX;
   delete pItemA;
   delete pItemB;
@@ -216,7 +226,23 @@ void test_simplify::test_simplify_1()
   delete pItemE;
   delete pItemF;
   // test what simplify does to this
+  pProduct = new CNormalProduct();
+  pItemPower = new CNormalItemPower();
+  pItemPower->setExp(1.0);
+  pGeneralPower = new CNormalGeneralPower();
+  pGeneralPower->setType(CNormalGeneralPower::POWER);
+  pFraction = CNormalFraction::createUnitFraction();
+  pGeneralPower->setRight(*pFraction);
+  delete pFraction;
+  pGeneralPower->setLeft(*pW);
+  pItemPower->setItem(*pGeneralPower);
+  pGeneralPower->simplify();
+  delete pGeneralPower;
+  pProduct->multiply(*pItemPower);
+  pItemPower->simplify();
+  delete pItemPower;
   pW->simplify();
-
+  pProduct->simplify();
+  delete pProduct;
   delete pW;
 }
