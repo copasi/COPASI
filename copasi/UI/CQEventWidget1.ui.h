@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:13:43 $
+//   $Author: pwilly $
+//   $Date: 2008/10/16 07:40:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,7 +269,7 @@ void CQEventWidget1::init()
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   mExpressionTriggerValid = false;
-  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  //  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   mExpressionEAValid = false;
   mpExpressionEA->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
@@ -900,10 +900,10 @@ bool CQEventWidget1::leave()
   return true;
 }
 
-/// Slot to select an object from the existing ones
+/// Slot to select an object from the existing ones -only- for target.
 void CQEventWidget1::slotSelectObject()
 {
-  CCopasiSimpleSelectionTree::SelectionFlag mExpressionType = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
+  CCopasiSimpleSelectionTree::SelectionFlag mExpressionType = CCopasiSimpleSelectionTree::TARGET_EVENT;
 
   QString oldText = mpLBTarget->currentText();
   QString newText = mpLBTarget->currentText();
