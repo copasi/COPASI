@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.75.2.1 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/10/02 16:32:34 $
+//   $Author: ssahle $
+//   $Date: 2008/10/16 20:09:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ class SliderDialog;
 class CQTrajectoryWidget;
 class SteadyStateWidget;
 class ScanWidget;
+class CQMCAWidget;
 class QPushButton;
 class QLabel;
 class QHBox;
@@ -115,6 +116,7 @@ class CopasiUI3Window : public QMainWindow
     CQTrajectoryWidget* getTrajectoryWidget();
     SteadyStateWidget* getSteadyStateWidget();
     ScanWidget* getScanWidget();
+    CQMCAWidget* getMCAWidget();
 
     void checkPendingMessages();
     void suspendAutoSave(const bool & suspend);

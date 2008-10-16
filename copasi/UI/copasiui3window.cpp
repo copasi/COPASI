@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242 $
+//   $Revision: 1.242.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/02 18:40:59 $
+//   $Author: ssahle $
+//   $Date: 2008/10/16 20:09:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1449,6 +1449,11 @@ SteadyStateWidget* CopasiUI3Window::getSteadyStateWidget()
 ScanWidget* CopasiUI3Window::getScanWidget()
 {
   return listViews->scanWidget;
+}
+
+CQMCAWidget* CopasiUI3Window::getMCAWidget()
+{
+  return listViews->mpCQMCAWidget;
 }
 
 void CopasiUI3Window::checkPendingMessages()
