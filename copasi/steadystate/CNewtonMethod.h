@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.28.6.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 16:30:55 $
+//   $Author: ssahle $
+//   $Date: 2008/10/17 22:09:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,8 @@ class CNewtonMethod : public CSteadyStateMethod
       stepSuccesful
     };
 
+    //these member variables contain configuration information, mostly they
+    //are initialized from the CCopasiParameters
     bool mUseNewton;
     bool mUseIntegration;
     bool mUseBackIntegration;
@@ -57,6 +59,8 @@ class CNewtonMethod : public CSteadyStateMethod
     bool mForceNewton;
     bool mKeepProtocol;
     C_INT32 mIterationLimit;
+    C_FLOAT64 mMaxDurationForward;
+    C_FLOAT64 mMaxDurationBackward;
 
     C_INT mDimension;
     C_FLOAT64 * mpX;

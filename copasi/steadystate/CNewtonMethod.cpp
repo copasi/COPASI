@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.88.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:14 $
+//   $Author: ssahle $
+//   $Date: 2008/10/17 22:09:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,8 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
   assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
   assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
+  assertParameter("Maximum duration for forward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e9);
+  assertParameter("Maximum duration for backward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e6);
   //assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
   //assertParameter("Keep Protocol", CCopasiParameter::BOOL, true);
 
@@ -181,8 +183,10 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
 CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 {
   C_FLOAT64 iterationFactor = forward ? 10.0 : 2.0;
-  C_FLOAT64 maxDuration = forward ? 1e10 : -1e8;
-  C_FLOAT64 minDuration = forward ? 1e-1 : -1e-2;
+  C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
+  //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
+  C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
+                              : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   unsigned C_INT32 hProcess;
@@ -211,7 +215,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   bool stepLimitReached;
   C_FLOAT64 duration;
 
-  for (duration = minDuration; fabs(duration) < fabs(maxDuration); duration *= iterationFactor, Step++)
+  for (duration = minDuration; fabs(duration) <= fabs(maxDuration); duration *= iterationFactor, Step++)
     {
       if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
@@ -733,6 +737,17 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  if (*getValue("Maximum duration for forward integration").pUDOUBLE <= 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERRoR, "Maximum duration for forward integration needs to be positive.");
+      return false;
+    }
+  if (*getValue("Maximum duration for backward integration").pUDOUBLE <= 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERRoR, "Maximum duration for backward integration needs to be positive.");
+      return false;
+    }
+
   return true;
 }
 
@@ -763,6 +778,10 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mKeepProtocol = true;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
+
+  mMaxDurationForward = *getValue("Maximum duration for forward integration").pUDOUBLE;
+  mMaxDurationBackward = *getValue("Maximum duration for backward integration").pUDOUBLE;
+
   //mFactor = * getValue("Derivation Factor").pUDOUBLE;
   //mSSResolution = * getValue("Steady State Resolution").pUDOUBLE;
   //mScaledResolution =
