@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.53.6.1 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/05/20 11:15:31 $
+//   $Date: 2008/10/17 07:34:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53 2008/05/20 11:15:31 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.1 2008/10/17 07:34:50 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -54,6 +54,8 @@
 
 //temporary
 #include "mathematics.h"
+
+#include "UI/CCopasiSelectionDialog.h"
 
 //-----------------------------------------------------------------------------
 
@@ -274,18 +276,39 @@ void PlotWidget1::addCurve2D()
   std::vector<CCopasiObjectName> objects1, objects2;
   unsigned C_INT32 i;
   std::vector<CCopasiObjectName>::const_iterator sit;
+  const CArrayAnnotation *pArray;
 
-  //translate to CNs and remove duplicates
+  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
+  // 2. translate to CNs and remove duplicates
   for (i = 0; i < pVector1->size(); i++)
-    if ((*pVector1)[i])
+    if ((*pVector1)[i])  // the object is not empty
       {
-        cn = (*pVector1)[i]->getCN();
+        // the type is Array
+        if ((*pVector1)[i]->getObjectType() == "Array")
+          {
+            const CCopasiObject *pObject = (*pVector1)[i];
+
+            pArray = (CArrayAnnotation *) pObject;
+            pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray);
+            cn = pObject->getCN();
+          }
+        else
+          cn = (*pVector1)[i]->getCN();
+
+        std::cout << "cn : " << cn << std::endl;
+        std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
+
+        // check whether cn is alreadyon objects1
         for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-          if (*sit == cn) break;
+          {
+            if (*sit == cn) break;
+          }
+
+        // if not exist, input cn into objects1
         if (sit == objects1.end())
           {
             objects1.push_back(cn);
-            //std::cout << "***" << cn << std::endl;
+            std::cout << "***" << cn << std::endl;
           }
       }
 
