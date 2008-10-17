@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14.4.4 $
+//   $Revision: 1.14.4.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/17 10:38:14 $
+//   $Date: 2008/10/17 10:47:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,6 +223,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
   pDialog->setArray(pArrayAnnotation);
 
   std::vector<const CCopasiObject*> returnvector;
+  returnvector.resize(1);
 
   int Result = pDialog->exec();
 
@@ -232,6 +233,8 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       index.resize(pArrayAnnotation->dimensionality());
       index[0] = pDialog->mpCBRow->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
       index[1] = pDialog->mpCBColumn->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
+
+      returnvector[0] = pArrayAnnotation->addElementReference(index);
 
       return returnvector; //pArrayAnnotation->addElementReference(index);
     }
