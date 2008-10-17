@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14.2.1 $
+//   $Revision: 1.14.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 19:44:47 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 19:08:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -277,15 +277,15 @@ void CTSSAMethod::integrationStep(const double & deltaT)
          &ITOL, //  6. error control
          &mRtol, //  7. relative tolerance array
          mAtol.array(), //  8. absolute tolerance array
-         &mState, //  9. output by overshoot & interpolatation
+         &mState, //  9. output by overshoot & interpolation
          &mLsodaStatus, // 10. the state control variable
-         &one, // 11. futher options (one)
+         &one, // 11. further options (one)
          mDWork.array(), // 12. the double work array
          &DSize, // 13. the double work array size
          mIWork.array(), // 14. the int work array
          &ISize, // 15. the int work array size
          NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of jacobian calculate (2)
+         &mJType);        // 17. the type of Jacobian calculate (2)
 
   if (mLsodaStatus == -1)
     mLsodaStatus = 2;
@@ -728,7 +728,7 @@ void CTSSAMethod::schur(C_INT &info)
 
   if (info)
     {
-      //  std::cout << "Problems with schur decomposition " << std::endl;
+      //  std::cout << "Problems with Schur decomposition " << std::endl;
 
       return;
     }
@@ -1391,7 +1391,7 @@ void CTSSAMethod::schur_desc(C_INT &info)
 /**
 SYLVESTER:
 Solution of Sylvester equation for given slow, mQ,mR
-Output: mTd, mTdinverse, mQz (is used later for newton iterations)
+Output: mTd, mTdinverse, mQz (is used later for Newton iterations)
  */
 
 void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
@@ -1528,7 +1528,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   /*  if (info) TODO*/
   if (info)
     {
-      //    std::cout << "Problems with the solution of sylvester equation" << std::endl;
+      //    std::cout << "Problems with the solution of Sylvester equation" << std::endl;
       return;
     }
 
@@ -1619,9 +1619,9 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
 
   if (flag_sylvester == 0)
     {
-      std::cout << " Matrix S = mTdInverse *Jacobian * mTd  " << std::endl;
-      std::cout << S << std::endl;
-      std::cout << std::endl;
+      // std::cout << " Matrix S = mTdInverse *Jacobian * mTd  " << std::endl;
+      // std::cout << S << std::endl;
+      // std::cout << std::endl;
     }
 
   for (i = 0; i < dim; i++)
@@ -1933,7 +1933,7 @@ void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * yd
 //  flag_jacob=0  to print Jacobian
 //  flag_schur=0  to print matrices of Schur decomposition
 //  flag_tab =0 to print the Tabs with slow space Analysis
-//  flag_deufl=0 to prove the deuflhard algorithm
+//  flag_deufl=0 to prove the Deuflhard algorithm
 //  flag_Td =0  to print the transformation matrices mTd and mTdInverse
 //  flag_sylvester=0  to print the transformed Jacobian:  mTdInverse*Jacobian_initial*mTd (should be diagonal)
 //  flag_norm =0 for printing "norm story"
@@ -1956,21 +1956,21 @@ void CTSSAMethod::emptyVectors()
 {}
 
 /**
- *upgrade all vectors with values from actually calculalion for current step
+ *upgrade all vectors with values from actually calculation for current step
  **/
 void CTSSAMethod::setVectors(int slowMode)
 {}
 
 /**
  * Create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget.
- * Input for each CArraAnnotations is a seperate CMatrix.
+ * Input for each CArraAnnotations is a separate CMatrix.
  **/
 void CTSSAMethod::createAnnotationsM()
 {}
 /**
  * Set the every CArrayAnnotation for the requested step.
- * Set also the desription of CArayAnnotation for both dimensions:
- *    - dimension description could consists of some std::srings
+ * Set also the description of CArayAnnotation for both dimensions:
+ *    - dimension description could consists of some std::strings
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/

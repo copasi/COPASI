@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.2 $
+//   $Revision: 1.32.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/13 16:45:29 $
+//   $Date: 2008/10/17 19:08:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -357,7 +357,7 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
   if (cs && cs->isUsed())
     {
       cs = NULL; //don´t accept a scaler that is already used
-      std::cout << "tried to use a color scale several times!" << std::endl;
+      // std::cout << "tried to use a color scale several times!" << std::endl;
     }
   if (mpColorScale)
     delete mpColorScale;
@@ -441,7 +441,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       mpSelectionTable->setItem(i, 1, new QComboTableItem(mpSelectionTable, combolist));
       //mpSelectionTable->adjustRow(i);
 
-      //set first combobox to "In rows", second to "In colums" and all other to the
+      //set first combobox to "In rows", second to "In columns" and all other to the
       //first object in the annotations list
       if (i < 2)
         setCurrentItem(i, i);

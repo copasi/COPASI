@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.86.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/07 11:18:17 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 19:08:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -430,7 +430,7 @@ void CQLayoutMainWindow::createMenus()
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
-  std::cout << "load SBMLfile" << std::endl;
+  // std::cout << "load SBMLfile" << std::endl;
   CListOfLayouts *pLayoutList;
   if (CCopasiDataModel::Global != NULL)
     {
@@ -791,7 +791,7 @@ QIconSet CQLayoutMainWindow::createStopIcon()
   return iconset;
 }
 
-// returns true because window is opened from Copasi and can be easily reopened
+// returns true because window is opened from COPASI and can be easily reopened
 bool CQLayoutMainWindow::maybeSave()
 {
   //  int ret = QMessageBox::warning(this, "SimWiz",

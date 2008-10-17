@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.177 $
+//   $Revision: 1.177.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Date: 2008/10/17 19:08:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 // Derived from Gepasi's cstep.cpp
 // (C) Pedro Mendes 1995-2000
 //
-// Converted for Copasi by Stefan Hoops
+// Converted for COPASI by Stefan Hoops
 
 #include "copasi.h"
 
@@ -116,7 +116,7 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 
     if (Name == "ParticleFlux")
       return "1/" + pModel->getTimeUnitName();
-    else if (Name == "Fux")
+    else if (Name == "Flux")
       return pModel->getConcentrationRateUnitName();
 
     return "";
@@ -267,7 +267,7 @@ void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 v
 
   if (!updateStatus) return;
 
-  //make shure that this local parameter is actually used:
+  //make sure that this local parameter is actually used:
 
   //first find index
   CFunctionParameter::DataType Type;
@@ -618,7 +618,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
                                   1, CChemEq::MODIFIER);
         }
 
-      //just throw away the rest (the gepasi files gives all metabs, not only
+      //just throw away the rest (the Gepasi files gives all species, not only
       //those that influence the kinetics)
       for (i = imax; i < n; i++)
         {
@@ -819,7 +819,7 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
   os << "CReaction:  " << d.getObjectName() << std::endl;
-  os << "   sbml id:  " << d.mSBMLId << std::endl;
+  os << "   SBML id:  " << d.mSBMLId << std::endl;
 
   os << "   mChemEq " << std::endl;
   os << d.mChemEq;
@@ -901,7 +901,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      // check wether it is a substrate, a product or a modifier
+                      // check whether it is a substrate, a product or a modifier
                       bool found = false;
                       const CCopasiVector<CChemEqElement>* v = &this->getChemEq().getSubstrates();
                       unsigned int i;
@@ -1226,7 +1226,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           // later I might have to find out if I have to create a generic
           // function or a kinetic function
           // this can be distinguished by looking if the replacement map
-          // constains CFunctionParameters that don't have the usage PARAMETER
+          // contains CFunctionParameters that don't have the usage PARAMETER
 
           // create a unique name first
           std::string functionName = "function_4_" + this->getObjectName();
@@ -1505,4 +1505,6 @@ std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
   }
 
 void CReaction::printDebug() const
-  {std::cout << *this;}
+  {
+    // std::cout << *this;
+  }

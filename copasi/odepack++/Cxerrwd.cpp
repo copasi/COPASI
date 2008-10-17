@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/Cxerrwd.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/Cxerrwd.cpp,v $
+  $Revision: 1.5.28.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/10/17 19:08:14 $
+  End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 //
@@ -17,10 +22,9 @@
 
 #include "Cxerrwd.h"
 
-Cxerrwd::Cxerrwd(const bool & print,
-                 std::ostream & os):
+Cxerrwd::Cxerrwd(const bool & print):
     mPrint(print),
-    mpOstream(&os)
+    mpOstream(NULL)
 {}
 
 Cxerrwd::~Cxerrwd() {}
@@ -99,7 +103,7 @@ void Cxerrwd::operator() (const std::string & msg, const C_INT *, const C_INT *,
   /*  Get logical unit number and message print flag. */
 
   /* ***FIRST EXECUTABLE STATEMENT  XERRWD */
-  if (!mPrint)
+  if (!mPrint && !mpOstream)
     {
       goto L100;
     }

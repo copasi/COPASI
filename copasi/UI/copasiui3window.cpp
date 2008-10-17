@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242.2.1 $
+//   $Revision: 1.242.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/16 20:09:24 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 19:08:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,7 +212,7 @@ CopasiUI3Window * CopasiUI3Window::create()
  *  this QObject. It's particularly useful in conjunction with the Qt Designer.
  *  You can find an object by name (and type) using child(), and more than one
  *  using queryList().
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation
+ *  @param flags Flags for this widget. Refer Qt::WidgetFlags of Qt documentation
  *  for more information about these flags.
  */
 CopasiUI3Window::CopasiUI3Window():
@@ -553,7 +553,7 @@ void CopasiUI3Window::createMenuBar()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the save as
+ ** Description:- This method is called when the users clicks on the save as
  **              option in the menu File
  *******************************************************************************************/
 bool CopasiUI3Window::slotFileSaveAs(QString str)
@@ -616,7 +616,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the new as
+ ** Description:- This method is called when the users clicks on the new as
  **              option in the menu File
  **
  *******************************************************************************************/
@@ -673,7 +673,7 @@ void CopasiUI3Window::newDoc()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on Open
+ ** Description:- This method is called when the users clicks on Open
  **              option in the menu File
  *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen(QString file)
@@ -849,7 +849,7 @@ bool CopasiUI3Window::slotFileSave()
   if (!Line.compare(0, 8, "Version=") ||
       strcasecmp(FileName.c_str(), ".gps") == 0)
     {
-      /* Ask for permision to overwrite write? */
+      /* Ask for permission to overwrite write? */
       /* If no call slotFileSaveAs */
       choice =
         CQMessageBox::warning(this,
@@ -1255,7 +1255,7 @@ void CopasiUI3Window::slotExportSBML()
                     + CDirEntry::baseName(CCopasiDataModel::Global->getFileName())
                     + ".xml");
 
-      // we need a new dialog the lets the user choose different levels of sbml as soon as support for export to those versions
+      // we need a new dialog the lets the user choose different levels of SBML as soon as support for export to those versions
       // has been implemented.
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
         CQSBMLFileDialog::getSaveFileName(this, "Export SBML Dialog", Default,
@@ -1488,7 +1488,7 @@ void CopasiUI3Window::checkPendingMessages()
           CQMessageBox box(this);
           if (text.isEmpty())
             text = "There were no serious issues encountered during the import of SBML. "
-                   "However some minor issues have occured, which can be viewed in the Minor "
+                   "However some minor issues have occurred, which can be viewed in the Minor "
                    "Issues tab.";
           box.configure(QString("COPASI Message"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
           box.enableFilteredMessages(true);
@@ -1509,7 +1509,7 @@ void CopasiUI3Window::updateTitle()
 {
   QString FileName = FROM_UTF8(CCopasiDataModel::Global->getFileName());
 
-#ifdef WIN32 // Windows allows mixxing of '/' and '\' as separator.
+#ifdef WIN32 // Windows allows mixing of '/' and '\' as separator.
   FileName.replace("\\", "/");
 #endif
 
@@ -1834,7 +1834,7 @@ bool CopasiUI3Window::slotRegistration()
 #ifdef COPASI_SBW_INTEGRATION
 void CopasiUI3Window::customEvent(QCustomEvent * event)
 {
-  // handle the file event, that is import the sbml file
+  // handle the file event, that is import the SBML file
   if (event->type() == 65433)
     {
       try

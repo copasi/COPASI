@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.13.2.3 $
+//   $Revision: 1.13.2.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/13 16:24:38 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 19:08:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ CLayout::CLayout(const CLayout & src,
     mvGraphicalObjects(src.mvGraphicalObjects, this)
 {
   //TODO references from one glyph to another have to be reconstructed after
-  //     copying. This applies to Labels and metab reference glyphs
+  //     copying. This applies to Labels and species reference glyphs
 }
 
 CLayout::CLayout(const Layout & sbml,
@@ -164,7 +164,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
   {
     os << "digraph G {\n";
 
-    //metab glyphs
+    //species glyphs
     unsigned C_INT32 i, imax = mvMetabs.size();
     for (i = 0; i < imax; ++i)
       {
@@ -188,8 +188,8 @@ void CLayout::exportToDotFile(std::ostream & os) const
               writeDotEdge(os, mrg->getMetabGlyphKey(), mvReactions[i]->getKey() + "_S");
             else if (mrg->getRole() == CLMetabReferenceGlyph::PRODUCT)
               writeDotEdge(os, mvReactions[i]->getKey() + "_P", mrg->getMetabGlyphKey());
-            else
-              std::cout << "!!!!" << std::endl;
+            // else
+            //   std::cout << "!!!!" << std::endl;
           }
       }
 
@@ -234,11 +234,11 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
     Dimensions tmpDim = mDimensions.getSBMLDimensions();
     layout->setDimensions(&tmpDim);
 
-    //some of the following code is not used at the moment:  the copasi model map
+    //some of the following code is not used at the moment:  the COPASI model map
     //does not contain glyphs. Since this may change in the future I leave the code
     //below.
 
-    // create a map from copasi layout object to sbml objects. We do not put
+    // create a map from COPASI layout object to SBML objects. We do not put
     //the layout objects into the global map (copasimodelmap) but we need to have
     //access to all objects in the current layout since speciesReferenceGlyph and
     //textGlyph need to reference other graphical objects.
@@ -379,7 +379,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
       {
         const CLTextGlyph * tmp = mvLabels[i];
 
-        //find the corresponding sbml object
+        //find the corresponding SBML object
         std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
         if (it != layoutmap.end() && it->second && dynamic_cast<const TextGlyph*>(it->second))
           {

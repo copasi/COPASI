@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/25 11:31:41 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 19:08:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
     CEvaluationNode();
 
     /**
-     * Unequals operator, compares two CEvaluationNode objects and return true if
+     * Unequal operator, compares two CEvaluationNode objects and return true if
      * they are equal.
      */
     virtual bool operator!=(const CEvaluationNode& right) const;
@@ -152,7 +152,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
     virtual bool compile(const CEvaluationTree * pTree);
 
     /**
-     * Retrieve the value of the node. This method is superceded
+     * Retrieve the value of the node. This method is superseded
      * value() which will perform faster.
      * @return const Data value
      */
@@ -238,7 +238,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
 
     /**
      * Comparison operator used to evaluate the precedence of the node.
-     * it compares the right precdence of the left node with the left
+     * it compares the right precedence of the left node with the left
      * precedence of the right node.
      * @param const CEvaluationNode & rhs;
      * @return bool isLess
@@ -259,7 +259,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
                              bool expand = true,
                              unsigned C_INT32 l = 0) const;
 
-    void printRecursively(std::ostream & os = std::cout, int indent = 0) const;
+    void printRecursively(std::ostream & os, int indent = 0) const;
 
     void printRecursively() const;
 
@@ -298,7 +298,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
     Data mData;
 
     /**
-     * Structure holding the precednce information
+     * Structure holding the precedence information
      * The Precedence Table
      * ====================
      *

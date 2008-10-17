@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14.4.6 $
+//   $Revision: 1.14.4.7 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/17 17:13:41 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 19:08:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
-  std::cout << "Size = " << Selection.size() << std::endl;
+  // std::cout << "Size = " << Selection.size() << std::endl;
 
   int Result = pDialog->exec();
 
@@ -215,7 +215,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
 }
 
 std::vector<const CCopasiObject*>
-CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value)
+CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool /* value */)
 {
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
