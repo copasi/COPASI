@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.122.4.1 $
+//   $Revision: 1.122.4.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 19:39:31 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 15:33:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,6 +228,7 @@ const MESSAGES Messages[] =
     {MCSBML + 72, "SBML (72): Error in eventassignment. Eventassignments may only assign values to compartments, species or global parameters, object with id \"%s\" is neither compartment, species or global parameter. Ignoring assignment."},
     {MCSBML + 73, "SBML (73): Could not export %s. %s has been ignored."},
     {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
+    {MCSBML + 75, "SBML (75): Invalid id RDF/XML found and corrected."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

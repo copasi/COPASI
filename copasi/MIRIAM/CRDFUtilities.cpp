@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFUtilities.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/18 20:27:43 $
+//   $Date: 2008/10/17 15:33:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,78 +24,27 @@ unsigned C_INT32 CRDFUtilities::fixLocalFileAboutReference(std::string & rdfXml,
   if (newId == oldId || rdfXml == "")
     return 0;
 
-  // Determine the name space qualifier for:
-  // http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  std::string::size_type start =
-    rdfXml.find("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-
-  // TODO this is acutally an error and we need to create a message
-  if (start == std::string::npos)
-    return 0;
-
-  // We need to backtrack to find the qualifier
-  std::string::size_type end = rdfXml.rfind('=', start);
-
-  // TODO this is acutally an error and we need to create a message
-  if (end == std::string::npos)
-    return 0;
-
-  start = rdfXml.rfind(':', end);
-
-  // TODO this is acutally an error and we need to create a message
-  if (start == std::string::npos)
-    return 0;
-
-  start++;
-  std::string Qualifier = rdfXml.substr(start, end - start);
+  // Determine the name space qualifier for http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  std::string Qualifier =
+    getNameSpaceQualifier(rdfXml, "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
   // Find all Qualifier:Description elements where the Qualifier:about attribute is
   // "#oldId"
-  start = 0;
+  std::string::size_type start = 0;
+  std::string::size_type end = 0;
   unsigned C_INT32 count = 0;
+
   // Find the next Qualifier:Description element.
-  while ((start = rdfXml.find("<" + Qualifier + ":Description", start)) != std::string::npos)
+  while (findNextElement(rdfXml, Qualifier + "Description", start, end))
     {
       // Determine the end of the element, i.e, a > which is not enclosed in " or '
       std::string::size_type pos = start;
-      bool ignoreSingle = false;
-      bool ignoreDouble = false;
-      bool ignore = false;
-      for (end = rdfXml.length(); pos < end; ++pos)
-        {
-          switch (rdfXml[pos])
-            {
-            case '\'':
-              if (!ignoreDouble)
-                {
-                  ignore = !ignore;
-                  ignoreSingle = !ignoreSingle;
-                }
-              break;
-
-            case '\"':
-              if (!ignoreSingle)
-                {
-                  ignore = !ignore;
-                  ignoreDouble = !ignoreDouble;
-                }
-              break;
-
-            case '>':
-              if (!ignore)
-                end = pos;
-              break;
-
-            default:
-              break;
-            }
-        }
 
       // Check whether we have a Qualifier:about attribute
-      pos = rdfXml.find(Qualifier + ":about=", start);
+      pos = rdfXml.find(Qualifier + "about=", start);
       if (pos < end && pos != std::string::npos)
         {
-          pos += Qualifier.length() + 7;
+          pos += Qualifier.length() + 6;
           const char Quote = rdfXml[pos];
           pos++; // advance past Quote
 
@@ -115,11 +64,167 @@ unsigned C_INT32 CRDFUtilities::fixLocalFileAboutReference(std::string & rdfXml,
                 }
             }
         }
-
-      start = end;
     }
 
   return count;
+}
+
+// static
+unsigned C_INT32 CRDFUtilities::fixSBMLRdf(std::string & rdfXml)
+{
+  // Fix broken SBML RDF:
+  // <dc:creator rdf:parseType="Resource">
+  //   <rdf:Bag>
+  // It is not allowed to use the attribute rdf:parseType="Resource" and <rdf:Bag> simultaneously
+
+  // Nothing to do
+  if (rdfXml == "")
+    return 0;
+
+  // Determine the name space qualifier for:
+  std::string Qualifier =
+    getNameSpaceQualifier(rdfXml, "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+
+  std::string::size_type start = 0;
+  std::string::size_type end = 0;
+  std::string::size_type pos = 0;
+  unsigned C_INT32 count = 0;
+
+  // We first look for all elements having the attribute rdf:parseType="Resource"
+  while (findNextElement(rdfXml, "", start, end))
+    {
+      if ((pos = std::min(rdfXml.find(Qualifier + "parseType=\"Resource\"", start),
+                          rdfXml.find(Qualifier + "parseType='Resource'", start))) > end)
+        continue;
+
+      // We found the attribute.
+      // Check whether the next element is an rdf:Bag
+      // Remember the current candidate
+      std::string::size_type currentStart = start;
+      std::string::size_type currentEnd = end;
+      if (findNextElement(rdfXml, "", start, end) &&
+          findNextElement(rdfXml, Qualifier + "Bag", currentStart, currentEnd) &&
+          start == currentStart &&
+          end == currentEnd)
+        {
+          // The next element is a bag element. We therefore have to remove the attribute.
+          rdfXml.erase(pos, Qualifier.length() + 20);
+          end -= Qualifier.length() + 20;
+
+          count++;
+        }
+    }
+
+  return count;
+}
+
+// static
+std::string CRDFUtilities::getNameSpaceQualifier(const std::string & rdfXml,
+    const std::string & nameSpace)
+{
+  std::string::size_type start = 0;
+  std::string::size_type end = 0;
+
+  while (true)
+    {
+      // Locate first name space declaration
+      start = rdfXml.find("xmlns:", end);
+      if (start == std::string::npos)
+        break;
+
+      start += 6;
+      end = rdfXml.find("=", start);
+      if (end == std::string::npos)
+        break;
+
+      if (rdfXml.compare(end + 1, nameSpace.length() + 2, "\"" + nameSpace + "\"") &&
+          rdfXml.compare(end + 1, nameSpace.length() + 2, "'" + nameSpace + "'"))
+        continue;
+
+      // We have the qualifier
+      return rdfXml.substr(start, end - start) + ":";
+    }
+
+  return "";
+}
+
+// static
+bool CRDFUtilities::findNextElement(const std::string & rdfXml,
+                                    const std::string & elementName,
+                                    std::string::size_type & start,
+                                    std::string::size_type & end)
+{
+  static std::string WhiteSpace = "\x20\x09\x0D\x0A";
+
+  bool ignore = false;
+  bool ignoreDouble = false;
+  bool ignoreSingle = false;
+
+  if (end >= rdfXml.length())
+    return false;
+
+  std::string::const_iterator it = rdfXml.begin() + end;
+  std::string::const_iterator itEnd = rdfXml.end();
+
+  if (*it == '>' && it < itEnd) ++it;
+
+  start = std::string::npos;
+  end = std::string::npos;
+
+  while (true)
+    {
+      for (; it < itEnd && end == std::string::npos; ++it)
+        {
+          switch (*it)
+            {
+            case '\'':
+              if (!ignoreDouble)
+                {
+                  ignore = !ignore;
+                  ignoreSingle = !ignoreSingle;
+                }
+              break;
+
+            case '\"':
+              if (!ignoreSingle)
+                {
+                  ignore = !ignore;
+                  ignoreDouble = !ignoreDouble;
+                }
+              break;
+
+            case '<':
+              if (!ignore)
+                start = it - rdfXml.begin();
+              break;
+
+            case '>':
+              if (!ignore && start != std::string::npos)
+                end = it - rdfXml.begin();
+              break;
+
+            default:
+              break;
+            }
+        }
+
+      if (end == std::string::npos)
+        return false;
+
+      if (elementName == "")
+        return true;
+
+      std::string::size_type NameStart = rdfXml.find_first_not_of(WhiteSpace, start + 1);
+      std::string::size_type NameEnd = rdfXml.find_first_of(WhiteSpace + "/>", NameStart);
+
+      if (rdfXml.substr(NameStart, NameEnd - NameStart) == elementName)
+        return true;
+
+      start = std::string::npos;
+      end = std::string::npos;
+    }
+
+  return false;
 }
 
 CRDFUtilities::CRDFUtilities()
