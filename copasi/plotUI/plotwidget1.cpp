@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53.6.1 $
+//   $Revision: 1.53.6.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/17 07:34:50 $
+//   $Author: ssahle $
+//   $Date: 2008/10/17 10:37:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.1 2008/10/17 07:34:50 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.2 2008/10/17 10:37:05 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -289,7 +289,7 @@ void PlotWidget1::addCurve2D()
             const CCopasiObject *pObject = (*pVector1)[i];
 
             pArray = (CArrayAnnotation *) pObject;
-            pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray);
+            pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
             cn = pObject->getCN();
           }
         else

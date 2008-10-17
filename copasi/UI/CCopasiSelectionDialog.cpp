@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14.4.3 $
+//   $Revision: 1.14.4.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/15 20:13:31 $
+//   $Author: ssahle $
+//   $Date: 2008/10/17 10:38:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
       const CArrayAnnotation * pArray;
 
       if ((pArray = dynamic_cast< const CArrayAnnotation * >(pObject)))
-        pObject = chooseCellMatrix(pArray);
+        pObject = chooseCellMatrix(pArray, true, true)[0];
 
       return pObject;
     }
@@ -190,27 +190,39 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   else
     //    return Selection;
     {
-      std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
 
+      std::vector<const CCopasiObject *> newSelection;
+
+      std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
       for (; itSelection != Selection.end(); ++itSelection)
         {
           const CArrayAnnotation * pArray;
-
           if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
-            * itSelection = chooseCellMatrix(pArray);
+            {
+              std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, true, true); //TODO value flag
+              std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+              for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
+                newSelection.push_back(*tmpit);
+            }
+          else
+            {
+              newSelection.push_back(*itSelection);
+            }
         }
 
-      return Selection;
+      return newSelection;
     }
 }
 
-const CCopasiObject *
-CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation)
+std::vector<const CCopasiObject*>
+CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value)
 {
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
   pDialog->setCaption(tr("Cell Selection of " + FROM_UTF8(pArrayAnnotation->getDescription())));
   pDialog->setArray(pArrayAnnotation);
+
+  std::vector<const CCopasiObject*> returnvector;
 
   int Result = pDialog->exec();
 
@@ -221,8 +233,8 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       index[0] = pDialog->mpCBRow->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
       index[1] = pDialog->mpCBColumn->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
 
-      return pArrayAnnotation->addElementReference(index);
+      return returnvector; //pArrayAnnotation->addElementReference(index);
     }
 
-  return NULL;
+  return returnvector;
 }
