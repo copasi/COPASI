@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.3 $
+//   $Revision: 1.18.2.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/15 01:05:45 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 20:09:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -509,7 +509,7 @@ void CQTSSAResultSubWidget::changeILDMModifiedInterval()
   mpTimeScaleWidgetILDMModified->paintTimeScale(pILDMModifiedMethod->getVec_TimeScale(step));
 }
 
-void CQTSSAResultSubWidget::displayCSPDevelopment(bool displayCSPTab)
+void CQTSSAResultSubWidget::displayCSPDevelopment(bool /* displayCSPTab */)
 {
   tabWidget2->removePage(TabPage_CSP);
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.14.4.2 $
+//   $Revision: 1.14.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:16 $
+//   $Date: 2008/10/17 20:09:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,7 +306,7 @@ void CQEventWidget1::slotExpressionDelayValid(bool valid)
 }
 
 /*! Slot to enable the Commit button if the mathematical expression of Trigger is valid */
-void CQEventWidget1::slotExpressionTriggerValid(bool valid)
+void CQEventWidget1::slotExpressionTriggerValid(bool /* valid */)
 {
   // std::cout << "CQEW1::slotExpressionTriggerValid - valid = " << valid << std::endl;
 
@@ -319,7 +319,7 @@ void CQEventWidget1::slotExpressionTriggerValid(bool valid)
 }
 
 /*! Slot to enable the Commit button if the mathematical expression of EventAssignment is valid */
-void CQEventWidget1::slotExpressionEAValid(bool valid)
+void CQEventWidget1::slotExpressionEAValid(bool /* valid */)
 {
   // std::cout << "CQEW1::slotExpressionEAValid - valid = " << valid << std::endl;
 
@@ -1100,7 +1100,6 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   std::string text = "";
   std::string objName = takeObjectName(mpLBTarget->currentText());
 
-  unsigned int jk;
   // for (jk = 0; jk < mObjectKeyDisplayName.size(); jk++)
   // std::cout << "Key = " << mObjectKeyDisplayName[jk].first << " - Display Name = " << mObjectKeyDisplayName[jk].second << std::endl;
 

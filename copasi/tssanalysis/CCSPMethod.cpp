@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.4 $
+//   $Revision: 1.8.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:14 $
+//   $Date: 2008/10/17 20:08:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -360,7 +360,7 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
   return;
 }
 
-void CCSPMethod::cspstep(const double & deltaT, C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
+void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
 {
 
   C_INT reacs_size = mpModel->getReactions().size();
@@ -903,11 +903,10 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
   return;
 }
 
-void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
+void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & /* R */)
 {
 
-  C_INT i, m, r;
-  const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
+  // const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
 
   // std::cout << "Amplitudes of reaction modes :" << std::endl;
 
@@ -1246,7 +1245,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
           ampl[i] += fabs(P(i, r) * flux[r]);
         }
 
-      C_FLOAT64 tmp;
+      C_FLOAT64 tmp = 0.0;
 
       for (j = 0; j < N; ++j)
         tmp += B0(i, j) * mYerror[j];
@@ -1356,7 +1355,7 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 }
 
 /* compute  amplitudes of fast and slow modes */
-void CCSPMethod::modesAmplitude(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
+void CCSPMethod::modesAmplitude(C_INT & N, C_INT & /* M */, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
 {
 
   C_INT i, j;
@@ -1551,7 +1550,7 @@ void CCSPMethod::calculateJacobianX(C_INT & N, CVector<C_FLOAT64> & y, CMatrix <
 }
 
 /* "true" if each  of the analyzed M  modes is exhausted */
-bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLOAT64 & tauM1 , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
+bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLOAT64 & /* tauM1 */ , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
 {
   C_INT i, j;
   C_FLOAT64 tmp;
@@ -1668,12 +1667,11 @@ void CCSPMethod::createAnnotationsM()
  **/
 void CCSPMethod::setAnnotationM(int step)
 {
-  double timeScale;
   std::string str;
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
-  int i, j;
+  int i;
 
   if (!step) return;
   step -= 1;

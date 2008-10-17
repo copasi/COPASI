@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14.2.2 $
+//   $Revision: 1.14.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:14 $
+//   $Date: 2008/10/17 20:08:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -490,8 +490,7 @@ MAT_ANAL_fast_space:  mathematical analysis of matrices mTdInverse for post-anal
 
 void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
 {
-  C_FLOAT64 denom, length;
-  C_FLOAT64 scalar_product, absolute_value_1, absolute_value_2;
+  C_FLOAT64 scalar_product, absolute_value_1;
   C_INT i, j, k, dim;
 
   dim = mData.dim;
@@ -1958,7 +1957,7 @@ void CTSSAMethod::emptyVectors()
 /**
  *upgrade all vectors with values from actually calculation for current step
  **/
-void CTSSAMethod::setVectors(int slowMode)
+void CTSSAMethod::setVectors(int /* slowMode */)
 {}
 
 /**
@@ -1974,5 +1973,5 @@ void CTSSAMethod::createAnnotationsM()
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-void CTSSAMethod::setAnnotationM(int step)
+void CTSSAMethod::setAnnotationM(int /* step */)
 {}

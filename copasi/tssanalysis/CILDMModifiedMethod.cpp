@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.7.2.2 $
+//   $Revision: 1.7.2.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/13 22:38:58 $
+//   $Author: shoops $
+//   $Date: 2008/10/17 20:08:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -950,7 +950,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
 
       // stop criterion of newton method
 
-      C_FLOAT64 g1, g2;
+      C_FLOAT64 g1, g2 = 0.0;
       if (iter == 1)
         g1 = 3.0 * err;
       else
