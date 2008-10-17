@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53.6.2 $
+//   $Revision: 1.53.6.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/17 10:37:05 $
+//   $Date: 2008/10/17 15:40:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.2 2008/10/17 10:37:05 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.3 2008/10/17 15:40:23 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -47,6 +47,7 @@
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
+#include "utilities/CAnnotatedMatrix.h"
 #include "UI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -284,7 +285,7 @@ void PlotWidget1::addCurve2D()
     if ((*pVector1)[i])  // the object is not empty
       {
         // the type is Array
-        if ((*pVector1)[i]->getObjectType() == "Array")
+        if (dynamic_cast< const CArrayAnnotation * >((*pVector1)[i]))
           {
             const CCopasiObject *pObject = (*pVector1)[i];
 
@@ -295,8 +296,8 @@ void PlotWidget1::addCurve2D()
         else
           cn = (*pVector1)[i]->getCN();
 
-        std::cout << "cn : " << cn << std::endl;
-        std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
+        //std::cout << "cn : " << cn << std::endl;
+        //std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
 
         // check whether cn is alreadyon objects1
         for (sit = objects1.begin(); sit != objects1.end(); ++sit)
@@ -308,7 +309,7 @@ void PlotWidget1::addCurve2D()
         if (sit == objects1.end())
           {
             objects1.push_back(cn);
-            std::cout << "***" << cn << std::endl;
+            //std::cout << "***" << cn << std::endl;
           }
       }
 
