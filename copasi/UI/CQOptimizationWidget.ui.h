@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.27.2.1 $
+//   $Revision: 1.27.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/15 15:15:43 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 11:20:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,9 +161,14 @@ void CQOptimizationWidget::slotConstraintNumberChanged(int number)
 
 void CQOptimizationWidget::init()
 {
-  mpHeaderWidget->setTaskName("Optimization");
+  std::string taskName = "Optimization";
 
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
+  mpHeaderWidget->setTaskName(taskName);
+
+  //  mpExpressionEMW->mpExpressionWidget->setName(FROM_UTF8(taskName));
+
+  //  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION);
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQOptimizationWidgetLayout->addWidget(mpBtnWidget);
@@ -183,6 +188,7 @@ void CQOptimizationWidget::init()
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
 
   mpParameters = new CQFittingItemWidget(mpParametersPage);
+  //  mpParameters->setName(FROM_UTF8(taskName));
 
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
   mpParameterPageLayout->addWidget(mpParameters);
@@ -190,6 +196,8 @@ void CQOptimizationWidget::init()
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
+  //  mpConstraints->setName(FROM_UTF8(taskName));
+
   mpConstraints->setItemType(CQFittingItemWidget::OPT_CONSTRAINT);
   mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
