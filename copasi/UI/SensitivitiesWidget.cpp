@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.29.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/12 01:14:58 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 11:14:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -645,7 +645,8 @@ void
 SensitivitiesWidget::on_SingleVariableChooser_clicked()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE);
 
   if (pObject)
     {
@@ -661,7 +662,8 @@ void
 SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE);
 
   if (pObject)
     {
