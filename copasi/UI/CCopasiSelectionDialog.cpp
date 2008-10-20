@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14.4.7 $
+//   $Revision: 1.14.4.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 19:08:16 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 10:54:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
+#include "CQMessageBox.h"
 
 CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
     QDialog(parent, name, modal),
@@ -151,18 +152,35 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
-  // std::cout << "Size = " << Selection.size() << std::endl;
+  //std::cout << "Size = " << Selection.size() << std::endl;
+  //std::cout << "parent: " << parent->name() << " - class: " << parent->className() << std::endl;
 
   int Result = pDialog->exec();
 
   if (Result == QDialog::Accepted && Selection.size() != 0)
     {
-      const CCopasiObject *pObject = Selection[0];;
+      const CCopasiObject *pObject = Selection[0];
       const CArrayAnnotation * pArray;
 
+      // if the selected object is an array then select firstly one cell of it
       if ((pArray = dynamic_cast< const CArrayAnnotation * >(pObject)))
-        pObject = chooseCellMatrix(pArray, true, true)[0];
+        {
+          //std::cout << "pArray->getCN() = " << pArray->getCN() << std::endl;
 
+          if (flag == CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION ||
+               flag == CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE ||
+               flag == CCopasiSimpleSelectionTree::PLOT_OBJECT)
+            pObject = chooseCellMatrix(pArray, true, true)[0];
+
+          if (!pObject) return NULL;
+        }
+
+      // just only show the object value
+      /*
+      C_FLOAT64 *pValue = (C_FLOAT64 *) pObject->getValuePointer();
+      if (pValue != NULL)
+      std::cout << "value = " << *pValue << std::endl;
+      */
       return pObject;
     }
 
@@ -185,33 +203,42 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 
+  //std::cout << "Parent widget = " << parent->className() << " - " << parent->name() << std::endl;
+
   if (pDialog->exec() == QDialog::Rejected && pCurrentSelection)
-    return *pCurrentSelection; // TO DO: What is different between *pCurrentSelection and Selection ??
+    return *pCurrentSelection;
   else
     //    return Selection;
     {
-
-      std::vector<const CCopasiObject *> newSelection;
-
-      std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
-      for (; itSelection != Selection.end(); ++itSelection)
+      if (flag == CCopasiSimpleSelectionTree::REPORT_ITEM)
         {
-          const CArrayAnnotation * pArray;
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
-            {
-              std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, true, true); //TODO value flag
-              std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
-              for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
-                newSelection.push_back(*tmpit);
-            }
-          else
-            {
-              newSelection.push_back(*itSelection);
-            }
-        }
+          std::vector<const CCopasiObject *> newSelection;
 
-      return newSelection;
+          std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
+          for (; itSelection != Selection.end(); ++itSelection)
+            {
+              // if the current object is an array then select firstly one cell of it
+              const CArrayAnnotation * pArray;
+              if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
+                {
+                  // second parameter is false in order 'ALL' options on the matrix dialog to appear
+                  std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
+                  std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+                  for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
+                    newSelection.push_back(*tmpit);
+                }
+              // otherwise, just put it into newSelection
+              else
+                {
+                  newSelection.push_back(*itSelection);
+                }
+            }
+          return newSelection;
+        }
+      return Selection;
     }
+
+  //  return Selection;
 }
 
 std::vector<const CCopasiObject*>
@@ -219,11 +246,14 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 {
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
-  pDialog->setCaption(tr("Cell Selection of " + FROM_UTF8(pArrayAnnotation->getDescription())));
+  pDialog->setCaption(tr("Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
   pDialog->setArray(pArrayAnnotation, single);
 
-  std::vector<const CCopasiObject*> returnvector;
-  returnvector.resize(1);
+  std::vector< const CCopasiObject* > returnVector;
+  if (single)
+    returnVector.resize(1);
+  else
+    returnVector.resize(0);
 
   int Result = pDialog->exec();
 
@@ -231,13 +261,148 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
     {
       CCopasiAbstractArray::index_type index;
       index.resize(pArrayAnnotation->dimensionality());
-      index[0] = pDialog->mpCBRow->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
-      index[1] = pDialog->mpCBColumn->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
+      if (index.size() > 2)
+        CQMessageBox::warning(0, "Dimensionality Problem", "Need more handle for high dimension of array",
+                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
 
-      returnvector[0] = pArrayAnnotation->addElementReference(index);
+      if (single)
+        {
+          // single cell selection
+          //std::cout << "single cell selection" << std::endl;
 
-      return returnvector; //pArrayAnnotation->addElementReference(index);
+          if (value)
+            {
+              index[0] = pDialog->mpCBRow->currentItem();
+              index[1] = pDialog->mpCBColumn->currentItem();
+              /*
+                  C_FLOAT64 value = (*pArrayAnnotation->array())[index];
+                  std::cout << "its value = " << value << std::endl;
+              */
+              returnVector[0] = pArrayAnnotation->addElementReference(index);
+            }
+
+          return returnVector;
+        }
+
+      // multi cell selection
+      if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0)
+        {
+          // whole matrix should be chosen -> the object itself will be returned
+          //std::cout << "whole matrix should be chosen" << std::endl;
+          returnVector.resize(1);
+          returnVector[0] = (CCopasiObject *) pArrayAnnotation;
+          return returnVector;
+        }
+
+      /*   if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0)
+         {
+        // whole matrix should be chosen
+        std::cout << "whole matrix should be chosen" << std::endl;
+
+        if (value)
+        {
+          int nRows = pArrayAnnotation->size()[0];
+          int nCols = pArrayAnnotation->size()[1];
+          int i, j;
+          for (i=0; i<nRows; i++)
+          {
+         for (j=0; j<nCols; j++)
+         {
+           returnVector.push_back(pArrayAnnotation->addElementReference(i,j));
+         }
+          }
+        }
+        else
+          returnVector.push_back((CCopasiObject *) pArrayAnnotation);
+
+        return returnVector;
+         }
+         else if (pDialog->mpCBRow->currentItem() && pDialog->mpCBColumn->currentItem())
+         {
+           // a cell should be chosen
+        std::cout << "a cell should be chosen" << std::endl;
+
+        if (value)
+        {
+          index[0] = pDialog->mpCBRow->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
+          index[1] = pDialog->mpCBColumn->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
+
+          C_FLOAT64 value = (*pArrayAnnotation->array())[index];
+          std::cout << "its value = " << value << std::endl;
+
+          returnVector.push_back(pArrayAnnotation->addElementReference(index));
+        }
+
+        return returnVector; //pArrayAnnotation->addElementReference(index);
+         }
+         else
+         {
+      */     // an entire row/column should be chosen
+      // TODO: do something
+      //std::cout << "an entire row/column should be chosen" << std::endl;
+
+      if (value)
+        {
+          int nRows, nCols;
+          int i, j, jj;
+
+          if (pDialog->mpCBRow->currentItem())
+            {
+              // not ALL option
+              i = pDialog->mpCBRow->currentItem() - 1;
+              nRows = i + 1;
+            }
+          else
+            {
+              // ALL option
+              i = 0;
+              nRows = pArrayAnnotation->size()[0];
+            }
+
+          if (pDialog->mpCBColumn->currentItem())
+            {
+              // not ALL option
+              jj = pDialog->mpCBColumn->currentItem() - 1;
+              nCols = jj + 1;
+            }
+          else
+            {
+              // ALL option
+              jj = 0;
+              nCols = pArrayAnnotation->size()[1];
+            }
+
+          for (; i < nRows; i++)
+            {
+              j = jj;
+              for (; j < nCols; j++)
+                {
+                  returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
+                  /*
+                       index[0] = i;
+                       index[1] = j;
+
+                       C_FLOAT64 value = (*pArrayAnnotation->array())[index];
+                       std::cout << "index [" << i << "][" << j << "] - its value = " << value << std::endl;
+
+                       returnVector.push_back(pArrayAnnotation->addElementReference(index));
+                  */
+                }
+            }
+        }
+
+      //std::cout << "returnVector.size() = " << returnVector.size() << std::endl;
+      return returnVector;
+      //}
     }
 
-  return returnvector;
+  else
+    {
+      // Rejected case
+      if (single)
+        returnVector[0] = NULL;
+
+      return returnVector;
+    }
+  //  return returnVector;
 }
