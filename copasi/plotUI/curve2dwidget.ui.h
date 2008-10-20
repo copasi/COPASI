@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.22.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/03/13 19:59:11 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 10:47:06 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -97,7 +102,8 @@ void Curve2DWidget::buttonPressedX()
 {
   if (!mpModel) return;
 
-  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectX);
+  //  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectX);
+  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectX);
 
   if (mpObjectX)
     {
@@ -117,7 +123,8 @@ void Curve2DWidget::buttonPressedY()
 {
   if (!mpModel) return;
 
-  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectY);
+  //  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectY);
+  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectY);
 
   if (mpObjectY)
     {
