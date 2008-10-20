@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.5 $
+//   $Revision: 1.26.4.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/15 16:18:42 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 11:05:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -352,27 +352,37 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   if (StoiMatrix.array())
     {
       pObject = pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
-      //      pItem = new QListViewItem(matrixSubtree, "Stoichiometry(ann)");
-      pItem = new QListViewItem(mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
-      treeItems[pItem] = pObject;
+      //std::cout << "isArray? : " << pObject->isArray() << std::endl;
+      if (filter(flag, pObject))
+        {
+          //      pItem = new QListViewItem(matrixSubtree, "Stoichiometry(ann)");
+          pItem = new QListViewItem(mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
+          treeItems[pItem] = pObject;
+        }
     }
 
   const CMatrix<C_FLOAT64> &RedStoiMatrix = pModel->getRedStoi();
   if (RedStoiMatrix.array())
     {
       pObject = pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"));
-      //      pItem = new QListViewItem(matrixSubtree, "Reduced stoichiometry(ann)");
-      pItem = new QListViewItem(mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
-      treeItems[pItem] = pObject;
+      if (filter(flag, pObject))
+        {
+          //      pItem = new QListViewItem(matrixSubtree, "Reduced stoichiometry(ann)");
+          pItem = new QListViewItem(mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
+          treeItems[pItem] = pObject;
+        }
     }
 
   const CMatrix<C_FLOAT64> &LinkMatrix = pModel->getL0();
   if (LinkMatrix.array())
     {
       pObject = pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)"));
-      //      pItem = new QListViewItem(matrixSubtree, "Link matrix(ann)");
-      pItem = new QListViewItem(mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
-      treeItems[pItem] = pObject;
+      if (filter(flag, pObject))
+        {
+          //      pItem = new QListViewItem(matrixSubtree, "Link matrix(ann)");
+          pItem = new QListViewItem(mpModelMatrixSubtree, FROM_UTF8(pObject->getObjectName()));
+          treeItems[pItem] = pObject;
+        }
     }
 
   removeEmptySubTree(&mpModelMatrixSubtree);
@@ -401,9 +411,10 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
           //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
           ann = dynamic_cast<CArrayAnnotation*>(its->second);
           if (!ann) continue;
-          //   std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
 
-          if (!ann->isEmpty())
+          //std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+          if (!ann->isEmpty() && filter(flag, ann))
             {
               pItem = new QListViewItem(this->mpResultMCASubtree, FROM_UTF8(ann->getObjectName()));
               treeItems[pItem] = ann;
@@ -427,7 +438,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
           if (!ann) continue;
           //     std::cout << "9 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
 
-          if (!ann->isEmpty())
+          if (!ann->isEmpty() && filter(flag, ann))
             {
               pItem = new QListViewItem(this->mpResultSteadyStateSubtree, FROM_UTF8(ann->getObjectName()));
               treeItems[pItem] = ann;
@@ -453,7 +464,9 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
           if (!ann) continue;
           //     std::cout << "10 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
 
-          if (!ann->isEmpty())
+          //std::cout << "isArray? : " << ann->isArray() << std::endl;
+
+          if (!ann->isEmpty() && filter(flag, ann))
             {
               pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(ann->getObjectName()));
               treeItems[pItem] = (CCopasiObject *) ann;
@@ -687,6 +700,20 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
   if (flag == NO_RESTRICTION)
     return true;
 
+  // if pObject is an array than the flag must be one based on array also.
+  if (pObject->isArray())
+    {
+      /*
+       std::cout << "on filter" << std::endl;
+       std::cout << "object cn = " << pObject->getCN() << std::endl;
+       std::cout << "object: " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
+
+          std::cout << "flag: " << flag << std::endl;
+      */
+      if (flag & BASE_ARRAY)
+        return true;
+    }
+
   // Check whether the value is of the desired numeric type.
   if (flag & NUMERIC)
     {
@@ -700,6 +727,20 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
   if (pObject->isReference())
     {
+      const CArrayAnnotation * pArrayElement =
+        dynamic_cast< const CArrayAnnotation * >(pObject->getObjectParent());
+      /*
+         std::cout << "on filter" << std::endl;
+         std::cout << "object cn = " << pObject->getCN() << std::endl;
+         std::cout << "object: " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
+
+            if (pArrayElement)
+              {
+          std::cout << "cn = " << pArrayElement->getCN() << std::endl;
+          std::cout << "array: " << pArrayElement->getObjectType() << " - " << pArrayElement->getObjectName() << std::endl;
+                //return true;
+              }
+      */
       // CModelEntity needs to be check more thoroughly
       const CModelEntity * pEntity =
         dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
@@ -816,14 +857,6 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
               (flag & BASE_TRANSIENT))
             return false;
 
-          return true;
-        }
-
-      const CArrayAnnotation * pArrayElement =
-        dynamic_cast< const CArrayAnnotation * >(pObject->getObjectParent());
-
-      if (pArrayElement)
-        {
           return true;
         }
     }
