@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53.6.3 $
+//   $Revision: 1.53.6.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/17 15:40:23 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 10:44:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.3 2008/10/17 15:40:23 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.4 2008/10/20 10:44:38 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -255,7 +255,8 @@ void PlotWidget1::addCurve2D()
   std::vector< const CCopasiObject * > * pVector2 = new std::vector< const CCopasiObject * >();
   pBrowser->setOutputVectors(pVector1, pVector2);
   pBrowser->setModel(CCopasiDataModel::Global->getModel(),
-                     CCopasiSimpleSelectionTree::NUMERIC);
+                     //                     CCopasiSimpleSelectionTree::NUMERIC);
+                     CCopasiSimpleSelectionTree::PLOT_OBJECT);
 
   if (pBrowser->exec () == QDialog::Rejected)
     {
@@ -273,7 +274,6 @@ void PlotWidget1::addCurve2D()
       return;
     }
 
-  std::string cn;
   std::vector<CCopasiObjectName> objects1, objects2;
   unsigned C_INT32 i;
   std::vector<CCopasiObjectName>::const_iterator sit;
@@ -281,50 +281,114 @@ void PlotWidget1::addCurve2D()
 
   // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
   // 2. translate to CNs and remove duplicates
+
+  // x-axis is set for single cell selection
+  //  std::cout << "pVector1->size() = " << pVector1->size() << std::endl;
+  std::string cn;
   for (i = 0; i < pVector1->size(); i++)
-    if ((*pVector1)[i])  // the object is not empty
-      {
-        // the type is Array
-        if (dynamic_cast< const CArrayAnnotation * >((*pVector1)[i]))
-          {
-            const CCopasiObject *pObject = (*pVector1)[i];
+    {
+      if ((*pVector1)[i])  // the object is not empty
+        {
+          // the type is Array
+          if (dynamic_cast< const CArrayAnnotation * >((*pVector1)[i]))
+            {
+              // initialization
+              const CCopasiObject *pObject = (*pVector1)[i];
 
-            pArray = (CArrayAnnotation *) pObject;
-            pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
-            cn = pObject->getCN();
-          }
-        else
-          cn = (*pVector1)[i]->getCN();
+              pArray = (CArrayAnnotation *) pObject;
 
-        //std::cout << "cn : " << cn << std::endl;
-        //std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
+              // second argument is true as only single cell here is allowed
+              pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
+              if (!pObject) return;
+              //std::cout << "object1 : " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
 
-        // check whether cn is alreadyon objects1
-        for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-          {
-            if (*sit == cn) break;
-          }
+              cn = pObject->getCN();
+            }
+          else
+            cn = (*pVector1)[i]->getCN();
 
-        // if not exist, input cn into objects1
-        if (sit == objects1.end())
-          {
-            objects1.push_back(cn);
-            //std::cout << "***" << cn << std::endl;
-          }
-      }
+          //std::cout << "cn : " << cn << std::endl;
+          //std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
 
+          // check whether cn is already on objects1
+          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
+            {
+              if (*sit == cn) break;
+            }
+
+          // if not exist, input cn into objects1
+          if (sit == objects1.end())
+            {
+              objects1.push_back(cn);
+              //std::cout << "***" << cn << std::endl;
+            }
+        }
+    }
+
+  // y-axis is set for multi cells selection
+  // Multi cells selection is done by calling single cell one multi times.
+  //std::cout << "pVector2->size() = " << pVector2->size() << std::endl;
+  //  std::vector<std::string> cnVector;
   for (i = 0; i < pVector2->size(); i++)
-    if ((*pVector2)[i])
-      {
-        cn = (*pVector2)[i]->getCN();
-        for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-          if (*sit == cn) break;
-        if (sit == objects2.end())
-          {
-            objects2.push_back(cn);
-            //std::cout << "---" << cn << std::endl;
-          }
-      }
+    {
+      if ((*pVector2)[i])
+        {
+          // the type is Array
+          if ((*pVector2)[i]->getObjectType() == "Array")
+            {
+
+              const CCopasiObject *pObject = (*pVector2)[i];
+
+              pArray = (CArrayAnnotation *) pObject;
+
+              // second argument is set true as single cell is allowed
+              pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
+              //std::cout << "object2 : " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
+
+              cn = pObject->getCN();
+              /*
+                          pArray = (CArrayAnnotation *) (*pVector2)[i];
+
+                 // second argument is set false as multi cells here are allowed
+                 std::vector< const CCopasiObject *> objectVector = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true);
+                 if (objectVector.empty()) return;
+                 std::cout << "objectVectors.size() = " << objectVector.size() << std::endl;
+
+                 std::vector<const CCopasiObject *>::const_iterator itA, itO = objectVector.end();
+                 for (itA = objectVector.begin(); itA != itO; ++itA)
+                 {
+                   cnVector.push_back((*itA)->getCN());
+                 }
+              */
+            }
+          else
+            cn = (*pVector2)[i]->getCN();
+          //    cnVector.push_back((*pVector2)[i]->getCN());
+
+          //std::cout << "cn2 : " << cn << std::endl;
+          //std::cout << "vector2 : " << (*pVector2)[i]->getObjectType() << " - " << (*pVector2)[i]->getObjectName() << std::endl;
+
+          // check whether each cn is already on objects2
+          std::vector< std::string >::const_iterator it;
+          /*
+            for (it = cnVector.begin(); it != cnVector.end(); ++it)
+            {
+              std::cout << "cn on list: " << *it << std::endl;
+          */
+          for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+            //            if (*sit == *it) break;
+            if (*sit == cn) break;
+
+          // if not exist, input cn into objects2
+          if (sit == objects2.end())
+            {
+              //           objects2.push_back(*it);
+              objects2.push_back(cn);
+              //std::cout << "---" << cn << std::endl;
+            }
+          //}
+        }
+    }
 
   //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   //if (!pspec) return;
