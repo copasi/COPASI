@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.15.4.2 $
+//   $Revision: 1.15.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/15 17:03:15 $
+//   $Author: pwilly $
+//   $Date: 2008/10/20 11:07:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,8 +43,9 @@ class CCopasiSimpleSelectionTree: public QListView
       BASE_TRANSIENT = 0x08,
       BASE_EXPRESSION = 0x10,
       BASE_MODEL = 0x20,
+      BASE_GLOBAL = 0x40,
       BASE_TASK = 0x80,
-      BASE_GLOBAL = 0x40
+      BASE_ARRAY = 0x100
     };
 
   public:
@@ -54,10 +55,14 @@ class CCopasiSimpleSelectionTree: public QListView
       TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
       INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
       TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
-      OBJECTIVE_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION,
       TARGET_EVENT = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
       INITIAL_PARAMETER = BASE_DOUBLE | BASE_INITIAL | BASE_TASK,
-      NO_RESTRICTION = -1
+      NO_RESTRICTION = -1,
+      OPTIMIZATION_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION | BASE_ARRAY,
+      SENSITIVITY_VARIABLE = INITIAL_VALUE | BASE_ARRAY,
+      //   ARRAY = BASE_ARRAY,
+      PLOT_OBJECT = BASE_ARRAY,
+      REPORT_ITEM = BASE_ARRAY
     };
 
     CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
