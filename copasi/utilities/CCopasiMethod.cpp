@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.53.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Author: ssahle $
+//   $Date: 2008/10/20 12:28:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "Stochastic",
     "Hybrid",
     "Hybrid (LSODA)",
-#ifdef COPASI_DEBUG
+#ifdef COPASI_TSSA
     "TimeScaleSeparation(ILDM,Deuflhard)",
     "TimeScaleSeparation(ILDM,Modified)",
     "TimeScaleSeparation(CSP)",
