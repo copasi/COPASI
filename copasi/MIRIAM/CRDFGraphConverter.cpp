@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.7.2.1 $
+//   $Revision: 1.7.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 15:33:46 $
+//   $Author: gauges $
+//   $Date: 2008/10/21 14:57:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
 {
   CRDFPredicate::Path CurrentPath = triplet.pObject->getPath();
 
-  unsigned SubPathIndex = C_INVALID_INDEX;
+  unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
 
   while (SubPathIndex == C_INVALID_INDEX && SubPathIndex > 0)
     {
