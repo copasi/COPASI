@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101.2.2 $
+//   $Revision: 1.101.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/14 19:47:25 $
+//   $Date: 2008/10/21 04:05:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,17 +265,16 @@ bool COptProblem::initializeSubtaskBeforeOutput()
       ListOfContainer.push_back(getObjectAncestor("Vector"));
       mpSubtask =
         dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
-    }
-  else
-    mpSubtask = NULL;
 
-  if (mpSubtask != NULL)
-    {
-      return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      //      ContainerList.push_back(mpSubtask);
+      if (mpSubtask != NULL)
+        return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+      return false;
     }
-  else
-    return false;
+
+  // We have a CFitProblem for which it is OK not to have a subtask.
+  mpSubtask = NULL;
+  return true;
 }
 
 bool COptProblem::initialize()
