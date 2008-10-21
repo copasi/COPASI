@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFUtilities.cpp,v $
-//   $Revision: 1.2.8.1 $
+//   $Revision: 1.2.8.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 15:33:46 $
+//   $Date: 2008/10/21 15:02:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,29 +72,30 @@ unsigned C_INT32 CRDFUtilities::fixLocalFileAboutReference(std::string & rdfXml,
 // static
 unsigned C_INT32 CRDFUtilities::fixSBMLRdf(std::string & rdfXml)
 {
-  // Fix broken SBML RDF:
-  // <dc:creator rdf:parseType="Resource">
-  //   <rdf:Bag>
-  // It is not allowed to use the attribute rdf:parseType="Resource" and <rdf:Bag> simultaneously
 
   // Nothing to do
   if (rdfXml == "")
     return 0;
-
-  // Determine the name space qualifier for:
-  std::string Qualifier =
-    getNameSpaceQualifier(rdfXml, "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
   std::string::size_type start = 0;
   std::string::size_type end = 0;
   std::string::size_type pos = 0;
   unsigned C_INT32 count = 0;
 
+  // Fix broken SBML RDF:
+  // <dc:creator rdf:parseType="Resource">
+  //   <rdf:Bag>
+  // It is not allowed to use the attribute rdf:parseType="Resource" and <rdf:Bag> simultaneously
+
+  // Determine the rdf name space qualifier for:
+  std::string RDFQualifier =
+    getNameSpaceQualifier(rdfXml, "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+
   // We first look for all elements having the attribute rdf:parseType="Resource"
   while (findNextElement(rdfXml, "", start, end))
     {
-      if ((pos = std::min(rdfXml.find(Qualifier + "parseType=\"Resource\"", start),
-                          rdfXml.find(Qualifier + "parseType='Resource'", start))) > end)
+      if ((pos = std::min(rdfXml.find(RDFQualifier + "parseType=\"Resource\"", start),
+                          rdfXml.find(RDFQualifier + "parseType='Resource'", start))) > end)
         continue;
 
       // We found the attribute.
@@ -103,18 +104,44 @@ unsigned C_INT32 CRDFUtilities::fixSBMLRdf(std::string & rdfXml)
       std::string::size_type currentStart = start;
       std::string::size_type currentEnd = end;
       if (findNextElement(rdfXml, "", start, end) &&
-          findNextElement(rdfXml, Qualifier + "Bag", currentStart, currentEnd) &&
+          findNextElement(rdfXml, RDFQualifier + "Bag", currentStart, currentEnd) &&
           start == currentStart &&
           end == currentEnd)
         {
           // The next element is a bag element. We therefore have to remove the attribute.
-          rdfXml.erase(pos, Qualifier.length() + 20);
-          end -= Qualifier.length() + 20;
+          rdfXml.erase(pos, RDFQualifier.length() + 20);
+          end -= RDFQualifier.length() + 20;
 
           count++;
         }
     }
 
+  start = 0;
+  end = 0;
+  pos = 0;
+
+  // Fix broken SBML RDF:
+  // <vCard:ORG>
+  //  <vCard:Orgname>ORGANIZATION_NAME</vCard:Orgname>
+  // </vCard:ORG>
+  // The <vCard:ORG> element must have the attribute rdf:parseType="Resource".
+
+  // Determine the vcard name space qualifier for:
+  std::string VCardQualifier =
+    getNameSpaceQualifier(rdfXml, "http://www.w3.org/2001/vcard-rdf/3.0#");
+
+  // We first look for all elements having the attribute rdf:parseType="Resource"
+  while (findNextElement(rdfXml, VCardQualifier + "ORG", start, end))
+    {
+      // Check whether the attribute rdf:parseType="Resource" is present.
+      if ((pos = std::min(rdfXml.find(RDFQualifier + "parseType=\"Resource\"", start),
+                          rdfXml.find(RDFQualifier + "parseType='Resource'", start))) < end)
+        continue;
+
+      // The attribute is missing we insert it.
+      rdfXml.insert(end, " " + RDFQualifier + "parseType=\"Resource\"");
+      count++;
+    }
   return count;
 }
 
