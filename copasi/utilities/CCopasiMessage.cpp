@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.40.2.1 $
+//   $Revision: 1.40.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/21 20:30:53 $
+//   $Date: 2008/10/21 21:34:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 
   va_list Arguments; // = NULL;
   va_start(Arguments, format);
-  Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+  Printed = vsnprintf(Text, TextSize, format, Arguments);
   va_end(Arguments);
 
   while (Printed < 0 || TextSize < Printed)
@@ -173,7 +173,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 
       va_list Arguments; // = NULL;
       va_start(Arguments, format);
-      Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+      Printed = vsnprintf(Text, TextSize, format, Arguments);
       va_end(Arguments);
     }
 
