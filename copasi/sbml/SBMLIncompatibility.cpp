@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLIncompatibility.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.14.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/11/15 10:38:07 $
+//   $Author: shoops $
+//   $Date: 2008/10/21 20:30:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,13 +47,14 @@ SBMLIncompatibility::SBMLIncompatibility(unsigned C_INT32 n, ...): mNumber(0), m
   if (mNumber != 9999)
     {
       const char* fmt = pTmp->mMessage;
-      va_list args;
-      va_start(args, n);
 
       C_INT32 TextSize = INITIALTEXTSIZE;
       char *Text = new char[TextSize + 1];
 
+      va_list args;
+      va_start(args, n);
       C_INT32 Printed = vsnprintf(Text, TextSize, fmt, args);
+      va_end(args);
 
       while (Printed < 0 || TextSize < Printed)
         {
@@ -57,12 +63,13 @@ SBMLIncompatibility::SBMLIncompatibility(unsigned C_INT32 n, ...): mNumber(0), m
           (Printed < 0) ? TextSize *= 2 : TextSize = Printed;
           Text = new char[TextSize + 1];
 
+          va_list args;
+          va_start(args, n);
           Printed = vsnprintf(Text, TextSize, fmt, args);
+          va_end(args);
         }
 
       mMessage = Text;
-
-      va_end(args);
     }
 }
 

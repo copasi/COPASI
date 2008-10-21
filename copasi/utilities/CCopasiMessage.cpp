@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.40.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Date: 2008/10/21 20:30:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,13 +156,13 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   C_INT32 TextSize = INITIALTEXTSIZE;
   C_INT32 Printed = 0;
 
-  va_list Arguments; // = NULL;
-  va_start(Arguments, format);
-
   char *Text = NULL;
   Text = new char[TextSize + 1];
 
+  va_list Arguments; // = NULL;
+  va_start(Arguments, format);
   Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+  va_end(Arguments);
 
   while (Printed < 0 || TextSize < Printed)
     {
@@ -171,14 +171,15 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
       (Printed < 0) ? TextSize *= 2 : TextSize = Printed;
       Text = new char[TextSize + 1];
 
-      Printed = vsnprintf(Text, TextSize, format, Arguments);
+      va_list Arguments; // = NULL;
+      va_start(Arguments, format);
+      Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+      va_end(Arguments);
     }
 
   mText = Text;
   mType = type;
   mNumber = 0;
-
-  va_end(Arguments);
 
   handler();
 }
@@ -197,13 +198,13 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   if (!Messages[i].Text)
     fatalError();
 
-  va_list Arguments; // = NULL;
-  va_start(Arguments, number);
-
   char *Text = NULL;
   Text = new char[TextSize + 1];
 
+  va_list Arguments; // = NULL;
+  va_start(Arguments, number);
   Printed = vsnprintf(Text, TextSize, Messages[i].Text, Arguments);
+  va_end(Arguments);
 
   while (Printed < 0 || TextSize < Printed)
     {
@@ -212,7 +213,10 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
       (Printed < 0) ? TextSize *= 2 : TextSize = Printed;
       Text = new char[TextSize + 1];
 
+      va_list Arguments; // = NULL;
+      va_start(Arguments, number);
       Printed = vsnprintf(Text, TextSize, Messages[i].Text, Arguments);
+      va_end(Arguments);
     }
 
   mText = Text;
@@ -220,8 +224,6 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 
   mType = type;
   mNumber = number;
-
-  va_end(Arguments);
 
   handler();
 }
