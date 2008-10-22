@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.41.4.1 $
+//   $Revision: 1.41.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 19:08:16 $
+//   $Author: gauges $
+//   $Date: 2008/10/22 14:43:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,8 +309,6 @@ void CEvaluationNode::replaceRoot(ConverterASTNode* sourceNode)
       ConverterASTNode* divideNode = new ConverterASTNode(AST_DIVIDE);
       ConverterASTNode* oneNode = new ConverterASTNode(AST_REAL);
       oneNode->setValue(1.0);
-      List* l = new List();
-      l->add(divideNode);
       divideNode->addChild(oneNode);
       divideNode->addChild(child1);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.2 $
+//   $Revision: 1.50.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 20:08:59 $
+//   $Author: gauges $
+//   $Date: 2008/10/22 14:42:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4528,6 +4528,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   // we have to delete pCOPASIAnnotation since replaceChild makes a copy
                   delete pCOPASIAnnotation;
                   pSBMLObject->setAnnotation(pAnnotation);
+                  delete pAnnotation;
                 }
               else
                 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.40.2.2 $
+//   $Revision: 1.40.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/21 21:34:48 $
+//   $Author: gauges $
+//   $Date: 2008/10/22 14:42:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,6 +178,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
     }
 
   mText = Text;
+  delete[] Text;
   mType = type;
   mNumber = 0;
 

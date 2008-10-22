@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Author: gauges $
+//   $Date: 2008/10/22 14:43:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,7 @@ CEvaluationNode* CEvaluationNodeChoice::createNodeFromASTTree(const ASTNode& nod
       // It is not clearly specified what happens if there are no pieces, but
       // an otherwise. I would assume that in this case, the otherwise always
       // takes effect
+      delete convertedNode;
       convertedNode = CEvaluationTree::convertASTNode(*node.getChild(0));
     }
   else

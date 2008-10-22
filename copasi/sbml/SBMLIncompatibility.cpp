@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLIncompatibility.cpp,v $
-//   $Revision: 1.1.14.1 $
+//   $Revision: 1.1.14.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/21 20:30:54 $
+//   $Author: gauges $
+//   $Date: 2008/10/22 14:42:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,7 @@ SBMLIncompatibility::SBMLIncompatibility(unsigned C_INT32 n, ...): mNumber(0), m
         }
 
       mMessage = Text;
+      delete[] Text;
     }
 }
 
