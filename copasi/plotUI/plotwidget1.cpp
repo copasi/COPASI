@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53.6.4 $
+//   $Revision: 1.53.6.5 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 10:44:38 $
+//   $Author: ssahle $
+//   $Date: 2008/10/22 11:01:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.4 2008/10/20 10:44:38 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.5 2008/10/22 11:01:20 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -251,26 +251,19 @@ void PlotWidget1::addCurveTab(const std::string & title,
 void PlotWidget1::addCurve2D()
 {
   CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
-  std::vector< const CCopasiObject * > * pVector1 = new std::vector< const CCopasiObject * >();
-  std::vector< const CCopasiObject * > * pVector2 = new std::vector< const CCopasiObject * >();
-  pBrowser->setOutputVectors(pVector1, pVector2);
-  pBrowser->setModel(CCopasiDataModel::Global->getModel(),
-                     //                     CCopasiSimpleSelectionTree::NUMERIC);
-                     CCopasiSimpleSelectionTree::PLOT_OBJECT);
+  std::vector< const CCopasiObject * > vector1;
+  std::vector< const CCopasiObject * > vector2;
+  pBrowser->setOutputVectors(&vector1, &vector2);
+  pBrowser->setModel(CCopasiDataModel::Global->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
 
   if (pBrowser->exec () == QDialog::Rejected)
     {
-      //pdelete(pBrowser1);
-      pdelete(pVector1);
-      pdelete(pVector2);
       return;
     }
 
-  if (pVector1->size() == 0 || pVector2->size() == 0)
+  //this assumes that the vector is empty if nothing was chosen
+  if (vector1.size() == 0 || vector2.size() == 0)
     {
-      //pdelete(pBrowser1);
-      pdelete(pVector1);
-      pdelete(pVector2);
       return;
     }
 
@@ -285,27 +278,23 @@ void PlotWidget1::addCurve2D()
   // x-axis is set for single cell selection
   //  std::cout << "pVector1->size() = " << pVector1->size() << std::endl;
   std::string cn;
-  for (i = 0; i < pVector1->size(); i++)
+  for (i = 0; i < vector1.size(); i++)
     {
-      if ((*pVector1)[i])  // the object is not empty
+      if (vector1[i])  // the object is not empty
         {
-          // the type is Array
-          if (dynamic_cast< const CArrayAnnotation * >((*pVector1)[i]))
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector1[i])))
             {
-              // initialization
-              const CCopasiObject *pObject = (*pVector1)[i];
-
-              pArray = (CArrayAnnotation *) pObject;
-
-              // second argument is true as only single cell here is allowed
-              pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
-              if (!pObject) return;
+              // second argument is true as only single cell here is allowed. In this case we
+              //can assume that the size of the return vector is 1.
+              const CCopasiObject * pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
+              if (!pObject) continue;
               //std::cout << "object1 : " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
 
               cn = pObject->getCN();
             }
           else
-            cn = (*pVector1)[i]->getCN();
+            cn = vector1[i]->getCN();
 
           //std::cout << "cn : " << cn << std::endl;
           //std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
@@ -329,64 +318,38 @@ void PlotWidget1::addCurve2D()
   // Multi cells selection is done by calling single cell one multi times.
   //std::cout << "pVector2->size() = " << pVector2->size() << std::endl;
   //  std::vector<std::string> cnVector;
-  for (i = 0; i < pVector2->size(); i++)
+  for (i = 0; i < vector2.size(); i++)
     {
-      if ((*pVector2)[i])
+      if (vector2[i])
         {
-          // the type is Array
-          if ((*pVector2)[i]->getObjectType() == "Array")
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
             {
+              // second argument is set false for multi selection
+              std::vector<const CCopasiObject*> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true);
+              std::vector<const CCopasiObject*>::const_iterator it;
+              for (it = vvv.begin(); it != vvv.end(); ++it)
+                {
+                  if (!*it) continue;
+                  cn = (*it)->getCN();
 
-              const CCopasiObject *pObject = (*pVector2)[i];
-
-              pArray = (CArrayAnnotation *) pObject;
-
-              // second argument is set true as single cell is allowed
-              pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
-              //std::cout << "object2 : " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
-
-              cn = pObject->getCN();
-              /*
-                          pArray = (CArrayAnnotation *) (*pVector2)[i];
-
-                 // second argument is set false as multi cells here are allowed
-                 std::vector< const CCopasiObject *> objectVector = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true);
-                 if (objectVector.empty()) return;
-                 std::cout << "objectVectors.size() = " << objectVector.size() << std::endl;
-
-                 std::vector<const CCopasiObject *>::const_iterator itA, itO = objectVector.end();
-                 for (itA = objectVector.begin(); itA != itO; ++itA)
-                 {
-                   cnVector.push_back((*itA)->getCN());
-                 }
-              */
+                  //check if the CN already is in the list, if not add it.
+                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                    if (*sit == cn) break;
+                  if (sit == objects2.end())
+                    objects2.push_back(cn);
+                }
             }
           else
-            cn = (*pVector2)[i]->getCN();
-          //    cnVector.push_back((*pVector2)[i]->getCN());
-
-          //std::cout << "cn2 : " << cn << std::endl;
-          //std::cout << "vector2 : " << (*pVector2)[i]->getObjectType() << " - " << (*pVector2)[i]->getObjectName() << std::endl;
-
-          // check whether each cn is already on objects2
-          std::vector< std::string >::const_iterator it;
-          /*
-            for (it = cnVector.begin(); it != cnVector.end(); ++it)
             {
-              std::cout << "cn on list: " << *it << std::endl;
-          */
-          for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-            //            if (*sit == *it) break;
-            if (*sit == cn) break;
+              cn = vector2[i]->getCN();
 
-          // if not exist, input cn into objects2
-          if (sit == objects2.end())
-            {
-              //           objects2.push_back(*it);
-              objects2.push_back(cn);
-              //std::cout << "---" << cn << std::endl;
+              //check if the CN already is in the list, if not add it.
+              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                if (*sit == cn) break;
+              if (sit == objects2.end())
+                objects2.push_back(cn);
             }
-          //}
         }
     }
 
@@ -433,9 +396,6 @@ void PlotWidget1::addCurve2D()
     }
 
   tabs->setCurrentPage(storeTab);
-
-  pdelete(pVector1);
-  pdelete(pVector2);
 }
 
 void PlotWidget1::addHisto1DTab(const std::string & title,
