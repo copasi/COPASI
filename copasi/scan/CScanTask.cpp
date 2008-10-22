@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.73.2.1 $
+//   $Revision: 1.73.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/21 09:13:55 $
+//   $Author: shoops $
+//   $Date: 2008/10/22 18:46:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,8 @@ bool CScanTask::initialize(const OutputFlag & of,
   bool success = true;
 
   initSubtask(pOutputHandler);
+
+  CCopasiMessage::clearDeque();
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
