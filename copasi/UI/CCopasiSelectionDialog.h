@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.11.4.3 $
+//   $Revision: 1.11.4.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/17 10:38:14 $
+//   $Date: 2008/10/22 19:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,6 @@ class CCopasiSelectionDialog: public QDialog
      * otherwise also the whole array annotation may be returned.
      */
     static std::vector<const CCopasiObject*> chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation,
-        bool single, bool value);
+        bool single, bool value, std::string caption = "");
   };
 #endif /* SimpleSelectionDialog_H__ */

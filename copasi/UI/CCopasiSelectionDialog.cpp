@@ -1,9 +1,7 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14.4.9 $
-//   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 11:30:49 $
+//   $Author: ssahle $
+//   $Date: 2008/10/22 19:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,11 +240,11 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
 }
 
 std::vector<const CCopasiObject*>
-CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value)
+CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value, std::string caption)
 {
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
-  pDialog->setCaption(tr("Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
+  pDialog->setCaption(tr(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
   pDialog->setArray(pArrayAnnotation, single);
 
   std::vector< const CCopasiObject* > returnVector;
@@ -268,8 +266,6 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       if (single)
         {
           // single cell selection
-          //std::cout << "single cell selection" << std::endl;
-
           if (value)
             {
               index[0] = pDialog->mpCBRow->currentItem();
@@ -285,7 +281,11 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
         }
 
       // multi cell selection
-      if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0)
+
+      //if "All" is selected for both rows and columns, and an object with numerical value
+      //is not requested,, return the array annotation as such
+      if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0
+          && !value)
         {
           // whole matrix should be chosen -> the object itself will be returned
           //std::cout << "whole matrix should be chosen" << std::endl;
@@ -294,106 +294,44 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
           return returnVector;
         }
 
-      /*   if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0)
-         {
-        // whole matrix should be chosen
-        std::cout << "whole matrix should be chosen" << std::endl;
+      int minRows, maxRows, minCols, maxCols;
+      int i, j;
 
-        if (value)
+      if (pDialog->mpCBRow->currentItem())
         {
-          int nRows = pArrayAnnotation->size()[0];
-          int nCols = pArrayAnnotation->size()[1];
-          int i, j;
-          for (i=0; i<nRows; i++)
-          {
-         for (j=0; j<nCols; j++)
-         {
-           returnVector.push_back(pArrayAnnotation->addElementReference(i,j));
-         }
-          }
+          // not ALL option
+          minRows = pDialog->mpCBRow->currentItem() - 1;
+          maxRows = minRows + 1;
         }
-        else
-          returnVector.push_back((CCopasiObject *) pArrayAnnotation);
-
-        return returnVector;
-         }
-         else if (pDialog->mpCBRow->currentItem() && pDialog->mpCBColumn->currentItem())
-         {
-           // a cell should be chosen
-        std::cout << "a cell should be chosen" << std::endl;
-
-        if (value)
+      else
         {
-          index[0] = pDialog->mpCBRow->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
-          index[1] = pDialog->mpCBColumn->currentItem() - 1; // "-1 since ALL is always indexed 0 on the combo box
-
-          C_FLOAT64 value = (*pArrayAnnotation->array())[index];
-          std::cout << "its value = " << value << std::endl;
-
-          returnVector.push_back(pArrayAnnotation->addElementReference(index));
+          // ALL option
+          minRows = 0;
+          maxRows = pArrayAnnotation->size()[0];
         }
 
-        return returnVector; //pArrayAnnotation->addElementReference(index);
-         }
-         else
-         {
-      */     // an entire row/column should be chosen
-      // TODO: do something
-      //std::cout << "an entire row/column should be chosen" << std::endl;
-
-      if (value)
+      if (pDialog->mpCBColumn->currentItem())
         {
-          int nRows, nCols;
-          int i, j, jj;
+          // not ALL option
+          minCols = pDialog->mpCBColumn->currentItem() - 1;
+          maxCols = minCols + 1;
+        }
+      else
+        {
+          // ALL option
+          minCols = 0;
+          maxCols = pArrayAnnotation->size()[1];
+        }
 
-          if (pDialog->mpCBRow->currentItem())
+      for (i = minRows; i < maxRows; ++i)
+        {
+          for (j = minCols; j < maxCols; ++j)
             {
-              // not ALL option
-              i = pDialog->mpCBRow->currentItem() - 1;
-              nRows = i + 1;
-            }
-          else
-            {
-              // ALL option
-              i = 0;
-              nRows = pArrayAnnotation->size()[0];
-            }
-
-          if (pDialog->mpCBColumn->currentItem())
-            {
-              // not ALL option
-              jj = pDialog->mpCBColumn->currentItem() - 1;
-              nCols = jj + 1;
-            }
-          else
-            {
-              // ALL option
-              jj = 0;
-              nCols = pArrayAnnotation->size()[1];
-            }
-
-          for (; i < nRows; i++)
-            {
-              j = jj;
-              for (; j < nCols; j++)
-                {
-                  returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
-                  /*
-                       index[0] = i;
-                       index[1] = j;
-
-                       C_FLOAT64 value = (*pArrayAnnotation->array())[index];
-                       std::cout << "index [" << i << "][" << j << "] - its value = " << value << std::endl;
-
-                       returnVector.push_back(pArrayAnnotation->addElementReference(index));
-                  */
-                }
+              returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
             }
         }
 
-      //std::cout << "returnVector.size() = " << returnVector.size() << std::endl;
       return returnVector;
-      //}
     }
 
   else
@@ -404,5 +342,4 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 
       return returnVector;
     }
-  //  return returnVector;
 }
