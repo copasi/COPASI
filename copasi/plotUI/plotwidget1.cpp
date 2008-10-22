@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53.6.5 $
+//   $Revision: 1.53.6.6 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/22 11:01:20 $
+//   $Date: 2008/10/22 19:47:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.5 2008/10/22 11:01:20 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53.6.6 2008/10/22 19:47:53 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -276,7 +276,6 @@ void PlotWidget1::addCurve2D()
   // 2. translate to CNs and remove duplicates
 
   // x-axis is set for single cell selection
-  //  std::cout << "pVector1->size() = " << pVector1->size() << std::endl;
   std::string cn;
   for (i = 0; i < vector1.size(); i++)
     {
@@ -287,17 +286,13 @@ void PlotWidget1::addCurve2D()
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
-              const CCopasiObject * pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true)[0];
+              const CCopasiObject * pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
               if (!pObject) continue;
-              //std::cout << "object1 : " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
 
               cn = pObject->getCN();
             }
           else
             cn = vector1[i]->getCN();
-
-          //std::cout << "cn : " << cn << std::endl;
-          //std::cout << "object: " << (*pVector1)[i]->getObjectType() << " - " << (*pVector1)[i]->getObjectName() << std::endl;
 
           // check whether cn is already on objects1
           for (sit = objects1.begin(); sit != objects1.end(); ++sit)
@@ -309,15 +304,10 @@ void PlotWidget1::addCurve2D()
           if (sit == objects1.end())
             {
               objects1.push_back(cn);
-              //std::cout << "***" << cn << std::endl;
             }
         }
     }
 
-  // y-axis is set for multi cells selection
-  // Multi cells selection is done by calling single cell one multi times.
-  //std::cout << "pVector2->size() = " << pVector2->size() << std::endl;
-  //  std::vector<std::string> cnVector;
   for (i = 0; i < vector2.size(); i++)
     {
       if (vector2[i])
@@ -326,7 +316,7 @@ void PlotWidget1::addCurve2D()
           if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
             {
               // second argument is set false for multi selection
-              std::vector<const CCopasiObject*> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true);
+              std::vector<const CCopasiObject*> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
               std::vector<const CCopasiObject*>::const_iterator it;
               for (it = vvv.begin(); it != vvv.end(); ++it)
                 {
@@ -352,9 +342,6 @@ void PlotWidget1::addCurve2D()
             }
         }
     }
-
-  //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
-  //if (!pspec) return;
 
   C_INT32 storeTab = tabs->count();
 
