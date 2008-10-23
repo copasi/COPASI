@@ -4,7 +4,7 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 pushd ../..
 
-AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer 6.4"
+AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
 VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
 if [ x"$#" = x1 ]; then
