@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.10.2.1 $
+$Revision: 1.10.2.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/10/10 20:43:56 $
+$Date: 2008/10/23 20:01:35 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,6 +207,22 @@ bool CConfigurationFile::load()
       initializeParameter();
     }
 
+  if (mpRecentMIRIAMResources->getResourceList().size() == 0)
+    {
+      // We load the default MIRIAM resources, which are part of the COPASI installation.
+      std::string MIRIAMResourceFile;
+      COptions::getValue("DefaultConfigDir", MIRIAMResourceFile);
+      MIRIAMResourceFile += CDirEntry::Separator + "MIRIAMResources.xml";
+
+      CConfigurationFile::CXML XMLMIRIAMResource;
+      success &= XMLMIRIAMResource.CCopasiXMLInterface::load(MIRIAMResourceFile, MIRIAMResourceFile);
+
+      if (success)
+        {
+          *mpRecentMIRIAMResources = *XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
+          mpRecentMIRIAMResources->initializeParameter();
+        }
+    }
   return success;
 }
 

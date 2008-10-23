@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.h,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/14 16:47:56 $
+//   $Date: 2008/10/23 20:01:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,6 +231,12 @@ class CMIRIAMResources : public CCopasiParameterGroup
     /*      void printResources(const std::string & sourceClass,
                               const std::string & sourceFunction) const;*/
 
+    /**
+     * Allocates all group parameters and assures that they are
+     * properly initialized.
+     */
+    void initializeParameter();
+
   private:
     //Attributes
     //in seconds
@@ -243,12 +249,6 @@ class CMIRIAMResources : public CCopasiParameterGroup
     std::map< std::string, unsigned C_INT32 > mURI2Resource;
 
     //Operations
-    /**
-     * Allocates all group parameters and assures that they are
-     * properly initialized.
-     */
-    void initializeParameter();
-
     void setMIRIAMLastUpdateDate();
 
     unsigned C_INT32 getActDateInSeconds();

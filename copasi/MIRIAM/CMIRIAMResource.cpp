@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.4.2.1 $
+//   $Revision: 1.4.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/14 16:47:56 $
+//   $Date: 2008/10/23 20:01:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,12 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
               pMIRIAMResource->setMIRIAMURI(pURI);
               pMIRIAMResource->setMIRIAMPattern(pPattern);
               pMIRIAMResource->setMIRIAMRegExp(strcmp(pRegExp, "true") == 0);
-              pMIRIAMResource->setMIRIAMCitation(false);
+              if (!strcmp(pURI, "urn:miriam:arxiv") ||
+                  !strcmp(pURI, "urn:miriam:doi") ||
+                  !strcmp(pURI, "urn:miriam:pubmed"))
+                pMIRIAMResource->setMIRIAMCitation(true);
+              else
+                pMIRIAMResource->setMIRIAMCitation(false);
 
               pTmpCpyCMIRIAMResources->addParameter(pMIRIAMResource);
             }

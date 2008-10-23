@@ -36,6 +36,7 @@ if [ x"$#" = x1 ]; then
     mkdir copasi/share/copasi/doc/html/figures
     mkdir copasi/share/copasi/examples
     mkdir copasi/share/copasi/icons
+    mkdir copasi/share/copasi/config
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README.txt
@@ -67,6 +68,9 @@ if [ x"$#" = x1 ]; then
         copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/
     fi
     
+    cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
+    chmod 444 copasi/share/copasi/config/*
+
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
@@ -171,6 +175,12 @@ echo "Set the icon in the Info.plist file."
       ${TMPDIR}/copasi/CopasiUI.app/Contents/Info.plist > ${TMPDIR}/tmp.plist
     mv ${TMPDIR}/tmp.plist ${TMPDIR}/copasi/CopasiUI.app/Contents/Info.plist
 
+# copy default configuration
+    echo "Make directory for default configuration"
+    mkdir -p ${TMPDIR}/copasi/config
+    echo "Copy default configuration files"
+    cp ./copasi/MIRIAM/MIRIAMResources.xml ${TMPDIR}/copasi/config
+
 # copy the examples into the Resources directory
     echo "Make example directory."
     mkdir -p ${TMPDIR}/copasi/examples
@@ -188,6 +198,7 @@ echo "Set the icon in the Info.plist file."
       ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/doc/html/
     cp -r ./copasi/wizard/help_html/figures \
       ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/doc/html/
+    
 # add the readme to the image
     echo "Copying readme file."
     cp README_MAC.rtf ${TMPDIR}/copasi/COPASI-README.rtf
@@ -227,6 +238,7 @@ echo "Set the icon in the Info.plist file."
     mkdir copasi/share/copasi/doc/html/figures
     mkdir copasi/share/copasi/examples
     mkdir copasi/share/copasi/icons
+    mkdir copasi/share/copasi/config
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README
@@ -251,6 +263,9 @@ echo "Set the icon in the Info.plist file."
       fi
     fi
     
+    cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
+    chmod 444 copasi/share/copasi/config/*
+
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 

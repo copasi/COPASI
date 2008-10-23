@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.39.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 22:47:57 $
+//   $Date: 2008/10/23 20:01:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,10 @@
 
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.39.8.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2008/03/11 22:47:57 $
+   $Date: 2008/10/23 20:01:35 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,12 +112,15 @@ void COptions::init(C_INT argc, char *argv[])
      and on the OS. */
 
 #ifdef Darwin
+  setValue("DefaultConfigDir", CDirEntry::dirName(CopasiDir) + "/config");
   setValue("ExampleDir", CDirEntry::dirName(CopasiDir) + "/examples");
   setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
 #elif WIN32
+  setValue("DefaultConfigDir", CopasiDir + "\\share\\copasi\\config");
   setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
   setValue("WizardDir", CopasiDir + "\\share\\copasi\\doc\\html");
-#else // All unix flavors have the same installation structure.
+#else // All Unix flavors have the same installation structure.
+  setValue("DefaultConfigDir", CopasiDir + "/share/copasi/config");
   setValue("ExampleDir", CopasiDir + "/share/copasi/examples");
   setValue("WizardDir", CopasiDir + "/share/copasi/doc/html");
 #endif
