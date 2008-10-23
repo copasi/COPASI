@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.88.2.2 $
+//   $Revision: 1.88.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 14:11:19 $
+//   $Date: 2008/10/23 14:48:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -692,7 +692,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
     for (; pIt != pEnd; ++pIt, ++pAtol, ++ppEntity)
       {
-        tmp = fabs(*pIt) / std::max(*pAtol, fabs((*ppEntity)->getRate()));
+        tmp = fabs(*pIt) / std::max(*pAtol, fabs((*ppEntity)->getValue()));
 
         if (tmp > store)
           store = tmp;
