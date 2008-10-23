@@ -1,22 +1,27 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.14.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 15:13:21 $
+//   $Date: 2008/10/23 14:11:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  *  CSteadyStateMethod class.
  *  This class describes the interface to all steady state methods.
- *  The variaous method like Newton have to be derived from
+ *  The various method like Newton have to be derived from
  *  this class.
  *
- *  Created for Copasi by Stefan Hoops 2002
+ *  Created for COPASI by Stefan Hoops 2002
  */
 
 #include "copasi.h"
@@ -89,16 +94,8 @@ void CSteadyStateMethod::initializeParameter()
   mpSSResolution = (C_FLOAT64*)getValue("Resolution").pUDOUBLE;
   mpDerivationResolution = (C_FLOAT64*)getValue("Resolution").pUDOUBLE;
 
-  //assertParameter("Steady State Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  //mpSSResolution = (C_FLOAT64*)getValue("Steady State Resolution").pUDOUBLE;
-
   assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
   mpDerivationFactor = (C_FLOAT64*)getValue("Derivation Factor").pUDOUBLE;
-
-  //assertParameter("Derivation Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  //mpDerivationResolution = (C_FLOAT64*)getValue("Derivation Resolution").pUDOUBLE;
-
-  //assertParameter("Stability Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)
@@ -110,19 +107,8 @@ void CSteadyStateMethod::initializeParameter()
   if ((pParm = getParameter("Newton.Resolution")) != NULL)
     {
       setValue("Resolution", *pParm->getValue().pUDOUBLE);
-      //setValue("Steady State Resolution", *pParm->getValue().pUDOUBLE);
-      //setValue("Derivation Resolution", *pParm->getValue().pUDOUBLE);
-      //setValue("Stability Resolution", *pParm->getValue().pUDOUBLE);
       removeParameter("Newton.Resolution");
     }
-
-  //if ((pParm = getParameter("Resolution")) != NULL)
-  //  {
-  //    setValue("Steady State Resolution", *pParm->getValue().pUDOUBLE);
-  //    setValue("Derivation Resolution", *pParm->getValue().pUDOUBLE);
-  //    setValue("Stability Resolution", *pParm->getValue().pUDOUBLE);
-  //    removeParameter("Resolution");
-  //}
 }
 
 bool CSteadyStateMethod::elevateChildren()
@@ -205,20 +191,20 @@ bool CSteadyStateMethod::allPositive()
   // Assure that all values are updated.
   mpModel->updateSimulatedValues(true);
 
-  CModelEntity ** ppEntity = mpModel->getStateTemplate().beginIndependent();
+  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
   const C_FLOAT64 * pIt = mpSteadyState->beginIndependent();
   const C_FLOAT64 * pEnd = mpSteadyState->endDependent();
 
   // Skip Model quantities of type ODE
   for (; pIt != pEnd; ++pIt, ++ppEntity)
-    if (dynamic_cast< CCompartment *>(*ppEntity) != NULL ||
-        dynamic_cast< CMetab *>(*ppEntity) != NULL)
+    if (dynamic_cast< const CCompartment *>(*ppEntity) != NULL ||
+        dynamic_cast< const CMetab *>(*ppEntity) != NULL)
       break;
 
   // For all compartments of type ODE we check that the volume is positive
   for (; pIt != pEnd; ++pIt, ++ppEntity)
     {
-      if (dynamic_cast< CCompartment *>(*ppEntity) == NULL)
+      if (dynamic_cast< const CCompartment *>(*ppEntity) == NULL)
         break;
       if (*pIt < - *mpDerivationResolution)
         return false;
@@ -230,7 +216,7 @@ bool CSteadyStateMethod::allPositive()
     - *mpDerivationResolution * mpModel->getQuantity2NumberFactor();
   for (; pIt != pEnd; ++pIt, ++ppEntity)
     {
-      if (dynamic_cast< CMetab *>(*ppEntity) == NULL)
+      if (dynamic_cast< const CMetab *>(*ppEntity) == NULL)
         break;
       if (*pIt < ParticleResolution)
         return false;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14.2.3 $
+//   $Revision: 1.14.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 20:08:59 $
+//   $Date: 2008/10/23 14:11:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,7 +113,7 @@ void CTSSAMethod::setProblem(CTSSAProblem * problem)
  *  starting with the current state, i.e., the result of the previous
  *  step.
  *  The new state (after deltaT) is expected in the current state.
- *  The return value is the actual timestep taken.
+ *  The return value is the actual time step taken.
  *  @param "const double &" deltaT
  */
 void CTSSAMethod::step(const double & C_UNUSED(deltaT))
@@ -123,7 +123,7 @@ void CTSSAMethod::step(const double & C_UNUSED(deltaT))
  *  This instructs the method to calculate a a time step of deltaT
  *  starting with the initialState given.
  *  The new state (after deltaT) is expected in the current state.
- *  The return value is the actual timestep taken.
+ *  The return value is the actual time step taken.
  *  @param "double &" deltaT
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
@@ -1888,15 +1888,15 @@ void CTSSAMethod::initializeAtol()
   C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 * pEnd = pAtol + mAtol.size();
 
-  CModelEntity **ppEntity = mpModel->getStateTemplate().beginIndependent();
-  CMetab * pMetab;
+  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
+  const CMetab * pMetab;
 
   for (; pAtol != pEnd; ++pAtol, ++ppEntity)
     {
       *pAtol = *pTolerance;
 
       // Rescale for metabolites as we are using particle numbers
-      if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
           *pAtol *=
             pMetab->getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();

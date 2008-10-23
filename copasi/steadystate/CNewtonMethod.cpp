@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.88.2.1 $
+//   $Revision: 1.88.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/17 22:09:38 $
+//   $Author: shoops $
+//   $Date: 2008/10/23 14:11:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -569,7 +569,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   //start progress bar
   unsigned C_INT32 hProcess;
   if (mpProgressHandler)
-    hProcess = mpProgressHandler->addItem("newton method...",
+    hProcess = mpProgressHandler->addItem("Newton method...",
                                           CCopasiParameter::UINT,
                                           & k,
                                           & mIterationLimit);
@@ -609,7 +609,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
         mMethodLog << "   Failed: Target criterium not matched after reaching iteration limit. " << targetValue << "\n";
     }
 
-  //do an additional newton step to refine the result
+  //do an additional Newton step to refine the result
   if ((CNewtonMethod::found == result) && mForceNewton && targetValue > 0.0)
     {
       bool tmp = true;
@@ -684,15 +684,16 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   {
     C_FLOAT64 tmp, store = 0;
 
-    // First we look at the ODE determined rates of non metabolites
+    // We look at all ODE determined entity and dependent species rates.
     const C_FLOAT64 * pIt = particlefluxes.array();
-    const C_FLOAT64 * pEnd =
-      pIt + mpModel->getStateTemplate().getNumIndependent()
-      - mpModel->getNumODEMetabs() - mpModel->getNumIndependentReactionMetabs();
+    const C_FLOAT64 * pEnd = pIt + particlefluxes.size();
+    const C_FLOAT64 * pAtol = mAtol.array();
+    CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
 
-    for (; pIt != pEnd; ++pIt)
+    for (; pIt != pEnd; ++pIt, ++pAtol, ++ppEntity)
       {
-        tmp = fabs(*pIt);
+        tmp = fabs(*pIt) / std::max(*pAtol, fabs((*ppEntity)->getRate()));
+
         if (tmp > store)
           store = tmp;
 
@@ -700,25 +701,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
           return DBL_MAX;
       }
 
-    // Scale to account for the scaling in the return value.
-    store *= mpModel->getQuantity2NumberFactor();
-
-    // Now all metabolites determined by ODEs and reactions (only independent)
-    pEnd = particlefluxes.array() + mpModel->getStateTemplate().getNumIndependent();
-    for (; pIt != pEnd; ++pIt)
-      {
-        tmp = fabs(*pIt);
-        if (tmp > store)
-          store = tmp;
-
-        if (isnan(tmp))
-          {
-            store = DBL_MAX;
-            break;
-          }
-      }
-
-    return store * mpModel->getNumber2QuantityFactor();
+    return store;
   }
 
 //virtual
@@ -794,6 +777,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   mDimension = mpProblem->getModel()->getStateTemplate().getNumIndependent();
 
+  mAtol = mpModel->initializeAtolVector(1.e-6, true);
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);

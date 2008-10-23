@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Date: 2008/10/23 14:11:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,12 +105,12 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer)
   //std::cout << n << std::endl;
   mpState = & pModel->getState();
 
-  CStateTemplate & Template = pModel->getStateTemplate();
+  const CStateTemplate & Template = pModel->getStateTemplate();
 
   // We store all variables of the system.
   // The reason for this is that events will be able to change even fixed values.
-  CModelEntity **it = Template.getEntities();
-  CModelEntity **end = Template.endFixed();
+  CModelEntity *const* it = Template.getEntities();
+  CModelEntity *const* end = Template.endFixed();
 
   C_INT32 i, imax = end - it;
 
@@ -130,11 +130,11 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer)
 
   mNumberToQuantityFactor = pModel->getNumber2QuantityFactor();
 
-  CMetab * pMetab;
+  const CMetab * pMetab;
 
   for (i = 0; it != end; ++i, ++it)
     {
-      if ((pMetab = dynamic_cast<CMetab *>(*it)) != NULL)
+      if ((pMetab = dynamic_cast< const CMetab *>(*it)) != NULL)
         {
           mTitles[i] = CMetabNameInterface::getDisplayName(pModel, *pMetab);
           mCompartment[i] = Template.getIndex(pMetab->getCompartment());

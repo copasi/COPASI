@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.1 $
+//   $Revision: 1.347.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/15 15:17:54 $
+//   $Date: 2008/10/23 14:11:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ const char * CModel::VolumeUnitNames[] =
 const char * CModel::TimeUnitNames[] =
   {"d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
-// "mol" is the correct name, however in the copasi xml files "Mol" is used
+// "mol" is the correct name, however in the COPASI XML files "Mol" is used
 // up to build 18
 
 const char * CModel::QuantityUnitOldXMLNames[] =
@@ -138,7 +138,7 @@ CModel::CModel():
   forceCompile(NULL);
 
   /* This following 2 lines added by Liang Xu
-  Becaues of the failure to initialize the parameter when creating a new models
+  Because of the failure to initialize the parameter when creating a new models
   */
   setQuantityUnit(mQuantityUnit); // set the factors
   setVolumeUnit(mVolumeUnit); // set the factors
@@ -380,7 +380,7 @@ bool CModel::compile()
                      &totalSteps);
     }
 
-  // To assure that we do not produce access violations we clear the refres sequences
+  // To assure that we do not produce access violations we clear the refresh sequences
   // first
   mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
@@ -662,7 +662,7 @@ bool CModel::handleUnusedMetabolites()
   for (; itUsedMetabolites != itMetabolitesEnd; ++itUsedMetabolites, ++itMetab)
     *itMetab = *itUsedMetabolites;
 
-  // Handle metabolites determined by assignement and marked as fixed
+  // Handle metabolites determined by assignment and marked as fixed
   // This is just a shift of NumUnused.
   endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
   for (; itMetab != endMetab; ++itMetab)
@@ -822,7 +822,7 @@ void CModel::initializeMetabolites()
 
       for (; itMetab != endMetab; ++itMetab)
         {
-          // Reset all moities
+          // Reset all moieties
           (*itMetab)->setDependentOn(NULL);
           mMetabolites.add(*itMetab);
         }
@@ -991,6 +991,9 @@ const CModel::CLinkMatrixView & CModel::getL() const
 const CMatrix< C_FLOAT64 > & CModel::getL0() const
   {return mL;}
 
+const CStateTemplate & CModel::getStateTemplate() const
+  {CCHECK return mStateTemplate;}
+
 CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
 
@@ -1067,14 +1070,14 @@ void CModel::applyInitialValues()
   // Copy the initial state to the current state,
   setState(mInitialState);
 
-  // Update all "constant" dependend values.
+  // Update all "constant" dependent values.
   // Here "constant" means do not change during simulation.
   std::vector< Refresh * >::const_iterator itRefresh = mConstantRefreshes.begin();
   std::vector< Refresh * >::const_iterator endRefresh = mConstantRefreshes.end();
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
-  // Update all dependend objects needed for simulation.
+  // Update all dependent objects needed for simulation.
   updateSimulatedValues(false);
 }
 
@@ -1252,7 +1255,7 @@ bool CModel::buildInitialSequence()
 
 bool CModel::updateInitialValues()
 {
-  // :TODO: We should have a seperate flag to handle this but the impact on the performance is minor.
+  // :TODO: We should have a separate flag to handle this but the impact on the performance is minor.
   if (mCompileIsNecessary)
     buildInitialSequence();
 
@@ -1659,7 +1662,7 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
 {
   C_FLOAT64 * pTmp = derivatives;
 
-  // First retreive derivatives of quantities determined by ODE
+  // First retrieve derivatives of quantities determined by ODE
   // The offset 1 is for the model time which is always the first
   // state variable.
   CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
@@ -1686,7 +1689,7 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 {
   C_FLOAT64 * pTmp = derivativesX;
 
-  // First retreive derivatives of quantities determined by ODE
+  // First retrieve derivatives of quantities determined by ODE
   // The offset 1 is for the model time which is always the first
   // state variable.
   CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
@@ -1729,7 +1732,7 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
   for (itEntity = beginEntity, Col = 0; itEntity != endEntity; ++itEntity, ++Col)
     {
       // :TODO: This only works for entities of type metabolites.
-      //        The scaling factor for other entites should be 1.
+      //        The scaling factor for other entities should be 1.
       const C_FLOAT64 invVolume =
         1.0 / static_cast<CMetab *>(*itEntity)->getCompartment()->getValue();
       C_FLOAT64 * pX =
@@ -2684,12 +2687,12 @@ bool CModel::removeEvent(const std::string & key,
 
 bool CModel::convert2NonReversible()
 {
-  //TODO check if there are any reversible reactions
-  //TODO warn the user
-  //TOD tell the gui about changes -> not from here
-  //TODO generate report ?
-  //TODO check if newly generated reaction names are valid
-  //TODO map, so that the same function is split only once
+  // TODO check if there are any reversible reactions
+  // TODO warn the user
+  // TODO tell the GUI about changes -> not from here
+  // TODO generate report ?
+  // TODO check if newly generated reaction names are valid
+  // TODO map, so that the same function is split only once
 
   bool success = true;
 
@@ -2995,9 +2998,9 @@ std::string CModel::suitableForStochasticSimulation() const
         if (mSteps[i]->isReversible() != 0)
           return "At least one reaction is reversible. That means stochastic simulation is not possible. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.";
 
-        // TEST integer stoichometry
+        // TEST integer stoichiometry
         // Iterate through each the metabolites
-        // juergen: the number of rows of mStoi equals the number of non-fixed metabs!
+        // Juergen: the number of rows of mStoi equals the number of non-fixed metabs!
         //  for (j=0; i<metabSize; j++)
         for (j = 0; j < mStoi.numRows(); j++)
           {
@@ -3061,7 +3064,7 @@ void CModel::buildLinkZero()
   C_INT LWORK = -1;
   C_INT INFO;
 
-  // QR factorization of the stoichimetry matrix
+  // QR factorization of the stoichiometry matrix
   /*
    *  -- LAPACK routine (version 3.0) --
    *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
@@ -3332,7 +3335,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
   const CModelEntity * pEntity;
   CMetab * pMetab;
 
-  // If the changed objects are empty we assume that all changable objects have been changed
+  // If the changed objects are empty we assume that all changeable objects have been changed
   if (changedObjects.size() == 0)
     {
       // The objects which are changed are all initial values of of all model entities including
@@ -3354,7 +3357,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
           // Metabolites have two initial values
           if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
             {
-              // The cocentration is assumed to be fix accept when this would lead to circular dependencies,
+              // The concentration is assumed to be fix accept when this would lead to circular dependencies,
               // for the parent's compartment's initial volume.
               if (pMetab->isInitialConcentrationChangeAllowed())
                 changedObjects.insert(pMetab->getInitialConcentrationReference());
@@ -3425,7 +3428,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
         }
     }
 
-  // We need to add the total particle number of moities.
+  // We need to add the total particle number of moieties.
   CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
   CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
 
@@ -3506,3 +3509,44 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   return UpdateVector;
 }
+
+CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const bool & reducedModel) const
+  {
+    CVector< C_FLOAT64 > Atol;
+
+    if (reducedModel)
+      Atol.resize(mStateTemplate.getNumIndependent());
+    else
+      Atol.resize(mStateTemplate.getNumIndependent() + mStateTemplate.getNumDependent());
+
+    C_FLOAT64 * pAtol = Atol.array();
+    C_FLOAT64 * pEnd = pAtol + Atol.size();
+
+    C_FLOAT64 InitialValue;
+    C_FLOAT64 Limit;
+
+    CModelEntity *const* ppEntity = getStateTemplate().beginIndependent();
+    const CMetab * pMetab;
+
+    for (; pAtol != pEnd; ++pAtol, ++ppEntity)
+      {
+        *pAtol = atol;
+
+        InitialValue = fabs((*ppEntity)->getInitialValue());
+
+        if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+          {
+            Limit =
+              fabs(pMetab->getCompartment()->getInitialValue()) * mQuantity2NumberFactor;
+
+            if (InitialValue != 0.0)
+              *pAtol *= std::min(Limit, InitialValue);
+            else
+              *pAtol *= std::max(1.0, Limit);
+          }
+        else if (InitialValue != 0.0)
+          *pAtol *= std::min(1.0, InitialValue);
+      }
+
+    return Atol;
+  }

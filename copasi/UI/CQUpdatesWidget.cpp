@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/17 16:23:34 $
+//   $Date: 2008/10/23 14:11:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,7 +246,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   mpTableObj->adjustColumn(4);
 
   //state
-  CStateTemplate & st = pModel->getStateTemplate();
+  const CStateTemplate & st = pModel->getStateTemplate();
   imax = st.size();
   mpTableState->setNumRows(0);
   mpTableState->setNumRows(imax + 1);

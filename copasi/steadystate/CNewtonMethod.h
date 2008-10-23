@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-//   $Revision: 1.28.6.1 $
+//   $Revision: 1.28.6.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/17 22:09:38 $
+//   $Author: shoops $
+//   $Date: 2008/10/23 14:11:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,6 +64,7 @@ class CNewtonMethod : public CSteadyStateMethod
 
     C_INT mDimension;
     C_FLOAT64 * mpX;
+    CVector< C_FLOAT64 > mAtol;
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
     CVector< C_FLOAT64 > mdxdt;

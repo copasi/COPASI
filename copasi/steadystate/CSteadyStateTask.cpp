@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.72.4.1 $
+//   $Revision: 1.72.4.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/17 15:34:58 $
+//   $Author: shoops $
+//   $Date: 2008/10/23 14:11:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
  * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Stefan Hoops 2002
+ * Created for COPASI by Stefan Hoops 2002
  */
 
 #include "copasi.h"
@@ -147,9 +147,9 @@ bool CSteadyStateTask::updateMatrices()
   if (!mpMethod->isValidProblem(mpProblem)) return false;
   if (!mpProblem->getModel()) return false;
 
-  CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
+  const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
 
-  //init jacobians
+  //init Jacobians
   unsigned C_INT32 sizeX = stateTemplate.getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + stateTemplate.getNumDependent();
@@ -158,7 +158,7 @@ bool CSteadyStateTask::updateMatrices()
   //jacobian annotations
 
   mpJacobianAnn->resize();
-  CModelEntity **ppEntities = stateTemplate.getEntities();
+  CModelEntity *const* ppEntities = stateTemplate.getEntities();
   const unsigned C_INT32 * pUserOrder = stateTemplate.getUserOrder().array();
   const unsigned C_INT32 * pUserOrderEnd = pUserOrder + stateTemplate.getUserOrder().size();
 
@@ -215,7 +215,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
 
 #ifdef xxxx
-  //init jacobians
+  //init Jacobians
   unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();

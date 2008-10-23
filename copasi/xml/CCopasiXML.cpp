@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.109.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Date: 2008/10/23 14:11:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 /*!
  \file CCopasiXML.cpp
- \brief Impöementation file of class CCopasiXML.
+ \brief Implementation file of class CCopasiXML.
  */
 
 /**
@@ -25,7 +25,7 @@
  * This class implements a CCopasiXMLInterface to the COPASI XML specified in
  * http://www.copasi.org/schema/copasi.xsd
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
 #include <iostream>
@@ -763,7 +763,7 @@ bool CCopasiXML::saveModel()
   Attributes.add("objectReference", "");
   std::pair< std::string, std::string > Variable;
 
-  CModelEntity **Entity = mpModel->getStateTemplate().getEntities();
+  CModelEntity *const* Entity = mpModel->getStateTemplate().getEntities();
   for (i = 0, imax = mpModel->getStateTemplate().size(); i < imax; i++, ++Entity)
     {
       Attributes.setValue(0, (*Entity)->getKey());

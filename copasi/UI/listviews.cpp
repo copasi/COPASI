@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.255.2.1 $
+//   $Revision: 1.255.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/14 19:47:24 $
+//   $Date: 2008/10/23 14:11:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
  **  $ Author  : Mudita Singhal
  **  $ Author  : Mrinmayee Kulkarni
  **
- ** This file contains the defination of the routines declared in listviews.h header
+ ** This file contains the definition of the routines declared in listviews.h header
  ** file.
  **
  ** This file is used to create the visual tree based on the information obtained from the data
@@ -107,11 +107,11 @@
  **              2. Folder* :- The folder that needs to be created
  **
  ** Returns  :- This is constructor so it does not return any thing
- ** Descripton:- This is a 2 argument constructor with one argument for the base class
+ ** Description:This is a 2 argument constructor with one argument for the base class
  **             This method creates a QListViewItem which the graphical display of the
  **             node of the tree with the name as specified in the name of the Folder
  **             and icon as per req..i.e whether its closed /locked..depending on
- **             whether the node has any childrens or not..
+ **             whether the node has any children or not..
  *******************************************************************************************/
 FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool recurs):
     QListViewItem(parent),
@@ -130,11 +130,11 @@ FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool rec
  **              2. Folder* :- The folder that needs to be created
  **
  ** Returns  :- This is constructor so it does not return any thing
- ** Descripton:- This is a 2 argument constructor with one argument for the base class
+ ** Description:This is a 2 argument constructor with one argument for the base class
  **             This method creates a QListViewItem which the graphical display of the
  **             node of the tree with the name as specified in the name of the Folder
  **             and icon as per req..i.e whether its closed /locked..depending on
- **             whether the node has any childrens or not..
+ **             whether the node has any children or not..
  *******************************************************************************************/
 FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs):
     QListViewItem(parent),
@@ -149,11 +149,11 @@ FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, boo
 
 /** **************FolderListItem::insertSubFolders(const QObjectList *lst)******
  **
- ** Parameters:- 1. QObjectList* :- The list of the object as my childrens
+ ** Parameters:- 1. QObjectList* :- The list of the object as my children
  **
  ** Returns  :- void
- ** Descripton:- This method is used to insert the sub folders of the folders. i.e. if the node
- **              has any childrens then this method is used to create those child nodes
+ ** Description: This method is used to insert the sub folders of the folders. i.e. if the node
+ **              has any children then this method is used to create those child nodes
  *******************************************************************************************/
 void FolderListItem::createSubFolders()
 {
@@ -196,16 +196,16 @@ QString FolderListItem::key(int, bool) const
 
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
-// Definations of the ListViews class as declared in listviews.h
+// Definitions of the ListViews class as declared in listviews.h
 /////////////////////////////////////////////////////////////////////////
 
 /*********ListViews::ListViews(QWidget *parent, const char *name)************
  **
  ** Parameters:- 1. QWidget* :- The parameter needed by the base class i.e QSplitter
- **              2. char* :- The name parameter needed by the base class ie QSplitter
- ** Returns  :-  It does not return anything sice its 2 argument constructor
- ** Descripton:-  This is the constructor of the ListViews and is used to
- **               set up all the requirement and intialization of the
+ **              2. char* :- The name parameter needed by the base class, i.e., QSplitter
+ ** Returns  :-  It does not return anything size its 2 argument constructor
+ ** Description:- This is the constructor of the ListViews and is used to
+ **               set up all the requirement and initialization of the
  **               components in the code.
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
@@ -289,7 +289,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   currentWidget = defaultWidget; // keeps track of the currentWidget in use
   lastKey = "";
 
-  // establishes the communication betweent the folders clicked and the routine called....
+  // establishes the communication between the folders clicked and the routine called....
   connect(folders, SIGNAL(pressed(QListViewItem*)),
           this, SLOT(slotFolderChanged(QListViewItem*)));
 
@@ -730,7 +730,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   folders->setCurrentItem(i);
   folders->ensureItemVisible(i);
 
-  // get the qlistview item in form of folderlistitem...
+  // get the listview item in form of folderlistitem...
   FolderListItem *item = static_cast< FolderListItem * >(i); //TODO dynamic cast?
 
   // find the widget
@@ -780,7 +780,7 @@ void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
 
 //**********************************************************************
 
-// this reconstructs the childrens of the listViewItems in all listviews
+// this reconstructs the children of the listViewItems in all listviews
 bool ListViews::updateAllListviews(C_INT32 id) //static
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
@@ -890,7 +890,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         case ADD:
           break;
         case DELETE:
-          // check if it was the last comaprtment, if yes,
+          // check if it was the last compartment, if yes,
           // make the compartment table the current widget
           if (dataModel)
             {
@@ -1261,8 +1261,8 @@ void ListViews::buildChangedObjects()
 
   mChangedObjects.clear();
 
-  CModelEntity **ppEntity = pModel->getStateTemplate().getEntities();
-  CModelEntity **ppEntityEnd = pModel->getStateTemplate().endFixed();
+  CModelEntity ** ppEntity = pModel->getStateTemplate().getEntities();
+  CModelEntity ** ppEntityEnd = pModel->getStateTemplate().endFixed();
 
   CMetab * pMetab;
   std::set< const CCopasiObject * > Objects;
