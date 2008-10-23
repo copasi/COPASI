@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:36:33 $
+//   $Author: ssahle $
+//   $Date: 2008/10/23 23:14:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -816,13 +816,13 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = y.end();
 
 #ifdef COPASI_DEBUG
-  std::cout << "COutputAssistant::createPlot:" << std::endl;
-  std::cout << " name: " << name << std::endl;
+  /*  std::cout << "COutputAssistant::createPlot:" << std::endl;
+    std::cout << " name: " << name << std::endl;
 
-  std::cout << x -> getObjectDisplayName() << std::endl;
+    std::cout << x -> getObjectDisplayName() << std::endl;
 
-  for (it = y.begin(); it != itEnd; ++it)
-    std::cout << (*it)->getObjectDisplayName() << std::endl;
+    for (it = y.begin(); it != itEnd; ++it)
+      std::cout << (*it)->getObjectDisplayName() << std::endl;*/
 #endif // COPASI_DEBUG
 
   //create plot with unique name
@@ -872,10 +872,10 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = d.end();
 
 #ifdef COPASI_DEBUG
-  std::cout << "COutputAssistant::createTable:" << std::endl;
-  std::cout << " name: " << name << std::endl;
-  for (it = d.begin(); it != itEnd; ++it)
-    std::cout << (*it)->getObjectDisplayName() << std::endl;
+  /*  std::cout << "COutputAssistant::createTable:" << std::endl;
+    std::cout << " name: " << name << std::endl;
+    for (it = d.begin(); it != itEnd; ++it)
+      std::cout << (*it)->getObjectDisplayName() << std::endl;*/
 #endif // COPASI_DEBUG
 
   //create plot with unique name
