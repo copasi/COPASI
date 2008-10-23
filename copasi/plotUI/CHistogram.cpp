@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:36:33 $
+//   $Author: ssahle $
+//   $Date: 2008/10/23 13:19:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,9 @@ void CHistogram::addValue(const C_FLOAT64 & val)
 {
   //just ignore breaks. Later we perhaps want to start a new histogram...
   if (isnan(val)) //NaN
+    return;
+
+  if (val >= DBL_MAX || val <= -DBL_MAX)
     return;
 
   mUptodate = false;
