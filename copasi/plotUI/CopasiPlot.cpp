@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.54.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/08 12:48:41 $
+//   $Date: 2008/10/23 23:16:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,7 +242,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
   CPlotItem* pItem;
-  QColor curveColours[7] = {darkRed, blue, darkGreen, cyan, magenta, yellow, gray} ; //TODO
+  QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO
 
   mCurves.resize(kmax);
   mCurveTypes.resize(kmax);
@@ -276,7 +276,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
-      pCurve->setPen(curveColours[k % 5]);
+      pCurve->setPen(curveColours[k % 6]);
       pCurve->attach(this);
 
       showCurve(pCurve, Visible);
@@ -297,7 +297,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               break;
             case 2:          //symbols
               pCurve->setStyle(QwtPlotCurve::NoCurve);
-              const QColor &c = curveColours[k % 5];
+              const QColor &c = curveColours[k % 6];
               pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
               break;
             }
