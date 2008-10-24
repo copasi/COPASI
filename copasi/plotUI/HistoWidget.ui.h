@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.11.22.1 $
+//   $Revision: 1.11.22.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 10:49:02 $
+//   $Author: ssahle $
+//   $Date: 2008/10/24 01:34:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,22 +34,43 @@
 #include "report/CCopasiContainer.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
+#include "plotwidget1.h"
 
 void HistoWidget::buttonPressedX()
 {
   if (!mpModel) return;
   //  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectX);
-  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectX);
+  //mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectX);
 
+  std::vector< const CCopasiObject * > oldSelection;
   if (mpObjectX)
+    oldSelection.push_back(mpObjectX);
+  std::vector< const CCopasiObject * > objects = CCopasiSelectionDialog::getObjectVector(this,
+      CCopasiSimpleSelectionTree::PLOT_OBJECT, &oldSelection);
+
+  if (objects.size() && objects[0])
     {
+      mpObjectX = objects[0];
       lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
       lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
     }
   else
     {
+      mpObjectX = NULL;
       lineEditXName->setText("");
       lineEditTitle->setText("Histogram");
+    }
+
+  //check if more than one object was selected...
+  if (objects.size() > 1)
+    {
+      PlotWidget1* pParent;
+      QObject* tmp = this;
+      while (!(pParent = dynamic_cast<PlotWidget1*>(tmp)) && this)
+        tmp = tmp->parent();
+
+      if (pParent) //tell the parent to create the remaining histogram descriptions.
+        pParent->createHistograms(objects, lineEditInc->text().toDouble());
     }
 }
 
