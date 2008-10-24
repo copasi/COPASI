@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.10.2.2 $
+$Revision: 1.10.2.3 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/10/23 20:01:35 $
+$Date: 2008/10/24 15:22:36 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,14 +215,18 @@ bool CConfigurationFile::load()
       MIRIAMResourceFile += CDirEntry::Separator + "MIRIAMResources.xml";
 
       CConfigurationFile::CXML XMLMIRIAMResource;
-      success &= XMLMIRIAMResource.CCopasiXMLInterface::load(MIRIAMResourceFile, MIRIAMResourceFile);
 
-      if (success)
+      if (XMLMIRIAMResource.CCopasiXMLInterface::load(MIRIAMResourceFile,
+          MIRIAMResourceFile))
         {
-          *mpRecentMIRIAMResources = *XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
+          *mpRecentMIRIAMResources =
+            *XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
           mpRecentMIRIAMResources->initializeParameter();
         }
+      else
+        success = false;
     }
+
   return success;
 }
 
