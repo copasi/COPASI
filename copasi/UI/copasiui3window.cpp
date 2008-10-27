@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242.2.3 $
+//   $Revision: 1.242.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/27 15:02:16 $
+//   $Author: ssahle $
+//   $Date: 2008/10/27 16:51:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,8 +226,10 @@ CopasiUI3Window::CopasiUI3Window():
     mSuspendAutoSave(false),
     mpMenuRecentFiles(NULL),
     mpMenuRecentSBMLFiles(NULL),
-    mpMIRIAMResources(NULL),
-    mpMenuSBW(NULL)
+    mpMIRIAMResources(NULL)
+#ifdef COPASI_SBW_INTEGRATION
+    , mpMenuSBW(NULL)
+#endif
 {
   // set destructive close
   WFlags f = this->getWFlags();
