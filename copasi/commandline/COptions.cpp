@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.39.8.1 $
+//   $Revision: 1.39.8.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 20:01:35 $
+//   $Date: 2008/10/27 16:30:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,10 @@
 
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.39.8.1 $
+   $Revision: 1.39.8.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2008/10/23 20:01:35 $
+   $Date: 2008/10/27 16:30:58 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,11 +65,36 @@ COptions::~COptions()
 
 void COptions::init(C_INT argc, char *argv[])
 {
+  char *ArgV[argc];
+  C_INT ArgC = 0;
+
   setValue("Self", localeToUtf8(argv[0]));
   setValue("PWD", getPWD());
 
+  // First we must clean up the command line by
+  // taking out any SBW commands like -sbwregister and -sbwmodule
+
+  // The default settings for SBW related options
+  setValue("SBWRegister", false);
+  setValue("SBWModule", false);
+
+  C_INT i;
+  for (i = 0; i < argc; i++)
+    {
+      if (strcmp(argv[i], "-sbwregister") == 0)
+        setValue("SBWRegister", true);
+      else if (strcmp(argv[i], "-sbwmodule") == 0)
+        setValue("SBWModule", true);
+      else
+        {
+          ArgV[ArgC] = argv[i];
+          ArgC++;
+        }
+    }
+
+  // Now we are ready to start the Clo++ generated parser.
   copasi::COptionParser * pPreParser = new copasi::COptionParser;
-  pPreParser->parse(argc, argv);
+  pPreParser->parse(ArgC, ArgV);
 
   const copasi::options &PreOptions = pPreParser->get_options();
 
