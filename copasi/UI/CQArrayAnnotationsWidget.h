@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.13.2.2 $
+//   $Revision: 1.13.2.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/27 10:55:59 $
+//   $Date: 2008/10/27 16:56:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ class CQArrayAnnotationsWidget : public QVBox
 
     void clearWidget();
 
-    CQBarChart* plot3d;
+    CQBarChart* mpPlot3d;
 
     QHBox* mpHBoxSelection;
     QHBox* mpHBoxContents;

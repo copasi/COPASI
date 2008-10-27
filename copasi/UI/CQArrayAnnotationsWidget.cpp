@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.4 $
+//   $Revision: 1.32.2.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/27 10:55:59 $
+//   $Date: 2008/10/27 16:56:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl,
     bool barChart, bool slider)
     : QVBox(parent, name, fl),
+    mpPlot3d(NULL),
     mpColorScale(NULL)
 {
   mWithBarChart = barChart;
@@ -69,10 +70,10 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
 
   //   if (showBarChart)
   //     {
-  //       plot3d = new CQBarChart(mpStack);
-  //       plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  //       if (slider) plot3d->activateSlider();
-  //       mpStack->addWidget(plot3d, 1);
+  //       mpPlot3d = new CQBarChart(mpStack);
+  //       mpPlot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  //       if (slider) mpPlot3d->activateSlider();
+  //       mpStack->addWidget(mpPlot3d, 1);
   //       if (barChartFirst)
   //         {
   //           setFocusOnBars();
@@ -223,8 +224,8 @@ void CQArrayAnnotationsWidget::clearWidget()
 
   if (mWithBarChart && mBarChartFilled)
     {
-      if (plot3d)
-        plot3d->emptyPlot();
+      if (mpPlot3d)
+        mpPlot3d->emptyPlot();
       mBarChartFilled = false;
     }
 }
@@ -523,7 +524,7 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
   if (mWithBarChart)
     {
-      if (!plot3d)
+      if (!mpPlot3d)
         createBarChart();
 
       setFocusOnBars();
@@ -544,22 +545,22 @@ void CQArrayAnnotationsWidget::disableBarChart()
 
 void CQArrayAnnotationsWidget::disableSlider()
 {
-  if (plot3d && plot3d->sliderActive())
+  if (mpPlot3d && mpPlot3d->sliderActive())
     {
-      plot3d->mpPlot->mpSliderColumn->hide();
-      plot3d->mpPlot->mpLabelColumn->clear();
-      plot3d->mpPlot->mpSliderRow->hide();
-      plot3d->mpPlot->mpLabelRow->clear();
-      plot3d->mpPlot->mpSlider = false;
+      mpPlot3d->mpPlot->mpSliderColumn->hide();
+      mpPlot3d->mpPlot->mpLabelColumn->clear();
+      mpPlot3d->mpPlot->mpSliderRow->hide();
+      mpPlot3d->mpPlot->mpLabelRow->clear();
+      mpPlot3d->mpPlot->mpSlider = false;
     }
 }
 
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
-  if (mWithBarChart && plot3d && plot3d->sliderActive())
+  if (mWithBarChart && mpPlot3d && mpPlot3d->sliderActive())
     {
-      int col = plot3d->mpPlot->mpSliderColumn->value();
-      int row = plot3d->mpPlot->mpSliderRow->value();
+      int col = mpPlot3d->mpPlot->mpSliderColumn->value();
+      int row = mpPlot3d->mpPlot->mpSliderRow->value();
 
       mpContentTable->clearSelection(true);
       if (col < mpContentTable->numCols())
@@ -593,36 +594,36 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
-  if (mWithBarChart && plot3d && plot3d->sliderActive())
+  if (mWithBarChart && mpPlot3d && mpPlot3d->sliderActive())
     {
       int col = mpContentTable->currentColumn();
       int row = mpContentTable->currentRow();
 
       if (mpContentTable->isRowSelected (row, true))
         {
-          plot3d->mpPlot->sliderMoved(-1, row);
-          plot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
-          plot3d->mpPlot->mpSliderRow->setValue(row);
+          mpPlot3d->mpPlot->sliderMoved(-1, row);
+          mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
+          mpPlot3d->mpPlot->mpSliderRow->setValue(row);
         }
       else
         if (mpContentTable->isColumnSelected (col, true))
           {
-            plot3d->mpPlot->sliderMoved(col, -1);
-            plot3d->mpPlot->mpSliderColumn->setValue(col);
-            plot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
+            mpPlot3d->mpPlot->sliderMoved(col, -1);
+            mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
+            mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
           }
         else
           {
             if (mpContentTable->currentRow() == -1 && mpContentTable->currentColumn() == -1)
               {
-                plot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
-                plot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
+                mpPlot3d->mpPlot->mpSliderColumn->setValue(mpContentTable->numCols() + 1);
+                mpPlot3d->mpPlot->mpSliderRow->setValue(mpContentTable->numRows() + 1);
               }
             else
               {
-                plot3d->mpPlot->sliderMoved(col, row);
-                plot3d->mpPlot->mpSliderColumn->setValue(col);
-                plot3d->mpPlot->mpSliderRow->setValue(row);
+                mpPlot3d->mpPlot->sliderMoved(col, row);
+                mpPlot3d->mpPlot->mpSliderColumn->setValue(col);
+                mpPlot3d->mpPlot->mpSliderRow->setValue(row);
               }
           }
     }
@@ -630,7 +631,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
 void CQArrayAnnotationsWidget::tableDoubleClicked()
 {
-  if (plot3d->sliderActive())
+  if (mpPlot3d->sliderActive())
     switchToBarChart();
 }
 
@@ -646,7 +647,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mWithBarChart)
     return;
 
-  if (!plot3d)
+  if (!mpPlot3d)
     createBarChart();
 
   mBarChartFilled = true;
@@ -750,21 +751,21 @@ void CQArrayAnnotationsWidget::fillBarChart()
       if ((maxValue == 0) && (minValue == 0))
         {
           // enableBarChart(false);
-          // plot3d->emptyPlot();
+          // mpPlot3d->emptyPlot();
         }
       else
         {
-          plot3d->setPlotTitle(QString(""));
-          plot3d->setColors(mColors, minZ, maxZ);
+          mpPlot3d->setPlotTitle(QString(""));
+          mpPlot3d->setColors(mColors, minZ, maxZ);
           mColors.erase(mColors.begin(), mColors.end());
-          plot3d->showColorLegend(true);
+          mpPlot3d->showColorLegend(true);
 
           if (mOneDimensional)
-            plot3d->setDescriptions(NULL, &mpArray->getAnnotationsString(mRowIndex));
+            mpPlot3d->setDescriptions(NULL, &mpArray->getAnnotationsString(mRowIndex));
           else
-            plot3d->setDescriptions(&mpArray->getAnnotationsString(mColIndex), &mpArray->getAnnotationsString(mRowIndex));
+            mpPlot3d->setDescriptions(&mpArray->getAnnotationsString(mColIndex), &mpArray->getAnnotationsString(mRowIndex));
 
-          plot3d->setData(data, columns, rows, holeSection);
+          mpPlot3d->setData(data, columns, rows, holeSection);
           enableBarChart(true);
         }
     }
@@ -772,10 +773,10 @@ void CQArrayAnnotationsWidget::fillBarChart()
 
 void CQArrayAnnotationsWidget::createBarChart()
 {
-  plot3d = new CQBarChart(mpStack);
-  plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  if (mUseSliders) plot3d->activateSlider();
-  mpStack->addWidget(plot3d, 1);
+  mpPlot3d = new CQBarChart(mpStack);
+  mpPlot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  if (mUseSliders) mpPlot3d->activateSlider();
+  mpStack->addWidget(mpPlot3d, 1);
   mpButton->setText("Bars");
   mBarChartFilled = false;
 }
