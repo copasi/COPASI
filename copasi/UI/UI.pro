@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.180.2.3 $
+#   $Revision: 1.180.2.4 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/10/15 15:15:43 $
+#   $Author: ssahle $
+#   $Date: 2008/10/27 10:50:59 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.180.2.3 $ $Author: shoops $ $Date: 2008/10/15 15:15:43 $
+# $Revision: 1.180.2.4 $ $Author: ssahle $ $Date: 2008/10/27 10:50:59 $
 ######################################################################
 
 LIB = UI
@@ -32,6 +32,7 @@ INCLUDEPATH	+= ..
 # Input
 HEADERS	+= \
   AboutDialog.h \
+  CColorScale.h \
 	CCopasiPlotSelectionDialog.h \
 #	CCopasi3dPlotSelectionDialog.h \
 	CCopasiSelectionDialog.h \
@@ -100,6 +101,7 @@ HEADERS	+= \
 
 SOURCES	+= \
   AboutDialog.cpp \
+  CColorScale.cpp \
 	CCopasiPlotSelectionDialog.cpp \
 #	CCopasi3dPlotSelectionDialog.cpp \
 	CCopasiSelectionDialog.cpp \
@@ -232,7 +234,7 @@ HEADERS += \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
            CQExpressionMmlWidget.ui.h \
-	         CQExpressionMmlWidget.h \
+           CQExpressionMmlWidget.h \
            CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
