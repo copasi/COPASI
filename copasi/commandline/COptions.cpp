@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.39.8.2 $
+//   $Revision: 1.39.8.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 16:30:58 $
+//   $Date: 2008/10/27 19:22:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,10 @@
 
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.39.8.2 $
+   $Revision: 1.39.8.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2008/10/27 16:30:58 $
+   $Date: 2008/10/27 19:22:21 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ COptions::~COptions()
 
 void COptions::init(C_INT argc, char *argv[])
 {
-  char *ArgV[argc];
+  char **ArgV = new char * [argc];
   C_INT ArgC = 0;
 
   setValue("Self", localeToUtf8(argv[0]));
@@ -174,6 +174,7 @@ void COptions::init(C_INT argc, char *argv[])
 #endif // COPASI_LICENSE_COM
 
   delete pPreParser;
+  delete [] ArgV;
 }
 
 void COptions::cleanup()
