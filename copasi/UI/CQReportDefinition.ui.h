@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.23.6.1 $
+//   $Revision: 1.23.6.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 11:18:18 $
+//   $Author: shoops $
+//   $Date: 2008/10/27 18:09:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -549,7 +549,7 @@ bool CQReportDefinition::save()
   CCopasiDataModel::Global->changed();
 
   mChanged = false;
-  return false;
+  return true;
 }
 
 bool CQReportDefinition::setAdvancedMode(const bool & advanced)
