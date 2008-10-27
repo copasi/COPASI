@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/01 15:41:13 $
+//   $Date: 2008/10/27 13:55:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,8 @@ CReference::CReference(const std::string & objectName,
     mTriplet(),
     mNodePath(),
     mKey(GlobalKeys.add("Reference", this)),
-    mPubMed("PubMed", ""),
-    mDOI("DOI", "")
+    mIdTriplet(),
+    mResource(NULL)
 {}
 
 CReference::CReference(const CRDFTriplet & triplet,
@@ -38,8 +38,8 @@ CReference::CReference(const CRDFTriplet & triplet,
     mTriplet(triplet),
     mNodePath(),
     mKey(GlobalKeys.add("Creator", this)),
-    mPubMed("PubMed", ""),
-    mDOI("DOI", "")
+    mIdTriplet(),
+    mResource(NULL)
 {
   if (!mTriplet)
     return;
@@ -58,23 +58,16 @@ CReference::CReference(const CRDFTriplet & triplet,
 
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
   std::set< CRDFTriplet >::iterator it;
-  std::set< CRDFTriplet >::iterator end;
 
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples = mTriplet.pObject->getDescendantsWithPredicate(*pPredicate);
-
       it = Triples.begin();
-      end = Triples.end();
 
-      for (; it != end; ++it)
+      if (it != Triples.end())
         {
-          const std::string & URI = it->pObject->getObject().getResource();
-
-          if (mPubMed.isValid(URI))
-            mPubMed.setNode(it->pObject);
-          else if (mDOI.isValid(URI))
-            mDOI.setNode(it->pObject);
+          mIdTriplet = *it;
+          mResource.setNode(mIdTriplet.pObject);
         }
     }
 }
@@ -85,8 +78,8 @@ CReference::CReference(const CReference & src,
     mTriplet(src.mTriplet),
     mNodePath(src.mNodePath),
     mKey(GlobalKeys.add("Creator", this)),
-    mPubMed(src.mPubMed),
-    mDOI(src.mDOI)
+    mIdTriplet(src.mIdTriplet),
+    mResource(src.mResource)
 {}
 
 CReference::~CReference()
@@ -100,26 +93,67 @@ const CRDFTriplet & CReference::getTriplet() const
 const std::string & CReference::getKey() const
   {return mKey;}
 
-const std::string & CReference::getPubmedId() const
-  {return mPubMed.getId();}
+std::string CReference::getResource() const
+  {return mResource.getDisplayName();}
 
-const std::string & CReference::getDOI() const
-  {return mDOI.getId();}
+void CReference::setResource(const std::string & resource)
+{
+  if (!mIdTriplet)
+    {
+      // We create an Id triplet
+      // This only adds the triplet if the resource is valid, i.e., it does not work;
+
+      mTriplet.pObject->setFieldValue("---", CRDFPredicate::copasi_isDescribedBy, mNodePath);
+
+      std::set< CRDFTriplet > Triples;
+      std::set< CRDFTriplet >::iterator it;
+
+      Triples = mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::copasi_isDescribedBy);
+      it = Triples.begin();
+
+      if (it != Triples.end())
+        {
+          mIdTriplet = *it;
+          mResource.setNode(mIdTriplet.pObject);
+        }
+    }
+
+  if (mIdTriplet && mResource.setDisplayName(resource))
+    mIdTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+}
+
+const std::string & CReference::getId() const
+{return mResource.getId();}
+
+void CReference::setId(const std::string & id)
+{
+  if (!mIdTriplet)
+    {
+      // We create an Id triplet
+      mTriplet.pObject->setFieldValue("---", CRDFPredicate::copasi_isDescribedBy, mNodePath);
+
+      std::set< CRDFTriplet > Triples;
+      std::set< CRDFTriplet >::iterator it;
+
+      Triples = mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::copasi_isDescribedBy);
+      it = Triples.begin();
+
+      if (it != Triples.end())
+        {
+          mIdTriplet = *it;
+          mResource.setNode(mIdTriplet.pObject);
+        }
+    }
+
+  if (mIdTriplet && mResource.setId(id))
+    mIdTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+}
+
+std::string CReference::getURI() const
+{return mResource.getURI();}
 
 const std::string & CReference::getDescription() const
   {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_description);}
-
-void CReference::setPubmedId(const std::string & pubmedId)
-{
-  mPubMed.setId(pubmedId);
-  mTriplet.pObject->setFieldValue(mPubMed, CRDFPredicate::copasi_isDescribedBy, mNodePath);
-}
-
-void CReference::setDOI(const std::string & DOI)
-{
-  mDOI.setId(DOI);
-  mTriplet.pObject->setFieldValue(mDOI, CRDFPredicate::copasi_isDescribedBy, mNodePath);
-}
 
 void CReference::setDescription(const std::string & description)
 {

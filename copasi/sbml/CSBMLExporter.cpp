@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.3 $
+//   $Revision: 1.50.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/22 14:42:12 $
+//   $Author: shoops $
+//   $Date: 2008/10/27 13:55:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4290,7 +4290,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO can have several resources.
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
-          cvTerm.addResource(pDescription->getResource());
+          cvTerm.addResource(pDescription->getURI());
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4301,7 +4301,33 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     {
       pReference = references[i];
       assert(pReference != NULL);
-      switch (pReference->getTriplet().Predicate)
+
+      CRDFPredicate::ePredicateType Predicates[] =
+        {
+          CRDFPredicate::copasi_isDescribedBy,
+          CRDFPredicate::bqbiol_isDescribedBy,
+          CRDFPredicate::bqmodel_isDescribedBy,
+          CRDFPredicate::end
+        };
+
+      std::set< CRDFTriplet > Triples;
+      CRDFTriplet IdTriplet;
+      CRDFPredicate::ePredicateType * pPredicate = Predicates;
+      std::set< CRDFTriplet >::iterator it;
+
+      for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
+        {
+          Triples = pReference->getTriplet().pObject->getDescendantsWithPredicate(*pPredicate);
+          it = Triples.begin();
+
+          if (it != Triples.end())
+            IdTriplet = *it;
+        }
+
+      if (!IdTriplet)
+        continue;
+
+      switch (IdTriplet.Predicate)
         {
         case CRDFPredicate::bqbiol_isDescribedBy:
         case CRDFPredicate::copasi_isDescribedBy:
@@ -4325,8 +4351,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       // set the resources which consist of the pubmed id and the DOI
       if (cvTerm.getQualifierType() != UNKNOWN_QUALIFIER)
         {
-          cvTerm.addResource(pReference->getPubmedId());
-          cvTerm.addResource(pReference->getDOI());
+          // now we set the resources
+          // TODO In COPASI there is only one resource per CBiologicalDescription
+          // TODO object, I will have to check if libsbml puts all resources with the
+          // TODO same predicate into one resource object since in libsbml a CVTerm
+          // TODO can have several resources.
+          // TODO If this isn't handled automatically by libsbml, I will have to add
+          // TODO code that does this.
+          cvTerm.addResource(pReference->getURI());
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }

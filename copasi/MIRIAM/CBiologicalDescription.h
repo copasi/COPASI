@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 18:08:05 $
+//   $Date: 2008/10/27 13:55:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,7 @@ class CBiologicalDescription : public CCopasiContainer
     std::string mKey;
 
     /**
-     * MIRIAM resource for holding the PubMed Id
+     * MIRIAM resource for holding the database and Id.
      */
     CMIRIAMResourceObject mResource;
 
@@ -83,6 +83,8 @@ class CBiologicalDescription : public CCopasiContainer
     std::string getResource() const;
 
     const std::string & getId() const;
+
+    std::string getURI() const;
 
     void setPredicate(const std::string & predicate);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/03 12:33:39 $
+//   $Date: 2008/10/27 13:55:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,3 +96,6 @@ void CBiologicalDescription::setId(const std::string & id)
   if (mResource.setId(id))
     mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
 }
+
+std::string CBiologicalDescription::getURI() const
+{return mResource.getURI();}

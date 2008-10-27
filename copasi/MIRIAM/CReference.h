@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 18:08:05 $
+//   $Date: 2008/10/27 13:55:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,19 +40,19 @@ class CReference : public CCopasiContainer
     CRDFPredicate::Path mNodePath;
 
     /**
-     * The key of the object needed for the copasi tables.
+     * The key of the object needed for the COPASI tables.
      */
     std::string mKey;
 
     /**
-     * MIRIAM resource for holding the PubMed Id
+     * Triplet in the RDF graph representing the reference.
      */
-    CMIRIAMResourceObject mPubMed;
+    CRDFTriplet mIdTriplet;
 
     /**
-     * MIRIAM resource for holding the DOI
+     * MIRIAM resource for holding database and Id.
      */
-    CMIRIAMResourceObject mDOI;
+    CMIRIAMResourceObject mResource;
 
   public:
     // Operations
@@ -91,15 +91,17 @@ class CReference : public CCopasiContainer
 
     virtual const std::string & getKey() const;
 
-    const std::string & getPubmedId() const;
+    std::string getResource() const;
 
-    const std::string & getDOI() const;
+    const std::string & getId() const;
 
     const std::string & getDescription() const;
 
-    void setPubmedId(const std::string &pubmedId);
+    std::string getURI() const;
 
-    void setDOI(const std::string & DOI);
+    void setResource(const std::string & resource);
+
+    void setId(const std::string & id);
 
     void setDescription(const std::string & description);
   };
