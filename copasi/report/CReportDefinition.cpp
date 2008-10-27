@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.40.22.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/23 18:52:49 $
+//   $Date: 2008/10/27 18:09:02 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -148,18 +153,22 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
 
   if (!pObject) return;
 
+  // Add separator
   if (!isFirst)
     {
-      mHeaderVector.push_back(SeparatorCN);
+      if (mbTitle)
+        mHeaderVector.push_back(SeparatorCN);
       mBodyVector.push_back(SeparatorCN);
     }
 
+  // Determine column title
   if (pObject->getObjectParent())
     {
       Title =
         pObject->getObjectParent()->getCN();
       Title += ",Reference=Name";
-      getHeaderAddr()->push_back(Title);
+      if (mbTitle)
+        mHeaderVector.push_back(Title);
 
       Title =
         CCopasiStaticString("[" + pObject->getObjectName() + "]").getCN();
@@ -168,7 +177,8 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
     Title =
       CCopasiStaticString(pObject->getObjectName()).getCN();
 
-  mHeaderVector.push_back(Title);
+  if (mbTitle)
+    mHeaderVector.push_back(Title);
   mBodyVector.push_back(pObject->getCN());
 
   return;
