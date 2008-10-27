@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242.2.2 $
+//   $Revision: 1.242.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:16 $
+//   $Date: 2008/10/27 15:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,7 +226,8 @@ CopasiUI3Window::CopasiUI3Window():
     mSuspendAutoSave(false),
     mpMenuRecentFiles(NULL),
     mpMenuRecentSBMLFiles(NULL),
-    mpMIRIAMResources(NULL)
+    mpMIRIAMResources(NULL),
+    mpMenuSBW(NULL)
 {
   // set destructive close
   WFlags f = this->getWFlags();
@@ -490,46 +491,39 @@ void CopasiUI3Window::createMenuBar()
 
   pFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
 
-#ifdef COPASI_SBW_INTEGRATION
-
-  // create and populate SBW menu
-  mpMenuSBW = new QPopupMenu(this);
-  menuBar()->insertItem("&SBW", mpMenuSBW);
-  refreshSBWMenu();
-
-#endif // COPASI_SBW_INTEGRATION
-
   //****** tools menu **************
 
   QPopupMenu* tools = new QPopupMenu(this);
   menuBar()->insertItem("&Tools", tools);
 
   //tools->insertSeparator();
-  tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
   //tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
 
   tools->insertSeparator();
-
+  mpaApplyInitialState->addTo(tools);
+  mpaUpdateInitialState->addTo(tools);
+  mpaSliders->addTo(tools);
   mpaCapture->addTo(tools);
 
   tools->insertSeparator();
-
+#ifdef COPASI_DEBUG
   mpaObjectBrowser->addTo(tools);
-
-  mpaSliders->addTo(tools);
+#endif // COPASI_DEBUG
 
   mpaCheckModel->addTo(tools);
+  tools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
 
-  mpaApplyInitialState->addTo(tools);
-  mpaUpdateInitialState->addTo(tools);
-
-  mpaUpdateMIRIAM->addTo(tools);
+#ifdef COPASI_SBW_INTEGRATION
+  // create and populate SBW menu
+  if (refreshSBWMenu())
+    tools->insertItem("&SBW", mpMenuSBW);
+#endif // COPASI_SBW_INTEGRATION
 
   tools->insertSeparator();
-  tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
+  mpaUpdateMIRIAM->addTo(tools);
+  tools->insertItem("&Preferences", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
 
 #ifdef COPASI_LICENSE_COM
-  tools->insertSeparator();
   tools->insertItem("&Registration", this, SLOT(slotRegistration()));
 #endif // COPASI_LICENSE_COM
 
@@ -1857,8 +1851,8 @@ void CopasiUI3Window::startSBWAnalyzer(int nId)
   try
     {
 
-      int nModule = SBWLowLevel::getModuleInstance(_oAnalyzerModules[nId].ascii());
-      int nService = SBWLowLevel::moduleFindServiceByName(nModule, _oAnalyzerServices[nId].ascii());
+      int nModule = SBWLowLevel::getModuleInstance(mAnalyzerModules[nId].ascii());
+      int nService = SBWLowLevel::moduleFindServiceByName(nModule, mAnalyzerServices[nId].ascii());
       int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
       DataBlockWriter args; args << exportSBMLToString();
       SBWLowLevel::methodSend(nModule, nService, nMethod, args);
@@ -1867,12 +1861,17 @@ void CopasiUI3Window::startSBWAnalyzer(int nId)
     {}}
 
 // get a list of all SBW analyzers and stick them into a menu
-void CopasiUI3Window::refreshSBWMenu()
+bool CopasiUI3Window::refreshSBWMenu()
 {
-  mpMenuSBW->clear();
+  bool success = true;
+
+  if (mpMenuSBW != NULL)
+    mpMenuSBW->clear();
+  else
+    mpMenuSBW = new QPopupMenu(this);
+
   try
     {
-
       std::vector<DataBlockReader> oModules = findServices("Analysis", true);
       QStringList oNameList;
       QStringList oModuleList;
@@ -1909,8 +1908,8 @@ void CopasiUI3Window::refreshSBWMenu()
 
           mpMenuSBW->insertItem(oSortedNameList[i], i);
         }
-      _oAnalyzerModules = oSortedModuleList;
-      _oAnalyzerServices = oSortedServiceList;
+      mAnalyzerModules = oSortedModuleList;
+      mAnalyzerServices = oSortedServiceList;
 
       if (!oNameList.empty())
         {
@@ -1920,12 +1919,19 @@ void CopasiUI3Window::refreshSBWMenu()
         {
           int index = mpMenuSBW->insertItem(QString("Please install SBW."));
           mpMenuSBW->setItemEnabled(index, false);
+          success = false;
         }
 
       SBWLowLevel::disconnect();
     }
+
   catch (...)
-    {}}
+    {
+      success = false;
+    }
+
+  return success;
+}
 
 // Here we get an SBML document
 SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::doAnalysis(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader)

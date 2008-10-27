@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.75.2.1 $
+//   $Revision: 1.75.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/16 20:09:24 $
+//   $Author: shoops $
+//   $Date: 2008/10/27 15:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,23 +181,6 @@ class CopasiUI3Window : public QMainWindow
     void slotShowObjectBrowserDialog(bool flag);
 
   private:
-#ifdef COPASI_SBW_INTEGRATION
-
-    // a list of SBW Analyzer Modules
-    QStringList _oAnalyzerModules;
-    // and corresponding services
-    QStringList _oAnalyzerServices;
-
-    // the SBW menu
-    QPopupMenu * mpMenuSBW;
-
-    // method to populate the SBW menu
-    void refreshSBWMenu();
-
-    std::vector< SystemsBiologyWorkbench::DataBlockReader > findServices(std::string var0, bool var1);
-
-#endif // COPASI_SBW_INTEGRATION
-
     int newFlag;
     QString FixedTitle;
     //QToolButton * msave_button;
@@ -251,6 +234,22 @@ class CopasiUI3Window : public QMainWindow
 
     CMIRIAMResources * mpMIRIAMResources;
 
+#ifdef COPASI_SBW_INTEGRATION
+
+    // a list of SBW Analyzer Modules
+    QStringList mAnalyzerModules;
+    // and corresponding services
+    QStringList mAnalyzerServices;
+
+    // the SBW menu
+    QPopupMenu * mpMenuSBW;
+
+    // method to populate the SBW menu
+    bool refreshSBWMenu();
+
+    std::vector< SystemsBiologyWorkbench::DataBlockReader > findServices(std::string var0, bool var1);
+
+#endif // COPASI_SBW_INTEGRATION
 #ifdef COPASI_LICENSE_COM
     bool checkRegistration();
 #endif // COPASI_LICENSE_COM
