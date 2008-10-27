@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.6.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/27 11:50:57 $
+//   $Author: shoops $
+//   $Date: 2008/10/27 19:49:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,8 @@
 #include "copasi.h"
 #include "UI/CopasiFileDialog.h"
 #include "utilities/COutputHandler.h"
+
+class QAction;
 
 class CopasiPlot;
 class CPlotSpecification;
@@ -50,6 +52,9 @@ class PlotWindow : public QMainWindow, public COutputInterface
     QToolButton * printButton;
     QToolButton * print2Button;
     QToolButton * saveButton;
+
+    QToolButton * mpSelectAll;
+    QToolButton * mpDeselectAll;
 
     ~PlotWindow();
 
@@ -99,4 +104,14 @@ class PlotWindow : public QMainWindow, public COutputInterface
 
     /// Zoom out
     void slotZoomOut();
+
+    /**
+     * Show all curves.
+     */
+    void slotSelectAll();
+
+    /**
+     * Hide all curves.
+     */
+    void slotDeselectAll();
   };

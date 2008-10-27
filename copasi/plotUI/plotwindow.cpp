@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.38.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/25 06:04:03 $
+//   $Author: shoops $
+//   $Date: 2008/10/27 19:49:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,21 +63,33 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   plotTools->setLabel("Plot Operations");
 
   printButton = new QToolButton(plotTools, "print plot");
-  printButton -> setTextLabel("Print plot");
+  printButton -> setTextLabel("Print Plot");
   printButton -> setText("Print");
 
-  print2Button = new QToolButton(plotTools, "print image");
-  print2Button -> setTextLabel("Print image");
-  print2Button -> setText("Print As Image");
+  print2Button = new QToolButton(plotTools, "save image");
+  print2Button -> setTextLabel("Print Image");
+  print2Button -> setText("Save Image");
 
   saveButton = new QToolButton(plotTools, "save data");
-  saveButton -> setTextLabel("Save data...");
-  saveButton -> setText("Save data");
+  saveButton -> setTextLabel("Save Data");
+  saveButton -> setText("Save Data");
 
   zoomButton = new QToolButton(plotTools, "zoom");
   zoomButton->setText("Zoom out");
   zoomButton->setTextLabel("Zoom out");
   //zoomButton->setToggleButton(true);
+
+  plotTools->addSeparator();
+
+  mpSelectAll = new QToolButton(plotTools, "show all");
+  mpSelectAll->setText("Show All");
+  mpSelectAll->setTextLabel("Show all curves");
+  connect(mpSelectAll, SIGNAL(clicked()), this, SLOT(slotSelectAll()));
+
+  mpDeselectAll = new QToolButton(plotTools, "hide all");
+  mpDeselectAll->setText("Hide All");
+  mpDeselectAll->setTextLabel("Hide all curves");
+  connect(mpDeselectAll, SIGNAL(clicked()), this, SLOT(slotDeselectAll()));
 
   //TODO button icons...
 
@@ -271,3 +283,15 @@ const std::set< const CCopasiObject * > & PlotWindow::getObjects() const
 
     return mObjects;
   }
+
+void PlotWindow::slotSelectAll()
+{
+  // We show all curves in mpPlot
+  mpPlot->setCurvesVisibility(true);
+}
+
+void PlotWindow::slotDeselectAll()
+{
+  // We hide all curves in mpPlot
+  mpPlot->setCurvesVisibility(false);
+}

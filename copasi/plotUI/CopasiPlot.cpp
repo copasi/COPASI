@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.54.2.1 $
+//   $Revision: 1.54.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/23 23:16:01 $
+//   $Author: shoops $
+//   $Date: 2008/10/27 19:49:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -877,7 +877,24 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
   item->setItemAttribute(QwtPlotItem::AutoScale, on);
   QWidget *w = legend()->find(item);
   if (w && w->inherits("QwtLegendItem"))
-    ((QwtLegendItem *)w)->setChecked(on);
+    static_cast< QwtLegendItem * >(w)->setChecked(on);
+
+  replot();
+}
+
+void CopasiPlot::setCurvesVisibility(const bool & visibility)
+{
+  std::map< std::string, QwtPlotCurve * >::iterator it = mCurveMap.begin();
+  std::map< std::string, QwtPlotCurve * >::iterator end = mCurveMap.end();
+
+  for (; it != end; ++it)
+    {
+      it->second->setVisible(visibility);
+      it->second->setItemAttribute(QwtPlotItem::AutoScale, visibility);
+      QWidget *w = legend()->find(it->second);
+      if (w && w->inherits("QwtLegendItem"))
+        static_cast< QwtLegendItem * >(w)->setChecked(visibility);
+    }
 
   replot();
 }
