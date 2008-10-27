@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.3 $
+//   $Revision: 1.32.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 19:08:16 $
+//   $Author: ssahle $
+//   $Date: 2008/10/27 10:55:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,279 +32,21 @@
 #include <iostream>
 
 #include "copasi/UI/CQBarChart.h"
-#include "copasi/mathematics.h"
-
-CColorScale1::CColorScale1()
-    : m1(1e-4)
-{}
-
-//virtual
-QColor CColorScale1::getColor(const C_FLOAT64 & number)
-{
-  QColor color;
-  if (fabs(number) < m1)
-    color = QColor(250, 250, 250);
-  else if (number > 0)
-    color = QColor(200, 255, 200);
-  else
-    color = QColor(255, 200, 200);
-  return color;
-}
-
-//**************************
-
-CColorScaleSimple::CColorScaleSimple()
-    : mMin(0.0),
-    mMax(1.0),
-    mLog(false),
-    mSym(false)
-{}
-
-//virtual
-QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
-{
-  C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
-  if (tmp > 1) tmp = 1;
-  if (tmp < 0) tmp = 0;
-
-  int r = 0;
-  int g = 0;
-  int b = 0;
-
-  if (tmp != tmp)
-    {
-      r = 85;
-      g = 85;
-      b = 135;
-    }
-  else if (tmp < 0.5)
-    {
-      r = 255;
-      g = (int) (255 + (tmp - 0.5) * 260);
-      b = (int) (255 + (tmp - 0.5) * 260);
-    }
-  else
-    {
-      r = (int) (255 - (tmp - 0.5) * 260);
-      g = 255;
-      b = (int) (255 - (tmp - 0.5) * 260);
-    }
-
-  QColor color(r, g, b);
-  return color;
-}
-
-//virtual
-void CColorScaleSimple::startAutomaticParameterCalculation()
-{
-  mMin = DBL_MAX;
-  mMax = -DBL_MAX;
-}
-
-//virtual
-void CColorScaleSimple::passValue(const C_FLOAT64 & number)
-{
-  if (number > mMax) mMax = number;
-  if (number < mMin) mMin = number;
-}
-
-//virtual
-void CColorScaleSimple::finishAutomaticParameterCalculation()
-{
-  if (mSym)
-    {
-      C_FLOAT64 tmp;
-      if (fabs(mMax) > fabs(mMin))
-        tmp = fabs(mMax);
-      else
-        tmp = fabs(mMin);
-
-      mMin = - tmp;
-      mMax = tmp;
-    }
-
-  if (mMin == mMax)
-    {
-      mMin -= 1e-5;
-      mMax += 1e-5;
-    }
-}
-
-//**************************
-
-CColorScaleAdvanced::CColorScaleAdvanced()
-    : CColorScaleSimple()
-{
-  mColorMax = QColor(0, 255, 0);
-  mColorMin = QColor(240, 240, 240);
-}
-
-void CColorScaleAdvanced::setColorMin(QColor col)
-{
-  mColorMin = col;
-}
-
-void CColorScaleAdvanced::setColorMax(QColor col)
-{
-  mColorMax = col;
-}
-
-QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number)
-{
-  C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
-  if (tmp > 1) tmp = 1;
-  if (tmp < 0) tmp = 0;
-
-  int r = (int) (mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
-  int g = (int) (mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
-  int b = (int) (mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
-
-  QColor color(r, g, b);
-  return color;
-}
-
-//**************************
-
-CColorScaleAverage::CColorScaleAverage()
-    : CColorScaleSimple(),
-    mFactor(3.0),
-    mFloat(0.0),
-    mInt(0)
-{}
-
-//virtual
-void CColorScaleAverage::startAutomaticParameterCalculation()
-{
-  mInt = 0;
-  mFloat = 0;
-}
-
-//virtual
-void CColorScaleAverage::passValue(const C_FLOAT64 & number)
-{
-  if (number != number) return; //NaN
-  if (fabs(number) >= DBL_MAX) return; //Inf
-
-  ++mInt;
-  mFloat += fabs(number);
-}
-
-//virtual
-void CColorScaleAverage::finishAutomaticParameterCalculation()
-{
-  if (mInt)
-    mMax = mFactor * mFloat / mInt;
-  else
-    mMax = mFactor;
-  mMin = -mMax;
-
-  if (mMin == mMax)
-    {
-      mMin -= 1e-5;
-      mMax += 1e-5;
-    }
-}
-
-//**************************
-
-CColorScaleBiLog::CColorScaleBiLog()
-    : m1(-6.0),
-    m2(2.0),
-    mFloat(0.0),
-    mInt(0)
-{}
-
-//virtual
-QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
-{
-  C_FLOAT64 logtmp = log(fabs(number));
-
-  C_FLOAT64 tmp = (logtmp - m1) / (m2 - m1); //scale to 0..1
-  if (tmp > 1) tmp = 1;
-  if (tmp < 0) tmp = 0;
-
-  if (number > 0)
-    tmp = 0.5 + tmp * 0.5;
-  else
-    tmp = 0.5 - tmp * 0.5;
-
-  int r = 0;
-  int g = 0;
-  int b = 0;
-
-  if (tmp != tmp)
-    {
-      r = 85;
-      g = 85;
-      b = 135;
-    }
-  else if (tmp < 0.5)
-    {
-      r = 255;
-      g = (int) (255 + (tmp - 0.5) * 260);
-      b = (int) (255 + (tmp - 0.5) * 260);
-    }
-  else
-    {
-      r = (int) (255 - (tmp - 0.5) * 260);
-      g = 255;
-      b = (int) (255 - (tmp - 0.5) * 260);
-    }
-
-  QColor color(r, g, b);
-  return color;
-}
-
-//virtual
-void CColorScaleBiLog::startAutomaticParameterCalculation()
-{
-  m1 = DBL_MAX;
-  m2 = -DBL_MAX;
-  mFloat = 0.0;
-  mInt = 0;
-}
-
-//virtual
-void CColorScaleBiLog::passValue(const C_FLOAT64 & number)
-{
-  if (number != number) return; //NaN
-  if (fabs(number) >= DBL_MAX) return; //Inf
-  if (number == 0.0) return;
-
-  C_FLOAT64 tmp = log(fabs(number));
-
-  //minmax
-  if (tmp > m2) m2 = tmp;
-  if (tmp < m1) m1 = tmp;
-
-  //average
-  ++mInt;
-  mFloat += tmp;
-}
-
-//virtual
-void CColorScaleBiLog::finishAutomaticParameterCalculation()
-{
-  if (mInt != 0)
-    m1 = (mFloat / mInt) - 4;
-  else
-    m1 = -4.0;
-  m2 -= 1.0;
-}
-
-//******************************************************************
-//******************************************************************
+//#include "copasi/mathematics.h"
 
 CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl,
-    bool barChart, bool slider, bool barChartFirst)
+    bool barChart, bool slider)
     : QVBox(parent, name, fl),
     mpColorScale(NULL)
 {
-  showBarChart = false;
+  mWithBarChart = barChart;
+  mUseSliders = slider;
   mBarChartFilled = false;
 
-  showBarChart = barChart;
   mpHBoxSelection = new QHBox(this);
+  mpHBoxSelection->setSpacing(4);
+  mpHBoxSelection->setMargin(4);
+
   mpSelectionTable = new QTable(mpHBoxSelection);
   mpSelectionTable->verticalHeader()->hide();
   mpSelectionTable->setLeftMargin(0);
@@ -314,7 +56,9 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpSelectionTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
   mpButton = new QPushButton(mpHBoxSelection);
-  mpButton->setFixedSize (70, 30);
+  mpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  mpButton->setText("Bars");
+
   mpHBoxSelection->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   mpHBoxContents = new QHBox(this);
   mpStack = new QWidgetStack(mpHBoxContents);
@@ -323,21 +67,21 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpContentTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   mpStack->addWidget(mpContentTable, 0);
 
-  if (showBarChart)
-    {
-      plot3d = new CQBarChart(mpStack);
-      plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-      if (slider) plot3d->activateSlider();
-      mpStack->addWidget(plot3d, 1);
-      if (barChartFirst)
-        {
-          setFocusOnBars();
-          mpStack->raiseWidget(1);
-          mpButton->setText("table");
-        }
-      else
-        mpButton->setText("bars");
-    }
+  //   if (showBarChart)
+  //     {
+  //       plot3d = new CQBarChart(mpStack);
+  //       plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  //       if (slider) plot3d->activateSlider();
+  //       mpStack->addWidget(plot3d, 1);
+  //       if (barChartFirst)
+  //         {
+  //           setFocusOnBars();
+  //           mpStack->raiseWidget(1);
+  //           mpButton->setText("table");
+  //}
+  //       else
+  //         mpButton->setText("bars");
+  //}
 
   connect(mpContentTable, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(tableDoubleClicked()));
   connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
@@ -477,9 +221,10 @@ void CQArrayAnnotationsWidget::clearWidget()
   mpContentTable->setNumCols(0);
   mpContentTable->setNumRows(0);
 
-  if (showBarChart && mBarChartFilled)
+  if (mWithBarChart && mBarChartFilled)
     {
-      plot3d->emptyPlot();
+      if (plot3d)
+        plot3d->emptyPlot();
       mBarChartFilled = false;
     }
 }
@@ -747,8 +492,7 @@ void CQArrayAnnotationsWidget::changeContents()
 
 void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
 {
-
-  if (showBarChart)
+  if (mWithBarChart)
     {
       if (enable)
         {
@@ -766,11 +510,10 @@ void CQArrayAnnotationsWidget:: enableBarChart(bool enable)
 
 void CQArrayAnnotationsWidget::switchToTable()
 {
-
   mpStack->raiseWidget(0);
-  if (showBarChart)
+  if (mWithBarChart)
     {
-      mpButton->setText("bars");
+      mpButton->setText("Bars");
       setFocusOnTable();
     }
 }
@@ -778,28 +521,30 @@ void CQArrayAnnotationsWidget::switchToTable()
 void CQArrayAnnotationsWidget::switchToBarChart()
 {
 
-  if (showBarChart)
+  if (mWithBarChart)
     {
+      if (!plot3d)
+        createBarChart();
+
       setFocusOnBars();
 
       if (!mBarChartFilled)
         fillBarChart();
 
       mpStack->raiseWidget(1);
-      mpButton->setText("table");
+      mpButton->setText("Table");
     }
 }
 
 void CQArrayAnnotationsWidget::disableBarChart()
 {
-
   switchToTable();
   mpButton->hide();
 }
 
 void CQArrayAnnotationsWidget::disableSlider()
 {
-  if (plot3d->sliderActive())
+  if (plot3d && plot3d->sliderActive())
     {
       plot3d->mpPlot->mpSliderColumn->hide();
       plot3d->mpPlot->mpLabelColumn->clear();
@@ -811,7 +556,7 @@ void CQArrayAnnotationsWidget::disableSlider()
 
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
-  if (showBarChart && plot3d->sliderActive())
+  if (mWithBarChart && plot3d && plot3d->sliderActive())
     {
       int col = plot3d->mpPlot->mpSliderColumn->value();
       int row = plot3d->mpPlot->mpSliderRow->value();
@@ -848,7 +593,7 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
-  if (showBarChart && plot3d->sliderActive())
+  if (mWithBarChart && plot3d && plot3d->sliderActive())
     {
       int col = mpContentTable->currentColumn();
       int row = mpContentTable->currentRow();
@@ -898,6 +643,12 @@ void CQArrayAnnotationsWidget::setColumnSize(int /* dummy1 */, int /* dummy2 */,
 
 void CQArrayAnnotationsWidget::fillBarChart()
 {
+  if (!mWithBarChart)
+    return;
+
+  if (!plot3d)
+    createBarChart();
+
   mBarChartFilled = true;
 
   if (!mpArray) return;
@@ -925,7 +676,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   else
     jmax = mpArray->size()[mColIndex];
 
-  if (showBarChart && (jmax > 0 && imax > 0))
+  if (jmax > 0 && imax > 0)
     {
       //create a new array data, witch holds the hole numeric data
       unsigned C_INT32 columns = jmax;
@@ -1019,6 +770,12 @@ void CQArrayAnnotationsWidget::fillBarChart()
     }
 }
 
-void CColorScaleBiLog::setWhitepoint(const C_FLOAT64 & n) {m1 = log(n);}
-
-void CColorScaleBiLog::setMaxIntensityPoint(const C_FLOAT64 & n) {m2 = log(n);}
+void CQArrayAnnotationsWidget::createBarChart()
+{
+  plot3d = new CQBarChart(mpStack);
+  plot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  if (mUseSliders) plot3d->activateSlider();
+  mpStack->addWidget(plot3d, 1);
+  mpButton->setText("Bars");
+  mBarChartFilled = false;
+}
