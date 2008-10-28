@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.3 $
+//   $Revision: 1.22.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 20:08:59 $
+//   $Author: ssahle $
+//   $Date: 2008/10/28 13:13:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,8 @@ void CILDMMethod::step(const double & deltaT)
 
   C_INT failed = 0;
   C_INT info_schur = 0;
-  C_INT failed_while = 0;
+
+  C_INT info;
 
   schur(info_schur); // TO DO : move the test to the TSSAMethod
 
@@ -236,6 +237,7 @@ void CILDMMethod::step(const double & deltaT)
     }
 
   // C_INT number, k;
+  C_INT failed_while;
 
   /** Classical ILDM iterations. The number of slow variables is decreased until the Deuflhard criterium holds */
   /*  do START slow iterations */
@@ -501,9 +503,21 @@ integration:
           for (j = 0; j < dim; j++)
             {
               Reac_slow_space[i] = Reac_slow_space[i] + mVslow_space[j] * Stoichiom(j, i);
-              mReacSlowSpace[i] = Reac_slow_space[i];  //NEW TAB
+              //  mReacSlowSpace[i] = Reac_slow_space[i];  //NEW TAB
             }
         }
+
+      C_FLOAT64 length;
+      length = 0;
+
+      for (i = 0; i < reacs_size; i++)
+        length = length + fabs(Reac_slow_space[i]);
+
+      for (i = 0; i < reacs_size; i++)
+        if (length > 0)
+          mReacSlowSpace[i] = Reac_slow_space[i] / length * 100;
+        else
+          mReacSlowSpace[i] = 0;
 
       /*      std::cout << "Reac_slow_space:" << std::endl;
             for (j = 0; j < reacs_size; j++)
@@ -725,13 +739,16 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       /* stop criterion of newton method */
 
-      C_FLOAT64 g1, g2 = 0.0;
+      C_FLOAT64 g1, g2;
+
+      g2 = err;
+
       if (iter == 1)
         g1 = 3.0 * err;
       else
         g1 = g2;
 
-      g2 = err;
+      //    g2 = err;
 
       if (g2 / g1 > 1.0)
         {
