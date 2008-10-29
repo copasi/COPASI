@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/Tools/Tester.py,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/10/29 15:29:04 $ 
+#   $Date: 2008/10/29 15:39:43 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -82,35 +82,21 @@ def check(args):
   else:                                    # already on ../Test/<TESTDIR>
     listInputDirs.append(args[2])
 
-#  exit() 
 # Create and fill listOutputDirs by replacing the directory of inputDir with more proper one   
-
   for dir in listInputDirs:
     listOutputDirs.append( string.replace(dir, 'Tests', 'Results/' + args[1]) )
 
-#  print 'Input Dirs:'
-#  print listInputDirs
-#  print '\nOutput Dirs:'
-#  print listOutputDirs
-
-#  exit()
-
 # Check the existence of output directory; create it if necessary
-
-#  print '--', listOutputDirs
 
   for outputDir in listOutputDirs:
     splitName = string.split(outputDir, '/')
     outDir = ''
     for name in splitName:
-#      print '----', name
       if outDir == '':
         outDir = name
       else:
         outDir = outDir + '/' + name
 		
-#      print outDir
-
       if os.path.exists(outDir) is False:
         print '%s does not exist.' % (outDir)
         os.system('mkdir ' + outDir)
@@ -132,11 +118,6 @@ def main():
     usage()
     exit()
 
-#  OS = string.split( sys.platform, ' ' )[0]
-#  print OS
-#  print sys.platform, sys.version
-#  exit()
-  
 # Check the given arguments
   
   check(args)
@@ -147,38 +128,21 @@ def main():
   print '\nOutput Dirs:'
   print listOutputDirs
   
-#  exit()
-
 # Create a list containing any required parameters to run CopasiSE
 
   parInputs = []  # input parameters including filename and its path
-#  parOutputs = [] # output parameters including filename and its path
 
-  for dir in listInputDirs:
-#    idx = 0
-    
+  for dir in listInputDirs:    
     for name in glob.glob(dir + '/*.cps'):
       parInputs.append(name)
-#      idx = idx + 1
 	  
-#    if idx == 0:
     if len(parInputs) == 0:
       print '\n-> %s contains no cps file <-\n'% (dir)
-#      exit()
   
-
-#  print '\n--------'
-#  for par in parInputs:
-#	print par
-#  print '--------\n'
-
-  print '\nInput File(s): '
-  print parInputs
+#  print '\nInput File(s): '
+#  print parInputs
 
   # output filename is taken from input one with different extension
-
-#  print '\nOutput File(s): '
-#  print parOutputs
 
   listPars = []  # containing any required parameters to run CopasiSE
 
@@ -188,29 +152,20 @@ def main():
     listPars.append(par)
     idx = idx + 1
 
-  print '--------'
-  for par in listPars:
-    print par
-  print '--------'
-
-#  exit()
+#  print '--------'
+#  for par in listPars:
+#    print par
+#  print '--------'
 
 # Run CopasiSE
 
-#  subprocess.Popen(pars[0:2]).wait()  # wait until CopasiSE finish
   print '\n--------'
   for par in listPars:
     print '\n', par, '\n'
     subprocess.Popen(par[0:2]).wait()  # wait until CopasiSE finish
     print '--------'
 
-#  exit()
-
 # Move the output file from the input directory to the output one
-
-  print '\n'
-
-  print 'listInputDirs = ', listInputDirs, ' in removing process'
 
   idx = 0
   for inDir in listInputDirs:
@@ -222,32 +177,13 @@ def main():
       os.system('mv ' + name + ' ' + outDir)    
     idx = idx + 1
 	
-#  exit()
-
 # Make a comparison between expected and real results
-
-##  resultsPath, sName = os.path.split(args[2])
-##  refPath = os.path.join(resultsPath, 'References')
-##  refFile = refPath + '/' + modelName + '.txt'
-##  print '\nReference Name: %s' % refFile
-
-##  for dir in listOutputDirs:
-##    for output in listOutputFiles:
-#      os.system('sdiff ' + dir + '/' + output + ' ' + refFile + ' > ' + dir + '/sdiff_' + output)
-##      resultFile = dir + '/' + output
-##      cmpFile = dir + '/diff_' + output
-#      print resultFile, ' --', cmpFile
-##      os.system('python NumDiff.py ' + resultFile + ' ' + refFile + ' ' + cmpFile )
 
   print 'listOutputDirs = ', listOutputDirs, ' in comparing process'
 
   dirSplit = listOutputDirs[0].split('/')
   
   # since the last character of 'dir' may be a '/' then :
-#  testName = ''
-#  while testName == '':
-#    testName = dirSplit.pop()
-#  dirSplit.pop()
   while dirSplit.pop() == '':
     continue 
 
@@ -255,7 +191,6 @@ def main():
   print dirSplit
   print report
 
-#  exit()
   if os.path.exists(report) is True:
     os.remove(report)
   
@@ -282,13 +217,7 @@ def main():
        cmpFile = string.replace(name, '_result.txt', '_diff.txt')
 
       print refFile, ' -vs- ', name, ' -> ', cmpFile
-#      resultFile = args[2] + '/Results/References/' + name
-#      cmpFile = dir + '/diff_' + output
-#      print resultFile, ' --', cmpFile
-#      os.system('python NumDiffE.py ' + refFile + ' ' + name + ' ' + cmpFile )
       os.system('python NumDiffE.py ' + refFile + ' ' + name + ' ' + cmpFile + ' ' + report + ' ' + testName )
-#      os.system('sdiff ' + refFile + ' ' + name + ' > ' + cmpFile)
-#      os.system('python ndiff.py ' + refFile + ' ' + name + ' > ' + cmpFile)
 
   print '\n>>> End of Tester.py <<<\n'
 
