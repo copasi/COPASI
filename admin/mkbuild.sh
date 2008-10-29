@@ -2,6 +2,8 @@
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
+SCP=${COPASI_SCP:-scp}
+
 pushd ../..
 
 AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
@@ -58,9 +60,9 @@ if [ x"$#" = x1 ]; then
     cp ~/environment/distribution/* copasi/bin
 
     if [ x"$license" = xUS ]; then
-      scp copasi/bin/CopasiSE.exe \
+      ${SCP} copasi/bin/CopasiSE.exe \
         copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build.exe
-      scp ~/environment/distribution/libexpat.dll \
+      ${SCP} ~/environment/distribution/libexpat.dll \
           ~/environment/distribution/libsbml.dll \
           ~/environment/distribution/msvcp80.dll \
           ~/environment/distribution/msvcr80.dll \
@@ -152,7 +154,7 @@ if [ x"$#" = x1 ]; then
       strip ${TMPDIR}/copasi/CopasiSE
       
       if [ x"$license" = xUS ]; then
-        scp ${TMPDIR}/copasi/CopasiSE \
+        ${SCP} ${TMPDIR}/copasi/CopasiSE \
           copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
        fi
     fi  
@@ -255,10 +257,10 @@ echo "Set the icon in the Info.plist file."
 
     if [ x"$license" = xUS ]; then
       if [ x"$DYNAMIC" == "xTRUE" ]; then
-        scp copasi/bin/CopasiSE \
+        ${SCP} copasi/bin/CopasiSE \
           copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
       else
-        scp copasi/bin/CopasiSE \
+        ${SCP} copasi/bin/CopasiSE \
           copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
       fi
     fi
@@ -290,7 +292,7 @@ echo "Set the icon in the Info.plist file."
     ;;
   esac
 
-  scp Copasi-$build-$1*.* \
+  ${SCP} Copasi-$build-$1*.* \
     copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
 
 else
