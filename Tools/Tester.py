@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/Tools/Tester.py,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/10/29 15:39:43 $ 
+#   $Date: 2008/10/30 09:57:00 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,6 +24,7 @@ import getopt      # for getting user's arguments
 import subprocess  # for running CopasiSE
 import glob		   # for making file lists from directory
 import string	   # for handling string
+import time
 #import shutil
 
 # --- Usage Function ---
@@ -122,6 +123,9 @@ def main():
   
   check(args)
 
+  timeStart = time.time()
+  print 'Time = ', timeStart
+
   print
   print 'Input Dirs:'
   print listInputDirs
@@ -164,6 +168,10 @@ def main():
     print '\n', par, '\n'
     subprocess.Popen(par[0:2]).wait()  # wait until CopasiSE finish
     print '--------'
+
+  timeInbetween = time.time()
+  print '\nTimeStart = ', timeStart, ' - timeInbetween = ', timeInbetween
+  print 'Duration = ', timeInbetween - timeStart, ' seconds\n'
 
 # Move the output file from the input directory to the output one
 
@@ -217,7 +225,13 @@ def main():
        cmpFile = string.replace(name, '_result.txt', '_diff.txt')
 
       print refFile, ' -vs- ', name, ' -> ', cmpFile
-      os.system('python NumDiffE.py ' + refFile + ' ' + name + ' ' + cmpFile + ' ' + report + ' ' + testName )
+      os.system('python NumDiff.py ' + refFile + ' ' + name + ' ' + cmpFile + ' ' + report + ' ' + testName )
+
+  timeFinish = time.time()
+  print '\nTimeStart = ', timeStart, ' - timeFinish = ', timeFinish
+  print '\nDuration before running CopasiSE = ', timeInbetween - timeStart, ' seconds'
+  print 'Duration after running CopasiSE = ', timeFinish - timeInbetween, ' seconds'
+  print 'Total duration = ', timeFinish - timeStart, ' seconds'
 
   print '\n>>> End of Tester.py <<<\n'
 
