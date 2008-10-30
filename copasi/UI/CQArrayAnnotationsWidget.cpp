@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.5 $
+//   $Revision: 1.32.2.6 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/27 16:56:09 $
+//   $Date: 2008/10/30 20:20:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -631,7 +631,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
 void CQArrayAnnotationsWidget::tableDoubleClicked()
 {
-  if (mpPlot3d->sliderActive())
+  if (mpPlot3d && mpPlot3d->sliderActive())
     switchToBarChart();
 }
 
