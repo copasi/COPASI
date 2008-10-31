@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.6 $
+//   $Revision: 1.26.4.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 11:05:12 $
+//   $Author: shoops $
+//   $Date: 2008/10/31 21:25:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -727,20 +727,6 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
 
   if (pObject->isReference())
     {
-      const CArrayAnnotation * pArrayElement =
-        dynamic_cast< const CArrayAnnotation * >(pObject->getObjectParent());
-      /*
-         std::cout << "on filter" << std::endl;
-         std::cout << "object cn = " << pObject->getCN() << std::endl;
-         std::cout << "object: " << pObject->getObjectType() << " - " << pObject->getObjectName() << std::endl;
-
-            if (pArrayElement)
-              {
-          std::cout << "cn = " << pArrayElement->getCN() << std::endl;
-          std::cout << "array: " << pArrayElement->getObjectType() << " - " << pArrayElement->getObjectName() << std::endl;
-                //return true;
-              }
-      */
       // CModelEntity needs to be check more thoroughly
       const CModelEntity * pEntity =
         dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
