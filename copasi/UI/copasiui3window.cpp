@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242.2.4 $
+//   $Revision: 1.242.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/27 16:51:54 $
+//   $Author: shoops $
+//   $Date: 2008/10/31 21:26:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1883,6 +1883,8 @@ bool CopasiUI3Window::refreshSBWMenu()
       QStringList oSortedModuleList;
       QStringList oSortedServiceList;
       unsigned int i;
+      bool isRegistered = false;
+
       for (i = 0; i < oModules.size(); i++)
         {
           std::string sModuleName;
@@ -1890,6 +1892,9 @@ bool CopasiUI3Window::refreshSBWMenu()
           std::string sMenuName;
           DataBlockReader oTemp = oModules[i];
           oTemp >> sModuleName >> sServiceName >> sMenuName;
+
+          if (sServiceName == "COPASI")
+            isRegistered = true;
 
           oNameList.append(sMenuName.c_str());
           oSortedNameList.append(sMenuName.c_str());
@@ -1901,7 +1906,7 @@ bool CopasiUI3Window::refreshSBWMenu()
 
       // TODO: this is backwards again, in QT4 sorting was easier
 
-      for (unsigned int i = 0; i < oSortedNameList.size(); i++)
+      for (i = 0; i < oSortedNameList.size(); i++)
         {
           // find old index
           int nIndex = oNameList.findIndex(oSortedNameList[i]);
@@ -1919,8 +1924,6 @@ bool CopasiUI3Window::refreshSBWMenu()
         }
       else
         {
-          int index = mpMenuSBW->insertItem(QString("Please install SBW."));
-          mpMenuSBW->setItemEnabled(index, false);
           success = false;
         }
 
