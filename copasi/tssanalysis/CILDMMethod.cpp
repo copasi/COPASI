@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.4 $
+//   $Revision: 1.22.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/28 13:13:47 $
+//   $Author: nsimus $
+//   $Date: 2008/11/03 12:19:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1074,43 +1074,41 @@ void CILDMMethod::setVectors(int slowMode)
 void CILDMMethod::createAnnotationsM()
 {
   CArrayAnnotation *
-  pTmp1 = new CArrayAnnotation("Unscaled elasticities", this,
+  pTmp1 = new CArrayAnnotation(" Contribution of species to modes ", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->VECTOR);
-  pTmp1->setDescription("mVslowPrintAnn matrix");
-  //pTmp1->setDimensionDescription(0, "contribution to each mode corresponding to timescale");
+  pTmp1->setDescription(" ");
   pTmp1->setDimensionDescription(0, "Contribution to  mode (TS - corresponding timescale)");
   pTmp1->setDimensionDescription(1, "Species");
   pVslowPrintAnn = pTmp1;
 
   CArrayAnnotation *
-  pTmp2 = new CArrayAnnotation("mVslowMetabPrint", this,
+  pTmp2 = new CArrayAnnotation(" Modes distribution for species ", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
-  pTmp2->setDescription("mVslowMetabPrint matrix");
+  pTmp2->setDescription(" ");
   pTmp2->setDimensionDescription(0, "Mode distribution for each species");
-  //pTmp2->setDimensionDescription(1, "modes corresponding to timescale");
   pTmp2->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
 
   CArrayAnnotation *
-  pTmp3 = new CArrayAnnotation("mVslowSpacePrint", this,
+  pTmp3 = new CArrayAnnotation(" Slow space ", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
-  pTmp3->setDescription("mVslowSpacePrint matrix");
+  pTmp3->setDescription(" ");
   pTmp3->setDimensionDescription(0, "Species");
   pTmp3->setDimensionDescription(1, "Contribution to slow space");
   pVslowSpacePrintAnn = pTmp3;
 
   CArrayAnnotation *
-  pTmp4 = new CArrayAnnotation("mVfastSpacePrint", this,
+  pTmp4 = new CArrayAnnotation(" Fast space ", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
-  pTmp4->setDescription("mVfastSpacePrint matrix");
+  pTmp4->setDescription(" ");
   pTmp4->setDimensionDescription(0, "Species");
   pTmp4->setDimensionDescription(1, "Contribution to fast space");
   pVfastSpacePrintAnn = pTmp4;
@@ -1118,11 +1116,11 @@ void CILDMMethod::createAnnotationsM()
   // NEW TAB
 
   CArrayAnnotation *
-  pTmp5 = new CArrayAnnotation("mReacSlowSpacePrint", this,
+  pTmp5 = new CArrayAnnotation(" Reactions slow space", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mReacSlowSpacePrint), true);
   pTmp5->setMode(1, pTmp5->STRINGS);
   pTmp5->setMode(0, pTmp5->VECTOR);
-  pTmp5->setDescription("mReacSlowSpacePrint matrix");
+  pTmp5->setDescription(" ");
   pTmp5->setDimensionDescription(0, "Reactions");
   pTmp5->setDimensionDescription(1, "Contribution to slow space");
   pReacSlowSpacePrintAnn = pTmp5;
