@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.6.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: ssahle $
+//   $Date: 2008/11/03 16:40:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,27 +191,6 @@ void CTSSAProblem::setTimeSeriesRequested(bool flag)
 
 bool CTSSAProblem::timeSeriesRequested() const
   {return *mpTimeSeriesRequested;}
-
-/**
- * Load a trajectory problem
- * @param "CReadConfig &" configBuffer
- */
-void CTSSAProblem::load(CReadConfig & configBuffer,
-                        CReadConfig::Mode C_UNUSED(mode))
-{
-  if (configBuffer.getVersion() < "4.0")
-    {
-      mpModel = CCopasiDataModel::Global->getModel();
-      configBuffer.getVariable("EndTime", "C_FLOAT64",
-                               mpDuration,
-                               CReadConfig::LOOP);
-      configBuffer.getVariable("Points", "C_INT32",
-                               mpStepNumber);
-      mStepNumberSetLast = true;
-
-      sync();
-    }
-}
 
 /**
  * This function synchronizes step size and number

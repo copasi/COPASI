@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.6.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/06/30 11:42:18 $
+//   $Author: ssahle $
+//   $Date: 2008/11/03 16:40:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,6 @@
 #include <string>
 
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
 
 class CTSSAProblem : public CCopasiProblem
   {
@@ -68,16 +67,6 @@ class CTSSAProblem : public CCopasiProblem
      *  Indicate whether the step number or step size was set last.
      */
     bool mStepNumberSetLast;
-
-    /**
-     *  The initial state, i.e., the starting conditions of the trajectroy.
-     */
-    //CState mInitialState;
-
-    /**
-     *  The final state of the trajectory at time EndTime
-     */
-    //CState mEndState;
 
   public:
     // Operations
@@ -168,14 +157,6 @@ class CTSSAProblem : public CCopasiProblem
      *
      */
     bool timeSeriesRequested() const;
-
-    /**
-     * Load a time scale separation analysis problem
-     * @param "CReadConfig &" configBuffer
-     * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
-     */
-    void load(CReadConfig & configBuffer,
-              CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
      * Set the Deufelhard Tolerance.

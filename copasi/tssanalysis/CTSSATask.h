@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:04 $
+//   $Author: ssahle $
+//   $Date: 2008/11/03 16:40:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,6 @@
 
 #include "tssanalysis/CTSSAMethod.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CReadConfig.h"
 #include "trajectory/CTimeSeries.h"
 
 class CTSSAProblem;
@@ -141,13 +140,6 @@ class CTSSATask : public CCopasiTask
      * @return bool success
      */
     virtual bool setMethodType(const int & type);
-
-    /**
-     * Loads parameters for this solver with data coming from a
-     * CReadConfig object. (CReadConfig object reads an input stream)
-     * @param configbuffer reference to a CReadConfig object.
-     */
-    void load(CReadConfig & configBuffer);
 
     /**
      * Retrieves a pointer to current state of the integration.
