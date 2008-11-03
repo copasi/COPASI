@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/Tools/NumDiff.py,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.5 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/10/29 15:36:45 $ 
+#   $Date: 2008/11/03 11:56:17 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -71,6 +71,7 @@ def takeImportantThings_python(ename, aname, dname):
   dataFile1 = [] 
   dataFile2 = [] 
   for line in difflib.unified_diff(a, b):
+    print line
     if string.find(line, '-') == 0:
       dataFile1.append(line)
     
@@ -221,14 +222,21 @@ def calcError(listValue0, listValue1, ref):
 
   absErr = []; relErr = []
 
-  # len(listValue1) = len(listValue2)
+  print 'listValue0 = ', listValue0
+  print 'listValue1 = ', listValue1
+
+  # len(listValue0) = len(listValue1)
   for ij in range(0, len(listValue1)):
 
     value0 = string.atof(listValue0[ij])
     value1 = string.atof(listValue1[ij])
 
-    absolute = abs(value0 - value1)
-    relative = absolute / max(abs(value0), abs(value1))
+    if max(abs(value0), abs(value1)) == 0.0:
+      absolute = 0.0; relative = 0.0
+    else:
+      absolute = abs(value0 - value1)
+      print 'val0 = ', value0, ' - val1 = ', value1 
+      relative = absolute / max(abs(value0), abs(value1))
 
     relErr.append(relative)
     absErr.append(absolute)
