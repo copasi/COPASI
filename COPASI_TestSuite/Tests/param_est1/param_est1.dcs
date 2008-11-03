@@ -1,0 +1,17 @@
+Parameter estimation test 1
+
+This is a simple parameter estimation problem of enzyme kinetics progress curve.
+It fits two parameters of the Michaelis-Menten mechanism to 5 progress curves.
+The problem is set to use the "Levenberg-Marquardt" algorithm. It should 
+converge in 290 function evaluations and reach a sum of squares around 12.5015,
+though with all optimization algorithms this depends a lot on numerics and is
+expected to be slightly different on different platforms. The first two 
+parameters should reach values of 26.3663 and 46.696, but note that these can
+change more easily than the SSq.
+
+input files
+param_est1.cps
+mmspec.dat
+
+output files
+param_est1_result.txt
