@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.125.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Author: ssahle $
+//   $Date: 2008/11/03 16:52:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1045,6 +1045,26 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
       pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
       break;
+
+      //**************************************************************************
+#ifdef COPASI_TSSA
+    case CCopasiTask::tssAnalysis:
+      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      pReport->setTaskType(taskType);
+      pReport->setComment("Automatically generated report.");
+      pReport->setIsTable(false);
+      pReport->setTitle(false);
+      pReport->setSeparator(CCopasiReportSeparator("\t"));
+
+      // Header
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description"));
+
+      // Footer
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
+      break;
+#endif //COPASI_TSSA
+
     default:
       return pReport;
     }
