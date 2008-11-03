@@ -1,4 +1,5 @@
 The following directories will be automatically tested
 
-TEST000001
-TEST000002
+ss_simple
+ss_simple2
+param_est1
