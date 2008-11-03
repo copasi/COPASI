@@ -1,0 +1,9 @@
+Simple steady state test
+
+This tests very basic steady state functionality. 
+The model is ->A->B-> with only mass action kinetics. A steady state should be 
+reached under all circumstances.
+Newton´s method is used. 
+
+output files
+ss_simple_result.txt
