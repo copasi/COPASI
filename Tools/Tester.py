@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/Tools/Tester.py,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: pwilly $ 
-#   $Date: 2008/10/30 09:57:00 $ 
+#   $Date: 2008/11/03 11:57:40 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -172,6 +172,7 @@ def main():
   timeInbetween = time.time()
   print '\nTimeStart = ', timeStart, ' - timeInbetween = ', timeInbetween
   print 'Duration = ', timeInbetween - timeStart, ' seconds\n'
+#  exit()
 
 # Move the output file from the input directory to the output one
 
@@ -181,27 +182,28 @@ def main():
     for name in glob.glob(inDir + '/*_result*.txt'):
       outName = string.replace(name, inDir, outDir)
       if os.path.exists(outName) is True:
-        print 'Remove %s to %s ... SUCCESS' % (name, outDir) 
+        print 'Remove %s to %s directory ... SUCCESS' % (name, outDir) 
       os.system('mv ' + name + ' ' + outDir)    
     idx = idx + 1
+  print ''
 	
-# Make a comparison between expected and real results
+# Prepare report file; delete it if it exists already
 
-  print 'listOutputDirs = ', listOutputDirs, ' in comparing process'
-
-  dirSplit = listOutputDirs[0].split('/')
-  
+  dirSplit = listOutputDirs[0].split('/')  
   # since the last character of 'dir' may be a '/' then :
   while dirSplit.pop() == '':
     continue 
-
   report = '/'.join(dirSplit) + '/report.txt'
-  print dirSplit
-  print report
+#  print dirSplit
+  print 'Report file: ', report, '\n'
 
   if os.path.exists(report) is True:
     os.remove(report)
   
+# Make a comparison between expected and real results
+
+  print 'listOutputDirs = ', listOutputDirs, ' in comparing process'
+
   for dir in listOutputDirs:
     print 'dir = ', dir
 
@@ -215,17 +217,25 @@ def main():
     print testName
 
     for name in glob.glob(dir + '/*_result*.txt'):
-      print os.path.basename(name)
-      refFile = string.replace(name, os.path.dirname(name), string.replace(args[2], 'Tests', 'Results/References'))
+      basename = os.path.basename(name)
+      print 'name = ', name, ' -- basename = ', basename
+      print 'dirname = ', os.path.dirname(name)
+      print 'args[2] = ', args[2]
+      refDir = string.replace(args[2], 'Tests', 'References/' + testName + '/')
+      print 'refDir = ', refDir
 
       # between 'results' and 'result'
-      if os.path.basename(name).find('results') != -1:
+      if basename.find('results') != -1:
         cmpFile = string.replace(name, '_results.txt', '_diff.txt')
       else:
        cmpFile = string.replace(name, '_result.txt', '_diff.txt')
 
-      print refFile, ' -vs- ', name, ' -> ', cmpFile
-      os.system('python NumDiff.py ' + refFile + ' ' + name + ' ' + cmpFile + ' ' + report + ' ' + testName )
+#      print refDir, ' -vs- ', name, ' -> ', cmpFile
+#      os.system('python NumDiff.py ' + refFile + ' ' + name + ' ' + cmpFile + ' ' + report + ' ' + testName )
+
+      for refName in glob.glob(refDir + '/*.txt'):
+        print 'refName = ', refName
+        os.system('python NumDiff.py ' + refName + ' ' + name + ' ' + cmpFile + ' ' + report + ' ' + testName )
 
   timeFinish = time.time()
   print '\nTimeStart = ', timeStart, ' - timeFinish = ', timeFinish
