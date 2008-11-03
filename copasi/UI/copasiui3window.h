@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.75.2.2 $
+//   $Revision: 1.75.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 15:02:16 $
+//   $Date: 2008/11/03 21:14:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,6 +243,7 @@ class CopasiUI3Window : public QMainWindow
 
     // the SBW menu
     QPopupMenu * mpMenuSBW;
+    bool mIsSBWRegistered;
 
     // method to populate the SBW menu
     bool refreshSBWMenu();

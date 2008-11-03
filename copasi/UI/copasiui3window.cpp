@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242.2.5 $
+//   $Revision: 1.242.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/31 21:26:21 $
+//   $Date: 2008/11/03 21:14:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1850,22 +1850,42 @@ void CopasiUI3Window::customEvent(QCustomEvent * event)
 // start the selected analyzer
 void CopasiUI3Window::startSBWAnalyzer(int nId)
 {
-  try
-    {
+  if (!mIsSBWRegistered)
+    nId--;
 
-      int nModule = SBWLowLevel::getModuleInstance(mAnalyzerModules[nId].ascii());
-      int nService = SBWLowLevel::moduleFindServiceByName(nModule, mAnalyzerServices[nId].ascii());
-      int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
-      DataBlockWriter args; args << exportSBMLToString();
-      SBWLowLevel::methodSend(nModule, nService, nMethod, args);
+  switch (nId)
+    {
+      // Register in SBW and refresh the SBW menu
+    case - 1:
+      {
+        std::string Self;
+        COptions::getValue("Self", Self);
+        std::string Command = utf8ToLocale(Self) + " -sbwregister";
+        if (system(Command.c_str()) == 0)
+          refreshSBWMenu();
+      }
+      break;
+
+    default:
+      try
+        {
+          int nModule = SBWLowLevel::getModuleInstance(mAnalyzerModules[nId].ascii());
+          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mAnalyzerServices[nId].ascii());
+          int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
+          DataBlockWriter args; args << exportSBMLToString();
+          SBWLowLevel::methodSend(nModule, nService, nMethod, args);
+        }
+      catch (...)
+      {}
+      break;
     }
-  catch (...)
-    {}}
+}
 
 // get a list of all SBW analyzers and stick them into a menu
 bool CopasiUI3Window::refreshSBWMenu()
 {
   bool success = true;
+  mIsSBWRegistered = false;
 
   if (mpMenuSBW != NULL)
     mpMenuSBW->clear();
@@ -1883,7 +1903,6 @@ bool CopasiUI3Window::refreshSBWMenu()
       QStringList oSortedModuleList;
       QStringList oSortedServiceList;
       unsigned int i;
-      bool isRegistered = false;
 
       for (i = 0; i < oModules.size(); i++)
         {
@@ -1894,7 +1913,7 @@ bool CopasiUI3Window::refreshSBWMenu()
           oTemp >> sModuleName >> sServiceName >> sMenuName;
 
           if (sServiceName == "COPASI")
-            isRegistered = true;
+            mIsSBWRegistered = true;
 
           oNameList.append(sMenuName.c_str());
           oSortedNameList.append(sMenuName.c_str());
@@ -1904,8 +1923,14 @@ bool CopasiUI3Window::refreshSBWMenu()
 
       oSortedNameList.sort();
 
-      // TODO: this is backwards again, in QT4 sorting was easier
+      // Add the option to register in SBW
+      if (!mIsSBWRegistered)
+        {
+          mpMenuSBW->insertItem("Register COPASI", 0);
+          mpMenuSBW->insertSeparator();
+        }
 
+      // TODO: this is backwards again, in QT4 sorting was easier
       for (i = 0; i < oSortedNameList.size(); i++)
         {
           // find old index
@@ -1913,7 +1938,7 @@ bool CopasiUI3Window::refreshSBWMenu()
           oSortedModuleList.append(oModuleList[nIndex]);
           oSortedServiceList.append(oServiceList[nIndex]);
 
-          mpMenuSBW->insertItem(oSortedNameList[i], i);
+          mpMenuSBW->insertItem(oSortedNameList[i], mIsSBWRegistered ? i : i + 1);
         }
       mAnalyzerModules = oSortedModuleList;
       mAnalyzerServices = oSortedServiceList;
