@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.68.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:12:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,8 @@
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
 #endif  // WIN32
+
+#include <limits.h>
 
 #include <mathematics.h>
 #include <vector>
