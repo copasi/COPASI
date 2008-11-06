@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.3 $
+//   $Revision: 1.347.2.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/31 00:58:57 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 07:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,16 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+//
+
+#include <string.h>
+#include <limits.h>
+#include <string>
+#include <vector>
+#include <limits>
+#include <float.h>
+#include <cmath>
+#include <algorithm>
 
 #ifdef SunOS
 # include <ieeefp.h>
@@ -22,13 +32,6 @@
 #endif
 
 #include "copasi.h"
-
-#include <string>
-#include <vector>
-#include <limits>
-#include <float.h>
-#include <cmath>
-#include <algorithm>
 
 // #define DEBUG_MATRIX
 
