@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.86.2.1 $
+//   $Revision: 1.86.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 19:08:15 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:20:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <stdlib.h>
 
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
