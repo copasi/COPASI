@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.39.8.3 $
+//   $Revision: 1.39.8.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/27 19:22:21 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 07:25:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,15 +17,17 @@
 
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.39.8.3 $
+   $Revision: 1.39.8.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2008/10/27 19:22:21 $
+   $Author: gauges $
+   $Date: 2008/11/06 07:25:37 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+#include <string.h>
+#include <stdlib.h>
 
 #include "copasi.h"
 
