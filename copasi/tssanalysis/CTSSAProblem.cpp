@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.3.6.1 $
+//   $Revision: 1.3.6.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/03 16:40:57 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:18:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 
 #include <math.h>
 #include <string>
+#include <limits.h>
 
 #include "copasi.h"
 #include "CTSSAProblem.h"
