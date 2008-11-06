@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
+  $Revision: 1.16.30.1 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2008/11/06 08:09:27 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,9 +23,11 @@
  * Created for Copasi by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
-#include "copasi.h"
 
 #include <sstream>
+#include <stdlib.h>
+
+#include "copasi.h"
 
 #include "CKeyFactory.h"
 
