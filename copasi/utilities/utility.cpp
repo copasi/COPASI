@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-  $Revision: 1.27.24.1 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/10/21 20:30:53 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
+ $Revision: 1.27.24.2 $
+ $Name:  $
+ $Author: gauges $
+ $Date: 2008/11/06 08:17:12 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,6 +18,9 @@
 #include "mathematics.h"
 #include <stdio.h>
 #include <time.h>
+
+#include <string.h>
+#include <stdlib.h>
 
 #ifdef WIN32
 # include <windows.h>
