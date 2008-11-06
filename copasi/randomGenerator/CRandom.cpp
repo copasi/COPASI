@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.19.16.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:07:18 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +19,8 @@
 #include <sys/timeb.h>
 #include <math.h>
 #include <algorithm>
+
+#include <string.h>
 
 #include "copasi.h"
 #include "CRandom.h"
