@@ -1,18 +1,25 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/04 15:45:49 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
+  $Revision: 1.13.24.1 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2008/11/06 08:06:19 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <vector>
 #include <limits>
 #include <math.h>
+
+#include <stdlib.h>
 
 #include "copasi.h"
 
