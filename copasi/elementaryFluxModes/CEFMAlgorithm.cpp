@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-  $Revision: 1.21 $
-  $Name:  $
-  $Author: tjohann $
-  $Date: 2008/07/02 08:06:12 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
+ $Revision: 1.21.6.1 $
+ $Name:  $
+ $Author: gauges $
+ $Date: 2008/11/06 07:38:18 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -38,7 +38,7 @@
 CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent):
     CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMAlgorithm, pParent),
     mpModel(NULL),
-    mStoi(0, 0),
+    mStoi(0),
     mReversible(0),
     mpCurrentTableau(NULL),
     mpNextTableau(NULL)
@@ -47,7 +47,7 @@ CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent):
 CEFMAlgorithm::CEFMAlgorithm(const CCopasiMethod::SubType subType, const CCopasiContainer * pParent):
     CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
     mpModel(NULL),
-    mStoi(0, 0),
+    mStoi(0),
     mReversible(0),
     mpCurrentTableau(NULL),
     mpNextTableau(NULL)
@@ -57,7 +57,7 @@ CEFMAlgorithm::CEFMAlgorithm(const CEFMAlgorithm & src,
                              const CCopasiContainer * pParent):
     CEFMMethod(src, pParent),
     mpModel(NULL),
-    mStoi(0, 0),
+    mStoi(0),
     mReversible(0),
     mpCurrentTableau(NULL),
     mpNextTableau(NULL)
