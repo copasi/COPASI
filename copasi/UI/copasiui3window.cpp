@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242.2.6 $
+//   $Revision: 1.242.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/03 21:14:52 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:30:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,10 @@
 
 #include <vector>
 #include <sstream>
+
+#ifdef COPASI_SBW_INTEGRATION
+#include <stdlib.h>
+#endif // COPASI_SBW_INTEGRATION
 
 extern const char * CopasiLicense;
 
