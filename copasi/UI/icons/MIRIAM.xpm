@@ -1,5 +1,5 @@
 /* XPM */
-static char * MIRIAM_xpm[] = {
+static const char * MIRIAM_xpm[] = {
 "79 52 1860 2",
 "  	c #121515",
 ". 	c #3D4947",
