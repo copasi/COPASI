@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.71.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 07:56:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 //
 // (C) Stefan Hoops 2002
 //
+
+#include <string.h>
 
 #include "copasi.h"
 
