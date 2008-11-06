@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.86.2.2 $
+//   $Revision: 1.86.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/11/06 08:20:04 $
+//   $Date: 2008/11/06 10:15:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -645,6 +645,7 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 void CQLayoutMainWindow::setIndividualScaling()
 {
   mpVisParameters->mScalingMode = mpVisParameters->INDIVIDUAL_SCALING;
+  mpGLViewport->getPainter()->setScaleMode(mpVisParameters->INDIVIDUAL_SCALING);
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->INDIVIDUAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
@@ -652,6 +653,7 @@ void CQLayoutMainWindow::setIndividualScaling()
 void CQLayoutMainWindow::setGlobalScaling()
 {
   mpVisParameters->mScalingMode = mpVisParameters->GLOBAL_SCALING;
+  mpGLViewport->getPainter()->setScaleMode(mpVisParameters->GLOBAL_SCALING);
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->GLOBAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
