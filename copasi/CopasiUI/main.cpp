@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.35.2.2 $
+//   $Revision: 1.35.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/31 21:24:42 $
+//   $Date: 2008/11/07 17:26:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,44 +65,15 @@ int main(int argc, char **argv)
   // Create the main application window.
   CopasiUI3Window *pWindow = CopasiUI3Window::create();
 
-  if (pWindow != NULL)
-    {
 #ifdef COPASI_SBW_INTEGRATION
-      // Let us define how COPASI will look to the rest of SBW
-      std::string sName("COPASI");
-      std::string sServiceName("COPASI");
-      std::string sDisplayName = "COPASI " + CCopasiDataModel::Global->getVersion()->getVersion();
-
-      // By belonging to the Analysis category, we tell all other modules that
-      // COPASI can take SBML files and do *something* with them
-      std::string sCategory("Analysis");
-      std::string sDescription("COPASI Analyzer - Loads an SBML model into COPASI");
-
-      SystemsBiologyWorkbench::ModuleImpl modImpl(sName, sDisplayName, SystemsBiologyWorkbench::UniqueModule, sDescription);
-      modImpl.addServiceObject(sServiceName, sDisplayName, sCategory, pWindow, sDescription);
-
-      try
-        {
-          if (COptions::compareValue("SBWRegister", true))
-            {
-              // in registration mode, we want to register COPASI with SBW but then shut it down again
-              modImpl.run(argc, argv);
-              goto finish;
-            }
-          if (COptions::compareValue("SBWModule", true))
-            {
-              SBW::addListener(pWindow);  // this lets SBW ask COPASI to shut down
-              modImpl.enableModuleServices(); // here we start the SBW services and give over to QT's main loop
-            }
-        }
-      catch (...)
-      {}
+  if (COptions::compareValue("SBWRegister", true))
+    goto finish;
 #endif // COPASI_SBW_INTEGRATION
 
+  if (pWindow != NULL)
+    {
       a.setMainWidget(pWindow);
-
       pWindow->getDataModel()->setQApp(&a);
-
       a.exec();
     }
 

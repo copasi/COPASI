@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.75.2.3 $
+//   $Revision: 1.75.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/03 21:14:52 $
+//   $Date: 2008/11/07 17:26:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,49 +61,12 @@ class CMIRIAMResourceObject;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
-      // A SBW listener can catch messages from SBW ... used here to allow copasi to be shut down
+      // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
       , public SBWListener
 #endif // COPASI_SBW_INTEGRATION
 
   {
     Q_OBJECT
-
-#ifdef COPASI_SBW_INTEGRATION
-
-    // Create 2 custom events, one containing the filename to an SBML document to be loaded
-    // into copasi
-  class QSBWSBMLEvent : public QCustomEvent
-      {
-      public:
-        QSBWSBMLEvent(const std::string& sSBMLModel)
-            : QCustomEvent(65433), _sSBML(sSBMLModel) {}
-        std::string sbmlString() const {return _sSBML;}
-      private:
-        std::string _sSBML;
-      };
-
-    // And another asking COPASI nicely to shut down
-  class QSBWShutdownEvent: public QCustomEvent
-      {
-      public:
-        QSBWShutdownEvent() : QCustomEvent(65434) {}};
-  public:
-
-    // We expose to methods to SBW, one to load an SBML file
-    SystemsBiologyWorkbench::DataBlockWriter doAnalysis(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader);
-    // and another to return the SBML file COAPSI is currently working with
-    SystemsBiologyWorkbench::DataBlockWriter getSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader reader);
-    // those methods are registered here
-    static void registerMethods(SystemsBiologyWorkbench::MethodTable<CopasiUI3Window> &table)
-    {
-      table.addMethod(&CopasiUI3Window::doAnalysis, "void doAnalysis(string)", false, "Starts up the CopasiUI and loads the given Model.");
-      table.addMethod(&CopasiUI3Window::getSBML, "string getSBML()", false, "returns the currently loaded Copasi model.");
-    }
-
-    // as part of the SBWListener we tell SBW here, that we want to react on the shutdown event
-    virtual void onShutdown() {QApplication::postEvent(this, new QSBWShutdownEvent());}
-
-#endif // COPASI_SBW_INTEGRATION
 
   public:
     static CopasiUI3Window * create();
@@ -120,7 +83,7 @@ class CopasiUI3Window : public QMainWindow
 
     void checkPendingMessages();
     void suspendAutoSave(const bool & suspend);
-    void importSBMLFromString(const std::string& sbmlDocumentText);
+    void importSBMLFromString(const std::string & sbmlDocumentText);
     std::string exportSBMLToString();
 
   protected:
@@ -225,30 +188,120 @@ class CopasiUI3Window : public QMainWindow
     bool mSuspendAutoSave;
 
     QPopupMenu * mpMenuExamples;
-
     QPopupMenu * mpMenuRecentFiles;
     void refreshRecentFileMenu();
 
     QPopupMenu * mpMenuRecentSBMLFiles;
     void refreshRecentSBMLFileMenu();
 
+    QPopupMenu * mpTools;
+
     CMIRIAMResources * mpMIRIAMResources;
 
 #ifdef COPASI_SBW_INTEGRATION
+  public:
+    /**
+     * This event is triggered by SBW asking COPASI to import an SBML document provided as a string
+     */
+  class QSBWSBMLEvent : public QCustomEvent
+      {
+      public:
+        /**
+         * Constructor
+         * @param const std::string & SBMLModel
+         */
+        QSBWSBMLEvent(const std::string & SBMLModel);
 
-    // a list of SBW Analyzer Modules
+        /**
+         * Retrieve the SBML model
+         * @return const std::string & SBMLModel
+         */
+        const std::string & getSBMLModel() const;
+
+      private:
+        /**
+         * A string holding the SBML model
+         */
+        std::string mSBML;
+      };
+
+    /**
+     * This event is triggered by SBW asking COPASI shut down.
+     */
+  class QSBWShutdownEvent: public QCustomEvent
+      {
+      public:
+        QSBWShutdownEvent();
+      };
+
+    // We expose 2 methods to SBW, one to load an SBML file
+    SystemsBiologyWorkbench::DataBlockWriter doAnalysis(SystemsBiologyWorkbench::Module from,
+        SystemsBiologyWorkbench::DataBlockReader reader);
+
+    // and another to return the SBML file COAPSI is currently working with
+    SystemsBiologyWorkbench::DataBlockWriter getSBML(SystemsBiologyWorkbench::Module from,
+        SystemsBiologyWorkbench::DataBlockReader reader);
+
+    // those methods are registered here
+    static void registerMethods(SystemsBiologyWorkbench::MethodTable<CopasiUI3Window> & table);
+
+    // as part of the SBWListener we tell SBW here, that we want to react on the shutdown event
+    virtual void onShutdown();
+
+  private:
+    /**
+     * Connect to SBW
+     */
+    void connectSBW();
+
+    /**
+     * Register COPASI as a module ins SBW
+     */
+    void registerSBW();
+
+    /**
+     * Refresh the SBW menu.
+     */
+    void refreshSBWMenu();
+
+    /**
+     * Retrieve the list of all services from the SBW broker
+     * @param const std::string & category
+     * @param const bool & recursive
+     * @return std::vector< SystemsBiologyWorkbench::DataBlockReader > services
+     */
+    std::vector< SystemsBiologyWorkbench::DataBlockReader > findServices(const std::string & category,
+        const bool & recursive);
+
+    /**
+     * The SBW module which handles the interaction with the SBW broker
+     */
+    SystemsBiologyWorkbench::ModuleImpl * mpSBWModule;
+
+    /**
+     * A list of SBW analyzer modules
+     */
     QStringList mAnalyzerModules;
-    // and corresponding services
+
+    /**
+     * A list of the corresponding SBW services
+     */
     QStringList mAnalyzerServices;
 
-    // the SBW menu
+    /**
+     * The SBW menu
+     */
     QPopupMenu * mpMenuSBW;
-    bool mIsSBWRegistered;
 
-    // method to populate the SBW menu
-    bool refreshSBWMenu();
+    /**
+     * The id of the SBW menu
+     */
+    int mIdMenuSBW;
 
-    std::vector< SystemsBiologyWorkbench::DataBlockReader > findServices(std::string var0, bool var1);
+    /**
+     * This variable indicates whether COPASI is to ignore SBW shutdown events
+     */
+    bool mIgnoreSBWShutdownEvent;
 
 #endif // COPASI_SBW_INTEGRATION
 #ifdef COPASI_LICENSE_COM
