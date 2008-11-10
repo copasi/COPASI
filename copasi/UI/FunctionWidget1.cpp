@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159 $
+//   $Revision: 1.159.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/11/10 20:23:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -432,8 +432,12 @@ bool FunctionWidget1::loadParameterTable()
         }
 
       // col. 0
+      QString Name = FROM_UTF8(params[j]->getObjectName());
+      if (!params[j]->isUsed())
+        Name += " (unused)";
+
       Table1->setItem(j, COL_NAME, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
-                      FROM_UTF8(params[j]->getObjectName())));
+                      Name));
 
       // col. 1
       //QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
@@ -455,7 +459,7 @@ bool FunctionWidget1::loadParameterTable()
   return true;
 }
 
-//! Function to generate the text reperesentation of the usage restrictions
+//! Function to generate the text representation of the usage restrictions
 bool FunctionWidget1::loadUsageTable()
 {
   std::vector<std::string> stringlist;
