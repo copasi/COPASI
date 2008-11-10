@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.188 $
+//   $Revision: 1.188.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/01 14:59:00 $
+//   $Date: 2008/11/10 20:24:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1078,6 +1078,16 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
+      // We need to remove all parameters which have been temporarily added to the list of variables
+      CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+      if (pFunction)
+        {
+          CFunctionParameters & Variables = pFunction->getVariables();
+          unsigned C_INT32 i = Variables.size() - 1;
+          for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
+            Variables.remove(Variables[i]->getObjectName());
+        }
+
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
       break;
@@ -1154,8 +1164,10 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       MinOccurs = atoi(minOccurs);
 
       maxOccurs = mParser.getAttributeValue("maxOccurs", papszAttrs , "1");
-      if (std::string("unbounded") == std::string(maxOccurs)) MaxOccurs = (unsigned C_INT32) - 1;
-      else MaxOccurs = atoi(maxOccurs);
+      if (std::string("unbounded") == std::string(maxOccurs))
+        MaxOccurs = (unsigned C_INT32) - 1;
+      else
+        MaxOccurs = atoi(maxOccurs);
 
       if (mCommon.mExistingFunction)
         {
@@ -1169,20 +1181,28 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
           unsigned C_INT32 Index =
             pFunction->getVariables().findParameterByName(Name, DataType);
 
+          bool isUsed = true;
+
           if (Index == C_INVALID_INDEX)
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCXML + 8, Name,
-                             pFunction->getObjectName().c_str(),
-                             mParser.getCurrentLineNumber());
-              break;
+              // We add the missing parametewr and mark it as unused.
+              pFunction->getVariables().add(Name,
+                                            CFunctionParameter::FLOAT64,
+                                            Role);
+
+              Index = pFunction->getVariables().findParameterByName(Name, DataType);
+              isUsed = false;
             }
 
-          if (Order >= pFunction->getVariables().size())
+          // Make sure that we have enough parameter to swap
+          unsigned C_INT32 Counter = 0;
+          while (Order >= pFunction->getVariables().size())
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCXML + 12, Order, Name,
-                             pFunction->getObjectName().c_str(),
-                             mParser.getCurrentLineNumber());
-              Order = Index;
+              std::string NewName = StringPrint("TMP_%d", Counter++);
+              while (!pFunction->getVariables().add(NewName,
+                                                    CFunctionParameter::FLOAT64,
+                                                    CFunctionParameter::TEMPORARY));
+              NewName = StringPrint("TMP_%d", Counter++);
             }
 
           // Assure that the order is correct
@@ -1192,6 +1212,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
           pParm = pFunction->getVariables()[Order];
           pParm->setObjectName(Name);
           pParm->setUsage(Role);
+          pParm->setIsUsed(isUsed);
 
           if (MaxOccurs == 1 && MinOccurs == 1)
             pParm->setType(CFunctionParameter::FLOAT64);
@@ -2282,7 +2303,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                               // Old file format support
+    case MathML:                                                // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2380,7 +2401,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                               // Old file format support
+    case MathML:                                                // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
