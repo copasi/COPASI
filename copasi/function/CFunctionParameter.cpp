@@ -1,19 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.22.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:54:42 $
+//   $Author: shoops $
+//   $Date: 2008/11/10 20:22:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  * CFunctionParameter
  *
- * Created for Copasi by Stefan Hoops
+ * Created for COPASI by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
 
@@ -40,7 +45,7 @@ CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xm
   for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != xmlrole); ++i);
 
   if (RoleNameXML[i] == "")
-    return VARIABLE; //default for invalid xml string
+    return VARIABLE; //default for invalid XML string
   else
     return (Role)i;
 }
@@ -50,7 +55,8 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
     CCopasiContainer(name, pParent, "Variable"),
     mKey(GlobalKeys.add("FunctionParameter", this)),
     mType((CFunctionParameter::DataType) - 1),
-    mUsage(VARIABLE)
+    mUsage(VARIABLE),
+    mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
@@ -58,7 +64,8 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
     CCopasiContainer(src, pParent),
     mKey(GlobalKeys.add("FunctionParameter", this)),
     mType(src.mType),
-    mUsage(src.mUsage)
+    mUsage(src.mUsage),
+    mIsUsed(src.mIsUsed)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const std::string &name,
@@ -68,7 +75,8 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
     CCopasiContainer(name, pParent, "Variable"),
     mKey(GlobalKeys.add("FunctionParameter", this)),
     mType(type),
-    mUsage(usage)
+    mUsage(usage),
+    mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::~CFunctionParameter()
@@ -104,6 +112,16 @@ CFunctionParameter::getType() const
   {
     return mType;
   }
+
+void CFunctionParameter::setIsUsed(const bool & isUsed)
+{mIsUsed = isUsed;}
+
+/**
+ * Retrieve whether the parameter is used within a function
+ * @return const bool & isUsed
+ */
+const bool & CFunctionParameter::isUsed() const
+  {return mIsUsed;}
 
 std::ostream& operator<<(std::ostream &os, const CFunctionParameter & d)
 {
