@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
- $Revision: 1.27.24.2 $
- $Name:  $
- $Author: gauges $
- $Date: 2008/11/06 08:17:12 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
+$Revision: 1.27.24.3 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/11/10 21:18:58 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -762,8 +762,6 @@ std::string localeToUtf8(const std::string & locale)
                       -1, // NULL terminated
                       pWideChar, // address of wide-character buffer
                       size);                // size of buffer
-
-  int UsedDefaultChar = 0;
 
   size = WideCharToMultiByte(CP_UTF8, // code page
                              0, // performance and mapping flags

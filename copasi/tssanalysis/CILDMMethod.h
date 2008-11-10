@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.8.6.1 $
+//   $Revision: 1.8.6.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 19:44:47 $
+//   $Author: shoops $
+//   $Date: 2008/11/10 21:18:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.6 $
+//   $Revision: 1.22.2.7 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/11/03 12:42:35 $
+//   $Author: shoops $
+//   $Date: 2008/11/10 21:18:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,8 +185,6 @@ void CILDMMethod::step(const double & deltaT)
 
   C_INT failed = 0;
   C_INT info_schur = 0;
-
-  C_INT info;
 
   schur(info_schur); // TO DO : move the test to the TSSAMethod
 
@@ -1027,8 +1025,8 @@ void CILDMMethod::setVectors(int slowMode)
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
-  int i;
-  for (i = 0; i < mData.dim; i++)
+  unsigned C_INT32 i;
+  for (i = 0; i < (unsigned C_INT32) mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
   mVec_mVslowMetab.push_back(mCurrentStep);
@@ -1141,7 +1139,7 @@ void CILDMMethod::setAnnotationM(int step)
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
-  int i;
+  C_INT32 i;
 
   mVslowPrint.resize(mData.dim, mData.dim);
   mVslowPrint = mVec_mVslow[step];
@@ -1210,7 +1208,7 @@ void CILDMMethod::setAnnotationM(int step)
   str = sstr.str();
 
   mReacSlowSpacePrint.resize(mReacSlowSpace.size(), 1);
-  for (i = 0; i < mReacSlowSpace.size(); i++)
+  for (i = 0; i < (C_INT32) mReacSlowSpace.size(); i++)
     mReacSlowSpacePrint(i, 0) = mVec_mReacSlowSpace[step][i];
   pReacSlowSpacePrintAnn->resize();
   pReacSlowSpacePrintAnn->setCopasiVector(0, &mpModel->getReactions());

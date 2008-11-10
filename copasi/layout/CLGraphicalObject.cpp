@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.11.2.1 $
+//   $Revision: 1.11.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/13 09:48:14 $
+//   $Author: shoops $
+//   $Date: 2008/11/10 21:18:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,7 @@ std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, boo
   }
 
 void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
-                                     const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                                     const std::map<CCopasiObject*, SBase*> & /* copasimodelmap */,
                                      std::map<std::string, const SBase*>& sbmlIDs) const
   {
     if (!sbmlobject) return;

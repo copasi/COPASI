@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.5 $
+//   $Revision: 1.8.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 20:08:59 $
+//   $Date: 2008/11/10 21:18:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -903,7 +903,7 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
   return;
 }
 
-void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & /* R */)
+void CCSPMethod::CSPOutput(C_INT & /* N */, C_INT & /* M */, C_INT & /* R */)
 {
 
   // const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
@@ -1671,7 +1671,7 @@ void CCSPMethod::setAnnotationM(int step)
   std::stringstream sstr;
   sstr.str("");
   sstr.clear();
-  int i;
+  unsigned C_INT32 i;
 
   if (!step) return;
   step -= 1;
@@ -1759,7 +1759,7 @@ void CCSPMethod::setVectors()
 
   mVec_mAmplitude.push_back(mCurrentStep);
   mVec_mAmplitude[mCurrentStep].resize(mAmplitude.size(), 1);
-  C_INT i;
+  unsigned C_INT32 i;
 
   for (i = 0; i < mAmplitude.size();i++)
     mVec_mAmplitude[mCurrentStep][i][0] = mAmplitude[i];

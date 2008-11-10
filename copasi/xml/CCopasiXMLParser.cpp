@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.188.2.1 $
+//   $Revision: 1.188.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/10 20:24:29 $
+//   $Date: 2008/11/10 21:18:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1079,15 +1079,16 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
       mCurrentElement = START_ELEMENT;
 
       // We need to remove all parameters which have been temporarily added to the list of variables
-      CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
-      if (pFunction)
-        {
-          CFunctionParameters & Variables = pFunction->getVariables();
-          unsigned C_INT32 i = Variables.size() - 1;
-          for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
-            Variables.remove(Variables[i]->getObjectName());
-        }
-
+      {
+        CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
+        if (pFunction)
+          {
+            CFunctionParameters & Variables = pFunction->getVariables();
+            unsigned C_INT32 i = Variables.size() - 1;
+            for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
+              Variables.remove(Variables[i]->getObjectName());
+          }
+      }
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
       break;
@@ -2303,7 +2304,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                                // Old file format support
+    case MathML:                                                 // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2401,7 +2402,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                                // Old file format support
+    case MathML:                                                 // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
