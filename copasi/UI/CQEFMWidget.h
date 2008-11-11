@@ -1,20 +1,21 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.h,v $
+//   $Revision: 1.3.26.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/11/11 17:19:46 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQEFMWidget.ui'
  **
- ** Created: Wed Aug 30 12:09:12 2006
- **      by: The User Interface Compiler ($Id: CQEFMWidget.h,v 1.3 2006/10/28 00:21:45 shoops Exp $)
+ ** Created: Tue Nov 11 12:09:50 2008
+ **      by: The User Interface Compiler ($Id: CQEFMWidget.h,v 1.3.26.1 2008/11/11 17:19:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,7 +24,7 @@
 #define CQEFMWIDGET_H
 
 #include <qvariant.h>
-#include "UI/TaskWidget.h"
+#include "TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -32,6 +33,7 @@ class QSpacerItem;
 class QFrame;
 class QLabel;
 class QLineEdit;
+class QPushButton;
 class QListView;
 class QListViewItem;
 
@@ -46,6 +48,7 @@ class CQEFMWidget : public TaskWidget
     QFrame* mpLine;
     QLabel* mpLblFluxModes;
     QLineEdit* mpEditFluxModes;
+    QPushButton* mpBtnSave;
     QListView* mpListView;
 
     virtual bool runTask();
@@ -55,7 +58,7 @@ class CQEFMWidget : public TaskWidget
 
   protected:
     QVBoxLayout* CQEFMWidgetLayout;
-    QHBoxLayout* mpLayoutFluxModes;
+    QHBoxLayout* layout2;
     QSpacerItem* mpSpacer;
 
   protected slots:
@@ -65,6 +68,9 @@ class CQEFMWidget : public TaskWidget
     void init();
     void destroy();
     void loadFluxModes();
+
+  private slots:
+    void slotSave();
   };
 
 #endif // CQEFMWIDGET_H

@@ -1,4 +1,17 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1.28.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2008/11/11 17:19:46 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
 <class>CQEFMWidget</class>
 <widget class="TaskWidget">
     <property name="name">
@@ -8,8 +21,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>366</width>
-            <height>168</height>
+            <width>314</width>
+            <height>137</height>
         </rect>
     </property>
     <property name="caption">
@@ -35,7 +48,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mpLayoutFluxModes</cstring>
+                <cstring>layout2</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -75,11 +88,19 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>40</width>
+                            <width>16</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mpBtnSave</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Save Result</string>
+                    </property>
+                </widget>
             </hbox>
         </widget>
         <widget class="QListView">
@@ -122,10 +143,25 @@
         </widget>
     </vbox>
 </widget>
+<connections>
+    <connection>
+        <sender>mpBtnSave</sender>
+        <signal>clicked()</signal>
+        <receiver>CQEFMWidget</receiver>
+        <slot>slotSave()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>mpEditFluxModes</tabstop>
+    <tabstop>mpBtnSave</tabstop>
+    <tabstop>mpListView</tabstop>
+</tabstops>
 <includes>
     <include location="local" impldecl="in declaration">TaskWidget.h</include>
-    <include location="local" impldecl="in implementation">CQEFMWidget.ui.h</include>
 </includes>
+<slots>
+    <slot access="private" specifier="non virtual">slotSave()</slot>
+</slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
@@ -136,7 +172,4 @@
     <function returnType="CCopasiMethod *">createMethod( const CCopasiMethod::SubType &amp; type )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>TaskWidget.h</includehint>
-</includehints>
 </UI>
