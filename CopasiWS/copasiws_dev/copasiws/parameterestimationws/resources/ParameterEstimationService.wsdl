@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ParameterEstimationService" targetNamespace="http://services.copasiws.copasi.org/parameterestimationws.wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:copasi="http://copasi.org/schema" xmlns:sbrml="http://www.sbrml.org/sbrml/level1/version1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sbml="http://www.sbml.org/sbml/level2/version1" xmlns:pews="http://parameterestimationws.services.copasiws.copasi.org/types" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:pewsdl="http://services.copasiws.copasi.org/parameterestimationws.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <types>
+    <xsd:schema targetNamespace="http://parameterestimationws.services.copasiws.copasi.org/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	<xsd:annotation>
+		<xsd:documentation>
+			* Filename   : parameterestimationws.wsdl
+			* Description: wsdl for COPASI parameter estimation Web Service 
+			* Author(s)  : Joseph Olufemi Dada  
+		</xsd:documentation>
+	</xsd:annotation> 	
+		    
+	<xsd:import namespace="http://copasi.org/schema" schemaLocation="xsd0.xsd"/>	
+	<xsd:import namespace="http://www.sbrml.org/sbrml/level1/version1" schemaLocation="xsd1.xsd"/>	
+
+<!-- ===================== Definition for resource property elements ======= -->
+
+<xsd:element name="resourceId" type="xsd:int"/> 
+<xsd:element name="modelFile" type="xsd:string"/>
+<xsd:element name="resultFile" type="xsd:string"/>  
+<xsd:element name="lifeTime" type="xsd:integer"/>  
+
+<xsd:element name="ResourceProperty">
+	<xsd:complexType>
+		<xsd:sequence>
+			<xsd:element ref="pews:resourceId"/>
+			<xsd:element ref="pews:resultFile"/>
+			<xsd:element ref="pews:modelFile"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:element>
+
+<!--============= Message types for Parameter Estimation =================-->
+
+<xsd:simpleType name="StatusCode">
+   <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="SUCCESS"/>
+    <xsd:enumeration value="FAIL"/>	
+	<xsd:enumeration value="INCORRECTOBJECTMAP"/>    
+    <xsd:enumeration value="UNKNOWNTRANSACTION"/>  
+	<xsd:enumeration value="NOEXPERIMENTALDATA"/>   
+    <xsd:enumeration value="INCOMPLETEDATA"/>   
+    <xsd:enumeration value="ALREADYEXISTS"/>
+ 	<xsd:enumeration value="NO_OF_RESOURCES_EXCEEDED"/>
+<xsd:enumeration value="COMPLETED"/>
+<xsd:enumeration value="SCHEDULE_TO_START"/>
+<xsd:enumeration value="RUNNING"/>
+<xsd:enumeration value="UNKNOWN"/>
+<xsd:enumeration value="SUSPENDED"/>
+<xsd:enumeration value="RESOURCE_ALREADY_DELETED"/>
+<xsd:enumeration value="CANNOT_BE_STARTED"/>
+   </xsd:restriction>
+  </xsd:simpleType>
+
+<xsd:complexType name="Status">
+   <xsd:sequence>
+     <xsd:element minOccurs="1" name="code" type="pews:StatusCode"/>
+     <xsd:element maxOccurs="1" minOccurs="0" name="message" type="xsd:string"/>   
+   </xsd:sequence>
+  </xsd:complexType>
+
+<xsd:complexType name="Transaction">
+   <xsd:sequence>
+     <xsd:element name="id" type="xsd:int"/>
+     <xsd:element maxOccurs="1" minOccurs="0" name="duration" type="xsd:int"/>
+   </xsd:sequence>
+  </xsd:complexType>
+
+<xsd:complexType name="User">
+   <xsd:sequence>
+     <xsd:element name="userId" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="password" type="xsd:string"/> <!--Temporary, will be changed later-->
+   </xsd:sequence>
+  </xsd:complexType>
+
+<!--Definition of model object for item to fit and mapping to experimental data -->
+
+<xsd:complexType name="Reaction">
+	<xsd:sequence>	
+	<xsd:element name="modelId" type="xsd:string"/>
+	<xsd:element name="parameterID" type="xsd:string" use="optional"/>	
+	</xsd:sequence>
+	<xsd:attribute name="quantityType">
+		  <xsd:simpleType>
+			  <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="parameterValue"/>
+				 <xsd:enumeration value="flux"/>
+				 <xsd:enumeration value="particleFlux"/>				
+			  </xsd:restriction>
+		  </xsd:simpleType>
+	  </xsd:attribute>	
+</xsd:complexType>
+
+
+<xsd:complexType name="Species">
+	<xsd:sequence>	
+	<xsd:element name="modelId" type="xsd:string"/>	
+	</xsd:sequence>
+	<xsd:attribute name="quantityType">
+		  <xsd:simpleType>
+			  <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="concentration"/>
+				<xsd:enumeration value="particleNumber"/>
+				<xsd:enumeration value="concentrationRate"/>
+				<xsd:enumeration value="particleNumberRate"/>
+				<xsd:enumeration value="initialConcentration"/>
+				<xsd:enumeration value="initialParticleNumber"/>
+			  </xsd:restriction>
+		  </xsd:simpleType>
+	  </xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="ArbitraryVariable">
+	<xsd:sequence>	
+	<xsd:element name="modelId" type="xsd:string"/>	
+	</xsd:sequence>
+	<xsd:attribute name="quantityType">
+		  <xsd:simpleType>
+			  <xsd:restriction base="xsd:string">
+				 <xsd:enumeration value="value"/>
+				 <xsd:enumeration value="initialValue"/>				
+			  </xsd:restriction>
+		  </xsd:simpleType>
+	  </xsd:attribute>	
+</xsd:complexType>
+
+<xsd:complexType name="AffectedExperiment">
+<xsd:attribute name="experiment">
+		<xsd:simpleType>
+			 <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="all"/>
+				<xsd:enumeration value="1"/>
+ 				<xsd:enumeration value="2"/>
+				<xsd:enumeration value="3"/>
+				<xsd:enumeration value="4"/>
+ 				<xsd:enumeration value="5"/>
+				<xsd:enumeration value="6"/>
+			</xsd:restriction>
+		  </xsd:simpleType>
+	</xsd:attribute>
+</xsd:complexType>
+
+<!--Definition of type for model item to fit-->
+<xsd:complexType name="ItemToFit">
+	<xsd:sequence>	
+	<xsd:choice>	
+	<xsd:element name="species" type="pews:Species"/>
+	<xsd:element name="reaction" type="pews:Reaction"/>
+	<xsd:element name="arbitraryVariable" type="pews:ArbitraryVariable"/>
+	</xsd:choice>
+	<xsd:element maxOccurs="unbounded" name="affectedExperiment" type="pews:AffectedExperiment"/>	
+	</xsd:sequence>
+	<xsd:attribute name="modelObjectType">
+		<xsd:simpleType>
+			 <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="species"/>
+				<xsd:enumeration value="reaction"/>
+ 				<xsd:enumeration value="arbitraryVariable"/>
+			</xsd:restriction>
+		  </xsd:simpleType>
+	</xsd:attribute>
+	<xsd:attribute name="lowerBound" type="xsd:double"/>
+        <xsd:attribute name="upperBound" type="xsd:double"/>
+        <xsd:attribute name="startValue" type="xsd:float"/> 
+</xsd:complexType>
+
+<!--Definition of type for mapping model object to experimental data -->
+
+<xsd:complexType name="ModelToExperimentMap">
+	<xsd:sequence>	
+	<xsd:element name="experimentDataId" type="xsd:string"/>
+ 	<xsd:element name="dataFirstRow" type="xsd:nonNegativeInteger"/>
+        <xsd:element name="dataLastRow" type="xsd:nonNegativeInteger"/>	
+	<xsd:element name="experimentType" type="pews:ExperimentType"/>
+ 	<xsd:element name="dataIsRowOriented" type="xsd:boolean"/>
+	<xsd:element name="weightMethod" type="pews:WeightMethod"/>
+      	<xsd:element name="numberOfColumn" type="xsd:nonNegativeInteger"/>
+	<xsd:element maxOccurs="unbounded" name="modelObject" type="pews:ModelObject"/>	
+	</xsd:sequence>
+	<xsd:attribute name="experimentSerialNumber">
+		<xsd:simpleType>
+			 <xsd:restriction base="xsd:int">				
+				<xsd:enumeration value="1"/>
+ 				<xsd:enumeration value="2"/>
+				<xsd:enumeration value="3"/>
+				<xsd:enumeration value="4"/>
+ 				<xsd:enumeration value="5"/>
+				<xsd:enumeration value="6"/>
+			</xsd:restriction>
+		  </xsd:simpleType>
+	</xsd:attribute>
+</xsd:complexType>
+
+<!--Definition of type for model object -->
+<xsd:complexType name="ModelObject">
+	<xsd:choice minOccurs="0">	
+	<xsd:element name="species" type="pews:Species"/>
+	<xsd:element name="reaction" type="pews:Reaction"/>
+	<xsd:element name="arbitraryVariable" type="pews:ArbitraryVariable"/>	
+	</xsd:choice>
+	<xsd:attribute name="columnInExperimentalData" type="xsd:nonNegativeInteger"/>	
+	<xsd:attribute name="variableType">
+		<xsd:simpleType>
+			 <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="Time"/>
+				<xsd:enumeration value="dependent"/>
+				<xsd:enumeration value="independent"/>
+ 				<xsd:enumeration value="ignored"/>
+			</xsd:restriction>
+		  </xsd:simpleType>
+	</xsd:attribute>
+	<xsd:attribute name="modelObjectType">
+		<xsd:simpleType>
+			 <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="time"/>				
+				<xsd:enumeration value="species"/>
+				<xsd:enumeration value="reaction"/>
+ 				<xsd:enumeration value="arbitraryVariable"/>
+			</xsd:restriction>
+		  </xsd:simpleType>
+	</xsd:attribute>
+</xsd:complexType>
+
+<xsd:simpleType name="WeightMethod">
+   <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="Mean"/>
+    <xsd:enumeration value="Mean Square"/>
+	<xsd:enumeration value="Standard Deviation"/>		
+   </xsd:restriction>
+  </xsd:simpleType>
+
+<xsd:simpleType name="ExperimentType">
+   <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="Time Course"/>
+    <xsd:enumeration value="Steady State"/>	
+   </xsd:restriction>
+  </xsd:simpleType>
+
+<!--Definition of type for experimnet data input file -->
+<xsd:complexType name="ExperimentalData">
+	<xsd:sequence>	
+	<xsd:element name="experimentDataId" type="xsd:string"/>
+	<xsd:element name="dataFileInStringFormat" type="xsd:string"/>	
+	</xsd:sequence>
+</xsd:complexType>
+
+<!--Definition of type for available optimization methods to use for fitting-->
+<xsd:complexType name="LevenbergMarquardt">
+	<xsd:sequence>	
+	<xsd:element default="200" name="iterationLimit" type="xsd:nonNegativeInteger"/>  
+	<xsd:element default="1e-06" name="tolerance" type="xsd:float"/>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ParticleSwarm">
+	<xsd:sequence>	
+	<xsd:element default="2000" name="iterationLimit" type="xsd:nonNegativeInteger"/>  
+	<xsd:element default="50" name="swarmSize" type="xsd:nonNegativeInteger"/> 
+ 	<xsd:element default="1e-06" name="standardDeviation" type="xsd:float"/>  
+ 	<xsd:element default="1" name="randomNumberGenerator" type="xsd:nonNegativeInteger"/>
+	 <xsd:element default="0" name="seed" type="xsd:nonNegativeInteger"/> 	
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="SimulatedAnnealing">
+	<xsd:sequence>	
+	<xsd:element default="1" name="startTemperature" type="xsd:nonNegativeInteger"/>  
+ 	<xsd:element default="0.85" name="coolingFactor" type="xsd:float"/> 
+        <xsd:element default="1e-06" name="tolerance" type="xsd:float"/> 
+	<xsd:element default="1" name="randomNumberGenerator" type="xsd:nonNegativeInteger"/>  	
+        <xsd:element default="0" name="seed" type="xsd:nonNegativeInteger"/> 		
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="GeneticAlgorithm">
+	<xsd:sequence>	
+	<xsd:element default="200" name="numberOfGenerations" type="xsd:nonNegativeInteger"/>  
+	<xsd:element default="20" name="populationSize" type="xsd:nonNegativeInteger"/> 
+	<xsd:element default="1" name="randomNumberGenerator" type="xsd:nonNegativeInteger"/>  	
+        <xsd:element default="0" name="seed" type="xsd:nonNegativeInteger"/> 	
+	</xsd:sequence>
+</xsd:complexType>
+
+<!--Choice of optimization method -->
+<xsd:complexType name="Method">
+	<xsd:choice>
+	<xsd:element name="geneticAlgorithm" type="pews:GeneticAlgorithm"/>	
+	<xsd:element name="levenbergMarquardt" type="pews:LevenbergMarquardt"/>	
+	<xsd:element name="particleSwarm" type="pews:ParticleSwarm"/>	
+	<xsd:element name="simulatedAnnealing" type="pews:SimulatedAnnealing"/>
+	<!--More methods to be added-->
+	</xsd:choice>
+	<xsd:attribute name="methodName">
+		<xsd:simpleType>
+			 <xsd:restriction base="xsd:string">
+				<xsd:enumeration value="Genetic Algorithm"/>
+				<xsd:enumeration value="Levenberg-Marquardt"/>
+				<xsd:enumeration value="Particle Swarm"/>
+ 				<xsd:enumeration value="Simulated Annealing"/>
+			</xsd:restriction>
+		  </xsd:simpleType>
+	 </xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="OutputResult">
+	<xsd:choice>
+		<xsd:element name="TextResult" type="xsd:string"/>
+		<xsd:element name="SBRMLResult" type="xsd:string"/>
+	</xsd:choice>	
+</xsd:complexType>
+
+<!--============= Message type for user to begiin a transaction for running parameter estimation simulation =================-->
+
+<xsd:element name="CreateSimulationResource">
+	<xsd:complexType>
+		<xsd:sequence>
+		<xsd:element name="user" type="pews:User"/>			
+		</xsd:sequence>
+	</xsd:complexType>   
+</xsd:element>
+
+<xsd:element name="CreateSimulationResourceResponse">
+	<xsd:complexType>
+		<xsd:sequence>
+		<xsd:element name="resourceId" type="xsd:int"/>	
+		<xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:element>
+
+<xsd:element name="SendModel">
+   <xsd:complexType>
+	<xsd:sequence>
+	<xsd:element name="resourceId" type="xsd:int"/>
+	<xsd:element name="userId" type="xsd:string"/>
+	<xsd:choice>
+		<xsd:element name="copasiml" type="xsd:string"/>
+		<xsd:element name="sbml" type="xsd:string"/>				
+	</xsd:choice>    
+</xsd:sequence>
+	<xsd:attribute default="SBML" name="inputFormat">
+		  <xsd:simpleType>
+			  <xsd:restriction base="xsd:string">
+				  <xsd:enumeration value="SBML"/>
+				  <xsd:enumeration value="CopasiML"/>
+			  </xsd:restriction>
+		  </xsd:simpleType>
+	  </xsd:attribute>
+	</xsd:complexType>
+</xsd:element>
+
+<xsd:element name="SendModelResponse">
+   <xsd:complexType>
+	<xsd:sequence>	
+	<xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>
+	</xsd:sequence>
+	</xsd:complexType>
+</xsd:element>
+
+<!--============= Message types for sending experimental data=================-->
+<xsd:element name="SendExperimentalData">
+   <xsd:complexType>
+    <xsd:sequence>    
+     	<xsd:element name="resourceId" type="xsd:int"/>
+	<xsd:element name="userId" type="xsd:string"/>	
+	<xsd:element maxOccurs="unbounded" name="experimentalData" type="pews:ExperimentalData"/> 	
+    </xsd:sequence>	
+   </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="SendExperimentalDataResponse">
+   <xsd:complexType>
+    <xsd:sequence> 
+     	<xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>				
+    </xsd:sequence>	
+   </xsd:complexType>
+  </xsd:element>
+
+<!--============= Message types for sending experimental data=================-->
+<xsd:element name="SetModelToExperimentMap">
+   <xsd:complexType>
+    <xsd:sequence>    
+     	<xsd:element name="resourceId" type="xsd:int"/>
+	<xsd:element name="userId" type="xsd:string"/>	
+	<xsd:element maxOccurs="unbounded" name="modelToExperimentMap" type="pews:ModelToExperimentMap"/> 	
+    </xsd:sequence>	
+   </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="SetModelToExperimentMapResponse">
+   <xsd:complexType>
+    <xsd:sequence> 
+     	<xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>				
+    </xsd:sequence>	
+   </xsd:complexType>
+  </xsd:element>
+  
+<xsd:element name="SetFitItemsAndMethod">
+   <xsd:complexType>
+    <xsd:sequence>    
+     	<xsd:element name="resourceId" type="xsd:int"/>
+	<xsd:element name="userId" type="xsd:string"/>	
+	<xsd:element maxOccurs="unbounded" name="itemToFit" type="pews:ItemToFit"/>
+	<xsd:element minOccurs="0" name="method" type="pews:Method"/>	
+    </xsd:sequence>	
+   </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="SetFitItemsAndMethodResponse">
+   <xsd:complexType>
+    <xsd:sequence>    
+     	<xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>	
+    </xsd:sequence>	
+   </xsd:complexType>
+</xsd:element>
+
+<!--============= Message types to start parameter estimation simulation =================-->
+
+<xsd:element name="StartSimulator">
+   <xsd:complexType>
+    <xsd:sequence>    
+     <xsd:element name="resourceId" type="xsd:int"/>
+	<xsd:element name="userId" type="xsd:string"/>	
+    </xsd:sequence>	
+   </xsd:complexType>
+  </xsd:element>
+
+<xsd:element name="StartSimulatorResponse">
+   <xsd:complexType>
+    <xsd:sequence>    
+     <xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>
+    </xsd:sequence>	
+   </xsd:complexType>
+  </xsd:element>
+
+<!--============= Message types for getting the status of parameter estimation simulation job =================-->
+
+<xsd:element name="GetSimulatorStatus">
+   <xsd:complexType>
+    <xsd:sequence>
+     <xsd:element name="userId" type="xsd:string"/>	 
+     <xsd:element name="resourceId" type="xsd:int"/>	
+    </xsd:sequence>	
+   </xsd:complexType>
+  </xsd:element>
+
+<xsd:element name="GetSimulatorStatusResponse">
+   <xsd:complexType>
+    <xsd:sequence>    
+     <xsd:element maxOccurs="1" minOccurs="1" name="status" type="pews:Status"/>
+    </xsd:sequence>	
+   </xsd:complexType>
+  </xsd:element>
+
+<!--============= Message types for getting simulation result=================-->
+
+<xsd:element name="GetResult">
+   <xsd:complexType>
+    <xsd:sequence>    
+   <xsd:element name="userId" type="xsd:string"/>	 
+   <xsd:element name="resourceId" type="xsd:int"/>	
+    </xsd:sequence>
+	<xsd:attribute default="sbrml" name="outputFormat">
+		  <xsd:simpleType>
+			  <xsd:restriction base="xsd:string">
+				  <xsd:enumeration value="text"/>
+				  <xsd:enumeration value="sbrml"/>
+			  </xsd:restriction>
+		  </xsd:simpleType>
+	 </xsd:attribute>	
+   </xsd:complexType>
+  </xsd:element>
+
+<xsd:element name="GetResultResponse">
+	<xsd:complexType>
+		<xsd:sequence>
+		<xsd:element name="outputResult" type="pews:OutputResult"/>
+		</xsd:sequence>
+	</xsd:complexType> 
+</xsd:element>
+
+<xsd:element name="ServiceFault">
+	<xsd:complexType>
+	  <xsd:all>
+	    <xsd:element name="errorMessage" type="xsd:string"/>
+	</xsd:all>
+	</xsd:complexType>
+</xsd:element>
+
+</xsd:schema>
+  </types>
+  <message name="GetSimulatorStatusRequest">
+    <part name="Parameters" element="pews:GetSimulatorStatus">
+    </part>
+  </message>
+  <message name="SendExperimentalDataResponse">
+    <part name="Parameters" element="pews:SendExperimentalDataResponse">
+    </part>
+  </message>
+  <message name="StartSimulatorResponse">
+    <part name="Parameters" element="pews:StartSimulatorResponse">
+    </part>
+  </message>
+  <message name="GetResultResponse">
+    <part name="Parameters" element="pews:GetResultResponse">
+    </part>
+  </message>
+  <message name="ServiceFaultMessage">
+    <part name="ServiceFaultMessage" element="pews:ServiceFault">
+    </part>
+  </message>
+  <message name="SendModelResponse">
+    <part name="Parameters" element="pews:SendModelResponse">
+    </part>
+  </message>
+  <message name="SetModelToExperimentMapRequest">
+    <part name="Parameters" element="pews:SetModelToExperimentMap">
+    </part>
+  </message>
+  <message name="CreateSimulationResourceRequest">
+    <part name="Parameters" element="pews:CreateSimulationResource">
+    </part>
+  </message>
+  <message name="CreateSimulationResourceResponse">
+    <part name="Parameters" element="pews:CreateSimulationResourceResponse">
+    </part>
+  </message>
+  <message name="SendModelRequest">
+    <part name="Parameters" element="pews:SendModel">
+    </part>
+  </message>
+  <message name="SetFitItemsAndMethodRequest">
+    <part name="Parameters" element="pews:SetFitItemsAndMethod">
+    </part>
+  </message>
+  <message name="SetFitItemsAndMethodResponse">
+    <part name="Parameters" element="pews:SetFitItemsAndMethodResponse">
+    </part>
+  </message>
+  <message name="StartSimulatorRequest">
+    <part name="Parameters" element="pews:StartSimulator">
+    </part>
+  </message>
+  <message name="GetResultRequest">
+    <part name="Parameters" element="pews:GetResult">
+    </part>
+  </message>
+  <message name="SendExperimentalDataRequest">
+    <part name="Parameters" element="pews:SendExperimentalData">
+    </part>
+  </message>
+  <message name="GetSimulatorStatusResponse">
+    <part name="Parameters" element="pews:GetSimulatorStatusResponse">
+    </part>
+  </message>
+  <message name="SetModelToExperimentMapResponse">
+    <part name="Parameters" element="pews:SetModelToExperimentMapResponse">
+    </part>
+  </message>
+  <portType name="ParameterEstimationPortType">
+    <operation name="createSimulationResource">
+      <input message="pewsdl:CreateSimulationResourceRequest">
+    </input>
+      <output message="pewsdl:CreateSimulationResourceResponse">
+    </output>
+      <fault name="CreateSimulationResourceFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="sendModel">
+      <input message="pewsdl:SendModelRequest">
+    </input>
+      <output message="pewsdl:SendModelResponse">
+    </output>
+      <fault name="SendModelFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="sendExperimentalData">
+      <input message="pewsdl:SendExperimentalDataRequest">
+    </input>
+      <output message="pewsdl:SendExperimentalDataResponse">
+    </output>
+      <fault name="SendExperimentalDataFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="setModelToExperimentMap">
+      <input message="pewsdl:SetModelToExperimentMapRequest">
+    </input>
+      <output message="pewsdl:SetModelToExperimentMapResponse">
+    </output>
+      <fault name="SetModelToExperimentMapFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="setFitItemsAndMethod">
+      <input message="pewsdl:SetFitItemsAndMethodRequest">
+    </input>
+      <output message="pewsdl:SetFitItemsAndMethodResponse">
+    </output>
+      <fault name="SetFitItemsAndMethodFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="startSimulator">
+      <input message="pewsdl:StartSimulatorRequest">
+    </input>
+      <output message="pewsdl:StartSimulatorResponse">
+    </output>
+      <fault name="StartSimulatorFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="getSimulatorStatus">
+      <input message="pewsdl:GetSimulatorStatusRequest">
+    </input>
+      <output message="pewsdl:GetSimulatorStatusResponse">
+    </output>
+      <fault name="GetSimulatorStatusFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+    <operation name="getResult">
+      <input message="pewsdl:GetResultRequest">
+    </input>
+      <output message="pewsdl:GetResultResponse">
+    </output>
+      <fault name="GetResultFault" message="pewsdl:ServiceFaultMessage">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="binding" type="pewsdl:ParameterEstimationPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="createSimulationResource">
+      <soap:operation soapAction="CreateSimulationResource" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="CreateSimulationResourceFault">
+        <soap:fault name="CreateSimulationResourceFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="sendModel">
+      <soap:operation soapAction="SendModel" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="SendModelFault">
+        <soap:fault name="SendModelFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="sendExperimentalData">
+      <soap:operation soapAction="SendExperimentalData" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="SendExperimentalDataFault">
+        <soap:fault name="SendExperimentalDataFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="setModelToExperimentMap">
+      <soap:operation soapAction="SetModelToExperimentMap" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="SetModelToExperimentMapFault">
+        <soap:fault name="SetModelToExperimentMapFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="setFitItemsAndMethod">
+      <soap:operation soapAction="SetFitItemsAndMethod" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="SetFitItemsAndMethodFault">
+        <soap:fault name="SetFitItemsAndMethodFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="startSimulator">
+      <soap:operation soapAction="StartSimulator" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="StartSimulatorFault">
+        <soap:fault name="StartSimulatorFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getSimulatorStatus">
+      <soap:operation soapAction="GetSimulatorStatus" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="GetSimulatorStatusFault">
+        <soap:fault name="GetSimulatorStatusFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getResult">
+      <soap:operation soapAction="GetResult" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="GetResultFault">
+        <soap:fault name="GetResultFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="ParameterEstimationService">
+    <port name="ParameterEstimationPort" binding="pewsdl:binding">
+      <soap:address location="http://localhost:8080/axis2/services/ParameterEstimationService"/>
+    </port>
+  </service>
+</definitions>
