@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.4 $
+//   $Revision: 1.347.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 07:55:35 $
+//   $Author: shoops $
+//   $Date: 2008/11/11 17:39:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3294,25 +3294,29 @@ const bool & CModel::isAutonomous() const
 
 void CModel::determineIsAutonomous()
 {
-  if (mCompartments.size() == 0 &&
-      mValues.size() == 0)
+  mIsAutonomous = true;
+
+  // If the model is not empty we check whether anything depends on time
+  if (mCompartments.size() != 0 ||
+      mValues.size() != 0)
     {
-      mIsAutonomous = true;
-      return;
+      std::set< const CCopasiObject * > TimeDependent;
+
+      appendDependentReactions(getDeletedObjects(), TimeDependent);
+      appendDependentMetabolites(getDeletedObjects(), TimeDependent);
+      appendDependentCompartments(getDeletedObjects(), TimeDependent);
+      appendDependentModelValues(getDeletedObjects(), TimeDependent);
+
+      mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
     }
 
-  std::set< const CCopasiObject * > TimeDependent;
-
-  appendDependentReactions(getDeletedObjects(), TimeDependent);
-  appendDependentMetabolites(getDeletedObjects(), TimeDependent);
-  appendDependentCompartments(getDeletedObjects(), TimeDependent);
-  appendDependentModelValues(getDeletedObjects(), TimeDependent);
-
-  mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
+  // An autonomous models always start simulation at T = 0
+  if (mIsAutonomous)
+    setInitialValue(0.0);
 }
 
 const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
-  {return mInitialRefreshes;}
+{return mInitialRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
   {return mSimulatedRefreshes;}
