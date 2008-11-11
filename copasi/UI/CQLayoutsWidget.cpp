@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/24 13:02:03 $
+//   $Author: shoops $
+//   $Date: 2008/11/11 16:26:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -261,7 +261,7 @@ void CQLayoutsWidget::slot_show(int row)
         }
       if (createNew)
         {
-          CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout, this, pLayout->getObjectName().c_str());
+          CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout, pLayout->getObjectName().c_str());
           pWin->resize(900, 600);
           pWin->show();
 

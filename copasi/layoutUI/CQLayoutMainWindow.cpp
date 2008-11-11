@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.86.2.3 $
+//   $Revision: 1.86.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 10:15:27 $
+//   $Author: shoops $
+//   $Date: 2008/11/11 16:26:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,8 @@
 
 using namespace std;
 
-CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : QMainWindow(parent, name)
+CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
+    QMainWindow(NULL, name)
 {
   mpLayout = pLayout;
   mCurrentPlace = QString::null;

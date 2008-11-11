@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.47.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/06 15:51:45 $
+//   $Author: shoops $
+//   $Date: 2008/11/11 16:26:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ class CQLayoutMainWindow : public QMainWindow
     void signal_close(const CQLayoutMainWindow* pWindow);
 
   public:
-    CQLayoutMainWindow(CLayout* pLayout = NULL, QWidget *parent = 0, const char *name = 0);
+    CQLayoutMainWindow(CLayout* pLayout = NULL, const char *name = 0);
     void setIndividualScaling();
     void setGlobalScaling();
     void setSizeMode();
