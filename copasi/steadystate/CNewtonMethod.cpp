@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.88.2.3 $
+//   $Revision: 1.88.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 14:48:25 $
+//   $Date: 2008/11/11 14:46:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -692,7 +692,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
     for (; pIt != pEnd; ++pIt, ++pAtol, ++ppEntity)
       {
-        tmp = fabs(*pIt) / std::max(*pAtol, fabs((*ppEntity)->getValue()));
+        tmp = fabs(*pIt) / std::min(*pAtol, fabs((*ppEntity)->getValue()));
 
         if (tmp > store)
           store = tmp;
@@ -777,7 +777,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   mDimension = mpProblem->getModel()->getStateTemplate().getNumIndependent();
 
-  mAtol = mpModel->initializeAtolVector(1.e-6, true);
+  mAtol = mpModel->initializeAtolVector(1.0, true);
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
