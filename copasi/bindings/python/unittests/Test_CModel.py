@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModel.py,v $ 
-#   $Revision: 1.12 $ 
+#   $Revision: 1.12.6.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Date: 2008/11/12 20:18:05 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -64,6 +64,16 @@ class Test_CModel(unittest.TestCase):
     n=self.model.getNumODEMetabs()
     self.assert_(type(n)==IntType)
     self.assert_(n==0)
+
+  def test_getNumIndependentReactionMetabs(self):
+    n=self.model.getNumIndependentReactionMetabs()
+    self.assert_(type(n)==IntType)
+    self.assert_(n==3)
+
+  def test_getNumDependentReactionMetabs(self):
+    n=self.model.getNumDependentReactionMetabs()
+    self.assert_(type(n)==IntType)
+    self.assert_(n==2)
 
   def test_getNumIndependentMetabs(self):
     n=self.model.getNumIndependentMetabs()
@@ -342,6 +352,8 @@ def suite():
          ,'test_getNumODEMetabs'
          ,'test_getNumIndependentMetabs'
          ,'test_getNumDependentMetabs'
+         ,'test_getNumIndependentReactionMetabs'
+         ,'test_getNumDependentReactionMetabs'
          ,'test_getModelValues'
          ,'test_getNumModelValues'
          ,'test_getReactions'

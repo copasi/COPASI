@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.14.6.2 $ 
+//   $Revision: 1.14.6.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:56:12 $ 
+//   $Date: 2008/11/12 20:18:05 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -114,6 +114,17 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
         return $self->getModelValues()[name];
     }
 
+    // for backwards compatibility
+   unsigned C_INT32 getNumIndependentMetabs() const 
+   {
+        return $self->getNumIndependentReactionMetabs();
+   }
+
+    // for backwards compatibility
+   unsigned C_INT32 getNumDependentMetabs() const 
+   {
+        return $self->getNumDependentReactionMetabs();
+   }
 }
 
 
