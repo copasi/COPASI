@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameter.i,v $ 
-//   $Revision: 1.7.6.1 $ 
+//   $Revision: 1.7.6.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:18:48 $ 
+//   $Date: 2008/11/12 15:56:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,8 @@
 
 %ignore CCopasiParameter::getValue() const;
 %ignore CCopasiParameter::getValue();
+%ignore CCopasiParameter::XMLType;
+%ignore operator==;
 
 %include "utilities/CCopasiParameter.h"
 

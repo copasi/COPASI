@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
-//   $Revision: 1.6.8.1 $ 
+//   $Revision: 1.6.8.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:18:48 $ 
+//   $Date: 2008/11/12 15:56:12 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,6 +20,8 @@
 #include "utilities/CCopasiParameterGroup.h"
 
 %}
+
+%ignore operator==;
 
 %include "utilities/CCopasiParameterGroup.h"
 
