@@ -1,7 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiObjectName.i,v $ 
+//   $Revision: 1.9.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -10,51 +22,15 @@
 %}
 
 
-class CCopasiObjectName : public std::string
+%include "report/CCopasiObjectName.h"
+
+%extend CCopasiObjectName
 {
-   public:
-     CCopasiObjectName();
-     
-     CCopasiObjectName(const std::string& name);
+  std::string getString()
+  {
+   return *self;
+  }
+}
 
-     CCopasiObjectName(const CCopasiObjectName& src);
-     
-     ~CCopasiObjectName();
-
-     CCopasiObjectName getPrimary() const;
-
-     CCopasiObjectName getRemainder() const;
-
-     std::string getObjectType() const;
-
-     std::string getObjectName() const;
-
-     static std::string escape(const std::string & name);
-
-     static std::string unescape(const std::string & name);
-
-     %extend
-     {
-       std::string getString()
-       {
-        return *self;
-       }
-     }
-};
-
-
-class CRegisteredObjectName: public CCopasiObjectName
-{
-  public:
-    CRegisteredObjectName();
-
-    CRegisteredObjectName(const std::string & name);
-
-    CRegisteredObjectName(const CRegisteredObjectName & src);
-
-    ~CRegisteredObjectName();
-
-
-};
 
 

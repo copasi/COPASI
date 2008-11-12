@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameter.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.7.6.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/21 10:27:08 $ 
+//   $Date: 2008/11/12 15:18:48 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,235 +21,118 @@
 
 %}
 
+%ignore CCopasiParameter::getValue() const;
+%ignore CCopasiParameter::getValue();
 
+%include "utilities/CCopasiParameter.h"
 
-class CCopasiParameter : public CCopasiContainer
+%extend CCopasiParameter
 {
-  public:
-    enum Type
-    {
-      DOUBLE = 0,
-      UDOUBLE,
-      INT,
-      UINT,
-      BOOL,
-      GROUP,
-      STRING,
-      CN,
-      KEY,
-      FILE,
-      INVALID
-    };
+  C_FLOAT64 getDblValue()
+  {
+    return *self->getValue().pDOUBLE;
+  }
 
-    /**
-     * String literals for the GUI to display type names of parameters known
-     * to COPASI.
-     */
-    static const std::string TypeName[];
+  C_FLOAT64 getUDblValue()
+  {
+    return *self->getValue().pUDOUBLE;
+  }
 
-  private:
-    /**
-     * Default constructor
-     */
-    CCopasiParameter();
+  C_INT32 getIntValue()
+  {
+    return *self->getValue().pINT;
+  }
 
-  public:
-    /**
-     * Copy constructor
-     * @param const CCopasiParameter & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiParameter(const CCopasiParameter & src,
-                     const CCopasiContainer * pParent = NULL);
+  unsigned C_INT32 getUIntValue()
+  {
+    return *self->getValue().pUINT;
+  }
 
-    /**
-     * Specific constructor
-     * @param const string & name
-     * @param const CCopasiParameter::Type & type
-     * @param const void * pValue (default: NULL)
-     * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & objectType (default: "Parameter")
-     */
-    CCopasiParameter(const std::string & name,
-                     const Type & type,
-                     const void * pValue = NULL,
-                     const CCopasiContainer * pParent = NULL,
-                     const std::string & objectType = "Parameter");
+  bool getBoolValue()
+  {
+    return *self->getValue().pBOOL;
+  }
 
-    /**
-     * Destructor
-     */
-    virtual ~CCopasiParameter();
+  std::vector<CCopasiParameter*> getGroupValue()
+  {
+    return *self->getValue().pGROUP;
+  }
 
-    /**
-     * Return the key of this model
-     * @return string key
-     */
-    virtual const std::string & getKey() const;
+  std::string getStringValue()
+  {
+    return *self->getValue().pSTRING;
+  }
 
-    /**
-     * Retrieve the type of the parameter.
-     * @return CCopasiParameter::Type & type
-     */
-    const CCopasiParameter::Type & getType() const;
+  CRegisteredObjectName getCNValue()
+  {
+    return *self->getValue().pCN;
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const C_FLOAT64 & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const C_FLOAT64 & value) const;
+  std::string getKeyValue()
+  {
+    return *self->getValue().pKEY;
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const C_INT32 & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const C_INT32 & value) const;
+  std::string getFileValue()
+  {
+    return *self->getValue().pFILE;
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const unsigend C_INT32 & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const unsigned C_INT32 & value) const;
+  void* getVoidValue()
+  {
+    return self->getValue().pVOID;
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const bool & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const bool & value) const;
+  bool setDblValue(const C_FLOAT64& v)
+  {
+    return self->setValue(v);
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const std::string & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const std::string & value) const;
+  bool setUDblValue(const C_FLOAT64& v)
+  {
+    return self->setValue(v);
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const CRegisteredObjectName & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const CCopasiObjectName & value) const;
+  bool setUIntValue(const unsigned C_INT32& v)
+  {
+    return self->setValue(v);
+  }
 
-    /**
-     * Check whether the value corresponds to the type
-     * @param const CCopasiParameterGroup::parameterGroup & value
-     * @return bool isValidValue
-     */
-    bool isValidValue(const std::vector< CCopasiParameter * > & value) const;
+  bool setIntValue(const C_INT32& v)
+  {
+    return (self->setValue(v) || self->setValue((const unsigned C_INT32&)v));
+  }
 
-    %extend
-    {
-      C_FLOAT64 getDblValue()
-      {
-        return *self->getValue().pDOUBLE;
-      }
+  bool setBoolValue(const bool& v)
+  {
+    return self->setValue(v);
+  }
 
-      C_FLOAT64 getUDblValue()
-      {
-        return *self->getValue().pUDOUBLE;
-      }
+  bool setGroupValue(const std::vector<CCopasiParameter*>& v)
+  {
+    return self->setValue(v);
+  }
 
-      C_INT32 getIntValue()
-      {
-        return *self->getValue().pINT;
-      }
+  bool setStringValue(const std::string& v)
+  {
+    return self->setValue(v);
+  }
 
-      unsigned C_INT32 getUIntValue()
-      {
-        return *self->getValue().pUINT;
-      }
+  bool setCNValue(const CRegisteredObjectName& v)
+  {
+    return self->setValue(v);
+  }
 
-      bool getBoolValue()
-      {
-        return *self->getValue().pBOOL;
-      }
+  bool setKeyValue(const std::string& v)
+  {
+    return self->setValue(v);
+  }
 
-      std::vector<CCopasiParameter*> getGroupValue()
-      {
-        return *self->getValue().pGROUP;
-      }
+  bool setFileValue(const std::string& v)
+  {
+    return self->setValue(v);
+  }
 
-      std::string getStringValue()
-      {
-        return *self->getValue().pSTRING;
-      }
-
-      CRegisteredObjectName getCNValue()
-      {
-        return *self->getValue().pCN;
-      }
-
-      std::string getKeyValue()
-      {
-        return *self->getValue().pKEY;
-      }
-
-      std::string getFileValue()
-      {
-        return *self->getValue().pFILE;
-      }
-
-      void* getVoidValue()
-      {
-        return self->getValue().pVOID;
-      }
-
-      bool setDblValue(const C_FLOAT64& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setUDblValue(const C_FLOAT64& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setUIntValue(const unsigned C_INT32& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setIntValue(const C_INT32& v)
-      {
-        return (self->setValue(v) || self->setValue((const unsigned C_INT32&)v));
-      }
-
-      bool setBoolValue(const bool& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setGroupValue(const std::vector<CCopasiParameter*>& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setStringValue(const std::string& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setCNValue(const CRegisteredObjectName& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setKeyValue(const std::string& v)
-      {
-        return self->setValue(v);
-      }
-
-      bool setFileValue(const std::string& v)
-      {
-        return self->setValue(v);
-      }
-
-    }
-};
+}
 
 

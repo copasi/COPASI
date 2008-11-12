@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.21 $ 
+//   $Revision: 1.21.6.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/21 10:27:08 $ 
+//   $Date: 2008/11/12 15:18:48 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,99 +21,35 @@
 
 %}
 
-template < class CType > class CCopasiVector:
-        protected std::vector< CType * >, public CCopasiContainer
-{
+%ignore operator<<;
+
+%include "utilities/CCopasiVector.h"
+
 
 %rename(removeObject) remove(CCopasiObject* pObject);
 
-    public:
-      typedef typename std::vector< CType * >::value_type value_type;
-      typedef typename std::vector< CType * >::iterator iterator;
-      typedef typename std::vector< CType * >::const_iterator const_iterator;
-
-      CCopasiVector(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = NULL,
-                    const unsigned C_INT32 &
-                    flag = CCopasiObject::Vector);
-
-      CCopasiVector(const CCopasiVector < CType > & src,
-                    const CCopasiContainer * pParent = NULL);
-
-      virtual ~CCopasiVector();
-      virtual void swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
-      virtual bool add(CType * src, bool adopt = false);
-      virtual void remove(const unsigned C_INT32 & index);
-      virtual bool remove(CCopasiObject * pObject);
-      virtual unsigned C_INT32 size() const;
-      virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
-
-      %extend
-      {
-        virtual value_type& get(unsigned C_INT32 index)
-        {
-            return (*self)[index];
-        }
-
-      }
-};
-
-
-template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
+%extend CCopasiVector
 {
+  virtual value_type& get(unsigned C_INT32 index)
+  {
+      return (*self)[index];
+  }
+
+}
+
+
 
 %rename(removeByName) remove(const std::string& name);
 %rename(getIndexByName) getIndex(const std::string& name) const;
 
-    public:
-      typedef typename std::vector< CType * >::value_type value_type;
-      typedef typename std::vector< CType * >::iterator iterator;
-      typedef typename std::vector< CType * >::const_iterator const_iterator;
-      CCopasiVectorN(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = NULL);
-
-      CCopasiVectorN(const CCopasiVectorN < CType > & src,
-                     const CCopasiContainer * pParent = NULL);
-
-      virtual ~CCopasiVectorN();
-      virtual bool add(CType * src, bool adopt = false);
-      virtual void remove(const std::string & name);
-      virtual unsigned C_INT32 getIndex(const std::string &name) const;
-
-      %extend
-      {
-        virtual value_type& getByName(const std::string& name)
-        {
-            return (*self)[name];
-        }
-      }
-};
-
-
-template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
+%extend CCopasiVectorN
 {
-    public:
-      typedef typename std::vector< CType * >::value_type value_type;
-      typedef typename std::vector< CType * >::iterator iterator;
-      typedef typename std::vector< CType * >::const_iterator const_iterator;
-      /**
-       *  Default constructor
-       */
-      CCopasiVectorNS(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = NULL);
+  virtual value_type& getByName(const std::string& name)
+  {
+      return (*self)[name];
+  }
+}
 
-      /**
-       *  Copy constructor
-       */
-      CCopasiVectorNS(const CCopasiVectorNS < CType > & src,
-                      const CCopasiContainer * pParent = NULL) ;
-
-      /**
-       *  Destructor
-       */
-      virtual ~CCopasiVectorNS();
-
-};
 
 %template(TaskStdVector) std::vector<CCopasiTask*>;
 %template(TaskVector) CCopasiVector<CCopasiTask>;

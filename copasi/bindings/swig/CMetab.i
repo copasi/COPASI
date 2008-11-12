@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CMetab.i,v $ 
+//   $Revision: 1.5.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -9,81 +22,6 @@
 %}
 
 
-class CMetab : public CModelEntity
-{
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMetab(const std::string & name = "NoName",
-           const CCopasiContainer * pParent = NULL);
+%include "model/CMetab.h"
 
-    /**
-     * Copy constructor
-     * @param const CMetab & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMetab(const CMetab & src,
-           const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor.
-     */
-    ~CMetab();
-
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
-
-
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getConcentration() const;
-
-    /**
-     *
-     */
-    void setInitialConcentration(const C_FLOAT64 & initialConcentration);
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getInitialConcentration() const;
-
-    /**
-     *
-     */
-    virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-    /**
-     *
-     */
-    const CCompartment * getCompartment() const;
-
-    /**
-     *
-     */
-    const CModel * getModel() const;
-
-    /**
-     *  Retrieves the transition time
-     *  @return "const C_FLOAT64 &" transitionTime
-     */
-    const C_FLOAT64 & getTransitionTime() const;
-
-    /**
-     * Return rate of production of this metaboLite
-     */
-    C_FLOAT64 getConcentrationRate() const;
-
-    /**
-     * Retreive whether the metabolite dependent
-     * @return bool dependent
-     */
-    bool isDependent() const;
-
-
-};
 

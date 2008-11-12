@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameters.i,v $ 
+//   $Revision: 1.4.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,98 +21,16 @@
 
 %}
 
-class CFunctionParameters : public CCopasiContainer
-{
 
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CFunctionParameters(const std::string & name = "NoName",
-                        const CCopasiContainer * pParent = NULL);
+%ignore operator[](unsigned C_INT32);
+%ignore operator[](unsigned C_INT32) const;
+%ignore operator[](const std::string&);
+%ignore operator[](const std::string&) const;
+%ignore operator= (const CFunctionParameters&);
+%ignore operator==(const CFunctionParameters &) const;
+%ignore operator<<(std::ostream&, const CFunctionParameters&);
 
-    /**
-     * Copy constructor
-     * @param "const CFunctionParameters &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CFunctionParameters(const CFunctionParameters & src,
-                        const CCopasiContainer * pParent = NULL);
+%include "function/CFunctionParameters.h"
 
-    /**
-     *  Destructor
-     */
-    ~CFunctionParameters();
-
-    /**
-     * Add a parameter to the parameter list
-     * @param "const string & name
-     * @param "const CFunctionParameter::DataType &" type
-     * @param "const string &" usage
-     * @return bool success
-     */
-    bool add(const std::string & name,
-             const CFunctionParameter::DataType & type,
-             CFunctionParameter::Role usage);
-
-    /**
-     *  Remove a parameter from the parameter list
-     *  @param "const CFunctionParameter &" parameter
-     */
-    void remove(const std::string & name);
-
-    /**
-     * number of parameters
-     */
-    unsigned C_INT32 size() const;
-
-    /**
-     * tells whether there is a parameter with vector type and the given role
-     * (if there is one it is assumed it is the only one with this role)
-     */
-    bool isVector(CFunctionParameter::Role role) const;
-
-    /**
-     * gets the number of Parameters with a specific usage
-     */
-    unsigned C_INT32 getNumberOfParametersByUsage(CFunctionParameter::Role usage) const;
-
-
-%extend
-{
-    /**
-     *  Retrieves the first parameter with the specified usage after pos
-     *  In a normal situation pos is set to 0 for the first call.
-     *  It is increment by the method to allow subsequent searches to start
-     *  after the last found item. This is usefull if several parameters
-     *  with the same usage exist.
-     *  @param "const string &" usage
-     *  @param "unsigned C_INT32 &" pos (first call should be with 0)
-     *  @return "CFunctionParameter &" usageRange
-     */
-    const CFunctionParameter * getParameterByUsage(CFunctionParameter::Role usage,
-        unsigned C_INT32  pos) const
-    {
-        return self->getParameterByUsage(usage,pos);
-    }
-
-    /**
-     * find a parameter by its name and return its index
-     */
-    unsigned C_INT32 findParameterByName(const std::string & name, CFunctionParameter::DataType  dataType) const
-    {
-        return self->findParameterByName(name,dataType);
-    }
-
-    CFunctionParameter* getParameter(unsigned C_INT32 index)
-    {
-        return (*self)[index];
-    }
-
-}
-
-};
 
 

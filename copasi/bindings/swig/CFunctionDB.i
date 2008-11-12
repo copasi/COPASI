@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionDB.i,v $ 
+//   $Revision: 1.4.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,64 +21,10 @@
 
 %}
 
-class CFunctionDB : public CCopasiContainer
-{
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: RootContainer)
-     */
-    CFunctionDB(const std::string & name = "FunctionDB",
-                const CCopasiContainer * pParent = CCopasiContainer::Root);
-
-    /**
-     * Destructor
-     */
-    ~CFunctionDB();
-
-   
-    bool removeFunction(const std::string &key);
-
-    /**
-     *  Search for a function among the loaded functions. If no
-     *  function is found NULL is returned
-     *  @param "const string" &functionName
-     *  @return CEvaluationTree *
-     */
-    CEvaluationTree * findFunction(const std::string & functionName);
-
-    /**
-     *  Search for a function among the loaded functions. If no
-     *  function is found the database is searched and the apropriate
-     *  function is loaded.
-     *  @param "const string" &functionName
-     *  @return CEvaluationTree * function (NULL if function is not found)
-     */
-    CEvaluationTree * findLoadFunction(const std::string & functionName);
-
-    /**
-     *  Retrieves the vector of loaded functions.
-     *  @return "CCopasiVectorNS < CKinFunction > &" loadedFunctions
-     */
-    CCopasiVectorN < CEvaluationTree > & loadedFunctions();
-
-    /**
-     *  Retrieves the vector of functions that are suitable for a
-     *  number of substrates, products and reversibility status.
-     *  Note: The returnes CCopasiVector has to be deleted after use!
-     *  @param "const unsigned C_INT32" noSubstrates the number of substrates
-     *  @param "const unsigned C_INT32" noProducts the number of products
-     *  @param "const TriLogic" reversible the reversibility status
-     *  @return "std::vector<CFunction*> " suitableFunctions
-     */
-    std::vector<CFunction*>
-    suitableFunctions(const unsigned C_INT32 noSubstrates,
-                      const unsigned C_INT32 noProducts,
-                      const TriLogic reversibility);
+%include "function/CFunctionDB.h"
 
 
-%extend
+%extend CFunctionDB
 {
     CEvaluationTree* createFunction(const std::string& name,CEvaluationTree::Type t)
     {
@@ -81,6 +40,5 @@ class CFunctionDB : public CCopasiContainer
     }
 }
 
-};
 
 

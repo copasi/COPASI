@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.23 $ 
+#   $Revision: 1.23.6.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 12:48:58 $ 
+#   $Date: 2008/11/12 15:18:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -172,6 +172,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CVector.i \
                      ../swig/compare_utilities.i \
                      ../swig/copasi.i \
+                     ../swig/CCopasiArray.i
 
 
 

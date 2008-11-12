@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/COutputHandler.i,v $ 
+//   $Revision: 1.2.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,63 +21,7 @@
 
 %}
 
-/**
- *  This is just the interface that is used to all output provided by COPASI.
- */
-class COutputInterface
-  {
-  public:
-    /**
-     * The output activity, indicating the status of the current operations
-     * performed by a task.
-     */
-    enum Activity
-    {
-      BEFORE = 0x01,
-      DURING = 0x02,
-      AFTER = 0x04
-    };
+%include "utilities/COutputHandler.h"
 
-    /**
-     * Default constructor
-     */
-    COutputInterface();
-
-    /**
-     * Copy constructor
-     * @param const COutputInterface & src
-     */
-    COutputInterface(const COutputInterface & src);
-
-    /**
-     * Destructor
-     */
-    virtual ~COutputInterface();
-
-  };
-
-/**
- *  This is the lass which drives all otuput of COPASI.
- */
-class COutputHandler: public COutputInterface
-  {
-  public:
-    /**
-     * Default Constructor
-     */
-    COutputHandler();
-
-    /**
-     * Copy constructor
-     * @param const COutputInterface & src
-     */
-    COutputHandler(const COutputHandler & src);
-
-    /**
-     * Destructor
-     */
-    virtual ~COutputHandler();
-
-  };
 
 

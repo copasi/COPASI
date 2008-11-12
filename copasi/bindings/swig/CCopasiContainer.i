@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiContainer.i,v $ 
+//   $Revision: 1.6.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -19,27 +32,5 @@
 
 %immutable CCopasiContainer::Root;
 
-class CCopasiContainer: public CCopasiObject
-{
-  private:
-    CCopasiContainer();
-
-  public:
-    static CCopasiContainer* Root;
-
-    // we need to cast the object that is returned to the correct type.
-    // I will have to look at the code in libsbml that does the same for the listOf class
-    static CCopasiObject* ObjectFromName(const CCopasiObjectName& objName);
-    static void init();
-
-    CCopasiContainer(const std::string& name,
-                     const CCopasiContainer * pParent = NULL,
-                     const std::string & type = "CN",
-                     const unsigned C_INT32 & flag = CCopasiObject::Container);
-
-    virtual ~CCopasiContainer();
-    
-
-};
-
+%include "report/CCopasiContainer.h"
 

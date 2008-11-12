@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCompartment.i,v $ 
+//   $Revision: 1.5.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -9,47 +22,6 @@
 %}
 
 
-class CCompartment : public CModelEntity
-{
-  public:
-    /**
-     * Default constructor.
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCompartment(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor.
-     * @param "const CCompartment &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCompartment(const CCompartment & src,
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor.
-     *  The destructor does nothing.
-     */
-    ~CCompartment();
-
-    /**
-     *
-     */
-    CCopasiVectorNS < CMetab > & getMetabolites();
-
-    bool removeMetabolite(CMetab *metabolite);
-
-    /**
-     *  Sets the initial volume of this compartment.
-     *  @param volume the volume of the compartment.
-     *  @return bool success
-     *  @see mVolume
-     */
-    virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-};
-
+%include "model/CCompartment.h"
 
 

@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CMatrix.i,v $ 
+//   $Revision: 1.6.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,63 +21,16 @@
 
 %}
 
+%include "utilities/CMatrix.h"
 
-template <class CType>
-class CMatrix
-  {
-  public:
-    typedef CType elementType;
-    
-    /**
-     * Default constructor
-     * @param unsigned C_INT32 rows (default = 0)
-     * @param unsigned C_INT32 cols (default = 0)
-     */
-    CMatrix(unsigned C_INT32 rows = 0, unsigned C_INT32 cols = 0);
-    
-    /**
-     * Copy constructor
-     * @param const CMatrix <CType> & src
-     */
-    CMatrix(const CMatrix <CType> & src);
 
-    /**
-     * Destructor.
-     */
-    virtual ~CMatrix();
-    /**
-     * The number of elements stored in the matrix.
-     * @return unsigned C_INT32 size
-     */
-    virtual unsigned C_INT32 size();
-
-    /**
-     * The number of rows of the matrix.
-     * @return unsigned C_INT32 rows
-     */
-    virtual unsigned C_INT32 numRows() const;
-
-    /**
-     * The number of columns of the matrix
-     * @return unsigned C_INT32 cols
-     */
-    virtual unsigned C_INT32 numCols() const;
-
-    /**
-     * Resize the matrix. The previous content is lost
-     * @param unsigned C_INT32 rows
-     * @param unsigned C_INT32 cols
-     */
-    virtual void resize(unsigned C_INT32 rows, unsigned C_INT32 cols);
-
-    %extend
+%extend CMatrix
+{
+    virtual elementType& get(const unsigned C_INT32& row,const unsigned C_INT32& col)
     {
-        virtual elementType& get(const unsigned C_INT32& row,const unsigned C_INT32& col)
-        {
-            return (*self)(row,col);
-        }
+        return (*self)(row,col);
     }
-  };
+}
 
 %template(FloatMatrix) CMatrix<C_FLOAT64>;
 
