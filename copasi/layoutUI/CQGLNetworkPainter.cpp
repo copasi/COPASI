@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.146.2.1 $
+//   $Revision: 1.146.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:15 $
+//   $Date: 2008/11/12 14:48:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -497,8 +497,8 @@ void CQGLNetworkPainter::initializeGL()
   glEnable(GL_BLEND);
   glEnable(GL_LINE_SMOOTH);
   glEnable(GL_ALPHA_TEST);
-  //glEnable(GL_POINT_SMOOTH);
-  glEnable(GL_POLYGON_SMOOTH);
+  // glEnable(GL_POINT_SMOOTH);
+  // glEnable(GL_POLYGON_SMOOTH);
   glShadeModel(GL_SMOOTH);
 
   glGenTextures(1, textureNames);
