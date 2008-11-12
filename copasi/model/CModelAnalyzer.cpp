@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.14.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/26 13:12:04 $
+//   $Author: shoops $
+//   $Date: 2008/11/12 14:50:39 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -275,6 +280,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           break;
 
         case CFunctionParameter::VARIABLE:
+        case CFunctionParameter::TEMPORARY:
           {
             //copasi bug
             //std::cout << "Don't know what to do with a VARIABLE parameter here..." << std::endl;
