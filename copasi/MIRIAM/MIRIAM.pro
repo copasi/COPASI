@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $
-#   $Revision: 1.14 $
+#   $Revision: 1.14.2.1 $
 #   $Name:  $
-#   $Author: aruff $
-#   $Date: 2008/09/17 17:27:36 $
+#   $Author: shoops $
+#   $Date: 2008/11/12 14:07:41 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,11 @@ CONFIG -= qt
 
 DEPENDPATH += ..
 INCLUDEPATH += ..
+
+!win32:{
+  QMAKE_CFLAGS_WARN_ON += -Wno-unused-parameter 
+  QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter 
+}
 
 # Input
 HEADERS += CBiologicalDescription.h
