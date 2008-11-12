@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.30.2.1 $
+//   $Revision: 1.30.2.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 08:00:07 $
+//   $Author: shoops $
+//   $Date: 2008/11/12 18:43:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,9 +254,9 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 
   try
     {
-      // First determine the location of the intervall
+      // First determine the location of the interval
       // Secondly determine whether to distribute the parameter linearly or not
-      // depending on the location and act uppon it.
+      // depending on the location and act upon it.
       if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
         {
           la = log10(mx) - log10(std::max(mn, DBL_MIN));

@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.49 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 20:57:33 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
+  $Revision: 1.49.26.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/11/12 18:43:06 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -66,11 +71,11 @@ const CCopasiVector < CChemEqElement > & CChemEq::getModifiers() const
 const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
   {return mBalances;}
 
-bool CChemEq::addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role)
+bool CChemEq::addMetabolite(const std::string & key, const C_FLOAT64 multiplicity, const MetaboliteRole & role)
 {
   CChemEqElement element;
   element.setMetabolite(key);
-  element.setMultiplicity(mult);
+  element.setMultiplicity(multiplicity);
 
   switch (role)
     {
@@ -164,10 +169,6 @@ const CCompartment & CChemEq::getLargestCompartment() const
     return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
   }
 
-/*const CCompartment & CChemEq::getSmallestCompartment() const
-{
-} */
-
 void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
                          const CChemEqElement & element,
                          CChemEq::MetaboliteRole role)
@@ -177,7 +178,7 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
   std::string key = element.getMetaboliteKey();
 
   if (key == "")
-    return; // don´t add empty element
+    return; // donï¿½t add empty element
 
   for (i = 0; i < structure.size(); i++)
     if (key == structure[i]->getMetaboliteKey())
@@ -197,48 +198,6 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
   else
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
-
-// const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
-//   {
-//     // check initialized() and compiled
-//
-//     const CCompartment* comp = NULL;
-//     unsigned C_INT32 i, imax;
-//
-//     if (mSubstrates.size() > 0)
-//       {
-//         comp = mSubstrates[0]->getMetabolite().getCompartment();
-//         imax = mSubstrates.size();
-//         for (i = 1; i < imax; i++)
-//           if (comp != mSubstrates[i]->getMetabolite().getCompartment())
-//           {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 2);} // substs in different compartments
-//         return comp; // all substrates are in the same compartment
-//}
-//     else if (mProducts.size() > 0)
-//       {
-//         comp = mProducts[0]->getMetabolite().getCompartment();
-//         imax = mProducts.size();
-//         for (i = 1; i < imax; i++)
-//           if (comp != mProducts[i]->getMetabolite().getCompartment())
-//           {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 3);}  // products in different compartments
-//         return comp; // all products are in the same compartment
-//}
-//     else
-//       {
-//         CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 1); // error: no subs. and no product
-//         return NULL;
-//}
-//}
-
-#ifdef xxxx
-void CChemEq::reverse()
-{
-  CCopasiVector<CChemEqElement> dummy;
-  dummy = mSubstrates;
-  mSubstrates = mProducts;
-  mProducts = dummy;
-}
-#endif
 
 C_INT32 CChemEq::getMolecularity(const MetaboliteRole role) const
   {

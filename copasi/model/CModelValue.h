@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.6.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/11 10:22:19 $
+//   $Author: shoops $
+//   $Date: 2008/11/12 18:43:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,13 +31,12 @@
 class CModel;
 class CExpression;
 
-/*!
-    \brief The base class for CCompartment, CMetab and CModelValue.
-
-    CModelEntity is a base class for CCompartment, CMetab and CModelValue.
-    These three classes have in common that (in the long run) they can each be model variables
-    (subject to ODEs), constant, or subject to algebraic assignments.
-    In addition, the CMetab objects can also be subject to reactions, and conservation rules.
+/**
+ * The base class for CCompartment, CMetab and CModelValue.
+ * CModelEntity is a base class for CCompartment, CMetab and CModelValue.
+ * These three classes have in common that (in the long run) they can each be model variables
+ * (subject to ODEs), constant, or subject to algebraic assignments.
+ * In addition, the CMetab objects can also be subject to reactions, and conservation rules.
  */
 class CModelEntity : public CCopasiContainer
   {
@@ -60,10 +59,10 @@ class CModelEntity : public CCopasiContainer
      */
     enum Status
     {
-      FIXED = 0, //the entity is constant (for metabs even if they are part of a reaction)
+      FIXED = 0, //the entity is constant (for species even if they are part of a reaction)
       ASSIGNMENT, //the entity is changed by an assignment rule
-      REACTIONS, //applies only for metabs, the metab concentration is changed by reactions
-      //      DEPENDENT, //applies only for metabs, the metab concentration is determined by conservation rules
+      REACTIONS, //applies only for species, the species concentration is changed by reactions
+      //      DEPENDENT, //applies only for species, the species concentration is determined by conservation rules
       //      UNUSED,
       ODE, //the entity is changed by an ordinary differential equation
       TIME
@@ -98,18 +97,19 @@ class CModelEntity : public CCopasiContainer
                  const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Destructor.
+     * Destructor.
      */
     ~CModelEntity();
 
     /**
-     *  Retrieve the key
+     * Retrieve the key
      * @return std::string key
      */
     virtual const std::string & getKey() const;
 
     /**
-     *
+     * Retrieve the status of the entity.
+     * @return const CModelEntity::Status & status
      */
     const CModelEntity::Status & getStatus() const;
 
@@ -124,7 +124,10 @@ class CModelEntity : public CCopasiContainer
      */
     virtual void calculate();
 
-    /// Retrieve the type status whether FIXED or not
+    /**
+     * Check whether the entity is FIXED or not.
+     * @return bool isFixed
+     */
     inline bool isFixed() const {return mStatus == FIXED;}
 
     /**
@@ -172,7 +175,7 @@ class CModelEntity : public CCopasiContainer
     void setRate(const C_FLOAT64 & rate);
 
     /**
-     * Retreive a pointer to the value;
+     * Retrieve a pointer to the value;
      */
     virtual void * getValuePointer() const;
 
@@ -184,7 +187,7 @@ class CModelEntity : public CCopasiContainer
     virtual bool setObjectParent(const CCopasiContainer * pParent);
 
     /**
-     * Retreive the list of deleted numeric child objects;
+     * Retrieve the list of deleted numeric child objects;
      * @return std::set< const CCopasiObject * > deletedObjects
      */
     virtual std::set< const CCopasiObject * > getDeletedObjects() const;
@@ -199,7 +202,16 @@ class CModelEntity : public CCopasiContainer
      */
     const std::string& getSBMLId() const;
 
+    /**
+     * Set the pointer to the initial value
+     * @param C_FLOAT64 * pInitialValue
+     */
     void setInitialValuePtr(C_FLOAT64 * pInitialValue);
+
+    /**
+     * Set the pointer to the value
+     * @param C_FLOAT64 * pValue
+     */
     void setValuePtr(C_FLOAT64 * pValue);
 
     /**
@@ -273,7 +285,7 @@ class CModelEntity : public CCopasiContainer
     void setUsed(const bool & used);
 
     /**
-     * Retreive whether the model value is used during simulation
+     * Retrieve whether the model value is used during simulation
      * @return const bool & used
      */
     const bool & isUsed() const;
@@ -285,25 +297,25 @@ class CModelEntity : public CCopasiContainer
     void setCalculatedOnce(const bool & calculatedOnce);
 
     /**
-     * Retreive whether the model value is calculated once prior to simulation
+     * Retrieve whether the model value is calculated once prior to simulation
      * @return const bool & calculatedOnce
      */
     const bool & isCalculatedOnce() const;
 
     /**
-     * Retreive object referencing the initial value
+     * Retrieve object referencing the initial value
      * @return CCopasiObject * initialValueReference
      */
     CCopasiObject * getInitialValueReference() const;
 
     /**
-     * Retreive object referencing the value
+     * Retrieve object referencing the value
      * @return CCopasiObject * valueReference
      */
     CCopasiObject * getValueReference() const;
 
     /**
-     * Retreive object referencing the rate
+     * Retrieve object referencing the rate
      * @return CCopasiObject * rateReference
      */
     CCopasiObject * getRateReference() const;
@@ -317,7 +329,7 @@ class CModelEntity : public CCopasiContainer
                              const std::string & oldId);
 
     /**
-     * Retreive the RDF/XML representation of the MIRIAM annotation
+     * Retrieve the RDF/XML representation of the MIRIAM annotation
      * @return const std::string & miriamAnnotation
      */
     const std::string & getMiriamAnnotation() const;
@@ -439,7 +451,7 @@ TIME                    implemented
 /**
  * CModelValue represents an entity in the model that has a value but is
  * not a concentration (like species) or a volume (like compartments).
- * It correspondents to global parameters in sbml
+ * It correspondents to global parameters in SBML
  */
 class CModelValue : public CModelEntity
   {

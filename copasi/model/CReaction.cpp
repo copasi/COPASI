@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.177.2.1 $
+//   $Revision: 1.177.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:14 $
+//   $Date: 2008/11/12 18:43:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,7 +260,9 @@ bool CReaction::setFunction(CFunction * pFunction)
 
 // TODO: check if function is set and map initialized in the following methods
 
-void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 value, bool updateStatus)
+void CReaction::setParameterValue(const std::string & parameterName,
+                                  const C_FLOAT64 & value,
+                                  const bool & updateStatus)
 {
   if (!mpFunction) fatalError();
   mParameters.setValue(parameterName, value);
@@ -294,7 +296,7 @@ const CCopasiParameterGroup & CReaction::getParameters() const
 CCopasiParameterGroup & CReaction::getParameters()
 {return mParameters;}
 
-void CReaction::setParameterMapping(C_INT32 index, const std::string & key)
+void CReaction::setParameterMapping(const C_INT32 & index, const std::string & key)
 {
   //std::cout << "CReaction::setParameterMapping, index = " << index << ", key = " << key << std::endl;
   if (!mpFunction) fatalError();
@@ -303,7 +305,7 @@ void CReaction::setParameterMapping(C_INT32 index, const std::string & key)
   mMetabKeyMap[index][0] = key;
 }
 
-void CReaction::addParameterMapping(C_INT32 index, const std::string & key)
+void CReaction::addParameterMapping(const C_INT32 & index, const std::string & key)
 {
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
@@ -366,7 +368,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   mMetabKeyMap[index].clear();
 }
 
-void CReaction::clearParameterMapping(C_INT32 index)
+void CReaction::clearParameterMapping(const C_INT32 & index)
 {
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError();
@@ -386,7 +388,7 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
     return mMetabKeyMap[index];
   }
 
-bool CReaction::isLocalParameter(C_INT32 index) const
+bool CReaction::isLocalParameter(const C_INT32 & index) const
   {
     unsigned C_INT32 i, imax = mParameters.size();
     for (i = 0; i < imax; ++i)
@@ -735,9 +737,6 @@ unsigned C_INT32 CReaction::getCompartmentNumber() const
 
 const CCompartment & CReaction::getLargestCompartment() const
   {return mChemEq.getLargestCompartment();}
-
-/*const CCompartment & CReaction::getSmallestCompartment() const
-{return mChemEq.getSmallestCompartment();}*/
 
 void CReaction::setScalingFactor()
 {

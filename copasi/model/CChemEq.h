@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:32:22 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
+  $Revision: 1.39.24.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/11/12 18:43:06 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,7 +20,7 @@
  *  Describing a chemical equation.
  *  The CChemEq class handles everything a reaction has to do with metabolites.
  *
- *  Created for Copasi by Stefan Hoops 2001
+ *  Created for COPASI by Stefan Hoops 2001
  */
 
 #ifndef COPASI_CChemEq
@@ -39,42 +44,7 @@ class CChemEq : public CCopasiContainer
       NOROLE
     };
 
-    // Attributes
-
-  private:
-    /**
-     * Indicates whether the chemical equation is reversible
-     */
-    bool mReversible;
-
-    /**
-     *  A vector of substrates and their multiplicity in the chemical reaction
-     * @supplierCardinality 0..*
-     * @label Substrates
-     */
-    CCopasiVector < CChemEqElement > mSubstrates;
-
-    /**
-     *  A vector of products and their multiplicity in the chemical reaction
-     * @supplierCardinality 0..*
-     * @label Products
-     */
-    CCopasiVector < CChemEqElement > mProducts;
-
-    /**
-     *  A vector of modifiers in the chemical reaction.
-     */
-    CCopasiVector < CChemEqElement > mModifiers;
-
-    /**
-     *  A vector of metabolites and their total balance in the chemical reaction
-     * @supplierCardinality 0..*
-     * @label Stoichiometry
-     */
-    CCopasiVector < CChemEqElement > mBalances;
-
     // Operations
-
   public:
     /**
      * Default constructor
@@ -102,48 +72,64 @@ class CChemEq : public CCopasiContainer
      */
     void cleanup();
 
-    void setReversibility(bool revers) {mReversible = revers;}
-    bool getReversibility() const {return mReversible;}
-
-    bool addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role);
+    /**
+     * Set the reversibility of the of the equation
+     * @param const bool & const bool & reversible
+     */
+    void setReversibility(const bool & reversible) {mReversible = reversible;}
 
     /**
-     *  Retrieves the vector of substrates and their multiplicity
-     *  in the chemical reaction.
-     *  @return "vector < CChemEqElement * > &" substrates
+     * Retrieve the reversibility of the equation
+     * @return const bool & reversible
+     */
+    const bool & getReversibility() const {return mReversible;}
+
+    /**
+     * Add a species to the equation
+     * @param const std::string & speciesKey
+     * @param const C_FLOAT64 & multiplicity
+     * @param const MetaboliteRole & role
+     * @return bool success
+     */
+    bool addMetabolite(const std::string & key, const C_FLOAT64 multiplicity, const MetaboliteRole & role);
+
+    /**
+     * Retrieves the vector of substrates and their multiplicity
+     * in the chemical reaction.
+     * @return "vector < CChemEqElement * > &" substrates
      */
     const CCopasiVector < CChemEqElement > & getSubstrates() const;
 
     /**
-     *  Retrieves the vector of products and their multiplicity
-     *  in the chemical reaction.
-     *  @return "vector < CChemEqElement * > &" products
+     * Retrieves the vector of products and their multiplicity
+     * in the chemical reaction.
+     * @return "vector < CChemEqElement * > &" products
      */
     const CCopasiVector < CChemEqElement > & getProducts() const;
 
     /**
-     *  Retrieves the vector of Modifiers and their multiplicity
+     * Retrieves the vector of Modifiers and their multiplicity
      */
     const CCopasiVector < CChemEqElement > & getModifiers() const;
 
     /**
-     *  Retrieves the vector of metabolites and their total balance
-     *  in the chemical reaction.
-     *  @return "vector < CChemEqElement * > &" balances
+     * Retrieves the vector of metabolites and their total balance
+     * in the chemical reaction.
+     * @return "vector < CChemEqElement * > &" balances
      */
     const CCopasiVector < CChemEqElement > & getBalances() const;
 
     /**
-     * Returns the number of comparments the chemical equation is associated
+     * Returns the number of compartments the chemical equation is associated
      * with.
      */
     unsigned C_INT32 getCompartmentNumber() const;
 
     /**
-     *  get the largest (smallest) compartment that the reaction touches.
+     * Retrieve the largest compartment that the reaction touches.
+     * @return const CCompartment & compartment
      */
     const CCompartment & getLargestCompartment() const;
-    const CCompartment & getSmallestCompartment() const;
 
     /**
      *  Checks if it is possible to figure out a compartment from the
@@ -154,11 +140,6 @@ class CChemEq : public CCopasiContainer
      *  will be thrown.
      */
     //const CCompartment* CheckAndGetFunctionCompartment() const;
-
-    /**
-     *  exchanges products and substrates
-     */
-    void reverse();
 
     /**
      *  This returns the sum of the multiplicities
@@ -178,7 +159,46 @@ class CChemEq : public CCopasiContainer
                     const CChemEqElement & element,
                     CChemEq::MetaboliteRole role = CChemEq::PRODUCT);
 
-    friend std::ostream & operator<<(std::ostream &os, const CChemEq & d);
+    /**
+     * Friend declaration for ostream operator
+     * @param std::ostream & os
+     * @param const CChemEq & d
+     * @return std::ostream & os
+     */
+    friend std::ostream & operator<<(std::ostream & os, const CChemEq & d);
+
+    // Attributes
+  private:
+    /**
+     * Indicates whether the chemical equation is reversible
+     */
+    bool mReversible;
+
+    /**
+     * A vector of substrates and their multiplicity in the chemical reaction
+     * @supplierCardinality 0..*
+     * @label Substrates
+     */
+    CCopasiVector < CChemEqElement > mSubstrates;
+
+    /**
+     * A vector of products and their multiplicity in the chemical reaction
+     * @supplierCardinality 0..*
+     * @label Products
+     */
+    CCopasiVector < CChemEqElement > mProducts;
+
+    /**
+     * A vector of modifiers in the chemical reaction.
+     */
+    CCopasiVector < CChemEqElement > mModifiers;
+
+    /**
+     * A vector of metabolites and their total balance in the chemical reaction
+     * @supplierCardinality 0..*
+     * @label Stoichiometry
+     */
+    CCopasiVector < CChemEqElement > mBalances;
   };
 
 #endif // COPASI_CChemEq

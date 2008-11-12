@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.22.6.1 $
+//   $Revision: 1.22.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 19:49:35 $
+//   $Date: 2008/11/12 18:43:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ class PlotWindow : public QMainWindow, public COutputInterface
     virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & activity);
@@ -83,7 +83,7 @@ class PlotWindow : public QMainWindow, public COutputInterface
     virtual void finish();
 
     /**
-     * Retreive the list of objects handled by the interface
+     * Retrieve the list of objects handled by the interface
      * @return const std::set< const CCopasiObject * > & objects
      */
     virtual const std::set< const CCopasiObject * > & getObjects() const;

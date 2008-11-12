@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.101.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Date: 2008/11/12 18:43:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  *  CReaction class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.
  *
- *  Converted for Copasi by Stefan Hoops 2001
+ *  Converted for COPASI by Stefan Hoops 2001
  */
 
 #ifndef COPASI_CReaction
@@ -44,81 +44,6 @@ class CFunctionDB;
 
 class CReaction : public CCopasiContainer
   {
-    // Attributes
-  private:
-    /**
-     *  The default scaling factor of a reaction which is 1.
-     */
-    static C_FLOAT64 mDefaultScalingFactor;
-
-    /**
-     *  The key of the reaction
-     */
-    std::string mKey;
-
-    /**
-     *  The chemical equation
-     */
-    CChemEq mChemEq;
-
-    /**
-     *  A pointer to the rate function of the reaction
-     */
-    CFunction * mpFunction;
-
-    /**
-     *  The flux of the reaction, as amount of substance/time
-     */
-    C_FLOAT64 mFlux;
-    CCopasiObjectReference<C_FLOAT64> *mpFluxReference;
-
-    /**
-     *  The scaled flux of the reaction, as particle number/time
-     */
-    C_FLOAT64 mParticleFlux;
-    CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
-
-    /**
-     *  A pointer to the scaling factor for the flux to calculate the particle number
-     *  changes. For a single compartment reaction this is the volume of
-     *  the compartment
-     */
-    const C_FLOAT64 * mScalingFactor;
-
-    /**
-     *  The unit conversion factor
-     */
-    const C_FLOAT64 * mUnitScalingFactor;
-
-    /**
-     *  This describes the mapping of the Metabs and Params to the function parameters.
-     *  Here are the pointers to the actual objects and values.
-     */
-    CFunctionParameterMap mMap;
-
-    /**
-     *  This describes the mapping of the Metabs to the function parameters. Here the
-     *  keys of the metabolites (as in the chemical equation) are stored.
-     */
-    std::vector< std::vector< std::string > > mMetabKeyMap;
-
-    /**
-     *  This is a list of parameter objects.
-     */
-    CCopasiParameterGroup mParameters;
-
-    /**
-     * The id of the corresponding reaction in an SBML file.
-     * This value is either set upon importing an SBML file,
-     * or when the object is first exported to an SBML file.
-     */
-    std::string mSBMLId;
-
-    /**
-     * The RDF/XML representation of the MIRIAM annotation
-     */
-    std::string mMiriamAnnotation;
-
   public:
     /**
      * Default constructor
@@ -152,22 +77,22 @@ class CReaction : public CCopasiContainer
     virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
     /**
-     *  Delete
+     * Delete
      */
     void cleanup();
 
     /**
-     *  Overload display name. Special treatment for reaction to
-     *  provide a shorter display
+     * Overload display name. Special treatment for reaction to
+     * provide a shorter display
      */
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
     /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return mFail
-     *  @see mFail
+     * Loads an object with data coming from a CReadConfig object.
+     * (CReadConfig object reads an input stream)
+     * @param pconfigbuffer reference to a CReadConfig object.
+     * @return mFail
+     * @see mFail
      */
     C_INT32 load(CReadConfig & configbuffer);
 
@@ -179,7 +104,7 @@ class CReaction : public CCopasiContainer
     virtual bool setObjectParent(const CCopasiContainer * pParent);
 
     /**
-     * Retreive the list of deleted numeric child objects;
+     * Retrieve the list of deleted numeric child objects;
      * @return std::set< const CCopasiObject * > deletedObjects
      */
     virtual std::set< const CCopasiObject * > getDeletedObjects() const;
@@ -191,32 +116,38 @@ class CReaction : public CCopasiContainer
     virtual const std::string & getKey() const;
 
     /**
-     *  Retrieves the chemical equation of the reaction
+     * Retrieves the chemical equation of the reaction
+     * @return const CChemEq & chemEq
      */
     const CChemEq & getChemEq() const;
+
+    /**
+     * Retrieves the chemical equation of the reaction
+     * @return CChemEq & chemEq
+     */
     CChemEq & getChemEq();
 
     /**
-     *  Retrieves the rate function of the reaction
-     *  @return "CBaseFunction &"
+     * Retrieves the rate function of the reaction
+     * @return "CBaseFunction &"
      */
     const CFunction * getFunction() const;
 
     /**
-     *  Retrieves the flux of the reaction
-     *  @return const C_FLOAT64 & flux
+     * Retrieves the flux of the reaction
+     * @return const C_FLOAT64 & flux
      */
     const C_FLOAT64 & getFlux() const;
 
     /**
-     *  Retrieves the scaled flux of the reaction
-     *  @return const C_FLOAT64 & scaledFlux
+     * Retrieves the scaled flux of the reaction
+     * @return const C_FLOAT64 & scaledFlux
      */
     const C_FLOAT64 & getParticleFlux() const;
 
     /**
-     *  Retrieves whether the reaction is reversible
-     *  @return bool
+     * Retrieves whether the reaction is reversible
+     * @return bool
      */
     bool isReversible() const;
 
@@ -264,38 +195,76 @@ class CReaction : public CCopasiContainer
     //****************************************************************************************
 
     /**
-     *  Sets a parameter value
-     *  if updateStatus==true the status is also updated to make shure
-     *  the value is actually used (instead of a global value that may
-     *  have been used before).
-     *  if updateStatus==false only the value of the local parameter is
-     *  set, even if it is not used
+     * Sets a parameter value
+     * if updateStatus==true the status is also updated to make sure
+     * the value is actually used (instead of a global value that may
+     * have been used before).
+     * if updateStatus==false only the value of the local parameter is
+     * set, even if it is not used
+     * @param const std::string & parameterName
+     * @param const C_FLOAT64 & value
+     * @param const bool & updateStatus (default: true(
      */
-    void setParameterValue(const std::string & parameterName, C_FLOAT64 value,
-                           bool updateStatus = true);
+    void setParameterValue(const std::string & parameterName,
+                           const C_FLOAT64 & value,
+                           const bool & updateStatus = true);
 
     /**
-     *  Gets a parameter value
+     * Retrieves a parameter value
      */
     const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
 
     /**
-     *  sets a function parameter->metab mapping.
+     * Sets a parameter mapping for the indexed parameter.
+     * @param const C_INT32 & index
+     * @param const std::string & key
      */
-    void setParameterMapping(C_INT32 index, const std::string & key);
-    void addParameterMapping(C_INT32 index, const std::string & key);
+    void setParameterMapping(const C_INT32 & index, const std::string & key);
+
+    /**
+     * Add a parameter mapping for the indexed parameter.
+     * @param const C_INT32 & index
+     * @param const std::string & key
+     */
+    void addParameterMapping(const C_INT32 & index, const std::string & key);
+
+    /**
+     * Sets a parameter mapping for the named parameter.
+     * @param const std::string & parameterName
+     * @param const std::string & key
+     */
     void setParameterMapping(const std::string & parameterName, const std::string & key);
+
+    /**
+     * Add a parameter mapping for the named parameter.
+     * @param const std::string & parameterName
+     * @param const std::string & key
+     */
     void addParameterMapping(const std::string & parameterName, const std::string & key);
 
+    /**
+     * Set the mapping for the name parameter which must be of type vector
+     * @param const std::string & parameterName
+     * @param const std::vector<std::string> & keys
+     */
     void setParameterMappingVector(const std::string & parameterName,
                                    const std::vector<std::string> & keys);
 
     /**
-     *  Clears a function parameter->metab mapping (only for vector parameters).
+     * Clear the parameter mapping for the named parameter.
+     * @param const C_INT32 & index
      */
     void clearParameterMapping(const std::string & parameterName);
-    void clearParameterMapping(C_INT32 index);
 
+    /**
+     * Clear the parameter mapping for the indexed parameter.
+     * @param const C_INT32 & index
+     */
+    void clearParameterMapping(const C_INT32 & index);
+
+    /**
+     * Retrieve the mappings of kinetic function parameters.
+     */
     const std::vector< std::vector<std::string> > & getParameterMappings() const
       {return mMetabKeyMap;}
 
@@ -311,10 +280,19 @@ class CReaction : public CCopasiContainer
      */
     CCopasiParameterGroup & getParameters();
 
-    bool isLocalParameter(C_INT32 index) const;
-    bool isLocalParameter(const std::string & parameterName) const;
+    /**
+     * Check whether the indexed parameter is a local parameter.
+     * @param const C_INT32 & index
+     * @return bool isLocal
+     */
+    bool isLocalParameter(const C_INT32 & index) const;
 
-    //***********************
+    /**
+     * Check whether the named parameter is a local parameter.
+     * @param const std::string & parameterName
+     * @return bool isLocal
+     */
+    bool isLocalParameter(const std::string & parameterName) const;
 
     /**
      *  Gets the description of what parameters the function expects.
@@ -349,7 +327,7 @@ class CReaction : public CCopasiContainer
     const C_FLOAT64 & calculateParticleFlux();
 
     /**
-     * Retreive object referencing the particle flux
+     * Retrieve object referencing the particle flux
      * @return CCopasiObject * particleFluxReference
      */
     CCopasiObject * getParticleFluxReference();
@@ -382,13 +360,14 @@ class CReaction : public CCopasiContainer
      *  get the largest (smallest) compartment that the reaction touches.
      */
     const CCompartment & getLargestCompartment() const;
-    const CCompartment & getSmallestCompartment() const;
 
     /**
      * Converts an expression tree into a CFunction object
      * and sets the mapping for the reaction.
      */
-    bool setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
+    bool setFunctionFromExpressionTree(CEvaluationTree* tree,
+                                       std::map<CCopasiObject*, SBase*> & copasi2sbmlmap,
+                                       CFunctionDB* pFunctionDB);
 
     /**
      * Converts the function tree into the corresponding expression tree.
@@ -415,27 +394,30 @@ class CReaction : public CCopasiContainer
                              const std::string & oldId);
 
     /**
-     * Retreive the RDF/XML representation of the MIRIAM annotation
+     * Retrieve the RDF/XML representation of the MIRIAM annotation
      * @return const std::string & miriamAnnotation
      */
     const std::string & getMiriamAnnotation() const;
 
     /**
-     * insert operator
+     * Friend declaration for ostream operator
+     * @param std::ostream & os
+     * @param const CReaction & d
+     * @return std::ostream & os
      */
-    friend std::ostream & operator<<(std::ostream &os, const CReaction & d);
+    friend std::ostream & operator<<(std::ostream & os, const CReaction & d);
 
     void printDebug() const;
 
   private:
 
     /**
-     *  loads a reaction from a gepasi file
+     * Loads a reaction from a Gepasi file
      */
     C_INT32 loadOld(CReadConfig & configbuffer);
 
     /**
-     *  used for loading gepasi files. Loads the mapping for one role
+     * Used for loading Gepasi files. Loads the mapping for one role
      */
     bool loadOneRole(CReadConfig & configbuffer,
                      CFunctionParameter::Role role, unsigned C_INT32 n,
@@ -496,6 +478,81 @@ class CReaction : public CCopasiContainer
      * tabs and spaces in double quotes.
      */
     std::string escapeId(const std::string& id);
+
+    // Attributes
+  private:
+    /**
+     *  The default scaling factor of a reaction which is 1.
+     */
+    static C_FLOAT64 mDefaultScalingFactor;
+
+    /**
+     *  The key of the reaction
+     */
+    std::string mKey;
+
+    /**
+     *  The chemical equation
+     */
+    CChemEq mChemEq;
+
+    /**
+     *  A pointer to the rate function of the reaction
+     */
+    CFunction * mpFunction;
+
+    /**
+     *  The flux of the reaction, as amount of substance/time
+     */
+    C_FLOAT64 mFlux;
+    CCopasiObjectReference<C_FLOAT64> *mpFluxReference;
+
+    /**
+     *  The scaled flux of the reaction, as particle number/time
+     */
+    C_FLOAT64 mParticleFlux;
+    CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
+
+    /**
+     *  A pointer to the scaling factor for the flux to calculate the particle number
+     *  changes. For a single compartment reaction this is the volume of
+     *  the compartment
+     */
+    const C_FLOAT64 * mScalingFactor;
+
+    /**
+     *  The unit conversion factor
+     */
+    const C_FLOAT64 * mUnitScalingFactor;
+
+    /**
+     *  This describes the mapping of the species and parameters to the function parameters.
+     *  Here are the pointers to the actual objects and values.
+     */
+    CFunctionParameterMap mMap;
+
+    /**
+     *  This describes the mapping of the species to the function parameters. Here the
+     *  keys of the metabolites (as in the chemical equation) are stored.
+     */
+    std::vector< std::vector< std::string > > mMetabKeyMap;
+
+    /**
+     *  This is a list of parameter objects.
+     */
+    CCopasiParameterGroup mParameters;
+
+    /**
+     * The id of the corresponding reaction in an SBML file.
+     * This value is either set upon importing an SBML file,
+     * or when the object is first exported to an SBML file.
+     */
+    std::string mSBMLId;
+
+    /**
+     * The RDF/XML representation of the MIRIAM annotation
+     */
+    std::string mMiriamAnnotation;
   };
 
 #endif // COPASI_CReaction
