@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.39.8.4 $
+//   $Revision: 1.39.8.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 07:25:37 $
+//   $Author: shoops $
+//   $Date: 2008/11/13 03:26:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,10 @@
 
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.39.8.4 $
+   $Revision: 1.39.8.5 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2008/11/06 07:25:37 $
+   $Author: shoops $
+   $Date: 2008/11/13 03:26:21 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,11 @@ void COptions::init(C_INT argc, char *argv[])
   char **ArgV = new char * [argc];
   C_INT ArgC = 0;
 
-  setValue("Self", localeToUtf8(argv[0]));
+  if (argc > 0)
+    setValue("Self", localeToUtf8(argv[0]));
+  else
+    setValue("Self", std::string(""));
+
   setValue("PWD", getPWD());
 
   // First we must clean up the command line by
