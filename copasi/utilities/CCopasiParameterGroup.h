@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
- $Revision: 1.28 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/10/07 15:31:45 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
+$Revision: 1.28.2.1 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/11/13 18:30:32 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -344,7 +344,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @return std::string name
      *
      */
-    const std::string & getName(const unsigned C_INT32 & index) const;
+    virtual const std::string & getName(const unsigned C_INT32 & index) const;
 
     /**
      * Set the value of a parameter or subgroup.
