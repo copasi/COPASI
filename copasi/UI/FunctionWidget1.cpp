@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159.2.2 $
+//   $Revision: 1.159.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/13 17:04:14 $
+//   $Date: 2008/11/13 20:32:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,8 +57,9 @@
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
+#endif // HAVE_MML
+
 #include "tex/CMathMLToTeX.h"
-#endif // Have_MML
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CMetab.h"
@@ -1445,11 +1446,7 @@ void FunctionWidget1::slotSave()
             this,
             "Save File Dialog",
             QString::null,
-#ifdef HAVE_MML
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
-#else
-            "MathML (*.mml);;XML (*.xml);;",
-#endif // HAVE_MML
             "Save Formula to Disk");
 
       if (!outfilename) return;
@@ -1460,14 +1457,11 @@ void FunctionWidget1::slotSave()
       if (Answer == QMessageBox::Cancel)
         return;
     }
-#ifdef HAVE_MML
+
   if (filter.contains("tex"))
     saveTeX(outfilename);
   else
     saveMML(outfilename);
-#else
-  saveMML(outfilename);
-#endif
 }
 
 // add 21.07.08
@@ -1489,18 +1483,22 @@ void FunctionWidget1::saveMML(const QString outfilename)
   ofile.close();
 }
 
-#ifdef HAVE_MML
 // add 21.07.08
 void FunctionWidget1::saveTeX(const QString outfilename)
 {
-  QString latexStr(MMLStr.latin1());
+  std::ostringstream mml;
+  std::vector<std::vector<std::string> > params;
+  mpFunction->createListOfParametersForMathML(params);
+  mpFunction->writeMathML(mml, params, true, false, 0);
+
+  QString latexStr(FROM_UTF8(mml.str()));
 
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
-  //  ofile << mml.str() << std::endl;
+
+  ofile << (const char *) latexStr.utf8();
+
   ofile.close();
 }
-#endif // HAVE_MML

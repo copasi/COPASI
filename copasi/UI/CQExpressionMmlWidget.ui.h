@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.6.2.2 $
+//   $Revision: 1.6.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/13 17:04:14 $
+//   $Date: 2008/11/13 20:32:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,9 @@
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
-# include "tex/CMathMLToTeX.h"
 #endif // HAVE_MML
+
+#include "tex/CMathMLToTeX.h"
 
 void CQExpressionMmlWidget::slotGoExpressionWidget()
 {
@@ -94,11 +95,7 @@ void CQExpressionMmlWidget::slotSaveExpression()
             this,
             "Save File Dialog",
             QString::null,
-#ifdef HAVE_MML
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
-#else
-            "MathML (*.mml);;XML (*.xml);;",
-#endif // HAVEMML
             "Save Expression to Disk");
 
       if (!outfilename) return;
@@ -110,14 +107,10 @@ void CQExpressionMmlWidget::slotSaveExpression()
         return;
     }
 
-#ifdef HAVE_MML
   if (filter.contains("tex"))
     saveTeX(outfilename);
   else
     saveMML(outfilename);
-#else
-  saveMML(outfilename);
-#endif // HAVE_MML
 }
 
 void CQExpressionMmlWidget::saveMML(const QString outfilename)
@@ -139,15 +132,17 @@ void CQExpressionMmlWidget::saveMML(const QString outfilename)
 
 void CQExpressionMmlWidget::saveTeX(const QString outfilename)
 {
-#ifdef HAVE_MML
-  QString latexStr(MMLStr.latin1());
+  std::ostringstream mml;
+  mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
+
+  QString latexStr(FROM_UTF8(mml.str()));
 
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
-  //  ofile << mml.str() << std::endl;
+
+  ofile << (const char *) latexStr.utf8();
+
   ofile.close();
-#endif // HAVE_MML
 }
