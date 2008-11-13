@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.13.2.1 $
+//   $Revision: 1.13.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/13 09:45:37 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:43:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -327,7 +327,7 @@ void CQTSSAWidget::checkTimeSeries()
 
 void CQTSSAWidget::disableDeuflhard(int i)
 {
-  if ((i == 2) || (i == 1))
+  if ((i == 2))
     {
       mpEditDeufelTol->setDisabled(true);
       mpLbDeuflTol->setDisabled(true);
