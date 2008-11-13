@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.h,v $
-//   $Revision: 1.8.6.2 $
+//   $Revision: 1.8.6.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/10 21:18:57 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:39:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,5 +171,11 @@ class CILDMMethod : public CTSSAMethod
     * set the desription of CArayAnnotation for both dimensions
     **/
     void setAnnotationM(int step);
+
+    /**
+     *  print of the standart report sequence for ILDM Method
+     *  @param std::ostream * ostream
+     **/
+    void printResult(std::ostream * ostream) const;
   };
 #endif // COPASI_CILDMMethod

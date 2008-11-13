@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.h,v $
-//   $Revision: 1.3.6.1 $
+//   $Revision: 1.3.6.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/03 16:40:57 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:39:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,6 +181,8 @@ class CTSSAProblem : public CCopasiProblem
     bool sync();
 
     void initObjects();
+
+    void printResult(std::ostream * ostream) const;
   };
 
 #endif // COPASI_CTSSAProblem

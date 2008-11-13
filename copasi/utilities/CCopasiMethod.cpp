@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.53.2.1 $
+//   $Revision: 1.53.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/20 12:28:53 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:40:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -258,3 +258,6 @@ std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o)
 
   return os;
 }
+
+void CCopasiMethod::printResult(std::ostream * ostream) const
+  {*ostream << " Not implemented.";}

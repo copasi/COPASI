@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14.2.4 $
+//   $Revision: 1.14.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/23 14:11:19 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:39:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "copasi.h"
 
 #include "CTSSAMethod.h"
+#include "CTSSAProblem.h"
 #include "CILDMMethod.h"
 #include "CILDMModifiedMethod.h"
 #include "CCSPMethod.h"

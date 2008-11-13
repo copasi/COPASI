@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.4 $
+//   $Revision: 1.18.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 20:09:00 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:43:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,23 +98,19 @@ void CQTSSAResultSubWidget::saveDataToFile()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  const CTimeSeries* timeSeries = this->table()->getTimeSeries();
-  int failed = 0;
-  if (timeSeries)
-    {
-      QCursor oldCursor = cursor();
-      setCursor(Qt::WaitCursor);
-      failed = timeSeries->save((const char *)fileName.utf8(), !(this->table()->doShowConcentrations()), "\t");
-      setCursor(oldCursor);
-    }
-  if (failed)
-    {
-      std::string s = "Could not save data to ";
-      s += fileName.utf8();
-      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
-    }
-}
+  std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
+  if (file.fail()) return;
 
+  CCopasiTask* mpTask =
+    dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+  if (!mpTask) return;
+
+  CCopasiProblem* mpProblem = mpTask->getProblem();
+
+  mpProblem->printResult(&file);
+
+  return;
+}
 void CQTSSAResultSubWidget::displayOptimizationTab(bool displayOptTab)
 {
   if (displayOptTab)
@@ -429,13 +425,20 @@ void CQTSSAResultSubWidget::hideButtons()
 {
   if ((tabWidget2->currentPageIndex() == 1) || (tabWidget2->currentPageIndex() == 2) || (tabWidget2->currentPageIndex() == 3))
     {
-      ButtonSaveData->setDisabled(true);
       comboBox->setDisabled(true);
     }
   else
     {
-      ButtonSaveData->setEnabled(true);
       comboBox->setEnabled(true);
+    }
+
+  if ((tabWidget2->currentPageIndex() == 3))
+    {
+      ButtonSaveData->setDisabled(true);
+    }
+  else
+    {
+      ButtonSaveData->setEnabled(true);
     }
 }
 /**

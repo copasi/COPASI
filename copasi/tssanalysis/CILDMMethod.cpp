@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.7 $
+//   $Revision: 1.22.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/10 21:18:57 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:39:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,11 +17,12 @@
 
 #include "copasi.h"
 #include "CILDMMethod.h"
+#include "CTSSATask.h"
 #include "CTSSAProblem.h"
 
 #include "model/CReaction.h"
 
-//#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 //#include "model/CState.h"
@@ -1035,18 +1036,10 @@ void CILDMMethod::setVectors(int slowMode)
 
   mVec_mVslowSpace.push_back(mCurrentStep);
   mVec_mVslowSpace[mCurrentStep].resize(mData.dim);
-  //TEST mVec_mVslowSpace[mCurrentStep] = mVslow_space;
-
-  //  std::cout << "Artjom TEST" << std::endl;
-  // std::cout << mCurrentStep << std::endl;
 
   for (i = 0; i < mVslow_space.size(); i++)
     {
       mVec_mVslowSpace[mCurrentStep][i] = mVslow_space[i];
-      //  std::cout << " mVslow_space[ " << i << " ]  " << mVslow_space[i];
-      // std::cout << " mVec_mVslowSpace[mCurrentStep][i] " << mVec_mVslowSpace[mCurrentStep][i];
-
-      // std::cout << std::endl;
     }
 
   mVec_mVfastSpace.push_back(mCurrentStep);
@@ -1214,3 +1207,145 @@ void CILDMMethod::setAnnotationM(int step)
   pReacSlowSpacePrintAnn->setCopasiVector(0, &mpModel->getReactions());
   pReacSlowSpacePrintAnn->setAnnotationString(1, 0, str);
 }
+
+void CILDMMethod::printResult(std::ostream * ostream) const
+  {
+    std::ostream & os = *ostream;
+    double timeScale;
+    C_INT i, j, istep = 0;
+
+    C_INT32 stepNumber;
+
+    CTSSATask* pTask =
+      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+
+    CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
+
+    stepNumber = pProblem->getStepNumber();
+
+    for (istep = 0; istep < stepNumber; istep++)
+      {
+
+        os << "**************** Current time step " << istep << " **************************  " << std::endl;
+
+        os << std::endl;
+
+        os << "Contribution of species to modes" << std::endl;
+
+        os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
+        os << "Columns: species  ";
+        for (j = 0; j < mData.dim; j++)
+          {
+            os << mpModel->getMetabolitesX()[j]->getObjectName() << "   ";
+          }
+
+        os << std::endl;
+
+        for (i = 0; i < mData.dim; i++)
+          {
+            timeScale = mVec_TimeScale[istep][i];
+            if (i < mVec_SlowModes[istep])
+              os << "Slow (";
+            else
+              os << "Fast (";
+            os << timeScale << "): ";
+
+            for (j = 0; j < mData.dim; j++)
+              os << mVec_mVslow[istep][i][j] << " ";
+
+            os << std::endl;
+          }
+
+        os << std::endl;
+
+        os << "Modes distribution for species" << std::endl;
+
+        os << "Rows : Mode distribution for each species" << std::endl;
+        os << "Columns: Modes (TS - corresponding  timescale) ";
+        os << std::endl;
+
+        for (i = 0; i < mData.dim; i++)
+          {
+            timeScale = mVec_TimeScale[istep][i];
+            if (i < mVec_SlowModes[istep])
+              os << "Slow (";
+            else
+              os << "Fast (";
+            os << timeScale << ")  ";
+          }
+
+        os << std::endl;
+
+        for (j = 0; j < mData.dim; j++)
+          {
+            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+
+            for (i = 0; i < mData.dim; i++)
+              os << mVec_mVslowMetab[istep][j][i] << "  ";
+
+            os << std::endl;
+          }
+
+        os << std::endl;
+
+        os << "Slow space" << std::endl;
+
+        os << "Rows : Species" << std::endl;
+        os << "Column: Contribution to slow space ";
+        os << std::endl;
+
+        os << mVec_SlowModes[istep];
+        os << " slow; ";
+
+        os << mData.dim - mVec_SlowModes[istep];
+        os << " fast";
+        os << std::endl;
+        for (j = 0; j < mData.dim; j++)
+          {
+            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+            os << mVec_mVslowSpace[istep][j] << "  ";
+
+            os << std::endl;
+          }
+
+        os << std::endl;
+        os << "Fast space" << std::endl;
+
+        os << "Rows : Species" << std::endl;
+        os << "Column: Contribution to fast space ";
+        os << std::endl;
+
+        os << mVec_SlowModes[istep];
+        os << " slow; ";
+
+        os << mData.dim - mVec_SlowModes[istep];
+        os << " fast";
+        os << std::endl;
+
+        for (j = 0; j < mData.dim; j++)
+          {
+            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+            os << mVec_mVfastSpace[istep][j] << "  ";
+
+            os << std::endl;
+          }
+
+        os << std::endl;
+        os << "Reactions slow space" << std::endl;
+
+        os << "Rows : Reactions" << std::endl;
+        os << "Column: Contribution to slow space ";
+        os << std::endl;
+
+        for (j = 0; j < (C_INT32) mpModel->getReactions().size(); j++)
+          {
+            os << mpModel->getReactions()[j]->getObjectName() << "  ";
+            os << mVec_mReacSlowSpace[istep][j] << "  ";
+
+            os << std::endl;
+          }
+
+        os << std::endl;
+      }
+    return;
+  }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.3.6.2 $
+//   $Revision: 1.3.6.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 08:18:10 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:39:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 
 #include "copasi.h"
 #include "CTSSAProblem.h"
+#include "CTSSATask.h"
 #include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -274,3 +275,17 @@ C_FLOAT64 CTSSAProblem::getDeufelhardTol()
 {
   return *getValue("Deuflhard Tolerance").pDOUBLE;
 }
+
+void CTSSAProblem::printResult(std::ostream * ostream) const
+  {
+    std::ostream & os = *ostream;
+
+    CCopasiTask* mpTask =
+      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+
+    if (!mpTask) return;
+
+    CCopasiMethod* mpMethod = mpTask->getMethod();
+
+    mpMethod->printResult(&os);
+  }
