@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-$Revision: 1.54.4.1 $
+$Revision: 1.54.4.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/11/13 17:04:14 $
+$Date: 2008/11/13 21:00:42 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,9 +146,7 @@ class FunctionWidget1 : public CopasiWidget
 
     void saveMML(const QString filename);
 
-#ifdef HAVE_MML
     void saveTeX(const QString filename);
-#endif // HAVE_MML
   };
 
 #endif // FunctionWidget1
