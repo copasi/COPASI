@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159.2.1 $
+//   $Revision: 1.159.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/10 20:23:35 $
+//   $Date: 2008/11/13 17:04:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,11 +170,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mpSaveBtn->setIconSet(QIconSet(saveIcon));
   mpFormulaVBL->addWidget(mpSaveBtn);
 
+#ifdef HAVE_MML
   //  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
   mFormulaEditToggleButton = new QToolButton(this, "mFormulaEditToggleButton");
   mFormulaEditToggleButton->setMaximumSize(QSize(20, 20));
   mFormulaEditToggleButton->setIconSet(QIconSet(editIcon));
   mpFormulaVBL->addWidget(mFormulaEditToggleButton);
+#endif // HAVE_MML
 
   mpFormulaSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpFormulaVBL->addItem(mpFormulaSpacer);
@@ -335,13 +337,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
 
+  connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 #ifdef HAVE_MML
   connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
           SLOT(slotToggleFcnDescriptionEdit()));
-#endif // HAVE_MML
-  connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
-
   QToolTip::add(mFormulaEditToggleButton, tr("edit formula"));
+#endif // HAVE_MML
+
   QToolTip::add(mpSaveBtn, tr("save formula"));
 }
 
@@ -1124,7 +1126,9 @@ void FunctionWidget1::slotNewButtonClicked()
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
 
+#ifdef HAVE_MML
   mFormulaEditToggleButton->hide();
+#endif //HAVE_MML
 
   mpSaveBtn->setEnabled(false);
 }
@@ -1341,7 +1345,9 @@ void FunctionWidget1::slotToggleFcnDescriptionEdit()
 {
   mStack->raiseWidget(textBrowser);
 
+#ifdef HAVE_MML
   mFormulaEditToggleButton->hide();
+#endif // HAVE_MML
 
   mpSaveBtn->setEnabled(false);
 }
@@ -1439,7 +1445,11 @@ void FunctionWidget1::slotSave()
             this,
             "Save File Dialog",
             QString::null,
+#ifdef HAVE_MML
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
+#else
+            "MathML (*.mml);;XML (*.xml);;",
+#endif // HAVE_MML
             "Save Formula to Disk");
 
       if (!outfilename) return;
@@ -1450,11 +1460,14 @@ void FunctionWidget1::slotSave()
       if (Answer == QMessageBox::Cancel)
         return;
     }
-
+#ifdef HAVE_MML
   if (filter.contains("tex"))
     saveTeX(outfilename);
   else
     saveMML(outfilename);
+#else
+  saveMML(outfilename);
+#endif
 }
 
 // add 21.07.08
@@ -1467,14 +1480,16 @@ void FunctionWidget1::saveMML(const QString outfilename)
   ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
-  //  ofile << mml.str();
-  ofile << MMLStr.latin1();
+  std::vector<std::vector<std::string> > params;
+  mpFunction->createListOfParametersForMathML(params);
+  mpFunction->writeMathML(ofile, params, true, false, 0);
 
   ofile << "</math>" << std::endl;
 
   ofile.close();
 }
 
+#ifdef HAVE_MML
 // add 21.07.08
 void FunctionWidget1::saveTeX(const QString outfilename)
 {
@@ -1488,3 +1503,4 @@ void FunctionWidget1::saveTeX(const QString outfilename)
   //  ofile << mml.str() << std::endl;
   ofile.close();
 }
+#endif // HAVE_MML

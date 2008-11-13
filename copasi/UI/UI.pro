@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.180.2.4 $
+#   $Revision: 1.180.2.5 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2008/10/27 10:50:59 $
+#   $Author: shoops $
+#   $Date: 2008/11/13 17:04:14 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.180.2.4 $ $Author: ssahle $ $Date: 2008/10/27 10:50:59 $
+# $Revision: 1.180.2.5 $ $Author: shoops $ $Date: 2008/11/13 17:04:14 $
 ######################################################################
 
 LIB = UI
@@ -59,6 +59,7 @@ HEADERS	+= \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
+	CQMatrixDialog.ui.h \
 #	CQQwt3dSurfacePlot.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
@@ -96,7 +97,7 @@ HEADERS	+= \
 	TimeSeriesWidget.h \
 	Tree.h \
 	TSSWidget.h \
-  CQExpressionMmlWidgetStack.h \
+    CQExpressionMmlWidgetStack.h \
 	CQMmlScrollView.h
 
 SOURCES	+= \
@@ -358,6 +359,9 @@ SOURCES += \
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
   SOURCES -= CQDifferentialEquations.cpp
+  
+  HEADERS -= CQMmlScrollView.h
+  SOURCES -= CQMmlScrollView.cpp
 }
 
 contains(DEFINES, COPASI_TSSA) {
@@ -415,6 +419,10 @@ DISTFILES += UI.vcproj \
              icons/stois.xpm \
              icons/substrate.xpm \
              icons/unlocked.xpm \
+             icons/MIRIAM.xpm \
+             icons/saveIcon.xpm \
+             icons/edit_Icon
+             
 
 
 

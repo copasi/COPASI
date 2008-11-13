@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.8.6.1 $
+//   $Revision: 1.8.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/11 17:19:46 $
+//   $Date: 2008/11/13 17:04:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,9 @@
 #include "model/CReaction.h"
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CEFMTask.h"
+#ifdef COPASI_SSA
 #include "elementaryFluxModes/CSSAMethod.h"
+#endif // COPASI_SSA
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
 
