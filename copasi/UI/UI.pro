@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.180.2.5 $
+#   $Revision: 1.180.2.6 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/11/13 17:04:14 $
+#   $Date: 2008/11/14 13:37:06 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.180.2.5 $ $Author: shoops $ $Date: 2008/11/13 17:04:14 $
+# $Revision: 1.180.2.6 $ $Author: shoops $ $Date: 2008/11/14 13:37:06 $
 ######################################################################
 
 LIB = UI
@@ -359,9 +359,6 @@ SOURCES += \
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
   SOURCES -= CQDifferentialEquations.cpp
-  
-  HEADERS -= CQMmlScrollView.h
-  SOURCES -= CQMmlScrollView.cpp
 }
 
 contains(DEFINES, COPASI_TSSA) {
@@ -421,7 +418,8 @@ DISTFILES += UI.vcproj \
              icons/unlocked.xpm \
              icons/MIRIAM.xpm \
              icons/saveIcon.xpm \
-             icons/edit_Icon
+             icons/edit_Icon.xpm \
+             icons/photo.xpm
              
 
 

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $
-#   $Revision: 1.14.2.2 $
+#   $Revision: 1.14.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/11/13 17:04:16 $
+#   $Date: 2008/11/14 13:37:06 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,4 +79,4 @@ SOURCES += WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.cpp
 SOURCES += WebServicesIssues/stdsoap2.cpp
 
 DISTFILES += MIRIAM.vcproj
-DISTFILEs += WebServicesIssues/MiriamWebServicesSoapBinding.nsmap
+DISTFILES += WebServicesIssues/MiriamWebServicesSoapBinding.nsmap
