@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.6.2.3 $
+//   $Revision: 1.6.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/13 20:32:38 $
+//   $Date: 2008/11/14 15:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,9 @@ void CQExpressionMmlWidget::updateWidget()
 void CQExpressionMmlWidget::init()
 {
   //  mpBtnViewExpression->setEnabled(FALSE);
+#ifndef HAVE_MML
+  mpBtnViewExpression->hide();
+#endif // not HAVE_MML
 }
 
 // add 22.07.08

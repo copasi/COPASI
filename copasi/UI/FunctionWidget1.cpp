@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159.2.3 $
+//   $Revision: 1.159.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/13 20:32:38 $
+//   $Date: 2008/11/14 15:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,7 +128,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mStack->addWidget(textBrowser, 0);
   mStack->raiseWidget(0);
 
-#ifdef HAVE_MML
   // A box which contains the MathML ScrollView with the Formula,
   //  and - if not ReadOnly -
   //   a button to switch to (editable) plain text view.
@@ -140,11 +139,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   mStack->addWidget(mMmlViewBox, 1);
 
+#ifdef HAVE_MML
   mMmlWidget = new QtMmlWidget(mScrollView->viewport());
   mMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
   mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
   mScrollView->addChild(mMmlWidget);
+#endif // HAVE_MML
 
   mScrollView->setResizePolicy(QScrollView::AutoOneFit);
   //mScrollView->show();
@@ -158,7 +159,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mpFormulaVBL = new QVBoxLayout(0, 0, 6, "mpFormulaVBL");
 
   //mMmlViewBox->insertChild(mFormulaEditToggleButton);
-#endif // HAVE_MML
 
   //  FunctionWidget1Layout->addWidget(mStack, 1, 1);
 
@@ -171,13 +171,11 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mpSaveBtn->setIconSet(QIconSet(saveIcon));
   mpFormulaVBL->addWidget(mpSaveBtn);
 
-#ifdef HAVE_MML
   //  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
   mFormulaEditToggleButton = new QToolButton(this, "mFormulaEditToggleButton");
   mFormulaEditToggleButton->setMaximumSize(QSize(20, 20));
   mFormulaEditToggleButton->setIconSet(QIconSet(editIcon));
   mpFormulaVBL->addWidget(mFormulaEditToggleButton);
-#endif // HAVE_MML
 
   mpFormulaSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mpFormulaVBL->addItem(mpFormulaSpacer);
@@ -332,20 +330,19 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(newFcn, SIGNAL(clicked()), this, SLOT(slotNewButtonClicked()));
   connect(deleteFcn, SIGNAL(clicked()), this, SLOT(slotDeleteButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
-  connect(mpSaveBtn, SIGNAL(clicked()), this, SLOT(slotSave()));
 
   connect(RadioButton1, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
 
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
-#ifdef HAVE_MML
+
+  QToolTip::add(mpSaveBtn, tr("save formula"));
+  connect(mpSaveBtn, SIGNAL(clicked()), this, SLOT(slotSave()));
+
   connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
           SLOT(slotToggleFcnDescriptionEdit()));
   QToolTip::add(mFormulaEditToggleButton, tr("edit formula"));
-#endif // HAVE_MML
-
-  QToolTip::add(mpSaveBtn, tr("save formula"));
 }
 
 //! Destructor
@@ -1127,14 +1124,14 @@ void FunctionWidget1::slotNewButtonClicked()
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
 
-#ifdef HAVE_MML
   mFormulaEditToggleButton->hide();
-#endif //HAVE_MML
 
+#ifdef HAVE_MML
   mpSaveBtn->setEnabled(false);
+#endif // HAVE_MML
 }
 
-//! Slot for being activated wehenver Delete button is clicked
+//! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotDeleteButtonClicked()
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
@@ -1341,16 +1338,16 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
 //***********  slot for editing requests on the function formula (mMmlWidget) *****
 
-//! Slot for being activated wehenver Edit button under Functions display is clicked
+//! Slot for being activated whenever Edit button under Functions display is clicked
 void FunctionWidget1::slotToggleFcnDescriptionEdit()
 {
   mStack->raiseWidget(textBrowser);
 
-#ifdef HAVE_MML
   mFormulaEditToggleButton->hide();
-#endif // HAVE_MML
 
+#ifdef HAVE_MML
   mpSaveBtn->setEnabled(false);
+#endif // HAVE_MML
 }
 
 //! Function to update the function formula
@@ -1387,11 +1384,13 @@ void FunctionWidget1::updateMmlWidget()
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);
-
+#else
+  mStack->raiseWidget(textBrowser);
+  mFormulaEditToggleButton->hide();
 #endif // HAVE_MML
 }
 
-//************************  standard interface to copasi widgets ******************
+//************************  standard interface to COPASI widgets ******************
 
 //! Function to update the COPASI widgets
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
