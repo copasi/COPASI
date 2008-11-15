@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiContainer.i,v $ 
-//   $Revision: 1.6.24.2 $ 
+//   $Revision: 1.6.24.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 20:18:04 $ 
+//   $Date: 2008/11/15 21:53:05 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -35,6 +35,7 @@
 
 %ignore CCopasiContainer::add(CCopasiObject*,const bool&); // needs to be hidden since it conflicts with methods in derived classes 
 %ignore CCopasiContainer::remove(CCopasiObject*); // needs to be hidden since it conflicts with methods in derived classes 
+%ignore CCopasiContainer::getRoot(); // needs to be hidden since it conflicts with methods in derived classes 
 
 %include "report/CCopasiContainer.h"
 

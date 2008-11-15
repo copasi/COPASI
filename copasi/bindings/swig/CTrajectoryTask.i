@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CTrajectoryTask.i,v $ 
-//   $Revision: 1.8 $ 
+//   $Revision: 1.8.16.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/06/15 08:33:33 $ 
+//   $Date: 2008/11/15 21:53:05 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -20,53 +25,10 @@
 
 %}
 
+%include "trajectory/CTrajectoryTask.h"
 
-class CTrajectoryTask : public CCopasiTask
-{
-  public:
-
-    /**
-     * Default constructor
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTrajectoryTask(const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor
-     * @param const CTrajectoryTask & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTrajectoryTask(const CTrajectoryTask & src,
-                    const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Destructor
-     */
-    ~CTrajectoryTask();
-
-
-    /**
-     * Set the method type applied to solve the task
-     * @param const CCopasiMethod::SubType & type
-     * @return bool success
-     */
-    virtual bool setMethodType(const int & type);
-
-    /**
-     * Retrieves a pointer to current state of the integration.
-     * @return CState * pState
-     */
-    CState * getState();
-
-    /**
-     * gets a reference to the time series
-     * @return time series
-     */
-    const CTimeSeries & getTimeSeries() const;
-
-    %extend{
-    
-    std::vector<C_INT32> getValidMethods() const
+%extend CTrajectoryTask{
+  std::vector<C_INT32> getValidMethods() const
     {
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
@@ -78,9 +40,23 @@ class CTrajectoryTask : public CCopasiTask
       return validMethods;
     } 
 
-  
-    }
+    virtual  bool process(bool useInitialValues) 
+      {
+        CCopasiMessage::clearDeque();
+        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,CCopasiDataModel::Global, NULL);
+        if(result)
+        {
+          result=self->process(useInitialValues);
+          CCopasiDataModel::Global->finish();
+        }
+        if(result)
+        {
+          result=self->restore();
+        }
+        return result;
+      }  
+   
+}  
 
-};
 
 

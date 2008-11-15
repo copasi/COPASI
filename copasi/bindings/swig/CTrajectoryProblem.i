@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CTrajectoryProblem.i,v $ 
+//   $Revision: 1.5.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/15 21:53:05 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,90 +21,6 @@
 
 %}
 
-
-class CTrajectoryProblem : public CCopasiProblem
-{
-  public:
-    /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTrajectoryProblem(const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor.
-     * @param const CTrajectoryProblem & src
-     * @paramconst CCopasiContainer * pParent (default: NULL)
-     */
-    CTrajectoryProblem(const CTrajectoryProblem & src,
-                       const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor.
-     */
-    ~CTrajectoryProblem();
-
-    /**
-     * Set the number of time steps the trajectory method should integrate.
-     * @param "const unsigned C_INT32 &" stepNumber
-     * @parem bool success
-     */
-    void setStepNumber(const unsigned C_INT32 & stepNumber);
-
-    /**
-     * Retrieve the number of time steps the trajectory method should integrate.
-     * @return "const unsigned C_INT32 &" stepNumber
-     */
-    const unsigned C_INT32 & getStepNumber() const;
-
-    /**
-     * Set the size a integration step the trajectory method should do.
-     * @param "const C_FLOAT64 &" stepSize
-     * @parem bool success
-     */
-    void setStepSize(const C_FLOAT64 & stepSize);
-
-    /**
-     * Retrieve the size a integration step the trajectory method should do.
-     * @return "const C_FLOAT64 &" stepSize
-     */
-    const C_FLOAT64 & getStepSize() const;
-
-    /**
-     * Set the end time.
-     * @param "const C_FLOAT64 &" duration
-     * @parem bool success
-     */
-    void setDuration(const C_FLOAT64 & duration);
-
-    /**
-     * Retrieve the end time.
-     * @return "const C_FLOAT64 &" duration
-     */
-    const C_FLOAT64 & getDuration() const;
-
-    /**
-     * Set the end time.
-     * @param "const C_FLOAT64 &" endTime
-     */
-    void setOutputStartTime(const C_FLOAT64 & endTime);
-
-    /**
-     * Retrieve the end time.
-     * @return "const C_FLOAT64 &" endTime
-     */
-    const C_FLOAT64 & getOutputStartTime() const;
-
-    /**
-     *.
-     */
-    void setTimeSeriesRequested(bool flag);
-
-    /**
-     *
-     */
-    bool timeSeriesRequested() const;
-
-};
+%include "trajectory/CTrajectoryProblem.h"
 
 
