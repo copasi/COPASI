@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.10.14.1 $
+//   $Revision: 1.10.14.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/11/15 20:47:01 $
+//   $Date: 2008/11/15 21:15:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,15 @@
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptMethod.h"
+#include "parameterFitting/CExperiment.h"
+#include "parameterFitting/CExperimentFileInfo.h"
+#include "parameterFitting/CExperimentObjectMap.h"
+#include "parameterFitting/CExperimentSet.h"
+#include "parameterFitting/CFitItem.h"
+#include "parameterFitting/CFitMethod.h"
+#include "parameterFitting/CFitMethod.h"
+#include "parameterFitting/CFitProblem.h"
+#include "parameterFitting/CFitTask.h"
 
 //#include <iostream>
 
