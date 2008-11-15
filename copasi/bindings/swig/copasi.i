@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.26.6.1 $ 
+//   $Revision: 1.26.6.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:18:48 $ 
+//   $Date: 2008/11/15 20:47:01 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -101,6 +101,14 @@
 %include "COptMethod.i"
 %include "COptProblem.i"
 %include "COptTask.i"
+%include "CExperimentFileInfo.i"
+%include "CExperiment.i"
+%include "CExperimentSet.i"
+%include "CExperimentObjectMap.i"
+%include "CFitItem.i"
+%include "CFitMethod.i"
+%include "CFitProblem.i"
+%include "CFitTask.i"
 %include "compare_utilities.i"
 
 

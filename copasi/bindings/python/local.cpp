@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.6.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/04/21 10:27:06 $
+//   $Date: 2008/11/15 20:47:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,15 @@
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptMethod.h"
+#include "parameterFitting/CExperiment.h"
+#include "parameterFitting/CExperimentFileInfo.h"
+#include "parameterFitting/CExperimentObjectMap.h"
+#include "parameterFitting/CExperimentSet.h"
+#include "parameterFitting/CFitItem.h"
+#include "parameterFitting/CFitMethod.h"
+#include "parameterFitting/CFitMethod.h"
+#include "parameterFitting/CFitProblem.h"
+#include "parameterFitting/CFitTask.h"
 
 //#include <iostream>
 
@@ -85,6 +94,102 @@ typedef CCopasiVector<CReaction> ReactionVector;
 typedef CCopasiVector<CEvaluationTree> CEvaluationTreeVector;
 
 typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
+
+/**
+ * @return the most specific Swig type for the given CExperimentSet object.
+struct swig_type_info*
+      GetDowncastSwigTypeForCExperimentSet (CExperimentSet* experimentSet)
+  {
+    if (array == NULL) return SWIGTYPE_p_CExperimentSet;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_CExperimentSet;
+    if (dynamic_cast<CCrossValidationSet*>(experimentSet))
+      {
+        pInfo = SWIGTYPE_p_CCrossValidationSet;
+      }
+    return pInfo;
+  }
+ */
+
+/**
+ * @return the most specific Swig type for the given CFitItem object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCFitItem (CFitItem* fitItem)
+  {
+    if (fitItem == NULL) return SWIGTYPE_p_CFitItem;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_CFitItem;
+    if (dynamic_cast<CFitConstraint*>(fitItem))
+      {
+        pInfo = SWIGTYPE_p_CFitConstraint;
+      }
+    return pInfo;
+  }
+
+/**
+ * @return the most specific Swig type for the given COptItem object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCOptItem (COptItem* optItem)
+  {
+    if (optItem == NULL) return SWIGTYPE_p_COptItem;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_COptItem;
+    if (dynamic_cast<CFitItem*>(optItem))
+      {
+        pInfo = GetDowncastSwigTypeForCFitItem(static_cast<CFitItem*>(optItem));
+      }
+    return pInfo;
+  }
+
+/**
+ * @return the most specific Swig type for the given COptProblem object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCOptProblem (COptProblem* optProblem)
+  {
+    if (optProblem == NULL) return SWIGTYPE_p_COptProblem;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_COptProblem;
+    if (dynamic_cast<CFitProblem*>(optProblem))
+      {
+        pInfo = SWIGTYPE_p_CFitProblem;
+      }
+    return pInfo;
+  }
+
+/**
+ * @return the most specific Swig type for the given COptMethod object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCOptMethod (COptMethod* optMethod)
+  {
+    if (optMethod == NULL) return SWIGTYPE_p_COptMethod;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_COptMethod;
+    if (dynamic_cast<CFitMethod*>(optMethod))
+      {
+        pInfo = SWIGTYPE_p_CFitMethod;
+      }
+    return pInfo;
+  }
+
+/**
+ * @return the most specific Swig type for the given COptTask object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCOptTask (COptTask* optTask)
+  {
+    if (optTask == NULL) return SWIGTYPE_p_COptTask;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_COptTask;
+    if (dynamic_cast<CFitTask*>(optTask))
+      {
+        pInfo = SWIGTYPE_p_CFitTask;
+      }
+    return pInfo;
+  }
 
 /**
  * @return the most specific Swig type for the given CCopasiAbstractArray object.
@@ -136,13 +241,13 @@ struct swig_type_info*
       case CCopasiTask::optimization:
         pInfo = SWIGTYPE_p_COptTask;
         break;
+      case CCopasiTask::parameterFitting:
+        pInfo = SWIGTYPE_p_CFitTask;
+        break;
         /*
-        case CCopasiTask::parameterFitting:
-        pInfo=SWIGTYPE_p_CFitTask;
-        break;
         case CCopasiTask::mca:
-        pInfo=SWIGTYPE_p_CMCATask;
-        break;
+          pInfo=SWIGTYPE_p_CMCATask;
+          break;
         */
       case CCopasiTask::lyap:
         pInfo = SWIGTYPE_p_CLyapTask;
@@ -314,10 +419,10 @@ struct swig_type_info*
       case CCopasiTask::optimization:
         pInfo = SWIGTYPE_p_COptProblem;
         break;
-        /*
-        case CCopasiTask::parameterFitting:
-        pInfo=SWIGTYPE_p_CFitProblem;
+      case CCopasiTask::parameterFitting:
+        pInfo = SWIGTYPE_p_CFitProblem;
         break;
+        /*
         case CCopasiTask::mca:
         pInfo=SWIGTYPE_p_CMCAProblem;
         break;
@@ -375,6 +480,22 @@ struct swig_type_info*
     else if (dynamic_cast<CCopasiProblem*>(group))
       {
         pInfo = GetDowncastSwigTypeForProblem(static_cast<CCopasiProblem*>(group));
+      }
+    else if (dynamic_cast<CExperiment*>(group))
+      {
+        pInfo = SWIGTYPE_p_CExperiment;
+      }
+    else if (dynamic_cast<CExperimentObjectMap*>(group))
+      {
+        pInfo = SWIGTYPE_p_CExperimentObjectMap;
+      }
+    else if (dynamic_cast<CExperimentSet*>(group))
+      {
+        pInfo = SWIGTYPE_p_CExperimentSet; //GetDowncastSwigTypeForCExperimentSet(static_cast<CExperimentSet*>(group));
+      }
+    else if (dynamic_cast<COptItem*>(group))
+      {
+        pInfo = GetDowncastSwigTypeForCOptItem(static_cast<COptItem*>(group));
       }
     return pInfo;
   }
@@ -528,6 +649,10 @@ struct swig_type_info*
     else if (dynamic_cast<CArrayAnnotation*>(container))
       {
         pInfo = SWIGTYPE_p_CArrayAnnotation;
+      }
+    else if (dynamic_cast<CFittingPoint*>(container))
+      {
+        pInfo = SWIGTYPE_p_CFittingPoint;
       }
     return pInfo;
   }
