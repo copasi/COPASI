@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:55 $
+//   $Date: 2008/11/17 14:29:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ class CFitTask : public COptTask
     /**
      * The methods which can be selected for performing this task.
      */
-    static unsigned C_INT32 validMethods[];
+    static unsigned C_INT32 ValidMethods[];
 
     /**
      * default constructor
