@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.5.8.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/16 20:41:09 $ 
+//   $Date: 2008/11/17 21:27:41 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -70,13 +70,14 @@ public class Test_RunOptimization extends TestCase
         this.mModel=createModel();
     }
 
-    public static COptTask runOptimization(int methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters,String objectiveFunction,COptItem optItem)
+    public static COptTask runOptimization(int methodType,int methodSubtype,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters,String objectiveFunction,COptItem optItem)
     {
         COptTask optTask=(COptTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.optimization);
         if(optTask==null) return null;
         optTask.setMethodType(CCopasiMethod.LevenbergMarquardt);
         COptProblem optProblem=(COptProblem)optTask.getProblem();
         if(optProblem==null) return null;
+        optProblem.setSubtaskType(methodSubtype);
         Set<String> keySet=problemParameters.keySet();
         for(Iterator<String> it=keySet.iterator();it.hasNext();)
         {
@@ -178,9 +179,6 @@ public class Test_RunOptimization extends TestCase
         }
         assertFalse(timeCourseKey=="");
         HashMap<String,Object> problemParameters=new HashMap<String,Object>();
-        // steady state or time-course
-        problemParameters.put("Steady-State","");
-        problemParameters.put("Time-Course",timeCourseKey);
         // opt_items 
         COptItem optItem=new COptItem();
         optItem.setObjectCN(new CCopasiObjectName(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()));
@@ -195,7 +193,7 @@ public class Test_RunOptimization extends TestCase
         // objective function
         String objectiveFunction=this.mVariableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
         objectiveFunction="<"+objectiveFunction+">";
-        COptTask optTask=runOptimization(CCopasiMethod.LevenbergMarquardt,problemParameters,methodParameters,objectiveFunction,optItem);
+        COptTask optTask=runOptimization(CCopasiMethod.LevenbergMarquardt,CCopasiTask.timeCourse,problemParameters,methodParameters,objectiveFunction,optItem);
         assertFalse(optTask==null);
         COptProblem optProblem=(COptProblem)optTask.getProblem();
         assertFalse(optProblem==null);
