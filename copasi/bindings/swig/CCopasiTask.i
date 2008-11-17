@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.21.6.2 $ 
+//   $Revision: 1.21.6.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:56:12 $ 
+//   $Date: 2008/11/17 08:50:57 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,7 +28,9 @@
 %ignore CCopasiTask::getDescription() const;
 %ignore CCopasiTask::getResult() const;
 %ignore CCopasiTask::XMLType;
+%ignore CCopasiTask::ValidMethods;
 %ignore CCopasiTask::process(bool const &);
+%ignore CCopasiTask::OutputFlag;
 
 %include "utilities/CCopasiTask.h"
 
