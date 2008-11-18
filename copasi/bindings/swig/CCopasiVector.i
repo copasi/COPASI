@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.21.6.4 $ 
+//   $Revision: 1.21.6.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/18 09:43:24 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,20 @@
 
 %ignore operator<< ;
 %ignore operator<< <>;
+
+#ifdef SWIGJAVA
+// disable some operator for Java to get rid of the warnings
+
+%ignore CCopasiVector::operator [];
+%ignore CCopasiVector::operator =;
+%ignore CCopasiVectorN::operator =;
+%ignore CCopasiVectorN::operator [];
+%ignore CCopasiVector::begin();
+%ignore CCopasiVector::begin() const;
+%ignore CCopasiVector::end();
+%ignore CCopasiVector::end() const;
+#endif // SWIGJAVA
+
 
 %rename(addCopy) CCopasiVector::add(const CType&);
 

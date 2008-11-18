@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
-//   $Revision: 1.6.8.4 $ 
+//   $Revision: 1.6.8.5 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/18 09:43:24 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,7 +25,23 @@
 
 %ignore operator==;
 
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CCopasiParameterGroup::operator =;
+
+%ignore CCopasiParameterGroup::getParameter(const std::string&) const;
+%ignore CCopasiParameterGroup::getParameter(const unsigned long&) const;
+%ignore CCopasiParameterGroup::getGroup(const std::string&) const;
+%ignore CCopasiParameterGroup::getGroup(const unsigned long&) const;
+%ignore CCopasiParameterGroup::getValue(const std::string&) const;
+%ignore CCopasiParameterGroup::getValue(const unsigned long&) const;
+
+
+#endif // SWIGJAVA
+
+
 %include "utilities/CCopasiParameterGroup.h"
+
 
 %extend CCopasiParameterGroup
 {

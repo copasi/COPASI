@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReaction.i,v $ 
-//   $Revision: 1.12.6.1 $ 
+//   $Revision: 1.12.6.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:18:48 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -22,6 +22,14 @@
 %}
     
 %ignore CReaction::getSmallestCompartment() const; // not implemented
+
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CReaction::getChemEq() const;
+%ignore CReaction::getParameters() const;
+
+#endif // SWIGJAVA
+
 
 %include "model/CReaction.h"
 

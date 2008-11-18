@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.21.6.3 $ 
+//   $Revision: 1.21.6.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/17 08:50:57 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -31,6 +31,14 @@
 %ignore CCopasiTask::ValidMethods;
 %ignore CCopasiTask::process(bool const &);
 %ignore CCopasiTask::OutputFlag;
+
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CCopasiTask::getProblem() const;
+%ignore CCopasiTask::getMethod() const;
+
+#endif // SWIGJAVA
+
 
 %include "utilities/CCopasiTask.h"
 

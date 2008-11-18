@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CState.i,v $ 
-//   $Revision: 1.6.16.3 $ 
+//   $Revision: 1.6.16.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/14 15:08:04 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,6 +43,13 @@
 %ignore CState::endFixed() const;
      
 %ignore CState::check; // not implemented
+
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CState::operator =;
+
+#endif // SWIGJAVA
+
 
 %include "model/CState.h"
 

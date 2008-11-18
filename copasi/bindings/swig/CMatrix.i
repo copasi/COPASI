@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CMatrix.i,v $ 
-//   $Revision: 1.6.24.1 $ 
+//   $Revision: 1.6.24.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:18:48 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -20,6 +20,15 @@
 #include "utilities/CMatrix.h"
 
 %}
+
+#ifdef SWIGJAVA
+
+// ignore some operators to get rid of the warnings
+%ignore CMatrix::operator =;
+%ignore CMatrix::operator [];
+%ignore CMatrix::operator ();
+
+#endif // SWIGJAVA
 
 %include "utilities/CMatrix.h"
 

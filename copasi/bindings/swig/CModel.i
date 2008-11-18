@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CModel.i,v $ 
-//   $Revision: 1.14.6.3 $ 
+//   $Revision: 1.14.6.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 20:18:05 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -33,7 +33,18 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::QuantityUnitNames;
 %ignore CModel::ModelTypeNames;
 
+#ifdef SWIGJAVA
 
+// ignore some methods for the Java wrappers to get rid of the warnings
+%ignore CModel::getMetabolites() const;
+%ignore CModel::getMetabolitesX() const;
+%ignore CModel::getModelValues() const;
+%ignore CModel::getReactions() const;
+%ignore CModel::getEvents() const;
+%ignore CModel::getCompartments() const;
+%ignore CModel::getStateTemplate() const;
+
+#endif // SWIGJAVA
 
 %include "model/CModel.h"
 

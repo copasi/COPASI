@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameter.i,v $ 
-//   $Revision: 1.7.6.2 $ 
+//   $Revision: 1.7.6.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:56:12 $ 
+//   $Date: 2008/11/18 10:37:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,6 +25,13 @@
 %ignore CCopasiParameter::getValue();
 %ignore CCopasiParameter::XMLType;
 %ignore operator==;
+
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CCopasiParameter::operator =;
+
+#endif // SWIGJAVA
+
 
 %include "utilities/CCopasiParameter.h"
 
