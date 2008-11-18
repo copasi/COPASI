@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.39.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Date: 2008/11/18 02:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ CMassAction::CMassAction(const TriLogic & reversible,
 {
   CONSTRUCTOR_TRACE;
   if (reversible != TriFalse && reversible != TriTrue)
-    CCopasiMessage(CCopasiMessage::ERRoR, MCMassAction + 1);
+    CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
 
   setType(CFunction::MassAction);
 

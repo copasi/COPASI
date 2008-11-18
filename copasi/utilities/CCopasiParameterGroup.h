@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-$Revision: 1.28.2.1 $
+$Revision: 1.28.2.2 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/11/13 18:30:32 $
+$Date: 2008/11/18 02:47:38 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -469,14 +469,14 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 {
   if (!pParm)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
       return NULL;
     }
 
   ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
   if (!pFrom)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
       return NULL;
     }
 
@@ -498,7 +498,7 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 
       if (it == end)
         {
-          CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 5);
+          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
           return NULL;
         }
 

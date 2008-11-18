@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.4.2.2 $
+//   $Revision: 1.4.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 20:01:34 $
+//   $Date: 2008/11/18 02:47:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,13 +11,15 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
-
-#include "CMIRIAMResource.h"
+// These are treated as external includes and must appear first
 #include "WebServicesIssues/soapH.h"
 #include "WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.h"
 #include "WebServicesIssues/MiriamWebServicesSoapBinding.nsmap"
-#include "MIRIAM/CConstants.h"
+
+#include "copasi.h"
+
+#include "CMIRIAMResource.h"
+#include "CConstants.h"
 
 #include "utilities/CCopasiException.h"
 
@@ -161,7 +163,7 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 
   if (!success)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR,
+      CCopasiMessage(CCopasiMessage::ERROR,
                      "Connection to MIRIRAM Web Services failed.\n%s\n%s",
                      pProxy->soap_fault_string(),
                      pProxy->soap_fault_detail());

@@ -88,7 +88,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 <<EOF>>  return 0;
 
 .     %{
-  CCopasiMessage(CCopasiMessage::ERRoR, MCFunction + 2, mPosition);
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
   return YYERRCODE;
 %}
      

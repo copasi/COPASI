@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Date: 2008/11/18 02:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,7 +158,7 @@ enum yytokentype {
 #endif
 #define yyerror(__str) \
   if (yychar != YYERRCODE) correctErrorPosition(); \
-  CCopasiMessage(CCopasiMessage::ERRoR, MCFunction + 1, mPosition)
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
 #include "copasi.h"
 #include "CEvaluationNode.h"

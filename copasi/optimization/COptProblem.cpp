@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101.2.3 $
+//   $Revision: 1.101.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/21 04:05:49 $
+//   $Date: 2008/11/18 02:47:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,7 +322,7 @@ bool COptProblem::initialize()
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 7);
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 7);
       success = false;
     }
 
@@ -341,7 +341,7 @@ bool COptProblem::initialize()
 
   if (it == end)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 6);
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 6);
       return false;
     }
 
@@ -386,7 +386,7 @@ bool COptProblem::initialize()
       !mpFunction->compile(ContainerList))
     {
       mRefreshMethods.clear();
-      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 5);
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.38.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:11 $
+//   $Date: 2008/11/18 02:47:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ bool CRDFGraph::addNameSpace(const std::string & prefix, const std::string & uri
   if (inserted.second || (inserted.first->second == uri))
     return true;
 
-  CCopasiMessage(CCopasiMessage::ERRoR, MCMiriam + 2,
+  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 2,
                  prefix.c_str(), inserted.first->second.c_str(), uri.c_str());
   return false;
 }

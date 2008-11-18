@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Date: 2008/11/18 02:47:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,13 +74,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
     {
       // Error: TauLeap simulation impossible
       /*    case - 3:      // non-integer stoichiometry
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 1);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
       case - 2:      // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
       case - 1:      // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
       // Everything all right: Hybrid simulation possible
     case 1:

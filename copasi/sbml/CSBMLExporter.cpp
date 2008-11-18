@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.4 $
+//   $Revision: 1.50.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 13:55:41 $
+//   $Date: 2008/11/18 02:47:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1015,7 +1015,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
                   // check if the compartment is fixed
                   if (pMetab->getCompartment()->getStatus() != CModelEntity::FIXED)
                     {
-                      CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 52, pMetab->getObjectName().c_str());
+                      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
                     }
                 }
               pOldRule = this->mpSBMLDocument->getModel()->createRateRule();
@@ -2005,7 +2005,7 @@ bool CSBMLExporter::exportModel(CCopasiDataModel& dataModel, const std::string& 
       if (testInfile && !overwrite)
         {
           // create a CCopasiMessage with the appropriate error
-          CCopasiMessage(CCopasiMessage::ERRoR, MCDirEntry + 1, filename.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, filename.c_str());
           return false;
         }
       /* write the document to a file */
@@ -3045,7 +3045,7 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
           pFun = dynamic_cast<CFunction*>(pFunDB->findFunction(*it));
           if (pFun == NULL)
             {
-              CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 15, (*it).c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 15, (*it).c_str());
             }
           else
             {

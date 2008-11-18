@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.40.2.3 $
+//   $Revision: 1.40.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/22 14:42:12 $
+//   $Author: shoops $
+//   $Date: 2008/11/18 02:47:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,7 +252,7 @@ void CCopasiMessage::handler(const bool & /* _throw */)
       mText += "<\n";
       break;
 
-    case ERRoR:
+    case ERROR:
       mText = ">ERROR ";
       mText += LocalTimeStamp();
       mText += "<\n";

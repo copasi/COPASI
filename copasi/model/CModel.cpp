@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.5 $
+//   $Revision: 1.347.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/11 17:39:37 $
+//   $Date: 2008/11/18 02:47:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -547,7 +547,7 @@ void CModel::buildStoi()
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
       if (!(*itStep)->getFunction()->isUsable())
-        CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 11,
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 11,
                        (*itStep)->getObjectName().c_str(),
                        (*itStep)->getFunction()->getObjectName().c_str());
 
@@ -2743,7 +2743,7 @@ bool CModel::convert2NonReversible()
             if ((tmp.first == NULL) || (tmp.second == NULL))
               {
                 // Create a message that the conversion for this reaction failed.
-                CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 12,
+                CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 12,
                                reac0->getObjectName().c_str(), fn.c_str());
                 success = false;
 

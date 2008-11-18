@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.88.2.5 $
+//   $Revision: 1.88.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/12 14:18:33 $
+//   $Date: 2008/11/18 02:47:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -716,18 +716,18 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
         || (* getValue("Use Back Integration").pBOOL)))
     {
       //would do nothing
-      CCopasiMessage(CCopasiMessage::ERRoR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
+      CCopasiMessage(CCopasiMessage::ERROR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
       return false;
     }
 
   if (*getValue("Maximum duration for forward integration").pUDOUBLE <= 0)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, "Maximum duration for forward integration needs to be positive.");
+      CCopasiMessage(CCopasiMessage::ERROR, "Maximum duration for forward integration needs to be positive.");
       return false;
     }
   if (*getValue("Maximum duration for backward integration").pUDOUBLE <= 0)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, "Maximum duration for backward integration needs to be positive.");
+      CCopasiMessage(CCopasiMessage::ERROR, "Maximum duration for backward integration needs to be positive.");
       return false;
     }
 

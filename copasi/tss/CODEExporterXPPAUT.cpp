@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.9.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:12 $
+//   $Date: 2008/11/18 02:47:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,7 +195,7 @@ std::string CODEExporterXPPAUT::testName(const std::string & name)
 
       if (ecount_size > 6)
         {
-          CCopasiMessage(CCopasiMessage::ERRoR, "too many repeated names to modify to XPP syntax"); //TODO
+          CCopasiMessage(CCopasiMessage::ERROR, "too many repeated names to modify to XPP syntax"); //TODO
           fatalError();
         }
       tmpname_size = name_size + ecount_size;
