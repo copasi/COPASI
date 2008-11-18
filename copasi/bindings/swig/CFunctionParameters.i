@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameters.i,v $ 
-//   $Revision: 1.4.24.2 $ 
+//   $Revision: 1.4.24.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 20:18:04 $ 
+//   $Date: 2008/11/18 09:43:24 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -22,13 +22,15 @@
 %}
 
 
-%ignore operator[](unsigned C_INT32);
-%ignore operator[](unsigned C_INT32) const;
-%ignore operator[](const std::string&);
-%ignore operator[](const std::string&) const;
-%ignore operator= (const CFunctionParameters&);
-%ignore operator==(const CFunctionParameters &) const;
+%ignore CFunctionParameters::operator[](unsigned C_INT32);
+%ignore CFunctionParameters::operator[](unsigned C_INT32) const;
+%ignore CFunctionParameters::operator[](const std::string&);
+%ignore CFunctionParameters::operator[](const std::string&) const;
+%ignore CFunctionParameters::operator= (const CFunctionParameters&);
+%ignore CFunctionParameters::operator==(const CFunctionParameters &) const;
 %ignore operator<<(std::ostream&, const CFunctionParameters&);
+
+%rename(addCopy) CFunctionParameters::add(const CFunctionParameter&);
 
 %include "function/CFunctionParameters.h"
 

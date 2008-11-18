@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiMessage.py,v $ 
-#   $Revision: 1.2.6.1 $ 
+#   $Revision: 1.2.6.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/12 20:18:05 $ 
+#   $Date: 2008/11/18 09:43:24 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -18,7 +18,7 @@ import string
 
 class Test_CCopasiMessage(unittest.TestCase):
   def setUp(self):
-    COPASI.CCopasiMessage(COPASI.CCopasiMessage.ERRoR,COPASI.MCSBML + 2)
+    COPASI.CCopasiMessage(COPASI.CCopasiMessage.ERROR,COPASI.MCSBML + 2)
     COPASI.CCopasiMessage(COPASI.CCopasiMessage.TRACE,COPASI.MCSBML + 4)
     COPASI.CCopasiMessage(COPASI.CCopasiMessage.WARNING,COPASI.MCSBML + 12,"test_function")
     COPASI.CCopasiMessage(COPASI.CCopasiMessage.WARNING,COPASI.MCOptimization + 5)
@@ -80,7 +80,7 @@ class Test_CCopasiMessage(unittest.TestCase):
     COPASI.CCopasiMessage.clearDeque()
 
   def test_getHighestSeverity(self):
-    self.assert_(COPASI.CCopasiMessage.getHighestSeverity()==COPASI.CCopasiMessage.ERRoR)
+    self.assert_(COPASI.CCopasiMessage.getHighestSeverity()==COPASI.CCopasiMessage.ERROR)
     COPASI.CCopasiMessage.clearDeque()
 
   def test_checkForMessage(self):
