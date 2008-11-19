@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.6 $
+//   $Revision: 1.347.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:37 $
+//   $Date: 2008/11/19 19:24:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,7 +212,7 @@ CModel::~CModel()
   pdelete(mpLinkMatrixAnnotation);
 
   GlobalKeys.remove(mKey);
-  //cleanup();
+
   DESTRUCTOR_TRACE;
 }
 
@@ -339,8 +339,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       (*pMetabolite) = *(*CCopasiDataModel::Global->pOldMetabolites)[i];
     }
 
-  //DebugFile << mCompartments;       //debug
-
   initializeMetabolites();
 
   if ((Fail = CCopasiDataModel::Global->getFunctionList()->load(configBuffer))) // slow
@@ -352,12 +350,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mSteps.load(configBuffer, Size); // slow
 
-  // DebugFile << std::endl << mSteps << std::endl;  //debug
-
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(/*mCompartments*/);
-
-  // DebugFile << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
   CCopasiDataModel::Global->pOldMetabolites->cleanup();
 
@@ -463,22 +457,10 @@ void CModel::compileDefaultMetabInitialValueDependencies()
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
-  //if (flag) std::cout << "* model dirty flag set. " << std::endl;
-
-  // We need to move this and do not do this automatically
-  // if (flag) initializeMetabolites();
 }
 
 bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 {
-  /*
-  std::cout << "** compiling a CModel is requested. ";
-  if (mCompileIsNecessary)
-    std::cout << "It will be done...." << std::endl;
-  else
-    std::cout << " " << std::endl;
-  */
-
   if (!mCompileIsNecessary)
     {
       this->compileDefaultMetabInitialValueDependencies();
@@ -2422,12 +2404,9 @@ bool CModel::removeMetabolite(const std::string & key,
         removeModelValue((*it)->getKey(), false);
     }
 
-  /* Check if metabolite with that name exists */
-  unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);
-  if (index == C_INVALID_INDEX)
-    return false;
-
-  mMetabolites.remove(index);
+  /* Assure that all references are removed */
+  mMetabolites.remove(pMetabolite);
+  mMetabolitesX.remove(pMetabolite);
 
   pdelete(pMetabolite);
 
@@ -3183,10 +3162,10 @@ void CModel::buildLinkZero()
   mL.resize(N - independent, independent);
   if (N == independent || independent == 0) return;
 
-  /* to take care of differences between fortran's and c's memory  acces,
+  /* to take care of differences between fortran's and c's memory  access,
      we need to take the transpose, i.e.,the upper triangular */
   char cL = 'U';
-  char cU = 'N'; /* 1 in the diaogonal of R */
+  char cU = 'N'; /* 1 in the diagonal of R */
 
   // Calculate Row Echelon form of R.
   // First invert R_1,1

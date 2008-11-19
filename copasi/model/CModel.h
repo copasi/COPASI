@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163.4.1 $
+//   $Revision: 1.163.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 14:11:20 $
+//   $Date: 2008/11/19 19:24:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -882,10 +882,33 @@ class CModel : public CModelEntity
      */
     const std::set< const CCopasiObject * > & getUptoDateObjects() const;
 
-    const std::vector< Refresh * > & getListOfInitialRefreshes() const; //mInitialRefreshes;
-    const std::vector< Refresh * > & getListOfSimulatedRefreshes() const; //mSimulatedRefreshes;
-    const std::vector< Refresh * > & getListOfConstantRefreshes() const; //mConstantRefreshes;
-    const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const; //mNonSimulatedRefreshes;
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * initial values
+     * @return const std::vector< Refresh * > & initialRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfInitialRefreshes() const;
+
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * simulated values
+     * @return const std::vector< Refresh * > & simulatedRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfSimulatedRefreshes() const;
+
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * constant values
+     * @return const std::vector< Refresh * > & constantRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfConstantRefreshes() const;
+
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * non simulated values
+     * @return const std::vector< Refresh * > & nonsimulatedRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const;
 
     /**
      * Check whether the model contains reversible reactions
@@ -1039,8 +1062,6 @@ class CModel : public CModelEntity
 
     /**
      *  for array of compartments
-     *  @supplierCardinality 0..*
-     *  @associates <{CCompartment}>
      */
     CCopasiVectorNS < CCompartment > mCompartments;
 
@@ -1179,6 +1200,10 @@ class CModel : public CModelEntity
      */
     bool mCompileIsNecessary;
 
+    /**
+     * A pointer to the process report. If not NULL the compile progress is
+     * reported to it.
+     */
     CProcessReport * mpCompileHandler;
 
     /**
