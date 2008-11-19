@@ -1315,4 +1315,100 @@ report.setTarget("table.xhtml");
  ...
 \end{lstlisting}
 
+\section{Error Messages}
+\label{ErrorMessages}
+COPASI uses a message deque to store certain warning and error messages that occur during a process, e.g. during import and export of SBML files.
+The methods to work with the message deque are part of the CCopasiMessage class.
+
+It is always a good idea to check the message deque after doing complex things like running a certain task, or loading models.
+
+The following methods are available to work with the message deque in COPASI.
+
+\begin{lstlisting}
+/**
+ * This static method peeks at the first message created in COPASI.
+ * If no more messages are in the deque the message
+ * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+ */
+CCopasiMessage peekFirstMessage();
+
+/**
+ * This static method peeks at the last message created in COPASI.
+ * If no more messages are in the deque the message
+ * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+ */
+CCopasiMessage peekLastMessage();
+
+/**
+ * This static method retrieves the first message created in COPASI.
+ * Consecutive calls allow for the retrieval of all generated
+ * messages in chronological order. If no more messages are in
+ * the deque the message (MCCopasiMessage + 1, "Message (1):
+ * No more messages." is returned.
+ */
+CCopasiMessage getFirstMessage();
+
+/**
+ * This static method retrieves the last message created in COPASI.
+ * Consecutive calls allow for the retrieval of all generated
+ * messages in reverse chronological order. If no more messages
+ * are in the deque the message (MCCopasiMessage + 1, "Message
+ * (1): No more messages." is returned.
+ */
+CCopasiMessage getLastMessage();
+
+/**
+ * Static method that retrieves the text of all messages in the deque in chronological
+ * or reverse chronological order. If more than on message is in
+ * the deque the messages are seperated by an empty line.
+ */
+String getAllMessageText(boolean chronological);
+
+/**
+ * Static method that clears the message deque.
+ */
+void clearDeque();
+
+/**
+ * Static method that retreives the size of the message deque
+ */
+long size();
+
+/**
+ * Static methosd that retrieves the highest severity of the messages in the deque.
+ * The returned severity can be CCopasiMessage.RAW, CCopasiMessage.TRACE,
+ * CCopasiMessage.COMMANDLINE, CCopasiMessage.WARNING, CCopasiMessage.ERROR,
+ * CCopasiMessage.EXCEPTION, CCopasiMessage.RAW_FILTERED,
+ * CCopasiMessage.TRACE_FILTERED, CCopasiMessage.COMMANDLINE_FILTERED,
+ * CCopasiMessage.WARNING_FILTERED, CCopasiMessage.ERROR_FILTERED or 
+ * CCopasiMEssage.EXCEPTION_FILTERED.
+ * 
+ * The most common of those are WARNING, ERROR or EXCEPTION.
+ */
+int getHighestSeverity();
+
+/**
+ * Static method that checks whether a message with the given number is in the deque
+ */
+boolean checkForMessage(long number);
+
+/**
+ *  Retrieves the text of the message instance.
+ */
+String getText();
+
+/**
+ *  Retrieves the type of the message instance.
+ */
+int getType();
+
+/**
+ *  Retrieves the number of the message instance.
+ */
+long getNumber();
+
+\end{lstlisting}
+
+
+
 \end{document}
