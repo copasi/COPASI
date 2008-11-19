@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.53.2.3 $
+//   $Revision: 1.53.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/18 02:47:40 $
+//   $Author: jpahle $
+//   $Date: 2008/11/19 14:12:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -619,15 +619,33 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
   C_INT32 index;
   std::set <C_INT32>::iterator iter, iterEnd;
 
-  // iterate through the set of affected reactions and update the stochastic ones in the priority queue
-  for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
+  //if the model contains assignments we use a less efficient loop over all (stochastic) reactions to capture all changes
+  // we do not know the exact dependencies. TODO: this should be changed later in order to get a more efficient update scheme
+  if (mHasAssignments)
     {
-      if (mReactionFlags[*iter].mpPrev == NULL) // reaction is stochastic!
+      for (index = 0; index < (C_INT32)mpReactions->size(); index++)
         {
-          index = *iter;
-          mAmuOld[index] = mAmu[index];
-          calculateAmu(index);
-          if (*iter != rIndex) updateTauMu(index, time);
+          if (mReactionFlags[index].mpPrev == NULL) // Reaction is stochastic!
+            {
+              mAmuOld[index] = mAmu[index];
+              calculateAmu(index);
+              if (mAmuOld[index] != mAmu[index])
+                if (index != rIndex) updateTauMu(index, time);
+            }
+        }
+    }
+  else
+    {
+      // iterate through the set of affected reactions and update the stochastic ones in the priority queue
+      for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
+        {
+          if (mReactionFlags[*iter].mpPrev == NULL) // reaction is stochastic!
+            {
+              index = *iter;
+              mAmuOld[index] = mAmu[index];
+              calculateAmu(index);
+              if (*iter != rIndex) updateTauMu(index, time);
+            }
         }
     }
 
