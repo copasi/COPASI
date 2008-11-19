@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.3.6.1 $
+//   $Revision: 1.3.6.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 19:44:47 $
+//   $Author: nsimus $
+//   $Date: 2008/11/19 18:38:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,5 +369,11 @@ class CCSPMethod : public CTSSAMethod
     * set the desription of CArayAnnotation for both dimensions
     **/
     void setAnnotationM(int step);
+
+    /**
+     *  print of the standart report sequence for ILDM Method
+     *  @param std::ostream * ostream
+     **/
+    void printResult(std::ostream * ostream) const;
   };
 #endif // COPASI_CCSPMethod

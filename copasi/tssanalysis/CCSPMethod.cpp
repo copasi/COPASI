@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.6 $
+//   $Revision: 1.8.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/10 21:18:57 $
+//   $Author: nsimus $
+//   $Date: 2008/11/19 18:38:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 
 #include "CCSPMethod.h"
 #include "CTSSAProblem.h"
+#include "CTSSATask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
@@ -1001,7 +1002,7 @@ void CCSPMethod::step(const double & deltaT)
 
   setVectors();
 
-  mCurrentStep = + 1;
+  mCurrentStep += 1;
 
   /* integrate one time step */
 
@@ -1614,8 +1615,8 @@ void CCSPMethod::createAnnotationsM()
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->STRINGS);
   pTmp1->setDescription("Amplitude Table");
-  pTmp1->setDimensionDescription(0, "Amplitude");
-  pTmp1->setDimensionDescription(1, "Reaction Mode");
+  pTmp1->setDimensionDescription(0, "Reaction Modes");
+  pTmp1->setDimensionDescription(1, "Amplitude");
   pAmplitudeAnn = pTmp1;
 
   CArrayAnnotation *
@@ -1625,7 +1626,7 @@ void CCSPMethod::createAnnotationsM()
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setDescription("Radical Pointer Table");
   pTmp2->setDimensionDescription(0, "Species");
-  pTmp2->setDimensionDescription(1, "Radical Pointer");
+  pTmp2->setDimensionDescription(1, "Reaction Modes");
   pRadicalPointerAnn = pTmp2;
 
   CArrayAnnotation *
@@ -1635,7 +1636,7 @@ void CCSPMethod::createAnnotationsM()
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setDescription("Fast Reaction Pointer Table");
   pTmp3->setDimensionDescription(0, "Reactions");
-  pTmp3->setDimensionDescription(1, "Fast Reaction Pointer");
+  pTmp3->setDimensionDescription(1, "Reaction Modes");
   pFastReactionPointerAnn = pTmp3;
 
   CArrayAnnotation *
@@ -1645,7 +1646,7 @@ void CCSPMethod::createAnnotationsM()
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription("Participation Index Table");
   pTmp4->setDimensionDescription(0, "Reactions");
-  pTmp4->setDimensionDescription(1, "Reaction Mode");
+  pTmp4->setDimensionDescription(1, "Reaction Modes");
   pParticipationIndexAnn = pTmp4;
 
   CArrayAnnotation *
@@ -1764,17 +1765,6 @@ void CCSPMethod::setVectors()
   for (i = 0; i < mAmplitude.size();i++)
     mVec_mAmplitude[mCurrentStep][i][0] = mAmplitude[i];
 
-#if 0
-  std::cout << "mCurrentStep " << mCurrentStep << std::endl;
-  for (i = 0; i < mAmplitude.size(); i++)
-    {
-      std::cout << " test mode  " << i << "  : " << mAmplitude[i];
-      std::cout << "  mVec_mAmplitude[mCurrentStep][i][0]  " << i << "  : " << mVec_mAmplitude[mCurrentStep][i][0];
-
-      std::cout << std::endl;
-    }
-#endif
-
   mVec_mRadicalPointer.push_back(mCurrentStep);
   mVec_mRadicalPointer[mCurrentStep].resize(mRadicalPointer.numCols(), mRadicalPointer.numRows());
   mVec_mRadicalPointer[mCurrentStep] = mRadicalPointer;
@@ -1808,3 +1798,84 @@ void CCSPMethod::emptyVectors()
   mVec_mParticipationIndex.erase(mVec_mParticipationIndex.begin(), mVec_mParticipationIndex.end());
   mVec_mImportanceIndex.erase(mVec_mImportanceIndex.begin(), mVec_mImportanceIndex.end());
 }
+
+void CCSPMethod::printResult(std::ostream * ostream) const
+  {
+    std::ostream & os = *ostream;
+    C_INT i, m, r, istep = 0;
+
+    C_INT32 stepNumber;
+
+    CTSSATask* pTask =
+      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+
+    CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
+
+    stepNumber = pProblem->getStepNumber();
+
+    this->print(&os);
+
+    const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
+
+    for (istep = 0; istep < stepNumber; istep++)
+      {
+
+        os << std::endl;
+        os << "**************** Time step " << istep + 1 << " **************************  " << std::endl;
+
+        os << std::endl;
+
+        os << "Amplitude " << std::endl;
+
+        for (i = 0; i < mData.dim; i++)
+          {
+            os << " mode  " << i << "  : " << mVec_mAmplitude[istep][i][0];
+
+            os << std::endl;
+          }
+        os << std::endl;
+
+        os << "Radical Pointer" << std::endl;
+
+        for (m = 0; m < mData.dim; m++)
+          {
+            os << " mode  " << m << " :" << std::endl;
+            for (i = 0; i < mData.dim; i++)
+              os << mpModel->getMetabolitesX()[i]->getObjectName()
+              << "   : " << mVec_mRadicalPointer[istep][i][m] << std::endl;
+          }
+        os << std::endl;
+
+        os << "Fast Reaction Pointer" << std::endl;
+
+        for (m = 0; m < mData.dim; m++)
+          {
+            os << "mode " << m << " :" << std::endl;
+            for (r = 0; r < (C_INT) reacs.size(); r++)
+              os << reacs[r]->getObjectName() << " :" << mVec_mFastReactionPointer[istep][r][m] << std::endl;
+          }
+
+        os << std::endl;
+
+        os << "Participation Index" << std::endl;
+
+        for (i = 0; i < mData.dim; i++)
+          {
+            os << "mode " << i << " :" << std::endl;
+            for (r = 0; r < (C_INT) reacs.size(); r++)
+              os << reacs[r]->getObjectName() << " :" << mVec_mParticipationIndex[istep][r][i] << std::endl;
+          }
+
+        os << std::endl;
+
+        os << "Importance Index" << std::endl;
+
+        for (i = 0; i < mData.dim; i++)
+          {
+            os << mpModel->getMetabolitesX()[i]->getObjectName() << " :" << std::endl;
+            for (r = 0; r < (C_INT) reacs.size(); r++)
+              os << reacs[r]->getObjectName() << " :" << mVec_mImportanceIndex[istep][r][i] << std::endl;
+          }
+      }
+    return;
+  }
