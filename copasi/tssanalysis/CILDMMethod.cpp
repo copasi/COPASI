@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.9 $
+//   $Revision: 1.22.2.10 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/11/19 16:53:21 $
+//   $Date: 2008/11/19 18:40:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1228,7 +1228,8 @@ void CILDMMethod::printResult(std::ostream * ostream) const
     for (istep = 0; istep < stepNumber; istep++)
       {
 
-        os << "**************** Current time step " << istep << " **************************  " << std::endl;
+        os << std::endl;
+        os << "****************  Time step " << istep + 1 << " **************************  " << std::endl;
 
         os << std::endl;
 
