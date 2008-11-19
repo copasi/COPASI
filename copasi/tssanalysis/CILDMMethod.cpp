@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.22.2.8 $
+//   $Revision: 1.22.2.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/11/13 12:39:21 $
+//   $Date: 2008/11/19 16:53:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1215,6 +1215,8 @@ void CILDMMethod::printResult(std::ostream * ostream) const
     C_INT i, j, istep = 0;
 
     C_INT32 stepNumber;
+
+    this->print(&os);
 
     CTSSATask* pTask =
       dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);

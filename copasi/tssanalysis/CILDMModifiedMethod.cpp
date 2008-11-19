@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.7.2.6 $
+//   $Revision: 1.7.2.7 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/11/13 12:39:21 $
+//   $Date: 2008/11/19 16:53:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1249,6 +1249,8 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
     std::ostream & os = *ostream;
     double timeScale;
     C_INT i, j, istep = 0;
+
+    this->print(&os);
 
     C_INT32 stepNumber;
 
