@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.3.6.3 $
+//   $Revision: 1.3.6.4 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/11/13 12:39:33 $
+//   $Date: 2008/11/19 18:44:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -286,6 +286,8 @@ void CTSSAProblem::printResult(std::ostream * ostream) const
     if (!mpTask) return;
 
     CCopasiMethod* mpMethod = mpTask->getMethod();
+
+    this->print(&os);
 
     mpMethod->printResult(&os);
   }
