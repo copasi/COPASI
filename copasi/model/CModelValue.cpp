@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.63.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Date: 2008/11/19 19:21:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ CModelEntity::~CModelEntity()
     mpModel->getStateTemplate().remove(this);
 
   // After the above call we definitely own the data and
-  // therfore must destroy them.
+  // therefore must destroy them.
 
   pdelete(mpValueData);
   pdelete(mpIValue);
