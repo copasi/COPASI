@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.80.2.1 $
+//   $Revision: 1.80.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:38 $
+//   $Date: 2008/11/19 19:22:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,9 +311,9 @@ template < class CType > class CCopasiVector:
           {
             iterator Target = begin() + index;
             erase(Target, Target + 1);
-
-            success = false;
           }
+        else
+          success = false;
 
         success &= CCopasiContainer::remove(pObject);
 
