@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101.2.4 $
+//   $Revision: 1.101.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:42 $
+//   $Date: 2008/11/20 18:28:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -305,26 +305,8 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  //   if (mpParmSubtaskCN != NULL)
-  //     {
-  //       std::vector< CCopasiContainer * > ListOfContainer;
-  //       ListOfContainer.push_back(getObjectAncestor("Vector"));
-  //       mpSubtask =
-  //         dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
-  //}
-  //   else
-  //     mpSubtask = NULL;
-
   if (mpSubtask != NULL)
-    {
-      //      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      ContainerList.push_back(mpSubtask);
-    }
-  else
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 7);
-      success = false;
-    }
+    ContainerList.push_back(mpSubtask);
 
   unsigned C_INT32 i;
   unsigned C_INT32 Size = mpOptItems->size();
@@ -358,8 +340,6 @@ bool COptProblem::initialize()
 
   changedObjects.erase(NULL);
   mInitialRefreshMethods = mpModel->buildInitialRefreshSequence(changedObjects);
-
-  if (!success) return false;
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
