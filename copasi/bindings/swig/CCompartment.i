@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCompartment.i,v $ 
-//   $Revision: 1.5.24.2 $ 
+//   $Revision: 1.5.24.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/18 10:37:24 $ 
+//   $Date: 2008/11/20 13:07:08 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -18,7 +18,7 @@
 %{
 
 #include "model/CCompartment.h"  
-  
+#include <assert.h>  
 %}
 
 
@@ -30,4 +30,16 @@
 
 %include "model/CCompartment.h"
 
+%extend CCompartment{
 
+    /**
+     * This method is there for backwards compatibility and will be
+     * removed eventually.
+     */
+    bool removeMetabolite(CMetab* metab)
+    {
+       CModel* pModel=dynamic_cast<CModel*>($self->getObjectParent()->getObjectParent());
+       assert(pModel!=NULL);
+       return pModel->removeMetabolite(metab->getKey());
+    }
+}
