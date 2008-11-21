@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.5 $
+//   $Revision: 1.18.2.6 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/11/13 12:43:16 $
+//   $Author: ssahle $
+//   $Date: 2008/11/21 00:52:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,10 +124,10 @@ void CQTSSAResultSubWidget::displayOptimizationTab(bool displayOptTab)
 
 void CQTSSAResultSubWidget::toggleView()
 {
-  if (comboBox->currentItem() == 0)
-    dataTable->showConcentrations(true);
-  else
-    dataTable->showConcentrations(false);
+  /*  if (comboBox->currentItem() == 0)
+      dataTable->showConcentrations(true);
+    else
+      dataTable->showConcentrations(false);*/
 }
 
 void CQTSSAResultSubWidget::init()
@@ -251,6 +251,9 @@ void CQTSSAResultSubWidget::init()
 #ifndef WITH_CSPMETHOD
   displayCSPDevelopment(false);
 #endif
+
+  //the combobox for switching particle number/concentration is obsolete and does not work
+  comboBox->hide();
 }
 
 CTimeSeriesTable* CQTSSAResultSubWidget::table()
