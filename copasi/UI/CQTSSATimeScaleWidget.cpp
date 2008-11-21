@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.2.6.1 $
+//   $Revision: 1.2.6.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/11/20 15:38:30 $
+//   $Date: 2008/11/21 00:32:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,12 +144,12 @@ void PaintWidget::paintEvent(QPaintEvent *)
   paint.setPen(QPen(QColor(180, 0, 0), 5));
   paint.drawLine(space, space, space, space + 10);
   paint.setPen(QPen(QColor(0, 0, 0), 1));
-  paint.drawText (space + 5, space + 10, " - negativ time scale values");
+  paint.drawText (space + 5, space + 10, " - negative time scale values");
 
   paint.setPen(QPen(QColor(0, 180, 0), 5));
   paint.drawLine(space, space + 20, space, space + 30);
   paint.setPen(QPen(QColor(0, 0, 0), 1));
-  paint.drawText (space + 5, space + 30, " - positiv time scale values");
+  paint.drawText (space + 5, space + 30, " - positive time scale values");
 
   //axis
   paint.setPen(QPen(QColor(100, 100, 100), 1));
@@ -193,7 +193,7 @@ void PaintWidget::paintEvent(QPaintEvent *)
             paint.drawText (xText + 1, yText - 15, " log10 (|" + QString::number(mVector[j]) + "|) = " + QString::number(log10(fabs(mVector[j]))));
           else
             paint.drawText (xText + 1, yText - 15, " log10 (" + QString::number(fabs(mVector[j])) + ") = " + QString::number(log10(fabs(mVector[j]))));
-          paint.drawText (scaleBegin + scaleEnd / 2 - 50, yCentre + 50, " log10 (X)");
+          paint.drawText (scaleBegin + scaleEnd / 2 - 50, yCentre + 50, " log timescale");
         }
       else
         {
