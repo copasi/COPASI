@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163.4.2 $
+//   $Revision: 1.163.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/19 19:24:07 $
+//   $Author: ssahle $
+//   $Date: 2008/11/21 13:59:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -944,6 +944,12 @@ class CModel : public CModelEntity
      * @return CVector< C_FLOAT64 > absoluteTolerances
      */
     CVector< C_FLOAT64 > initializeAtolVector(const C_FLOAT64 & baseTolerance, const bool & reducedModel) const;
+
+    /**
+     * generates a string that contains a text description of all model parameters
+     * (initial values and reaction parameters)
+     */
+    std::string printParameterOverview();
 
   private:
 

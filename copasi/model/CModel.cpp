@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.7 $
+//   $Revision: 1.347.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/19 19:24:07 $
+//   $Author: ssahle $
+//   $Date: 2008/11/21 13:59:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@
 #include "utilities/CProcessReport.h"
 #include "CReactionInterface.h"
 #include "utilities/CAnnotatedMatrix.h"
+#include "CMetabNameInterface.h"
 
 #include "blaswrap.h"
 #include "clapackwrap.h"
@@ -3536,3 +3537,103 @@ CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const 
 
     return Atol;
   }
+
+#include "utilities/CDimension.h"
+
+std::string CModel::printParameterOverview()
+{
+  std::ostringstream oss;
+  CModel* model = this;
+
+  oss << "Initial time: " << model->getInitialTime() << " " << model->getTimeUnitName() << std::endl;
+
+  oss << std::endl;
+
+  unsigned C_INT32 i, imax, j, jmax;
+
+  //Compartments
+  const CCopasiVector< CCompartment > & comps = model->getCompartments();
+  imax = comps.size();
+  if (imax)
+    {
+      oss << "Initial volumes:\n\n";
+      for (i = 0; i < imax; ++i)
+        oss << comps[i]->getObjectName() << " \t" << comps[i]->getInitialValue()
+        << " " << model->getVolumeUnitName() << "\n";
+      oss << "\n";
+    }
+
+  //Species
+  const CCopasiVector< CMetab > & metabs = model->getMetabolites();
+  imax = metabs.size();
+  if (imax)
+    {
+      oss << "Initial concentrations:\n\n";
+      for (i = 0; i < imax; ++i)
+        oss << CMetabNameInterface::getDisplayName(model, *metabs[i]) << " \t"
+        << metabs[i]->getInitialConcentration() << " "
+        << model->getConcentrationUnitName() << "\n";
+      oss << "\n";
+    }
+
+  //global Parameters
+  const CCopasiVector< CModelValue > & params = model->getModelValues();
+  imax = params.size();
+  if (imax)
+    {
+      oss << "Initial values of global quantities:\n\n";
+      for (i = 0; i < imax; ++i)
+        oss << params[i]->getObjectName() << " \t"
+        << params[i]->getInitialValue() << "\n";
+      oss << "\n";
+    }
+
+  //Reactions
+  const CCopasiVector< CReaction > & reacs = model->getReactions();
+  imax = reacs.size();
+  if (imax)
+    {
+      oss << "Reaction parameters:\n\n";
+      CReaction* reac;
+      for (i = 0; i < imax; ++i)
+        {
+          reac = reacs[i];
+          oss << reac->getObjectName() << "\n";
+
+          //calculate units
+          CFindDimensions units(reac->getFunction());
+          units.setUseHeuristics(true);
+          units.setChemicalEquation(&reac->getChemEq());
+          units.findDimensions(reac->getCompartmentNumber() > 1);
+
+          const CFunctionParameters & params = reac->getFunctionParameters();
+          jmax = params.size();
+          for (j = 0; j < jmax; ++j)
+            if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
+              {
+                CCopasiObject * obj = GlobalKeys.get(reac->getParameterMappings()[j][0]);
+                if (!obj) continue;
+
+                if (reac->isLocalParameter(j))
+                  {
+                    CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
+                    if (!par) continue; //or rather fatal error?
+                    oss << "    " << params[j]->getObjectName() << " \t"
+                    << *par->getValue().pDOUBLE << " "
+                    << units.getDimensions()[j].getDisplayString() << "\n";
+                  }
+                else
+                  {
+                    CModelValue * par = dynamic_cast<CModelValue*>(obj); //must be a CModelValue
+                    if (!par) continue; //or rather fatal error?
+                    oss << "    " << params[j]->getObjectName() << " \t"
+                    << "-> " + par->getObjectName()
+                    << " (" << units.getDimensions()[j].getDisplayString() << ")\n";
+                  }
+              }
+          oss << "\n";
+        }
+    }
+
+  return oss.str();
+}
