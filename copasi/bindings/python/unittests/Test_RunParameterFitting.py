@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunParameterFitting.py,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/24 17:05:42 $ 
+#   $Date: 2008/11/24 20:52:57 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -264,10 +264,11 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(experimentSet!=None)
         self.assert_(experimentSet.__class__ == COPASI.CExperimentSet)
         self.assert_(experimentSet.getExperimentCount() == 0)
+        # first experiment
         experiment=COPASI.CExperiment()
         self.assert_(experiment!=None)
-        # first experiment
         self.assert_(experiment.__class__==COPASI.CExperiment)
+        experiment.setFileName("parameter_fitting_data_simple.txt")
         experiment.setFirstRow(1)
         self.assert_(experiment.getFirstRow()==1)
         experiment.setLastRow(22)
@@ -325,23 +326,33 @@ class Test_RunParameterFitting(unittest.TestCase):
         # getObjectCN returns a string whereas getCN returns a
         # CCopasiObjectname
         self.assert_(objectMap.getObjectCN(2)==particleReference.getCN().getString())
-        result=experiment.read(TIME_COURSE_DATA,False)
-        self.assert_(result==True)
-        
+        # reading from string is not possible with the current C++ API
+        #result=experiment.read(TIME_COURSE_DATA,False)
+        #self.assert_(result==True)
          
+        reaction=model.getReaction(0)
+        self.assert_(reaction!=None)
+        self.assert_(reaction.__class__==COPASI.CReaction)
+        self.assert_(reaction.isLocalParameter(0)==True)
+        parameter=reaction.getParameters().getParameter(0)
+        self.assert_(parameter!=None)
+        self.assert_(parameter.__class__==COPASI.CCopasiParameter)
+        
         # define CFitItems
-        COptItem optItem=new COptItem();
-        optItem=fitProblem.addFitItem(CN for reaction parameter);
-        #optItem.setObjectCN(CCopasiObjectName(CN for reaction parameter);
-        optItem.setStartValue(4.0);
-        optItem.setLowerBound(CCopasiObjectName("0.0001"));
-        optItem.setUpperBound(CCopasiObjectName("10"));
+        self.assert_(fitProblem.getOptItemSize()==0)
+        parameterReference=parameter.getObject(COPASI.CCopasiObjectName("Reference=Value"))
+        self.assert_(parameterReference!=None)
+        self.assert_(parameterReference.__class__==COPASI.CCopasiObject)
+        fitItem=fitProblem.addOptItem(parameterReference.getCN())
+        fitItem.setStartValue(4.0);
+        fitItem.setLowerBound(COPASI.CCopasiObjectName("0.0001"))
+        fitItem.setUpperBound(COPASI.CCopasiObjectName("10"))
+        self.assert_(fitProblem.getOptItemSize()==1)
+        self.assert_(fitItem.getStartValue()==4.0)
+        
         result=True
         try:
-          pass
-          # !!!TODO check if process works with data instead of file for
-          # experiments
-          #result=fitTask.process(true)
+          result=fitTask.process(true)
         except:
           result=False
         self.assert_(result==True)
