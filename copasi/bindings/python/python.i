@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.19.16.1 $ 
+//   $Revision: 1.19.16.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/15 20:47:01 $ 
+//   $Date: 2008/11/24 09:16:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -151,9 +151,13 @@ import types
 
 %include "../swig/copasi.i"
 
+%{
+#include "report/CCopasiContainer.h"
+#include "commandline/COptions.h"
+%}
+
 %init %{
 
-#include "report/CCopasiContainer.h"
 // Taken from CopasiSE.cpp
 
 // Create the root container
@@ -162,8 +166,10 @@ CCopasiContainer::init();
 // Create the global data model
 CCopasiDataModel::Global = new CCopasiDataModel;
 
-// !!! TODO !!! initialize COptions
-
+// initialize COptions
+// this is needed for handling of relative file names when
+// loading or importing models from file
+COptions::init(0,NULL);
 %}
 
 %pythoncode %{

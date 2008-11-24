@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.10.14.2 $
+//   $Revision: 1.10.14.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/11/15 21:15:40 $
+//   $Date: 2008/11/24 09:16:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,12 +99,16 @@ typedef CCopasiVector<CEvaluationTree> CEvaluationTreeVector;
 typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "commandline/COptions.h"
 
 void initCopasi()
 {
   CCopasiContainer::init();
   CCopasiDataModel::Global = new CCopasiDataModel();
-  // !!! TODO !!! initialize COptions
+  // initialize COptions
+  // this is needed for handling of relative file names when
+  // loading or importing models from file
+  COptions::init(0, NULL);
 }
 
 jobject DownCast_COptTask(JNIEnv* jenv, COptTask* pPointer)
