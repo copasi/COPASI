@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.7 $
+//   $Revision: 1.26.4.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/31 21:25:08 $
+//   $Author: ssahle $
+//   $Date: 2008/11/24 18:33:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -774,7 +774,7 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
             {
               if ((pObject->getObjectName().find("Time") != std::string::npos) ||
                   (pObject->getObjectName().find("Initial") != std::string::npos) ||
-                  (pObject->getObjectName().find("ParticleNumber") != std::string::npos) ||
+                  // (pObject->getObjectName().find("ParticleNumber") != std::string::npos) ||
                   (pObject->getObjectName().find("Rate") != std::string::npos))
                 return false;
             }
