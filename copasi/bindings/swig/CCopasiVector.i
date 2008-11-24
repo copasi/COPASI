@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.21.6.5 $ 
+//   $Revision: 1.21.6.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/18 10:37:24 $ 
+//   $Date: 2008/11/24 10:13:11 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -39,6 +39,32 @@
 
 
 %rename(addCopy) CCopasiVector::add(const CType&);
+
+/*
+ * The following code should make sure that an object that is added to a vector
+ * which takes ownership for the object is not deleted by python.
+ * Unfortunatelly the SWIG documentation for this is a bit scarse and the fact
+ * that the code has to be indented correctly, makes this difficult.
+ * For now this is disabled and it will be added to the documentation that the
+ * user has to call .__disown__() on the object that is added to a vector.
+#ifdef SWIGPYTHON
+%pythonprepend CCopasiVector::add(CType*) %{
+        # disown the given object
+        if(length(args)==2):
+          args[1].__disown__()
+        else if(length(args)==3 and args[2]==true):
+          args[1].__disown__()
+%}
+
+%pythonprepend CCopasiVectorN::add(CType*) %{
+        # disown the given object
+        if(length(args)==2):
+          args[1].__disown__()
+        else if(length(args)==3 and args[2]==true):
+          args[1].__disown__()
+%}
+#endif // SWIGPYTHON
+*/
 
 %include "utilities/CCopasiVector.h"
 

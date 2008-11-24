@@ -25,6 +25,16 @@ showtabs=false,                 % show tabs within strings adding particular und
 escapeinside={\%*}{*)}          % if you want to add a comment within your code
 }
 
+
+% !!!TODO!!! when adding documentation for the vector classes and the
+% CCopasiParameterGroup, make sure to document that the add methods in the
+% vector classes and the addParameter method for the parameter group (might) take
+% ownership of the onjects they are passed. In python this problem can be
+% solved by calling .__disown__() on the passed object. FOr java I haven't
+% found an equivalent solution yet. According the the SWIG documentation this
+% can be achieved via typemaps.
+%
+
 \title{Documentation for the Java bindings for COPASI}
 \author{Ralph Gauges}
 \date{\today}
