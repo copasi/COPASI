@@ -1169,7 +1169,7 @@ Unfortunately those results are not stored in memory, so right now the only way 
 
 \subsection{Running Optimizations}
 In order to run an optimization, the general procedure is the same as with the other tasks. One has to acquire or create an instance of \textit{COptTask}, choose the desired method to use for the task out of the set of methods COPASI provides for the optimization, set the desired parameter values on the instance of \textit{COptProblem} that can be fetched from the \textit{COptTask} instance and maybe set some parameter values on the method to change the methods behaviour.
-At the time of writing, an optimization can either be done with a time course calculation or a steady state calculation. In order to tell the problem which of the two to use, the problem has two parameters that hold the key of the task that should be used for the optimization. If the optimization is to be run with a steady state calculation, the parameter named "Steady-State" has to contain the key of the steady state task, likewise if the optimization is to use a time course calculation, the parameter named "Time-Course" has to be set to the key of the time course task instance. The parameter corresponding to the task that is not going to be used should be set to an empty string. Setting both keys, or setting an invalid key or a key of an object that is not a steady state task or a time course might lead to undesired behaviour.
+At the time of writing, an optimization can either be done with a time course calculation or a steady state calculation. In order to tell the problem which of the two to use, the problem has a method called setSubtaskType. Valid arguments for the method are CCopasiTask.steadyState or CCopasiTask.timeCourse;
 The parameters that can be set on the methods very much depend on the method that is being used. So if you want to find out which parameters each method provides you will have to read the COPASI manual which if you are lucky does list them.
 Before running the optimization, two more items have to be set. One is the object that should be optimized, e.g. the initial value of some parameter, the other item is the objective function that the optimization uses the determine the optimal result.
 The object(s) that are going to be optimized are determined by one or more instances of \textit{COptItem}. Each \textit{COptItem} object stores a reference to the model object to optimize, the start value with which the optimization process will begin and an upper and a lower bound for the value of the object. The optimization method will then try to find values for all objects so that the objective function will (in the optimal case) become minimal.
@@ -1202,12 +1202,9 @@ String objectiveFunction=object.getCN().getString();
 objectiveFunction="<"+objectiveFunction+">";
 // set the objective function on the problem
 optProblem.setObjectiveFunction(objectiveFunction);
-// set the problem parameters to indicate that the optimization
+// set the problems subtask type to indicate that the optimization
 // is to be run on a time course simulation
-CCopasiParameter param=optProblem.getParameter("Steady-State");
-param.setStringValue("");
-param=optProblem.getParameter("Time-Course");
-param.setStringValue(timeCourseTask.getKey());
+optProblem.setSubtaskType(CCopasiTask.timeCourse);
 
 // create an optimization item for the 
 // initial value of some model parameter
