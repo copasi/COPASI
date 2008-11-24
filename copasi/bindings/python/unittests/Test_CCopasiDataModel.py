@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiDataModel.py,v $ 
-#   $Revision: 1.14.6.1 $ 
+#   $Revision: 1.14.6.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/24 10:34:36 $ 
+#   $Date: 2008/11/24 17:05:42 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -15,7 +15,6 @@ import COPASI
 import unittest
 from types import *
 import string
-import pdb
 
 CPS_FILE="calcium_juergen.cps"
 SBML_FILE="calcium_juergen.xml"

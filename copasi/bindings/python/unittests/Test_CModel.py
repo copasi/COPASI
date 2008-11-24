@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModel.py,v $ 
-#   $Revision: 1.12.6.2 $ 
+#   $Revision: 1.12.6.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/14 15:08:05 $ 
+#   $Date: 2008/11/24 17:05:42 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -15,7 +15,6 @@ import COPASI
 import unittest
 from types import *
 import math
-import pdb 
 
 class Test_CModel(unittest.TestCase):
   def setUp(self):

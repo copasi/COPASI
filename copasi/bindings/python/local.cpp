@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.8.6.1 $
+//   $Revision: 1.8.6.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/11/15 20:47:01 $
+//   $Date: 2008/11/24 17:05:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,9 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
 #include "steadystate/CNewtonMethod.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "trajectory/CTrajectoryMethod.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
 #include "scan/CScanMethod.h"
@@ -54,7 +57,6 @@
 #include "parameterFitting/CExperimentObjectMap.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CFitMethod.h"
 #include "parameterFitting/CFitMethod.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CFitTask.h"
@@ -222,53 +224,25 @@ struct swig_type_info*
     if (task == NULL) return SWIGTYPE_p_CCopasiTask;
 
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiTask;
-    switch (task->getType())
+    if (dynamic_cast<COptTask*>(task))
       {
-      case CCopasiTask::steadyState:
-        pInfo = SWIGTYPE_p_CSteadyStateTask;
-        break;
-      case CCopasiTask::timeCourse:
+        pInfo = GetDowncastSwigTypeForCOptTask(static_cast<COptTask*>(task));
+      }
+    else if (dynamic_cast<CTrajectoryTask*>(task))
+      {
         pInfo = SWIGTYPE_p_CTrajectoryTask;
-        break;
-      case CCopasiTask::scan:
+      }
+    else if (dynamic_cast<CScanTask*>(task))
+      {
         pInfo = SWIGTYPE_p_CScanTask;
-        break;
-        /*
-              case CCopasiTask::fluxMode:
-                pInfo=SWIGTYPE_p_CEFMTask;
-                break;
-                */
-      case CCopasiTask::optimization:
-        pInfo = SWIGTYPE_p_COptTask;
-        break;
-      case CCopasiTask::parameterFitting:
-        pInfo = SWIGTYPE_p_CFitTask;
-        break;
-        /*
-        case CCopasiTask::mca:
-          pInfo=SWIGTYPE_p_CMCATask;
-          break;
-        */
-      case CCopasiTask::lyap:
+      }
+    else if (dynamic_cast<CSteadyStateTask*>(task))
+      {
+        pInfo = SWIGTYPE_p_CSteadyStateTask;
+      }
+    else if (dynamic_cast<CLyapTask*>(task))
+      {
         pInfo = SWIGTYPE_p_CLyapTask;
-        break;
-        /*
-#ifdef COPASI_DEBUG
-        case CCopasiTask::tss:
-        pInfo=SWIGTYPE_p_CTSSTask;
-        break;
-        case CCopasiTask::sens:
-        pInfo=SWIGTYPE_p_CSensTask;
-        break;
-#endif // COPASI_DEBUG
-#ifdef COPASI_SSA
-        case CCopasiTask::ssa:
-        pInfo=SWIGTYPE_p_CSSATask;
-        break;
-#endif // COPASI_SSA
-        */
-      default:
-        break;
       }
     return pInfo;
   }
@@ -282,111 +256,25 @@ struct swig_type_info*
     if (method == NULL) return SWIGTYPE_p_CCopasiMethod;
 
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiMethod;
-    switch (method->getSubType())
+    if (dynamic_cast<COptMethod*>(method))
       {
-      case CCopasiMethod::RandomSearch:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::RandomSearchMaster:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::SimulatedAnnealing:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::GeneticAlgorithm:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::EvolutionaryProgram:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::SteepestDescent:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::HybridGASA:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::GeneticAlgorithmSR:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::HookeJeeves:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::LevenbergMarquardt:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::NelderMead:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::SRES:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::Statistics:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::ParticleSwarm:
-        pInfo = SWIGTYPE_p_COptMethod;
-        break;
-      case CCopasiMethod::Newton:
-        pInfo = SWIGTYPE_p_CNewtonMethod;
-        break;
-      case CCopasiMethod::deterministic:
+        pInfo = GetDowncastSwigTypeForCOptMethod(static_cast<COptMethod*>(method));
+      }
+    else if (dynamic_cast<CTrajectoryMethod*>(method))
+      {
         pInfo = SWIGTYPE_p_CTrajectoryMethod;
-        //pInfo=SWIGTYPE_p_CLsodaMethod;
-        break;
-      case CCopasiMethod::LSODAR:
-        pInfo = SWIGTYPE_p_CTrajectoryMethod;
-        //pInfo=SWIGTYPE_p_CLsodarMethod;
-        break;
-      case CCopasiMethod::stochastic:
-        pInfo = SWIGTYPE_p_CTrajectoryMethod;
-        //pInfo=SWIGTYPE_p_CStochMethod;
-        break;
-      case CCopasiMethod::hybrid:
-        pInfo = SWIGTYPE_p_CTrajectoryMethod;
-        //pInfo=SWIGTYPE_p_CHybridMethod;
-        break;
-      case CCopasiMethod::hybridLSODA:
-        pInfo = SWIGTYPE_p_CTrajectoryMethod;
-        //pInfo=SWIGTYPE_p_CHybridMethodLSODA;
-        break;
-      case CCopasiMethod::tauLeap:
-        pInfo = SWIGTYPE_p_CTrajectoryMethod;
-        //pInfo=SWIGTYPE_p_CTauLeapMethod;
-        break;
-        /*
-              case CCopasiMethod::mcaMethodReder:
-                pInfo=SWIGTYPE_p_;
-                break;
-                */
-      case CCopasiMethod::scanMethod:
+      }
+    else if (dynamic_cast<CScanMethod*>(method))
+      {
         pInfo = SWIGTYPE_p_CScanMethod;
-        break;
-        /*
-        case CCopasiMethod::lyapWolf:
-        pInfo=SWIGTYPE_p_;
-        break;
-        case CCopasiMethod::tssMethod:
-        pInfo=SWIGTYPE_p_;
-        break;
-        case CCopasiMethod::sensMethod:
-        pInfo=SWIGTYPE_p_;
-        break;
-#ifdef COPASI_SSA
-        case CCopasiMethod::ssaMethod:
-        pInfo=SWIGTYPE_p_;
-        break;
-#endif // COPASI_SSA
-#ifdef COPASI_EXTREMECURRENTS
-        case CCopasiMethod::extremeCurrents:
-        pInfo=SWIGTYPE_p_;
-        break;
-#endif // COPASI_EXTREMECURRENTS
-        case CCopasiMethod::EFMAlgorithm:
-        pInfo=SWIGTYPE_p_;
-        break;
-        */
-      default:
-        break;
+      }
+    else if (dynamic_cast<CSteadyStateMethod*>(method))
+      {
+        pInfo = SWIGTYPE_p_CSteadyStateMethod;
+      }
+    else if (dynamic_cast<CLyapMethod*>(method))
+      {
+        pInfo = SWIGTYPE_p_CLyapMethod;
       }
     return pInfo;
   }
@@ -400,53 +288,25 @@ struct swig_type_info*
     if (problem == NULL) return SWIGTYPE_p_CCopasiProblem;
 
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiProblem;
-    switch (problem->getType())
+    if (dynamic_cast<COptProblem*>(problem))
       {
-      case CCopasiTask::steadyState:
-        pInfo = SWIGTYPE_p_CSteadyStateProblem;
-        break;
-      case CCopasiTask::timeCourse:
+        pInfo = GetDowncastSwigTypeForCOptProblem(static_cast<COptProblem*>(problem));
+      }
+    else if (dynamic_cast<CTrajectoryProblem*>(problem))
+      {
         pInfo = SWIGTYPE_p_CTrajectoryProblem;
-        break;
-      case CCopasiTask::scan:
+      }
+    else if (dynamic_cast<CScanProblem*>(problem))
+      {
         pInfo = SWIGTYPE_p_CScanProblem;
-        break;
-        /*
-              case CCopasiTask::fluxMode:
-                pInfo=SWIGTYPE_p_CEFMProblem;
-                break;
-                */
-      case CCopasiTask::optimization:
-        pInfo = SWIGTYPE_p_COptProblem;
-        break;
-      case CCopasiTask::parameterFitting:
-        pInfo = SWIGTYPE_p_CFitProblem;
-        break;
-        /*
-        case CCopasiTask::mca:
-        pInfo=SWIGTYPE_p_CMCAProblem;
-        break;
-        */
-      case CCopasiTask::lyap:
+      }
+    else if (dynamic_cast<CSteadyStateProblem*>(problem))
+      {
+        pInfo = SWIGTYPE_p_CSteadyStateProblem;
+      }
+    else if (dynamic_cast<CLyapProblem*>(problem))
+      {
         pInfo = SWIGTYPE_p_CLyapProblem;
-        break;
-        /*
-#ifdef COPASI_DEBUG
-        case CCopasiTask::tss:
-        pInfo=SWIGTYPE_p_CTSSProblem;
-        break;
-        case CCopasiTask::sens:
-        pInfo=SWIGTYPE_p_CSensProblem;
-        break;
-#endif // COPASI_DEBUG
-#ifdef COPASI_SSA
-        case CCopasiTask::ssa:
-        pInfo=SWIGTYPE_p_CSSAProblem;
-        break;
-#endif // COPASI_SSA
-        */
-      default:
-        break;
       }
     return pInfo;
   }
