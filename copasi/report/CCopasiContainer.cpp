@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.48.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/25 22:36:43 $
+//   $Author: shoops $
+//   $Date: 2008/11/24 18:51:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,7 @@ void CCopasiContainer::initObjects() {}
 bool CCopasiContainer::add(CCopasiObject * pObject,
                            const bool & adopt)
 {
-  /* We check wheter we are already containing that object. */
+  /* We check whether we are already containing that object. */
   std::pair< objectMap::iterator, objectMap::iterator > range =
     mObjects.equal_range(pObject->getObjectName());
   objectMap::iterator it;
