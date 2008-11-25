@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.8.6.2 $
+//   $Revision: 1.8.6.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/11/24 17:05:42 $
+//   $Date: 2008/11/25 14:31:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,6 @@ struct swig_type_info*
       GetDowncastSwigTypeForCOptItem (COptItem* optItem)
   {
     if (optItem == NULL) return SWIGTYPE_p_COptItem;
-
     struct swig_type_info* pInfo = SWIGTYPE_p_COptItem;
     if (dynamic_cast<CFitItem*>(optItem))
       {

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunParameterFitting.py,v $ 
-#   $Revision: 1.1.2.3 $ 
+#   $Revision: 1.1.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/25 11:56:09 $ 
+#   $Date: 2008/11/25 14:31:29 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -249,7 +249,7 @@ class Test_RunParameterFitting(unittest.TestCase):
     self.model=Test_CreateSimpleModel.createModel()
 
    def test_runParameterFittingOnSimpleModel(self):
-        fitTask=COPASI.CCopasiDataModel.GLOBAL.addTask(COPASI.CCopasiTask.parameterFitting);
+        fitTask=COPASI.CCopasiDataModel.GLOBAL.addTask(COPASI.CCopasiTask.parameterFitting)
         self.assert_(fitTask!=None)
         self.assert_(fitTask.__class__==COPASI.CFitTask)
         fitMethod=fitTask.getMethod()
@@ -287,10 +287,10 @@ class Test_RunParameterFitting(unittest.TestCase):
         result=objectMap.setRole(0,COPASI.CExperiment.time)
         self.assert_(result==True)
         self.assert_(objectMap.getRole(0)==COPASI.CExperiment.time)
-        model=COPASI.CCopasiDataModel.GLOBAL.getModel();
+        model=COPASI.CCopasiDataModel.GLOBAL.getModel()
         self.assert_(model!=None)
         self.assert_(model.__class__==COPASI.CModel)
-        timeReference=model.getObject(COPASI.CCopasiObjectName("Reference=Time"));
+        timeReference=model.getObject(COPASI.CCopasiObjectName("Reference=Time"))
         self.assert_(timeReference!=None)
         self.assert_(timeReference.__class__==COPASI.CCopasiObject)
         objectMap.setObjectCN(0,timeReference.getCN())
@@ -311,7 +311,7 @@ class Test_RunParameterFitting(unittest.TestCase):
             self.assert_(metabB!=None)
             self.assert_(metabB.__class__==COPASI.CMetab)
         objectMap.setRole(1,COPASI.CExperiment.dependent)
-        particleReference=metabA.getObject(COPASI.CCopasiObjectName("Reference=ParticleNumber"));
+        particleReference=metabA.getObject(COPASI.CCopasiObjectName("Reference=ParticleNumber"))
         self.assert_(particleReference!=None)
         self.assert_(particleReference.__class__==COPASI.CCopasiObject)
         objectMap.setObjectCN(1,particleReference.getCN())
@@ -319,7 +319,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         # CCopasiObjectname
         self.assert_(objectMap.getObjectCN(1)==particleReference.getCN().getString())
         objectMap.setRole(2,COPASI.CExperiment.dependent)
-        particleReference=metabB.getObject(COPASI.CCopasiObjectName("Reference=ParticleNumber"));
+        particleReference=metabB.getObject(COPASI.CCopasiObjectName("Reference=ParticleNumber"))
         self.assert_(particleReference!=None)
         self.assert_(particleReference.__class__==COPASI.CCopasiObject)
         objectMap.setObjectCN(2,particleReference.getCN())
@@ -354,7 +354,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(fitItem!=None)
         self.assert_(fitItem.__class__==COPASI.CFitItem)
         fitItem.setObjectCN(parameterReference.getCN())
-        fitItem.setStartValue(4.0);
+        fitItem.setStartValue(4.0)
         fitItem.setLowerBound(COPASI.CCopasiObjectName("0.0001"))
         fitItem.setUpperBound(COPASI.CCopasiObjectName("10"))
         # add the experiment to the fit item
@@ -366,7 +366,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(optimizationItemGroup!=None)
         self.assert_(optimizationItemGroup.__class__==COPASI.CCopasiParameterGroup)
         self.assert_(optimizationItemGroup.size()==0)
-        optimizationItemGroup.addParameter(fitItem);
+        optimizationItemGroup.addParameter(fitItem)
         self.assert_(optimizationItemGroup.size()==1)
         # addParameter makes a copy of the fit item, so we have to get it back
         fitItem=optimizationItemGroup.getParameter(0)
