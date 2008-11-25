@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.5.8.1 $
+//   $Revision: 1.5.8.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/23 14:11:19 $
+//   $Author: ssahle $
+//   $Date: 2008/11/25 15:06:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -250,10 +250,12 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   imax = st.size();
   mpTableState->setNumRows(0);
   mpTableState->setNumRows(imax + 1);
-  mpTableState->setNumCols(3);
+  mpTableState->setNumCols(5);
   mpTableState->horizontalHeader()->setLabel(0, "Name");
   mpTableState->horizontalHeader()->setLabel(1, "status");
   mpTableState->horizontalHeader()->setLabel(2, "");
+  mpTableState->horizontalHeader()->setLabel(3, "ATol(1)");
+  mpTableState->horizontalHeader()->setLabel(4, "SS criterion(1)");
 
   for (i = 0; i < imax; ++i)
     {
@@ -320,9 +322,24 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   tmpint = st.endFixed() - st.getEntities();
   mpTableState->setText(tmpint, 2, mpTableState->text(tmpint, 2) + "endFixed ");
 
+  //add absolute Tolerances to table
+  CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
+  tmpint = st.beginIndependent() - st.getEntities();
+  for (i = 0; i < atolv.size(); ++i)
+    {
+      mpTableState->setText(i + tmpint, 3, QString::number(atolv[i]));
+
+      CModelEntity* pME = *(st.getEntities() + i + 1);
+      C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * DBL_MIN, fabs(pME->getInitialValue())));
+      std::cout << atolv[i] << " " << pME->getInitialValue() << " " << tmp << std::endl;
+      mpTableState->setText(i + tmpint, 4, QString::number(tmp));
+    }
+
   mpTableState->adjustColumn(0);
   mpTableState->adjustColumn(1);
   mpTableState->adjustColumn(2);
+  mpTableState->adjustColumn(3);
+  mpTableState->adjustColumn(4);
 }
 
 //*************************************
