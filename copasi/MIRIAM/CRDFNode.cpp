@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 18:08:05 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,7 +223,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
           break;
 
         case CRDFObject::BLANK_NODE:
-          Object.setResource(value, false);
+          fatalError();
           break;
         }
     }
@@ -318,7 +318,7 @@ CRDFTriplet CRDFNode::addEdge(const CRDFPredicate & predicate, CRDFNode * pObjec
     return Failed;
 
   // If the predicate is rdf:li and this is not a bag node we bagify it.
-  if (!isBagNode() && CRDFPredicate::rdf_li == predicate)
+  if (!isBagNode() && predicate == CRDFPredicate::rdf_li)
     {
       // Bagify the node.
       CRDFObject Object;
@@ -330,7 +330,7 @@ CRDFTriplet CRDFNode::addEdge(const CRDFPredicate & predicate, CRDFNode * pObjec
     }
 
   // We now can safely insert any edge with the predicate rdf_li
-  if (CRDFPredicate::rdf_li == predicate)
+  if (predicate == CRDFPredicate::rdf_li)
     {
       if (!addTripletToGraph(Triplet))
         return Failed;

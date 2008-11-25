@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 13:55:42 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,6 +174,8 @@ void CBiologicalDescriptionsWidget::tableLineToObject(unsigned C_INT32 row, CCop
 
   QString ID = table->text(row, COL_ID);
   pBiologicalDescription->setId((const char *) ID.utf8());
+
+  pBiologicalDescription->clearInvalidEntries();
 }
 
 void CBiologicalDescriptionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)

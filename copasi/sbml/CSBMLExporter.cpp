@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.5 $
+//   $Revision: 1.50.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:43 $
+//   $Date: 2008/11/25 16:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4186,7 +4186,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     {
       pDescription = descriptions[i];
       assert(pDescription != NULL);
-      switch (pDescription->getTriplet().Predicate)
+      switch (pDescription->getTriplet().Predicate.getType())
         {
         case CRDFPredicate::bqbiol_encodes:
         case CRDFPredicate::copasi_encodes:
@@ -4327,7 +4327,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       if (!IdTriplet)
         continue;
 
-      switch (IdTriplet.Predicate)
+      switch (IdTriplet.Predicate.getType())
         {
         case CRDFPredicate::bqbiol_isDescribedBy:
         case CRDFPredicate::copasi_isDescribedBy:
@@ -4465,7 +4465,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             }
           else
             {
-              CSBMLExporter::createUniqueId(metaIds, "metaid");
+              metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
               metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
               pSBMLObject->setMetaId(metaId);
             }

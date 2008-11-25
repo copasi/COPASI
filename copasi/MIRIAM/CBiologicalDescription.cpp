@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.8.6.1 $
+//   $Revision: 1.8.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 13:55:41 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,8 +71,7 @@ void CBiologicalDescription::setPredicate(const std::string & predicate)
 {
   CRDFPredicate Predicate(CRDFPredicate::getPredicateFromDisplayName(predicate));
 
-  if (Predicate == mTriplet.Predicate ||
-      CRDFPredicate::unknown == Predicate)
+  if (Predicate == mTriplet.Predicate)
     return;
 
   // Add the edge with the new predicate without any object creation.
@@ -87,15 +86,25 @@ void CBiologicalDescription::setPredicate(const std::string & predicate)
 
 void CBiologicalDescription::setResource(const std::string & resource)
 {
-  if (mResource.setDisplayName(resource))
-    mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+  mResource.setDisplayName(resource);
+  mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
 }
 
 void CBiologicalDescription::setId(const std::string & id)
 {
-  if (mResource.setId(id))
-    mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+  mResource.setId(id);
+  mTriplet.pObject->getObject().setResource(mResource.getURI(), false);
 }
 
 std::string CBiologicalDescription::getURI() const
-{return mResource.getURI();}
+  {return mResource.getURI();}
+
+void CBiologicalDescription::clearInvalidEntries()
+{
+  if (mTriplet.Predicate == CRDFPredicate::unknown ||
+      !mResource.isValid())
+    {
+      // Remove the edge with the predicate and object.
+      mTriplet.pSubject->removeEdge(mTriplet.Predicate, mTriplet.pObject);
+    }
+}

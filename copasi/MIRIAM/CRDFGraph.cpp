@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.38.2.1 $
+//   $Revision: 1.38.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:40 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,14 +39,24 @@ CRDFGraph::CRDFGraph():
     mBlankNodeId2Node(),
     mLocalResource2Node(),
     mRemoteResourceNodes(),
-    mLiteralNodes()
+    mLiteralNodes(),
+    mTriplets(),
+    mSubject2Triplet(),
+    mObject2Triplet(),
+    mPredicate2Triplet()
 {}
 
 CRDFGraph::~CRDFGraph()
 {
-  // Note: mpAbout is not explicitely destroyed since it is contained in the map
-  // of resource nodes.
+  // We first clear the sets and maps
+  // This is necessary since they refer to the nodes which are destroyed later.
+  mTriplets.clear();
+  mSubject2Triplet.clear();
+  mObject2Triplet.clear();
+  mPredicate2Triplet.clear();
 
+  // Note: mpAbout is not explicitly destroyed since it is contained in the map
+  // of resource nodes.
   std::map< std::string, CRDFNode * >::iterator itMap;
   std::map< std::string, CRDFNode * >::iterator endMap;
 
@@ -252,26 +262,17 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Range = mSubject2Triplet.equal_range(triplet.pSubject);
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
-      {
-        mSubject2Triplet.erase(Range.first);
-        break;
-      }
+      mSubject2Triplet.erase(Range.first);
 
   Range = mObject2Triplet.equal_range(triplet.pObject);
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
-      {
-        mObject2Triplet.erase(Range.first);
-        break;
-      }
+      mObject2Triplet.erase(Range.first);
 
   std::pair< Predicate2Triplet::iterator, Predicate2Triplet::iterator> RangeP = mPredicate2Triplet.equal_range(triplet.Predicate);
   for (; RangeP.first != RangeP.second; ++RangeP.first)
     if (RangeP.first->second == triplet)
-      {
-        mPredicate2Triplet.erase(RangeP.first);
-        break;
-      }
+      mPredicate2Triplet.erase(RangeP.first);
 
   destroyUnreferencedNode(triplet.pObject);
   return;
@@ -303,7 +304,7 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
     {
       // We ignore rdf_li predicates
       if (Range.first->second.Predicate != CRDFPredicate::rdf_li)
-        Path.insert(Path.begin(), Range.first->second.Predicate);
+        Path.insert(Path.begin(), Range.first->second.Predicate.getType());
 
       pCurrent = Range.first->second.pSubject;
 
@@ -565,7 +566,7 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
 
     case CRDFObject::LITERAL:
       {
-        // Check whther the pointer still exists in mLiteralNodes
+        // Check whether the pointer still exists in mLiteralNodes
         std::vector< CRDFNode * >::iterator it = mLiteralNodes.begin();
         std::vector< CRDFNode * >::iterator end = mLiteralNodes.end();
         for (; it != end; ++it)

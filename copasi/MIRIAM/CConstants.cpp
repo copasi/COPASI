@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.10.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/17 18:55:57 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,11 +59,20 @@ CMIRIAMResourceObject::CMIRIAMResourceObject(const CMIRIAMResourceObject & src):
 bool CMIRIAMResourceObject::setId(const std::string & id)
 {
   mId = id;
+
+  // Empty IDs are not allowed.
+  if (mId == "")
+    return false;
+
+  // Check whether the resource is known.
+  if (mResource == C_INVALID_INDEX)
+    return true;
+
   return isValid();
 }
 
 const std::string & CMIRIAMResourceObject::getId() const
-  {return mId;}
+{return mId;}
 
 bool CMIRIAMResourceObject::setURI(const std::string & URI)
 {
@@ -75,10 +84,6 @@ bool CMIRIAMResourceObject::setURI(const std::string & URI)
 
 std::string CMIRIAMResourceObject::getURI() const
   {
-    // Check whether the resource is known.
-    if (!isValid())
-      return "";
-
     return (mpResources->getMIRIAMResource(mResource)).getMIRIAMURI() + ":" + mId;
   }
 
@@ -97,13 +102,12 @@ CRDFNode * CMIRIAMResourceObject::getNode() const
 
 bool CMIRIAMResourceObject::setDisplayName(const std::string & displayName)
 {
-  unsigned C_INT32 tmp = mpResources->getResourceIndexFromDisplayName(displayName);
+  mResource = mpResources->getResourceIndexFromDisplayName(displayName);
 
-  if (tmp == C_INVALID_INDEX)
+  if (mResource == C_INVALID_INDEX)
     return false;
 
-  mResource = tmp;
-  return isValid();
+  return true;
 }
 
 std::string CMIRIAMResourceObject::getDisplayName() const

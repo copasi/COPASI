@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:42:21 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -536,16 +536,13 @@ void CRDFPredicate::initialize()
   createAllowedLocationsAbsolute();
 }
 
-// static
-CRDFPredicate CRDFPredicate::Factory;
-
 // Methods
 CRDFPredicate::CRDFPredicate(const ePredicateType & type):
     mType(type),
     mURI()
 {
   initialize();
-  mURI = getURI(mType);
+  mURI = CRDFPredicate::PredicateURI[mType];
 }
 
 CRDFPredicate::CRDFPredicate(const std::string & uri):
@@ -570,7 +567,7 @@ CRDFPredicate::~CRDFPredicate()
 CRDFPredicate CRDFPredicate::operator = (const ePredicateType & type)
 {return CRDFPredicate(type);}
 
-CRDFPredicate::operator ePredicateType() const
+const CRDFPredicate::ePredicateType & CRDFPredicate::getType() const
   {return mType;}
 
 void CRDFPredicate::setURI(const std::string & uri)
@@ -589,6 +586,19 @@ const std::string & CRDFPredicate::getURI() const
 bool CRDFPredicate::operator == (const CRDFPredicate & rhs) const
   {return mURI == rhs.mURI;}
 
+bool CRDFPredicate::operator != (const CRDFPredicate & rhs) const
+  {return mURI != rhs.mURI;}
+
+bool CRDFPredicate::operator < (const CRDFPredicate & rhs) const
+  {return mURI < rhs.mURI;}
+
+// friend
+std::ostream & operator << (std::ostream & os, const CRDFPredicate & p)
+{
+  os << p.mType;
+  return os;
+}
+
 // static
 const CRDFPredicate::AllowedLocationList & CRDFPredicate::getAllowedLocationList(const ePredicateType & predicate)
 {
@@ -596,9 +606,9 @@ const CRDFPredicate::AllowedLocationList & CRDFPredicate::getAllowedLocationList
 }
 
 // static
-const std::string & CRDFPredicate::getURI(const CRDFPredicate::ePredicateType & predicate)
+const std::string & CRDFPredicate::getURI(const CRDFPredicate & predicate)
 {
-  return PredicateURI[predicate];
+  return PredicateURI[predicate.mType];
 }
 
 // static
@@ -616,9 +626,9 @@ CRDFPredicate::ePredicateType CRDFPredicate::getPredicateFromURI(const std::stri
 }
 
 // static
-const std::string & CRDFPredicate::getDisplayName(const CRDFPredicate::ePredicateType & predicate)
+const std::string & CRDFPredicate::getDisplayName(const CRDFPredicate & predicate)
 {
-  return PredicateDisplayName[predicate];
+  return PredicateDisplayName[predicate.mType];
 }
 
 // static

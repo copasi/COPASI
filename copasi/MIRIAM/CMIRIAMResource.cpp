@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.4.2.3 $
+//   $Revision: 1.4.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:40 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,20 @@
 #include "CConstants.h"
 
 #include "utilities/CCopasiException.h"
+
+// static
+CMIRIAMResource * CMIRIAMResources::pUnknownResource = NULL;
+
+// static
+void CMIRIAMResources::initializeUnkownResource()
+{
+  if (pUnknownResource == NULL)
+    {
+      pUnknownResource = new CMIRIAMResource("Unknown Resource");
+      pUnknownResource->setMIRIAMDisplayName("-- select --");
+      pUnknownResource->setMIRIAMURI("urn:miriam:unknown");
+    }
+}
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CCopasiContainer * pParent) :
@@ -59,6 +73,8 @@ void CMIRIAMResources::initializeParameter()
 
   createDisplayNameMap();
   createURIMap();
+
+  initializeUnkownResource();
 }
 
 void CMIRIAMResources::addMIRIAMResource(CMIRIAMResource * mimriamResource)
@@ -170,6 +186,8 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
     }
   else
     {
+      // TODO add a resource for local objects, i.e., within the current model.
+
       setMIRIAMLastUpdateDate();
       *mpMIRIAMResources = *pTmpCpyCMIRIAMResources;
       elevateChildren();
@@ -260,7 +278,9 @@ void CMIRIAMResources::createURIMap()
 
 const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const unsigned C_INT32 index) const
   {
-    assert(index < mpMIRIAMResources->size());
+    if (index >= mpMIRIAMResources->size())
+      return * pUnknownResource;
+
     return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
   }
 
@@ -306,6 +326,7 @@ unsigned C_INT32 CMIRIAMResources::getResourceIndexFromDisplayName(const std::st
         // unknown is indicated by an invalid index.
         return C_INVALID_INDEX;
       }
+
     return it->second;
   }
 

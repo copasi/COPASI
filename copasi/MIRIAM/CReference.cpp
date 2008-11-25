@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.9.6.1 $
+//   $Revision: 1.9.6.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 13:55:41 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,59 +98,67 @@ std::string CReference::getResource() const
 
 void CReference::setResource(const std::string & resource)
 {
-  if (!mIdTriplet)
+  bool isValid = mResource.setDisplayName(resource);
+
+  if (isValid)
     {
-      // We create an Id triplet
-      // This only adds the triplet if the resource is valid, i.e., it does not work;
-
-      mTriplet.pObject->setFieldValue("---", CRDFPredicate::copasi_isDescribedBy, mNodePath);
-
-      std::set< CRDFTriplet > Triples;
-      std::set< CRDFTriplet >::iterator it;
-
-      Triples = mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::copasi_isDescribedBy);
-      it = Triples.begin();
-
-      if (it != Triples.end())
+      if (!mIdTriplet)
         {
-          mIdTriplet = *it;
-          mResource.setNode(mIdTriplet.pObject);
-        }
-    }
+          // We create an Id triplet
+          // This only adds the triplet if the resource is valid, i.e., it does not work;
 
-  if (mIdTriplet && mResource.setDisplayName(resource))
-    mIdTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+          mTriplet.pObject->setFieldValue("---", CRDFPredicate::copasi_isDescribedBy, mNodePath);
+
+          std::set< CRDFTriplet > Triples;
+          std::set< CRDFTriplet >::iterator it;
+
+          Triples = mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::copasi_isDescribedBy);
+          it = Triples.begin();
+
+          if (it != Triples.end())
+            {
+              mIdTriplet = *it;
+              mResource.setNode(mIdTriplet.pObject);
+            }
+        }
+
+      mIdTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+    }
 }
 
 const std::string & CReference::getId() const
-{return mResource.getId();}
+  {return mResource.getId();}
 
 void CReference::setId(const std::string & id)
 {
-  if (!mIdTriplet)
+  bool isValid = mResource.setId(id);
+
+  if (isValid)
     {
-      // We create an Id triplet
-      mTriplet.pObject->setFieldValue("---", CRDFPredicate::copasi_isDescribedBy, mNodePath);
-
-      std::set< CRDFTriplet > Triples;
-      std::set< CRDFTriplet >::iterator it;
-
-      Triples = mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::copasi_isDescribedBy);
-      it = Triples.begin();
-
-      if (it != Triples.end())
+      if (!mIdTriplet)
         {
-          mIdTriplet = *it;
-          mResource.setNode(mIdTriplet.pObject);
-        }
-    }
+          // We create an Id triplet
+          mTriplet.pObject->setFieldValue("---", CRDFPredicate::copasi_isDescribedBy, mNodePath);
 
-  if (mIdTriplet && mResource.setId(id))
-    mIdTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+          std::set< CRDFTriplet > Triples;
+          std::set< CRDFTriplet >::iterator it;
+
+          Triples = mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::copasi_isDescribedBy);
+          it = Triples.begin();
+
+          if (it != Triples.end())
+            {
+              mIdTriplet = *it;
+              mResource.setNode(mIdTriplet.pObject);
+            }
+        }
+
+      mIdTriplet.pObject->getObject().setResource(mResource.getURI(), false);
+    }
 }
 
 std::string CReference::getURI() const
-{return mResource.getURI();}
+  {return mResource.getURI();}
 
 const std::string & CReference::getDescription() const
   {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_description);}
@@ -158,4 +166,18 @@ const std::string & CReference::getDescription() const
 void CReference::setDescription(const std::string & description)
 {
   mTriplet.pObject->setFieldValue(description, CRDFPredicate::dcterms_description, mNodePath);
+}
+
+void CReference::clearInvalidEntries()
+{
+  // Empty descriptions are handled automatically since setFieldValue removes
+  // a triplet if the value is an empty string.
+
+  // Handle invalid resource
+  if (!mResource.isValid() && mIdTriplet)
+    {
+      // We remove the Id triplet
+      mTriplet.pObject->setFieldValue("", CRDFPredicate::copasi_isDescribedBy, mNodePath);
+      mIdTriplet = CRDFTriplet(); // This makes it invalid.
+    }
 }
