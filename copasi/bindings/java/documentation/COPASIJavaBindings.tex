@@ -1248,6 +1248,129 @@ After the optimization has been run, the solution of the optimization is stored 
 In order to get the lowest value COPASI was able to find for the objective function, use the call to \textit{getSolutionValue}.
 The values for the \textit{COptItem} objects corresponding to that result, use \textit{getSolutionVariables}. This method returns a container with double values. The size of the container can be queried with its \textit{size} method and individual values can be acquire by calling \textit{get} with the index of the value. The value for index \textbf{i} belongs to the \textit{COptItem} with index \textbf{i} in the list of \textit{COptItem}s.  To get a container with all defined \textit{COptItem}s, use \textit{getOptItemList}.
 
+\subsection{Fitting parameters}
+\label{ParameterFitting}
+
+Parameter fitting can be used to determine the value of certain model entities with the help of experimental data.
+The API for doing parameter fitting is very similar to the one for running an optimization (see above). This is because the classes for parameter fitting are derived from the optimization classes.
+This makes sense since the actions for running an optimization are very similar to what COPASI does when doing parameter fitting. The major difference is that for an optimization, the user has to provide an objective function that is minimized wheras for the parameter fitting, the user provides experimental data and some information about the data and COPASI determines the objective function from that information.
+
+The first step when doing parameter fitting is to get an instance of \textit{CFitTask}. Either there is already one in the list of tasks which can be used, or we simpliy add one, as demonstrated in the example below.
+The \textit{CFitTask} has the methods \textit{getMethod} and \textit{getProblem} which provide the method and the problem for the task.
+
+The methods that can be used for parameter fitting currently is a subset of the methods available for the optimization. The methods that are available can be queries with \textit{getValidMethods} in \textit{CFitTask} and a specific method can be set with \textit{setMethodType} also in \textit{CFitTask}.
+
+Most settings for the parameter fitting however are done in the problem. The problem contains a parameter group called \textbf{Experiment Set} which contains the information about the experimental data against which the parameters should be fitted.
+The information for each experiment is stored in an instance of \textit{CExperiment}. The information that needs to be provided for each experment is 
+\begin{itemize}
+\item{the name of the file where the experimental data can be found}
+\item{the row number where the data for the experiment starts}
+\item{the row number where the data for the experiment ends}
+\item{the type of experiment that the data represents (time course or steady state)}
+\item{the number of data columns in the data set}
+\item{the mapping of the columns to the entities in the model and their role}
+\end{itemize}
+
+The information about the mapping from data columns to model entities is stored in an instance of \textit{CExperimentObjectmap} which can be aquired with the \textit{getObjectMap} method from \textit{CExperiment}.
+After the information for the experiment has been set, the experiment needs to be added to the experiment set. The \textit{addExperiment} method creates a copy of the experiment that is added, so make sure that you get the experiment from the experiment set before you make further modifications or use it, e.g. to add it to the fit item (see below).
+
+Next we need to create the fit items which correspond to the optimization items in the optimization task. Fit items are instances of \textit{CFitItem} and they have an upper bound, a lower bound and a start value just like optimization items.
+By default each fit item is influenced by all experiments. if you want to limit a fit item to be only influenced by certain experiments, you have to add those experiments to the fit item with the \textit{addExperiment} method of \textit{CFitItem}.
+
+There is no specialized method to add fit items to the fit problem, so we have to use the generic methods provided be \textit{CCopasiParameterGroup} to do this. The fit problem contains a parameter group called \textbf{OptimizationItemList} which holds all the fit items. Since the problem itself is derived from \textit{CCopasiParameterGroup}, we can use the \textit{getParameter} method with the name of the parameter in order to get the parameter group. Now we can add the fit items with the \textit{addParameter} method to the group.
+Just like the \textit{addExperiment} method above, this method makes a copy of its argument, so if you are planning to use the fit item again, be sure to get the fit item from the group again.
+
+A fit problem can actually contain many experiments and many fit items, but the example code below only uses one experiment and one fit item to fit the reaction parameter of a simple system. The code assumes that the models consists of only one compartment with two species named \textit{A} and \textit{B} as well as one reaction with a local reaction parameter (which is fitted).
+
+\begin{lstlisting}
+ CFitTask fitTask=
+   (CFitTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.parameterFitting);
+ // the method in a fit task is an instance of COptMethod or a subclass of
+ // it.
+ COptMethod fitMethod=(COptMethod)fitTask.getMethod();
+ // the object must be an instance of COptMethod or a subclass thereof
+ // (CFitMethod)
+ CFitProblem fitProblem=(CFitProblem)fitTask.getProblem();
+ CExperimentSet experimentSet=(CExperimentSet)fitProblem.getParameter("Experiment Set");
+ // first experiment
+ CExperiment experiment=new CExperiment();
+ experiment.setFileName("parameter_fitting_data_simple.txt");
+ experiment.setFirstRow(1);
+ experiment.setLastRow(22);
+ experiment.setHeaderRow(1);
+ experiment.setExperimentType(CCopasiTask.timeCourse);
+ experiment.setNumColumns(3);
+ CExperimentObjectMap objectMap=experiment.getObjectMap();
+ boolean result=objectMap.setNumCols(3);
+ result=objectMap.setRole(0,CExperiment.time);
+ CModel model=CCopasiDataModel.getGlobal().getModel();
+ // create the common name for time (column 0)
+ CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
+ objectMap.setObjectCN(0,timeReference.getCN().getString());
+ CMetab metabA=model.getMetabolite(0);
+ CMetab metabB=null;
+ if(metabA.getObjectName()!="A")
+ {
+     metabB=metabA;
+     metabA=model.getMetabolite(1);
+ }
+ else
+ {
+     metabB=model.getMetabolite(1);
+ }
+ // set the role to dependent
+ objectMap.setRole(1,CExperiment.dependent);
+ // create the common name for the particle number of A (column 1)
+ CCopasiObject particleReference=
+     metabA.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+ objectMap.setObjectCN(1,particleReference.getCN().getString());
+ // set the role to dependent
+ objectMap.setRole(2,CExperiment.dependent);
+ // create the common name for the particle number of B (column 1)
+ particleReference=metabB.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+ objectMap.setObjectCN(2,particleReference.getCN().getString());
+ // getObjectCN returns a string whereas getCN returns a
+ // CCopasiObjectname
+ assertTrue(objectMap.getObjectCN(2).equals(particleReference.getCN().getString()));
+ experimentSet.addExperiment(experiment);
+ // addExperiment makes a copy, so we need to get the added experiment
+ // again
+ experiment=experimentSet.getExperiment(0);
+
+ CReaction reaction=model.getReaction(0);
+ CCopasiParameter parameter=reaction.getParameters().getParameter(0);
+ 
+ // define CFitItems
+ CCopasiObject parameterReference=
+     parameter.getObject(new CCopasiObjectName("Reference=Value"));
+ CFitItem fitItem=new CFitItem();
+ fitItem.setObjectCN(parameterReference.getCN());
+ fitItem.setStartValue(4.0);
+ fitItem.setLowerBound(new CCopasiObjectName("0.0001"));
+ fitItem.setUpperBound(new CCopasiObjectName("10"));
+ // add the experiment to the fit item
+ //fitItem.addExperiment(experiment.getKey())
+ // add the fit item to the correct parameter group
+ CCopasiParameterGroup optimizationItemGroup=
+     (CCopasiParameterGroup)fitProblem.getParameter("OptimizationItemList");
+ optimizationItemGroup.addParameter(fitItem);
+ // addParameter makes a copy of the fit item, so we have to get it back
+ fitItem=(CFitItem)optimizationItemGroup.getParameter(0);
+ result=true;
+ try
+ {
+   result=fitTask.process(true);
+ }
+ catch(Exception e)
+ {
+   result=false;
+ }
+ // get the fitted value for the reaction parameter
+ double fittedK=fitItem.getLocalValue();
+\end{lstlisting}
+
+After running the fitting task, the fit result is stored in the individual fit items. The best value that was achived during parameter fitting can be queried by the \textit{getLocalValue} method from each fit item.
+
 \section{Creating Reports}
 \label{CreatingReports}
 
