@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunParameterFitting.py,v $ 
-#   $Revision: 1.1.2.2 $ 
+#   $Revision: 1.1.2.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/24 20:52:57 $ 
+#   $Date: 2008/11/25 11:56:09 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -329,7 +329,14 @@ class Test_RunParameterFitting(unittest.TestCase):
         # reading from string is not possible with the current C++ API
         #result=experiment.read(TIME_COURSE_DATA,False)
         #self.assert_(result==True)
-         
+        experimentSet.addExperiment(experiment)
+        self.assert_(experimentSet.getExperimentCount()==1)
+        # addExperiment makes a copy, so we need to get the added experiment
+        # again
+        experiment=experimentSet.getExperiment(0)
+        self.assert_(experiment!=None)
+        self.assert_(experiment.__class__==COPASI.CExperiment)
+
         reaction=model.getReaction(0)
         self.assert_(reaction!=None)
         self.assert_(reaction.__class__==COPASI.CReaction)
@@ -343,20 +350,37 @@ class Test_RunParameterFitting(unittest.TestCase):
         parameterReference=parameter.getObject(COPASI.CCopasiObjectName("Reference=Value"))
         self.assert_(parameterReference!=None)
         self.assert_(parameterReference.__class__==COPASI.CCopasiObject)
-        fitItem=fitProblem.addOptItem(parameterReference.getCN())
+        fitItem=COPASI.CFitItem()
+        self.assert_(fitItem!=None)
+        self.assert_(fitItem.__class__==COPASI.CFitItem)
+        fitItem.setObjectCN(parameterReference.getCN())
         fitItem.setStartValue(4.0);
         fitItem.setLowerBound(COPASI.CCopasiObjectName("0.0001"))
         fitItem.setUpperBound(COPASI.CCopasiObjectName("10"))
-        self.assert_(fitProblem.getOptItemSize()==1)
+        # add the experiment to the fit item
+        #fitItem.addExperiment(experiment.getKey())
         self.assert_(fitItem.getStartValue()==4.0)
-        
+        #self.assert_(fitItem.getExperimentCount()==1)
+        # add the fit item to the correct parameter group
+        optimizationItemGroup=fitProblem.getParameter("OptimizationItemList")
+        self.assert_(optimizationItemGroup!=None)
+        self.assert_(optimizationItemGroup.__class__==COPASI.CCopasiParameterGroup)
+        self.assert_(optimizationItemGroup.size()==0)
+        optimizationItemGroup.addParameter(fitItem);
+        self.assert_(optimizationItemGroup.size()==1)
+        # addParameter makes a copy of the fit item, so we have to get it back
+        fitItem=optimizationItemGroup.getParameter(0)
+        self.assert_(fitItem!=None)
+        self.assert_(fitItem.__class__==COPASI.CFitItem)
         result=True
         try:
-          result=fitTask.process(true)
+          result=fitTask.process(True)
         except:
           result=False
         self.assert_(result==True)
-
+        # just check if the result is in the correct range. The actual value is
+        # probably off since we use only one experiment to fit
+        self.assert_((fitItem.getLocalValue()-0.5)/0.5 < 1.0)
 
    def test_runParameterFittingOnExtendedModel(self):
         Test_CreateSimpleModel.extendModel(self.model)
