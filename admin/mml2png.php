@@ -2,9 +2,9 @@
 
 <?php
 
-$mml2png = '/home/usr/jeuclid/bin/mml2xxx';
-$ifontsize = '-FontSize 14.0';
-$bfontsize = '-FontSize 18.0';
+$mml2png = '/usr/local/jeuclid/bin/mml2xxx';
+$ifontsize = '-fontSize 14.0';
+$bfontsize = '-fontSize 18.0';
 
 for ($i = 1; $i < $argc; $i++)
 {

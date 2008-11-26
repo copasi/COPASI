@@ -5,7 +5,7 @@
   <!-- <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/profile-docbook.xsl"/> -->
   <!-- <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/> -->
   <!-- <xsl:import href="/usr/share/xml/docbook/xsl-stylesheets-1.72.0/xhtml/chunk.xsl"/> -->
-  <xsl:import href="/home/usr/docbook-xsl-1.73.2/xhtml/chunk.xsl"/>
+  <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/chunk.xsl"/>
   
   <!-- ==================================================================== -->
   
