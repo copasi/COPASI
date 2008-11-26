@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
- $Revision: 1.26.2.1 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/11/18 02:47:39 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
+$Revision: 1.26.2.2 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/11/26 15:17:09 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -338,27 +338,20 @@ unsigned C_INT32 CExperimentSet::keyToIndex(const std::string & key) const
 void CExperimentSet::sort()
 {
   // First we make sure that all experiments are at the end of the group
-  std::vector< CCopasiParameter * > Grp = *mValue.pGROUP;
+  index_iterator it = beginIndex();
+  index_iterator end = endIndex();
 
-  std::vector< CCopasiParameter * >::iterator it = Grp.begin();
-  std::vector< CCopasiParameter * >::iterator end = Grp.end();
-
-  std::vector< CCopasiParameter * >::iterator insert = Grp.begin();
+  index_iterator swapTarget = beginIndex();
   mNonExperiments = 0;
 
   for (; it != end; ++it)
     if (dynamic_cast< CExperiment * >(*it) == NULL)
       {
-        *insert = *it;
-        ++insert;
-        ++mNonExperiments;
-      }
+        if (it != swapTarget)
+          swap(it, swapTarget);
 
-  for (it = Grp.begin(); it != end; ++it)
-    if (dynamic_cast< CExperiment * >(*it) != NULL)
-      {
-        *insert = *it;
-        ++insert;
+        swapTarget++;
+        mNonExperiments++;
       }
 
   // Now sort the experiments
