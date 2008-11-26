@@ -1258,7 +1258,7 @@ This makes sense since the actions for running an optimization are very similar 
 The first step when doing parameter fitting is to get an instance of \textit{CFitTask}. Either there is already one in the list of tasks which can be used, or we simplify add one, as demonstrated in the example below.
 The \textit{CFitTask} has the methods \textit{getMethod} and \textit{getProblem} which provide the method and the problem for the task.
 
-The methods that can be used for parameter fitting currently is a subset of the methods available for the optimization. The methods that are available can be queries with \textit{getValidMethods} in \textit{CFitTask} and a specific method can be set with \textit{setMethodType} also in \textit{CFitTask}.
+The methods that can be used for parameter fitting should be the same set of methods that is available for the optimization. The methods that are available can be queried with \textit{getValidMethods} in \textit{CFitTask} and a specific method can be set with \textit{setMethodType} also in \textit{CFitTask}.
 
 Most settings for the parameter fitting however are done in the problem. The problem contains a parameter group called \textbf{Experiment Set} which contains the information about the experimental data against which the parameters should be fitted.
 The information for each experiment is stored in an instance of \textit{CExperiment}. The information that needs to be provided for each experment is 
