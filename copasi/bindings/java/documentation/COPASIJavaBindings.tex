@@ -1253,9 +1253,9 @@ The values for the \textit{COptItem} objects corresponding to that result, use \
 
 Parameter fitting can be used to determine the value of certain model entities with the help of experimental data.
 The API for doing parameter fitting is very similar to the one for running an optimization (see above). This is because the classes for parameter fitting are derived from the optimization classes.
-This makes sense since the actions for running an optimization are very similar to what COPASI does when doing parameter fitting. The major difference is that for an optimization, the user has to provide an objective function that is minimized wheras for the parameter fitting, the user provides experimental data and some information about the data and COPASI determines the objective function from that information.
+This makes sense since the actions for running an optimization are very similar to what COPASI does when doing parameter fitting. The major difference is that for an optimization, the user has to provide an objective function that is minimized whereas for the parameter fitting, the user provides experimental data and some information about the data and COPASI determines the objective function from that information.
 
-The first step when doing parameter fitting is to get an instance of \textit{CFitTask}. Either there is already one in the list of tasks which can be used, or we simpliy add one, as demonstrated in the example below.
+The first step when doing parameter fitting is to get an instance of \textit{CFitTask}. Either there is already one in the list of tasks which can be used, or we simplify add one, as demonstrated in the example below.
 The \textit{CFitTask} has the methods \textit{getMethod} and \textit{getProblem} which provide the method and the problem for the task.
 
 The methods that can be used for parameter fitting currently is a subset of the methods available for the optimization. The methods that are available can be queries with \textit{getValidMethods} in \textit{CFitTask} and a specific method can be set with \textit{setMethodType} also in \textit{CFitTask}.
@@ -1270,6 +1270,8 @@ The information for each experiment is stored in an instance of \textit{CExperim
 \item{the number of data columns in the data set}
 \item{the mapping of the columns to the entities in the model and their role}
 \end{itemize}
+
+Another useful piece of information that can be set for the experiment is the separator that is used in the data file to separate the individual columns. This separator can be set with the \textit{setSeparator} method in \textit{CExperiment}. It takes a string as its only argument. One thing to watch out for is the fact that COPASI tries to match the separator exactly. That is, if the separator is set to be one space character, having two space characters between two columns in the file will lead COPASI to think that there is an empty column. Unfortunately there is no way right now to tell COPASI that the delimiter for the columns is e.g. one or more space characters.
 
 The information about the mapping from data columns to model entities is stored in an instance of \textit{CExperimentObjectmap} which can be aquired with the \textit{getObjectMap} method from \textit{CExperiment}.
 After the information for the experiment has been set, the experiment needs to be added to the experiment set. The \textit{addExperiment} method creates a copy of the experiment that is added, so make sure that you get the experiment from the experiment set before you make further modifications or use it, e.g. to add it to the fit item (see below).
