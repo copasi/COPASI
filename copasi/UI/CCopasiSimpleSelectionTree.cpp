@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.8 $
+//   $Revision: 1.26.4.9 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/11/24 18:33:44 $
+//   $Date: 2008/11/28 16:44:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,86 +393,101 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
 
   // MCA
   task = dynamic_cast<CCopasiTask*>((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
-  if (task && task->updateMatrices())
+  try
     {
-      //for mca the result is in the method
-      CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
-      //           if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
-      //             std::cout << "Steady-State exists" << std::endl;
-      //           else
-      //             std::cout << "NOT EXISTS" << std::endl;
-
-      const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
-      CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
-      CArrayAnnotation *ann;
-      for (; its != pObjects->end(); ++its)
+      if (task && task->updateMatrices())
         {
-          //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
-          //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
-          ann = dynamic_cast<CArrayAnnotation*>(its->second);
-          if (!ann) continue;
+          //for mca the result is in the method
+          CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
+          //           if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
+          //             std::cout << "Steady-State exists" << std::endl;
+          //           else
+          //             std::cout << "NOT EXISTS" << std::endl;
 
-          //std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
-
-          if (!ann->isEmpty() && filter(flag, ann))
+          const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+          for (; its != pObjects->end(); ++its)
             {
-              pItem = new QListViewItem(this->mpResultMCASubtree, FROM_UTF8(ann->getObjectName()));
-              treeItems[pItem] = ann;
+              //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+              if (!ann) continue;
+
+              //std::cout << "8 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+              if (!ann->isEmpty() && filter(flag, ann))
+                {
+                  pItem = new QListViewItem(this->mpResultMCASubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = ann;
+                }
             }
         }
     }
+  catch (...)
+  {}
 
   // Steady State
   task = dynamic_cast<CCopasiTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-  if (task && task->updateMatrices())
+  try
     {
-      //for steady state the results are in the task
-      const CCopasiContainer::objectMap * pObjects = & task->getObjects();
-      CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
-      CArrayAnnotation *ann;
-      for (; its != pObjects->end(); ++its)
+      if (task && task->updateMatrices())
         {
-          //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
-          //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
-          ann = dynamic_cast<CArrayAnnotation*>(its->second);
-          if (!ann) continue;
-          //     std::cout << "9 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
-
-          if (!ann->isEmpty() && filter(flag, ann))
+          //for steady state the results are in the task
+          const CCopasiContainer::objectMap * pObjects = & task->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+          for (; its != pObjects->end(); ++its)
             {
-              pItem = new QListViewItem(this->mpResultSteadyStateSubtree, FROM_UTF8(ann->getObjectName()));
-              treeItems[pItem] = ann;
+              //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+              if (!ann) continue;
+              //     std::cout << "9 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+              if (!ann->isEmpty() && filter(flag, ann))
+                {
+                  pItem = new QListViewItem(this->mpResultSteadyStateSubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = ann;
+                }
             }
         }
     }
+  catch (...)
+  {}
 
   // Sensitivities
   task = dynamic_cast<CCopasiTask *>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
-  if (task && task->updateMatrices())
+  try
     {
-      //for sensitivities the result is in the problem
-      CSensProblem *sens = dynamic_cast<CSensProblem *>(task->getProblem());
-
-      const CCopasiContainer::objectMap * pObjects = & sens->getObjects();
-      CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
-      CArrayAnnotation *ann;
-      for (; its != pObjects->end(); ++its)
+      if (task && task->updateMatrices())
         {
-          //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
-          //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
-          ann = dynamic_cast<CArrayAnnotation*>(its->second);
-          if (!ann) continue;
-          //     std::cout << "10 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+          //for sensitivities the result is in the problem
+          CSensProblem *sens = dynamic_cast<CSensProblem *>(task->getProblem());
 
-          //std::cout << "isArray? : " << ann->isArray() << std::endl;
-
-          if (!ann->isEmpty() && filter(flag, ann))
+          const CCopasiContainer::objectMap * pObjects = & sens->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+          for (; its != pObjects->end(); ++its)
             {
-              pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(ann->getObjectName()));
-              treeItems[pItem] = (CCopasiObject *) ann;
+              //              std::cout << "Name = " << its->second->getObjectName() << std::endl;
+              //              std::cout << "Type = " << its->second->getObjectType() << std::endl;
+              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+              if (!ann) continue;
+              //     std::cout << "10 - Name : " << ann->getObjectName() << " - Type : " << ann->getObjectType() << std::endl;
+
+              //std::cout << "isArray? : " << ann->isArray() << std::endl;
+
+              if (!ann->isEmpty() && filter(flag, ann))
+                {
+                  pItem = new QListViewItem(this->mpResultSensitivitySubtree, FROM_UTF8(ann->getObjectName()));
+                  treeItems[pItem] = (CCopasiObject *) ann;
+                }
             }
         }
     }
+  catch (...)
+  {}
 
   removeEmptySubTree(&mpResultMCASubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
