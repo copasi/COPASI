@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/08 11:41:20 $
+//   $Author: ssahle $
+//   $Date: 2008/11/28 16:46:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -376,8 +376,11 @@ void CQMetabolite::slotInitialTypeChanged(bool useInitialExpression)
  */
 void CQMetabolite::slotNameLostFocus()
 {
-  if (mpEditName->text() != FROM_UTF8(mpMetab->getObjectName()))
-    {}}
+  //  if (mpEditName->text() != FROM_UTF8(mpMetab->getObjectName()))
+  {}
+  // I don´t know if we need this slot, but since it does not do anything, but
+  //causes a crash, I comment it out
+}
 
 void CQMetabolite::slotExpressionValid(bool valid)
 {
