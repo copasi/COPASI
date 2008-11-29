@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.68.8.1 $
+//   $Revision: 1.68.8.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 08:12:23 $
+//   $Author: ssahle $
+//   $Date: 2008/11/29 00:59:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,7 +180,7 @@ void CStochMethod::step(const double & deltaT)
   // get back the particle numbers:
 
   /* Set the variable Metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
@@ -196,7 +196,9 @@ void CStochMethod::start(const CState * initialState)
   unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
-  *mpCurrentState = *initialState; //TODO seem to be identical
+  //mpCurrentState is initialized. This state is not used internally in the
+  //stochastic solver, but it is used for returning the result after each step.
+  *mpCurrentState = *initialState;
 
   mpModel = mpProblem->getModel();
   assert(mpModel);
@@ -210,30 +212,19 @@ void CStochMethod::start(const CState * initialState)
 
   unsigned C_INT32 i, imax;
 
-  //fix variable particel numbers to be integer
-  mNumNumbers = mpCurrentState->getNumVariable();
-  mNumbers.resize(mNumNumbers);
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
-  CModelEntity*const* obj = mpModel->getStateTemplate().beginIndependent();
-  for (i = 0; i < mNumNumbers; ++i, Dbl++, ++obj)
+  //initialize the vector of ints that contains the particle numbers
+  //for the discrete simulation. This also floors all particle numbers in the model.
+  mNumbers.resize(mpModel->getMetabolitesX().size());
+  for (i = 0; i < mNumbers.size(); ++i)
     {
-      mNumbers[i] = (C_INT64) * Dbl;
-      *Dbl = floor(*Dbl);
+      mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
+      mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
+      mpModel->getMetabolitesX()[i]->refreshConcentration();
       //std::cout << (*obj)->getObjectName() << std::endl;
       //obj can later be used to handle variables differently
     }
 
-  //make sure fixed particle numbers are integer
-  imax = mpCurrentState->getNumFixed();
-  for (i = 0; i < imax; ++i, Dbl++, ++obj)
-    {
-      //std::cout << (*obj)->getObjectName() << std::endl;
-      if (dynamic_cast<const CMetab*>(*obj))
-        *Dbl = floor(*Dbl);
-    }
-
-  //update model to integer particle numbers and calculate initial propensities
-  mpModel->setState(*mpCurrentState);
+  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
 
   mpModel->updateSimulatedValues(false); //for assignments
   //mpModel->updateNonSimulatedValues(); //for assignments
@@ -394,6 +385,24 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       // this is less efficient but can deal with assignments.
       //TODO: handle dependencies for assignments also.
       mpModel->updateSimulatedValues(false);
+
+      //now potentially species with assignments have non integer
+      //particle numbers. This needs to be rounded. Also the updated
+      //particle numbers need to be copied to the vector of integers.
+      //(the integer values may be used to calculate the propensities for
+      //higher order kinetics).
+      unsigned C_INT32 i, imax = mNumbers.size();
+      for (i = 0; i < imax; ++i)
+        {
+          if (mpModel->getMetabolitesX()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+            {
+              mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
+              mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
+              mpModel->getMetabolitesX()[i]->refreshConcentration();
+            }
+        }
+
+      //now the propensities can be updated
       updatePropensities();
     }
   else
