@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/12/01 13:33:46 $
+//   $Date: 2008/12/01 13:58:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,6 +188,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           try
             {
               pFraction = create_simplified_normalform(pNewMath);
+              assert(pFraction != NULL);
+              //            this->mNormalizedExpressions.push_back(pFraction);
             }
           catch (recursion_limit_exception e)
             {
@@ -199,8 +201,6 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
             }
           ++mNumExpressions;
           delete pNewMath;
-          assert(pFraction != NULL);
-          //            this->mNormalizedExpressions.push_back(pFraction);
         }
     }
   // kinetic laws + stoichiometric expressions
@@ -221,6 +221,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
               try
                 {
                   pFraction = create_simplified_normalform(pNewMath);
+                  assert(pFraction != NULL);
+                  //                this->mNormalizedExpressions.push_back(pFraction);
                 }
               catch (recursion_limit_exception e)
                 {
@@ -230,10 +232,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                 {
                   std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
                 }
-              ++mNumExpressions;
               delete pNewMath;
-              assert(pFraction != NULL);
-              //                this->mNormalizedExpressions.push_back(pFraction);
+              ++mNumExpressions;
             }
         }
       const SpeciesReference* pSpeciesReference = NULL;
@@ -255,6 +255,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                   try
                     {
                       pFraction = create_simplified_normalform(pNewMath);
+                      assert(pFraction != NULL);
+                      //                    this->mNormalizedExpressions.push_back(pFraction);
                     }
                   catch (recursion_limit_exception e)
                     {
@@ -266,8 +268,6 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                     }
                   ++mNumExpressions;
                   delete pNewMath;
-                  assert(pFraction != NULL);
-                  //                    this->mNormalizedExpressions.push_back(pFraction);
                 }
             }
         }
@@ -289,6 +289,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                   try
                     {
                       pFraction = create_simplified_normalform(pNewMath);
+                      assert(pFraction != NULL);
+                      //                    this->mNormalizedExpressions.push_back(pFraction);
                     }
                   catch (recursion_limit_exception e)
                     {
@@ -300,8 +302,6 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                     }
                   ++mNumExpressions;
                   delete pNewMath;
-                  assert(pFraction != NULL);
-                  //                    this->mNormalizedExpressions.push_back(pFraction);
                 }
             }
         }
@@ -326,6 +326,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           try
             {
               pFraction = create_simplified_normalform(pNewMath);
+              assert(pFraction != NULL);
+              //            this->mNormalizedExpressions.push_back(pFraction);
             }
           catch (recursion_limit_exception e)
             {
@@ -337,8 +339,6 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
             }
           ++mNumExpressions;
           delete pNewMath;
-          assert(pFraction != NULL);
-          //            this->mNormalizedExpressions.push_back(pFraction);
         }
 
       // delay
@@ -354,6 +354,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
               try
                 {
                   pFraction = create_simplified_normalform(pNewMath);
+                  assert(pFraction != NULL);
+                  //                this->mNormalizedExpressions.push_back(pFraction);
                 }
               catch (recursion_limit_exception e)
                 {
@@ -365,8 +367,6 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                 }
               ++mNumExpressions;
               delete pNewMath;
-              assert(pFraction != NULL);
-              //                this->mNormalizedExpressions.push_back(pFraction);
             }
         }
 
@@ -385,6 +385,8 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
               try
                 {
                   pFraction = create_simplified_normalform(pNewMath);
+                  assert(pFraction != NULL);
+                  //                this->mNormalizedExpressions.push_back(pFraction);
                 }
               catch (recursion_limit_exception e)
                 {
@@ -396,8 +398,6 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                 }
               ++mNumExpressions;
               delete pNewMath;
-              assert(pFraction != NULL);
-              //                this->mNormalizedExpressions.push_back(pFraction);
             }
         }
     }
@@ -428,6 +428,8 @@ void stress_test::normalizeAndSimplifyFunctionDefinitions(const Model* pModel)
           try
             {
               pFraction = create_simplified_normalform(pNewRoot);
+              assert(pFraction != NULL);
+              //          mNormalizedFunctionDefinitions.push_back(pFraction);
             }
           catch (recursion_limit_exception e)
             {
@@ -438,8 +440,6 @@ void stress_test::normalizeAndSimplifyFunctionDefinitions(const Model* pModel)
               std::cerr << "expression \"" << writeMathMLToString(pNewRoot) << "\" could not be normalized." << std::endl;
             }
           ++mNumFunctionDefinitions;
-          assert(pFraction != NULL);
-          //          mNormalizedFunctionDefinitions.push_back(pFraction);
         }
     }
 }
