@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/08 15:50:43 $
+//   $Date: 2008/12/01 13:36:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,9 @@ const CEvaluationNode CNormalTranslation::ZERO_NODE = CNormalTranslation::NEUTRA
 const CEvaluationNode CNormalTranslation::ONE_NODE = CNormalTranslation::NEUTRAL_ELEMENT_MULTIPLY;
 const CEvaluationNode CNormalTranslation::PLUS_NODE = CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
 const CEvaluationNode CNormalTranslation::TIMES_NODE = CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+
+recursion_limit_exception::recursion_limit_exception(recursion_limit_exception::LIMIT_TYPE type): std::exception(), mType(type)
+{}
 
 /**
  * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
@@ -151,7 +154,7 @@ CNormalFraction* CNormalTranslation::normAndSimplify(const CEvaluationNode* root
  */
 CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationTree* tree0, unsigned int depth)
 {
-  if (depth > RECURSION_LIMIT) throw;
+  if (depth > RECURSION_LIMIT) throw recursion_limit_exception(recursion_limit_exception::NORM_AND_SIMPLIFY);
   //std::cout << "<p>normAndSimplifyReptdly called.</p>" << std::endl;
   const CEvaluationNode* root0 = tree0->getRoot();
 
@@ -188,7 +191,7 @@ CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationTre
  */
 CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationNode* root0, unsigned int depth)
 {
-  if (depth > RECURSION_LIMIT) throw;
+  if (depth > RECURSION_LIMIT) throw recursion_limit_exception(recursion_limit_exception::NORM_AND_SIMPLIFY);
   //std::cout << "<p>normAndSimplifyReptdly called.</p>" << std::endl;
   //const CEvaluationNode* root0=tree0->getRoot();
   CNormalFraction * base0 = normAndSimplify(root0);
@@ -453,7 +456,7 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
   while (!finished)
     {
       ++counter;
-      if (counter > RECURSION_LIMIT) throw;
+      if (counter > RECURSION_LIMIT) throw recursion_limit_exception(recursion_limit_exception::SIMPLIFY);
       pResult = CNormalTranslation::eliminate(pTmp);
       delete pTmp;
       // now we evaluate everything that can be evaluated, e.g. operations on

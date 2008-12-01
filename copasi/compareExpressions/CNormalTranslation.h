@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/08 15:50:43 $
+//   $Date: 2008/12/01 13:36:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,8 +21,28 @@
 class CNormalFraction;
 class CEvaluationTree;
 
+#include <exception>
+
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeOperator.h"
+
+class recursion_limit_exception : public std::exception
+  {
+  public:
+    enum LIMIT_TYPE
+    {
+      SIMPLIFY,
+      NORM_AND_SIMPLIFY
+    };
+
+    /**
+     * constructor
+     */
+    recursion_limit_exception(LIMIT_TYPE type);
+
+  protected:
+    LIMIT_TYPE mType;
+  };
 
 /**
  * The class for simplification and translation of trees into CNormal
