@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.8.6.2 $
+//   $Revision: 1.8.6.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2008/12/01 17:47:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,17 +111,17 @@ void CReferencesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   table->setText(row, COL_DUMMY, QString::number(row));
 
   QComboTableItem * pComboBox = NULL;
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RESOURCE)))
-    {
-      pComboBox = static_cast<QComboTableItem *>(table->item(row, COL_RESOURCE));
-      pComboBox->setCurrentItem(FROM_UTF8(pReference->getResource()));
-    }
-  else
+  if ((pComboBox = dynamic_cast<QComboTableItem *>(table->item(row, COL_RESOURCE))) == NULL)
     {
       pComboBox = new QComboTableItem(table, mResources);
-      pComboBox->setCurrentItem(FROM_UTF8(pReference->getResource()));
       table->setItem(row, COL_RESOURCE, pComboBox);
     }
+
+  std::string Resource = pReference->getResource();
+  if (Resource == "")
+    pComboBox->setCurrentItem(0);
+  else
+    pComboBox->setCurrentItem(FROM_UTF8(Resource));
 
   table->setText(row, COL_ID, FROM_UTF8(pReference->getId()));
   table->setText(row, COL_DESCRIPTION, FROM_UTF8(pReference->getDescription()));
