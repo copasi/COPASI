@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.38.2.2 $
+//   $Revision: 1.38.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2008/12/01 17:44:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,17 +262,35 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Range = mSubject2Triplet.equal_range(triplet.pSubject);
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
-      mSubject2Triplet.erase(Range.first);
+      {
+        mSubject2Triplet.erase(Range.first);
+
+        // We must stop or make sure that the iterator Range is still valid. Since
+        // triplets are unique (we have at most one reference) we can stop.
+        break;
+      }
 
   Range = mObject2Triplet.equal_range(triplet.pObject);
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
-      mObject2Triplet.erase(Range.first);
+      {
+        mObject2Triplet.erase(Range.first);
+
+        // We must stop or make sure that the iterator Range is still valid. Since
+        // triplets are unique (we have at most one reference) we can stop.
+        break;
+      }
 
   std::pair< Predicate2Triplet::iterator, Predicate2Triplet::iterator> RangeP = mPredicate2Triplet.equal_range(triplet.Predicate);
   for (; RangeP.first != RangeP.second; ++RangeP.first)
     if (RangeP.first->second == triplet)
-      mPredicate2Triplet.erase(RangeP.first);
+      {
+        mPredicate2Triplet.erase(RangeP.first);
+
+        // We must stop or make sure that the iterator RangeP is still valid. Since
+        // triplets are unique (we have at most one reference) we can stop.
+        break;
+      }
 
   destroyUnreferencedNode(triplet.pObject);
   return;
