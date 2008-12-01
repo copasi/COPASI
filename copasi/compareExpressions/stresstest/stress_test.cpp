@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/10 13:54:53 $
+//   $Date: 2008/12/01 13:33:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,10 +33,12 @@
 #include "sbml/EventAssignment.h"
 #include "sbml/StoichiometryMath.h"
 #include "sbml/math/ASTNode.h"
+#include "sbml/math/MathML.h"
 
 #include "copasi/report/CCopasiContainer.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/compareExpressions/CNormalFraction.h"
+#include "copasi/compareExpressions/CNormalTranslation.h"
 
 /**
  * Constructor.
@@ -153,7 +155,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
         {
           pNewMath = create_expression(pMath, pModel);
           assert(pNewMath != NULL);
-          pFraction = create_simplified_normalform(pNewMath);
+          try
+            {
+              pFraction = create_simplified_normalform(pNewMath);
+            }
+          catch (recursion_limit_exception e)
+            {
+              std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+            }
+          catch (...)
+            {
+              std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+            }
           ++mNumExpressions;
           delete pNewMath;
           assert(pFraction != NULL);
@@ -172,7 +185,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
         {
           pNewMath = create_expression(pMath, pModel);
           assert(pNewMath != NULL);
-          pFraction = create_simplified_normalform(pNewMath);
+          try
+            {
+              pFraction = create_simplified_normalform(pNewMath);
+            }
+          catch (recursion_limit_exception e)
+            {
+              std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+            }
+          catch (...)
+            {
+              std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+            }
           ++mNumExpressions;
           delete pNewMath;
           assert(pFraction != NULL);
@@ -194,7 +218,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
             {
               pNewMath = create_expression(pMath, pModel);
               assert(pNewMath != NULL);
-              pFraction = create_simplified_normalform(pNewMath);
+              try
+                {
+                  pFraction = create_simplified_normalform(pNewMath);
+                }
+              catch (recursion_limit_exception e)
+                {
+                  std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                }
+              catch (...)
+                {
+                  std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                }
               ++mNumExpressions;
               delete pNewMath;
               assert(pFraction != NULL);
@@ -217,7 +252,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                 {
                   pNewMath = create_expression(pMath, pModel);
                   assert(pNewMath != NULL);
-                  pFraction = create_simplified_normalform(pNewMath);
+                  try
+                    {
+                      pFraction = create_simplified_normalform(pNewMath);
+                    }
+                  catch (recursion_limit_exception e)
+                    {
+                      std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                    }
+                  catch (...)
+                    {
+                      std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                    }
                   ++mNumExpressions;
                   delete pNewMath;
                   assert(pFraction != NULL);
@@ -240,7 +286,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                 {
                   pNewMath = create_expression(pMath, pModel);
                   assert(pNewMath != NULL);
-                  pFraction = create_simplified_normalform(pNewMath);
+                  try
+                    {
+                      pFraction = create_simplified_normalform(pNewMath);
+                    }
+                  catch (recursion_limit_exception e)
+                    {
+                      std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                    }
+                  catch (...)
+                    {
+                      std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                    }
                   ++mNumExpressions;
                   delete pNewMath;
                   assert(pFraction != NULL);
@@ -266,7 +323,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
         {
           pNewMath = create_expression(pMath, pModel);
           assert(pNewMath != NULL);
-          pFraction = create_simplified_normalform(pNewMath);
+          try
+            {
+              pFraction = create_simplified_normalform(pNewMath);
+            }
+          catch (recursion_limit_exception e)
+            {
+              std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+            }
+          catch (...)
+            {
+              std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+            }
           ++mNumExpressions;
           delete pNewMath;
           assert(pFraction != NULL);
@@ -283,7 +351,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
             {
               pNewMath = create_expression(pMath, pModel);
               assert(pNewMath != NULL);
-              pFraction = create_simplified_normalform(pNewMath);
+              try
+                {
+                  pFraction = create_simplified_normalform(pNewMath);
+                }
+              catch (recursion_limit_exception e)
+                {
+                  std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                }
+              catch (...)
+                {
+                  std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                }
               ++mNumExpressions;
               delete pNewMath;
               assert(pFraction != NULL);
@@ -303,7 +382,18 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
             {
               pNewMath = create_expression(pMath, pModel);
               assert(pNewMath != NULL);
-              pFraction = create_simplified_normalform(pNewMath);
+              try
+                {
+                  pFraction = create_simplified_normalform(pNewMath);
+                }
+              catch (recursion_limit_exception e)
+                {
+                  std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                }
+              catch (...)
+                {
+                  std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                }
               ++mNumExpressions;
               delete pNewMath;
               assert(pFraction != NULL);
@@ -335,7 +425,18 @@ void stress_test::normalizeAndSimplifyFunctionDefinitions(const Model* pModel)
           assert(pMath != NULL);
           pNewRoot = expand_function_calls(pMath, pModel);
           assert(pNewRoot != NULL);
-          pFraction = create_simplified_normalform(pNewRoot);
+          try
+            {
+              pFraction = create_simplified_normalform(pNewRoot);
+            }
+          catch (recursion_limit_exception e)
+            {
+              std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewRoot) << "\"." << std::endl;
+            }
+          catch (...)
+            {
+              std::cerr << "expression \"" << writeMathMLToString(pNewRoot) << "\" could not be normalized." << std::endl;
+            }
           ++mNumFunctionDefinitions;
           assert(pFraction != NULL);
           //          mNormalizedFunctionDefinitions.push_back(pFraction);
