@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.3.6.2 $
+//   $Revision: 1.3.6.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/11/19 18:38:58 $
+//   $Date: 2008/12/02 12:39:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -350,7 +350,7 @@ class CCSPMethod : public CTSSAMethod
     /**
      * upgrade all vectors with values from actually calculalion for current step
      **/
-    void setVectors();
+    void setVectors(int fast);
 
     /**
     * empty every vector to be able to fill them with new values for a
