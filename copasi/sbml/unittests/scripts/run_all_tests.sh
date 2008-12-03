@@ -209,7 +209,7 @@ function run_franks_testsuite
   fi
   USE_VALGRIND=${USE_VALGRIND} DO_LEAKCHECK=${DO_LEAKCHECK} TMP_DIR=${RESULT_DIR}/franks/curated ./run_franks_test.sh ${BIOMODELS_DIR}/curated/*.xml
   if [ "${DO_NONCURATED}" == "yes" ];then
-    echo -e "\nRoundtripping noncurated models ..."
+    echo -e "\nSimulating noncurated models ..."
     # check if ${BIOMODELS_DIR}/noncurated exists
     if [ ! -d ${BIOMODELS_DIR}/noncurated ];then
       echo "Error. \"${BIOMODELS_DIR}/noncurated\" does not exist or is not a directory."
