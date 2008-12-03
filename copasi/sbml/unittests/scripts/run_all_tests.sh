@@ -20,7 +20,7 @@ USE_VALGRIND=${USE_VALGRIND:="no"}
 
 DO_LEACKCHECK=${DO_LEAKCHECK:="no"}
 
-DO_NONCURATED=${DO_NONCURATED:="no"}
+DO_NONCURATED=${DO_NONCURATED:="yes"}
 
 if [ -z $COPASISE ];then
   if [ "$SYSTEM" == "Darwin" ];then
@@ -33,7 +33,7 @@ fi
 COPASISE_OPTIONS=${COPASISE_OPTIONS:="--nologo --verbose"}
 
 # parameters for import test
-BIOMODELS_DIR=${BIOMODELS_DIR:=${HOME}/Downloads/biomodels_25September2007_sbmls}
+BIOMODELS_DIR=${BIOMODELS_DIR:=${HOME}/workspace/release_21August2008_sbmls}
 
 # parameters for export test
 CPS_DIR=${CPS_DIR:=""}
@@ -323,7 +323,7 @@ else
             fi
             shift;
             ;;
-          rountrip )
+          roundtrip )
             run_roundtripping_tests;
             shift;
             ;;
@@ -341,6 +341,7 @@ else
             ;;
           * )
             echo "Error. invalid testname \"${TEST}\" specified. For a list of valid test names run \"./run_all_tests help\"."
+            shift;
             ;;
         esac
         TEST=$1
