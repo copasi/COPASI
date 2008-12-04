@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.18.8.1 $
+//   $Revision: 1.18.8.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/23 13:18:37 $
+//   $Date: 2008/12/04 00:20:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -273,10 +273,10 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
           ret.push_back((*itValue)->getValueReference());
       break;
 
-    case CONST_GLOBAL_PARAMETER_VALUES:
+    case CONST_GLOBAL_PARAMETER_INITIAL_VALUES:
       for (;itValue != endValue; ++itValue)
         if ((*itValue)->getStatus() == CModelEntity::FIXED)
-          ret.push_back((*itValue)->getValueReference());
+          ret.push_back((*itValue)->getInitialValueReference());
       break;
 
     case ODE_GLOBAL_PARAMETER_VALUES:
@@ -378,7 +378,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
     case ALL_PARAMETER_VALUES:
       {
-        ret = getListOfConstObjects(CONST_GLOBAL_PARAMETER_VALUES, pModel);
+        ret = getListOfConstObjects(CONST_GLOBAL_PARAMETER_INITIAL_VALUES, pModel);
 
         ObjectList tmp = getListOfConstObjects(ALL_LOCAL_PARAMETER_VALUES, pModel);
         ret.insert(ret.end(), tmp.begin(), tmp.end());
