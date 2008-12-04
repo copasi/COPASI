@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.6 $
+//   $Revision: 1.32.2.7 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/30 20:20:20 $
+//   $Date: 2008/12/04 15:20:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,8 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpContentTable->setReadOnly(true);
   mpContentTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   mpStack->addWidget(mpContentTable, 0);
+
+  mpContentTable->horizontalHeader()->setTracking(true);
 
   //   if (showBarChart)
   //     {
@@ -635,11 +637,22 @@ void CQArrayAnnotationsWidget::tableDoubleClicked()
     switchToBarChart();
 }
 
-void CQArrayAnnotationsWidget::setColumnSize(int /* dummy1 */, int /* dummy2 */, int size)
+void CQArrayAnnotationsWidget::setColumnSize(int col, int size0, int size)
 {
-  int i;
+  unsigned C_INT32 i;
+  unsigned C_INT32 sum = 0;
+  for (i = 0; i <= col; ++i)
+    sum += mpContentTable->horizontalHeader()->sectionSize(i);
+
+  unsigned C_INT32 newSize = sum / (col + 1);
+  if (newSize < 5) newSize = 5;
+
   for (i = 0; i < mpContentTable->numCols(); i++)
-    mpContentTable->horizontalHeader()->resizeSection(i, size);
+    mpContentTable->setColumnWidth(i, newSize);
+
+  //mpContentTable->horizontalHeader()->resizeSection(i, newSize);
+  mpContentTable->horizontalHeader()->repaint();
+  mpContentTable->update();
 }
 
 void CQArrayAnnotationsWidget::fillBarChart()
