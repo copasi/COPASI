@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.27.2.4 $
+//   $Revision: 1.27.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/04 15:06:55 $
+//   $Date: 2008/12/04 16:22:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,10 +69,10 @@ bool CQOptimizationWidget::saveTask()
       pProblem->setSubtaskType((CCopasiTask::Type) mSubtaskMap[(const char *) mpBoxSubtask->currentText().utf8()]);
     }
 
-  if (mpCheckMaximize->isChecked() != pProblem->maximize())
+  if (mpBtnMaximize->isChecked() != pProblem->maximize())
     {
       mChanged = true;
-      pProblem->setMaximize(mpCheckMaximize->isChecked());
+      pProblem->setMaximize(mpBtnMaximize->isChecked());
     }
 
   mChanged |= mpParameters->save(NULL, NULL);
@@ -102,7 +102,7 @@ bool CQOptimizationWidget::loadTask()
   mpExpressionEMW->mpExpressionWidget->setExpression(pProblem->getObjectiveFunction());
   mpExpressionEMW->updateWidget();
 
-  mpCheckMaximize->setChecked(pProblem->maximize());
+  mpBtnMaximize->setChecked(pProblem->maximize());
 
   mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
@@ -165,16 +165,15 @@ void CQOptimizationWidget::init()
 
   mpHeaderWidget->setTaskName(taskName);
 
-  //  mpExpressionEMW->mpExpressionWidget->setName(FROM_UTF8(taskName));
-
-  //  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION);
-
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQOptimizationWidgetLayout->addWidget(mpBtnWidget);
 
   addMethodSelectionBox(COptTask::ValidMethods);
   addMethodParameterTable();
+
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION);
+
+  mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
 
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;
