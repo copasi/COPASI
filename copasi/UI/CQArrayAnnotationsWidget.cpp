@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.32.2.7 $
+//   $Revision: 1.32.2.8 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/12/04 15:20:44 $
+//   $Date: 2008/12/04 15:58:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,9 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpSelectionTable->setTopMargin(0);
   mpSelectionTable->setNumCols(2);
   mpSelectionTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  mpSelectionTable->setColumnMovingEnabled(false);
+  mpSelectionTable->setRowMovingEnabled(false);
+  mpSelectionTable->verticalHeader()->setResizeEnabled(false);
 
   mpButton = new QPushButton(mpHBoxSelection);
   mpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -68,7 +71,10 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpContentTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   mpStack->addWidget(mpContentTable, 0);
 
+  mpContentTable->setColumnMovingEnabled(false);
+  mpContentTable->setRowMovingEnabled(false);
   mpContentTable->horizontalHeader()->setTracking(true);
+  mpContentTable->verticalHeader()->setResizeEnabled(false);
 
   //   if (showBarChart)
   //     {
@@ -637,18 +643,18 @@ void CQArrayAnnotationsWidget::tableDoubleClicked()
     switchToBarChart();
 }
 
-void CQArrayAnnotationsWidget::setColumnSize(int col, int size0, int size)
+void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*/)
 {
-  unsigned C_INT32 i;
-  unsigned C_INT32 sum = 0;
+  C_INT32 i;
+  C_FLOAT64 sum = 0;
   for (i = 0; i <= col; ++i)
     sum += mpContentTable->horizontalHeader()->sectionSize(i);
 
-  unsigned C_INT32 newSize = sum / (col + 1);
+  C_FLOAT64 newSize = sum / (col + 1);
   if (newSize < 5) newSize = 5;
 
   for (i = 0; i < mpContentTable->numCols(); i++)
-    mpContentTable->setColumnWidth(i, newSize);
+    mpContentTable->setColumnWidth(i, ((int)(newSize*(i + 1))) - ((int)(newSize*i)));
 
   //mpContentTable->horizontalHeader()->resizeSection(i, newSize);
   mpContentTable->horizontalHeader()->repaint();

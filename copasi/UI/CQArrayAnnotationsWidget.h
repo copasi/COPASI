@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.13.2.3 $
+//   $Revision: 1.13.2.4 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/27 16:56:09 $
+//   $Date: 2008/12/04 15:58:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,7 +86,7 @@ class CQArrayAnnotationsWidget : public QVBox
 
     void tableDoubleClicked();
 
-    void setColumnSize(int dummy1, int dummy2, int size);
+    void setColumnSize(int col, int size0, int size);
 
   protected:
 
