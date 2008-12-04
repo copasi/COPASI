@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.29.4.1 $
+//   $Revision: 1.29.4.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 11:14:34 $
+//   $Author: ssahle $
+//   $Date: 2008/12/04 00:45:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,30 +17,18 @@
 
 #include <qfiledialog.h>
 
-#include <qvariant.h>
-#include <qcheckbox.h>
-//#include <qcombobox.h>
-#include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qmessagebox.h>
+//#include <qwhatsthis.h>
 #include <qtoolbutton.h>
 #include <qimage.h>
-
-#include <algorithm>
 
 #include "SensitivitiesWidget.h"
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
-//#include "listviews.h"
-//#include "CProgressBar.h"
-//#include "copasiui3window.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 #include "CCopasiSelectionDialog.h"
@@ -52,7 +40,6 @@
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
-//#include "parametertable.h"
 #include "CQSensResultWidget.h"
 
 SensWidgetComboBox::SensWidgetComboBox(QWidget * parent, const char * name)
@@ -197,7 +184,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   //******** subtask ******************
 
   TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Subtask Method"));
+  TextLabel1->setText(trUtf8("Subtask"));
   TextLabel1->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel1, fieldStart + 1, 0);
@@ -222,6 +209,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   FunctionChooser = new SensWidgetComboBox(this, "TargetFunctionChooser");
   //  FunctionChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, FunctionChooser->sizePolicy().hasHeightForWidth()));
   mpMethodLayout->addMultiCellWidget(FunctionChooser, fieldStart + 4, fieldStart + 4, 1, 1);
+  QToolTip::add(FunctionChooser, "This specifies the set of target values for which<br>the sensitivities are to be calculated.");
 
   FunctionLineEdit = new QLineEdit(this, "FunctionLineEdit");
   lineEditFormat = FunctionLineEdit->sizeHint();
@@ -237,6 +225,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
                                         lineEditFormat.height());
   SingleFunctionChooser->setIconSet(QIconSet(img));
   SingleFunctionChooser->setEnabled(false); //hide();
+  QToolTip::add(SingleFunctionChooser, "If the target value of the sensitivities calculation is a single object <br>the object can be selected by clicking this button.");
 
   //*********** variable 1 **********************
 
@@ -249,6 +238,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   VariableChooser = new SensWidgetComboBox(this, "VariableChooser");
 
   mpMethodLayout->addMultiCellWidget(VariableChooser, fieldStart + 6, fieldStart + 6, 1, 1);
+  QToolTip::add(VariableChooser, "This specifies a set of parameters. The sensitivities are calculated with respect to these parameters.");
 
   VariableLineEdit = new QLineEdit(this, "VariableLineEdit");
   VariableLineEdit->resize(lineEditFormat);
@@ -275,6 +265,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   Variable2Chooser = new SensWidgetComboBox(this, "Variable2Chooser");
   //  Variable2Chooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, Variable2Chooser->sizePolicy().hasHeightForWidth()));
   mpMethodLayout->addMultiCellWidget(Variable2Chooser, fieldStart + 8, fieldStart + 8, 1, 1);
+  QToolTip::add(Variable2Chooser, "This specifies a second set of parameters. If this is set, second order sensitivities will be calculated.");
 
   Variable2LineEdit = new QLineEdit(this, "Variable2LineEdit");
   Variable2LineEdit->resize(lineEditFormat);
