@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.9 $
+//   $Revision: 1.26.4.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/28 16:44:32 $
+//   $Author: pwilly $
+//   $Date: 2008/12/04 12:53:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -832,11 +832,13 @@ bool CCopasiSimpleSelectionTree::filter(const SelectionFlag & flag, const CCopas
             return false;
 
           // TARGET_EVENT -> only Transient Volumes, Transient Concentrations, and Transient Values are allowed
-          if ((flag & BASE_TRANSIENT) && (flag & BASE_MODEL))
-            {
-              if (pObject->getObjectName().find("Flux") != std::string::npos)
-                return false;
-            }
+          /* as it conflicts with TRANSIENT_EXPRESSION and it is not yet used, we temporarily ignore the following (04.12.2008).
+                if ((flag & BASE_TRANSIENT) && (flag & BASE_MODEL))
+                  {
+                    if (pObject->getObjectName().find("Flux") != std::string::npos)
+                      return false;
+                  }
+          */
 
           // Every other value of CReaction is valid.
           return true;
