@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.29.4.2 $
+//   $Revision: 1.29.4.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/12/04 00:45:36 $
+//   $Author: shoops $
+//   $Date: 2008/12/04 17:14:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,15 +16,15 @@
 // All rights reserved.
 
 #include <qfiledialog.h>
-
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-//#include <qwhatsthis.h>
 #include <qtoolbutton.h>
 #include <qimage.h>
+
+#include <algorithm>
 
 #include "SensitivitiesWidget.h"
 #include "DataModelGUI.h"
