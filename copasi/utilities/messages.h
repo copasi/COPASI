@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.122.4.2 $
+//   $Revision: 1.122.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 15:33:46 $
+//   $Author: nsimus $
+//   $Date: 2008/12/08 11:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,6 +316,7 @@ const MESSAGES Messages[] =
     {MCTSSAMethod + 11, "CILDMModifiedMethod (11): At time t='%f'  no reduction is possible."},
     {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
     {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
+    {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assigments or ODE are presenting. "},
 
     // CTSSAProblem
     {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},
