@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163.4.3 $
+//   $Revision: 1.163.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/21 13:59:38 $
+//   $Author: nsimus $
+//   $Date: 2008/12/08 11:54:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,6 +311,12 @@ class CModel : public CModelEntity
      *  @return unsigned C_INT32 dimension
      */
     unsigned C_INT32 getNumODEMetabs() const;
+
+    /**
+     *  Get the number of metabolites determined by assigments
+     *  @return unsigned C_INT32 dimension
+     */
+    unsigned C_INT32 getNumAssignmentMetabs() const;
 
     /**
      *  Get the number of independent metabolites determined by reactions
