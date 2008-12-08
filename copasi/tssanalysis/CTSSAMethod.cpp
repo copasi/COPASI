@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14.2.5 $
+//   $Revision: 1.14.2.6 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/11/13 12:39:21 $
+//   $Date: 2008/12/08 11:53:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,11 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  if (pTP->getModel()->getNumODEMetabs() != 0 || pTP->getModel()->getNumAssignmentMetabs() != 0)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 14);
+      return false;
+    }
   return true;
 }
 
