@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.64.6.1 $
+//   $Revision: 1.64.6.1.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/24 18:55:22 $
+//   $Author: ssahle $
+//   $Date: 2008/12/10 16:57:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -239,6 +239,7 @@ void CopasiTableWidget::saveTable()
           if (!mFlagDelete[j])
             {
               CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
+              if (!pObj) continue;
               if (mShowNewObjectWarning && pObj->getObjectName() != (const char *)table->text(j, 1).utf8())
                 {
                   QString msg;
