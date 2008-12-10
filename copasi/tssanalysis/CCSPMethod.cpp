@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.8 $
+//   $Revision: 1.8.2.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/12/02 12:39:16 $
+//   $Date: 2008/12/10 11:44:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -489,9 +489,9 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   if (info)
     {
-      // TODO: check this case
-      // std::cout << "After time scales separation :  " << std::endl;
-      // std::cout << "the first slow candidate mode is explosive mode " << std::endl;
+      /*  the fastest of slow modes has positive eigen value  */
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     MCTSSAMethod + 15, mTime);
 
       return;
     }
@@ -507,13 +507,12 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   if (M == 0)
     {
 
-      // std::cout << "After time scales separation :  " << std::endl;
-      // std::cout << "There are no candidates to fast modes " << std::endl;
+      /* After time scales separation : */
+      /* no candidates to  fast modes */
 
       CCopasiMessage(CCopasiMessage::WARNING,
                      MCTSSAMethod + 12, mTime);
 
-      setVectors(M);
       return;
     }
 
@@ -731,7 +730,9 @@ cspiteration:
 
           //CSPOutput(N,M,reacs_size);
 
-          mSetVectors = 1;
+          //mSetVectors = 1; TO REMOVE
+
+          //setVectors(M);
 
           A = A1;
           B = B1;
@@ -745,10 +746,12 @@ cspiteration:
         else
           {
 
-            // std::cout << "No any fast exhausted modes was found on this time step " << std::endl;
+            /* No any fast exhausted modes was found on this time step */
 
-            //CCopasiMessage(CCopasiMessage::WARNING,
-            //   MCTSSAMethod + 5, 0);
+            M = 0;
+
+            CCopasiMessage(CCopasiMessage::WARNING,
+                           MCTSSAMethod + 12, mTime);
             return;
           }
     }
@@ -793,11 +796,24 @@ cspiteration:
       }
     else
       {
-        //CCopasiMessage(CCopasiMessage::WARNING,
-        //   MCTSSAMethod + 6, 0);
+        if (M > 1)
+          {
+            M --;
+            goto analyseMmodes;
+          }
+        else
+          {
+
+            /* No any fast exhausted modes was found on this time step */
+
+            M = 0;
+
+            CCopasiMessage(CCopasiMessage::WARNING,
+                           MCTSSAMethod + 12, mTime);
+            return;
+          }
       }
 
-  // TODO : return correct A, B
   return;
 }
 /*  compute  the norm C  of the off-diagonal blocks   */
@@ -1679,10 +1695,11 @@ void CCSPMethod::setAnnotationM(int step)
   sstr.clear();
   unsigned C_INT32 i;
   double timeScale;
-  unsigned C_INT32 M = mVec_SlowModes[step];
+  unsigned C_INT32 M;
 
   if (!step) return;
   step -= 1;
+  M = mVec_SlowModes[step];
 
   // fill pAmplitudeAnn
 
@@ -1781,6 +1798,8 @@ void CCSPMethod::setAnnotationM(int step)
  **/
 void CCSPMethod::setVectors(int fast)
 {
+
+  //if (fast == 0) return;
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
