@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.5.2.1 $
+//   $Revision: 1.5.2.1.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/11 16:26:30 $
+//   $Author: ssahle $
+//   $Date: 2008/12/10 16:59:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,11 +213,12 @@ void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
   if (row == table->numRows() - 1) //new Object
     {
-      flagNew = true;
-      resizeTable(table->numRows() + 1);
-      mFlagNew[row] = true;
-      table->setText(row, 1, createNewName(defaultObjectName()));
-      defaultTableLineContent(row, 0);
+      //we have no default way to create a layout at the moment
+      /*      flagNew = true;
+            resizeTable(table->numRows() + 1);
+            mFlagNew[row] = true;
+            table->setText(row, 1, createNewName(defaultObjectName()));
+            defaultTableLineContent(row, 0);*/
     }
 
   saveTable();
@@ -270,7 +271,7 @@ void CQLayoutsWidget::slot_show(int row)
     }
   else
     {
-      std::cerr << "Could not find layout." << std::endl;
+      //std::cerr << "Could not find layout." << std::endl;
     }
 }
 
