@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.55 $ -->
+<!--   $Revision: 1.55.6.1 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2008/09/01 17:01:32 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2008/12/15 10:22:58 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4810,4 +4810,105 @@ loaded in XPPAUT.
 </caution>
 </sect1>
 </chapter>  
-
+<chapter id="diagrams" xreflabel="Diagrams">
+<title>Diagrams</title>
+<para>Starting with version 4.4.28, COPASI has the possibility to read and display layout information from COPASI and SBML files. An additional feature that comes with the diagram display is the possibility to display animations of time course data from simulations.</para>
+<para>Currently there is no way to create new diagrams within COPASI, but we hope to change that in the future.</para>
+<para>The layout information can either be obtained in the form of the SBML layout extension (see the <ulink url="http://otto.bioquant.uni-heidelberg.de/sbml/">SBML Layout Extension Specification</ulink> for further information) or from a COPASI file that includes layout information.</para>
+<para>Since there is no way to create new diagrams in COPASI, the only way to come up with a COPASI file that includes layout information is to create an SBML file with layout information and convert it to a COPASI file. The layout in COPASI files is also stored in the form of the SBML layout extension. Only that the SBML object ids are replaced by the corresponding COPASI keys.</para>
+<para>
+There are several ways to create layout information for an SBML model. The <ulink url="http://sycamore.eml.org">Sycamore webapplication</ulink> allows you to load SBML files, create layout information for the model in the file and save the model with the layout information back to file. It provides different methods for generating the layout and the layout can be modified manually as well.
+</para>
+<para>
+Another web application that allows the user to add layout information to an SBML file is Frank Bergmanns <ulink url="http://sbw.kgi.edu/Layout/">SBML Layout Viewer</ulink>. It allows the user to influence the layout creation by setting some parameters.
+</para>
+<para>
+Franks Bermanns layout creation tool is also part of <ulink url="http://sbw.kgi.edu/">SBW</ulink> and since the latest Versions of COPASI do include some SBW support, it is possible to send a model from COPASI to the layout tool and get back a model with layout information. 
+</para>
+<para>If the model file you loaded contains layout information, the diagram table contains an entry for every layout that is contained in the file. In order to display a specific layout, you have to either click on the show button beside the layout or double click on the layout entry in the table.</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Diagrams_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Diagram table with one diagram entry.</phrase>
+ </textobject>
+ <caption>
+  <para>diagram table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+In the layout window that comes up, you can see some controls on the left side and on the right side you see the actual layout. When the layout is first openend, all species are displayed as rectangles.
+</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Diagrams_02.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Diagram before loading simulation data. Some controls are disabled.</phrase>
+ </textobject>
+ <caption>
+  <para>diagram window with some controls disabled due to missing simulation data</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+Currently the menu bar at the top contains two control elements. The first one is a button that allows you to read time course data from COPASI if any has been calculated. If a time course has already been calculated when the laoyut window is openend, this time course data is imported automatically. Each time you rerun the time course simulation in COPASI, you have to reimport it to the layout if you want to display it.
+</para>
+<para>
+Since the time course data is copied when it is imported to the layout, you have to take care that you  have enough memory in your machine if you either have very large simulations or if you want to animate the data in many different layout windows. In the future we will try to handle this more intelligently.
+</para>
+<para>
+The second control element in the toolbar is for zooming in and out of the layout view.
+</para>
+<para>
+If there is no time course data yet, many of the controls on the right side are disabled since they only make sense in the context of animating simulation data. Once simulation data has been loaded via the button in the toolbar, those controls are enabled.
+</para>
+<para>
+If you don't need the controls, but just want to look at the diagram, the individual controls can be hidden via the <guimenu>View</guimenu> menu in the menu bar.
+</para>
+<para>
+In order to animate your simulation data, you can use the player controls at the bottom of the screen. The controls look like the controls on a CD player and it should be easy to figure out what the individual buttons do. There are buttons to start and stop the animation, as well as buttons to forward and rewind or sngle step through the animation. You can also drag the slider beside the buttons to go to a certain time point within the animation.
+</para>
+<para>
+During the animation, the species are displayed as colored balls. The speed of the animation can be controlled by the <guibutton>Frame rate</guibutton> element at the top of the controls.
+</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Diagrams_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Diagram window with paused animation in size mode. Individual species are displayed as red balls, all controls are enabled.</phrase>
+ </textobject>
+ <caption>
+  <para>diagram window with paused animation in size mode</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+Depending on the <guibutton>Mapping mode</guibutton> that is controled by the radio button group with the same name, either the size of the balls or the color changes to reflect the concentration of the species at a given time point.
+</para>
+<para>
+The radio button group above the <guibutton>Mapping</guibutton> group, called <guibutton>Scheduling Mode</guibutton> determines how the size or color of a species is determined during an animation. 
+</para>
+<para>
+If the control is set to <emphasis>Individual Scaling</emphasis>, the size (or color) of a species is determined by the minimum and maximum value of that species. If the control is set to <emphasis>Global Scaling</emphasis>, the size or color is determined by the minimum and maximum values of all species in the model.
+</para>
+<para>
+The last control element is the table with the names and concentrations of all species contained in the layout. The concentration displayed is the concentration of the species at the given time point of the simulation. All species that are checked vary their size or color during the animation, species tha are unchecked don't.
+</para>
+<para>
+There is also the possibility to export the current layout as a bitmap. In order to do this, you select the <guisubmenu>Create Image</guisubmenu> menu item from the <guimenu>View</guimenu> menu.
+Currently, this only allows you the create a bitmap of the layout as it is displayed. Parts that are not displayed because the window is to small are not written to the bitmap. So in order to make a bitmap from large layouts, you might have to hide the controls as described above, make the layout window as large as possible and change the zoom factor until the full layout is displayed in the layout window. We also hope to make this more convenient in the future.
+</para>
+<para>
+Since this is an early version of the diagram display, there certainly are still many issues, but we hope that it might be helpful nevertheless. If you have suggestions or complaints, please tell us, preferably via the <ulink url="http://www.copasi.org/tiki-view_forum.php?forumId=1">COPASI user forum</ulink> or if you think it is a bug via our <ulink url="http://www.copasi.org/tracker/">issue tracking system</ulink>.
+</para>
+</chapter>
