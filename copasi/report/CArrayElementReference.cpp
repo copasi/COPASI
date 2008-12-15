@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.cpp,v $
-//   $Revision: 1.4.2.1 $
+//   $Revision: 1.4.2.1.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/15 21:32:14 $
+//   $Date: 2008/12/15 15:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,11 @@ void * CArrayElementReference::getValuePointer() const
     //this could be done in the constructor, actually
     unsigned C_INT32 ii = 0;
     CCopasiArray::index_type index;
-    while (mIndex.getElementName(ii, false) != "")
+    std::string tmpIndexString;
+    while ((tmpIndexString = mIndex.getElementName(ii, false)) != "")
       {
+        if (tmpIndexString == ".")
+          break; //"." indicates 0-dimensional array. This means index should stay empty
         index.push_back(mIndex.getElementIndex(ii));
         ++ii;
       }
