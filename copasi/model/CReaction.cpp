@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.177.2.3 $
+//   $Revision: 1.177.2.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:37 $
+//   $Date: 2008/12/15 20:30:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -502,15 +502,14 @@ void CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
-                {
-                  pObject = GlobalKeys.get(mMetabKeyMap[i][j]);
-                  mMap.addCallParameter(paramName, pObject);
-                  Dependencies.insert(pObject->getValueObject());
-                }
+                if ((pObject = GlobalKeys.get(mMetabKeyMap[i][j])) != NULL)
+                  {
+                    mMap.addCallParameter(paramName, pObject);
+                    Dependencies.insert(pObject->getValueObject());
+                  }
             }
-          else
+          else if ((pObject = GlobalKeys.get(mMetabKeyMap[i][0])) != NULL)
             {
-              pObject = GlobalKeys.get(mMetabKeyMap[i][0]);
               mMap.setCallParameter(paramName, pObject);
               Dependencies.insert(pObject->getValueObject());
             }
