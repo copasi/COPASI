@@ -1,7 +1,7 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
 //   $Author: ssahle $
-//   $Date: 2008/10/22 19:53:48 $
+//   $Date: 2008/12/15 15:51:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,16 +242,28 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
 std::vector<const CCopasiObject*>
 CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value, std::string caption)
 {
+  std::vector< const CCopasiObject* > returnVector;
+  if (single)
+  {returnVector.resize(1); returnVector[0] = NULL;}
+  else
+    returnVector.resize(0);
+
+  if (!pArrayAnnotation) return returnVector;
+
+  //handle zero-dimensional array
+  if (pArrayAnnotation->size().size() == 0)
+    {
+      CCopasiAbstractArray::index_type index;
+      index.resize(0);
+      returnVector.resize(1);
+      returnVector[0] = pArrayAnnotation->addElementReference(index);
+      return returnVector;
+    }
+
   CQMatrixDialog * pDialog = new CQMatrixDialog();
 
   pDialog->setCaption(tr(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
   pDialog->setArray(pArrayAnnotation, single);
-
-  std::vector< const CCopasiObject* > returnVector;
-  if (single)
-    returnVector.resize(1);
-  else
-    returnVector.resize(0);
 
   int Result = pDialog->exec();
 
