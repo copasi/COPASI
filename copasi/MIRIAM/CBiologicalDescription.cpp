@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.8.6.2 $
+//   $Revision: 1.8.6.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2008/12/15 20:05:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,8 @@ std::string CBiologicalDescription::getURI() const
 
 void CBiologicalDescription::clearInvalidEntries()
 {
-  if (mTriplet.Predicate == CRDFPredicate::unknown ||
+  if ((mTriplet.Predicate == CRDFPredicate::unknown &&
+       mTriplet.Predicate.getURI() == "") ||
       !mResource.isValid())
     {
       // Remove the edge with the predicate and object.

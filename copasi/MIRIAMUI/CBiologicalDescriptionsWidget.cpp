@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.10.2.2 $
+//   $Revision: 1.10.2.2.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2008/12/15 20:05:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,6 +118,13 @@ void CBiologicalDescriptionsWidget::updateResourcesList()
   for (i = 0; i < imax; i++)
     if (!pResource->getMIRIAMResource(i).getMIRIAMCitation())
       mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+
+  // We need to update each currently shown ComboBox
+  QComboTableItem * pComboBox = NULL;
+  imax = table->numCols();
+  for (i = 0; i < imax; i++)
+    if ((pComboBox = dynamic_cast<QComboTableItem *>(table->item(i, COL_RESOURCE))) != NULL)
+      delete pComboBox;
 }
 
 void CBiologicalDescriptionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
