@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.6 $
+//   $Revision: 1.18.2.6.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/21 00:52:37 $
+//   $Author: nsimus $
+//   $Date: 2008/12/16 11:58:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,17 +227,19 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget3_3->setColorCoding(tcs);
   pArrayWidget3_3->setColorScalingAutomatic(true);
+
   // Participation Index widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget4_3->setColorCoding(tcs);
+
+  CColorScaleSimple* pics = new CColorScaleSimple();
+  pics->setSymmetric(true);
+  pArrayWidget4_3->setColorCoding(pics);
   pArrayWidget4_3->setColorScalingAutomatic(true);
-  // Participation Index widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget4_3_2->setColorCoding(tcs);
+
+  // Importance Index widget
+
+  CColorScaleSimple* iics = new CColorScaleSimple();
+  iics->setSymmetric(true);
+  pArrayWidget4_3_2->setColorCoding(iics);
   pArrayWidget4_3_2->setColorScalingAutomatic(true);
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeILDMInterval()));
