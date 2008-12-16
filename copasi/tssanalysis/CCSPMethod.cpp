@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.9.2.1 $
+//   $Revision: 1.8.2.9.2.2 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/12/16 12:00:40 $
+//   $Author: shoops $
+//   $Date: 2008/12/16 19:47:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -501,8 +501,8 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   if (M == N)
     {
 
-      /* this case is not possiable : */
-      /*  if the ratio of time scale separation nearly 1, the time scale
+      /* this case is not possible : */
+      /*  if the ratio of time scale separation nearly 1, the time scale */
       /*  considered as slow */
 #ifdef CSPDEBUG
       std::cout << "After time scales separation :  " << std::endl;
