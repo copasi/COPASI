@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.3.6.3 $
+//   $Revision: 1.3.6.3.2.1 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/12/02 12:39:29 $
+//   $Date: 2008/12/16 12:00:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -282,12 +282,6 @@ class CCSPMethod : public CTSSAMethod
      *  26, pp. 461-486, 1994
      */
     void cspstep(const double & deltaT, C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
-
-    /**
-     * CSP output
-     **/
-
-    void CSPOutput(C_INT & N, C_INT & M, C_INT & R);
 
     /**
      * CSP output : empty

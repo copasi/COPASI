@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.9 $
+//   $Revision: 1.8.2.9.2.1 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/12/10 11:44:06 $
+//   $Date: 2008/12/16 12:00:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+//#define CSPDEBUG
+
 #include <math.h>
 
 #include "copasi.h"
@@ -22,7 +24,6 @@
 #include "CCSPMethod.h"
 #include "CTSSAProblem.h"
 #include "CTSSATask.h"
-
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -330,7 +331,7 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
         {
           tmp = eigen[i + 1 ] / eigen[i];
 
-#if 0
+#ifdef CSPDEBUG
 
           std::cout << "tsc[" << i << "]/tsc[" << i + 1 << "] " << tmp << std::endl;
           std::cout << "mEps " << mEps << std::endl;
@@ -339,8 +340,9 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
           if (tmp > 0 && tmp < mEps)
             {
               k++;
+
               if (i)
-                if (eigen(i) == eigen(i - 1)) k++;
+                if (eigen[i] == eigen[i - 1]) k++;
             }
           else
             {
@@ -351,7 +353,7 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
       else
         {
 
-#if 0
+#ifdef CSPDEBUG
           std::cout << "the following time scales are equal:  " << std::endl;
           std::cout << "tsc[" << i << "] = tsc[" << i + 1 << "] " << std::endl;
 #endif
@@ -367,9 +369,9 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   C_INT reacs_size = mpModel->getReactions().size();
   emptyOutputData(N, N, reacs_size);
 
-#if 1
-  // std::cout << " *********************  New time step **********************" << std::endl;
-  //std::cout << "delta T " << deltaT << std::endl;
+#ifdef CSPDEBUG
+  std::cout << " *********************  New time step **********************" << std::endl;
+  std::cout << "mTime " << mTime << std::endl;
 
 #endif
 
@@ -400,15 +402,15 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   J = mJacobian;
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "concentration of metabolite  and  right hand side :" << std::endl;
   for (j = 0; j < N; j++)
     std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << "  " << y[j] << "  " << g[j] << std::endl;
 #endif
 
-#if 1
-  // std::cout << "current Jacobian " << std::endl;
-  // std::cout << J << std::endl;
+#ifdef CSPDEBUG
+  std::cout << "current Jacobian " << std::endl;
+  std::cout << J << std::endl;
 #endif
 
   CMatrix<C_FLOAT64> ALA;
@@ -466,22 +468,22 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
       tsc[i] = 1. / eigen[i];
     }
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "CSP iteration:  " << std::endl;
   std::cout << "Eigen values ordered by increasing " << std::endl;
   for (i = 0; i < N; i++)
     std::cout << "eigen[" << i << "]  " << eigen[i] << std::endl;
 #endif
 
-#if 1
-  // std::cout << "time scales :  " << std::endl;
+#ifdef CSPDEBUG
+  std::cout << "time scales :  " << std::endl;
   for (i = 0; i < N; i++)
-    // std::cout << fabs(tsc[i]) << std::endl;
+    std::cout << fabs(tsc[i]) << std::endl;
 #endif
 
-    /* find the number of candidate to fast   */
+  /* find the number of candidate to fast   */
 
-    info = 0;
+  info = 0;
 
   //findTimeScaleSeparation(N, M, eigen, info);
 
@@ -496,10 +498,16 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
       return;
     }
 
-  if (M == N) // TODO : check this case
+  if (M == N)
     {
-      // std::cout << "After time scales separation :  " << std::endl;
-      // std::cout << "the number of candidates to  fast modes is equal to the total number of modes" << std::endl;
+
+      /* this case is not possiable : */
+      /*  if the ratio of time scale separation nearly 1, the time scale
+      /*  considered as slow */
+#ifdef CSPDEBUG
+      std::cout << "After time scales separation :  " << std::endl;
+      std::cout << "the number of candidates to  fast modes is equal to the total number of modes" << std::endl;
+#endif
 
       return;
     }
@@ -518,8 +526,8 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
 analyseMmodes:
 
-#if 1
-  //   std::cout << " ************************************** Number of candidates to fast " << M << " ************************" << std::endl;
+#ifdef CSPDEBUG
+  std::cout << " ************************************** Number of candidates to fast " << M << " ************************" << std::endl;
 #endif
 
   iter = 0;
@@ -547,7 +555,7 @@ analyseMmodes:
           DBDT(i, j) = (B(i, j) - mB(i, j)) / deltaT;
         }
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "time derivatives of B " << std::endl;
   std::cout << DBDT << std::endl;
 #endif
@@ -568,13 +576,13 @@ analyseMmodes:
 
   smmult(TMP, A, ALA, N, N, N);
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "B*J*A should converge to block-diagonal for an ideal basis:" << std::endl;
   std::cout << ALA << std::endl;
-#endif
 
-  // std::cout << "considered time resolution of the solution  " << std::endl;
-  // std::cout << fabs(tsc[M]) << std::endl;   // to check this
+  std::cout << "considered time resolution of the solution  " << std::endl;
+  std::cout << fabs(tsc[M]) << std::endl;   // to check this
+#endif
 
   CMatrix<C_FLOAT64> TAUM;
   CMatrix<C_FLOAT64> ALAM;
@@ -597,17 +605,17 @@ analyseMmodes:
 #if 1
   modesAmplitude(N, M, g, B, F);
 
-  //std::cout << "number2conc " << number2conc << std::endl;
+#ifdef CSPDEBUG
+  std::cout << "number2conc " << number2conc << std::endl;
 
-  // std::cout << " scaled amplitudes via  trial basis :  " << std::endl;
+  std::cout << " scaled amplitudes via  trial basis :  " << std::endl;
 
   for (i = 0; i < M; i++)
     {
 
-      // std::cout << F(i, 0) << std::endl;
+      std::cout << F(i, 0) << std::endl;
     }
 
-#if 0
   std::cout << "mYerror[j] = mRerror * y[j] + mAerror" << std::endl;
 
   for (i = 0; i < N; i++)
@@ -616,7 +624,7 @@ analyseMmodes:
     }
 #endif
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
 
   C_FLOAT64 tmp;
@@ -639,7 +647,7 @@ cspiteration:
 
   emptyOutputData(N, M, reacs_size);
 
-#if 1
+#ifdef CSPDEBUG
   // std::cout << "*********************************** CSP refinement iteration " << iter << "*******************************" << std::endl;
 #endif
 
@@ -668,7 +676,7 @@ cspiteration:
           DBDT(i, j) = (B1(i, j) - mB(i, j)) / deltaT;
         }
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "time derivatives of B " << std::endl;
   std::cout << DBDT << std::endl;
 #endif
@@ -686,7 +694,7 @@ cspiteration:
 
   smmult(TMP, A1, ALA, N, N, N);
 
-#if 0
+#ifdef CSPDEBUG
   std::cout << "B1*J*A1 :   " << std::endl;
   std::cout << ALA << std::endl;
 #endif
@@ -741,7 +749,18 @@ cspiteration:
         if (M > 1)
           {
             M --;
-            goto analyseMmodes;
+            if (tsc[M] == tsc[M - 1]) M --;
+
+            if (M) goto analyseMmodes;
+            else
+              {
+
+                /* No any fast exhausted modes was found on this time step */
+
+                CCopasiMessage(CCopasiMessage::WARNING,
+                               MCTSSAMethod + 12, mTime);
+                return;
+              }
           }
         else
           {
@@ -760,18 +779,16 @@ cspiteration:
       {
 
         modesAmplitude(N, M, g, B1, F);
+#ifdef  CSPDEBUG
+        std::cout << "number2conc " << number2conc << std::endl;
 
-        //std::cout << "number2conc " << number2conc << std::endl;
-
-        // std::cout << "scaled amplitudes via refined basis :  " << std::endl;
+        std::cout << "scaled amplitudes via refined basis :  " << std::endl;
 
         for (i = 0; i < M; i++)
           {
 
-            // std::cout << F(i, 0) << std::endl;
+            std::cout << F(i, 0) << std::endl;
           }
-
-#if 0
 
         std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
 
@@ -799,7 +816,18 @@ cspiteration:
         if (M > 1)
           {
             M --;
-            goto analyseMmodes;
+            if (tsc[M] == tsc[M - 1]) M --;
+
+            if (M) goto analyseMmodes;
+            else
+              {
+
+                /* No any fast exhausted modes was found on this time step */
+
+                CCopasiMessage(CCopasiMessage::WARNING,
+                               MCTSSAMethod + 12, mTime);
+                return;
+              }
           }
         else
           {
@@ -821,7 +849,7 @@ bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
 {
   C_INT i, j, imax, jmax, imaxl, jmaxl;
   C_FLOAT64 max = -1., maxl = -1.;
-#if 0
+#ifdef CSPDEBUG
   std::cout << "blocks of ALA : " << std::endl;
 
   std::cout << "upper - left : " << std::endl;
@@ -873,7 +901,6 @@ bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
           max = fabs(ALA(i, j));
           imax = i; jmax = j;
         }
-  // std::cout << "Maximal elements of the control matrix blocks " << std::endl;
 #if 1
   /* step #2: lower-left block */
 
@@ -884,12 +911,18 @@ bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
           maxl = fabs(ALA(i, j));
           imaxl = i ; jmaxl = j;
         }
-  // std::cout << "norm C of the lower-left block of ALA is ALA(" << imaxl << "," << jmaxl << ") = " << maxl << std::endl;
-  // std::cout << "the low-left block : " << maxl << std::endl;
+
+#ifdef CSPDEBUG
+  std::cout << "norm C of the lower-left block of ALA is ALA(" << imaxl << "," << jmaxl << ") = " << maxl << std::endl;
+  std::cout << "the low-left block : " << maxl << std::endl;
 #endif
 
-  //std::cout << "the norm C of the upper-right block of ALA is ALA(" << imax << "," << jmax << ") = " << max << std::endl;
-  // std::cout << "the upper-right block : " << max << std::endl;
+#endif
+
+#ifdef CSPDEBUG
+  std::cout << "the norm C of the upper-right block of ALA is ALA(" << imax << "," << jmax << ") = " << max << std::endl;
+  std::cout << "the upper-right block : " << max << std::endl;
+#endif
 
   if (max <= small) return 1;
   else
@@ -923,64 +956,6 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
   return;
 }
 
-void CCSPMethod::CSPOutput(C_INT & /* N */, C_INT & /* M */, C_INT & /* R */)
-{
-
-  // const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
-
-  // std::cout << "Amplitudes of reaction modes :" << std::endl;
-
-  // for (m = 0; m < M; m++)
-  //   {
-  // std::cout << "reaction mode " << m << " :" << std::endl;
-  //     for (i = 0; i < N; i++)
-  //      {
-  // std::cout << " mode  " << i << "  : " << mAmplitude[i];
-
-  // std::cout << std::endl;
-  //}
-  // std::cout << std::endl;
-  // std::cout << "Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
-
-  //     for (i = 0; i < N; i++)
-  // std::cout << mpModel->getMetabolitesX()[i]->getObjectName()
-  // << "   : " << mRadicalPointer(i, m) << std::endl;
-  //}
-  // std::cout << std::endl;
-  // std::cout << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
-  // std::cout << " the r-th reaction is said to be a fast reaction  " << std::endl;
-
-  // for (m = 0; m < M; m++)
-  //   {
-  // std::cout << "reaction mode " << m << " :" << std::endl;
-  //     for (r = 0; r < R; r++)
-  // std::cout << reacs[r]->getObjectName() << " :" << mFastReactionPointer(r, m) << std::endl;
-  //}
-
-  // std::cout << std::endl;
-  // std::cout << " Participation Index : is a measure of participation of the r-th elementary reaction " << std::endl;
-  // std::cout << " to the balancing act of the i-th mode " << std::endl;
-
-  // for (i = 0; i < N; i++)
-  //   {
-  // std::cout << "reaction mode " << i << " :" << std::endl;
-  //     for (r = 0; r < R; r++)
-  // std::cout << reacs[r]->getObjectName() << " :" << mParticipationIndex(r, i) << std::endl;
-  //}
-
-  // std::cout << std::endl;
-  // std::cout << " Importance Index: is a measure of relative importance of the contribution of r-th elementary " << std::endl;
-  // std::cout << " reaction to the current reaction rate of i-th species   " << std::endl;
-
-  // for (i = 0; i < N; i++)
-  //   {
-  // std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << " :" << std::endl;
-  //     for (r = 0; r < R; r++)
-  // std::cout << reacs[r]->getObjectName() << " :" << mImportanceIndex(r, i) << std::endl;
-  //}
-
-  return;
-}
 void CCSPMethod::step(const double & deltaT)
 {
   C_INT N = mData.dim;
@@ -1076,9 +1051,6 @@ void CCSPMethod::start(const CState * initialState)
 
   mSetVectors = 0;
 
-  //std::ofstream os;
-  //os.open("CSPValues.dat", std::ios::out);
-
   return;
 }
 
@@ -1093,11 +1065,6 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
   //C_INT  size = mpModel->getRedStoi().size();
 
   //mRadicalPointer.resize(mData.dim, M);
-
-#if 0
-  std::cout << "Stoichiometry matrix (iIndependent, jReaction) : " << std::endl;
-  std::cout << redStoi << std::endl;
-#endif
 
   CMatrix<C_FLOAT64> A0;
   CMatrix<C_FLOAT64> B0;
@@ -1126,11 +1093,6 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
         B0(r, i) = A0(i, r) / tmp;
     }
 
-#if 0
-  std::cout << " Inverse(redStoi) " << std::endl;
-  std::cout << B0 << std::endl;
-#endif
-
   /*  m-th fast mode projection matrix */
 
   CMatrix<C_FLOAT64> QM;
@@ -1150,11 +1112,6 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
             Qm(i, j) = A(i, m) * B(m, j);
           }
 
-#if 0
-      std::cout << "CSP iteration: the " << m << "-th fast mode projection matrix  " << std::endl;
-      std::cout << Qm << std::endl;
-#endif
-
       /**
        * some comments on the Qm matrix: Qm(i,i) , i = 0,1,...,N,
        * is a measure of projection of i-th unit vector in the m-th mode,
@@ -1163,38 +1120,19 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
 
       C_FLOAT64 tmp = 0.;
 
-#if 0
-      std::cout << "the diagonal elements of " << m << "-th fast mode projection matrix  " << std::endl;
-#endif
       for (i = 0; i < N ; i++)
         {
           mRadicalPointer(i, m) = Qm(i, i);
 
           tmp += Qm(i, i);
-#if 0
-          std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << " corresponding  Qm(i,i) " << Qm(i, i) << std::endl;
-#endif
         }
 
-#if 0
-      std::cout << "the sum of the diagonal elements of " << m << "-th fast mode projection matrix  " << std::endl;
-      std::cout << tmp << std::endl;
-#endif
-
       /* use stoichiometric vectors to build the fast reaction pointer */
-
-#if 0
-      std::cout << "Fast reaction pointer " << std::endl;
-#endif
 
       /**
        * Pmr  is a measure of projection of r-th stoichiometric vector in the m-th mode,
        * whenever Pmr is not a small number, the r-th reaction is said to be a fast reaction
        **/
-
-#if 0
-      std::cout << m << "-th mode:" << std::endl;
-#endif
 
       for (r = 0; r < reacs_size; r++)
         {
@@ -1211,10 +1149,6 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
             Pmr += B0(r, j) * TMP(j, r);
 
           mFastReactionPointer(r, m) = Pmr;
-
-#if 0
-          std::cout << "reaction " << reacs[r]->getObjectName() << " :" << Pmr << std::endl;
-#endif
         }
     }
   return;
@@ -1232,10 +1166,6 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
   C_INT32 reacs_size = mpModel->getReactions().size();
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
-
-#if 0
-  std::cout << "Participation Index: " << std::endl;
-#endif
 
   CVector<C_FLOAT64> flux;
   flux.resize(reacs_size);
@@ -1278,18 +1208,11 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
   for (i = 0; i < N; ++i)
     {
 
-#if 0
-      std::cout << " mode " << i << " : " << std::endl;
-#endif
-
       for (r = 0; r < reacs_size; ++r)
         {
           P(i, r) *= flux[r] / (ampl[i] + estim[i]);
 
           mParticipationIndex(r, i) = P(i, r);
-#if 0
-          std::cout << " reaction " << reacs[r]->getObjectName() << " index : " << P(i, r) << std::endl;
-#endif
         }
     }
 
@@ -1310,10 +1233,6 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
   const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
 
-#if 0
-  std::cout << "Importance Index: " << std::endl;
-#endif
-
   CVector<C_FLOAT64> flux;
   flux.resize(reacs_size);
 
@@ -1331,11 +1250,6 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 
   CVector<C_FLOAT64> g;
   g.resize(N);
-
-#if 0
-  std::cout << "slow subspace projection matrix  " << std::endl;
-  std::cout << Q << std::endl;
-#endif
 
   S = redStoi;
 
@@ -1357,19 +1271,11 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
   for (i = 0; i < N; ++i)
     {
 
-#if 0
-      std::cout << "current reaction rate of " << mpModel->getMetabolitesX()[i]->getObjectName() << " : " << std::endl;
-#endif
-
       for (r = 0; r < reacs_size; ++r)
         {
           I(i, r) = S0(i, r) * flux[r] / (g[i] + estim[i]);
 
           mImportanceIndex(r, i) = I(i, r);
-
-#if 0
-          std::cout << " contribution of the reaction " << reacs[r]->getObjectName() << "  : " << I(i, r) << std::endl;
-#endif
         }
     }
 
@@ -1389,14 +1295,10 @@ void CCSPMethod::modesAmplitude(C_INT & N, C_INT & /* M */, CVector< C_FLOAT64 >
       F(i, 0) = 0.;
       for (j = 0; j < N; j++)
 
-#if 0
-        std::cout << "i " << i << " j " << j << " B(i,j) " << B(i, j) << " g[j] " << g[j] << std::endl;
-#endif
-
-      for (j = 0; j < N; j++)
-        {
-          F(i, 0) += B(i, j) * g[j];
-        }
+        for (j = 0; j < N; j++)
+          {
+            F(i, 0) += B(i, j) * g[j];
+          }
     }
 
   return;
@@ -1417,18 +1319,6 @@ void CCSPMethod::yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMa
 
   smmult(A, TAUM, TMP, N, M, M);
 
-#if 0
-  std::cout << std::endl;
-  std::cout << "Radical correction :" << std::endl;
-  std::cout << "A" << std::endl;
-  std::cout << A << std::endl;
-  std::cout << "TAU" << std::endl;
-  std::cout << TAUM << std::endl;
-  std::cout << "TMP" << std::endl;
-  std::cout << TMP << std::endl;
-  std::cout << "dy" << std::endl;
-#endif
-
   for (i = 0; i < N ; i++) dy[i] = 0.;
 
   for (i = 0; i < N ; i++)
@@ -1440,9 +1330,6 @@ void CCSPMethod::yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMa
   for (i = 0; i < N; i++)
     {
       y[i] -= dy[i];
-#if 0
-      std::cout << dy[i] << std::endl;
-#endif
     }
   return;
 }
@@ -1480,13 +1367,6 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
           Q(j, m) += ALA(j, n) * TAU(n, m);
       }
 
-#if 0
-  std::cout << "P" << std::endl;
-  std::cout << P << std::endl;
-  std::cout << "Q" << std::endl;
-  std::cout << Q << std::endl;
-#endif
-
   A0 = A;
   B0 = B;
 
@@ -1501,14 +1381,6 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
     for (j = M ; j < N; j++)
       for (n = 0; n < M ; n++)
         A0(i, j) -= A(i, n) * P(n, j);
-
-#if 0
-  std::cout << "refinement step1" << std::endl;
-  std::cout << "B0" << std::endl;
-  std::cout << B0 << std::endl;
-  std::cout << "A0" << std::endl;
-  std::cout << A0 << std::endl;
-#endif
 
 #if 1
   /* step #2  */
@@ -1526,14 +1398,6 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
       for (j = M; j < N; j++)
         A0(i, m) += A(i, j) * Q(j, m);
 
-#endif
-
-#if 0
-  std::cout << "after refinement :" << std::endl;
-  std::cout << "A0" << std::endl;
-  std::cout << A0 << std::endl;
-  std::cout << "B0" << std::endl;
-  std::cout << B0 << std::endl;
 #endif
 
   //smnorm(N, A0, B0, N);
@@ -1581,45 +1445,15 @@ bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLO
 
   modesAmplitude(N, M, g, B, F);
 
-#if 0
-
-  std::cout << "amplitudes  after refinement :  " << std::endl;
-  for (i = 0; i < M; i++)
-    {
-
-      std::cout << F(i, 0) << std::endl;
-    }
-
-  std::cout << "mYerror[j] = mRerror * y[j] + mAerror" << std::endl;
-
-  for (i = 0; i < N; i++)
-    {
-      std::cout << mYerror[i] << std::endl;
-    }
-
-  std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
-#endif
-
   for (j = 0; j < M; j++)
     {
 
-#if 0
-      std::cout << " m " << j << std::endl;
-#endif
       for (i = 0; i < N; i++)
         {
           tmp = fabs(A(i, j) * F(j, 0) * tauM);
-#if 0
-          std::cout << A(i, j) << " * " << F(j, 0) << " * " << tauM << " = " << tmp << "        " << mYerror[i] << std::endl;
-
-#endif
           if (tmp >= mYerror[i]) exhausted = false;
         }
     }
-
-  // if (exhausted == true) std::cout << "TRUE:  the  candidate modes  are fast exhausted";
-  // else std::cout << "FALSE: there are unexhausted modes  among the candidate modes";
-  // std::cout << std::endl;
 
   return exhausted;
 }
@@ -1798,8 +1632,6 @@ void CCSPMethod::setAnnotationM(int step)
  **/
 void CCSPMethod::setVectors(int fast)
 {
-
-  //if (fast == 0) return;
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
