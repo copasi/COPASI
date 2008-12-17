@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.55.6.2 $ -->
+<!--   $Revision: 1.55.6.3 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2008/12/15 15:44:58 $ -->
+<!--   $Date: 2008/12/17 09:16:29 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4868,6 +4868,9 @@ loaded in XPPAUT.
 <para>Since there is no way to create new diagrams in COPASI, the only way to come up with a COPASI file that includes layout information is to create an SBML file with layout information and convert it to a COPASI file. The layout in COPASI files is also stored in the form of the SBML layout extension. Only that the SBML object ids are replaced by the corresponding COPASI keys.</para>
 <para>
 There are several ways to create layout information for an SBML model. The <ulink url="http://sycamore.eml.org">Sycamore webapplication</ulink> allows you to load SBML files, create layout information for the model in the file and save the model with the layout information back to file. It provides different methods for generating the layout and the layout can be modified manually as well.
+</para>
+<para>
+<ulink url="http://sabio.bioquant.uni-heidelberg.de/">SABIO-RK</ulink> is a reaction kinetics database that allows you to create SBML models from the entries in the database. The model can be saved as an SBML file and it can also create layout information for the model.
 </para>
 <para>
 Another web application that allows the user to add layout information to an SBML file is Frank Bergmanns <ulink url="http://sbw.kgi.edu/Layout/">SBML Layout Viewer</ulink>. It allows the user to influence the layout creation by setting some parameters.
