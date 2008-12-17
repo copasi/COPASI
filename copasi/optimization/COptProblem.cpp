@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101.2.5 $
+//   $Revision: 1.101.2.5.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/20 18:28:47 $
+//   $Date: 2008/12/17 20:30:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,8 +266,13 @@ bool COptProblem::initializeSubtaskBeforeOutput()
       mpSubtask =
         dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
 
-      if (mpSubtask != NULL)
-        return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      try
+        {
+          if (mpSubtask != NULL)
+            return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+        }
+
+    catch (...) {}
 
       return false;
     }
@@ -389,7 +394,7 @@ bool COptProblem::restore(const bool & updateModel)
 
   if (updateModel && mSolutionValue != mInfinity)
     {
-      // Set the model values ans start values to the solution values
+      // Set the model values and start values to the solution values
       pTmp = mSolutionVariables.array();
 
       for (; it != end; ++it, pTmp++)
