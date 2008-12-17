@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.93.2.1.2.1 $ 
+#   $Revision: 1.93.2.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/12/16 20:01:20 $ 
+#   $Date: 2008/12/17 17:13:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.93.2.1.2.1 $ $Author: shoops $ $Date: 2008/12/16 20:01:20 $  
+# $Revision: 1.93.2.1.2.2 $ $Author: shoops $ $Date: 2008/12/17 17:13:16 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -459,7 +459,7 @@ contains(BUILD_OS, Linux) {
           LIBS += -llapack 
           LIBS += -lblas
           HAVE_G2C = $$system(locate libg2c)
-          !isEmpty(HAVE_G2C) LIBS += -lg2
+          !isEmpty(HAVE_G2C) LIBS += -lg2c
         }
       } else {
         error( "Either MKL_PATH, CLAPACK_PATH, or LAPACK_PATH must be specified" )
