@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.53.2.4 $
+//   $Revision: 1.53.2.4.2.1 $
 //   $Name:  $
 //   $Author: jpahle $
-//   $Date: 2008/11/19 14:12:15 $
+//   $Date: 2008/12/18 23:21:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,7 +224,7 @@ void CHybridMethod::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
@@ -244,6 +244,8 @@ void CHybridMethod::start(const CState * initialState)
     mDoCorrection = false;
 
   mHasAssignments = modelHasAssignments(mpModel);
+
+  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
 
   mpProblem->getModel()->setState(*mpCurrentState);
 
@@ -271,8 +273,8 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mAmuOld.clear();
   mAmuOld.resize(mpReactions->size());
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolitesX()));
-  //old  mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
-  mNumVariableMetabs = mpCurrentState->getNumVariable(); // mpBeginFixed - mpBeginIndependent
+  mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
+  //  mNumVariableMetabs = mpCurrentState->getNumVariable(); // mpBeginFixed - mpBeginIndependent
 
   temp.clear();
   temp.resize(mNumVariableMetabs);
@@ -623,6 +625,7 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
   // we do not know the exact dependencies. TODO: this should be changed later in order to get a more efficient update scheme
   if (mHasAssignments)
     {
+      mpModel->updateSimulatedValues(false);
       for (index = 0; index < (C_INT32)mpReactions->size(); index++)
         {
           if (mReactionFlags[index].mpPrev == NULL) // Reaction is stochastic!

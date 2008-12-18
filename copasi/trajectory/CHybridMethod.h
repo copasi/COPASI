@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-//   $Revision: 1.24.22.1 $
+//   $Revision: 1.24.22.1.2.1 $
 //   $Name:  $
 //   $Author: jpahle $
-//   $Date: 2008/10/16 10:17:29 $
+//   $Date: 2008/12/18 23:21:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -479,6 +479,11 @@ class CHybridMethod : public CTrajectoryMethod
      *   Dimension of the system. Total number of metabolites.
      */
     unsigned C_INT32 mNumVariableMetabs;
+
+    /**
+     *   index of the first metab in CState
+     */
+    unsigned C_INT32 mFirstMetabIndex;
 
     /**
      *   Max number of doSingleStep() per step()
