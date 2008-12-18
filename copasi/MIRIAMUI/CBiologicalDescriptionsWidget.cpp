@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:25:12 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@
  *  Constructs a CBiologicalDescriptionsWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CBiologicalDescriptionsWidget::CBiologicalDescriptionsWidget(QWidget* parent, const char* name, WFlags f)
+CBiologicalDescriptionsWidget::CBiologicalDescriptionsWidget(QWidget* parent, const char* name, Qt::WFlags f)
     : CopasiTableWidget(parent, false, name, f, false)
 {
   if (!name)
@@ -82,7 +82,7 @@ void CBiologicalDescriptionsWidget::init()
   table->setNumCols(numCols);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
   tableHeader->setLabel(COL_DUMMY, "Dummy");
   tableHeader->setLabel(COL_RELATIONSHIP, "Relationship");
@@ -130,27 +130,27 @@ void CBiologicalDescriptionsWidget::tableLineFromObject(const CCopasiObject* obj
 
   table->setText(row, COL_DUMMY, QString::number(row));
 
-  QComboTableItem * pComboBox = NULL;
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
+  Q3ComboTableItem * pComboBox = NULL;
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
     {
-      pComboBox = static_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP));
+      pComboBox = static_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP));
       pComboBox->setCurrentItem(FROM_UTF8(pBiologicalDescription->getPredicate()));
     }
   else
     {
-      pComboBox = new QComboTableItem(table, mPredicates);
+      pComboBox = new Q3ComboTableItem(table, mPredicates);
       pComboBox->setCurrentItem(FROM_UTF8(pBiologicalDescription->getPredicate()));
       table->setItem(row, COL_RELATIONSHIP, pComboBox);
     }
 
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RESOURCE)))
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE)))
     {
-      pComboBox = static_cast<QComboTableItem *>(table->item(row, COL_RESOURCE));
+      pComboBox = static_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE));
       pComboBox->setCurrentItem(FROM_UTF8(pBiologicalDescription->getResource()));
     }
   else
     {
-      pComboBox = new QComboTableItem(table, mResources);
+      pComboBox = new Q3ComboTableItem(table, mResources);
       pComboBox->setCurrentItem(FROM_UTF8(pBiologicalDescription->getResource()));
       table->setItem(row, COL_RESOURCE, pComboBox);
     }
@@ -163,15 +163,15 @@ void CBiologicalDescriptionsWidget::tableLineToObject(unsigned C_INT32 row, CCop
   if (!obj) return;
   CBiologicalDescription * pBiologicalDescription = static_cast< CBiologicalDescription * >(obj);
 
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
     {
-      const std::string relationship = (const char *) static_cast<QComboTableItem *>(table->item(row, COL_RELATIONSHIP))->currentText().utf8();
+      const std::string relationship = (const char *) static_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP))->currentText().utf8();
       pBiologicalDescription->setPredicate(relationship);
     }
 
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_RESOURCE)))
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE)))
     {
-      QString resource = static_cast<QComboTableItem *>(table->item(row, COL_RESOURCE))->currentText();
+      QString resource = static_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE))->currentText();
       pBiologicalDescription->setResource((const char *) resource.utf8());
     }
 
@@ -183,14 +183,14 @@ void CBiologicalDescriptionsWidget::defaultTableLineContent(unsigned C_INT32 row
 {
   if (exc != COL_RELATIONSHIP)
     {
-      QComboTableItem * pComboBox = new QComboTableItem(table, mPredicates);
+      Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mPredicates);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_RELATIONSHIP, pComboBox);
     }
 
   if (exc != COL_RESOURCE)
     {
-      QComboTableItem * pComboBox = new QComboTableItem(table, mResources);
+      Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mResources);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_RESOURCE, pComboBox);
     }
@@ -241,14 +241,14 @@ void CBiologicalDescriptionsWidget::slotValueChanged(int row, int col)
       int selectedItem = -1;
       if (row == table->numRows() - 1) //new Object
         {
-          if (dynamic_cast<QComboTableItem *>(table->item(row, col)))
+          if (dynamic_cast<Q3ComboTableItem *>(table->item(row, col)))
             {
-              selectedItem = static_cast<QComboTableItem *>(table->item(row, col))->currentItem();
+              selectedItem = static_cast<Q3ComboTableItem *>(table->item(row, col))->currentItem();
             }
         }
       CopasiTableWidget::slotValueChanged(row, col);
       if (selectedItem > -1)
-      {static_cast<QComboTableItem *>(table->item(row, col))->setCurrentItem(selectedItem);}
+      {static_cast<Q3ComboTableItem *>(table->item(row, col))->setCurrentItem(selectedItem);}
     }
   else
   {CopasiTableWidget::slotValueChanged(row, col);}

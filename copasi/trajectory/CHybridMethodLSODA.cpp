@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Date: 2008/12/18 19:14:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,8 @@
 #define min _cpp_min
 #define max _cpp_max
 #endif // WIN32
+
+#include <limits.h>
 
 #include "mathematics.h" // pow(), floor()
 

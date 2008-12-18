@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/lyap.pro,v $ 
-#   $Revision: 1.5 $ 
+#   $Revision: 1.6 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/07/08 16:06:34 $ 
+#   $Date: 2008/12/18 18:50:01 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,7 +12,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2008/07/08 16:06:34 $
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2008/12/18 18:50:01 $
 ######################################################################
 
 LIB = lyap
@@ -35,3 +35,5 @@ SOURCES += CLyapWolfMethod.cpp \
 
 
 DISTFILES += lyaponov.vcproj
+#The following line was inserted by qt3to4
+QT +=  qt3support 

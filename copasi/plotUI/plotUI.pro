@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.4 $
+#   $Revision: 1.5 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:32 $
+#   $Date: 2008/12/18 19:04:22 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2008/07/08 16:06:32 $
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2008/12/18 19:04:22 $
 ######################################################################
 
 LIB = plotUI
@@ -38,8 +38,10 @@ SOURCES += CHistogram.cpp \
            scrollbar.cpp \
            scrollzoomer.cpp
 
-FORMS +=  curve2dwidget.ui
-FORMS +=  HistoWidget.ui
+#The following line was changed from FORMS to FORMS3 by qt3to4
+FORMS3 +=  curve2dwidget.ui
+#The following line was changed from FORMS to FORMS3 by qt3to4
+FORMS3 +=  HistoWidget.ui
 
 HEADERS += curve2dwidget.ui.h
 HEADERS +=  HistoWidget.ui.h
@@ -49,3 +51,10 @@ INCLUDEPATH += $${QWT_PATH}/include
 
 DISTFILES += plotUI.vcproj
 DISTFILES += QwtLicense
+#The following line was inserted by qt3to4
+QT +=  opengl qt3support 
+#The following line was inserted by qt3to4
+CONFIG += uic3
+
+#The following line was inserted by qt3to4
+QT +=  

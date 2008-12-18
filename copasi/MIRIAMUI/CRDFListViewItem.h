@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #ifndef COPASI_CRDFListViewItem
 #define COPASI_CRDFListViewItem
 
-#include <qlistview.h>
+#include <q3listview.h>
 
 #include "copasi/MIRIAM/CRDFTriplet.h"
 
@@ -22,7 +22,7 @@ class CRDFListView;
 class CRDFNode;
 class CRDFEdge;
 
-class CRDFListViewItem: public QListViewItem
+class CRDFListViewItem: public Q3ListViewItem
   {
     // Operations
   public:

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/scan.pro,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/07/08 16:06:34 $ 
+#   $Date: 2008/12/18 19:10:35 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,7 +12,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2008/07/08 16:06:34 $
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2008/12/18 19:10:35 $
 ######################################################################
 
 LIB = scan
@@ -31,3 +31,5 @@ SOURCES += CScanMethod.cpp \
 
 
 DISTFILES += scan.vcproj
+#The following line was inserted by qt3to4
+QT +=  qt3support 

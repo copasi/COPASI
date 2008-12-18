@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,7 @@
  *  Constructs a CModifiedWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CModifiedWidget::CModifiedWidget(QWidget* parent, const char* name, WFlags f)
+CModifiedWidget::CModifiedWidget(QWidget* parent, const char* name, Qt::WFlags f)
     : CopasiTableWidget(parent, false, name, f, false)
 {
   if (!name)
@@ -79,7 +79,7 @@ void CModifiedWidget::init()
   table->setMinimumWidth(300);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
   tableHeader->setLabel(COL_DUMMY, "Dummy");
   tableHeader->setLabel(COL_DATE_MODIFIED, "Date and Time Modified");
@@ -120,7 +120,7 @@ void CModifiedWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
       CQDateTimeEditTableItem * pDTE = static_cast<CQDateTimeEditTableItem *> (table->cellWidget(row, COL_DATE_MODIFIED));
       std::string dt = "";
       if (pDTE->dateTime().isValid())
-        dt = pDTE->dateTime().toString(Qt::ISODate).utf8() + "Z";
+        dt = std::string((const char *) pDTE->dateTime().toString(Qt::ISODate).utf8()) + "Z";
 
       pModified->setDate(dt);
     }

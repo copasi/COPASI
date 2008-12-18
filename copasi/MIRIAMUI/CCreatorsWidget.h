@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/24 16:25:08 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ class CCreatorsWidget : public CopasiTableWidget
   {
     Q_OBJECT
   public:
-    CCreatorsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    CCreatorsWidget(QWidget *parent, const char * name = 0, Qt::WFlags f = 0);
     ~CCreatorsWidget();
     /**
     * This initializes the widget

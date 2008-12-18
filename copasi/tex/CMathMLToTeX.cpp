@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CMathMLToTeX.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/29 13:41:56 $
+//   $Date: 2008/12/18 19:12:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 //#include <qstring.h>
 #include <qstringlist.h>
 #include <qregexp.h>
+#include "UI/qtUtilities.h"
 
 //#include <qxml.h>
 #include "CStructureParser.h"
@@ -162,7 +163,7 @@ void CMathMLToTeX::convert(QString &text)
     mtableNode(text);
   else
     {
-      if (text.contains("<mtable>") > 1)
+      if (text.count("<mtable>") > 1)
         {
           std::cout << "The MathML contains <mtable> more than one. Needs more handling." << std::endl;
           text = "The MathML contains <mtable> more than one. Needs more handling.";
@@ -176,7 +177,7 @@ void CMathMLToTeX::convert(QString &text)
 /// normal equation node
 void CMathMLToTeX::mNode(QString &text)
 {
-  std::cout << "BEFORE: Text:\n" << text << std::endl;
+  std::cout << "BEFORE: Text:\n" << UTF8_TO_CHAR(text) << std::endl;
 
   CStructureParser xmlParser(0);
   QXmlSimpleReader xmlReader;
@@ -190,7 +191,7 @@ void CMathMLToTeX::mNode(QString &text)
 
   text = xmlParser.getTeX();
 
-  std::cout << "AFTER: Text:\n" << text << std::endl;
+  std::cout << "AFTER: Text:\n" << UTF8_TO_CHAR(text) << std::endl;
 }
 
 /// converting <mtable> ... </mtable>
@@ -203,7 +204,7 @@ void CMathMLToTeX::mtableNode(QString &text)
       int posB = text.find("</mtr>");
       QString mtrText = text.mid(posA, posB - posA + 6);
 
-      sumCols = mtrText.contains("<mtd");
+      sumCols = mtrText.count("<mtd");
     }
 
   CStructureParser xmlParser(sumCols);

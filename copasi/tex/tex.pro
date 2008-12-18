@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/tex.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/07/24 10:58:00 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/12/18 19:12:29 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -25,3 +25,5 @@ SOURCES += CMathMLToTeX.cpp \
 	   CStructureParser.cpp
 
 DISTFILES += TeX.dsp
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 

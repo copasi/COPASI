@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.pro,v $
-#   $Revision: 1.13 $
+#   $Revision: 1.14 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:24 $
+#   $Date: 2008/12/18 19:18:58 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,16 +26,13 @@ unix {
   OBJECTS_DIR = .
 }
 
-# FORMS	= wizard.ui
-
-HEADERS += \
-           wizard.h \
-           wizard.ui.h
-
-SOURCES += \
-           wizard.cpp
+ FORMS3	= wizard.ui
 
 
 DISTFILES += wizard.vcproj \
              help_html/figures/*.png \
              help_html/*.html
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 
+#The following line was inserted by qt3to4
+CONFIG += uic3

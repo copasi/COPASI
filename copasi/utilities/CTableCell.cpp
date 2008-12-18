@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
- $Revision: 1.13 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/07/07 20:50:37 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
+$Revision: 1.14 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:26:08 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,6 +19,8 @@
 #include <iostream>
 #include <sstream>
 #include <float.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "copasi.h"
 

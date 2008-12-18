@@ -1,13 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:56 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.h,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 18:57:58 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /***************************************************************************
@@ -32,8 +33,7 @@
 #ifndef QTMMLWIDGET_H
 #define QTMMLWIDGET_H
 
-#include <qdom.h>
-#include <qframe.h>
+#include <QFrame>
 
 class MmlDocument;
 

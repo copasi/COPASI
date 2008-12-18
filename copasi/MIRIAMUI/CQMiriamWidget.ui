@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
-<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Revision: 1.3 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2008/06/11 19:18:05 $ </comment>
+<comment>   $Date: 2008/12/18 18:57:10 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -262,10 +262,10 @@
 <includes>
     <include location="global" impldecl="in declaration">vector</include>
     <include location="local" impldecl="in declaration">copasi/UI/copasiWidget.h</include>
-    <include location="local" impldecl="in implementation">CCreatorsWidget.h</include>
-    <include location="local" impldecl="in implementation">CReferencesWidget.h</include>
-    <include location="local" impldecl="in implementation">CBiologicalDescriptionsWidget.h</include>
-    <include location="local" impldecl="in implementation">CModifiedWidget.h</include>
+    <include location="local" impldecl="in declaration">CCreatorsWidget.h</include>
+    <include location="local" impldecl="in declaration">CReferencesWidget.h</include>
+    <include location="local" impldecl="in declaration">CBiologicalDescriptionsWidget.h</include>
+    <include location="local" impldecl="in declaration">CModifiedWidget.h</include>
     <include location="local" impldecl="in implementation">CQMiriamWidget.ui.h</include>
 </includes>
 <forwards>

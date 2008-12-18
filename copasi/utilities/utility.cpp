@@ -1,18 +1,26 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.27 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/30 19:37:19 $
-   End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
+$Revision: 1.28 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:26:08 $
+End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "mathematics.h"
 #include <stdio.h>
 #include <time.h>
+
+#include <string.h>
+#include <stdlib.h>
 
 #ifdef WIN32
 # include <windows.h>
@@ -90,12 +98,12 @@ std::string StringPrint(const char * format, ...)
 
   char *Text = NULL;
 
-  va_list Arguments; // = NULL;
-  va_start(Arguments, format);
-
   Text = new char[TextSize + 1];
 
+  va_list Arguments; // = NULL;
+  va_start(Arguments, format);
   Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+  va_end(Arguments);
 
   while (Printed < 0 || TextSize < Printed)
     {
@@ -104,9 +112,11 @@ std::string StringPrint(const char * format, ...)
       (Printed < 0) ? TextSize *= 2 : TextSize = Printed;
       Text = new char[TextSize + 1];
 
-      Printed = vsnprintf(Text, TextSize, format, Arguments);
+      va_list Arguments; // = NULL;
+      va_start(Arguments, format);
+      Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+      va_end(Arguments);
     }
-  va_end(Arguments);
 
   std::string Result = Text;
 
@@ -256,11 +266,11 @@ void FixXHTML(const std::string &original, std::string &fixed)
   fixed.erase();
   for (i = 0; i != -1;)
     {
-      p = Str.find_first_of("&><\"¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
+      p = Str.find_first_of("&><\"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
       fixed += Str.substr(0, p)
 ;
       len = Str.length();
-      i = Str.find_first_of("&><\"¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
+      i = Str.find_first_of("&><\"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
       if (i != -1)
         {
           switch (Str[i])
@@ -277,289 +287,289 @@ void FixXHTML(const std::string &original, std::string &fixed)
             case '"':
               fixed += "&quot; ";
               break;
-            case '¡':
+            case 'ï¿½':
               fixed += "&#161; ";
               break;
-            case '¢':
+            case 'ï¿½':
               fixed += "&#162; ";
               break;
-            case '£':
+            case 'ï¿½':
               fixed += "&#163; ";
               break;
-            case '¤':
+            case 'ï¿½':
               fixed += "&#164; ";
               break;
-            case '¥':
+            case 'ï¿½':
               fixed += "&#165; ";
               break;
-            case '¦':
+            case 'ï¿½':
               fixed += "&#166; ";
               break;
-            case '§':
+            case 'ï¿½':
               fixed += "&#167; ";
               break;
-            case '¨':
+            case 'ï¿½':
               fixed += "&#168; ";
               break;
-            case '©':
+            case 'ï¿½':
               fixed += "&#169; ";
               break;
-            case 'ª':
+            case 'ï¿½':
               fixed += "&#170; ";
               break;
-            case '«':
+            case 'ï¿½':
               fixed += "&#171; ";
               break;
-            case '¬':
+            case 'ï¿½':
               fixed += "&#172; ";
               break;
-            case '­':
+            case 'ï¿½':
               fixed += "&#173; ";
               break;
-            case '®':
+            case 'ï¿½':
               fixed += "&#174; ";
               break;
-            case '¯':
+            case 'ï¿½':
               fixed += "&#175; ";
               break;
-            case '°':
+            case 'ï¿½':
               fixed += "&#176; ";
               break;
-            case '±':
+            case 'ï¿½':
               fixed += "&#177; ";
               break;
-            case '²':
+            case 'ï¿½':
               fixed += "&#178; ";
               break;
-            case '³':
+            case 'ï¿½':
               fixed += "&#179; ";
               break;
-            case '´':
+            case 'ï¿½':
               fixed += "&#180; ";
               break;
-            case 'µ':
+            case 'ï¿½':
               fixed += "&#181; ";
               break;
-            case '¶':
+            case 'ï¿½':
               fixed += "&#182; ";
               break;
-            case '·':
+            case 'ï¿½':
               fixed += "&#183; ";
               break;
-            case '¸':
+            case 'ï¿½':
               fixed += "&#184; ";
               break;
-            case '¹':
+            case 'ï¿½':
               fixed += "&#185; ";
               break;
-            case 'º':
+            case 'ï¿½':
               fixed += "&#186; ";
               break;
-            case '»':
+            case 'ï¿½':
               fixed += "&#187; ";
               break;
-            case '¼':
+            case 'ï¿½':
               fixed += "&#188; ";
               break;
-            case '½':
+            case 'ï¿½':
               fixed += "&#189; ";
               break;
-            case '¾':
+            case 'ï¿½':
               fixed += "&#190; ";
               break;
-            case '¿':
+            case 'ï¿½':
               fixed += "&#191; ";
               break;
-            case 'À':
+            case 'ï¿½':
               fixed += "&#192; ";
               break;
-            case 'Á':
+            case 'ï¿½':
               fixed += "&#193; ";
               break;
-            case 'Â':
+            case 'ï¿½':
               fixed += "&#194; ";
               break;
-            case 'Ã':
+            case 'ï¿½':
               fixed += "&#195; ";
               break;
-            case 'Ä':
+            case 'ï¿½':
               fixed += "&#196; ";
               break;
-            case 'Å':
+            case 'ï¿½':
               fixed += "&#197; ";
               break;
-            case 'Æ':
+            case 'ï¿½':
               fixed += "&#198; ";
               break;
-            case 'Ç':
+            case 'ï¿½':
               fixed += "&#199; ";
               break;
-            case 'È':
+            case 'ï¿½':
               fixed += "&#200; ";
               break;
-            case 'É':
+            case 'ï¿½':
               fixed += "&#201; ";
               break;
-            case 'Ê':
+            case 'ï¿½':
               fixed += "&#202; ";
               break;
-            case 'Ë':
+            case 'ï¿½':
               fixed += "&#203; ";
               break;
-            case 'Ì':
+            case 'ï¿½':
               fixed += "&#204; ";
               break;
-            case 'Í':
+            case 'ï¿½':
               fixed += "&#205; ";
               break;
-            case 'Î':
+            case 'ï¿½':
               fixed += "&#206; ";
               break;
-            case 'Ï':
+            case 'ï¿½':
               fixed += "&#207; ";
               break;
-            case 'Ð':
+            case 'ï¿½':
               fixed += "&#208; ";
               break;
-            case 'Ñ':
+            case 'ï¿½':
               fixed += "&#209; ";
               break;
-            case 'Ò':
+            case 'ï¿½':
               fixed += "&#210; ";
               break;
-            case 'Ó':
+            case 'ï¿½':
               fixed += "&#211; ";
               break;
-            case 'Ô':
+            case 'ï¿½':
               fixed += "&#212; ";
               break;
-            case 'Õ':
+            case 'ï¿½':
               fixed += "&#213; ";
               break;
-            case 'Ö':
+            case 'ï¿½':
               fixed += "&#214; ";
               break;
-            case '×':
+            case 'ï¿½':
               fixed += "&#215; ";
               break;
-            case 'Ø':
+            case 'ï¿½':
               fixed += "&#216; ";
               break;
-            case 'Ù':
+            case 'ï¿½':
               fixed += "&#217; ";
               break;
-            case 'Ú':
+            case 'ï¿½':
               fixed += "&#218; ";
               break;
-            case 'Û':
+            case 'ï¿½':
               fixed += "&#219; ";
               break;
-            case 'Ü':
+            case 'ï¿½':
               fixed += "&#220; ";
               break;
-            case 'Ý':
+            case 'ï¿½':
               fixed += "&#221; ";
               break;
-            case 'Þ':
+            case 'ï¿½':
               fixed += "&#222; ";
               break;
-            case 'ß':
+            case 'ï¿½':
               fixed += "&#223; ";
               break;
-            case 'à':
+            case 'ï¿½':
               fixed += "&#224; ";
               break;
-            case 'á':
+            case 'ï¿½':
               fixed += "&#225; ";
               break;
-            case 'â':
+            case 'ï¿½':
               fixed += "&#226; ";
               break;
-            case 'ã':
+            case 'ï¿½':
               fixed += "&#227; ";
               break;
-            case 'ä':
+            case 'ï¿½':
               fixed += "&#228; ";
               break;
-            case 'å':
+            case 'ï¿½':
               fixed += "&#229; ";
               break;
-            case 'æ':
+            case 'ï¿½':
               fixed += "&#230; ";
               break;
-            case 'ç':
+            case 'ï¿½':
               fixed += "&#231; ";
               break;
-            case 'è':
+            case 'ï¿½':
               fixed += "&#232; ";
               break;
-            case 'é':
+            case 'ï¿½':
               fixed += "&#233; ";
               break;
-            case 'ê':
+            case 'ï¿½':
               fixed += "&#234; ";
               break;
-            case 'ë':
+            case 'ï¿½':
               fixed += "&#235; ";
               break;
-            case 'ì':
+            case 'ï¿½':
               fixed += "&#236; ";
               break;
-            case 'í':
+            case 'ï¿½':
               fixed += "&#237; ";
               break;
-            case 'î':
+            case 'ï¿½':
               fixed += "&#238; ";
               break;
-            case 'ï':
+            case 'ï¿½':
               fixed += "&#239; ";
               break;
-            case 'ð':
+            case 'ï¿½':
               fixed += "&#240; ";
               break;
-            case 'ñ':
+            case 'ï¿½':
               fixed += "&#241; ";
               break;
-            case 'ò':
+            case 'ï¿½':
               fixed += "&#242; ";
               break;
-            case 'ó':
+            case 'ï¿½':
               fixed += "&#243; ";
               break;
-            case 'ô':
+            case 'ï¿½':
               fixed += "&#244; ";
               break;
-            case 'õ':
+            case 'ï¿½':
               fixed += "&#245; ";
               break;
-            case 'ö':
+            case 'ï¿½':
               fixed += "&#246; ";
               break;
-            case '÷':
+            case 'ï¿½':
               fixed += "&#247; ";
               break;
-            case 'ø':
+            case 'ï¿½':
               fixed += "&#248; ";
               break;
-            case 'ù':
+            case 'ï¿½':
               fixed += "&#249; ";
               break;
-            case 'ú':
+            case 'ï¿½':
               fixed += "&#250; ";
               break;
-            case 'û':
+            case 'ï¿½':
               fixed += "&#251; ";
               break;
-            case 'ü':
+            case 'ï¿½':
               fixed += "&#252; ";
               break;
-            case 'ý':
+            case 'ï¿½':
               fixed += "&#253; ";
               break;
-            case 'þ':
+            case 'ï¿½':
               fixed += "&#254; ";
               break;
-            case 'ÿ':
+            case 'ï¿½':
               fixed += "&#255; ";
               break;
             }
@@ -607,44 +617,44 @@ std::string utf8ToLocale(const std::string & utf8)
 #ifdef WIN32
   C_INT32 size;
 
-  size = MultiByteToWideChar(CP_UTF8,              // code page
+  size = MultiByteToWideChar(CP_UTF8, // code page
                              MB_ERR_INVALID_CHARS, // character-type options
-                             utf8.c_str(),         // address of string to map
-                             -1,                   // NULL terminated
-                             NULL,                 // address of wide-character buffer
+                             utf8.c_str(), // address of string to map
+                             -1, // NULL terminated
+                             NULL, // address of wide-character buffer
                              0) + 1;               // size of buffer
 
   WCHAR * pWideChar = new WCHAR[size];
 
-  MultiByteToWideChar(CP_UTF8,              // code page
+  MultiByteToWideChar(CP_UTF8, // code page
                       MB_ERR_INVALID_CHARS, // character-type options
-                      utf8.c_str(),         // address of string to map
-                      -1,                   // NULL terminated
-                      pWideChar,            // address of wide-character buffer
+                      utf8.c_str(), // address of string to map
+                      -1, // NULL terminated
+                      pWideChar, // address of wide-character buffer
                       size);                // size of buffer
 
   int UsedDefaultChar = 0;
 
-  size = WideCharToMultiByte(CP_THREAD_ACP,          // code page
+  size = WideCharToMultiByte(CP_THREAD_ACP, // code page
                              WC_COMPOSITECHECK |
-                             WC_DEFAULTCHAR,         // performance and mapping flags
-                             pWideChar,              // address of wide-character string
-                             -1,                     // NULL terminated
-                             NULL,                   // address of buffer for new string
-                             0,                      // size of buffer
-                             "?",                    // address of default for unmappable characters
+                             WC_DEFAULTCHAR, // performance and mapping flags
+                             pWideChar, // address of wide-character string
+                             -1, // NULL terminated
+                             NULL, // address of buffer for new string
+                             0, // size of buffer
+                             "?", // address of default for unmappable characters
                              & UsedDefaultChar) + 1; // address of flag set when default char used
 
   char * pLocal = new char[size];
 
-  WideCharToMultiByte(CP_THREAD_ACP,          // code page
+  WideCharToMultiByte(CP_THREAD_ACP, // code page
                       WC_COMPOSITECHECK |
-                      WC_DEFAULTCHAR,         // performance and mapping flags
-                      pWideChar,              // address of wide-character string
-                      -1,                     // NULL terminated
-                      pLocal,                 // address of buffer for new string
-                      size,                   // size of buffer
-                      "?",                    // address of default for unmappable characters
+                      WC_DEFAULTCHAR, // performance and mapping flags
+                      pWideChar, // address of wide-character string
+                      -1, // NULL terminated
+                      pLocal, // address of buffer for new string
+                      size, // size of buffer
+                      "?", // address of default for unmappable characters
                       & UsedDefaultChar);     // address of flag set when default char used
 
   std::string Local = pLocal;
@@ -737,42 +747,42 @@ std::string localeToUtf8(const std::string & locale)
 #ifdef WIN32
   C_INT32 size;
 
-  size = MultiByteToWideChar(CP_THREAD_ACP,        // code page
+  size = MultiByteToWideChar(CP_THREAD_ACP, // code page
                              MB_ERR_INVALID_CHARS, // character-type options
-                             locale.c_str(),       // address of string to map
-                             -1,                   // NULL terminated
-                             NULL,                 // address of wide-character buffer
+                             locale.c_str(), // address of string to map
+                             -1, // NULL terminated
+                             NULL, // address of wide-character buffer
                              0) + 1;               // size of buffer
 
   WCHAR * pWideChar = new WCHAR[size];
 
-  MultiByteToWideChar(CP_THREAD_ACP,        // code page
+  MultiByteToWideChar(CP_THREAD_ACP, // code page
                       MB_ERR_INVALID_CHARS, // character-type options
-                      locale.c_str(),       // address of string to map
-                      -1,                   // NULL terminated
-                      pWideChar,            // address of wide-character buffer
+                      locale.c_str(), // address of string to map
+                      -1, // NULL terminated
+                      pWideChar, // address of wide-character buffer
                       size);                // size of buffer
 
   int UsedDefaultChar = 0;
 
-  size = WideCharToMultiByte(CP_UTF8,   // code page
-                             0,         // performance and mapping flags
+  size = WideCharToMultiByte(CP_UTF8, // code page
+                             0, // performance and mapping flags
                              pWideChar, // address of wide-character string
-                             -1,        // NULL terminated
-                             NULL,      // address of buffer for new string
-                             0,         // size of buffer
-                             NULL,      // address of default for unmappable characters
+                             -1, // NULL terminated
+                             NULL, // address of buffer for new string
+                             0, // size of buffer
+                             NULL, // address of default for unmappable characters
                              NULL) + 1; // address of flag set when default char used
 
   char * pUtf8 = new char[size];
 
-  WideCharToMultiByte(CP_UTF8,   // code page
-                      0,         // address of wide-character string
+  WideCharToMultiByte(CP_UTF8, // code page
+                      0, // address of wide-character string
                       pWideChar, // address of wide-character string
-                      -1,        // NULL terminated
-                      pUtf8,     // address of buffer for new string
-                      size,      // size of buffer
-                      NULL,      // address of default for unmappable characters
+                      -1, // NULL terminated
+                      pUtf8, // address of buffer for new string
+                      size, // size of buffer
+                      NULL, // address of default for unmappable characters
                       NULL);     // address of flag set when default char used
 
   std::string Utf8 = pUtf8;

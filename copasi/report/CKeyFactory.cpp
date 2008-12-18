@@ -1,26 +1,32 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.16 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
+ $Revision: 1.17 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:06:50 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  * CKeyFactory class.
- * This class is used to create a unique key whithin COPASI. It also allows
- * retreival of the CCopasiObject the key is assigned to.
+ * This class is used to create a unique key within COPASI. It also allows
+ * Retrieval of the CCopasiObject the key is assigned to.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
-#include "copasi.h"
-
 #include <sstream>
+#include <stdlib.h>
+
+#include "copasi.h"
 
 #include "CKeyFactory.h"
 

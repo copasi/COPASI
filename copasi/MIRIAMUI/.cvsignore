@@ -1,6 +1,6 @@
-Makefile
-CQRDFListViewWidget.cpp
 CQRDFListViewWidget.h
+CQRDFListViewWidget.cpp
+Makefile
 moc_*.cpp
 CQMiriamWidget.h
 CQMiriamWidget.cpp

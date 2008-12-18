@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:58:00 $
+//   $Date: 2008/12/18 18:50:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+#include <string.h>
 
 #include "copasi.h"
 
@@ -91,7 +92,7 @@ void CLyapWolfMethod::step(const double & deltaT)
          &two , //  6. vector absolute error, scalar relative error
          &mRtol , //  7. relative tolerance array
          mAtol.array() , //  8. absolute tolerance array
-         &mState , //  9. output by overshoot & interpolatation
+         &mState , //  9. output by overshoot & interpolation
          &mLsodaStatus , // 10. the state control variable
          &one , // 11. futher options (one)
          mDWork.array() , // 12. the double work array
@@ -99,7 +100,7 @@ void CLyapWolfMethod::step(const double & deltaT)
          mIWork.array() , // 14. the int work array
          &ISize , // 15. the int work array size
          NULL , // 16. evaluate J (not given)
-         &mJType);           // 17. the type of jacobian calculate (2)
+         &mJType);           // 17. the type of Jacobian calculate (2)
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
 

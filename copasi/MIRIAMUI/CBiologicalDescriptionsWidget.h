@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:25:12 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@ class CBiologicalDescriptionsWidget : public CopasiTableWidget
     QStringList mResources;
 
   public:
-    CBiologicalDescriptionsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    CBiologicalDescriptionsWidget(QWidget *parent, const char * name = 0, Qt::WFlags f = 0);
     ~CBiologicalDescriptionsWidget();
     /**
     * This initializes the widget

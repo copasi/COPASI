@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListView.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,8 +17,8 @@
 #define COL_PREDICATE  1
 #define COL_OBJECT     2
 
-CRDFListView::CRDFListView(QWidget * pParent, const char * name, WFlags flag):
-    QListView(pParent, name, flag),
+CRDFListView::CRDFListView(QWidget * pParent, const char * name, Qt::WFlags flag):
+    Q3ListView(pParent, name, flag),
     mNode2Item()
 {
   addColumn("Subject");
@@ -33,7 +33,7 @@ CRDFListView::~CRDFListView()
 void CRDFListView::clear()
 {
   mNode2Item.clear();
-  QListView::clear();
+  Q3ListView::clear();
 }
 
 CRDFListViewItem * CRDFListView::find(const CRDFNode * pNode)

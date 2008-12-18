@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Date: 2008/12/18 19:14:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@
 #include <mathematics.h>
 #include <vector>
 #include <numeric>
-#include <limits>
+#include <limits.h>
 #include <set>
 
 #include "copasi.h"

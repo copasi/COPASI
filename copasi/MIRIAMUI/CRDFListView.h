@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListView.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/11 13:00:39 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,12 +15,12 @@
 #define COPASI_CRDFListView
 
 #include <map>
-#include <qlistview.h>
+#include <q3listview.h>
 
 class CRDFNode;
 class CRDFListViewItem;
 
-class CRDFListView : public QListView
+class CRDFListView : public Q3ListView
   {
     Q_OBJECT
 
@@ -31,7 +31,7 @@ class CRDFListView : public QListView
      * @param const char * name (default: NULL)
      * @param WFlags flag (default: 0)
      */
-    CRDFListView(QWidget * pParent = NULL, const char * name = NULL, WFlags flag = 0);
+    CRDFListView(QWidget * pParent = NULL, const char * name = NULL, Qt::WFlags flag = 0);
 
     /**
      * Destructor

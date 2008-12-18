@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/tss.pro,v $
-#   $Revision: 1.10 $
+#   $Revision: 1.11 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:26 $
+#   $Date: 2008/12/18 19:14:56 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2008/07/08 16:06:26 $
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2008/12/18 19:14:56 $
 ######################################################################
 
 LIB = tss
@@ -47,3 +47,5 @@ SOURCES += CODEExporterXPPAUT.cpp
 
 
 DISTFILES += tss.vcproj
+#The following line was inserted by qt3to4
+QT +=  qt3support 

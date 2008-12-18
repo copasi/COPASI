@@ -1,10 +1,15 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollzoomer.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:33 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollzoomer.cpp,v $
+ $Revision: 1.5 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:04:22 $
+ End CVS Header */
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 // Copyright © 1997   Josef Wilgen
 // Copyright © 2002   Uwe Rathmann
@@ -22,6 +27,9 @@
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_layout.h>
 #include <qwt_scale_engine.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QChildEvent>
 #include "scrollbar.h"
 #include "scrollzoomer.h"
 
@@ -48,22 +56,8 @@ QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
     x = qwtMax(x, zoomBase().left());
     x = qwtMin(x, zoomBase().right() - zoomRect().width());
 
-
-
-
-
-
-
-
     y = qwtMax(y, zoomBase().top());
     y = qwtMin(y, zoomBase().bottom() - zoomRect().height());
-
-
-
-
-
-
-
 
     if (x != zoomRect().left() || y != zoomRect().top())
     {
@@ -130,7 +124,7 @@ class ScrollData
         scrollBar(NULL),
         position(ScrollZoomer::OppositeToScale),
 #if QT_VERSION < 0x040000
-        mode(QScrollView::Auto)
+        mode(Q3ScrollView::Auto)
 #else
         mode(Qt::ScrollBarAsNeeded)
 #endif
@@ -145,7 +139,7 @@ class ScrollData
     ScrollBar *scrollBar;
     ScrollZoomer::ScrollBarPosition position;
 #if QT_VERSION < 0x040000
-    QScrollView::ScrollBarMode mode;
+    Q3ScrollView::ScrollBarMode mode;
 #else
     Qt::ScrollBarPolicy mode;
 #endif
@@ -206,7 +200,7 @@ ScrollBar *ScrollZoomer::verticalScrollBar() const
   }
 
 #if QT_VERSION < 0x040000
-void ScrollZoomer::setHScrollBarMode(QScrollView::ScrollBarMode mode)
+void ScrollZoomer::setHScrollBarMode(Q3ScrollView::ScrollBarMode mode)
 #else
 void ScrollZoomer::setHScrollBarMode(Qt::ScrollBarPolicy mode)
 #endif
@@ -219,7 +213,7 @@ void ScrollZoomer::setHScrollBarMode(Qt::ScrollBarPolicy mode)
 }
 
 #if QT_VERSION < 0x040000
-void ScrollZoomer::setVScrollBarMode(QScrollView::ScrollBarMode mode)
+void ScrollZoomer::setVScrollBarMode(Q3ScrollView::ScrollBarMode mode)
 #else
 void ScrollZoomer::setVScrollBarMode(Qt::ScrollBarPolicy mode)
 #endif
@@ -232,7 +226,7 @@ void ScrollZoomer::setVScrollBarMode(Qt::ScrollBarPolicy mode)
 }
 
 #if QT_VERSION < 0x040000
-QScrollView::ScrollBarMode ScrollZoomer::hScrollBarMode() const
+Q3ScrollView::ScrollBarMode ScrollZoomer::hScrollBarMode() const
 #else
 Qt::ScrollBarPolicy ScrollZoomer::hScrollBarMode() const
 #endif
@@ -242,7 +236,7 @@ Qt::ScrollBarPolicy ScrollZoomer::hScrollBarMode() const
   }
 
 #if QT_VERSION < 0x040000
-QScrollView::ScrollBarMode ScrollZoomer::vScrollBarMode() const
+Q3ScrollView::ScrollBarMode ScrollZoomer::vScrollBarMode() const
 #else
 Qt::ScrollBarPolicy ScrollZoomer::vScrollBarMode() const
 #endif
@@ -345,7 +339,7 @@ bool ScrollZoomer::eventFilter(QObject *o, QEvent *e)
 bool ScrollZoomer::needScrollBar(Qt::Orientation o) const
   {
 #if QT_VERSION < 0x040000
-    QScrollView::ScrollBarMode mode;
+    Q3ScrollView::ScrollBarMode mode;
 #else
     Qt::ScrollBarPolicy mode;
 #endif
@@ -372,14 +366,14 @@ bool ScrollZoomer::needScrollBar(Qt::Orientation o) const
     switch (mode)
       {
 #if QT_VERSION < 0x040000
-      case QScrollView::AlwaysOn:
+      case Q3ScrollView::AlwaysOn:
 #else
       case Qt::ScrollBarAlwaysOn:
 #endif
         needed = true;
         break;
 #if QT_VERSION < 0x040000
-      case QScrollView::AlwaysOff:
+      case Q3ScrollView::AlwaysOff:
 #else
       case Qt::ScrollBarAlwaysOff:
 #endif

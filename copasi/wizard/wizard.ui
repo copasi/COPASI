@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
+<comment>   $Revision: 1.7 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: gauges $ </comment>
-<comment>   $Date: 2008/04/22 11:06:48 $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2008/12/18 19:18:58 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -444,9 +444,9 @@ Defining the Output</string>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
-    <include location="local" impldecl="in implementation">qmessagebox.h</include>
-    <include location="local" impldecl="in implementation">qdir.h</include>
-    <include location="local" impldecl="in implementation">../CopasiUI/listviews.h</include>
+    <include location="global" impldecl="in implementation">qmessagebox.h</include>
+    <include location="global" impldecl="in implementation">qdir.h</include>
+    <include location="local" impldecl="in implementation">UI/listviews.h</include>
     <include location="local" impldecl="in implementation">wizard.ui.h</include>
 </includes>
 <variables>

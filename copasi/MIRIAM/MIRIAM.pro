@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/MIRIAM.pro,v $
-#   $Revision: 1.14 $
+#   $Revision: 1.15 $
 #   $Name:  $
-#   $Author: aruff $
-#   $Date: 2008/09/17 17:27:36 $
+#   $Author: shoops $
+#   $Date: 2008/12/18 18:52:23 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,3 +83,5 @@ SOURCES += WebServicesIssues/stdsoap2.cpp
 SOURCES += CMIRIAMResource.cpp
 
 DISTFILES += MIRIAM.vcproj
+#The following line was inserted by qt3to4
+QT +=  qt3support 

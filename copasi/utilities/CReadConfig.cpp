@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-  $Revision: 1.19 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/09/16 18:30:09 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
+$Revision: 1.20 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:26:08 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include <stdlib.h>
 #include <assert.h>
 
 #include "copasi.h"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ bool CQRDFListViewWidget::leave()
 
 void CQRDFListViewWidget::load()
 {
-  mpListView->clear();
+  Ui::CQRDFListViewWidget::mpListView->clear();
   pdelete(mpGraph);
 
   CCopasiObject *pObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
@@ -83,7 +83,7 @@ void CQRDFListViewWidget::load()
     {
       QString Message = FROM_UTF8(CCopasiMessage::getAllMessageText());
       CQMessageBox::warning(this, QString("RDF Warning"), Message,
-                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                            QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
     }
 
   if (mpGraph == NULL)
@@ -97,11 +97,11 @@ void CQRDFListViewWidget::load()
   std::set< CRDFTriplet >::const_iterator end = mpGraph->getTriplets().end();
   for (; it != end; ++it)
     {
-      CRDFListViewItem * pSubjectItem = mpListView->find(it->pSubject);
+      CRDFListViewItem * pSubjectItem = Ui::CQRDFListViewWidget::mpListView->find(it->pSubject);
       if (pSubjectItem == NULL)
         {
-          pSubjectItem = new CRDFListViewItem(mpListView, NULL);
-          mpListView->insert(it->pSubject, pSubjectItem);
+          pSubjectItem = new CRDFListViewItem(Ui::CQRDFListViewWidget::mpListView, NULL);
+          Ui::CQRDFListViewWidget::mpListView->insert(it->pSubject, pSubjectItem);
           // Display the subject information
 
           const CRDFSubject & Subject = it->pSubject->getSubject();
@@ -117,19 +117,19 @@ void CQRDFListViewWidget::load()
             }
         }
 
-      CRDFListViewItem * pObjectItem = mpListView->find(it->pObject);
+      CRDFListViewItem * pObjectItem = Ui::CQRDFListViewWidget::mpListView->find(it->pObject);
       if (pObjectItem == NULL)
         {
           pObjectItem = new CRDFListViewItem(pSubjectItem, NULL);
-          mpListView->insert(it->pObject, pObjectItem);
+          Ui::CQRDFListViewWidget::mpListView->insert(it->pObject, pObjectItem);
         }
       else
         {
-          QListViewItem * pParent = pObjectItem->parent();
+          Q3ListViewItem * pParent = pObjectItem->parent();
 
           if (pParent == NULL)
             {
-              mpListView->takeItem(pObjectItem);
+              Ui::CQRDFListViewWidget::mpListView->takeItem(pObjectItem);
               pSubjectItem->insertItem(pObjectItem);
             }
           else

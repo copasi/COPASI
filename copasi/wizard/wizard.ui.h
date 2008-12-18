@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/04/22 11:06:48 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:18:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,9 +64,9 @@ void WizardDialog::buttonGroup2_clicked(int)
 
 void WizardDialog::init()
 {
-  WFlags f = this->getWFlags();
+  Qt::WindowFlags f = this->windowFlags();
   f = (f | Qt::WStyle_Minimize | Qt::WDestructiveClose);
-  this->setWFlags(f);
+  this->setWindowFlags(f);
 
   std::string WizardDir;
   COptions::getValue("WizardDir", WizardDir);
@@ -89,12 +89,12 @@ void WizardDialog::init()
   this->button4->setStyle("motif");
   this->button5->setStyle("motif");
   this->button6->setStyle("motif");
-  this->button1->setBackgroundOrigin(QButton::WindowOrigin);
-  this->button2->setBackgroundOrigin(QButton::WindowOrigin);
-  this->button3->setBackgroundOrigin(QButton::WindowOrigin);
-  this->button4->setBackgroundOrigin(QButton::WindowOrigin);
-  this->button5->setBackgroundOrigin(QButton::WindowOrigin);
-  this->button6->setBackgroundOrigin(QButton::WindowOrigin);
+  this->button1->setBackgroundOrigin(QWidget::WindowOrigin);
+  this->button2->setBackgroundOrigin(QWidget::WindowOrigin);
+  this->button3->setBackgroundOrigin(QWidget::WindowOrigin);
+  this->button4->setBackgroundOrigin(QWidget::WindowOrigin);
+  this->button5->setBackgroundOrigin(QWidget::WindowOrigin);
+  this->button6->setBackgroundOrigin(QWidget::WindowOrigin);
 }
 
 void WizardDialog::forwardButton_clicked()
@@ -139,7 +139,7 @@ void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString 
   else
     {
       CQMessageBox::information(this, "Error", "Link not found",
-                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+                                QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
     }
 }
 

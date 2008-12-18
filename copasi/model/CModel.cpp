@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347 $
+//   $Revision: 1.348 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Date: 2008/12/18 18:58:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@
 
 #include <string>
 #include <vector>
-#include <limits>
+#include <limits.h>
 #include <float.h>
 #include <cmath>
 #include <algorithm>

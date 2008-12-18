@@ -1,10 +1,15 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollzoomer.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:33 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollzoomer.h,v $
+ $Revision: 1.6 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:04:22 $
+ End CVS Header */
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 // Copyright © 1997   Josef Wilgen
 // Copyright © 2002   Uwe Rathmann
@@ -24,10 +29,12 @@
 #include <qglobal.h>
 
 #if QT_VERSION < 0x040000
-# include <qscrollview.h>
+# include <q3scrollview.h>
 #endif
 
 #include <qwt_plot_zoomer.h>
+//Added by qt3to4:
+#include <QEvent>
 
 class ScrollData;
 class ScrollBar;
@@ -64,11 +71,11 @@ class ScrollZoomer: public LogPlotZoomer
     ScrollBar *verticalScrollBar() const;
 
 #if QT_VERSION < 0x040000
-    void setHScrollBarMode(QScrollView::ScrollBarMode);
-    void setVScrollBarMode(QScrollView::ScrollBarMode);
+    void setHScrollBarMode(Q3ScrollView::ScrollBarMode);
+    void setVScrollBarMode(Q3ScrollView::ScrollBarMode);
 
-    QScrollView::ScrollBarMode vScrollBarMode () const;
-    QScrollView::ScrollBarMode hScrollBarMode () const;
+    Q3ScrollView::ScrollBarMode vScrollBarMode () const;
+    Q3ScrollView::ScrollBarMode hScrollBarMode () const;
 #else
     void setHScrollBarMode(Qt::ScrollBarPolicy);
     void setVScrollBarMode(Qt::ScrollBarPolicy);

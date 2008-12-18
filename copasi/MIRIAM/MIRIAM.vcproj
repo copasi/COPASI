@@ -59,6 +59,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CMIRIAMResource.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CModelMIRIAMInfo.cpp"
 				>
 			</File>
@@ -133,6 +137,10 @@
 			</File>
 			<File
 				RelativePath=".\CCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CMIRIAMResource.h"
 				>
 			</File>
 			<File

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/report.pro,v $ 
-#   $Revision: 1.18 $ 
+#   $Revision: 1.19 $ 
 #   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2008/09/22 22:15:32 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/12/18 19:06:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,7 +12,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.18 $ $Author: ssahle $ $Date: 2008/09/22 22:15:32 $
+# $Revision: 1.19 $ $Author: shoops $ $Date: 2008/12/18 19:06:50 $
 ######################################################################
 
 LIB = report
@@ -51,3 +51,5 @@ SOURCES += CArrayElementReference.cpp \
 
 
 DISTFILES += report.vcproj
+#The following line was inserted by qt3to4
+QT +=  qt3support 

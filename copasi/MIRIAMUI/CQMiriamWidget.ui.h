@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:48 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,8 +91,8 @@ void CQMiriamWidget::slotBtnClearClicked()
     {
       delete mpDTCreated;
 
-      mpDTCreated = new QDateTimeEdit(this, "mpDTCreated");
-      CQMiriamWidgetLayout->addWidget(mpDTCreated, 0, 1);
+      mpDTCreated = new Q3DateTimeEdit(this, "mpDTCreated");
+      gridLayout->addWidget(mpDTCreated, 0, 1);
       mpDTCreated->show();
       return;
     }
@@ -149,7 +149,7 @@ bool CQMiriamWidget::leave()
   // Created at
   std::string DT = "";
   if (mpDTCreated->dateTime().isValid())
-    DT = mpDTCreated->dateTime().toString(Qt::ISODate).utf8() + "Z";
+    DT = std::string((const char *) mpDTCreated->dateTime().toString(Qt::ISODate).utf8()) + "Z";
 
   if (DT != mpMIRIAMInfo->getCreatedDT())
     {
@@ -193,8 +193,8 @@ bool CQMiriamWidget::enter(const std::string & key)
     {
       delete mpDTCreated;
 
-      mpDTCreated = new QDateTimeEdit(this, "mpDTCreated");
-      CQMiriamWidgetLayout->addWidget(mpDTCreated, 0, 1);
+      mpDTCreated = new Q3DateTimeEdit(this, "mpDTCreated");
+      gridLayout->addWidget(mpDTCreated, 0, 1);
       mpDTCreated->show();
     }
 

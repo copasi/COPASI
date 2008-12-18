@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:10 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 #define COL_OBJECT     2
 
 CRDFListViewItem::CRDFListViewItem(CRDFListView * pParent, CRDFListViewItem * pAfter):
-    QListViewItem(pParent, pAfter),
+    Q3ListViewItem(pParent, pAfter),
     mTriplet()
 {
   assert(pParent != NULL);
@@ -32,7 +32,7 @@ CRDFListViewItem::CRDFListViewItem(CRDFListView * pParent, CRDFListViewItem * pA
 }
 
 CRDFListViewItem::CRDFListViewItem(CRDFListViewItem * pParent, CRDFListViewItem * pAfter):
-    QListViewItem(pParent, pAfter),
+    Q3ListViewItem(pParent, pAfter),
     mTriplet()
 {
   assert(pParent != NULL);

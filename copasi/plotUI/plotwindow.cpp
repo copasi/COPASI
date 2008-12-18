@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/25 06:04:03 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:04:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,11 +17,11 @@
 
 // the window containing the plot and buttons for supported operations
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qprinter.h>
 #include <qpixmap.h>
-#include <qpicture.h>
-#include <qfiledialog.h>
+#include <q3picture.h>
+#include <q3filedialog.h>
 #include <qcursor.h>
 #include <qregexp.h>
 #include <qlineedit.h>
@@ -59,7 +59,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
 
   // set up the GUI - the toolbar
-  QToolBar * plotTools = new QToolBar(this, "plot operations");
+  Q3ToolBar * plotTools = new Q3ToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
 
   printButton = new QToolButton(plotTools, "print plot");
@@ -165,7 +165,7 @@ void PlotWindow::printAsImage()
 
   if (extensionName == "svg") // true
     {
-      QPicture pict;
+      Q3Picture pict;
       painter.begin(&pict);
       mpPlot->print(&painter, rect, PrintFilter());
       painter.end();
@@ -203,7 +203,7 @@ void PlotWindow::slotSaveData()
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog", QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
 
-      if (fileName == NULL) return;
+      if (fileName.isNull()) return;
 
       if (!fileName.endsWith(".txt") &&
           !fileName.endsWith(".")) fileName += ".txt";
@@ -226,7 +226,7 @@ void PlotWindow::slotSaveData()
   if (!success)
     {
       std::string s = "Could not save data to ";
-      s += fileName.utf8();
+      s += (const char *) fileName.utf8();
       CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::NoButton);
     }
 }

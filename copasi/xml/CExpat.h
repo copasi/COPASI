@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-  $Revision: 1.20 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/09/16 18:30:14 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
+$Revision: 1.21 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:21:26 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -25,6 +25,8 @@
 
 #ifndef COPASI_CExpat
 #define COPASI_CExpat
+
+#include <string.h>
 
 #include <assert.h>
 #include <expat.h>

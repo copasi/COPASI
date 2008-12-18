@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/07/25 07:51:48 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:12:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #define STRUCTUREPARSER_H
 
 #include <qxml.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 class QString;
 
@@ -52,7 +52,7 @@ class CStructureParser : public QXmlDefaultHandler
     int sumColumns;
     int indexColumns;
 
-    QValueList<QString> mListOfUncompletedTags;
+    Q3ValueList<QString> mListOfUncompletedTags;
   };
 
 #endif

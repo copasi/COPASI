@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/05/20 11:15:31 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:04:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.53 2008/05/20 11:15:31 pwilly Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.54 2008/12/18 19:04:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,11 +32,14 @@
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <qtoolbutton.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
 
 //#include <qtooltip.h>
 //#include <qwhatsthis.h>
@@ -61,22 +64,22 @@
  *  Constructs a PlotWidget1 as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
+PlotWidget1::PlotWidget1(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("PlotWidget1");
 
-  PlotWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "PlotWidget1Layout");
+  PlotWidget1Layout = new Q3GridLayout(this, 1, 1, 11, 6, "PlotWidget1Layout");
 
   //********** title ********************
 
   labelTitle = new QLabel(this, "labelTitle");
   labelTitle->setText(tr("Plot title"));
-  labelTitle->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  labelTitle->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
   PlotWidget1Layout->addWidget(labelTitle, 0, 0);
 
-  layoutTitle = new QHBoxLayout(0, 0, 6, "layoutTitle");
+  layoutTitle = new Q3HBoxLayout(0, 0, 6, "layoutTitle");
 
   titleLineEdit = new QLineEdit(this, "titleLineEdit");
   layoutTitle->addWidget(titleLineEdit);
@@ -92,7 +95,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   labelType = new QLabel(this, "labelType");
   labelType->setText(tr("Type"));
   labelType->setEnabled(TRUE);
-  labelType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  labelType->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
   PlotWidget1Layout->addWidget(labelType, 1, 0);
 
   comboType = new QComboBox(FALSE, this, "comboType");
@@ -106,7 +109,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   labelScale = new QLabel(this, "lableScale");
   labelScale->setText(tr("Axis scales"));
   //labelScale->setEnabled(FALSE);
-  labelScale->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  labelScale->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
   PlotWidget1Layout->addWidget(labelScale, 2, 0);
 
   checkLogX = new QCheckBox(this, "checkLogX");
@@ -121,20 +124,20 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   //*********** line *******************
 
-  line1 = new QFrame(this, "line1");
-  line1->setFrameShape(QFrame::HLine);
-  line1->setFrameShadow(QFrame::Sunken);
-  line1->setFrameShape(QFrame::HLine);
+  line1 = new Q3Frame(this, "line1");
+  line1->setFrameShape(Q3Frame::HLine);
+  line1->setFrameShadow(Q3Frame::Sunken);
+  line1->setFrameShape(Q3Frame::HLine);
   PlotWidget1Layout->addMultiCellWidget(line1, 4, 4, 0, 1);
 
   //************ curves ***************
 
   labelCurves = new QLabel(this, "lableCurves");
   labelCurves->setText(tr("Curve specifications"));
-  labelCurves->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  labelCurves->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
   PlotWidget1Layout->addWidget(labelCurves, 5, 0);
 
-  layoutCurves = new QHBoxLayout(0, 0, 6, "layoutCurves");
+  layoutCurves = new Q3HBoxLayout(0, 0, 6, "layoutCurves");
   spacerCurves = new QSpacerItem(257, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layoutCurves->addItem(spacerCurves);
 
@@ -162,15 +165,15 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   //********** line *************************
 
-  lineButtons = new QFrame(this, "lineButtons");
-  lineButtons->setFrameShape(QFrame::HLine);
-  lineButtons->setFrameShadow(QFrame::Sunken);
-  lineButtons->setFrameShape(QFrame::HLine);
+  lineButtons = new Q3Frame(this, "lineButtons");
+  lineButtons->setFrameShape(Q3Frame::HLine);
+  lineButtons->setFrameShadow(Q3Frame::Sunken);
+  lineButtons->setFrameShape(Q3Frame::HLine);
   PlotWidget1Layout->addMultiCellWidget(lineButtons, 7, 7, 0, 1);
 
   //*********** buttons *****************
 
-  layoutButtons = new QHBoxLayout(0, 0, 2, "layoutButtons");
+  layoutButtons = new Q3HBoxLayout(0, 0, 2, "layoutButtons");
 
   startPlotButton = new QPushButton(this, "Commit");
   startPlotButton->setText(tr("Commit"));

@@ -1,13 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:56 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.cpp,v $
+//   $Revision: 1.6 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 18:57:58 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /***************************************************************************
@@ -29,12 +30,15 @@
  ** not clear to you.
  **
  */
-#include <qpainter.h>
-#include <qapplication.h>
-#include <qdom.h>
-#include <qpaintdevicemetrics.h>
+#include <QPainter>
+#include <QApplication>
+#include <QDomNode>
 
 #include "qtmmlwidget.h"
+#include <QList>
+#include <QMap>
+#include <QString>
+#include <QDesktopWidget>
 
 // *******************************************************************
 // Declarations
@@ -106,8 +110,8 @@ struct NodeSpec
     const char *attributes;
 
     enum ChildSpec {
-      ChildAny = -1,    // any number of children allowed
-      ChildIgnore = -2,    // do not build subexpression of children
+      ChildAny = -1, // any number of children allowed
+      ChildIgnore = -2, // do not build subexpression of children
       ImplicitMrow = -3  // if more than one child, build mrow
     };
   };
@@ -502,7 +506,7 @@ class MmlMtableNode : public MmlTableBaseNode
     struct CellSizeData
       {
         void init(const MmlNode *first_row);
-        QValueList<int> col_widths, row_heights;
+        QList<int> col_widths, row_heights;
         uint numCols() const {return col_widths.count();}
         uint numRows() const {return row_heights.count();}
         uint colWidthSum() const;
@@ -518,7 +522,7 @@ class MmlMtrNode : public MmlTableBaseNode
   public:
     MmlMtrNode(MmlDocument *document, const MmlAttributeMap &attribute_map)
         : MmlTableBaseNode(MtrNode, document, attribute_map) {}
-    void layoutCells(const QValueList<int> &col_widths, int col_spc);
+    void layoutCells(const QList<int> &col_widths, int col_spc);
   };
 
 class MmlMtdNode : public MmlTableBaseNode
@@ -695,340 +699,340 @@ static const char *g_oper_spec_names[g_oper_spec_rows] = {"accent", "fence", "la
 static const OperSpec g_oper_spec_data[] =
   {
     {"!!" , Mml::PostfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}
-    ,    // "!!"
-    {"!" , Mml::PostfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "!"
-    {"!=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "!="
-    {"&And;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::VStretch},    // "&And;"
-    {"&ApplyFunction;" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&ApplyFunction;"
-    {"&Assign;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Assign;"
-    {"&Backslash;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&Backslash;"
-    {"&Because;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Because;"
-    {"&Breve;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&Breve;"
-    {"&Cap;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Cap;"
-    {"&CapitalDifferentialD;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // &CapitalDifferentialD;"
-    {"&Cedilla;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&Cedilla;"
-    {"&CenterDot;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&CenterDot;"
-    {"&CircleDot;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&CircleDot;"
-    {"&CircleMinus;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&CircleMinus;"
-    {"&CirclePlus;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&CirclePlus;"
-    {"&CircleTimes;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&CircleTimes;"
-    {"&ClockwiseContourIntegral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // &ClockwiseContourIntegral;"
-    {"&CloseCurlyDoubleQuote;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // &CloseCurlyDoubleQuote;"
-    {"&CloseCurlyQuote;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&CloseCurlyQuote;"
-    {"&Colon;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Colon;"
-    {"&Congruent;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Congruent;"
-    {"&ContourIntegral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&ContourIntegral;"
-    {"&Coproduct;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Coproduct;"
-    {"&CounterClockwiseContourIntegral;", Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // &CounterClockwiseContourInteg
-    {"&Cross;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Cross;"
-    {"&Cup;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Cup;"
-    {"&CupCap;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&CupCap;"
-    {"&Del;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Del;"
-    {"&DiacriticalAcute;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&DiacriticalAcute;"
-    {"&DiacriticalDot;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&DiacriticalDot;"
-    {"&DiacriticalDoubleAcute;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // &DiacriticalDoubleAcute;"
-    {"&DiacriticalGrave;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&DiacriticalGrave;"
-    {"&DiacriticalLeftArrow;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &DiacriticalLeftArrow;"
-    {"&DiacriticalLeftRightArrow;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &DiacriticalLeftRightArrow;"
-    {"&DiacriticalLeftRightVector;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &DiacriticalLeftRightVector;"
-    {"&DiacriticalLeftVector;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &DiacriticalLeftVector;"
-    {"&DiacriticalRightArrow;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &DiacriticalRightArrow;"
-    {"&DiacriticalRightVector;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &DiacriticalRightVector;"
-    {"&DiacriticalTilde;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::NoStretch},    // "&DiacriticalTilde;"
-    {"&Diamond;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Diamond;"
-    {"&DifferentialD;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&DifferentialD;"
-    {"&DotEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&DotEqual;"
-    {"&DoubleContourIntegral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // &DoubleContourIntegral;"
-    {"&DoubleDot;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&DoubleDot;"
-    {"&DoubleDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DoubleDownArrow;"
-    {"&DoubleLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&DoubleLeftArrow;"
-    {"&DoubleLeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // &DoubleLeftRightArrow;"
-    {"&DoubleLeftTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&DoubleLeftTee;"
-    {"&DoubleLongLeftArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // "&DoubleLongLeftArrow;"
-    {"&DoubleLongLeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // &DoubleLongLeftRightArrow;"
-    {"&DoubleLongRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // &DoubleLongRightArrow;"
-    {"&DoubleRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&DoubleRightArrow;"
-    {"&DoubleRightTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&DoubleRightTee;"
-    {"&DoubleUpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DoubleUpArrow;"
-    {"&DoubleUpDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DoubleUpDownArrow;"
-    {"&DoubleVerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&DoubleVerticalBar;"
-    {"&DownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DownArrow;"
-    {"&DownArrowBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DownArrowBar;"
-    {"&DownArrowUpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DownArrowUpArrow;"
-    {"&DownBreve;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&DownBreve;"
-    {"&DownLeftRightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownLeftRightVector;"
-    {"&DownLeftTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownLeftTeeVector;"
-    {"&DownLeftVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownLeftVector;"
-    {"&DownLeftVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownLeftVectorBar;"
-    {"&DownRightTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownRightTeeVector;"
-    {"&DownRightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownRightVector;"
-    {"&DownRightVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&DownRightVectorBar;"
-    {"&DownTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&DownTee;"
-    {"&DownTeeArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&DownTeeArrow;"
-    {"&Element;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Element;"
-    {"&Equal;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Equal;"
-    {"&EqualTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&EqualTilde;"
-    {"&Equilibrium;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&Equilibrium;"
-    {"&Exists;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Exists;"
-    {"&ForAll;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&ForAll;"
-    {"&GreaterEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterEqual;"
-    {"&GreaterEqualLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterEqualLess;"
-    {"&GreaterFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterFullEqual;"
-    {"&GreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterGreater;"
-    {"&GreaterLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterLess;"
-    {"&GreaterSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterSlantEqual;"
-    {"&GreaterTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&GreaterTilde;"
-    {"&Hacek;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::NoStretch},    // "&Hacek;"
-    {"&Hat;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&Hat;"
-    {"&HorizontalLine;" , Mml::InfixForm, {0, 0, 0, "0em", "0", 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&HorizontalLine;"
-    {"&HumpDownHump;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&HumpDownHump;"
-    {"&HumpEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&HumpEqual;"
-    {"&Implies;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&Implies;"
-    {"&Integral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&Integral;"
-    {"&Intersection;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&Intersection;"
-    {"&InvisibleComma;" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", "true", 0}, OperSpec::NoStretch},    // "&InvisibleComma;"
-    {"&InvisibleTimes;" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&InvisibleTimes;"
-    {"&LeftAngleBracket;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&LeftAngleBracket;"
-    {"&LeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftArrow;"
-    {"&LeftArrowBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftArrowBar;"
-    {"&LeftArrowRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftArrowRightArrow;"
-    {"&LeftBracketingBar;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&LeftBracketingBar;"
-    {"&LeftCeiling;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&LeftCeiling;"
-    {"&LeftDoubleBracket;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&LeftDoubleBracket;"
-    {"&LeftDoubleBracketingBar;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &LeftDoubleBracketingBar;"
-    {"&LeftDownTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftDownTeeVector;"
-    {"&LeftDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftDownVector;"
-    {"&LeftDownVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftDownVectorBar;"
-    {"&LeftFloor;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&LeftFloor;"
-    {"&LeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftRightArrow;"
-    {"&LeftRightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftRightVector;"
-    {"&LeftSkeleton;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&LeftSkeleton;"
-    {"&LeftTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LeftTee;"
-    {"&LeftTeeArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftTeeArrow;"
-    {"&LeftTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftTeeVector;"
-    {"&LeftTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LeftTriangle;"
-    {"&LeftTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LeftTriangleBar;"
-    {"&LeftTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LeftTriangleEqual;"
-    {"&LeftUpDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftUpDownVector;"
-    {"&LeftUpTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftUpTeeVector;"
-    {"&LeftUpVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftUpVector;"
-    {"&LeftUpVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LeftUpVectorBar;"
-    {"&LeftVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&LeftVector;"
-    {"&LeftVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::VStretch},    // "&LeftVectorBar;"
-    {"&LessEqualGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LessEqualGreater;"
-    {"&LessFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LessFullEqual;"
-    {"&LessGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LessGreater;"
-    {"&LessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LessLess;"
-    {"&LessSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LessSlantEqual;"
-    {"&LessTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&LessTilde;"
-    {"&LongLeftArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // "&LongLeftArrow;"
-    {"&LongLeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // "&LongLeftRightArrow;"
-    {"&LongRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // "&LongRightArrow;"
-    {"&LowerLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LowerLeftArrow;"
-    {"&LowerRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&LowerRightArrow;"
-    {"&MinusPlus;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "veryverythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&MinusPlus;"
-    {"&NestedGreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NestedGreaterGreater;"
-    {"&NestedLessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NestedLessLess;"
-    {"&Not;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Not;"
-    {"&NotCongruent;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotCongruent;"
-    {"&NotCupCap;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotCupCap;"
-    {"&NotDoubleVerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotDoubleVerticalBar;"
-    {"&NotElement;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotElement;"
-    {"&NotEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotEqual;"
-    {"&NotEqualTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotEqualTilde;"
-    {"&NotExists;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotExists;"
-    {"&NotGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotGreater;"
-    {"&NotGreaterEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotGreaterEqual;"
-    {"&NotGreaterFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotGreaterFullEqual;"
-    {"&NotGreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotGreaterGreater;"
-    {"&NotGreaterLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotGreaterLess;"
-    {"&NotGreaterSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotGreaterSlantEqual;"
-    {"&NotGreaterTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotGreaterTilde;"
-    {"&NotHumpDownHump;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotHumpDownHump;"
-    {"&NotHumpEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotHumpEqual;"
-    {"&NotLeftTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLeftTriangle;"
-    {"&NotLeftTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLeftTriangleBar;"
-    {"&NotLeftTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotLeftTriangleEqual;"
-    {"&NotLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLess;"
-    {"&NotLessEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLessEqual;"
-    {"&NotLessFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLessFullEqual;"
-    {"&NotLessGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLessGreater;"
-    {"&NotLessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLessLess;"
-    {"&NotLessSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLessSlantEqual;"
-    {"&NotLessTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotLessTilde;"
-    {"&NotNestedGreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotNestedGreaterGreater;"
-    {"&NotNestedLessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotNestedLessLess;"
-    {"&NotPrecedes;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotPrecedes;"
-    {"&NotPrecedesEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotPrecedesEqual;"
-    {"&NotPrecedesSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotPrecedesSlantEqual;"
-    {"&NotPrecedesTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotPrecedesTilde;"
-    {"&NotReverseElement;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotReverseElement;"
-    {"&NotRightTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotRightTriangle;"
-    {"&NotRightTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotRightTriangleBar;"
-    {"&NotRightTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotRightTriangleEqual;"
-    {"&NotSquareSubset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSquareSubset;"
-    {"&NotSquareSubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotSquareSubsetEqual;"
-    {"&NotSquareSuperset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSquareSuperset;"
-    {"&NotSquareSupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotSquareSupersetEqual;"
-    {"&NotSubset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSubset;"
-    {"&NotSubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSubsetEqual;"
-    {"&NotSucceeds;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSucceeds;"
-    {"&NotSucceedsEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSucceedsEqual;"
-    {"&NotSucceedsSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // &NotSucceedsSlantEqual;"
-    {"&NotSucceedsTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSucceedsTilde;"
-    {"&NotSuperset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSuperset;"
-    {"&NotSupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotSupersetEqual;"
-    {"&NotTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotTilde;"
-    {"&NotTildeEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotTildeEqual;"
-    {"&NotTildeFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotTildeFullEqual;"
-    {"&NotTildeTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotTildeTilde;"
-    {"&NotVerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&NotVerticalBar;"
-    {"&OpenCurlyDoubleQuote;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // &OpenCurlyDoubleQuote;"
-    {"&OpenCurlyQuote;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&OpenCurlyQuote;"
-    {"&Or;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::VStretch},    // "&Or;"
-    {"&OverBar;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&OverBar;"
-    {"&OverBrace;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&OverBrace;"
-    {"&OverBracket;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&OverBracket;"
-    {"&OverParenthesis;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&OverParenthesis;"
-    {"&PartialD;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&PartialD;"
-    {"&PlusMinus;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "veryverythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&PlusMinus;"
-    {"&Precedes;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Precedes;"
-    {"&PrecedesEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&PrecedesEqual;"
-    {"&PrecedesSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&PrecedesSlantEqual;"
-    {"&PrecedesTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&PrecedesTilde;"
-    {"&Product;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Product;"
-    {"&Proportion;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Proportion;"
-    {"&Proportional;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Proportional;"
-    {"&ReverseElement;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&ReverseElement;"
-    {"&ReverseEquilibrium;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&ReverseEquilibrium;"
-    {"&ReverseUpEquilibrium;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch},    // &ReverseUpEquilibrium;"
-    {"&RightAngleBracket;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&RightAngleBracket;"
-    {"&RightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightArrow;"
-    {"&RightArrowBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightArrowBar;"
-    {"&RightArrowLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightArrowLeftArrow;"
-    {"&RightBracketingBar;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&RightBracketingBar;"
-    {"&RightCeiling;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&RightCeiling;"
-    {"&RightDoubleBracket;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&RightDoubleBracket;"
-    {"&RightDoubleBracketingBar;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // &RightDoubleBracketingBar;"
-    {"&RightDownTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&RightDownTeeVector;"
-    {"&RightDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&RightDownVector;"
-    {"&RightDownVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&RightDownVectorBar;"
-    {"&RightFloor;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&RightFloor;"
-    {"&RightSkeleton;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&RightSkeleton;"
-    {"&RightTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&RightTee;"
-    {"&RightTeeArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightTeeArrow;"
-    {"&RightTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightTeeVector;"
-    {"&RightTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&RightTriangle;"
-    {"&RightTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&RightTriangleBar;"
-    {"&RightTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&RightTriangleEqual;"
-    {"&RightUpDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&RightUpDownVector;"
-    {"&RightUpTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&RightUpTeeVector;"
-    {"&RightUpVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&RightUpVector;"
-    {"&RightUpVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&RightUpVectorBar;"
-    {"&RightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightVector;"
-    {"&RightVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch},    // "&RightVectorBar;"
-    {"&RoundImplies;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&RoundImplies;"
-    {"&ShortDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&ShortDownArrow;"
-    {"&ShortLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::HStretch},    // "&ShortLeftArrow;"
-    {"&ShortRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::HStretch},    // "&ShortRightArrow;"
-    {"&ShortUpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::VStretch},    // "&ShortUpArrow;"
-    {"&SmallCircle;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&SmallCircle;"
-    {"&Sqrt;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&Sqrt;"
-    {"&Square;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Square;"
-    {"&SquareIntersection;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::HVStretch},    // "&SquareIntersection;"
-    {"&SquareSubset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SquareSubset;"
-    {"&SquareSubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SquareSubsetEqual;"
-    {"&SquareSuperset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SquareSuperset;"
-    {"&SquareSupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SquareSupersetEqual;"
-    {"&SquareUnion;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::HVStretch},    // "&SquareUnion;"
-    {"&Star;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Star;"
-    {"&Subset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Subset;"
-    {"&SubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SubsetEqual;"
-    {"&Succeeds;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Succeeds;"
-    {"&SucceedsEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SucceedsEqual;"
-    {"&SucceedsSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SucceedsSlantEqual;"
-    {"&SucceedsTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SucceedsTilde;"
-    {"&SuchThat;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SuchThat;"
-    {"&Sum;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Sum;"
-    {"&Superset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Superset;"
-    {"&SupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&SupersetEqual;"
-    {"&Therefore;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Therefore;"
-    {"&Tilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&Tilde;"
-    {"&TildeEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&TildeEqual;"
-    {"&TildeFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&TildeFullEqual;"
-    {"&TildeTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&TildeTilde;"
-    {"&TripleDot;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "&TripleDot;"
-    {"&UnderBar;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&UnderBar;"
-    {"&UnderBrace;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&UnderBrace;"
-    {"&UnderBracket;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&UnderBracket;"
-    {"&UnderParenthesis;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch},    // "&UnderParenthesis;"
-    {"&Union;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&Union;"
-    {"&UnionPlus;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, "true"}, OperSpec::HVStretch},    // "&UnionPlus;"
-    {"&UpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&UpArrow;"
-    {"&UpArrowBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&UpArrowBar;"
-    {"&UpArrowDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&UpArrowDownArrow;"
-    {"&UpDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&UpDownArrow;"
-    {"&UpEquilibrium;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&UpEquilibrium;"
-    {"&UpTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&UpTee;"
-    {"&UpTeeArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch},    // "&UpTeeArrow;"
-    {"&UpperLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&UpperLeftArrow;"
-    {"&UpperRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch},    // "&UpperRightArrow;"
-    {"&Vee;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Vee;"
-    {"&VerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&VerticalBar;"
-    {"&VerticalLine;" , Mml::InfixForm, {0, 0, 0, "0em", "0", 0, "0em", 0, "true"}, OperSpec::VStretch},    // "&VerticalLine;"
-    {"&VerticalSeparator;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::VStretch},    // "&VerticalSeparator;"
-    {"&VerticalTilde;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&VerticalTilde;"
-    {"&Wedge;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "&Wedge;"
-    {"&amp;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&amp;"
-    {"&amp;&amp;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&amp;&amp;"
-    {"&le;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&le;"
-    {"&lt;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&lt;"
-    {"&lt;=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "&lt;="
-    {"&lt;>" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "&lt;>"
-    {"'" , Mml::PostfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "'"
-    {"(" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "("
-    {")" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // ")"
-    {"*" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "*"
-    {"**" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "**"
-    {"*=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "*="
-    {"+" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "+"
-    {"+" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "+"
-    {"++" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "++"
-    {"+=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "+="
-    {"," , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "verythickmathspace", "true", 0}, OperSpec::NoStretch},    // ","
-    {"-" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "-"
-    {"-" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "-"
-    {"--" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    //   "--"
-    {"-=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "-="
-    {"->" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "->"
-    {"." , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "."
-    {".." , Mml::PostfixForm, {0, 0, 0, "mediummathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // ".."
-    {"..." , Mml::PostfixForm, {0, 0, 0, "mediummathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch},    // "..."
-    {"/" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, "true"}, OperSpec::VStretch},    // "/"
-    {"//" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "//"
-    {"/=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "/="
-    {":" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // ":"
-    {":=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // ":="
-    {";" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "verythickmathspace", "true", 0}, OperSpec::NoStretch},    // ";"
-    {";" , Mml::PostfixForm, {0, 0, 0, "0em", 0, 0, "0em", "true", 0}, OperSpec::NoStretch},    // ";"
-    {"=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "="
-    {"==" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // "=="
-    {">" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // ">"
-    {">=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch},    // ">="
-    {"?" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "?"
-    {"@" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "@"
-    {"[" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "["
-    {"]" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "]"
-    {"^" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "^"
-    {"_" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "_"
-    {"lim" , Mml::PrefixForm, {0, 0, 0, "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "lim"
-    {"max" , Mml::PrefixForm, {0, 0, 0, "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "max"
-    {"min" , Mml::PrefixForm, {0, 0, 0, "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch},    // "min"
-    {"{" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "{"
-    {"|" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::VStretch},    // "|"
-    {"||" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, 0}, OperSpec::NoStretch},    // "||"
-    {"}" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch},    // "}"
-    {"~" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch},    // "~"
+    , // "!!"
+    {"!" , Mml::PostfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "!"
+    {"!=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "!="
+    {"&And;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::VStretch}, // "&And;"
+    {"&ApplyFunction;" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&ApplyFunction;"
+    {"&Assign;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Assign;"
+    {"&Backslash;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&Backslash;"
+    {"&Because;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Because;"
+    {"&Breve;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&Breve;"
+    {"&Cap;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Cap;"
+    {"&CapitalDifferentialD;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // &CapitalDifferentialD;"
+    {"&Cedilla;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&Cedilla;"
+    {"&CenterDot;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&CenterDot;"
+    {"&CircleDot;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&CircleDot;"
+    {"&CircleMinus;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&CircleMinus;"
+    {"&CirclePlus;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&CirclePlus;"
+    {"&CircleTimes;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&CircleTimes;"
+    {"&ClockwiseContourIntegral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // &ClockwiseContourIntegral;"
+    {"&CloseCurlyDoubleQuote;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // &CloseCurlyDoubleQuote;"
+    {"&CloseCurlyQuote;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&CloseCurlyQuote;"
+    {"&Colon;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Colon;"
+    {"&Congruent;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Congruent;"
+    {"&ContourIntegral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&ContourIntegral;"
+    {"&Coproduct;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Coproduct;"
+    {"&CounterClockwiseContourIntegral;", Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // &CounterClockwiseContourInteg
+    {"&Cross;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Cross;"
+    {"&Cup;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Cup;"
+    {"&CupCap;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&CupCap;"
+    {"&Del;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Del;"
+    {"&DiacriticalAcute;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&DiacriticalAcute;"
+    {"&DiacriticalDot;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&DiacriticalDot;"
+    {"&DiacriticalDoubleAcute;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // &DiacriticalDoubleAcute;"
+    {"&DiacriticalGrave;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&DiacriticalGrave;"
+    {"&DiacriticalLeftArrow;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &DiacriticalLeftArrow;"
+    {"&DiacriticalLeftRightArrow;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &DiacriticalLeftRightArrow;"
+    {"&DiacriticalLeftRightVector;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &DiacriticalLeftRightVector;"
+    {"&DiacriticalLeftVector;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &DiacriticalLeftVector;"
+    {"&DiacriticalRightArrow;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &DiacriticalRightArrow;"
+    {"&DiacriticalRightVector;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &DiacriticalRightVector;"
+    {"&DiacriticalTilde;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::NoStretch}, // "&DiacriticalTilde;"
+    {"&Diamond;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Diamond;"
+    {"&DifferentialD;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&DifferentialD;"
+    {"&DotEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&DotEqual;"
+    {"&DoubleContourIntegral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // &DoubleContourIntegral;"
+    {"&DoubleDot;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&DoubleDot;"
+    {"&DoubleDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DoubleDownArrow;"
+    {"&DoubleLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&DoubleLeftArrow;"
+    {"&DoubleLeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // &DoubleLeftRightArrow;"
+    {"&DoubleLeftTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&DoubleLeftTee;"
+    {"&DoubleLongLeftArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // "&DoubleLongLeftArrow;"
+    {"&DoubleLongLeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // &DoubleLongLeftRightArrow;"
+    {"&DoubleLongRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // &DoubleLongRightArrow;"
+    {"&DoubleRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&DoubleRightArrow;"
+    {"&DoubleRightTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&DoubleRightTee;"
+    {"&DoubleUpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DoubleUpArrow;"
+    {"&DoubleUpDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DoubleUpDownArrow;"
+    {"&DoubleVerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&DoubleVerticalBar;"
+    {"&DownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DownArrow;"
+    {"&DownArrowBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DownArrowBar;"
+    {"&DownArrowUpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DownArrowUpArrow;"
+    {"&DownBreve;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&DownBreve;"
+    {"&DownLeftRightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownLeftRightVector;"
+    {"&DownLeftTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownLeftTeeVector;"
+    {"&DownLeftVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownLeftVector;"
+    {"&DownLeftVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownLeftVectorBar;"
+    {"&DownRightTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownRightTeeVector;"
+    {"&DownRightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownRightVector;"
+    {"&DownRightVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&DownRightVectorBar;"
+    {"&DownTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&DownTee;"
+    {"&DownTeeArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&DownTeeArrow;"
+    {"&Element;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Element;"
+    {"&Equal;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Equal;"
+    {"&EqualTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&EqualTilde;"
+    {"&Equilibrium;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&Equilibrium;"
+    {"&Exists;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Exists;"
+    {"&ForAll;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&ForAll;"
+    {"&GreaterEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterEqual;"
+    {"&GreaterEqualLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterEqualLess;"
+    {"&GreaterFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterFullEqual;"
+    {"&GreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterGreater;"
+    {"&GreaterLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterLess;"
+    {"&GreaterSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterSlantEqual;"
+    {"&GreaterTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&GreaterTilde;"
+    {"&Hacek;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::NoStretch}, // "&Hacek;"
+    {"&Hat;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&Hat;"
+    {"&HorizontalLine;" , Mml::InfixForm, {0, 0, 0, "0em", "0", 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&HorizontalLine;"
+    {"&HumpDownHump;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&HumpDownHump;"
+    {"&HumpEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&HumpEqual;"
+    {"&Implies;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&Implies;"
+    {"&Integral;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&Integral;"
+    {"&Intersection;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&Intersection;"
+    {"&InvisibleComma;" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", "true", 0}, OperSpec::NoStretch}, // "&InvisibleComma;"
+    {"&InvisibleTimes;" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&InvisibleTimes;"
+    {"&LeftAngleBracket;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&LeftAngleBracket;"
+    {"&LeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftArrow;"
+    {"&LeftArrowBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftArrowBar;"
+    {"&LeftArrowRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftArrowRightArrow;"
+    {"&LeftBracketingBar;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&LeftBracketingBar;"
+    {"&LeftCeiling;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&LeftCeiling;"
+    {"&LeftDoubleBracket;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&LeftDoubleBracket;"
+    {"&LeftDoubleBracketingBar;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &LeftDoubleBracketingBar;"
+    {"&LeftDownTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftDownTeeVector;"
+    {"&LeftDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftDownVector;"
+    {"&LeftDownVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftDownVectorBar;"
+    {"&LeftFloor;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&LeftFloor;"
+    {"&LeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftRightArrow;"
+    {"&LeftRightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftRightVector;"
+    {"&LeftSkeleton;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&LeftSkeleton;"
+    {"&LeftTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LeftTee;"
+    {"&LeftTeeArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftTeeArrow;"
+    {"&LeftTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftTeeVector;"
+    {"&LeftTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LeftTriangle;"
+    {"&LeftTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LeftTriangleBar;"
+    {"&LeftTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LeftTriangleEqual;"
+    {"&LeftUpDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftUpDownVector;"
+    {"&LeftUpTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftUpTeeVector;"
+    {"&LeftUpVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftUpVector;"
+    {"&LeftUpVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LeftUpVectorBar;"
+    {"&LeftVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&LeftVector;"
+    {"&LeftVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::VStretch}, // "&LeftVectorBar;"
+    {"&LessEqualGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LessEqualGreater;"
+    {"&LessFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LessFullEqual;"
+    {"&LessGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LessGreater;"
+    {"&LessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LessLess;"
+    {"&LessSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LessSlantEqual;"
+    {"&LessTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&LessTilde;"
+    {"&LongLeftArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // "&LongLeftArrow;"
+    {"&LongLeftRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // "&LongLeftRightArrow;"
+    {"&LongRightArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // "&LongRightArrow;"
+    {"&LowerLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LowerLeftArrow;"
+    {"&LowerRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&LowerRightArrow;"
+    {"&MinusPlus;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "veryverythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&MinusPlus;"
+    {"&NestedGreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NestedGreaterGreater;"
+    {"&NestedLessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NestedLessLess;"
+    {"&Not;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Not;"
+    {"&NotCongruent;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotCongruent;"
+    {"&NotCupCap;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotCupCap;"
+    {"&NotDoubleVerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotDoubleVerticalBar;"
+    {"&NotElement;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotElement;"
+    {"&NotEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotEqual;"
+    {"&NotEqualTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotEqualTilde;"
+    {"&NotExists;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotExists;"
+    {"&NotGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotGreater;"
+    {"&NotGreaterEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotGreaterEqual;"
+    {"&NotGreaterFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotGreaterFullEqual;"
+    {"&NotGreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotGreaterGreater;"
+    {"&NotGreaterLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotGreaterLess;"
+    {"&NotGreaterSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotGreaterSlantEqual;"
+    {"&NotGreaterTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotGreaterTilde;"
+    {"&NotHumpDownHump;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotHumpDownHump;"
+    {"&NotHumpEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotHumpEqual;"
+    {"&NotLeftTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLeftTriangle;"
+    {"&NotLeftTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLeftTriangleBar;"
+    {"&NotLeftTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotLeftTriangleEqual;"
+    {"&NotLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLess;"
+    {"&NotLessEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLessEqual;"
+    {"&NotLessFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLessFullEqual;"
+    {"&NotLessGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLessGreater;"
+    {"&NotLessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLessLess;"
+    {"&NotLessSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLessSlantEqual;"
+    {"&NotLessTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotLessTilde;"
+    {"&NotNestedGreaterGreater;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotNestedGreaterGreater;"
+    {"&NotNestedLessLess;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotNestedLessLess;"
+    {"&NotPrecedes;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotPrecedes;"
+    {"&NotPrecedesEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotPrecedesEqual;"
+    {"&NotPrecedesSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotPrecedesSlantEqual;"
+    {"&NotPrecedesTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotPrecedesTilde;"
+    {"&NotReverseElement;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotReverseElement;"
+    {"&NotRightTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotRightTriangle;"
+    {"&NotRightTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotRightTriangleBar;"
+    {"&NotRightTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotRightTriangleEqual;"
+    {"&NotSquareSubset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSquareSubset;"
+    {"&NotSquareSubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotSquareSubsetEqual;"
+    {"&NotSquareSuperset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSquareSuperset;"
+    {"&NotSquareSupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotSquareSupersetEqual;"
+    {"&NotSubset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSubset;"
+    {"&NotSubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSubsetEqual;"
+    {"&NotSucceeds;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSucceeds;"
+    {"&NotSucceedsEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSucceedsEqual;"
+    {"&NotSucceedsSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // &NotSucceedsSlantEqual;"
+    {"&NotSucceedsTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSucceedsTilde;"
+    {"&NotSuperset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSuperset;"
+    {"&NotSupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotSupersetEqual;"
+    {"&NotTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotTilde;"
+    {"&NotTildeEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotTildeEqual;"
+    {"&NotTildeFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotTildeFullEqual;"
+    {"&NotTildeTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotTildeTilde;"
+    {"&NotVerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&NotVerticalBar;"
+    {"&OpenCurlyDoubleQuote;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // &OpenCurlyDoubleQuote;"
+    {"&OpenCurlyQuote;" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&OpenCurlyQuote;"
+    {"&Or;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::VStretch}, // "&Or;"
+    {"&OverBar;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&OverBar;"
+    {"&OverBrace;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&OverBrace;"
+    {"&OverBracket;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&OverBracket;"
+    {"&OverParenthesis;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&OverParenthesis;"
+    {"&PartialD;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&PartialD;"
+    {"&PlusMinus;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "veryverythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&PlusMinus;"
+    {"&Precedes;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Precedes;"
+    {"&PrecedesEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&PrecedesEqual;"
+    {"&PrecedesSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&PrecedesSlantEqual;"
+    {"&PrecedesTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&PrecedesTilde;"
+    {"&Product;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Product;"
+    {"&Proportion;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Proportion;"
+    {"&Proportional;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Proportional;"
+    {"&ReverseElement;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&ReverseElement;"
+    {"&ReverseEquilibrium;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&ReverseEquilibrium;"
+    {"&ReverseUpEquilibrium;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HStretch}, // &ReverseUpEquilibrium;"
+    {"&RightAngleBracket;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&RightAngleBracket;"
+    {"&RightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightArrow;"
+    {"&RightArrowBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightArrowBar;"
+    {"&RightArrowLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightArrowLeftArrow;"
+    {"&RightBracketingBar;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&RightBracketingBar;"
+    {"&RightCeiling;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&RightCeiling;"
+    {"&RightDoubleBracket;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&RightDoubleBracket;"
+    {"&RightDoubleBracketingBar;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // &RightDoubleBracketingBar;"
+    {"&RightDownTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&RightDownTeeVector;"
+    {"&RightDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&RightDownVector;"
+    {"&RightDownVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&RightDownVectorBar;"
+    {"&RightFloor;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&RightFloor;"
+    {"&RightSkeleton;" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&RightSkeleton;"
+    {"&RightTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&RightTee;"
+    {"&RightTeeArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightTeeArrow;"
+    {"&RightTeeVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightTeeVector;"
+    {"&RightTriangle;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&RightTriangle;"
+    {"&RightTriangleBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&RightTriangleBar;"
+    {"&RightTriangleEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&RightTriangleEqual;"
+    {"&RightUpDownVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&RightUpDownVector;"
+    {"&RightUpTeeVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&RightUpTeeVector;"
+    {"&RightUpVector;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&RightUpVector;"
+    {"&RightUpVectorBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&RightUpVectorBar;"
+    {"&RightVector;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightVector;"
+    {"&RightVectorBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HStretch}, // "&RightVectorBar;"
+    {"&RoundImplies;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&RoundImplies;"
+    {"&ShortDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&ShortDownArrow;"
+    {"&ShortLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::HStretch}, // "&ShortLeftArrow;"
+    {"&ShortRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::HStretch}, // "&ShortRightArrow;"
+    {"&ShortUpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::VStretch}, // "&ShortUpArrow;"
+    {"&SmallCircle;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&SmallCircle;"
+    {"&Sqrt;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&Sqrt;"
+    {"&Square;" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Square;"
+    {"&SquareIntersection;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::HVStretch}, // "&SquareIntersection;"
+    {"&SquareSubset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SquareSubset;"
+    {"&SquareSubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SquareSubsetEqual;"
+    {"&SquareSuperset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SquareSuperset;"
+    {"&SquareSupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SquareSupersetEqual;"
+    {"&SquareUnion;" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, "true"}, OperSpec::HVStretch}, // "&SquareUnion;"
+    {"&Star;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Star;"
+    {"&Subset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Subset;"
+    {"&SubsetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SubsetEqual;"
+    {"&Succeeds;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Succeeds;"
+    {"&SucceedsEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SucceedsEqual;"
+    {"&SucceedsSlantEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SucceedsSlantEqual;"
+    {"&SucceedsTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SucceedsTilde;"
+    {"&SuchThat;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SuchThat;"
+    {"&Sum;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Sum;"
+    {"&Superset;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Superset;"
+    {"&SupersetEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&SupersetEqual;"
+    {"&Therefore;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Therefore;"
+    {"&Tilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&Tilde;"
+    {"&TildeEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&TildeEqual;"
+    {"&TildeFullEqual;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&TildeFullEqual;"
+    {"&TildeTilde;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&TildeTilde;"
+    {"&TripleDot;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "&TripleDot;"
+    {"&UnderBar;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&UnderBar;"
+    {"&UnderBrace;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&UnderBrace;"
+    {"&UnderBracket;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&UnderBracket;"
+    {"&UnderParenthesis;" , Mml::PostfixForm, {"true", 0, 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::HStretch}, // "&UnderParenthesis;"
+    {"&Union;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&Union;"
+    {"&UnionPlus;" , Mml::PrefixForm, {0, 0, "true", "0em", 0, "true", "thinmathspace", 0, "true"}, OperSpec::HVStretch}, // "&UnionPlus;"
+    {"&UpArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&UpArrow;"
+    {"&UpArrowBar;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&UpArrowBar;"
+    {"&UpArrowDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&UpArrowDownArrow;"
+    {"&UpDownArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&UpDownArrow;"
+    {"&UpEquilibrium;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&UpEquilibrium;"
+    {"&UpTee;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&UpTee;"
+    {"&UpTeeArrow;" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, "true"}, OperSpec::VStretch}, // "&UpTeeArrow;"
+    {"&UpperLeftArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&UpperLeftArrow;"
+    {"&UpperRightArrow;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::HVStretch}, // "&UpperRightArrow;"
+    {"&Vee;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Vee;"
+    {"&VerticalBar;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&VerticalBar;"
+    {"&VerticalLine;" , Mml::InfixForm, {0, 0, 0, "0em", "0", 0, "0em", 0, "true"}, OperSpec::VStretch}, // "&VerticalLine;"
+    {"&VerticalSeparator;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::VStretch}, // "&VerticalSeparator;"
+    {"&VerticalTilde;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&VerticalTilde;"
+    {"&Wedge;" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "&Wedge;"
+    {"&amp;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&amp;"
+    {"&amp;&amp;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&amp;&amp;"
+    {"&le;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&le;"
+    {"&lt;" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&lt;"
+    {"&lt;=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "&lt;="
+    {"&lt;>" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "&lt;>"
+    {"'" , Mml::PostfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "'"
+    {"(" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "("
+    {")" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // ")"
+    {"*" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "*"
+    {"**" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "**"
+    {"*=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "*="
+    {"+" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "+"
+    {"+" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "+"
+    {"++" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "++"
+    {"+=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "+="
+    {"," , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "verythickmathspace", "true", 0}, OperSpec::NoStretch}, // ","
+    {"-" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "-"
+    {"-" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "-"
+    {"--" , Mml::PrefixForm, {0, 0, 0, "0em", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, //   "--"
+    {"-=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "-="
+    {"->" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "->"
+    {"." , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "."
+    {".." , Mml::PostfixForm, {0, 0, 0, "mediummathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // ".."
+    {"..." , Mml::PostfixForm, {0, 0, 0, "mediummathspace", 0, 0, "0em", 0, 0}, OperSpec::NoStretch}, // "..."
+    {"/" , Mml::InfixForm, {0, 0, 0, "thinmathspace", 0, 0, "thinmathspace", 0, "true"}, OperSpec::VStretch}, // "/"
+    {"//" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "//"
+    {"/=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "/="
+    {":" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // ":"
+    {":=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // ":="
+    {";" , Mml::InfixForm, {0, 0, 0, "0em", 0, 0, "verythickmathspace", "true", 0}, OperSpec::NoStretch}, // ";"
+    {";" , Mml::PostfixForm, {0, 0, 0, "0em", 0, 0, "0em", "true", 0}, OperSpec::NoStretch}, // ";"
+    {"=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "="
+    {"==" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // "=="
+    {">" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // ">"
+    {">=" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, 0}, OperSpec::NoStretch}, // ">="
+    {"?" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "?"
+    {"@" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "@"
+    {"[" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "["
+    {"]" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "]"
+    {"^" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "^"
+    {"_" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "_"
+    {"lim" , Mml::PrefixForm, {0, 0, 0, "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "lim"
+    {"max" , Mml::PrefixForm, {0, 0, 0, "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "max"
+    {"min" , Mml::PrefixForm, {0, 0, 0, "0em", 0, "true", "thinmathspace", 0, 0}, OperSpec::NoStretch}, // "min"
+    {"{" , Mml::PrefixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "{"
+    {"|" , Mml::InfixForm, {0, 0, 0, "thickmathspace", 0, 0, "thickmathspace", 0, "true"}, OperSpec::VStretch}, // "|"
+    {"||" , Mml::InfixForm, {0, 0, 0, "mediummathspace", 0, 0, "mediummathspace", 0, 0}, OperSpec::NoStretch}, // "||"
+    {"}" , Mml::PostfixForm, {0, "true", 0, "0em", 0, 0, "0em", 0, "true"}, OperSpec::VStretch}, // "}"
+    {"~" , Mml::InfixForm, {0, 0, 0, "verythinmathspace", 0, 0, "verythinmathspace", 0, 0}, OperSpec::NoStretch}, // "~"
 
     {0 , Mml::InfixForm, {0, 0, 0, 0, 0, 0, 0, 0, 0}, OperSpec::NoStretch}
   };
@@ -3129,7 +3133,7 @@ void MmlDocument::_dump(const MmlNode *node, QString &indent) const
   {
     if (node == 0) return;
 
-    qWarning(indent + node->toStr());
+    qWarning((indent + node->toStr()).toUtf8().data());
 
     indent += "  ";
     const MmlNode *child = node->firstChild();
@@ -3703,7 +3707,7 @@ int MmlNode::scriptlevel(const MmlNode *) const
           }
         else
           {
-            qWarning("MmlNode::scriptlevel(): bad value " + expl_sl_str);
+            qWarning(("MmlNode::scriptlevel(): bad value " + expl_sl_str).toUtf8().data());
             return parent_sl;
           }
       }
@@ -3719,7 +3723,7 @@ int MmlNode::scriptlevel(const MmlNode *) const
       return parent_sl - 1;
     else
       {
-        qWarning("MmlNode::scriptlevel(): could not parse value: \"" + expl_sl_str + "\"");
+        qWarning(("MmlNode::scriptlevel(): could not parse value: \"" + expl_sl_str + "\"").toUtf8().data());
         return parent_sl;
       }
   }
@@ -4080,7 +4084,8 @@ QRect MmlMfracNode::symbolRect() const
   {
     int num_width = numerator()->myRect().width();
     int denom_width = denominator()->myRect().width();
-    int my_width = QMAX(num_width, denom_width) + 4;
+    int my_width = (num_width > denom_width) ? num_width : denom_width;
+    my_width += 4;
 
     return QRect(-my_width / 2, 0, my_width, 1);
   }
@@ -4232,7 +4237,7 @@ void MmlRootBaseNode::paintSymbol(QPainter *p) const
 MmlTextNode::MmlTextNode(const QString &text, MmlDocument *document)
     : MmlNode(TextNode, document, MmlAttributeMap())
 {
-  m_text = text.stripWhiteSpace();
+  m_text = text.trimmed();
   if (m_text == QChar(0x62, 0x20)      // &InvisibleTimes;
       || m_text == QChar(0x63, 0x20)  // &InvisibleComma;
       || m_text == QChar(0x61, 0x20)) // &ApplyFunction;
@@ -4252,7 +4257,7 @@ void MmlTextNode::paintSymbol(QPainter *p) const
 
     QFontInfo fi(fn);
     //    qWarning("MmlTextNode::paintSymbol(): requested: %s, used: %s, size=%d, italic=%d, bold=%d, text=\"%s\" sl=%d",
-    //          fn.family().latin1(), fi.family().latin1(), fi.pointSize(), (int)fi.italic(), (int)fi.bold(), m_text.latin1(), scriptlevel());
+    //          fn.family().toUtf8().data(), fi.family().toStdString(), fi.pointSize(), (int)fi.italic(), (int)fi.bold(), m_text.toStdString(), scriptlevel());
 
     QFontMetrics fm(fn);
 
@@ -4268,7 +4273,7 @@ QRect MmlTextNode::symbolRect() const
     QFontMetrics fm(font());
 
     QRect br = boundingRect(fm, m_text);
-    br.moveBy(0, fm.strikeOutPos());
+    br.translate(0, fm.strikeOutPos());
 
     return br;
   }
@@ -4410,7 +4415,7 @@ Mml::FormType MmlMoNode::form() const
         if (ok)
           return value;
         else
-          qWarning("Could not convert %s to form", value_str.latin1());
+          qWarning("Could not convert %s to form", value_str.toUtf8().data());
       }
 
     // Default heuristic.
@@ -4557,7 +4562,7 @@ void MmlMtableNode::CellSizeData::init(const MmlNode *first_row)
           if (col_cnt == col_widths.count())
             col_widths.append(mtdmr.width());
           else
-            col_widths[col_cnt] = QMAX(col_widths[col_cnt], mtdmr.width());
+            col_widths[col_cnt] = (col_widths[col_cnt] > mtdmr.width()) ? col_widths[col_cnt] : mtdmr.width();
         }
 
       row_heights.append(mtr->myRect().height());
@@ -4627,7 +4632,7 @@ void MmlMtableNode::layoutSymbol()
         {
           value.truncate(value.length() - 1);
           double factor = value.toFloat(&ok);
-          if (ok && value > 0)
+          if (ok && !value.isEmpty())
             {
               factor /= 100.0;
               relative_width_sum += m_cell_size_data.col_widths[i];
@@ -4643,7 +4648,7 @@ void MmlMtableNode::layoutSymbol()
               continue;
             }
           else
-            qWarning("MmlMtableNode::layoutSymbol(): could not parse value %s%%", value.latin1());
+            qWarning("MmlMtableNode::layoutSymbol(): could not parse value %s%%", value.toUtf8().data());
         }
 
       // Relatively sized column, but we failed to parse the factor. Treat is like an auto
@@ -4697,7 +4702,7 @@ void MmlMtableNode::layoutSymbol()
     }
 
   QString s;
-  QValueList<int> &col_widths = m_cell_size_data.col_widths;
+  QList<int> &col_widths = m_cell_size_data.col_widths;
   for (i = 0; i < col_widths.count(); ++i)
     {
       s += QString("[w=%1 %2%%]")
@@ -4860,7 +4865,7 @@ int MmlMtableNode::framespacing_hor() const
       return (int)(0.4*em());
   }
 
-void MmlMtrNode::layoutCells(const QValueList<int> &col_widths,
+void MmlMtrNode::layoutCells(const QList<int> &col_widths,
                              int col_spc)
 {
   QRect mr = myRect();
@@ -5159,7 +5164,7 @@ int MmlMpaddedNode::interpretSpacing(QString value, int base_value, bool *ok) co
     double factor = factor_str.toFloat(&float_ok);
     if (!float_ok || factor < 0)
       {
-        qWarning("MmlMpaddedNode::interpretSpacing(): could not parse \"%s\"", value.latin1());
+        qWarning("MmlMpaddedNode::interpretSpacing(): could not parse \"%s\"", value.toUtf8().data());
         return 0;
       }
 
@@ -5188,7 +5193,7 @@ int MmlMpaddedNode::interpretSpacing(QString value, int base_value, bool *ok) co
         unit_size = MmlNode::interpretSpacing("1" + pseudo_unit, &unit_ok);
         if (!unit_ok)
           {
-            qWarning("MmlMpaddedNode::interpretSpacing(): could not parse \"%s\"", value.latin1());
+            qWarning("MmlMpaddedNode::interpretSpacing(): could not parse \"%s\"", value.toUtf8().data());
             return 0;
           }
       }
@@ -5299,31 +5304,10 @@ QRect MmlMpaddedNode::symbolRect() const
 /*!
     \class QtMmlWidget
 
-
-
-
-
-
-
-
     \brief The QtMmlWidget class renders mathematical formulas written in MathML 2.0.
-
-
-
-
-
-
-
 
     QtMmlWidget implements the Presentation Markup subset of the
     MathML 2.0 specification, with a few \link overview.html exceptions\endlink.
-
-
-
-
-
-
-
 
     \code
     QtMmlWidget *mmlWidget = new QtMmlWidget(this);
@@ -5333,99 +5317,36 @@ QRect MmlMpaddedNode::symbolRect() const
     bool ok = mmlWidget->setContent(mmlText, &errorMsg, &errorLine, &errorColumn);
     if (!ok) {
  qWarning("MathML error: %s, Line: %d, Column: %d",
-   errorMsg.latin1(), errorLine, errorColumn);
+   errorMsg.toUtf8().data(), errorLine, errorColumn);
     }
     \endcode
-
-
-
-
-
-
-
 
  */
 
 /*!
     \enum QtMmlWidget::MmlFont
 
-
-
-
-
-
-
-
     This ennumerated type is used in fontName() and setFontName() to
     specify a font type.
-
-
-
-
-
-
-
 
     \value NormalFont The default font type, used to render
     expressions for which no mathvariant or fontfamily is specified,
     or for which the "normal" mathvariant is specified.
 
-
-
-
-
-
-
-
     \value FrakturFont The font type used to render expressions for
     which the "fraktur" mathvariant is specified.
-
-
-
-
-
-
-
 
     \value SansSerifFont    The font type used to render expressions
     for which the "sans-serif" mathvariant is specified.
 
-
-
-
-
-
-
-
     \value ScriptFont     The font type used to render expressions
     for which the "script" mathvariant is specified.
-
-
-
-
-
-
-
 
     \value MonospaceFont    The font type used to render expressions
     for which the "monospace" mathvariant is specified.
 
-
-
-
-
-
-
-
     \value DoublestruckFont The font type used to render expressions
     for which the "doublestruck" mathvariant is specified.
-
-
-
-
-
-
-
 
     \sa setFontName() fontName() setBaseFontPointSize() baseFontPointSize()
  */
@@ -5436,8 +5357,9 @@ QRect MmlMpaddedNode::symbolRect() const
  */
 
 QtMmlWidget::QtMmlWidget(QWidget *parent, const char *name)
-    : QFrame(parent, name)
+    : QFrame(parent)
 {
+  if (name) this->setObjectName(name);
   m_doc = new MmlDocument;
 }
 
@@ -5453,13 +5375,6 @@ QtMmlWidget::~QtMmlWidget()
 /*!
     Returns the name of the font used to render the font \a type.
 
-
-
-
-
-
-
-
     \sa setFontName()  setBaseFontPointSize() baseFontPointSize() QtMmlWidget::MmlFont
  */
 
@@ -5470,13 +5385,6 @@ QString QtMmlWidget::fontName(MmlFont type) const
 
 /*!
     Sets the name of the font used to render the font \a type to \a name.
-
-
-
-
-
-
-
 
     \sa fontName() setBaseFontPointSize() baseFontPointSize() QtMmlWidget::MmlFont
  */
@@ -5493,13 +5401,6 @@ void QtMmlWidget::setFontName(MmlFont type, const QString &name)
     expression; if \a b is false, no such rectangle is drawn.
     This is mostly useful for debugging MathML expressions.
 
-
-
-
-
-
-
-
     \sa drawFrames()
  */
 
@@ -5513,13 +5414,6 @@ void QtMmlWidget::setDrawFrames(bool b)
     Returns true if each expression should be drawn with a red
     bounding rectangle; otherwise returns false.
     This is mostly useful for debugging MathML expressions.
-
-
-
-
-
-
-
 
     \sa setDrawFrames()
  */
@@ -5541,13 +5435,6 @@ void QtMmlWidget::clear()
     Returns the point size of the font used to render expressions
     whose scriptlevel is 0.
 
-
-
-
-
-
-
-
     \sa setBaseFontPointSize() fontName() setFontName()
  */
 
@@ -5559,13 +5446,6 @@ int QtMmlWidget::baseFontPointSize() const
 /*!
     Sets the point \a size of the font used to render expressions
     whose scriptlevel is 0.
-
-
-
-
-
-
-
 
     \sa baseFontPointSize() fontName() setFontName()
  */
@@ -5600,13 +5480,6 @@ QSize QtMmlWidget::sizeHint() const
     errorLine and \a errorColumn contain the location of the error.
     Any of \a errorMsg, \a errorLine and \a errorColumn may be 0,
     in which case they are not set.
-
-
-
-
-
-
-
 
     \a text should contain MathML 2.0 presentation markup elements enclosed
     in a <math> element.
@@ -5705,7 +5578,7 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
         return (int)(em*factor);
       else
         {
-          qWarning("interpretSpacing(): could not parse \"%sem\"", value.latin1());
+          qWarning("interpretSpacing(): could not parse \"%sem\"", value.toUtf8().data());
           if (ok != 0)
             *ok = false;
           return 0;
@@ -5721,7 +5594,7 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
         return (int)(ex*factor);
       else
         {
-          qWarning("interpretSpacing(): could not parse \"%sex\"", value.latin1());
+          qWarning("interpretSpacing(): could not parse \"%sex\"", value.toUtf8().data());
           if (ok != 0)
             *ok = false;
           return 0;
@@ -5736,14 +5609,13 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
       if (float_ok && factor >= 0)
         {
           Q_ASSERT(qApp->desktop() != 0);
-          QPaintDeviceMetrics pdm(qApp->desktop());
-          Q_ASSERT(pdm.width() != 0);
-          Q_ASSERT(pdm.widthMM() != 0);
-          return (int)(factor*10*pdm.width() / pdm.widthMM());
+          Q_ASSERT(qApp->desktop()->width() != 0);
+          Q_ASSERT(qApp->desktop()->widthMM() != 0);
+          return (int)(factor*10*qApp->desktop()->width() / qApp->desktop()->widthMM());
         }
       else
         {
-          qWarning("interpretSpacing(): could not parse \"%scm\"", value.latin1());
+          qWarning("interpretSpacing(): could not parse \"%scm\"", value.toUtf8().data());
           if (ok != 0)
             *ok = false;
           return 0;
@@ -5758,14 +5630,13 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
       if (float_ok && factor >= 0)
         {
           Q_ASSERT(qApp->desktop() != 0);
-          QPaintDeviceMetrics pdm(qApp->desktop());
-          Q_ASSERT(pdm.width() != 0);
-          Q_ASSERT(pdm.widthMM() != 0);
-          return (int)(factor*pdm.width() / pdm.widthMM());
+          Q_ASSERT(qApp->desktop()->width() != 0);
+          Q_ASSERT(qApp->desktop()->widthMM() != 0);
+          return (int)(factor*qApp->desktop()->width() / qApp->desktop()->widthMM());
         }
       else
         {
-          qWarning("interpretSpacing(): could not parse \"%smm\"", value.latin1());
+          qWarning("interpretSpacing(): could not parse \"%smm\"", value.toUtf8().data());
           if (ok != 0)
             *ok = false;
           return 0;
@@ -5780,14 +5651,13 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
       if (float_ok && factor >= 0)
         {
           Q_ASSERT(qApp->desktop() != 0);
-          QPaintDeviceMetrics pdm(qApp->desktop());
-          Q_ASSERT(pdm.width() != 0);
-          Q_ASSERT(pdm.widthMM() != 0);
-          return (int)(factor*10*pdm.width() / (2.54*pdm.widthMM()));
+          Q_ASSERT(qApp->desktop()->width() != 0);
+          Q_ASSERT(qApp->desktop()->widthMM() != 0);
+          return (int)(factor*10*qApp->desktop()->width() / (2.54*qApp->desktop()->widthMM()));
         }
       else
         {
-          qWarning("interpretSpacing(): could not parse \"%sin\"", value.latin1());
+          qWarning("interpretSpacing(): could not parse \"%sin\"", value.toUtf8().data());
           if (ok != 0)
             *ok = false;
           return 0;
@@ -5803,7 +5673,7 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
         return i;
       else
         {
-          qWarning("interpretSpacing(): could not parse \"%spx\"", value.latin1());
+          qWarning("interpretSpacing(): could not parse \"%spx\"", value.toUtf8().data());
           if (ok != 0)
             *ok = false;
           return 0;
@@ -5815,7 +5685,7 @@ static int interpretSpacing(QString value, int em, int ex, bool *ok)
   if (float_ok && i >= 0)
     return i;
 
-  qWarning("interpretSpacing(): could not parse \"%s\"", value.latin1());
+  qWarning("interpretSpacing(): could not parse \"%s\"", value.toUtf8().data());
   if (ok != 0)
     *ok = false;
   return 0;
@@ -5840,7 +5710,7 @@ static int interpretPercentSpacing(QString value, int base, bool *ok)
       return (int)(base*factor / 100.0);
     }
 
-  qWarning("interpretPercentSpacing(): could not parse \"%s%%\"", value.latin1());
+  qWarning("interpretPercentSpacing(): could not parse \"%s%%\"", value.toUtf8().data());
   if (ok != 0)
     *ok = false;
   return 0;
@@ -5865,7 +5735,7 @@ static int interpretPointSize(QString value, bool *ok)
       return pt_size;
     }
 
-  qWarning("interpretPointSize(): could not parse \"%spt\"", value.latin1());
+  qWarning("interpretPointSize(): could not parse \"%spt\"", value.toUtf8().data());
   if (ok != 0)
     *ok = false;
   return 0;
@@ -5930,7 +5800,7 @@ static bool mmlCheckAttributes(Mml::NodeType child_type, const MmlAttributeMap &
 
   QString allowed_attr(spec->attributes);
   // empty list means any attr is valid
-  if (allowed_attr == 0)
+  if (allowed_attr.isEmpty())
     return true;
 
   MmlAttributeMap::const_iterator it = attr.begin(), end = attr.end();
@@ -5938,7 +5808,7 @@ static bool mmlCheckAttributes(Mml::NodeType child_type, const MmlAttributeMap &
     {
       QString name = it.key();
 
-      if (name.find(':') != -1)
+      if (name.indexOf(':') != -1)
         continue;
 
       QString padded_name = " " + name + " ";
@@ -5974,16 +5844,16 @@ static QString decodeEntityValue(QString literal)
     {
       if (!literal.startsWith("&#"))
         {
-          qWarning("decodeEntityValue(): bad entity literal: \"" + literal + "\"");
+          qWarning(("decodeEntityValue(): bad entity literal: \"" + literal + "\"").toUtf8().data());
           return QString::null;
         }
 
       literal = literal.right(literal.length() - 2);
 
-      int i = literal.find(';');
+      int i = literal.indexOf(';');
       if (i == -1)
         {
-          qWarning("decodeEntityValue(): bad entity literal: \"" + literal + "\"");
+          qWarning(("decodeEntityValue(): bad entity literal: \"" + literal + "\"").toUtf8().data());
           return QString::null;
         }
 
@@ -5992,7 +5862,7 @@ static QString decodeEntityValue(QString literal)
 
       if (char_code.isEmpty())
         {
-          qWarning("decodeEntityValue(): bad entity literal: \"" + literal + "\"");
+          qWarning(("decodeEntityValue(): bad entity literal: \"" + literal + "\"").toUtf8().data());
           return QString::null;
         }
 
@@ -6003,7 +5873,7 @@ static QString decodeEntityValue(QString literal)
           unsigned c = char_code.toUInt(&ok, 16);
           if (!ok)
             {
-              qWarning("decodeEntityValue(): bad entity literal: \"" + literal + "\"");
+              qWarning(("decodeEntityValue(): bad entity literal: \"" + literal + "\"").toUtf8().data());
               return QString::null;
             }
           result += QChar(c);
@@ -6014,7 +5884,7 @@ static QString decodeEntityValue(QString literal)
           unsigned c = char_code.toUInt(&ok, 10);
           if (!ok)
             {
-              qWarning("decodeEntityValue(): bad entity literal: \"" + literal + "\"");
+              qWarning(("decodeEntityValue(): bad entity literal: \"" + literal + "\"").toUtf8().data());
               return QString::null;
             }
           result += QChar(c);
@@ -6073,7 +5943,7 @@ const OperSpec *&OperSpecSearchResult::getForm(Mml::FormType f)
  */
 static const OperSpec *searchOperSpecData(const QString &name)
 {
-  const char *name_latin1 = name.latin1();
+  const char *name_latin1 = name.toUtf8().data();
 
   // binary search
   // establish invariant g_oper_spec_data[begin].name < name < g_oper_spec_data[end].name
@@ -6125,7 +5995,7 @@ static OperSpecSearchResult _mmlFindOperSpec(const QStringList &name_list, Mml::
       if (spec == 0)
         continue;
 
-      const char *name_latin1 = name.latin1();
+      const char *name_latin1 = name.toUtf8().data();
 
       // backtrack to the first instance of name
       while (spec > g_oper_spec_data && qstrcmp((spec - 1)->name, name_latin1) == 0)
@@ -6154,13 +6024,6 @@ static OperSpecSearchResult _mmlFindOperSpec(const QStringList &name_list, Mml::
     job is to find an operator spec in the operator dictionary (g_oper_spec_data)
     that matches text. Things are further complicated by the fact, that many
     operators come in several forms (prefix, infix, postfix).
-
-
-
-
-
-
-
 
     If available, this function returns an operator spec matching text in the specified
     form. If such operator is not available, returns an operator spec that matches
@@ -6261,7 +6124,7 @@ static uint interpretMathVariant(const QString &value, bool *ok)
   if (ok != 0)
     *ok = false;
 
-  qWarning("interpretMathVariant(): could not parse value: \"%s\"", value.latin1());
+  qWarning("interpretMathVariant(): could not parse value: \"%s\"", value.toUtf8().data());
 
   return Mml::NormalMV;
 }
@@ -6281,7 +6144,7 @@ static Mml::FormType interpretForm(const QString &value, bool *ok)
   if (ok != 0)
     *ok = false;
 
-  qWarning("interpretForm(): could not parse value \"%s\"", value.latin1());
+  qWarning("interpretForm(): could not parse value \"%s\"", value.toUtf8().data());
   return Mml::InfixForm;
 }
 
@@ -6302,7 +6165,7 @@ static Mml::ColAlign interpretColAlign(const QString &value_list, uint colnum, b
   if (ok != 0)
     *ok = false;
 
-  qWarning("interpretColAlign(): could not parse value \"%s\"", value.latin1());
+  qWarning("interpretColAlign(): could not parse value \"%s\"", value.toUtf8().data());
   return Mml::ColAlignCenter;
 }
 
@@ -6327,13 +6190,13 @@ static Mml::RowAlign interpretRowAlign(const QString &value_list, uint rownum, b
   if (ok != 0)
     *ok = false;
 
-  qWarning("interpretRowAlign(): could not parse value \"%s\"", value.latin1());
+  qWarning("interpretRowAlign(): could not parse value \"%s\"", value.toUtf8().data());
   return Mml::RowAlignAxis;
 }
 
 static QString interpretListAttr(const QString &value_list, uint idx, const QString &def)
 {
-  QStringList l = QStringList::split(' ', value_list);
+  QStringList l = value_list.split(' ');
 
   if (l.count() == 0)
     return def;
@@ -6361,7 +6224,7 @@ static Mml::FrameType interpretFrameType(const QString &value_list, uint idx, bo
   if (ok != 0)
     *ok = false;
 
-  qWarning("interpretFrameType(): could not parse value \"%s\"", value.latin1());
+  qWarning("interpretFrameType(): could not parse value \"%s\"", value.toUtf8().data());
   return Mml::FrameNone;
 }
 
@@ -6369,10 +6232,10 @@ static Mml::FrameSpacing interpretFrameSpacing(const QString &value_list, int em
 {
   Mml::FrameSpacing fs;
 
-  QStringList l = QStringList::split(' ', value_list);
+  QStringList l = value_list.split(' ');
   if (l.count() != 2)
     {
-      qWarning("interpretFrameSpacing: could not parse value \"%s\"", value_list.latin1());
+      qWarning("interpretFrameSpacing: could not parse value \"%s\"", value_list.toUtf8().data());
       if (ok != 0)
         *ok = false;
       return Mml::FrameSpacing((int)(0.4*em), (int)(0.5*ex));
@@ -6430,7 +6293,7 @@ static QFont interpretDepreciatedFontAttr(const MmlAttributeMap &font_attr, QFon
       else if (value == "bold")
         fn.setBold(true);
       else
-        qWarning("interpretDepreciatedFontAttr(): could not parse fontweight \"%s\"", value.latin1());
+        qWarning("interpretDepreciatedFontAttr(): could not parse fontweight \"%s\"", value.toUtf8().data());
     }
 
   if (font_attr.contains("fontstyle"))
@@ -6441,7 +6304,7 @@ static QFont interpretDepreciatedFontAttr(const MmlAttributeMap &font_attr, QFon
       else if (value == "italic")
         fn.setItalic(true);
       else
-        qWarning("interpretDepreciatedFontAttr(): could not parse fontstyle \"%s\"", value.latin1());
+        qWarning("interpretDepreciatedFontAttr(): could not parse fontstyle \"%s\"", value.toUtf8().data());
     }
 
   if (font_attr.contains("fontfamily"))
@@ -6491,7 +6354,7 @@ static QFont interpretMathSize(QString value, QFont &fn, int em, int ex, bool *o
 
   if (ok != 0)
     *ok = false;
-  qWarning("interpretMathSize(): could not parse mathsize \"%s\"", value.latin1());
+  qWarning("interpretMathSize(): could not parse mathsize \"%s\"", value.toUtf8().data());
   return fn;
 }
 
@@ -6503,7 +6366,7 @@ static QRect boundingRect(const QFontMetrics &fm, const QString &s)
     {
       QChar c = s.at(i);
       QRect char_rect = fm.boundingRect(c);
-      char_rect.moveBy(w, 0);
+      char_rect.translate(w, 0);
       result = result.unite(char_rect);
       w += fm.width(c);
     }

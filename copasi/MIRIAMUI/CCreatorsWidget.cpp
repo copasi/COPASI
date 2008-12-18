@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@
  *  Constructs a CCreatorsWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CCreatorsWidget::CCreatorsWidget(QWidget* parent, const char* name, WFlags f)
+CCreatorsWidget::CCreatorsWidget(QWidget* parent, const char* name, Qt::WFlags f)
     : CopasiTableWidget(parent, false, name, f, false)
 {
   if (!name)
@@ -81,7 +81,7 @@ void CCreatorsWidget::init()
   table->setNumCols(numCols);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
   tableHeader->setLabel(COL_DUMMY, "Dummy");
   tableHeader->setLabel(COL_FAMILY_NAME, "Family Name");

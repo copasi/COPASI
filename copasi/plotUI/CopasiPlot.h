@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 17:01:30 $
+//   $Date: 2008/12/18 19:04:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include <qmemarray.h>
+#include <q3memarray.h>
 
 #include <qpainter.h>
 #include <qwt_plot.h>
@@ -182,7 +182,7 @@ class CopasiPlot : public QwtPlot, public COutputInterface
     /**
      * Vector that contains pointers to vectors of data in the selected columns.
      */
-    std::vector< std::vector< QMemArray< double > * > > mData;
+    std::vector< std::vector< Q3MemArray< double > * > > mData;
 
     /**
      * Vector of pointers to the current object values

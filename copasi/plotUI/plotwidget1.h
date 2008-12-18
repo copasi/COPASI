@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/10/02 18:18:07 $
+//   $Date: 2008/12/18 19:04:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.17 2007/10/02 18:18:07 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.18 2008/12/18 19:04:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,19 +31,25 @@
 #include <string>
 #include <fstream>
 #include <qvariant.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 
 #include "UI/copasiWidget.h"
 #include "plot/CPlotSpecification.h"
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
 class QComboBox;
 class QLineEdit;
 class QCheckBox;
 class QLabel;
-class QFrame;
+class Q3Frame;
 class QPushButton;
 class QTabWidget;
 class QWidget;
@@ -52,7 +63,7 @@ class PlotWidget1 : public CopasiWidget
     Q_OBJECT
 
   public:
-    PlotWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    PlotWidget1(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~PlotWidget1();
 
     virtual bool update(ListViews::ObjectType objectType,
@@ -75,10 +86,10 @@ class PlotWidget1 : public CopasiWidget
 
     //CPlotSpecification *mpPlotSpec;
 
-    QGridLayout* PlotWidget1Layout;
-    QHBoxLayout* layoutTitle;
-    QHBoxLayout* layoutButtons;
-    QHBoxLayout* layoutCurves;
+    Q3GridLayout* PlotWidget1Layout;
+    Q3HBoxLayout* layoutTitle;
+    Q3HBoxLayout* layoutButtons;
+    Q3HBoxLayout* layoutCurves;
     QSpacerItem* spacerCurves;
 
     QComboBox* comboType;
@@ -89,7 +100,7 @@ class PlotWidget1 : public CopasiWidget
     QLabel* labelScale;
     QCheckBox* checkLogX;
     QCheckBox* checkLogY;
-    QFrame* lineButtons;
+    Q3Frame* lineButtons;
     QTabWidget* tabs;
     //    QWidget* tab;
     //    QWidget* tab_2;
@@ -97,7 +108,7 @@ class PlotWidget1 : public CopasiWidget
     QToolButton* addCurveButton;
     QToolButton* addHistoButton;
     QToolButton* deleteCurveButton;
-    QFrame* line1;
+    Q3Frame* line1;
 
     QPushButton* startPlotButton;
     QPushButton* deletePlotButton;

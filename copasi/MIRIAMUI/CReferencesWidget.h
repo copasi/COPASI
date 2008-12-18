@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/03 13:21:21 $
+//   $Date: 2008/12/18 18:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@ class CReferencesWidget : public CopasiTableWidget
   {
     Q_OBJECT
   public:
-    CReferencesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+    CReferencesWidget(QWidget *parent, const char * name = 0, Qt::WFlags f = 0);
     ~CReferencesWidget();
     /**
     * This initializes the widget

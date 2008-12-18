@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 12:48:41 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:04:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 #include <qwt_legend.h>
 #include <qwt_legend_item.h>
 #include <qwt_scale_engine.h>
+//Added by qt3to4:
+#include <Q3MemArray>
 
 #include <float.h>
 #include <limits>
@@ -202,7 +204,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   mpZoomer->setTrackerFont(this->font());
 
   // white background better for printing...
-  setCanvasBackground(white);
+  setCanvasBackground(Qt::white);
 
   //  setTitle(FROM_UTF8(plotspec->getTitle()));
   setCanvasLineWidth(0);
@@ -242,7 +244,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
   CPlotItem* pItem;
-  QColor curveColours[7] = {darkRed, blue, darkGreen, cyan, magenta, yellow, gray} ; //TODO
+  QColor curveColours[7] = {Qt::darkRed, Qt::blue, Qt::darkGreen, Qt::cyan, Qt::magenta, Qt::yellow, Qt::gray} ; //TODO
 
   mCurves.resize(kmax);
   mCurveTypes.resize(kmax);
@@ -423,7 +425,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
               DataIndex.second = ActivityObjects[ItemActivity].size() - 1;
 
               // Allocate the data buffer
-              mData[ItemActivity].push_back(new QMemArray<double>(500));
+              mData[ItemActivity].push_back(new Q3MemArray<double>(500));
 
               // Store the pointer to the current object value. (Only if it has a double or integer value
               // and the value pointer actually exists. If not, use a dummy value.)
@@ -474,7 +476,7 @@ void CopasiPlot::output(const Activity & activity)
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if (ItemActivity & activity && mData[ItemActivity].size())
       {
-        std::vector< QMemArray< double > * > & data = mData[ItemActivity];
+        std::vector< Q3MemArray< double > * > & data = mData[ItemActivity];
         unsigned C_INT32 & ndata = mDataSize[ItemActivity];
 
         if ((imax = data.size()) != 0)
@@ -528,7 +530,7 @@ void CopasiPlot::separate(const Activity & activity)
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if (ItemActivity & activity && mData[ItemActivity].size())
       {
-        std::vector< QMemArray< double > * > & data = mData[ItemActivity];
+        std::vector< Q3MemArray< double > * > & data = mData[ItemActivity];
         unsigned C_INT32 & ndata = mDataSize[ItemActivity];
 
         if ((imax = data.size()) != 0)
@@ -593,7 +595,7 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
   for (k = 0; k < kmax; k++)
     if ((unsigned C_INT32) mCurveActivities[k] == activity)
       {
-        std::vector< QMemArray< double > * > & data = mData[activity];
+        std::vector< Q3MemArray< double > * > & data = mData[activity];
         unsigned C_INT32 & ndata = mDataSize[activity];
 
         switch (mCurveTypes[k])
@@ -682,11 +684,11 @@ bool CopasiPlot::saveData(const std::string & filename)
   fs << "\n";
 
   unsigned C_INT32 i, imax = mObjects.size();
-  std::vector< QMemArray< double > * > Data;
+  std::vector< Q3MemArray< double > * > Data;
   Data.resize(imax);
 
-  std::vector< QMemArray< double > * >::const_iterator itData;
-  std::vector< QMemArray< double > * >::const_iterator endData = Data.end();
+  std::vector< Q3MemArray< double > * >::const_iterator itData;
+  std::vector< Q3MemArray< double > * >::const_iterator endData = Data.end();
 
   std::vector< unsigned C_INT32 > Offset;
   std::vector< unsigned C_INT32 >::const_iterator itOffset;
@@ -891,7 +893,7 @@ void CopasiPlot::clearBuffers()
 
   for (Activity = 0; Activity < ActivitySize; Activity++)
     {
-      std::vector< QMemArray< double > * > & data = mData[Activity];
+      std::vector< Q3MemArray< double > * > & data = mData[Activity];
 
       // Delete each QMemArray
       for (i = 0, imax = data.size(); i < imax; i++)
