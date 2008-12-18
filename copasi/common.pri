@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.94 $ 
+#   $Revision: 1.95 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/12/18 17:19:24 $ 
+#   $Date: 2008/12/18 21:38:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.94 $ $Author: shoops $ $Date: 2008/12/18 17:19:24 $  
+# $Revision: 1.95 $ $Author: shoops $ $Date: 2008/12/18 21:38:56 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -503,4 +503,21 @@ QMAKE_EXTRA_UNIX_TARGETS += DEP1
       ../../copasi_src/copasi/$$SRC_TARGET/
 
   QMAKE_EXTRA_UNIX_TARGETS += src_distribution
+}
+
+# addSubdirs(subdirs,deps): Adds directories to the project that depend on
+# other directories
+defineTest(addSubdirs) {
+    for(subdirs, 1) {
+        entries = $$files($$subdirs)
+        for(entry, entries) {
+            name = $$replace(entry, [/\\\\], _)
+            SUBDIRS += $$name
+            eval ($${name}.subdir = $$entry)
+            for(dep, 2):eval ($${name}.depends += $$replace(dep, [/\\\\], _))
+            export ($${name}.subdir)
+            export ($${name}.depends)
+        }
+    }
+    export (SUBDIRS)
 }

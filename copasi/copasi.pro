@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.56 $
+#   $Revision: 1.57 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 17:19:24 $
+#   $Date: 2008/12/18 21:38:56 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.56 $ $Author: shoops $ $Date: 2008/12/18 17:19:24 $
+# $Revision: 1.57 $ $Author: shoops $ $Date: 2008/12/18 21:38:56 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -62,45 +62,37 @@ contains(DEFINES, COPASI_TSSA) {
   COPASISE_DIRS += tssanalysis
 }
 
-# Now the UI libraries
-COPASIUI_DIRS += barChart
-COPASIUI_DIRS += layoutUI
-COPASIUI_DIRS += MIRIAMUI
-COPASIUI_DIRS += plotUI
-COPASIUI_DIRS += tex
-COPASIUI_DIRS += wizard
-COPASIUI_DIRS += UI
-
-contains(DEFINES, HAVE_MML) {
-  COPASIUI_DIRS += mml
-}
-
-SUBDIRS += $${COPASISE_DIRS}
+addSubdirs($${COPASISE_DIRS})
 
 !contains(BUILD_GUI, no) {
-  SUBDIRS += $${COPASIUI_DIRS}
+  # Now the UI libraries
+  COPASIUI_DIRS += barChart
+  COPASIUI_DIRS += layoutUI
+  COPASIUI_DIRS += MIRIAMUI
+  COPASIUI_DIRS += plotUI
+  COPASIUI_DIRS += wizard
+
+  contains(DEFINES, HAVE_MML) {
+    COPASIUI_DIRS += mml
+    COPASIUI_DIRS += tex
+  }
+
+  addSubdirs($${COPASIUI_DIRS})
+
+  COPASIUI_DIRS += UI
+  addSubdirs(UI, wizard)
 }
 
 # Now build the libs
-SUBDIRS += libs
-sub-libs.depends = $$join(COPASISE_DIRS, " sub-", "sub-")
-!contains(BUILD_GUI, no) {
-  sub-libs.depends += $$join(COPASIUI_DIRS, " sub-", "sub-")
-}
-QMAKE_EXTRA_UNIX_TARGETS += sub-libs
+
+addSubdirs(libs, $${COPASISE_DIRS} $${COPASIUI_DIRS})
 
 # Now the excecutables
-SUBDIRS += CopasiSE
-sub-CopasiSE.depends = sub-libs
-QMAKE_EXTRA_UNIX_TARGETS += sub-CopasiSE
+addSubdirs(CopasiSE, libs)
 
 !contains(BUILD_GUI, no) {
-  SUBDIRS += CopasiUI
-  sub-CopasiUI.depends = sub-libs
-  QMAKE_EXTRA_UNIX_TARGETS += sub-CopasiUI
+  addSubdirs(CopasiUI, libs)
 }
-
-#SUBDIRS += test3
 
 isEmpty(COPASI_SRC_PACKAGE) {
   # The bindings
