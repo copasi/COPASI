@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidgetStack.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/03/26 02:42:38 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,8 +24,8 @@
 //#include <qlayout.h>
 //#include <qtooltip.h>
 //#include <qwhatsthis.h>
-#include <qvbox.h>
-#include <qscrollview.h>
+#include <q3vbox.h>
+#include <q3scrollview.h>
 
 #include "qtUtilities.h"  // for FROM_UTF8
 
@@ -42,8 +42,8 @@
  name 'name' and widget flags set to 'f'.
  */
 
-CQExpressionMmlWidgetStack::CQExpressionMmlWidgetStack(QWidget* parent, const char* name, WFlags fl)
-    : QWidgetStack(parent, name, fl)
+CQExpressionMmlWidgetStack::CQExpressionMmlWidgetStack(QWidget* parent, const char* name, Qt::WFlags fl)
+    : Q3WidgetStack(parent, name, fl)
 {
   // set
   if (!name)
@@ -60,10 +60,10 @@ CQExpressionMmlWidgetStack::CQExpressionMmlWidgetStack(QWidget* parent, const ch
 
   // Page 2: a box of type QVBox, containing the MathMML ScrollView with the formula
   //         and a button to switch to the text edit (ie. back to Page 1)
-  mpVBox = new QVBox(this, "mpVBox");
+  mpVBox = new Q3VBox(this, "mpVBox");
   mpVBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-  mScrollView = new QScrollView(mpVBox, "mmlScrollView");
+  mScrollView = new Q3ScrollView(mpVBox, "mmlScrollView");
   mScrollView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
   addWidget(mpVBox, 1);
@@ -74,7 +74,7 @@ CQExpressionMmlWidgetStack::CQExpressionMmlWidgetStack(QWidget* parent, const ch
 
   mScrollView->addChild(mMmlWidget);
 
-  mScrollView->setResizePolicy(QScrollView::AutoOneFit);
+  mScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
 
 #endif
 }

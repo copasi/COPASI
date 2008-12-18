@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:47:38 $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 
 //#include <qpushbutton.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 #include "copasi.h"
 
 #include "CQTSSAResultWidget.h"
@@ -39,7 +41,7 @@ CTSSAMethod* pTSSILDM;
  *  Constructs a CQTSSAResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, WFlags fl)
+CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl),
     objKey("")
 {
@@ -47,7 +49,7 @@ CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, WFlags
     setName("CQTSSAResultWidget");
   setCaption(trUtf8("CQTSSAResultWidget"));
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new CQTSSAResultSubWidget(this, "CQTSSAResultSubWidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);

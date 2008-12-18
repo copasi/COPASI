@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,8 +17,12 @@
 
 #include <qpushbutton.h>
 #include <qlayout.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include "copasi.h"
 
@@ -38,7 +42,7 @@
  *  Constructs a OptimizationResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* name, WFlags fl, const int comingFrom)
+OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* name, Qt::WFlags fl, const int comingFrom)
     : CopasiWidget(parent, name, fl), objKey(""),
     mpTimeSeries(NULL)
 {
@@ -46,9 +50,9 @@ OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* 
     setName("OptimizationResultWidget");
   setCaption(trUtf8("OptimizationResultWidget"));
 
-  parentLayout = new QVBoxLayout(this, 0, 0, "parentLayout");
-  stateLayout = new QHBoxLayout(0, 0 , 6, "StateLayout");
-  mWidgetLayout = new QGridLayout(NULL, 1, 1, 0, -1, "Layout");
+  parentLayout = new Q3VBoxLayout(this, 0, 0, "parentLayout");
+  stateLayout = new Q3HBoxLayout(0, 0 , 6, "StateLayout");
+  mWidgetLayout = new Q3GridLayout(NULL, 1, 1, 0, -1, "Layout");
 
   if (comingFrom == 0)
     {

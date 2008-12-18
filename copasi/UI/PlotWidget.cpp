@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ void PlotWidget::init()
   table->setNumCols(numCols);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Curves");
@@ -80,8 +80,8 @@ void PlotWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 
   table->setText(row, 2, QString::number(pPl->getItems().size()));
 
   // 3: active?
-  QCheckTableItem * activeCB;
-  activeCB = new QCheckTableItem(table, "");
+  Q3CheckTableItem * activeCB;
+  activeCB = new Q3CheckTableItem(table, "");
   activeCB->setChecked(pPl->isActive());
   table->setItem(row, 3, activeCB);
 }
@@ -92,7 +92,7 @@ void PlotWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
   CPlotSpecification* pPl = (CPlotSpecification*)obj;
 
   // 3: active?
-  bool active = ((QCheckTableItem*)(table->item(row, 3)))->isChecked();
+  bool active = ((Q3CheckTableItem*)(table->item(row, 3)))->isChecked();
   pPl->setActive(active);
 }
 
@@ -104,8 +104,8 @@ void PlotWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 
   // 3: active?
   if (exc != 3)
     {
-      QCheckTableItem * activeCB;
-      activeCB = new QCheckTableItem(table, "");
+      Q3CheckTableItem * activeCB;
+      activeCB = new Q3CheckTableItem(table, "");
       activeCB->setChecked(true);
       table->setItem(row, 3, activeCB);
     }

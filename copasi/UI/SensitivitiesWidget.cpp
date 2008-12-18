@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/12 01:14:58 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,23 +15,25 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
 //#include <qcombobox.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qmessagebox.h>
 #include <qtoolbutton.h>
 #include <qimage.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include <algorithm>
 
@@ -56,7 +58,7 @@
 #include "CQSensResultWidget.h"
 
 SensWidgetComboBox::SensWidgetComboBox(QWidget * parent, const char * name)
-    : QComboBox(FALSE, parent, name)
+    : QComboBox(false, parent, name)
 {}
 
 void SensWidgetComboBox::fillFromList(const std::vector<CObjectLists::ListType> & list)
@@ -165,7 +167,7 @@ static const unsigned char button_image_data[] =
  *  Constructs a SensitivitiesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFlags fl)
+SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : TaskWidget(parent, name, fl),
     mpSingleFunction(NULL),
     mpSingleVariable(NULL),
@@ -184,7 +186,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   setCaption(trUtf8("SensitivitiesWidget"));
 
   //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  mpMethodLayout = new QGridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
+  mpMethodLayout = new Q3GridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
 
   mpHeaderWidget->setTaskName("Sensitivities");
   addHeaderToGrid();
@@ -198,11 +200,11 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Subtask Method"));
-  TextLabel1->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel1->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   mpMethodLayout->addWidget(TextLabel1, fieldStart + 1, 0);
 
-  SubTaskChooser = new QComboBox(FALSE, this, "SubTaskChooser");
+  SubTaskChooser = new QComboBox(false, this, "SubTaskChooser");
   SubTaskChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, SubTaskChooser->sizePolicy().hasHeightForWidth()));
   mpMethodLayout->addWidget(SubTaskChooser, fieldStart + 1, 1);
 
@@ -215,8 +217,8 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
 
   TextLabel2 = new QLabel(this, "TextLabel2");
   TextLabel2->setText(trUtf8("Function"));
-  TextLabel2->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel2->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   mpMethodLayout->addWidget(TextLabel2, fieldStart + 4, 0);
 
   FunctionChooser = new SensWidgetComboBox(this, "TargetFunctionChooser");
@@ -235,15 +237,15 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpMethodLayout->addWidget(SingleFunctionChooser, fieldStart + 5, 2);
   SingleFunctionChooser->setMaximumSize(lineEditFormat.height(),
                                         lineEditFormat.height());
-  SingleFunctionChooser->setIconSet(QIconSet(img));
+  SingleFunctionChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
   SingleFunctionChooser->setEnabled(false); //hide();
 
   //*********** variable 1 **********************
 
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Variable"));
-  TextLabel3->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel3->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   mpMethodLayout->addWidget(TextLabel3, fieldStart + 6, 0);
 
   VariableChooser = new SensWidgetComboBox(this, "VariableChooser");
@@ -261,15 +263,15 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpMethodLayout->addWidget(SingleVariableChooser, fieldStart + 7, 2);
   SingleVariableChooser->setMaximumSize(lineEditFormat.height(),
                                         lineEditFormat.height());
-  SingleVariableChooser->setIconSet(QIconSet(img));
+  SingleVariableChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
   SingleVariableChooser->setEnabled(false); //hide();
 
   //********** variable 2 **********************
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Second Variable"));
-  TextLabel4->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel4->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   mpMethodLayout->addWidget(TextLabel4, fieldStart + 8, 0);
 
   Variable2Chooser = new SensWidgetComboBox(this, "Variable2Chooser");
@@ -287,7 +289,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpMethodLayout->addWidget(SingleVariable2Chooser, fieldStart + 9, 2);
   SingleVariable2Chooser->setMaximumSize(lineEditFormat.height(),
                                          lineEditFormat.height());
-  SingleVariable2Chooser->setIconSet(QIconSet(img));
+  SingleVariable2Chooser->setIconSet(QIcon(QPixmap::fromImage(img)));
   SingleVariable2Chooser->setEnabled(false); //hide();
 
   //**********************************************

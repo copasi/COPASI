@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/04/21 20:33:00 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,17 +26,17 @@
 #define COL_NAME 0
 #define COL_VALUE 1
 
-class CPreferenceListViewItem : public QListViewItem
+class CPreferenceListViewItem : public Q3ListViewItem
   {
   public:
-    CPreferenceListViewItem(QListView *parent, const QString & label1, QString label2 = QString::null)
-        : QListViewItem(parent, label1, label2)
+    CPreferenceListViewItem(Q3ListView *parent, const QString & label1, QString label2 = QString::null)
+        : Q3ListViewItem(parent, label1, label2)
     {
       setRenameEnabled(COL_VALUE, true);
     }
 
-    CPreferenceListViewItem(QListViewItem *parent, const QString & label1, QString label2 = QString::null)
-        : QListViewItem(parent, label1, label2)
+    CPreferenceListViewItem(Q3ListViewItem *parent, const QString & label1, QString label2 = QString::null)
+        : Q3ListViewItem(parent, label1, label2)
     {
       setRenameEnabled(COL_VALUE, true);
     }
@@ -52,7 +52,7 @@ void CQPreferenceDialog::slotBtnOk()
       CConfigurationFile * configFile = CCopasiDataModel::Global->getConfiguration();
 
       QString parName = "Max Last Visited Files";
-      QListViewItem *item = mpListView->findItem(parName, 0);
+      Q3ListViewItem *item = mpListView->findItem(parName, 0);
       newMaxFiles = item->text(COL_VALUE).toUInt();
       CRecentFiles & recentFiles = configFile->getRecentFiles();
       par = recentFiles.getParameter("MaxFiles");
@@ -95,7 +95,7 @@ void CQPreferenceDialog::slotBtnCancel()
       unsigned C_INT32 maxFiles = 0;
       CConfigurationFile * configFile = CCopasiDataModel::Global->getConfiguration();
 
-      QListViewItem *item = mpListView->findItem("Max Last Visited Files", 0);
+      Q3ListViewItem *item = mpListView->findItem("Max Last Visited Files", 0);
       CRecentFiles & recentFiles = configFile->getRecentFiles();
       CCopasiParameter * par = recentFiles.getParameter("MaxFiles");
       maxFiles = *par->getValue().pUINT;
@@ -143,7 +143,7 @@ void CQPreferenceDialog::init()
 }
 
 //slot
-void CQPreferenceDialog::editItem(QListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
+void CQPreferenceDialog::editItem(Q3ListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
 {
   if (!item) return;
   if (c == COL_VALUE) //column 1
@@ -151,7 +151,7 @@ void CQPreferenceDialog::editItem(QListViewItem * item, const QPoint & C_UNUSED(
 }
 
 //slot
-void CQPreferenceDialog::editItem(QListViewItem * item)
+void CQPreferenceDialog::editItem(Q3ListViewItem * item)
 {
   if (!item) return;
   item->startRename(COL_VALUE);

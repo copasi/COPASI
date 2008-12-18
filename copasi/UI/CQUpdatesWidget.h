@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/03/14 16:32:28 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,11 +22,14 @@
 
 #include "UI/copasiWidget.h"
 #include "mathematics.h"
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <QLabel>
 
-class QGridLayout;
+class Q3GridLayout;
 class QLabel;
 class QTabWidget;
-class QTable;
+class Q3Table;
 
 class CModel;
 
@@ -39,7 +42,7 @@ class CQUpdatesWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    CQUpdatesWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQUpdatesWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~CQUpdatesWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -53,14 +56,14 @@ class CQUpdatesWidget : public CopasiWidget
     void loadWidget();
     void clearArrays();
 
-    void loadOneTable(QTable* pTable, const std::vector< Refresh * > & list);
+    void loadOneTable(Q3Table* pTable, const std::vector< Refresh * > & list);
     void loadObjectsTable(CModel* pModel);
 
     std::map<const Refresh*, const CCopasiObject*> mRefreshsMap;
 
     void fillRefreshsMapRecursively(const CCopasiObject* obj);
 
-    QGridLayout* mWidgetLayout;
+    Q3GridLayout* mWidgetLayout;
 
     QLabel* mLabelTitle;
 
@@ -68,13 +71,13 @@ class CQUpdatesWidget : public CopasiWidget
     QTabWidget* mpTab;
     QTabWidget* mpTab2;
 
-    QTable* mpTable0;
-    QTable* mpTable1;
-    QTable* mpTable2;
-    QTable* mpTable3;
+    Q3Table* mpTable0;
+    Q3Table* mpTable1;
+    Q3Table* mpTable2;
+    Q3Table* mpTable3;
 
-    QTable* mpTableObj;
-    QTable* mpTableState;
+    Q3Table* mpTableObj;
+    Q3Table* mpTableState;
   };
 
 #endif

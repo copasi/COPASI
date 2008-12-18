@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,7 +23,7 @@
 #include "ObjectBrowserWidget.h"
 #include "CCopasiSimpleSelectionTree.h"
 
-CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , WFlags fl): QWidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL),
+CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent , const char* name , Qt::WFlags fl): Q3WidgetStack(parent, name, fl), mpSimpleTree(NULL), mpObjectBrowser(NULL), mpOutputVector(NULL),
     mSingleSelect(false), mExpertMode(false)
 {
   this->mpSimpleTree = new CCopasiSimpleSelectionTree(this);
@@ -59,7 +64,7 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
   this->mpSimpleTree->clearSelection();
   if (this->mSingleSelect)
     {
-      this->mpSimpleTree->setSelectionMode(QListView::Single);
+      this->mpSimpleTree->setSelectionMode(Q3ListView::Single);
       if (this->mpObjectBrowser)
         {
           /* this needs to be implemented first !
@@ -71,7 +76,7 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
     }
   else
     {
-      this->mpSimpleTree->setSelectionMode(QListView::Extended);
+      this->mpSimpleTree->setSelectionMode(Q3ListView::Extended);
       if (this->mpObjectBrowser)
         {
           /* this needs to be implemented first !

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 17:13:43 $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ void CQEventsWidget::init()
   //table->QTable::setNumRows(1);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Condition Trigger");
@@ -107,7 +107,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
         assignmentTarget += FROM_UTF8(GlobalKeys.get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName());
       else
         {
-          std::cout << "sObjectName = " << sObjectName << std::endl;
+          std::cout << "sObjectName = " << UTF8_TO_CHAR(sObjectName) << std::endl;
           assignmentTarget += "ERROR";
         }
       assignmentExpression += FROM_UTF8(pEv->getAssignmentExpressionStr(i));
@@ -317,7 +317,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                      // Yes or Enter
+      case 0:                                   // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -330,7 +330,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                      // No or Escape
+      default:                                   // No or Escape
         break;
       }
   */

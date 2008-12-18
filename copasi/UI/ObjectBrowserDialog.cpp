@@ -1,19 +1,27 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 00:41:15 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "ObjectBrowserDialog.h"
 #include "qpushbutton.h"
 #include "qlayout.h"
-#include "qframe.h"
+#include "q3frame.h"
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <QCloseEvent>
 
 #include "copasi.h"
 
@@ -38,18 +46,18 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
     ObjectBrowserDialogLayout(NULL) //,
     //    mparent(NULL)
 {
-  this->setWFlags(getWFlags() | Qt::WDestructiveClose);
-  ObjectBrowserDialogLayout = new QGridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
+  this->setWindowFlags(windowFlags() | Qt::WDestructiveClose);
+  ObjectBrowserDialogLayout = new Q3GridLayout(this, 3, 4, 11, 6, "ObjectBrowserDialogLayout");
   ObjectBrowserDialogLayout->setAutoAdd(false);
 
   //  objectBrowserWidget = new ObjectBrowserWidget(this, NULL, 0, 1);
   objectBrowserWidget = new ObjectBrowserWidget(this);
   ObjectBrowserDialogLayout->addMultiCellWidget(objectBrowserWidget, 0, 0, 0, 3);
 
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
+  Line1 = new Q3Frame(this, "Line1");
+  Line1->setFrameShape(Q3Frame::HLine);
+  Line1->setFrameShadow(Q3Frame::Sunken);
+  Line1->setFrameShape(Q3Frame::HLine);
   ObjectBrowserDialogLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
 
   //  spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);

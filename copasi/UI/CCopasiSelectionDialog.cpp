@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 17:13:43 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,13 @@
 
 #include "qpushbutton.h"
 #include "qcheckbox.h"
-#include "qhbox.h"
-#include "qvbox.h"
+#include "q3hbox.h"
+#include "q3vbox.h"
 #include "qlayout.h"
 #include <qcombobox.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
@@ -47,13 +50,13 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
     mExpertMode(false),
     mExpertModeEnabled(true)
 {
-  setWFlags(this->getWFlags() | Qt::WDestructiveClose);
-  mpMainLayout = new QVBoxLayout(this);
+  setWindowFlags(this->windowFlags() | Qt::WDestructiveClose);
+  mpMainLayout = new Q3VBoxLayout(this);
 
   mpSelectionWidget = new CCopasiSelectionWidget(this);
   mpMainLayout->addWidget(mpSelectionWidget);
 
-  mpButtonBox = new QHBoxLayout(mpMainLayout);
+  mpButtonBox = new Q3HBoxLayout(mpMainLayout);
 
   mpOKButton = new QPushButton(this, "OK");
   mpOKButton->setText("OK");
@@ -231,7 +234,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
               if (Result == QDialog::Rejected)
                 return std::vector< const CCopasiObject * >();
               else if (Result == QDialog::Accepted)
-                std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
+                std::cout << UTF8_TO_CHAR(dialog->mpCBRow->currentText()) << " AND " << UTF8_TO_CHAR(dialog->mpCBColumn->currentText()) << std::endl;
             }
         }
 
@@ -267,6 +270,6 @@ void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
       if (Result == QDialog::Rejected)
         return;
       else if (Result == QDialog::Accepted)
-        std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
+        std::cout << UTF8_TO_CHAR(dialog->mpCBRow->currentText()) << " AND " << UTF8_TO_CHAR(dialog->mpCBColumn->currentText()) << std::endl;
     }
 }

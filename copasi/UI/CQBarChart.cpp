@@ -1,24 +1,32 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQBarChart.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/20 08:27:03 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "UI/CQBarChart.h"
 
 #include <iostream>
+//Added by qt3to4:
+#include <Q3BoxLayout>
+#include <Q3HBoxLayout>
 
-CQBarChart::CQBarChart(QWidget* parent, const char* name, WFlags fl)
+CQBarChart::CQBarChart(QWidget* parent, const char* name, Qt::WFlags fl)
     : QWidget(parent, name, fl)
 {
-  QBoxLayout * mpLayout = new QHBoxLayout(this);
-  mpLayout->setAutoAdd(TRUE);
+  Q3BoxLayout * mpLayout = new Q3HBoxLayout(this);
+  mpLayout->setAutoAdd(true);
   mpPlot = new Plot3d(this, "bar chart");
 }
 

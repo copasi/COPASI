@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 19:32:47 $
+//   $Date: 2008/12/18 19:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,8 +52,8 @@ void CQTrajectoryWidget::init()
 
   mpHeaderWidget->setTaskName("Time Course");
 
-  CQTrajectoryWidgetLayout->insertWidget(0, mpHeaderWidget);
-  CQTrajectoryWidgetLayout->addWidget(mpBtnWidget);
+  vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->addWidget(mpBtnWidget);
 
   addMethodSelectionBox(CTrajectoryTask::ValidMethods);
   addMethodParameterTable(0);
@@ -94,8 +94,8 @@ void CQTrajectoryWidget::slotDuration()
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok,
-                                QMessageBox::NoButton,
-                                QMessageBox::NoButton);
+                                Qt::NoButton,
+                                Qt::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
@@ -122,8 +122,8 @@ void CQTrajectoryWidget::slotIntervalSize()
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok,
-                                QMessageBox::NoButton,
-                                QMessageBox::NoButton);
+                                Qt::NoButton,
+                                Qt::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
@@ -149,8 +149,8 @@ void CQTrajectoryWidget::slotIntervals()
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok,
-                                QMessageBox::NoButton,
-                                QMessageBox::NoButton);
+                                Qt::NoButton,
+                                Qt::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));

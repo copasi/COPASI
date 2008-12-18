@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,8 @@
  ** destructor.
  *****************************************************************************/
 
-#include <qtable.h>
-#include <qheader.h>
+#include <q3table.h>
+#include <q3header.h>
 #include <qregexp.h>
 #include <qimage.h>
 #include <qsignalmapper.h>
@@ -34,7 +34,7 @@
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qpainter.h>
-#include <qpicture.h>
+#include <q3picture.h>
 
 #include "copasi.h"
 
@@ -87,7 +87,7 @@ void CQMoietiesTaskResult::init()
   // Initialize the moieties tab
   mpMoieties->setNumCols(4);
 
-  QHeader * pHeader = mpMoieties->horizontalHeader();
+  Q3Header * pHeader = mpMoieties->horizontalHeader();
   pHeader->setLabel(COL_SPECIES, "Dependent Species");
   pHeader->setLabel(COL_AMOUNT, "Total Amount");
   pHeader->setLabel(COL_BTN, "");
@@ -150,7 +150,7 @@ void CQMoietiesTaskResult::load()
       pBtn = new QToolButton(mpMoieties);
       pBtn->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pBtn->sizePolicy().hasHeightForWidth()));
       pBtn->setMaximumSize(QSize(20, 20));
-      pBtn->setIconSet(QIconSet(mToolBtn));
+      pBtn->setIconSet(QIcon(mToolBtn));
       pBtn->setTextLabel(("Create global quantity for total amount."));
       mpToolBtnMap->setMapping(pBtn, i);
       connect(pBtn, SIGNAL(clicked()), mpToolBtnMap, SLOT(map()));

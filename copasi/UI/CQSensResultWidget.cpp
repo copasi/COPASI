@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 12:36:53 $
+//   $Date: 2008/12/18 19:57:11 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,9 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -34,7 +41,7 @@
  *  Constructs a CQSensResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags fl)
+CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl),
     mpResult(NULL)
 {
@@ -42,13 +49,13 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
     setName("CQSensResultWidget");
   setCaption("CQSensResultWidget");
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
+  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
 
   // **********  Label **************
   mLabelTitle = new QLabel(this, "SensLabel");
   mLabelTitle->setText("Sensitivities");
-  mLabelTitle->setAlignment(int(QLabel::AlignVCenter
-                                | QLabel::AlignLeft));
+  mLabelTitle->setAlignment(int(Qt::AlignVCenter
+                                | Qt::AlignLeft));
   mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 

@@ -1,19 +1,24 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.h,v $
+ $Revision: 1.14 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:58:12 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef PARAMETERTABLE_H
 #define PARAMETERTABLE_H
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qcombobox.h>
 
 #include "copasi.h"
@@ -21,10 +26,10 @@
 
 class CReactionInterface;
 
-class ColorTableItem : public QTableItem
+class ColorTableItem : public Q3TableItem
   {
   public:
-    ColorTableItem(QTable *t, EditType et, QColor c, const QString txt);
+    ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt);
     ~ColorTableItem();
     void setColor(QColor col) {color = col; table()->repaint();}
 
@@ -34,10 +39,10 @@ class ColorTableItem : public QTableItem
     QColor color;
   };
 
-class ColorCheckTableItem : public QCheckTableItem
+class ColorCheckTableItem : public Q3CheckTableItem
   {
   public:
-    ColorCheckTableItem(QTable *t, QColor c, const QString txt);
+    ColorCheckTableItem(Q3Table *t, QColor c, const QString txt);
     ~ColorCheckTableItem();
     void setColor(QColor col) {color = col; table()->repaint();}
 
@@ -50,7 +55,7 @@ class ColorCheckTableItem : public QCheckTableItem
 class ComboItem : public ColorTableItem
   {
   public:
-    ComboItem(QTable *t, EditType et, QColor c, const QStringList & sl);
+    ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl);
     QWidget *createEditor() const;
     void setContentFromEditor(QWidget *w);
     void setText(const QString &s);
@@ -62,7 +67,7 @@ class ComboItem : public ColorTableItem
 
 //table used in the reactions widget
 
-class ParameterTable : public QTable
+class ParameterTable : public Q3Table
   {
     Q_OBJECT
 

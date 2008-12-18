@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@
 
 #include "copasi.h"
 
-#include "qheader.h"
+#include "q3header.h"
 #include "qregexp.h"
 
 #include "UI/CopasiFileDialog.h"
@@ -62,7 +62,7 @@ void CQFittingResult::init()
   mpParameters->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpParameters->sizePolicy().hasHeightForWidth()));
   mpParameters->setNumRows(0);
   mpParameters->setNumCols(5);
-  mpParameters->setReadOnly(TRUE);
+  mpParameters->setReadOnly(true);
 
   for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
     mpParameters->adjustColumn(i);
@@ -81,7 +81,7 @@ void CQFittingResult::init()
   mpExperiments->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpExperiments->sizePolicy().hasHeightForWidth()));
   mpExperiments->setNumRows(0);
   mpExperiments->setNumCols(5);
-  mpExperiments->setReadOnly(TRUE);
+  mpExperiments->setReadOnly(true);
 
   for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
     mpExperiments->adjustColumn(i);
@@ -100,7 +100,7 @@ void CQFittingResult::init()
   mpValues->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpValues->sizePolicy().hasHeightForWidth()));
   mpValues->setNumRows(0);
   mpValues->setNumCols(5);
-  mpValues->setReadOnly(TRUE);
+  mpValues->setReadOnly(true);
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
     mpValues->adjustColumn(i);
@@ -123,7 +123,7 @@ void CQFittingResult::init()
   mpCrossValidations->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpExperiments->sizePolicy().hasHeightForWidth()));
   mpCrossValidations->setNumRows(0);
   mpCrossValidations->setNumCols(5);
-  mpCrossValidations->setReadOnly(TRUE);
+  mpCrossValidations->setReadOnly(true);
 
   for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
     mpCrossValidations->adjustColumn(i);
@@ -142,7 +142,7 @@ void CQFittingResult::init()
   mpCrossValidationValues->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpValues->sizePolicy().hasHeightForWidth()));
   mpCrossValidationValues->setNumRows(0);
   mpCrossValidationValues->setNumCols(5);
-  mpCrossValidationValues->setReadOnly(TRUE);
+  mpCrossValidationValues->setReadOnly(true);
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
     mpCrossValidationValues->adjustColumn(i);

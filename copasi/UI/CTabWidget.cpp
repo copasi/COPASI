@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:30:32 $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,8 @@
 
 #include <qtabwidget.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
 
 #include "CTabWidget.h"
 #include "ModelWidget.h"
@@ -29,13 +31,13 @@
  *  tab name.
  */
 CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
-                       QWidget* parent, const char* name, WFlags f)
+                       QWidget* parent, const char* name, Qt::WFlags f)
     : CopasiWidget(parent, name, f)
 {
   if (!name)
     CopasiWidget::setName("CTabWidget");
 
-  QHBoxLayout* tabLayout = new QHBoxLayout(this, 0, 0, "tabLayout");
+  Q3HBoxLayout* tabLayout = new Q3HBoxLayout(this, 0, 0, "tabLayout");
   mTabWidget = new QTabWidget (this, "mTabWidget");
   tabLayout->addWidget(mTabWidget);
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 12:53:03 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
  ** Created: Wed Oct 8 02:15:46 2008
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.12 2008/10/08 12:53:03 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.13 2008/12/18 19:57:33 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,67 +23,15 @@
 #include "CScanWidgetTask.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
 #include "CScanWidgetTask.ui.h"
-
 /*
  *  Constructs a CScanWidgetTask as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
+CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, Qt::WindowFlags fl)
     : QWidget(parent, name, fl)
 {
-  if (!name)
-    setName("CScanWidgetTask");
-  CScanWidgetTaskLayout = new QVBoxLayout(this, 5, 6, "CScanWidgetTaskLayout");
-
-  frame = new QFrame(this, "frame");
-  frame->setPaletteBackgroundColor(QColor(191, 236, 183));
-  frame->setFrameShape(QFrame::StyledPanel);
-  frame->setFrameShadow(QFrame::Raised);
-  frameLayout = new QVBoxLayout(frame, 6, 6, "frameLayout");
-
-  layout1 = new QHBoxLayout(0, 0, 6, "layout1");
-
-  labelTitle = new QLabel(frame, "labelTitle");
-  layout1->addWidget(labelTitle);
-  spacer1 = new QSpacerItem(30, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-  layout1->addItem(spacer1);
-
-  comboType = new QComboBox(FALSE, frame, "comboType");
-  layout1->addWidget(comboType);
-  spacer2 = new QSpacerItem(99, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout1->addItem(spacer2);
-  frameLayout->addLayout(layout1);
-
-  layout2 = new QHBoxLayout(0, 0, 6, "layout2");
-
-  checkInitialConditions = new QCheckBox(frame, "checkInitialConditions");
-  checkInitialConditions->setChecked(TRUE);
-  layout2->addWidget(checkInitialConditions);
-  spacer3 = new QSpacerItem(30, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-  layout2->addItem(spacer3);
-
-  checkOutput = new QCheckBox(frame, "checkOutput");
-  checkOutput->setChecked(TRUE);
-  layout2->addWidget(checkOutput);
-  spacer4 = new QSpacerItem(41, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout2->addItem(spacer4);
-  frameLayout->addLayout(layout2);
-  CScanWidgetTaskLayout->addWidget(frame);
-  languageChange();
-  resize(QSize(419, 76).expandedTo(minimumSizeHint()));
-  clearWState(WState_Polished);
-
-  // signals and slots connections
-  connect(comboType, SIGNAL(activated(int)), this, SLOT(typeChanged(int)));
+  setupUi(this);
   init();
 }
 
@@ -101,20 +49,5 @@ CScanWidgetTask::~CScanWidgetTask()
  */
 void CScanWidgetTask::languageChange()
 {
-  setCaption(tr("Form1"));
-  labelTitle->setText(tr("<h2>Subtask</h2>"));
-  comboType->clear();
-  comboType->insertItem(tr("Steady State"));
-  comboType->insertItem(tr("Time course"));
-  comboType->insertItem(tr("Metabolic control analysis"));
-  comboType->insertItem(tr("Lyapunov exponents"));
-  comboType->insertItem(tr("Optimization"));
-  comboType->insertItem(tr("Parameter Estimation"));
-  comboType->insertItem(tr("Sensitivities"));
-  comboType->setCurrentItem(1);
-  checkInitialConditions->setText(tr("always use initial conditions"));
-  QToolTip::add(checkInitialConditions, tr("If this is activated every calculation will start with the initial conditions specified in the model. <p>If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation."));
-  checkOutput->setText(tr("output during subtask execution"));
-  checkOutput->setAccel(QKeySequence(QString::null));
-  QToolTip::add(checkOutput, tr("If this is activated output will be generated during each calculation. <p>If it is not activated only the state at the end of each calculation will be plotted."));
+  retranslateUi(this);
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@
 
 void CQExpressionMmlWidget::slotGoExpressionWidget()
 {
-  std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << mpExpressionWidget->text() << std::endl;
+  std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << UTF8_TO_CHAR(mpExpressionWidget->text()) << std::endl;
   mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
 }
 
@@ -93,7 +93,7 @@ void CQExpressionMmlWidget::slotSaveExpression()
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
             "Save Expression to Disk");
 
-      if (!outfilename) return;
+      if (outfilename.isNull()) return;
 
       // Checks whether the file exists
       Answer = checkSelection(outfilename);
@@ -133,7 +133,7 @@ void CQExpressionMmlWidget::saveTeX(const QString outfilename)
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
+  ofile << UTF8_TO_CHAR(latexStr);
   //  ofile << mml.str() << std::endl;
   ofile.close();
 }

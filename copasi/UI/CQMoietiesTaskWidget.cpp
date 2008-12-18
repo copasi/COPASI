@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,23 +11,10 @@
 // and The University of Manchester.
 // All rights reserved.
 
-/****************************************************************************
- ** Form implementation generated from reading ui file 'CQMoietiesTaskWidget.ui'
- **
- ** Created: Wed Feb 20 14:48:52 2008
- **      by: The User Interface Compiler ($Id: CQMoietiesTaskWidget.cpp,v 1.2 2008/03/12 00:32:59 shoops Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+#include <qvariant.h>
 
 #include "CQMoietiesTaskWidget.h"
-
-#include <qvariant.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
 #include "CQMoietiesTaskWidget.ui.h"
-
 /*
  *  Constructs a CQMoietiesTaskWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -35,14 +22,8 @@
 CQMoietiesTaskWidget::CQMoietiesTaskWidget(QWidget* parent, const char* name)
     : TaskWidget(parent, name)
 {
-  if (!name)
-    setName("CQMoietiesTaskWidget");
-  CQMoietiesTaskWidgetLayout = new QVBoxLayout(this, 11, 6, "CQMoietiesTaskWidgetLayout");
-  mpSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  CQMoietiesTaskWidgetLayout->addItem(mpSpacer);
-  languageChange();
-  resize(QSize(260, 23).expandedTo(minimumSizeHint()));
-  clearWState(WState_Polished);
+  setupUi(this);
+
   init();
 }
 
@@ -61,5 +42,5 @@ CQMoietiesTaskWidget::~CQMoietiesTaskWidget()
  */
 void CQMoietiesTaskWidget::languageChange()
 {
-  setCaption(tr("Mass Conservation"));
+  retranslateUi(this);
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ void MetabolitesWidget::init()
   table->setNumCols(numCols);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
   tableHeader->setLabel(COL_NAME, "Name");
   tableHeader->setLabel(COL_COMPARTMENT, "Compartment");
@@ -107,7 +107,7 @@ void MetabolitesWidget::init()
 
 void MetabolitesWidget::updateHeaderUnits()
 {
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
 
   if (CCopasiDataModel::Global->getModel())
     {
@@ -131,12 +131,12 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   const CCopasiVector < CCompartment > & compartments = CCopasiDataModel::Global->getModel()->getCompartments();
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
     compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
-  QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
+  Q3ComboTableItem * item = new Q3ComboTableItem(table, compartmentType, false);
   table->setItem(row, COL_COMPARTMENT, item);
   item->setCurrentItem(FROM_UTF8(pMetab->getCompartment()->getObjectName()));
 
   // Type
-  QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+  Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mTypes);
   pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pMetab->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
@@ -229,8 +229,8 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
     }
 
   // Type
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_TYPE)))
-    pMetab->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE)))
+    pMetab->setStatus((CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
 
   // Initial Concentration or Initial Number
   if (mFlagConc)
@@ -250,7 +250,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
       for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
         compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
 
-      QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
+      Q3ComboTableItem * item = new Q3ComboTableItem(table, compartmentType, false);
       table->setItem(row, COL_COMPARTMENT, item);
 
       if (compartments.size())
@@ -265,7 +265,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
   // Type
   if (exc != COL_TYPE)
     {
-      QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+      Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mTypes);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_TYPE, pComboBox);
     }
@@ -499,7 +499,7 @@ void MetabolitesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
   switch (col)
     {
     case COL_TYPE:
-      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
         {
           table->item(row, COL_ICONCENTRATION)->setEnabled(false);
           table->item(row, COL_INUMBER)->setEnabled(false);

@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
- $Revision: 1.54 $
- $Name:  $
- $Author: pwilly $
- $Date: 2008/07/25 06:53:38 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
+$Revision: 1.55 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:57:54 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,20 +28,26 @@
 #include <sstream>
 
 #include "UI/copasiWidget.h"
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 
-class QVBox;
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QHButtonGroup;
-class QFrame;
+class Q3VBox;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
+class Q3HButtonGroup;
+class Q3Frame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QRadioButton;
-class QTable;
-class QTextEdit;
-class QWidgetStack;
+class Q3Table;
+class Q3TextEdit;
+class Q3WidgetStack;
 class QToolButton;
 class QSpacerItem;
 //class MyLineEdit;
@@ -63,7 +69,7 @@ class FunctionWidget1 : public CopasiWidget
     Q_OBJECT
 
   public:
-    FunctionWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
+    FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WFlags f = 0);
     virtual ~FunctionWidget1();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -99,35 +105,35 @@ class FunctionWidget1 : public CopasiWidget
     bool isValid;
 
     //Widgets
-    QGridLayout* FunctionWidget1Layout;
-    QHBoxLayout* Layout1;
-    QHBoxLayout* Layout2;
+    Q3GridLayout* FunctionWidget1Layout;
+    Q3HBoxLayout* Layout1;
+    Q3HBoxLayout* Layout2;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
-    QTextEdit* textBrowser;
+    Q3TextEdit* textBrowser;
 
-    QFrame* Line2;
+    Q3Frame* Line2;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
     QPushButton* newFcn;
     QPushButton* deleteFcn;
-    QHButtonGroup* ButtonGroup1;
+    Q3HButtonGroup* ButtonGroup1;
     QRadioButton* RadioButton1;
     QRadioButton* RadioButton2;
     QRadioButton* RadioButton3;
     QLabel* TextLabel4;
-    QFrame* Line3;
+    Q3Frame* Line3;
     QLineEdit* LineEdit1;
-    QTable* Table2;
+    Q3Table* Table2;
     QLabel* TextLabel5;
-    QFrame* Line4;
-    QTable* Table1;
+    Q3Frame* Line4;
+    Q3Table* Table1;
     QLabel* TextLabel3;
-    QFrame* Line1;
+    Q3Frame* Line1;
 
-    QWidgetStack* mStack;
-    QVBox* mMmlViewBox;
-    QScrollView* mScrollView;
+    Q3WidgetStack* mStack;
+    Q3VBox* mMmlViewBox;
+    Q3ScrollView* mScrollView;
 #ifdef HAVE_MML
     //    QPushButton* mFormulaEditToggleButton;
     QToolButton* mFormulaEditToggleButton;
@@ -138,8 +144,8 @@ class FunctionWidget1 : public CopasiWidget
     CFunction * mpFunction;
 
     QToolButton *mpSaveBtn;
-    QHBoxLayout *mpFormulaHBL;
-    QVBoxLayout *mpFormulaVBL;
+    Q3HBoxLayout *mpFormulaHBL;
+    Q3VBoxLayout *mpFormulaVBL;
     QSpacerItem *mpFormulaSpacer;
 
   private:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,14 @@
 #define TSSARESULTWIDGET_H
 
 #include "UI/copasiWidget.h"
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 //class QPushButton;
 
 class CQTSSAResultSubWidget;
@@ -32,7 +36,7 @@ class CQTSSAResultWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    CQTSSAResultWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQTSSAResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~CQTSSAResultWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -50,7 +54,7 @@ class CQTSSAResultWidget : public CopasiWidget
 
   protected:
     std::string objKey;
-    QGridLayout* mWidgetLayout;
+    Q3GridLayout* mWidgetLayout;
     CQTSSAResultSubWidget* mCentralWidget;
   };
 

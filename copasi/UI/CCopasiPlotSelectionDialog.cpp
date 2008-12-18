@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 15:47:17 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,8 +21,11 @@
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qsplitter.h>
-#include <qhbox.h>
-#include <qvbox.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include "copasi.h"
 
@@ -28,7 +36,7 @@
 #include "model/CModel.h"
 #include "report/CCopasiObject.h"
 
-CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, WFlags f):
+CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags f):
     QDialog(parent, name, modal, f)
     , mpOKButton(NULL)
     , mpCancelButton(NULL)
@@ -45,13 +53,13 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
     , mpXAxisOutputVector(NULL)
     , mpYAxisOutputVector(NULL)
 {
-  mpMainLayout = new QVBoxLayout(this);
+  mpMainLayout = new Q3VBoxLayout(this);
 
   mpSplitter = new QSplitter(this);
   mpSplitter->setOrientation(Qt::Horizontal);
   mpMainLayout->addWidget(mpSplitter);
 
-  mpButtonBox = new QHBoxLayout(mpMainLayout);
+  mpButtonBox = new Q3HBoxLayout(mpMainLayout);
 
   mpOKButton = new QPushButton(this);
   mpOKButton->setText("OK");
@@ -67,11 +75,11 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
   mpExpertCheckBox->setChecked(false);
   mpButtonBox->add(mpExpertCheckBox);
 
-  mpXAxisSelectionBox = new QVBox(mpSplitter);
+  mpXAxisSelectionBox = new Q3VBox(mpSplitter);
   mpXAxisSelectionBox->layout()->setMargin(5);
   mpXAxisSelectionBox->layout()->setAutoAdd(false);
 
-  mpYAxisSelectionBox = new QVBox(mpSplitter);
+  mpYAxisSelectionBox = new Q3VBox(mpSplitter);
   mpYAxisSelectionBox->layout()->setMargin(5);
   mpYAxisSelectionBox->layout()->setAutoAdd(false);
 

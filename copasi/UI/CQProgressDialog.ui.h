@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressDialog.ui.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressDialog.ui.h,v $
+ $Revision: 1.7 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:56:51 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,9 +22,9 @@ bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
 {
   if (mItemCount == 0) mpLine->show();
 
-  CQProgressDialogLayout->removeItem(mpSpacer);
-  CQProgressDialogLayout->addWidget(pItem);
-  CQProgressDialogLayout->addItem(mpSpacer);
+  vboxLayout->removeItem(mpSpacer);
+  vboxLayout->addWidget(pItem);
+  vboxLayout->addItem(mpSpacer);
 
   pItem->show();
   qApp->processEvents();
@@ -30,7 +35,7 @@ bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
 
 bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
 {
-  CQProgressDialogLayout->remove(pItem);
+  vboxLayout->remove(pItem);
 
   mItemCount--;
   if (mItemCount == 0) mpLine->hide();

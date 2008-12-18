@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.195 $
+//   $Revision: 1.196 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,18 +24,21 @@
  ** the Second level of Reactions.
  **********************************************************************/
 
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qlayout.h>
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qwidget.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qcheckbox.h>
 #include <qlineedit.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
 
 #include "copasi.h"
 #include "ReactionsWidget1.h"
@@ -61,7 +64,7 @@
  *
  */
 
-ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
+ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlags f)
     : CopasiWidget(parent, name, f),
     objKey(""),
     mpRi(NULL)
@@ -70,22 +73,22 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
     setName("ReactionsWidget1");
   setCaption(trUtf8("ReactionsWidget1"));
 
-  ReactionsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
+  ReactionsWidget1Layout = new Q3GridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Name"));
-  TextLabel4->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel4->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel4, 0, 0);
 
   TextLabel7 = new QLabel(this, "TextLabel7");
   TextLabel7->setText(trUtf8("Symbol Definition"));
-  TextLabel7->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel7->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
   //Buttons:
-  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
+  Layout1 = new Q3HBoxLayout(0, 0, 6, "Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
@@ -107,10 +110,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   //
 
-  Line2 = new QFrame(this, "Line2");
-  Line2->setFrameShape(QFrame::HLine);
-  Line2->setFrameShadow(QFrame::Sunken);
-  Line2->setFrameShape(QFrame::HLine);
+  Line2 = new Q3Frame(this, "Line2");
+  Line2->setFrameShape(Q3Frame::HLine);
+  Line2->setFrameShadow(Q3Frame::Sunken);
+  Line2->setFrameShape(Q3Frame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line2, 7, 7, 0, 3);
 
   /*Line1 = new QFrame(this, "Line1");
@@ -128,11 +131,11 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   // kinetics line
   TextLabel6 = new QLabel(this, "TextLabel6");
   TextLabel6->setText(trUtf8("Rate Law"));
-  TextLabel6->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel6->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel6, 5, 0);
 
-  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  ComboBox1 = new QComboBox(false, this, "ComboBox1");
   ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
   newKinetics = new QPushButton(this, "newKinetics");
@@ -141,12 +144,12 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   TextLabel8 = new QLabel(this, "TextLabel8");
   TextLabel8->setText(trUtf8("Flux"));
-  TextLabel8->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel8->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel8, 6, 0);
 
   LineEdit3 = new QLineEdit(this, "LineEdit3");
-  LineEdit3->setEnabled(FALSE);
+  LineEdit3->setEnabled(false);
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
 
   //name
@@ -156,8 +159,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   // equation line
   TextLabel5 = new QLabel(this, "TextLabel5");
   TextLabel5->setText(trUtf8("Chemical Equation"));
-  TextLabel5->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel5->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
 
   LineEdit2 = new MyLineEdit(this, "LineEdit2");
@@ -173,10 +176,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   mpMultiCompartment->setEnabled(false);
   ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 2);
 
-  Line4 = new QFrame(this, "Line4");
-  Line4->setFrameShape(QFrame::HLine);
-  Line4->setFrameShadow(QFrame::Sunken);
-  Line4->setFrameShape(QFrame::HLine);
+  Line4 = new Q3Frame(this, "Line4");
+  Line4->setFrameShape(Q3Frame::HLine);
+  Line4->setFrameShadow(Q3Frame::Sunken);
+  Line4->setFrameShape(Q3Frame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
 
   table = new ParameterTable(this, "table");
@@ -366,7 +369,7 @@ void ReactionsWidget1::slotBtnNewClicked()
     {
       i++;
       name = "reaction_";
-      name += QString::number(i).utf8();
+      name += (const char *) QString::number(i).utf8();
     }
   protectedNotify(ListViews::REACTION, ListViews::ADD);
   enter(CCopasiDataModel::Global->getModel()->getReactions()[name]->getKey());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/09 21:22:03 $
+//   $Date: 2008/12/18 19:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,9 +24,11 @@
 
 #include "qpushbutton.h"
 #include "qpixmap.h"
-#include "qtextedit.h"
+#include "q3textedit.h"
 #include "qlayout.h"
 #include "qsizepolicy.h"
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 #include "icons/copasi_beta_background.xpm"
 
 #include "copasi.h"
@@ -56,7 +58,7 @@ const char* AboutDialog::text =
   "</p><p>"
   "The following software and algorithms are being used by COPASI: "
   "<ul>"
-  "<li>Qt3 GUI framework</li>"
+  "<li>Qt4 GUI framework</li>"
   "<li>QWT 5.0.2</li>"
   "<li>Expat 2.0.1 XML parser</li>"
   "<li>libsbml 3.1.1</li>"
@@ -79,15 +81,15 @@ AboutDialog::AboutDialog(QWidget* parent,
     backgroundPixmap(NULL),
     mainLayout(NULL)
 {
-  WFlags f = this->getWFlags();
+  Qt::WindowFlags f = this->windowFlags();
   f = (f | Qt::WDestructiveClose);
-  this->setWFlags(f);
+  this->setWindowFlags(f);
   this->setModal(true);
-  this->mainLayout = new QVBoxLayout(this);
+  this->mainLayout = new Q3VBoxLayout(this);
   this->mainLayout->setResizeMode(QLayout::Fixed);
   this->mainLayout->setAutoAdd(false);
   this->backgroundPixmap = new QPixmap((const char**)copasi_beta_background_xpm);
-  this->textEdit = new QTextEdit(this);
+  this->textEdit = new Q3TextEdit(this);
   this->textEdit->setPaletteBackgroundPixmap(*this->backgroundPixmap);
   QFontMetrics FontMetrics = this->fontMetrics();
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;

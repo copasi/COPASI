@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/08/18 08:51:46 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 
 #include <qlabel.h>
 #include <qcombobox.h>
+//Added by qt3to4:
+#include <QKeyEvent>
 
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
@@ -35,7 +37,7 @@
 #include "qtUtilities.h"
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
-    : QSyntaxHighlighter(ew)
+    : Q3SyntaxHighlighter(ew)
 {}
 
 int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* endStateOfLastPara */)
@@ -73,8 +75,8 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* en
 
 //***********************************************************************
 
-CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
-    CQValidator< QTextEdit >(parent, name),
+CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * name, bool isBoolean):
+    CQValidator< Q3TextEdit >(parent, name),
     mExpression()
 {
   mExpression.setBoolean(isBoolean);
@@ -90,7 +92,7 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
         const_cast< CExpression * >(&mExpression)->compile())
       {
         QString Input = mpLineEdit->text();
-        return CQValidator< QTextEdit >::validate(Input, pos);
+        return CQValidator< Q3TextEdit >::validate(Input, pos);
       }
 
     setColor(Invalid);
@@ -109,14 +111,14 @@ CExpression *CQValidatorExpression::getExpression()
 //***********************************************************************
 
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool isBoolean)
-    : QTextEdit(parent, name),
+    : Q3TextEdit(parent, name),
     mOldPar(0),
     mOldPos(0),
     mExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION),
     mpCurrentObject(NULL),
     mNewName("")
 {
-  setTextFormat(PlainText);
+  setTextFormat(Qt::PlainText);
   setTabChangesFocus(true);
 
   new CQExpressionHighlighter(this);
@@ -148,7 +150,7 @@ void CQExpressionWidget::keyPressEvent (QKeyEvent * e)
   if (e->text() == ">")
     return;
 
-  QTextEdit::keyPressEvent(e);
+  Q3TextEdit::keyPressEvent(e);
 }
 
 void CQExpressionWidget::slotSelectionChanged()
@@ -277,7 +279,7 @@ bool CQExpressionWidget::compareCursorPositions(int parold, int posold, int par,
   return false;
 }
 
-void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
+void CQExpressionWidget::doKeyboardAction(Q3TextEdit::KeyboardAction action)
 {
   int para, pos;
   getCursorPosition(&para, &pos);
@@ -285,7 +287,7 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
   //handle backspace and delete. All other actions are ignored
   switch (action)
     {
-    case QTextEdit::ActionBackspace:
+    case Q3TextEdit::ActionBackspace:
       if (pos == 0) return;
       if (text(para)[pos - 1] == '>')
         {
@@ -295,10 +297,10 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
           removeSelectedText();
         }
       else
-        QTextEdit::doKeyboardAction(action);
+        Q3TextEdit::doKeyboardAction(action);
       break;
 
-    case QTextEdit::ActionDelete:
+    case Q3TextEdit::ActionDelete:
       if ((unsigned int) pos == text().length()) return;
       if (text(para)[pos] == '<')
         {
@@ -308,11 +310,11 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
           removeSelectedText();
         }
       else
-        QTextEdit::doKeyboardAction(action);
+        Q3TextEdit::doKeyboardAction(action);
       break;
 
     default:
-      QTextEdit::doKeyboardAction(action);
+      Q3TextEdit::doKeyboardAction(action);
       break;
     }
 }

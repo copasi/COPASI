@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -239,7 +239,7 @@ void SliderSettingsDialog::minValueChanged()
         {
           CQMessageBox::information(this, "Incorrect min value",
                                     "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
-                                    QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default , Qt::NoButton);
           mpLogCheckBox->setChecked(false);
           mScaling = CSlider::linear;
         }
@@ -338,7 +338,7 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           CQMessageBox::information(this, "Invalid Object",
                                     "You chose an object that does not correspond to an integer or float value. Please choose an object that corresponds to an integet or float value.",
-                                    QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
           mpSlider = NULL;
           mpObjectNameLineEdit->setText("");
           return;
@@ -352,7 +352,7 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           CQMessageBox::information(this, "Invalid Object",
                                     "You chose an object that cannot be used as a slider. Please choose an other object.",
-                                    QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
           mpSlider = NULL;
           mpObjectNameLineEdit->setText("");
           return;
@@ -463,7 +463,7 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
         {
           CQMessageBox::information(this, "Incorrect min value",
                                     "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
-                                    QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default , Qt::NoButton);
           mpLogCheckBox->setChecked(false);
           mScaling = CSlider::linear;
         }

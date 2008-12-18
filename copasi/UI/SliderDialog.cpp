@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,19 +19,26 @@
 #include <sstream>
 #include <mathematics.h>
 
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qlistbox.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
+#include <q3listbox.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qstring.h>
 #include <qslider.h>
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qobjectlist.h>
+#include <qobject.h>
 #include <qtooltip.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QContextMenuEvent>
+#include <QCloseEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <Q3VBoxLayout>
 
 #include "SliderDialog.h"
 #include "copasiui3window.h"
@@ -64,7 +71,7 @@ C_INT32 SliderDialog::numKnownTasks = 4;
 C_INT32 SliderDialog::knownTaskIDs[] = {21, 23, 24, 31};
 const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
-SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags fl):
+SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
     QDialog(parent, name, modal, fl),
     pParentWindow(NULL),
     runTaskButton(NULL),
@@ -79,10 +86,10 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags
     mSliderValueChanged(false),
     mSliderPressed(false)
 {
-  setWFlags(getWFlags() | WStyle_StaysOnTop);
-  QVBoxLayout* mainLayout = new QVBoxLayout(this);
+  setWindowFlags(windowFlags() | Qt::WStyle_StaysOnTop);
+  Q3VBoxLayout* mainLayout = new Q3VBoxLayout(this);
   mainLayout->setMargin(5);
-  QHBoxLayout* layout2 = new QHBoxLayout(0);
+  Q3HBoxLayout* layout2 = new Q3HBoxLayout(0);
   layout2->setMargin(3);
   layout2->addStretch();
   newSliderButton = new QPushButton(this);
@@ -92,15 +99,15 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags
   layout2->addStretch();
   mainLayout->addLayout(layout2);
 
-  scrollView = new QScrollView(this);
-  scrollView->setResizePolicy(QScrollView::AutoOneFit);
-  sliderBox = new QVBox(0);
+  scrollView = new Q3ScrollView(this);
+  scrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
+  sliderBox = new Q3VBox(0);
   sliderBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   sliderBox->layout()->setAutoAdd(false);
   scrollView->addChild(sliderBox);
   mainLayout->addWidget(scrollView);
 
-  QHBoxLayout* layout1 = new QHBoxLayout(0);
+  Q3HBoxLayout* layout1 = new Q3HBoxLayout(0);
   layout1->addStretch();
   mpAutoModifyRangesCheckBox = new QCheckBox(this);
   mpAutoModifyRangesCheckBox->setChecked(true);
@@ -110,7 +117,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags
   mainLayout->addSpacing(10);
   mainLayout->addLayout(layout1);
 
-  layout1 = new QHBoxLayout(0);
+  layout1 = new Q3HBoxLayout(0);
   layout1->addStretch();
   autoRunCheckBox = new QCheckBox(this);
   autoRunCheckBox->setChecked(true);
@@ -120,7 +127,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags
   mainLayout->addSpacing(10);
   mainLayout->addLayout(layout1);
 
-  layout2 = new QHBoxLayout(0);
+  layout2 = new Q3HBoxLayout(0);
   layout2->addStretch();
   runTaskButton = new QPushButton(this);
   runTaskButton->setText("run task");
@@ -129,7 +136,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags
   layout2->addStretch();
   mainLayout->addLayout(layout2);
 
-  contextMenu = new QPopupMenu(this);
+  contextMenu = new Q3PopupMenu(this);
   contextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
   contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
   contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
@@ -258,7 +265,7 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
         }
       assert(it != end);
       v->erase(it);
-      ((QVBoxLayout*)sliderBox->layout())->remove(pSlider);
+      ((Q3VBoxLayout*)sliderBox->layout())->remove(pSlider);
       pdelete(pSlider);
     }
 }
@@ -330,7 +337,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
       currSlider->setHidden(true);
       currSlider->updateSliderData();
       sliderMap[currentFolderId].push_back(currSlider);
-      ((QVBoxLayout*)sliderBox->layout())->add(currSlider);
+      ((Q3VBoxLayout*)sliderBox->layout())->add(currSlider);
       connect(currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
       connect(currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
       connect(currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
@@ -481,7 +488,7 @@ void SliderDialog::fillSliderBox()
     {
       QWidget* widget = v[i - 1];
       widget->setHidden(true);
-      ((QVBoxLayout*)sliderBox->layout())->insertWidget(0, widget);
+      ((Q3VBoxLayout*)sliderBox->layout())->insertWidget(0, widget);
       setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
       if (currSlider)
         {
@@ -679,7 +686,7 @@ void SliderDialog::clearSliderBox()
     {
       QWidget* widget = v[i];
       widget->setHidden(true);
-      ((QVBoxLayout*)sliderBox->layout())->remove(widget);
+      ((Q3VBoxLayout*)sliderBox->layout())->remove(widget);
     }
 }
 

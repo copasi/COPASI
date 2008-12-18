@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/02/24 17:33:04 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,9 @@
 
 #include <qwidget.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <Q3VBoxLayout>
 #include "utilities/CVector.h"
 #include <qslider.h>
 #include <qpainter.h>
@@ -25,7 +28,7 @@ class PaintWidget : public QWidget
     Q_OBJECT
 
   public:
-    PaintWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    PaintWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~PaintWidget();
 
     void paintTimeScale(int select);
@@ -45,7 +48,7 @@ class CQTSSATimeScaleWidget : public QWidget
     Q_OBJECT
 
   public:
-    CQTSSATimeScaleWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQTSSATimeScaleWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~CQTSSATimeScaleWidget();
 
     void paintTimeScale(CVector< C_FLOAT64> vector);
@@ -55,7 +58,7 @@ class CQTSSATimeScaleWidget : public QWidget
     void changedInterval();
 
   private:
-    QVBoxLayout * mpVLayout;
+    Q3VBoxLayout * mpVLayout;
     PaintWidget * mpPaintWidget;
     QSlider * mpSlider;
   };

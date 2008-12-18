@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,18 +26,20 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qmessagebox.h>
 #include <qvariant.h>
-#include <qheader.h>
-#include <qlistview.h>
-#include <qtextedit.h>
-#include <qlistbox.h>
+#include <q3header.h>
+#include <q3listview.h>
+#include <q3textedit.h>
+#include <q3listbox.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include <qsimplerichtext.h>
-#include <qframe.h>
+#include <q3simplerichtext.h>
+#include <q3frame.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -63,7 +65,7 @@ QPixmap *pObjectNone = 0;
  *  Constructs a ObjectBrowser which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFlags fl, int state)
+ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::WFlags fl, int state)
     : QWidget(parent, name, fl),
     objectItemList(NULL),
     refreshList(NULL),
@@ -82,22 +84,22 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
     setName("ObjectBrowser");
 
   if (state == 0)
-    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
+    ObjectBrowserLayout = new Q3GridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
   else
-    ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
+    ObjectBrowserLayout = new Q3GridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
   ObjectBrowserLayout->setAutoAdd(false);
-  ObjectListView = new QListView(this, "ObjectListView");
+  ObjectListView = new Q3ListView(this, "ObjectListView");
   //  ObjectListView->addColumn(trUtf8("Object Browser"));
   ObjectListView->addColumn(trUtf8("Name"));
   ObjectListView->addColumn(trUtf8("Type"));
-  ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
-  ObjectListView->setAcceptDrops(FALSE);
-  ObjectListView->setResizeMode(QListView::LastColumn);
+  ObjectListView->header()->setClickEnabled(false, ObjectListView->header()->count() - 1);
+  ObjectListView->setAcceptDrops(false);
+  ObjectListView->setResizeMode(Q3ListView::LastColumn);
   ObjectListView->setTreeStepSize(19);
   //  ObjectListView->setSorting(-1);
-  ObjectListView->setSelectionMode(QListView::NoSelection);
+  ObjectListView->setSelectionMode(Q3ListView::NoSelection);
 
-  ObjectItemText = new QTextEdit(this, "ObjectItemText");
+  ObjectItemText = new Q3TextEdit(this, "ObjectItemText");
   ObjectItemText ->hide();
 
   ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
@@ -105,10 +107,10 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
 
   if (state != 0)
     {
-      Line1 = new QFrame(this, "Line1");
-      Line1->setFrameShape(QFrame::HLine);
-      Line1->setFrameShadow(QFrame::Sunken);
-      Line1->setFrameShape(QFrame::HLine);
+      Line1 = new Q3Frame(this, "Line1");
+      Line1->setFrameShape(Q3Frame::HLine);
+      Line1->setFrameShadow(Q3Frame::Sunken);
+      Line1->setFrameShape(Q3Frame::HLine);
 
       ObjectBrowserLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
 
@@ -138,7 +140,7 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
       setTabOrder(toggleViewButton, commitButton);
     }
 
-  connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
+  connect(ObjectListView, SIGNAL(clicked(Q3ListViewItem*)), this, SLOT(listviewChecked(Q3ListViewItem*)));
 
   pObjectAll = new QPixmap((const char**)ptrObjectAll);
   pObjectNone = new QPixmap((const char**)ptrObjectNone);
@@ -171,7 +173,7 @@ void ObjectBrowserWidget::clearClicked()
   //  qWarning("ObjectBrowser::clearClicked(): Not implemented yet!");
 }
 
-void ObjectBrowserWidget::listviewChecked(QListViewItem* pCurrent)
+void ObjectBrowserWidget::listviewChecked(Q3ListViewItem* pCurrent)
 {
   //  if ((pCurrent == NULL)||(((ObjectBrowserItem *)pCurrent)->getType() == FIELDATTR))
   if ((pCurrent == NULL) || (pCurrent->text(0) == "Select by attribute"))

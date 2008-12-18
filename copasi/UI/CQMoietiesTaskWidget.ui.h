@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 18:50:10 $
+//   $Date: 2008/12/18 19:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,8 @@ void CQMoietiesTaskWidget::init()
   mpHeaderWidget->setTaskName("Moieties");
   mpHeaderWidget->mpUpdateModel->hide();
 
-  CQMoietiesTaskWidgetLayout->insertWidget(0, mpHeaderWidget);
-  CQMoietiesTaskWidgetLayout->addWidget(mpBtnWidget);
+  vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->addWidget(mpBtnWidget);
 }
 
 void CQMoietiesTaskWidget::destroy()

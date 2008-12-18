@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 18:40:20 $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,16 +20,21 @@
 
 #include <vector>
 //#include <qvariant.h>
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3Frame>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
-class QFrame;
+class Q3Frame;
 class QLineEdit;
 class QToolButton;
-class QVBox;
+class Q3VBox;
 
 class CUpDownSubwidget;
 
@@ -32,7 +42,7 @@ class CUpDownSubwidget;
  *  This widget is a table that contains other widgets (arranged vertically)
  *  it adds buttons to delete, move up or down the widgets
  */
-class CScanContainerWidget : public QTable
+class CScanContainerWidget : public Q3Table
   {
     Q_OBJECT
 

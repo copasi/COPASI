@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ void ModelValuesWidget::init()
   //table->QTable::setNumRows(1);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
 
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(COL_NAME, "Name");
@@ -102,7 +102,7 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   table->setText(row, COL_NAME, FROM_UTF8(pMV->getObjectName()));
 
   // Type
-  QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+  Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mTypes);
   pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pMV->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
@@ -147,8 +147,8 @@ void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!pMV) return;
 
   CModelEntity::Status OldStatus = pMV->getStatus();
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_TYPE)))
-    pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE)))
+    pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
 
   if (pMV->getStatus() != CModelEntity::ASSIGNMENT &&
       OldStatus != CModelEntity::ASSIGNMENT)
@@ -159,7 +159,7 @@ void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
 {
   if (exc != COL_TYPE)
     {
-      QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+      Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mTypes);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_TYPE, pComboBox);
     }
@@ -360,7 +360,7 @@ void ModelValuesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
   switch (col)
     {
     case COL_TYPE:
-      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
         table->item(row, COL_INITIAL)->setEnabled(false);
       else
         table->item(row, COL_INITIAL)->setEnabled(true);

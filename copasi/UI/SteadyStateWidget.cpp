@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2008/12/18 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,19 +15,22 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3VBoxLayout>
 
 #include "DataModelGUI.h"
 
@@ -52,17 +55,17 @@
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
+SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : TaskWidget(parent, name, fl)
 {
   if (!name)
     setName("SteadyStateWidget");
   setCaption(trUtf8("SteadyStateWidget"));
 
-  SteadyStateWidgetLayout = new QVBoxLayout(this, 11, 6, "SteadyStateWidgetLayout");
+  SteadyStateWidgetLayout = new Q3VBoxLayout(this, 11, 6, "SteadyStateWidgetLayout");
 
   //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  mpLayoutProblem = new QGridLayout(0, 1, 1, 11, 6, "mpLayoutProblem");
+  mpLayoutProblem = new Q3GridLayout(0, 1, 1, 11, 6, "mpLayoutProblem");
 
   //*************************
 
@@ -77,10 +80,10 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   SteadyStateWidgetLayout->addLayout(mpLayoutProblem);
 
-  line1 = new QFrame(this, "line1");
-  line1->setFrameShape(QFrame::HLine);
-  line1->setFrameShadow(QFrame::Sunken);
-  line1->setFrameShape(QFrame::HLine);
+  line1 = new Q3Frame(this, "line1");
+  line1->setFrameShape(Q3Frame::HLine);
+  line1->setFrameShadow(Q3Frame::Sunken);
+  line1->setFrameShape(Q3Frame::HLine);
   SteadyStateWidgetLayout->addWidget(line1);
 
   // addHLineToGrid(mpMethodLayout, 4, 2);

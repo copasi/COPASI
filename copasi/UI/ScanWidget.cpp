@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.204 $
+//   $Revision: 1.205 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,9 +22,12 @@
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 
 #include "copasi.h"
 
@@ -51,14 +54,14 @@
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
-ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
+ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
     : TaskWidget(parent, name, f)
 {
   if (!name)
     setName("ScanWidget");
 
   setCaption(trUtf8("ScanWidget"));
-  ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
+  ScanWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
   mpHeaderWidget->setTaskName("Parameter Scan");
 
@@ -67,7 +70,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   //*****************
 
-  QHBoxLayout* tmpLayout = new QHBoxLayout();
+  Q3HBoxLayout* tmpLayout = new Q3HBoxLayout();
 
   QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
   tmpLayout->addItem(tmpSpacer);
@@ -93,7 +96,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   //*****************************
 
-  Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
+  Layout24 = new Q3HBoxLayout(0, 0, 6, "Layout24");
 
   scrollview = new CScanContainerWidget(this);
   Layout24->addWidget(scrollview);

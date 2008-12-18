@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/05/07 20:03:29 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,7 +382,7 @@ void CQExperimentData::slotExperimentAdd()
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
 }
 
-void CQExperimentData::slotExperimentChanged(QListBoxItem * pItem)
+void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
 {
   std::string Name;
   if (pItem)
@@ -469,7 +469,7 @@ void CQExperimentData::slotFileAdd()
                                       "Data Files (*.txt *.csv);;All Files (*.*);;",
                                       "Open Data Files");
 
-  if (!File) return;
+  if (File.isNull()) return;
 
   std::map<std::string, std::string>::const_iterator it = mFileMap.begin();
   std::map<std::string, std::string>::const_iterator end = mFileMap.end();
@@ -511,7 +511,7 @@ void CQExperimentData::slotFileAdd()
     }
 }
 
-void CQExperimentData::slotFileChanged(QListBoxItem * pItem)
+void CQExperimentData::slotFileChanged(Q3ListBoxItem * pItem)
 {
   if (pItem)
     {
@@ -873,12 +873,12 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
       mpValidatorName->validate(value, pos) == QValidator::Acceptable)
     {
       int current = mpBoxExperiment->currentItem();
-      disconnect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)),
-                 this, SLOT(slotExperimentChanged(QListBoxItem*)));
+      disconnect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
+                 this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
       mpBoxExperiment->changeItem(value, mShown);
       mpBoxExperiment->setSelected(current, true);
-      connect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)),
-              this, SLOT(slotExperimentChanged(QListBoxItem*)));
+      connect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
+              this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
       pExperiment->setObjectName((const char *) value);
     }
 
@@ -953,11 +953,11 @@ void CQExperimentData::syncExperiments()
       mpBoxExperiment->insertItem(FROM_UTF8((*it)));
       if (*it == Current)
         {
-          disconnect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)),
-                     this, SLOT(slotExperimentChanged(QListBoxItem*)));
+          disconnect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
+                     this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
           mpBoxExperiment->setSelected(mpBoxExperiment->count() - 1, true);
-          connect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)),
-                  this, SLOT(slotExperimentChanged(QListBoxItem*)));
+          connect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
+                  this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
         }
       if (*it == Shown) mShown = i;
     }
@@ -1069,7 +1069,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       pBtn = new QToolButton(mpTable);
       pBtn->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pBtn->sizePolicy().hasHeightForWidth()));
       pBtn->setMaximumSize(QSize(20, 20));
-      pBtn->setIconSet(QIconSet(mCopasi));
+      pBtn->setIconSet(QIcon(mCopasi));
 
       if (Type == CExperiment::ignore || Type == CExperiment::time)
         pBtn->setEnabled(false);
@@ -1296,7 +1296,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
     {
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 3);
 
-      CQMessageBox::information(this, "Specification Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton);
+      CQMessageBox::information(this, "Specification Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton);
       CCopasiMessage::clearDeque();
     }
 

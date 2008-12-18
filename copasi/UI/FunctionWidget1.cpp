@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159 $
+//   $Revision: 1.160 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/12/18 19:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,22 +27,26 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qradiobutton.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include <qhbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qwidget.h>
-#include <qframe.h>
-#include <qtextbrowser.h>
-#include <qwidgetstack.h>
-#include <qvbox.h>
+#include <q3frame.h>
+#include <q3textbrowser.h>
+#include <q3widgetstack.h>
+#include <q3vbox.h>
 #include <qtoolbutton.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
+#include <Q3VBoxLayout>
 
 #include <sstream>
 #include <stdlib.h>
@@ -88,7 +92,7 @@
    Constructs a FunctionWidget1 which is a child of 'parent', with the
    name 'name' and widget flags set to 'f'.
  */
-FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
+FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags fl):
     CopasiWidget(parent, name, fl),
     objKey(""),
     mpFunction(NULL)
@@ -96,14 +100,14 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   if (!name)
     setName("FunctionWidget1");
   setCaption(trUtf8("FunctionWidget1"));
-  FunctionWidget1Layout = new QGridLayout(this, 1, 1, 6, 6, "FunctionWidget1Layout");
+  FunctionWidget1Layout = new Q3GridLayout(this, 1, 1, 6, 6, "FunctionWidget1Layout");
 
   //******** name *************
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Function Name"));
-  TextLabel1->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel1->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
 
   LineEdit1 = new QLineEdit(this, "LineEdit1");
@@ -113,17 +117,17 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   TextLabel2 = new QLabel(this, "TextLabel2");
   TextLabel2->setText(trUtf8("Formula"));
-  TextLabel2->setAlignment(int(QLabel::AlignTop
-                               | QLabel::AlignRight));
+  TextLabel2->setAlignment(int(Qt::AlignTop
+                               | Qt::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
   //the stack
-  mStack = new QWidgetStack(this, "Stack");
+  mStack = new Q3WidgetStack(this, "Stack");
   mStack->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-  textBrowser = new QTextEdit(mStack, "Text Browser");
+  textBrowser = new Q3TextEdit(mStack, "Text Browser");
   textBrowser->setTabChangesFocus(true);
-  textBrowser->setTextFormat(PlainText);
+  textBrowser->setTextFormat(Qt::PlainText);
   mStack->addWidget(textBrowser, 0);
   mStack->raiseWidget(0);
 
@@ -131,10 +135,10 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   // A box which contains the MathML ScrollView with the Formula,
   //  and - if not ReadOnly -
   //   a button to switch to (editable) plain text view.
-  mMmlViewBox = new QVBox(mStack, "Formula View");
+  mMmlViewBox = new Q3VBox(mStack, "Formula View");
   mMmlViewBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-  mScrollView = new QScrollView(mMmlViewBox, "mmlScrollView");
+  mScrollView = new Q3ScrollView(mMmlViewBox, "mmlScrollView");
   mScrollView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
   mStack->addWidget(mMmlViewBox, 1);
@@ -145,16 +149,16 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   mScrollView->addChild(mMmlWidget);
 
-  mScrollView->setResizePolicy(QScrollView::AutoOneFit);
+  mScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
   //mScrollView->show();
 
   // raise mScrollView with mMmmlWidget:
   mStack->raiseWidget(1);
 
-  mpFormulaHBL = new QHBoxLayout(0, 0, 6, "mpFormulaHBL");
+  mpFormulaHBL = new Q3HBoxLayout(0, 0, 6, "mpFormulaHBL");
   mpFormulaHBL->addWidget(mStack);
 
-  mpFormulaVBL = new QVBoxLayout(0, 0, 6, "mpFormulaVBL");
+  mpFormulaVBL = new Q3VBoxLayout(0, 0, 6, "mpFormulaVBL");
 
   //mMmlViewBox->insertChild(mFormulaEditToggleButton);
 #endif // HAVE_MML
@@ -167,13 +171,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mpSaveBtn->setMaximumSize(QSize(20, 20));
   //  mpSaveBtn->setText(trUtf8("Save Formula to Disk"));
   //  mpSaveBtn->setTextLabel(trUtf8("Save Formula to Disk"));
-  mpSaveBtn->setIconSet(QIconSet(saveIcon));
+  mpSaveBtn->setIconSet(QIcon(saveIcon));
   mpFormulaVBL->addWidget(mpSaveBtn);
 
   //  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
   mFormulaEditToggleButton = new QToolButton(this, "mFormulaEditToggleButton");
   mFormulaEditToggleButton->setMaximumSize(QSize(20, 20));
-  mFormulaEditToggleButton->setIconSet(QIconSet(editIcon));
+  mFormulaEditToggleButton->setIconSet(QIcon(editIcon));
   mpFormulaVBL->addWidget(mFormulaEditToggleButton);
 
   mpFormulaSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -188,11 +192,11 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Function Type"));
-  TextLabel3->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
+  TextLabel3->setAlignment(int(Qt::AlignVCenter
+                               | Qt::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel3, 4, 0);
 
-  ButtonGroup1 = new QHButtonGroup(this, "ButtonGroup1");
+  ButtonGroup1 = new Q3HButtonGroup(this, "ButtonGroup1");
   ButtonGroup1->setFlat(true);
   ButtonGroup1->setInsideMargin(0);
   ButtonGroup1->setLineWidth(0);
@@ -221,11 +225,11 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Parameters"));
-  TextLabel4->setAlignment(int(QLabel::AlignTop
-                               | QLabel::AlignRight));
+  TextLabel4->setAlignment(int(Qt::AlignTop
+                               | Qt::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
 
-  Table1 = new QTable(this, "Table1");
+  Table1 = new Q3Table(this, "Table1");
   Table1->setNumCols(3);
   Table1->horizontalHeader()->setLabel(COL_NAME, trUtf8("Name"));
   Table1->horizontalHeader()->setLabel(COL_USAGE, trUtf8("Description"));
@@ -243,11 +247,11 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   TextLabel5 = new QLabel(this, "TextLabel5");
   TextLabel5->setText(trUtf8("Application\nrestrictions"));
-  TextLabel5->setAlignment(int(QLabel::AlignTop
-                               | QLabel::AlignRight));
+  TextLabel5->setAlignment(int(Qt::AlignTop
+                               | Qt::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel5, 7, 0);
 
-  Table2 = new QTable(this, "Table2");
+  Table2 = new Q3Table(this, "Table2");
   Table2->setNumCols(2);
   Table2->horizontalHeader()->setLabel(0, trUtf8("Description"));
   Table2->horizontalHeader()->setLabel(1, trUtf8("Min"));
@@ -268,15 +272,15 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   //***************************************
 
-  Line3 = new QFrame(this, "Line3");
-  Line3->setFrameShape(QFrame::HLine);
+  Line3 = new Q3Frame(this, "Line3");
+  Line3->setFrameShape(Q3Frame::HLine);
   //Line3->setFrameShadow(QFrame::Sunken);
   //Line3->setFrameShape(QFrame::HLine);
   FunctionWidget1Layout->addMultiCellWidget(Line3, 11, 11, 0, 1);
 
   //****** buttons *********************************
 
-  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
+  Layout1 = new Q3HBoxLayout(0, 0, 6, "Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
@@ -432,7 +436,7 @@ bool FunctionWidget1::loadParameterTable()
         }
 
       // col. 0
-      Table1->setItem(j, COL_NAME, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
+      Table1->setItem(j, COL_NAME, new ColorTableItem(Table1, Q3TableItem::WhenCurrent, color,
                       FROM_UTF8(params[j]->getObjectName())));
 
       // col. 1
@@ -442,12 +446,12 @@ bool FunctionWidget1::loadParameterTable()
       //item->setText(temp);
 
       // col. 1
-      QComboTableItem * item2 = new QComboTableItem(Table1, Usages);
+      Q3ComboTableItem * item2 = new Q3ComboTableItem(Table1, Usages);
       item2->setCurrentItem(qUsage);
       Table1->setItem(j, COL_USAGE, item2);
 
       //col. 2 (units)
-      Table1->setItem(j, COL_UNIT, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
+      Table1->setItem(j, COL_UNIT, new ColorTableItem(Table1, Q3TableItem::WhenCurrent, color,
                       FROM_UTF8(units[j])));
     }
   Table1->adjustColumn(COL_UNIT);
@@ -877,7 +881,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
 
   if (col == COL_USAGE) //Usage
     {
-      QComboTableItem * tmpItem = dynamic_cast<QComboTableItem *>(Table1->item(row, col));
+      Q3ComboTableItem * tmpItem = dynamic_cast<Q3ComboTableItem *>(Table1->item(row, col));
       if (!tmpItem) fatalError();
       CFunctionParameter::Role usage = (CFunctionParameter::Role)tmpItem->currentItem();
 
@@ -1438,7 +1442,7 @@ void FunctionWidget1::slotSave()
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
             "Save Formula to Disk");
 
-      if (!outfilename) return;
+      if (outfilename.isNull()) return;
 
       // Checks whether the file exists
       Answer = checkSelection(outfilename);
@@ -1480,7 +1484,7 @@ void FunctionWidget1::saveTeX(const QString outfilename)
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
+  ofile << UTF8_TO_CHAR(latexStr);
   //  ofile << mml.str() << std::endl;
   ofile.close();
 }

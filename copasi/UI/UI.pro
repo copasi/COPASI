@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.180 $
+#   $Revision: 1.181 $
 #   $Name:  $
-#   $Author: akoenig $
-#   $Date: 2008/10/09 15:36:55 $
+#   $Author: shoops $
+#   $Date: 2008/12/18 19:58:29 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.180 $ $Author: akoenig $ $Date: 2008/10/09 15:36:55 $
+# $Revision: 1.181 $ $Author: shoops $ $Date: 2008/12/18 19:58:29 $
 ######################################################################
 
 LIB = UI
@@ -27,6 +27,7 @@ include(../common.pri)
 
 DEPENDPATH += ..
 INCLUDEPATH	+= ..
+INCLUDEPATH += $${QWT3D_PATH}/include
 
 
 # Input
@@ -360,8 +361,8 @@ contains(DEFINES, COPASI_TSSA) {
   HEADERS += CQTSSAResultWidget.h
   SOURCES += CQTSSAResultWidget.cpp
 
-# FORMS += CQTSSAWidget.ui
-# FORMS += CQTSSAResultSubWidget.ui
+# FORMS3 += CQTSSAWidget.ui
+# FORMS3 += CQTSSAResultSubWidget.ui
 
   HEADERS += CQTSSAWidget.h \
              CQTSSAWidget.ui.h \
@@ -413,4 +414,9 @@ DISTFILES += UI.vcproj \
              icons/unlocked.xpm \
 
 
+
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 
+#The following line was inserted by qt3to4
+CONFIG += uic3
 

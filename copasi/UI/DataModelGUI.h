@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/30 15:13:50 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #define DATAMODELGUI_H
 
 #include <qobject.h>
+#include <qapplication.h>
 
 #include "UI/Tree.h"
 #include "plotUI/COutputHandlerPlot.h"

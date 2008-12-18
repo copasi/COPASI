@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,12 +19,12 @@
 #include "qtUtilities.h"
 
 CTimeSeriesTable::CTimeSeriesTable(QWidget* p, const char * name):
-    QTable(3, 3, p, name),
+    Q3Table(3, 3, p, name),
     mpTS(NULL),
     mFlagConc(true)
 {
   setLeftMargin(0);
-  mItem = new QTableItem(this, QTableItem::Never);
+  mItem = new Q3TableItem(this, Q3TableItem::Never);
 }
 
 CTimeSeriesTable::~CTimeSeriesTable()
@@ -42,7 +42,7 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & TS)
       setNumRows(mpTS->getRecordedSteps());
       setNumCols(mpTS->getNumVariables());
 
-      QHeader *tableHeader = horizontalHeader();
+      Q3Header *tableHeader = horizontalHeader();
       C_INT32 i, imax = mpTS->getNumVariables();
       for (i = 0; i < imax; ++i)
         tableHeader->setLabel(i, FROM_UTF8(mpTS->getTitle(i)));

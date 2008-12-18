@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,20 +18,24 @@
 #ifndef OPTIMIZATIONWIDGET4_H
 #define OPTIMIZATIONWIDGET4_H
 
-#include "UI/copasiWidget.h"
-#include "UI/TimeSeriesSubwidget.h"
+#include "copasiWidget.h"
+#include "TimeSeriesSubwidget.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QPushButton;
-class QHBoxLayout;
-class QVBoxLayout;
+class Q3HBoxLayout;
+class Q3VBoxLayout;
 class OptimizationWidget;
-class QTextEdit;
+class Q3TextEdit;
 
 class StateSubwidget;
 class TimeSeriesSubWidget;
@@ -45,7 +49,7 @@ class OptimizationResultWidget : public CopasiWidget
   public:
     QPushButton* setInitialState;
 
-    OptimizationResultWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, const int comingFrom = 0);
+    OptimizationResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, const int comingFrom = 0);
     ~OptimizationResultWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -62,9 +66,9 @@ class OptimizationResultWidget : public CopasiWidget
     bool saveToBackend();
     std::string objKey;
 
-    QGridLayout* mWidgetLayout;
-    QHBoxLayout* stateLayout;
-    QVBoxLayout* parentLayout;
+    Q3GridLayout* mWidgetLayout;
+    Q3HBoxLayout* stateLayout;
+    Q3VBoxLayout* parentLayout;
     StateSubwidget* mCentralWidgetSteady;
     TimeSeriesSubWidget* mCentralWidgetTime;
 

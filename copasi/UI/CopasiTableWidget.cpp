@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,11 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QKeyEvent>
+#include <Q3VBoxLayout>
 
 #include "listviews.h"
 #include "qtUtilities.h"
@@ -31,7 +35,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 
-CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, WFlags f, bool showButtons)
+CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name, Qt::WFlags f, bool showButtons)
     : CopasiWidget(parent, name, f),
     mShowNewObjectWarning(true),
     mSaveOnLeave(true)
@@ -40,14 +44,14 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   mShowButtons = showButtons;
 
   //here the table is initialized
-  table = new QTable(this, "table");
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
+  table = new Q3Table(this, "table");
+  Q3VBoxLayout *vBoxLayout = new Q3VBoxLayout(this, 6);
   vBoxLayout->setMargin(0);
   vBoxLayout->addWidget(table);
 
   //table->sortColumn (0, true, true);
   table->setSorting (false);
-  table->setFocusPolicy(QWidget::WheelFocus);
+  table->setFocusPolicy(Qt::WheelFocus);
   table->setColumnReadOnly(0, true);
 
   //table->verticalHeader()->setResizeEnabled(false);
@@ -72,7 +76,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       btnNew = new QPushButton("New", this);
       btnClear = new QPushButton("Clear", this);
 
-      QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
+      Q3HBoxLayout* mHLayout = new Q3HBoxLayout(vBoxLayout, 0);
       mHLayout->setMargin(6);
 
       mHLayout->addWidget(btnOK);

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,9 +19,11 @@
 #define HANDLER_PROGRESS_BAR
 
 #include <qdatetime.h>
+//Added by qt3to4:
+#include <QCloseEvent>
 
 #include "utilities/CProcessReport.h"
-#include "UI/CQProgressDialog.h"
+#include "CQProgressDialog.h"
 
 template < typename > class CVector;
 class CQProgressItem;
@@ -30,8 +37,8 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
   public:
     CProgressBar(QWidget* parent = 0,
                  const char* name = 0,
-                 bool modal = FALSE,
-                 WFlags fl = 0);
+                 bool modal = false,
+                 Qt::WFlags fl = 0);
 
     virtual ~CProgressBar();
 

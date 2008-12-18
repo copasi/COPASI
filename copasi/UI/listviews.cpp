@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.255 $
+//   $Revision: 1.256 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 19:49:53 $
+//   $Date: 2008/12/18 19:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
  ** This file is used to create the visual tree based on the information obtained from the data
  ** model about the tree
  **********************************************************************/
-#include <qobjectlist.h>
+#include <qobject.h>
 #include <qimage.h>
 
 #include "DataModelGUI.h"
@@ -113,8 +113,8 @@
  **             and icon as per req..i.e whether its closed /locked..depending on
  **             whether the node has any childrens or not..
  *******************************************************************************************/
-FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool recurs):
-    QListViewItem(parent),
+FolderListItem::FolderListItem(Q3ListView *parent, const IndexedNode *f, bool recurs):
+    Q3ListViewItem(parent),
     mpFolder(f),
     mSortKey(f->getSortKey())
 {
@@ -137,7 +137,7 @@ FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool rec
  **             whether the node has any childrens or not..
  *******************************************************************************************/
 FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs):
-    QListViewItem(parent),
+    Q3ListViewItem(parent),
     mpFolder(f),
     mSortKey(f->getSortKey())
 {
@@ -168,7 +168,7 @@ void FolderListItem::createSubFolders()
 
 void FolderListItem::deleteSubFolders()
 {
-  QListViewItem * tmp;
+  Q3ListViewItem * tmp;
   for (tmp = firstChild(); tmp; tmp = firstChild())
     {
       delete tmp;
@@ -270,7 +270,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   setChildrenCollapsible(false);
 
   // create a new QListview to be displayed on the screen..and set its property
-  folders = new QListView(this);
+  folders = new Q3ListView(this);
   //folders->header()->setClickEnabled(false);
   folders->header()->hide();
   //folders->setRootIsDecorated(true);
@@ -290,12 +290,12 @@ ListViews::ListViews(QWidget *parent, const char *name):
   lastKey = "";
 
   // establishes the communication betweent the folders clicked and the routine called....
-  connect(folders, SIGNAL(pressed(QListViewItem*)),
-          this, SLOT(slotFolderChanged(QListViewItem*)));
+  connect(folders, SIGNAL(pressed(Q3ListViewItem*)),
+          this, SLOT(slotFolderChanged(Q3ListViewItem*)));
 
   // Need to somehow signal folders to change when navigating using up and down arrows
-  connect(folders, SIGNAL(returnPressed(QListViewItem*)),
-          this, SLOT(slotFolderChanged(QListViewItem*)));
+  connect(folders, SIGNAL(returnPressed(Q3ListViewItem*)),
+          this, SLOT(slotFolderChanged(Q3ListViewItem*)));
 
   attach();
 }
@@ -681,7 +681,7 @@ FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //shoul
 {
   FolderListItem * item = NULL;
 
-  QListViewItemIterator it(folders);
+  Q3ListViewItemIterator it(folders);
   for (; *it; ++it)
     {
       item = (FolderListItem*) * it;
@@ -698,8 +698,8 @@ FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //shoul
 
   //now look for the right key
   FolderListItem * item2;
-  QListViewItemIterator it2(item->firstChild());
-  QListViewItem * itemEnd = item->nextSibling();
+  Q3ListViewItemIterator it2(item->firstChild());
+  Q3ListViewItem * itemEnd = item->nextSibling();
   for (; *it2 && (*it2 != itemEnd); ++it2)
     {
       item2 = (FolderListItem*) * it2;
@@ -722,7 +722,7 @@ FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //shoul
  ** Description:-This method is called whenever the user clicks on one of the
  ** tree view items...
  *************************************************************************************/
-void ListViews::slotFolderChanged(QListViewItem *i)
+void ListViews::slotFolderChanged(Q3ListViewItem *i)
 {
   bool changeWidget = true;
   if (!i) return;
@@ -1175,18 +1175,15 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
                                    Action action,
                                    const std::string & key)
 {
-  QObjectList * pList = queryList("CopasiWidget");
-  QObjectListIt it(*pList); // iterate over the CopasiWidgets
+  QList <QWidget *> widgets = findChildren<QWidget *>("CopasiWidget");
+  QListIterator<QWidget *> it(widgets); // iterate over the CopasiWidgets
   CopasiWidget * pCopasiWidget;
 
-  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.current())) != NULL)
+  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.next())) != NULL)
     {
       //std::cout << pCopasiWidget->name() << std::endl;
       pCopasiWidget->update(objectType, action, key);
-      ++it;
     }
-
-  delete pList; // delete the list, not the CopasiWidgets
 }
 
 // static
@@ -1203,17 +1200,14 @@ void ListViews::notifyAllChildWidgets(ObjectType objectType,
 
 void ListViews::setChildWidgetsFramework(int framework)
 {
-  QObjectList * pList = queryList("CopasiWidget");
-  QObjectListIt it(*pList); // iterate over the CopasiWidgets
+  QList <QWidget *> widgets = findChildren<QWidget *>("CopasiWidget");
+  QListIterator<QWidget *> it(widgets); // iterate over the CopasiWidgets
   CopasiWidget * pCopasiWidget;
 
-  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.current())) != NULL)
+  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.next())) != NULL)
     {
       pCopasiWidget->setFramework(framework);
-      ++it;
     }
-
-  delete pList; // delete the list, not the CopasiWidgets
 }
 
 // static
@@ -1228,17 +1222,14 @@ void ListViews::updateMIRIAMResourceContents()
 
 void ListViews::updateBiologicalDescriptionContents()
 {
-  QObjectList * pList = queryList("CBiologicalDescriptionsWidget");
-  QObjectListIt it(*pList); // iterate over the CopasiWidgets
+  QList <QWidget *> widgets = findChildren<QWidget *>("CBiologicalDescriptionsWidget");
+  QListIterator<QWidget *> it(widgets); // iterate over the CBiologicalDescriptionsWidget
   CBiologicalDescriptionsWidget * pBiologicalDescriptionsWidget;
 
-  while ((pBiologicalDescriptionsWidget = static_cast< CBiologicalDescriptionsWidget * >(it.current())) != NULL)
+  while ((pBiologicalDescriptionsWidget = static_cast< CBiologicalDescriptionsWidget * >(it.next())) != NULL)
     {
       pBiologicalDescriptionsWidget->updateResourcesList();
-      ++it;
     }
-
-  delete pList; // delete the list, not the CopasiWidgets
 }
 
 // static
@@ -1320,7 +1311,7 @@ void ListViews::buildChangedObjects()
       Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
       CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
-                             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                             QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
       CCopasiMessage::clearDeque();
 
       mUpdateVector.clear();

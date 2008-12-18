@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
+ $Revision: 1.14 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:58:29 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,18 +21,24 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 #include "UI/copasiWidget.h"
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QCheckBox;
 class QComboBox;
-class QFrame;
+class Q3Frame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QTable;
+class Q3Table;
 class QSpacerItem;
 
 class CQTaskHeaderWidget;
@@ -46,7 +57,7 @@ class TaskWidget : public CopasiWidget
   public:
     TaskWidget(QWidget* parent = 0,
                const char* name = 0,
-               WFlags fl = 0);
+               Qt::WFlags fl = 0);
 
     ~TaskWidget();
 
@@ -94,7 +105,7 @@ class TaskWidget : public CopasiWidget
 
     //convenience functions
     void addHeaderToGrid(unsigned int row = 0);
-    bool addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol);
+    bool addHLineToGrid(Q3GridLayout* grid, unsigned int row, unsigned int maxcol);
 
     bool loadMethod();
     bool saveMethod();
@@ -109,10 +120,10 @@ class TaskWidget : public CopasiWidget
     CQTaskHeaderWidget * mpHeaderWidget;
     CQTaskBtnWidget * mpBtnWidget;
 
-    QGridLayout * mpMethodLayout;
+    Q3GridLayout * mpMethodLayout;
 
     QLabel * mpLblParameter;
-    QTable * mpTblParameter;
+    Q3Table * mpTblParameter;
     QSpacerItem * mpSpacer1;
     QLabel * mpLblMethod;
     QComboBox * mpBoxMethod;

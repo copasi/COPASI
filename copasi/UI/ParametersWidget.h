@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,16 +20,21 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 
 #include "UI/copasiWidget.h"
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
 class QPushButton;
-class QListView;
-class QListViewItem;
+class Q3ListView;
+class Q3ListViewItem;
 class QLabel;
 class CParameterListItem;
 
@@ -38,7 +43,7 @@ class ParametersWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    ParametersWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ParametersWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~ParametersWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -54,12 +59,12 @@ class ParametersWidget : public CopasiWidget
 
     QPushButton* commitButton;
     QPushButton* revertButton;
-    QListView* listView;
+    Q3ListView* listView;
     QLabel* labelTitle;
 
-    QGridLayout* ParametersWidgetLayout;
+    Q3GridLayout* ParametersWidgetLayout;
     QSpacerItem* spacer2;
-    QVBoxLayout* layoutLeft;
+    Q3VBoxLayout* layoutLeft;
     QSpacerItem* spacer1;
 
     CParameterListItem* mTimeItem;
@@ -72,8 +77,8 @@ class ParametersWidget : public CopasiWidget
     virtual void commitPressed();
     virtual void revertPressed();
 
-    virtual void editItem(QListViewItem * item, const QPoint & pnt, int c);
-    virtual void editItem(QListViewItem * item);
+    virtual void editItem(Q3ListViewItem * item, const QPoint & pnt, int c);
+    virtual void editItem(Q3ListViewItem * item);
   };
 
 #endif // PARAMETERSWIDGET_H

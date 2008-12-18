@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 // All rights reserved.
 
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -32,7 +34,7 @@
  *  Constructs a TimeSeriesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
+TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl),
     objKey("")
 {
@@ -40,7 +42,7 @@ TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TimeSeriesWidget");
   setCaption(trUtf8("TimeSeriesWidget"));
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new TimeSeriesSubWidget(this, "TimeSeriesSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);

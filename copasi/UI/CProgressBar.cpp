@@ -1,20 +1,28 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/07/24 13:25:47 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qapplication.h>
 #include <qwaitcondition.h>
+//Added by qt3to4:
+#include <QCloseEvent>
+#include <QMutex>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -27,9 +35,9 @@
 extern QApplication *pApp;
 
 CProgressBar::CProgressBar(QWidget* parent, const char* name,
-                           bool modal, WFlags fl):
+                           bool modal, Qt::WFlags fl):
     CProcessReport(),
-    CQProgressDialog(parent, name, modal, fl | WStyle_Minimize),
+    CQProgressDialog(parent, name, modal, fl | Qt::WStyle_Minimize),
     mProgressItemList(1),
     mNextEventProcessing(QDateTime::currentDateTime()),
     mpMainWidget(NULL)
@@ -119,8 +127,9 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
 
   while (mPause)
     {
+      QMutex mutex;
       QWaitCondition Pause;
-      Pause.wait(500);
+      Pause.wait(&mutex, 500);
       qApp->processEvents();
     }
 
@@ -160,8 +169,9 @@ bool CProgressBar::proceed()
 
   while (mPause)
     {
+      QMutex mutex;
       QWaitCondition Pause;
-      Pause.wait(500);
+      Pause.wait(&mutex, 500);
       qApp->processEvents();
     }
 

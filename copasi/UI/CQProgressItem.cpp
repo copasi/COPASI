@@ -1,48 +1,28 @@
-/* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CQProgressItem.cpp,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2005/04/25 18:13:22 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /home/cvs/copasi_dev/copasi/UI/CQProgressItem.cpp,v $
+//   $Revision: 1.2.28.2 $
+//   $Name: Qt3To4 $
+//   $Author: aekamal $
+//   $Date: 2008/11/03 15:56:56 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
-
-/****************************************************************************
- ** Form implementation generated from reading ui file 'CQProgressItem.ui'
- **
- ** Created: Thu Apr 21 13:02:56 2005
- **      by: The User Interface Compiler ($Id: CQProgressItem.cpp,v 1.1 2005/04/25 18:13:22 shoops Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
 
 #include "CQProgressItem.h"
 
 #include <qvariant.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
 #include "CQProgressItem.ui.h"
-
 /*
  *  Constructs a CQProgressItem as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQProgressItem::CQProgressItem(QWidget* parent, const char* name, WFlags fl)
+CQProgressItem::CQProgressItem(QWidget* parent, const char* name, Qt::WindowFlags fl)
     : QWidget(parent, name, fl)
 {
-  if (!name)
-    setName("CQProgressItem");
-
-  QWidget* privateLayoutWidget = new QWidget(this, "mLabel");
-  privateLayoutWidget->setGeometry(QRect(10, 10, 330, 22));
-  mLabel = new QHBoxLayout(privateLayoutWidget, 11, 6, "mLabel");
-  languageChange();
-  resize(QSize(404, 44).expandedTo(minimumSizeHint()));
-  clearWState(WState_Polished);
+  setupUi(this);
 }
 
 /*
@@ -59,5 +39,5 @@ CQProgressItem::~CQProgressItem()
  */
 void CQProgressItem::languageChange()
 {
-  setCaption(tr("Form1"));
+  retranslateUi(this);
 }

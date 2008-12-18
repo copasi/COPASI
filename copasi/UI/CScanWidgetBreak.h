@@ -1,62 +1,166 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetBreak.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetBreak.h,v $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
-
-/****************************************************************************
- ** Form interface generated from reading ui file 'CScanWidgetBreak.ui'
- **
- ** Created: Tue Mar 28 14:23:44 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetBreak.h,v 1.4 2006/04/27 01:27:42 shoops Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
 
 #ifndef CSCANWIDGETBREAK_H
 #define CSCANWIDGETBREAK_H
 
 #include <qvariant.h>
-#include <qwidget.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QSpacerItem;
-class QFrame;
-class QComboBox;
-class QLabel;
 class CCopasiParameterGroup;
 class CScanProblem;
 
-class CScanWidgetBreak : public QWidget
+#include <Qt3Support/Q3Frame>
+#include <Qt3Support/Q3MimeSourceFactory>
+#include <QtCore/QVariant>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <Qt3Support/Q3ButtonGroup>
+#include <QtGui/QComboBox>
+#include <Qt3Support/Q3GridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QSpacerItem>
+#include <Qt3Support/Q3VBoxLayout>
+#include <QtGui/QWidget>
+
+QT_BEGIN_NAMESPACE
+
+class Ui_CScanWidgetBreak
+  {
+  public:
+    Q3VBoxLayout *vboxLayout;
+    Q3Frame *frame;
+    Q3GridLayout *gridLayout;
+    QComboBox *comboBoxReport;
+    QLabel *textLabelReport;
+    QComboBox *comboBoxPlot;
+    QLabel *labelTitle;
+    QLabel *textLabelPlot;
+    QSpacerItem *spacer1;
+
+    void setupUi(QWidget *CScanWidgetBreak)
+    {
+      if (CScanWidgetBreak->objectName().isEmpty())
+        CScanWidgetBreak->setObjectName(QString::fromUtf8("CScanWidgetBreak"));
+      CScanWidgetBreak->resize(420, 74);
+      vboxLayout = new Q3VBoxLayout(CScanWidgetBreak);
+      vboxLayout->setSpacing(6);
+      vboxLayout->setMargin(5);
+      vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
+      frame = new Q3Frame(CScanWidgetBreak);
+      frame->setObjectName(QString::fromUtf8("frame"));
+      frame->setFrameShape(Q3Frame::StyledPanel);
+      frame->setFrameShadow(Q3Frame::Raised);
+      gridLayout = new Q3GridLayout(frame);
+      gridLayout->setSpacing(6);
+      gridLayout->setMargin(6);
+      gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+      comboBoxReport = new QComboBox(frame);
+      comboBoxReport->setObjectName(QString::fromUtf8("comboBoxReport"));
+      comboBoxReport->setEnabled(false);
+      QSizePolicy sizePolicy(static_cast<QSizePolicy::Policy>(0), static_cast<QSizePolicy::Policy>(0));
+      sizePolicy.setHorizontalStretch(0);
+      sizePolicy.setVerticalStretch(0);
+      sizePolicy.setHeightForWidth(comboBoxReport->sizePolicy().hasHeightForWidth());
+      comboBoxReport->setSizePolicy(sizePolicy);
+
+      gridLayout->addWidget(comboBoxReport, 0, 3, 1, 1);
+
+      textLabelReport = new QLabel(frame);
+      textLabelReport->setObjectName(QString::fromUtf8("textLabelReport"));
+      textLabelReport->setEnabled(false);
+      textLabelReport->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+      textLabelReport->setWordWrap(false);
+
+      gridLayout->addWidget(textLabelReport, 0, 2, 1, 1);
+
+      comboBoxPlot = new QComboBox(frame);
+      comboBoxPlot->setObjectName(QString::fromUtf8("comboBoxPlot"));
+      comboBoxPlot->setEnabled(false);
+      sizePolicy.setHeightForWidth(comboBoxPlot->sizePolicy().hasHeightForWidth());
+      comboBoxPlot->setSizePolicy(sizePolicy);
+
+      gridLayout->addWidget(comboBoxPlot, 1, 3, 1, 1);
+
+      labelTitle = new QLabel(frame);
+      labelTitle->setObjectName(QString::fromUtf8("labelTitle"));
+      labelTitle->setWordWrap(false);
+
+      gridLayout->addWidget(labelTitle, 0, 0, 2, 1);
+
+      textLabelPlot = new QLabel(frame);
+      textLabelPlot->setObjectName(QString::fromUtf8("textLabelPlot"));
+      textLabelPlot->setEnabled(false);
+      textLabelPlot->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+      textLabelPlot->setWordWrap(false);
+
+      gridLayout->addWidget(textLabelPlot, 1, 2, 1, 1);
+
+      spacer1 = new QSpacerItem(30, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+      gridLayout->addItem(spacer1, 0, 1, 2, 1);
+
+      vboxLayout->addWidget(frame);
+
+      retranslateUi(CScanWidgetBreak);
+
+      QMetaObject::connectSlotsByName(CScanWidgetBreak);
+    } // setupUi
+
+    void retranslateUi(QWidget *CScanWidgetBreak)
+    {
+      CScanWidgetBreak->setWindowTitle(QApplication::translate("CScanWidgetBreak", "Form1", 0, QApplication::UnicodeUTF8));
+      comboBoxReport->clear();
+      comboBoxReport->insertItems(0, QStringList()
+                                  << QApplication::translate("CScanWidgetBreak", "empty line", 0, QApplication::UnicodeUTF8)
+                                  << QApplication::translate("CScanWidgetBreak", "page break", 0, QApplication::UnicodeUTF8)
+                                  << QApplication::translate("CScanWidgetBreak", "new file", 0, QApplication::UnicodeUTF8)
+                                  << QApplication::translate("CScanWidgetBreak", "no break", 0, QApplication::UnicodeUTF8)
+);
+      textLabelReport->setText(QApplication::translate("CScanWidgetBreak", "for reports:", 0, QApplication::UnicodeUTF8));
+      comboBoxPlot->clear();
+      comboBoxPlot->insertItems(0, QStringList()
+                                << QApplication::translate("CScanWidgetBreak", "new curve", 0, QApplication::UnicodeUTF8)
+                                << QApplication::translate("CScanWidgetBreak", "new plot window", 0, QApplication::UnicodeUTF8)
+                                << QApplication::translate("CScanWidgetBreak", "no break", 0, QApplication::UnicodeUTF8)
+);
+      labelTitle->setText(QApplication::translate("CScanWidgetBreak", "<h2>Output separator</h2>", 0, QApplication::UnicodeUTF8));
+      textLabelPlot->setText(QApplication::translate("CScanWidgetBreak", "for plots:", 0, QApplication::UnicodeUTF8));
+      Q_UNUSED(CScanWidgetBreak);
+    } // retranslateUi
+  };
+
+namespace Ui
+  {
+  class CScanWidgetBreak: public Ui_CScanWidgetBreak {};
+} // namespace Ui
+
+QT_END_NAMESPACE
+
+class CScanWidgetBreak : public QWidget, public Ui::CScanWidgetBreak
   {
     Q_OBJECT
 
   public:
-    CScanWidgetBreak(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CScanWidgetBreak(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
     ~CScanWidgetBreak();
-
-    QFrame* frame;
-    QComboBox* comboBoxReport;
-    QLabel* textLabelReport;
-    QComboBox* comboBoxPlot;
-    QLabel* labelTitle;
-    QLabel* textLabelPlot;
 
     virtual bool initFromScanItem(CCopasiParameterGroup * pg);
     virtual bool saveToScanItem(CScanProblem * pg) const;
-
-  protected:
-    QVBoxLayout* CScanWidgetBreakLayout;
-    QGridLayout* frameLayout;
-    QSpacerItem* spacer1;
 
   protected slots:
     virtual void languageChange();

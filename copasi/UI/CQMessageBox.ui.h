@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMessageBox.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/04 15:47:17 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,6 +28,9 @@
  *****************************************************************************/
 
 #include <assert.h>
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <QCloseEvent>
 
 void CQMessageBox::configure(const QString & caption, const QString & text,
                              QMessageBox::Icon icon, int btn0, int btn1, int btn2, int btn3)
@@ -115,7 +123,7 @@ void CQMessageBox::configureBtn(int index, const QString & text, int btnDefault,
   int type;
 
   if (text.isEmpty())
-    type = QMessageBox::NoButton;
+    type = Qt::NoButton;
   else
     type = index + 1; // We must not use index 0 as this is equal to QMessageBox::NoButton
 
@@ -146,8 +154,8 @@ void CQMessageBox::slotBtn3() {done(mBtnAnswer[3]);}
 void CQMessageBox::init()
 {
   // Center the buttons and prevent horizontal stretching.
-  mpLayoutBtn->insertStretch(0, 0);
-  mpLayoutBtn->addStretch(0);
+  hboxLayout->insertStretch(0, 0);
+  hboxLayout->addStretch(0);
 
   // Initialize the button area.
   mBtn[0] = mpBtn0;
@@ -156,17 +164,17 @@ void CQMessageBox::init()
   mBtn[3] = mpBtn3;
 
   // Initialize the results
-  mBtnAnswer[0] = QMessageBox::NoButton;
-  mBtnAnswer[1] = QMessageBox::NoButton;
-  mBtnAnswer[2] = QMessageBox::NoButton;
-  mBtnAnswer[3] = QMessageBox::NoButton;
+  mBtnAnswer[0] = Qt::NoButton;
+  mBtnAnswer[1] = Qt::NoButton;
+  mBtnAnswer[2] = Qt::NoButton;
+  mBtnAnswer[3] = Qt::NoButton;
 
   this->enableFilteredMessages(false);
 }
 
 void CQMessageBox::keyPressEvent(QKeyEvent * e)
 {
-  if (e->key() == Key_Escape && mBtnEscape != -1)
+  if (e->key() == Qt::Key_Escape && mBtnEscape != -1)
     done(mBtnAnswer[mBtnEscape]);
 }
 

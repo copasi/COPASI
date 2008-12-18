@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-  $Revision: 1.34 $
-  $Name:  $
-  $Author: gauges $
-  $Date: 2008/04/22 11:06:48 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
+$Revision: 1.35 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:58:12 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,22 +19,28 @@
 #define SLIDER_DIALOG_H__
 
 #include "qdialog.h"
+//Added by qt3to4:
+#include <QEvent>
+#include <QLabel>
+#include <QContextMenuEvent>
+#include <Q3PopupMenu>
+#include <QCloseEvent>
 #include "copasi.h"
 #include <vector>
 #include <map>
 #include "report/CCopasiObjectName.h"
 
-class QScrollView;
-class QHBox;
-class QVBox;
-class QListBox;
+class Q3ScrollView;
+class Q3HBox;
+class Q3VBox;
+class Q3ListBox;
 class QCheckBox;
 class QPushButton;
 class QString;
 class QSlider;
 class CCopasiObject;
 class QLabel;
-class QPopupMenu;
+class Q3PopupMenu;
 class DataModelGUI;
 class CopasiSlider;
 class CCopasiTask;
@@ -46,7 +52,7 @@ class SliderDialog: public QDialog
     Q_OBJECT
 
   public:
-    SliderDialog(QWidget* parent, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
+    SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
     virtual ~SliderDialog();
     void addSlider(CSlider* slider);
     void setCurrentFolderId(C_INT32 id);
@@ -58,9 +64,9 @@ class SliderDialog: public QDialog
     QPushButton* newSliderButton;
     QCheckBox* autoRunCheckBox;
     QCheckBox* mpAutoModifyRangesCheckBox;
-    QScrollView* scrollView;
-    QVBox* sliderBox;
-    QPopupMenu* contextMenu;
+    Q3ScrollView* scrollView;
+    Q3VBox* sliderBox;
+    Q3PopupMenu* contextMenu;
     CopasiSlider* currSlider;
     std::map<C_INT32 , std::vector< QWidget* > > sliderMap;
     std::map < C_INT32 , void(SliderDialog::*)() > taskMap;

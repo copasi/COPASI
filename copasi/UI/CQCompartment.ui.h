@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/05/19 08:28:59 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,7 @@ void CQCompartment::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
-      CQCompartmentLayout->remove(mpLblExpression);
+      gridLayout->remove(mpLblExpression);
 
       mpLblExpression->hide();
       mpExpressionEMW->hide();
@@ -265,7 +265,7 @@ void CQCompartment::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ASSIGNMENT:
-      CQCompartmentLayout->addWidget(mpLblExpression, 2, 0);
+      gridLayout->addWidget(mpLblExpression, 2, 0);
 
       mpLblExpression->show();
       mpExpressionEMW->show();
@@ -277,7 +277,7 @@ void CQCompartment::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ODE:
-      CQCompartmentLayout->addWidget(mpLblExpression, 2, 0);
+      gridLayout->addWidget(mpLblExpression, 2, 0);
 
       mpLblExpression->show();
       mpExpressionEMW->show();
@@ -301,7 +301,7 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 {
   if (useInitialAssignment)
     {
-      CQCompartmentLayout->addWidget(mpLblInitialExpression, 4, 0);
+      gridLayout->addWidget(mpLblInitialExpression, 4, 0);
 
       mpLblInitialExpression->show();
       mpInitialExpressionEMW->show();
@@ -311,7 +311,7 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
     }
   else
     {
-      CQCompartmentLayout->remove(mpLblInitialExpression);
+      gridLayout->remove(mpLblInitialExpression);
 
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
@@ -479,7 +479,7 @@ void CQCompartment::save()
           CQMessageBox::information(this,
                                     "Unable to rename Compartment",
                                     msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
 
           mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
         }
@@ -540,12 +540,12 @@ void CQCompartment::save()
 void CQCompartment::destroy()
 {}
 
-void CQCompartment::slotMetaboliteTableCurrentChanged(QListViewItem * pItem)
+void CQCompartment::slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem)
 {
   if (mpCompartment == NULL) return;
 
   std::string s1, s2;
-  s1 = pItem->text(0).utf8();
+  s1 = (const char *) pItem->text(0).utf8();
 
   std::multimap< const std::string, CCopasiObject * >::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
@@ -576,7 +576,7 @@ void CQCompartment::loadMetaboliteTable()
 
   for (; it != end; ++it)
     if (dynamic_cast< CMetab * >(it->second) != NULL)
-      new QListViewItem(mpMetaboliteTable, FROM_UTF8(it->second->getObjectName()));
+      new Q3ListViewItem(mpMetaboliteTable, FROM_UTF8(it->second->getObjectName()));
 
   return;
 }

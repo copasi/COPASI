@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.h,v $
+ $Revision: 1.19 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:57:33 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,13 +29,19 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3Frame>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 #include "UI/CopasiFileDialog.h"
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QPushButton;
-class QFrame;
+class Q3Frame;
 class QLabel;
 class QComboBox;
 class QLineEdit;
@@ -43,7 +54,7 @@ class CReportDefinitionSelect : public QDialog
     Q_OBJECT
 
   public:
-    CReportDefinitionSelect(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CReportDefinitionSelect(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~CReportDefinitionSelect();
     ListViews* pListView;
 
@@ -55,7 +66,7 @@ class CReportDefinitionSelect : public QDialog
 
     QPushButton* confirmButton;
     QPushButton* cancelButton;
-    QFrame* frame5;
+    Q3Frame* frame5;
     QLabel* reportLabel;
     QComboBox* reportDefinitionNameList;
     QLineEdit* targetEdit;
@@ -65,8 +76,8 @@ class CReportDefinitionSelect : public QDialog
     QPushButton* browseButton;
 
   protected:
-    QGridLayout* CReportDefinitionSelectLayout;
-    QGridLayout* frame5Layout;
+    Q3GridLayout* CReportDefinitionSelectLayout;
+    Q3GridLayout* frame5Layout;
 
   protected slots:
     virtual void languageChange();

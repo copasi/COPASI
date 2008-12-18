@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 11:09:50 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,18 +17,21 @@
 #include <qbitmap.h>
 #include <qcolor.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QPaintEvent>
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, WFlags fl)
+CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : QWidget(parent, name, fl)
 {
   if (!name)
     setName("CQTSSATimeScaleWidget");
 
-  mpVLayout = new QVBoxLayout(this);
+  mpVLayout = new Q3VBoxLayout(this);
   mpPaintWidget = new PaintWidget(this, "PaintWidget");
   mpSlider = new QSlider(Qt::Horizontal, this);
   mpSlider->setDisabled(true);
@@ -84,7 +87,7 @@ void CQTSSATimeScaleWidget::clearWidget()
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-PaintWidget::PaintWidget(QWidget* parent, const char* name, WFlags fl)
+PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : QWidget(parent, name, fl)
 {
   if (!name)

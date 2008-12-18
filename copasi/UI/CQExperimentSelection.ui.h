@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentSelection.ui.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentSelection.ui.h,v $
+ $Revision: 1.8 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:56:21 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -108,6 +113,6 @@ void CQExperimentSelection::init()
   mpTable->verticalHeader()->hide();
   mpTable->setTopMargin(0);
   mpTable->setLeftMargin(0);
-  mpTable->setFocusStyle(QTable::FollowStyle);
+  mpTable->setFocusStyle(Q3Table::FollowStyle);
   mpTable->setColumnStretchable(0, true);
 }

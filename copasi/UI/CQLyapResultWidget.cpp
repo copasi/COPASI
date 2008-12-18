@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-  $Revision: 1.3 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/03/12 00:32:58 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
+$Revision: 1.4 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:56:20 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,7 +19,9 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -38,30 +40,30 @@
  *  Constructs a CQLyapResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, WFlags fl)
+CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("CQLyapResultWidget");
   setCaption("CQLyapResultWidget");
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "LyapResultWidgetLayout");
+  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "LyapResultWidgetLayout");
 
   // **********  Exponents **************
   mLabelExponents = new QLabel(this, "ExponentsLabel");
   mLabelExponents->setText(trUtf8("Lyapunov Exponents"));
-  mLabelExponents->setAlignment(int(QLabel::AlignVCenter
-                                    | QLabel::AlignRight));
+  mLabelExponents->setAlignment(int(Qt::AlignVCenter
+                                    | Qt::AlignRight));
   mWidgetLayout->addWidget(mLabelExponents, 4, 0);
 
   QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
   mWidgetLayout->addItem(spacer, 5, 0);
 
-  mTableExponents = new QTable(this, "mTableExponents");
+  mTableExponents = new Q3Table(this, "mTableExponents");
   mWidgetLayout->addMultiCellWidget(mTableExponents, 4, 5, 1, 2);
   mTableExponents->setNumRows(0);
   mTableExponents->setNumCols(1);
-  QHeader *colHeader = mTableExponents->horizontalHeader();
+  Q3Header *colHeader = mTableExponents->horizontalHeader();
   colHeader->setLabel(0, tr("Exponent"));
   mTableExponents->setColumnStretchable(0, true);
   mTableExponents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -69,8 +71,8 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, WFlags
   // ********** Sum *********************
   mLabelSum = new QLabel(this, "SumLabel");
   mLabelSum->setText(trUtf8("Sum of Lyapunov Exponents"));
-  mLabelSum->setAlignment(int(QLabel::AlignVCenter
-                              | QLabel::AlignRight));
+  mLabelSum->setAlignment(int(Qt::AlignVCenter
+                              | Qt::AlignRight));
   mWidgetLayout->addWidget(mLabelSum, 6, 0);
 
   mLineEditSum = new QLineEdit(this, "mLineEditSum");
@@ -80,8 +82,8 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, WFlags
   // ************* Divergence **************
   mLabelDivergence = new QLabel(this, "mLabelDivergence");
   mLabelDivergence->setText(trUtf8("Divergence"));
-  mLabelDivergence->setAlignment(int(QLabel::AlignVCenter
-                                     | QLabel::AlignRight));
+  mLabelDivergence->setAlignment(int(Qt::AlignVCenter
+                                     | Qt::AlignRight));
   mWidgetLayout->addWidget(mLabelDivergence, 7, 0);
 
   mLineEditDivergence = new QLineEdit(this, "mLineEditDivergence");
@@ -90,7 +92,7 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, WFlags
 
   // ************* comment ******************
   mLabelComment = new QLabel(this, "mLabelComment");
-  mLabelComment->setAlignment(int(QLabel::WordBreak));
+  mLabelComment->setAlignment(int(Qt::WordBreak));
   mLabelComment->setText("");
 
   mWidgetLayout->addWidget(mLabelComment, 8, 1);

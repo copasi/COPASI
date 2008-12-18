@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:26:44 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.h,v $
+ $Revision: 1.11 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:58:29 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,7 +43,7 @@ class TSSWidget : public TaskWidget
     //virtual bool leave();
     //virtual bool enter(const std::string & key = "");
 
-    TSSWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    TSSWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~TSSWidget();
 
     virtual bool runTask();

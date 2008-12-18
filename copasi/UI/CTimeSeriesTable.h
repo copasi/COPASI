@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:59 $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,13 +18,13 @@
 #ifndef CTSTABLE
 #define CTSTABLE
 
-#include <qtable.h>
+#include <q3table.h>
 
 #include "copasi.h"
 
 #include "trajectory/CTimeSeries.h"
 
-class CTimeSeriesTable : public QTable
+class CTimeSeriesTable : public Q3Table
   {
   public:
 
@@ -43,21 +43,21 @@ class CTimeSeriesTable : public QTable
     virtual void paintCell (QPainter * p, int row, int col, const QRect & cr, bool selected)
     {
       mItem->setText(textForCell(row, col));
-      QTable::paintCell(p, row, col, cr, selected);
+      Q3Table::paintCell(p, row, col, cr, selected);
     }
 
     //basically do nothing in the following overloaded methods
     void resizeData(int) {}
-    QTableItem *item(int , int) const {return mItem;}
-    void setItem(int , int , QTableItem *) {}
+    Q3TableItem *item(int , int) const {return mItem;}
+    void setItem(int , int , Q3TableItem *) {}
     void clearCell(int , int) {}
-    void takeItem(QTableItem *) {}
+    void takeItem(Q3TableItem *) {}
     void insertWidget(int , int , QWidget *) {}
     QWidget *cellWidget(int , int) const {return NULL;}
     void clearCellWidget(int , int) {}
 
   private:
-    QTableItem * mItem;
+    Q3TableItem * mItem;
     const CTimeSeries * mpTS;
     bool mFlagConc;
   };

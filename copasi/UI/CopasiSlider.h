@@ -1,19 +1,26 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
+ $Revision: 1.16 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:54:59 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CopasiSlider_H__
 #define CopasiSlider_H__
 
-#include <qhbox.h>
+#include <q3hbox.h>
+//Added by qt3to4:
+#include <QLabel>
 
 #include "copasi.h"
 
@@ -27,7 +34,7 @@ class QLabel;
 class CCopasiParameterGroup;
 class QToolButton;
 
-class CopasiSlider: public QHBox
+class CopasiSlider: public Q3HBox
   {
     Q_OBJECT
   public:

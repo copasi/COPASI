@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/03/13 19:56:56 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,21 +29,27 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <Q3Frame>
 #include <vector>
 
 template <class CType> class CCopasiVector;
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
 class QPushButton;
-class QListView;
-class QListViewItem;
-class QTextEdit;
+class Q3ListView;
+class Q3ListViewItem;
+class Q3TextEdit;
 class ObjectBrowserItem;
 class ObjectList;
-class QFrame;
+class Q3Frame;
 class CCopasiContainer;
 class CCopasiObject;
 class CopasiUI3Window;
@@ -51,20 +62,20 @@ class ObjectBrowserWidget : public QWidget
     Q_OBJECT
 
   public:
-    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, int state = 0);
+    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, int state = 0);
     virtual ~ObjectBrowserWidget();
 
     ObjectList* objectItemList;
     ObjectList* refreshList;
 
-    QGridLayout* ObjectBrowserLayout;
+    Q3GridLayout* ObjectBrowserLayout;
     QPushButton* clearButton;
     QPushButton* toggleViewButton;
     QPushButton* commitButton;
-    QListView* ObjectListView;
-    QFrame* Line1;
+    Q3ListView* ObjectListView;
+    Q3Frame* Line1;
     QSpacerItem* spacer;
-    QTextEdit* ObjectItemText;
+    Q3TextEdit* ObjectItemText;
 
     void eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector);
     void removeDuplicate(ObjectList* objectItemList);
@@ -91,7 +102,7 @@ class ObjectBrowserWidget : public QWidget
     virtual void clearClicked();
     virtual void toggleViewClicked();
     virtual void commitClicked();
-    virtual void listviewChecked(QListViewItem*);
+    virtual void listviewChecked(Q3ListViewItem*);
 
   private:
     std::vector< const CCopasiObject * > * mOutputObjectVector;

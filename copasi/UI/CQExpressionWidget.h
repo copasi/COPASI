@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/13 15:23:50 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,8 +18,10 @@
 #ifndef CQEXPRESSION
 #define CQEXPRESSION
 
-#include <qtextedit.h>
-#include <qsyntaxhighlighter.h>
+#include <q3textedit.h>
+#include <q3syntaxhighlighter.h>
+//Added by qt3to4:
+#include <QKeyEvent>
 
 #include <vector>
 
@@ -34,7 +36,7 @@ class CCopasiObject;
 /*!
     \brief The class for highlighting the expression syntax
  */
-class CQExpressionHighlighter: public QSyntaxHighlighter
+class CQExpressionHighlighter: public Q3SyntaxHighlighter
   {
   public:
     CQExpressionHighlighter(CQExpressionWidget* ew);
@@ -46,10 +48,10 @@ class CQExpressionHighlighter: public QSyntaxHighlighter
 /*!
     \brief The class for checking the validity of a given mathematical expression
  */
-class CQValidatorExpression: public CQValidator< QTextEdit >
+class CQValidatorExpression: public CQValidator< Q3TextEdit >
   {
   public:
-    CQValidatorExpression(QTextEdit * parent, const char * name = 0, bool isBoolean = false);
+    CQValidatorExpression(Q3TextEdit * parent, const char * name = 0, bool isBoolean = false);
 
     /**
      * Function to validate a string input
@@ -70,7 +72,7 @@ class CQValidatorExpression: public CQValidator< QTextEdit >
 /*!
     \brief The class for writing/editing a mathematical expression
  */
-class CQExpressionWidget: public QTextEdit
+class CQExpressionWidget: public Q3TextEdit
   {
     Q_OBJECT
   public:
@@ -144,7 +146,7 @@ class CQExpressionWidget: public QTextEdit
     //void slotTextChanged(const QString & text);
 
   public slots:
-    void doKeyboardAction (QTextEdit::KeyboardAction action);
+    void doKeyboardAction (Q3TextEdit::KeyboardAction action);
     void slotSelectObject();
 
     //void slotForceUpdate();

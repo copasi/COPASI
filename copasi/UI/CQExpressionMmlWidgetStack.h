@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidgetStack.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/03/26 02:42:42 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,9 +16,9 @@
 
 //#include <qvariant.h>
 //#include <qwidget.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 
-class QVBox;
+class Q3VBox;
 //class QVBoxLayout;
 //class QHBoxLayout;
 //class QGridLayout;
@@ -26,7 +26,7 @@ class QVBox;
 //class QTextEdit;
 //class QPushButton;
 class CQExpressionWidget;
-class QScrollView;
+class Q3ScrollView;
 
 class QtMmlWidget;
 
@@ -37,13 +37,13 @@ class QtMmlWidget;
    a mathematical expression by switching between CQExpressionWidget and QtMMLWidget.
  */
 
-class CQExpressionMmlWidgetStack : public QWidgetStack
+class CQExpressionMmlWidgetStack : public Q3WidgetStack
   {
     Q_OBJECT
 
   public:
     /// Constructor
-    CQExpressionMmlWidgetStack(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQExpressionMmlWidgetStack(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     /// Destructor
     ~CQExpressionMmlWidgetStack();
     /// Update the mathematical expression widget
@@ -51,10 +51,10 @@ class CQExpressionMmlWidgetStack : public QWidgetStack
 
     CQExpressionWidget* mpEditExpression;
 
-    QScrollView *mScrollView;
+    Q3ScrollView *mScrollView;
     QtMmlWidget *mMmlWidget;
 
-    QVBox *mpVBox;
+    Q3VBox *mpVBox;
 
   private slots:
     /// Slot for being activated whenever Edit Expression button is clicked

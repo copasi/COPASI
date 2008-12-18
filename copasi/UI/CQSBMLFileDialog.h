@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 13:50:03 $
+//   $Date: 2008/12/18 19:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,10 @@
 #include <qstring.h>
 
 #include <vector>
+#include <utility>
+#include "copasi.h"
+//Added by qt3to4:
+#include <QLabel>
 
 class QWidget;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.119 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/08 08:32:07 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ void CompartmentsWidget::init()
   table->setNumCols(numCols);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
   tableHeader->setLabel(COL_NAME, "Name");
   tableHeader->setLabel(COL_TYPE, "Type");
@@ -97,7 +97,7 @@ void CompartmentsWidget::init()
 
 void CompartmentsWidget::updateHeaderUnits()
 {
-  QHeader *tableHeader = table->horizontalHeader();
+  Q3Header *tableHeader = table->horizontalHeader();
 
   if (CCopasiDataModel::Global->getModel())
     {
@@ -118,7 +118,7 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
   table->setText(row, COL_NAME, FROM_UTF8(pComp->getObjectName()));
 
   // Type
-  QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+  Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mTypes);
   pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pComp->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
@@ -161,8 +161,8 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
   CCompartment * pComp = static_cast< CCompartment * >(obj);
 
   // Type
-  if (dynamic_cast<QComboTableItem *>(table->item(row, COL_TYPE)))
-    pComp->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE)))
+    pComp->setStatus((CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
 
   // Initial Volume
   pComp->setInitialValue(table->text(row, COL_IVOLUME).toDouble());
@@ -173,7 +173,7 @@ void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned 
   // Type
   if (exc != COL_TYPE)
     {
-      QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+      Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mTypes);
       pComboBox->setCurrentItem(0);
       table->setItem(row, COL_TYPE, pComboBox);
     }
@@ -383,7 +383,7 @@ void CompartmentsWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col
   switch (col)
     {
     case COL_TYPE:
-      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
         table->item(row, COL_IVOLUME)->setEnabled(false);
       else
         table->item(row, COL_IVOLUME)->setEnabled(true);

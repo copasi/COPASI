@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:53:45 $
+//   $Source: /home/cvs/copasi_dev/copasi/UI/TimeSeriesSubwidget.cpp,v $
+//   $Revision: 1.13.4.2 $
+//   $Name: Qt3To4 $
+//   $Author: aekamal $
+//   $Date: 2008/11/03 15:56:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,74 +11,23 @@
 // and The University of Manchester.
 // All rights reserved.
 
-/****************************************************************************
- ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
- **
- ** Created: Wed Jul 2 13:56:59 2008
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.8   edited Jan 11 14:47 $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
-
 #include "TimeSeriesSubwidget.h"
 
 #include <qvariant.h>
 #include <qregexp.h>
-#include <qpushbutton.h>
-#include <qtabwidget.h>
-#include <qtextedit.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "CTimeSeriesTable.h"
 #include "qmessagebox.h"
-#include "qfiledialog.h"
+#include "q3filedialog.h"
+#include "CTimeSeriesTable.h"
 #include "TimeSeriesSubwidget.ui.h"
-
 /*
  *  Constructs a TimeSeriesSubWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFlags fl)
+TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
     : QWidget(parent, name, fl)
 {
-  if (!name)
-    setName("TimeSeriesSubWidget");
-  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
-  TimeSeriesSubWidgetLayout = new QVBoxLayout(this, 11, 6, "TimeSeriesSubWidgetLayout");
+  setupUi(this);
 
-  toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
-  spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  toplayout->addItem(spacer);
-
-  ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
-  toplayout->addWidget(ButtonSaveData);
-  TimeSeriesSubWidgetLayout->addLayout(toplayout);
-
-  tabWidget2 = new QTabWidget(this, "tabWidget2");
-
-  tab = new QWidget(tabWidget2, "tab");
-  tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
-
-  optimizationResultText = new QTextEdit(tab, "optimizationResultText");
-  optimizationResultText->setReadOnly(TRUE);
-  tabLayout->addWidget(optimizationResultText);
-  tabWidget2->insertTab(tab, QString::fromLatin1(""));
-
-  tab_2 = new QWidget(tabWidget2, "tab_2");
-  tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
-
-  dataTable = new CTimeSeriesTable(tab_2, "dataTable");
-  tabLayout_2->addWidget(dataTable);
-  tabWidget2->insertTab(tab_2, QString::fromLatin1(""));
-  TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
-  languageChange();
-  resize(QSize(600, 382).expandedTo(minimumSizeHint()));
-  clearWState(WState_Polished);
-
-  // signals and slots connections
-  connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
   init();
 }
 
@@ -96,8 +45,5 @@ TimeSeriesSubWidget::~TimeSeriesSubWidget()
  */
 void TimeSeriesSubWidget::languageChange()
 {
-  setCaption(tr("Form1"));
-  ButtonSaveData->setText(tr("Save data to file"));
-  tabWidget2->changeTab(tab, tr("OptimizationResult"));
-  tabWidget2->changeTab(tab_2, tr("TimeSeries"));
+  retranslateUi(this);
 }

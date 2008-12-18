@@ -1,17 +1,26 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/05 20:16:26 $
+//   $Date: 2008/12/18 19:58:29 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qpushbutton.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 #include "copasi.h"
 
 #include "StateWidget.h"
@@ -28,7 +37,7 @@
  *  Constructs a StateWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
+StateWidget::StateWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl),
     objKey(""),
     mUpToDate(false)
@@ -40,9 +49,9 @@ StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
   setInitialState = new QPushButton(this, "setInitialState");
   setInitialState->setText(trUtf8("SetResultsAsNextInitialState"));
 
-  parentLayout = new QVBoxLayout(this, 0, 0, "parentLayout");
-  stateLayout = new QHBoxLayout(0, 0 , 6, "StateLayout");
-  mWidgetLayout = new QGridLayout(NULL, 1, 1, 0, -1, "Layout");
+  parentLayout = new Q3VBoxLayout(this, 0, 0, "parentLayout");
+  stateLayout = new Q3HBoxLayout(0, 0 , 6, "StateLayout");
+  mWidgetLayout = new Q3GridLayout(NULL, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new StateSubwidget(this, "StateSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);

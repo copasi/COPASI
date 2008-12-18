@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,9 +16,11 @@
 // All rights reserved.
 
 #include <qstringlist.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
+//Added by qt3to4:
+#include <QPixmap>
 #include <stdlib.h>
 
 #include "parametertable.h"
@@ -35,7 +37,7 @@
 #include "./icons/unlocked.xpm"
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name)
-    : QTable(parent, name),
+    : Q3Table(parent, name),
     mOldRow(0)
 {
   initTable();
@@ -59,7 +61,7 @@ void ParameterTable::initTable()
   verticalHeader()->hide();
   setLeftMargin(0);
   //setSelectionMode(QTable::Single);
-  setSelectionMode(QTable::NoSelection);
+  setSelectionMode(Q3Table::NoSelection);
   //setFocusStyle(QTable::FollowStyle);
 
   //setNumRows(3);
@@ -178,9 +180,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   C_INT32 rowCounter = 0;
 
   //ColorTableItem *item;
-  QTableItem *item;
+  Q3TableItem *item;
   //ComboItem *combo;
-  QComboTableItem *combo;
+  Q3ComboTableItem *combo;
   QStringList qsl;
 
   QColor subsColor(255, 210, 210);
@@ -251,14 +253,14 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         }
 
       // add first column
-      item = new ColorTableItem(this, QTableItem::Never, color, qUsage);
+      item = new ColorTableItem(this, Q3TableItem::Never, color, qUsage);
       if (usage == CFunctionParameter::SUBSTRATE) item->setPixmap(*pSubstrate);
       if (usage == CFunctionParameter::PRODUCT) item->setPixmap(*pProduct);
       if (usage == CFunctionParameter::MODIFIER) item->setPixmap(*pModifier);
       setItem(rowCounter, 0, item);
 
       // add second column
-      item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
+      item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
       if ((usage != CFunctionParameter::PARAMETER)
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
@@ -275,12 +277,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         }
       else
         {
-          item = new ColorTableItem(this, QTableItem::Never, color, "");
+          item = new ColorTableItem(this, Q3TableItem::Never, color, "");
         }
       setItem(rowCounter, 2, item);
 
       // add units column
-      item = new ColorTableItem(this, QTableItem::Never, color,
+      item = new ColorTableItem(this, Q3TableItem::Never, color,
                                 FROM_UTF8(" " + units.getDimensions()[i].getDisplayString()));
       setItem(rowCounter, 4, item);
 
@@ -304,13 +306,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             {
               if (ri.isLocked(i))
                 {
-                  item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[0]));
+                  item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 3, item);
                 }
               else
                 {
                   //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
-                  combo = new QComboTableItem(this, qsl);
+                  combo = new Q3ComboTableItem(this, qsl);
                   //combo->setText(FROM_UTF8((*metabNames)[0]));
                   combo->setCurrentItem(FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 3, combo);
@@ -320,13 +322,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             {
               if (ri.isLocked(i))
                 {
-                  item = new ColorTableItem(this, QTableItem::Never, color, "");
+                  item = new ColorTableItem(this, Q3TableItem::Never, color, "");
                   setItem(rowCounter, 3, item);
                 }
               else // this should not happen
                 {
                   //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
-                  combo = new QComboTableItem(this, qsl);
+                  combo = new Q3ComboTableItem(this, qsl);
                   //combo->setText("add species");
                   combo->setCurrentItem("add species");
                   setItem(rowCounter, 3, combo);
@@ -337,7 +339,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
               for (j = 0; j < jmax; ++j)
                 {
                   ++rowCounter;
-                  item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[j]));
+                  item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8((*metabNames)[j]));
                   setItem(rowCounter, 3, item);
                 }
             }
@@ -347,12 +349,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         {
           if (ri.isLocalValue(i))
             {
-              item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
+              item = new ColorTableItem(this, Q3TableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
               setItem(rowCounter, 3, item);
             }
           else //global parameter
             {
-              combo = new QComboTableItem(this, getListOfAllGlobalParameterNames(model));
+              combo = new Q3ComboTableItem(this, getListOfAllGlobalParameterNames(model));
               combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
               setItem(rowCounter, 3, combo);
             }
@@ -360,20 +362,20 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       // add a line for a kinetic parameter
       else if (usage == CFunctionParameter::VOLUME)
         {
-          combo = new QComboTableItem(this, getListOfAllCompartmentNames(model));
+          combo = new Q3ComboTableItem(this, getListOfAllCompartmentNames(model));
           combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
           setItem(rowCounter, 3, combo);
         }
       // add a line for time
       else if (usage == CFunctionParameter::TIME)
         {
-          item = new ColorTableItem(this, QTableItem::OnTyping, color, "");
+          item = new ColorTableItem(this, Q3TableItem::OnTyping, color, "");
           setItem(rowCounter, 3, item);
         }
       // add a line for an unknown role
       else
         {
-          item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
+          item = new ColorTableItem(this, Q3TableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
           setItem(rowCounter, 3, item);
         }
 
@@ -421,7 +423,7 @@ void ParameterTable::slotCellChanged(int row, int col)
   //handle the check boxes
   if (col == 2) //only checkboxes is this column
     {
-      QCheckTableItem *tmp = dynamic_cast<QCheckTableItem*>(this->item(row, col));
+      Q3CheckTableItem *tmp = dynamic_cast<Q3CheckTableItem*>(this->item(row, col));
       if (!tmp) return;
       /*if (tmp->isChecked())
         {
@@ -439,11 +441,11 @@ void ParameterTable::slotCellChanged(int row, int col)
 
 //**************************************************************************
 
-ComboItem::ComboItem(QTable *t, EditType et, QColor c, const QStringList & sl)
+ComboItem::ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl)
     : ColorTableItem(t, et, c, "Yes"), cb(0)
 {
   // we do not want this item to be replaced
-  setReplaceable(FALSE);
+  setReplaceable(false);
   mSL = sl;
 }
 
@@ -464,18 +466,18 @@ void ComboItem::setContentFromEditor(QWidget *w)
   if (w->inherits("QComboBox"))
     setText(((QComboBox*)w)->currentText());
   else
-    QTableItem::setContentFromEditor(w);
+    Q3TableItem::setContentFromEditor(w);
 }
 
 void ComboItem::setText(const QString &s)
 {
-  QTableItem::setText(s);
+  Q3TableItem::setText(s);
 }
 
 //**********************************************************************
 
-ColorTableItem::ColorTableItem(QTable *t, EditType et, QColor c, const QString txt)
-    : QTableItem(t, et, txt)
+ColorTableItem::ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt)
+    : Q3TableItem(t, et, txt)
 {
   color = c;
 }
@@ -488,13 +490,13 @@ void ColorTableItem::paint(QPainter *p, const QColorGroup &cg,
 {
   QColorGroup g(cg);
   g.setColor(QColorGroup::Base, color);
-  QTableItem::paint(p, g, cr, selected);
+  Q3TableItem::paint(p, g, cr, selected);
 }
 
 //**********************************************************************
 
-ColorCheckTableItem::ColorCheckTableItem(QTable *t, QColor c, const QString txt)
-    : QCheckTableItem(t, txt)
+ColorCheckTableItem::ColorCheckTableItem(Q3Table *t, QColor c, const QString txt)
+    : Q3CheckTableItem(t, txt)
 {
   color = c;
 }
@@ -507,5 +509,5 @@ void ColorCheckTableItem::paint(QPainter *p, const QColorGroup &cg,
 {
   QColorGroup g(cg);
   g.setColor(QColorGroup::Base, color);
-  QCheckTableItem::paint(p, g, cr, selected);
+  Q3CheckTableItem::paint(p, g, cr, selected);
 }

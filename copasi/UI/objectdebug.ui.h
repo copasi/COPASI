@@ -1,18 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/25 22:41:38 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
@@ -32,25 +28,25 @@
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 
-class MyListViewItemWithPtr : public QListViewItem
+class MyListViewItemWithPtr : public Q3ListViewItem
   {
   public:
 
-    MyListViewItemWithPtr(QListViewItem * parent, CCopasiObject * ptr,
+    MyListViewItemWithPtr(Q3ListViewItem * parent, CCopasiObject * ptr,
                           QString label1, QString label2 = QString::null,
                           QString label3 = QString::null, QString label4 = QString::null,
                           QString label5 = QString::null, QString label6 = QString::null,
                           QString label7 = QString::null, QString label8 = QString::null)
-        : QListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
+        : Q3ListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
         mpObject(ptr)
     {}
 
-    MyListViewItemWithPtr(QListView * parent, CCopasiObject * ptr,
+    MyListViewItemWithPtr(Q3ListView * parent, CCopasiObject * ptr,
                           QString label1, QString label2 = QString::null,
                           QString label3 = QString::null, QString label4 = QString::null,
                           QString label5 = QString::null, QString label6 = QString::null,
                           QString label7 = QString::null, QString label8 = QString::null)
-        : QListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
+        : Q3ListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
         mpObject(ptr)
     {}
 
@@ -60,7 +56,7 @@ class MyListViewItemWithPtr : public QListViewItem
 void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
 {
   CCopasiObject* obj = (CCopasiObject*)ptr;
-  QListViewItem * element;
+  Q3ListViewItem * element;
 
   std::string cn = obj->getCN();
   CCopasiObject* testObj = CCopasiContainer::ObjectFromName(cn);
@@ -95,7 +91,7 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   else
     value = "";
 
-  element = new MyListViewItemWithPtr((QListViewItem*)parent, obj,
+  element = new MyListViewItemWithPtr((Q3ListViewItem*)parent, obj,
                                       FROM_UTF8(obj->getObjectName()),
                                       FROM_UTF8(obj->getObjectType()),
                                       flags,
@@ -143,7 +139,7 @@ void ObjectDebug::update()
 
   CCopasiObject * obj;
 
-  QListViewItem * element;
+  Q3ListViewItem * element;
   element = new MyListViewItemWithPtr(ListOfObjects, NULL, "*");
   element->setOpen(true);
 
@@ -178,7 +174,7 @@ void ObjectDebug::writeDot()
 
 #include "model/CModelAnalyzer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <sstream>
 
 void ObjectDebug::checkModel()
@@ -188,6 +184,6 @@ void ObjectDebug::checkModel()
   std::ostringstream ss;
   MA.writeReport(ss, true, true);
 
-  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
+  Q3TextEdit* pTE = new Q3TextEdit(FROM_UTF8(ss.str()));
   pTE->show();
 }

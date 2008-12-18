@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 18:54:21 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,16 +28,20 @@
 
 #include <vector>
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qevent.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <QKeyEvent>
 
 #include "copasi.h"
 #include "UI/copasiWidget.h"
 
 class QPushButton;
-class QGridLayout;
+class Q3GridLayout;
 //class QTable;
-class QHBoxLayout;
+class Q3HBoxLayout;
 //class MyTable;
 class CCopasiObject;
 
@@ -46,7 +50,7 @@ class CopasiTableWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    CopasiTableWidget(QWidget *parent, bool ro, const char * name = 0, WFlags f = 0, bool showButtons = true);
+    CopasiTableWidget(QWidget *parent, bool ro, const char * name = 0, Qt::WFlags f = 0, bool showButtons = true);
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -81,7 +85,7 @@ class CopasiTableWidget : public CopasiWidget
     void resizeTable(const unsigned C_INT32 numRows);
     bool isTableChanged();
 
-    QTable* table;
+    Q3Table* table;
 
     QPushButton* btnOK;
     QPushButton* btnCancel;

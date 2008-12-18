@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQBarChart.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/20 08:23:12 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,6 +21,8 @@
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qcolor.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
 #include "../barChart/qwt3dPlot.h"
 
 /**
@@ -29,7 +36,7 @@ class CQBarChart : public QWidget
     Q_OBJECT
   public:
 
-    CQBarChart(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CQBarChart(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~CQBarChart();
 
     /**
@@ -40,7 +47,7 @@ class CQBarChart : public QWidget
     /**
     * This layoutwidget holds the above declared widgegt.
     */
-    QHBoxLayout* mpLayout;
+    Q3HBoxLayout* mpLayout;
 
     /**
     * This method sets the main data you want the represent.

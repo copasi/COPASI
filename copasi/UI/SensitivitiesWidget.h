@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/11 22:27:54 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,6 +25,9 @@
 #include "sensitivities/CSensProblem.h"
 
 #include <qcombobox.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QLabel>
 
 class QToolButton;
 
@@ -60,7 +68,7 @@ class SensitivitiesWidget : public TaskWidget
 
   public:
 
-    explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~SensitivitiesWidget();
 
     virtual bool runTask();
@@ -78,7 +86,7 @@ class SensitivitiesWidget : public TaskWidget
     //     };
 
   protected:
-    QVBoxLayout* SensitivitiesWidgetLayout;
+    Q3VBoxLayout* SensitivitiesWidgetLayout;
     //QGridLayout* mpSensitivitiesLayout;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
@@ -119,7 +127,7 @@ class SensitivitiesWidget : public TaskWidget
 
     /**
      * if the combo box is set to "single object" check if the lineedit
-     * contains a valid CN. Returns FALSE if invalid
+     * contains a valid CN. Returns false if invalid
      */
     bool checkSingleObject(const SensWidgetComboBox* box, const CCopasiObject * object);
 

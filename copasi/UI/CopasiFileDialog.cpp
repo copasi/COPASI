@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 13:50:03 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,13 +50,20 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
     const QString & caption,
     QString * pSelectedFilter)
 {
-  QString newFile = QFileDialog::getOpenFileName(startWith.isNull() ? LastDir.path() : startWith,
+  /*QString newFile = QFileDialog::getOpenFileName(startWith.isNull() ? LastDir.path() : startWith,
                     filter,
                     parent,
                     name,
                     caption,
                     pSelectedFilter,
-                    true);
+                    true);*/
+
+  QString newFile = QFileDialog::getOpenFileName(parent,
+                    caption,
+                    startWith.isNull() ? LastDir.path() : startWith,
+                    filter,
+                    pSelectedFilter);
+
   if (newFile != "")
     LastDir = FROM_UTF8(CDirEntry::dirName((const char *)newFile.utf8()));
 
@@ -96,7 +103,7 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selectedFilter,
     CopasiFileDialog::getSaveFileName(parent, name, startWith,
                                       filter, caption, & selectedFilter);
 
-  if (!File) return "";
+  if (File.isNull()) return "";
 
   // check the extension and replace the uncorrect extension with the correct one according to the filter
   QString Filter;

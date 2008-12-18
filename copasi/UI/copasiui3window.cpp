@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.242 $
+//   $Revision: 1.243 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/02 18:40:59 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,8 +18,8 @@
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qtoolbutton.h>
-#include <qwhatsthis.h>
-#include <qpopupmenu.h>
+#include <q3whatsthis.h>
+#include <q3popupmenu.h>
 #include <qmenubar.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
@@ -29,11 +29,14 @@
 #include <qbitmap.h>
 #include <qtimer.h>
 #include <qlabel.h>
-#include <qhbox.h>
-#include <qscrollview.h>
+#include <q3hbox.h>
+#include <q3scrollview.h>
 #include <qaction.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qcombobox.h>
+
+//Added by qt3to4:
+#include <QCloseEvent>
 #include <qfile.h>
 
 #include <vector>
@@ -216,7 +219,7 @@ CopasiUI3Window * CopasiUI3Window::create()
  *  for more information about these flags.
  */
 CopasiUI3Window::CopasiUI3Window():
-    QMainWindow(),
+    Q3MainWindow(),
     dataModel(NULL),
     listViews(NULL),
     mpSliders(NULL),
@@ -229,12 +232,12 @@ CopasiUI3Window::CopasiUI3Window():
     mpMIRIAMResources(NULL)
 {
   // set destructive close
-  WFlags f = this->getWFlags();
+  Qt::WindowFlags f = this->windowFlags();
   f |= Qt::WDestructiveClose;
-  this->setWFlags(f);
+  this->setWindowFlags(f);
   QImage img;
   img.loadFromData(image0_data, sizeof(image0_data), "PNG");
-  QPixmap image0 = img;
+  QPixmap image0 = QPixmap::fromImage(img);
   setIcon(image0);
 
   // Set the window caption/title
@@ -264,7 +267,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   listViews = new ListViews(this);
 
-  connect(listViews->folders, SIGNAL(currentChanged(QListViewItem*)), this, SLOT(listViewsFolderChanged(QListViewItem*)));
+  connect(listViews->folders, SIGNAL(currentChanged(Q3ListViewItem*)), this, SLOT(listViewsFolderChanged(Q3ListViewItem*)));
 
   ListViews::setDataModel(dataModel);
   listViews->show();
@@ -316,31 +319,31 @@ CopasiUI3Window::~CopasiUI3Window()
 
 void CopasiUI3Window::createActions()
 {
-  mpaNew = new QAction(QPixmap(filenew), "&New", CTRL + Key_N, this, "new");
+  mpaNew = new QAction(QPixmap(filenew), "&New", Qt::CTRL + Qt::Key_N, this, "new");
   connect(mpaNew, SIGNAL(activated()), this, SLOT(newDoc()));
 
-  mpaOpen = new QAction(QPixmap(fileopen), "&Open...", CTRL + Key_O, this, "open");
+  mpaOpen = new QAction(QPixmap(fileopen), "&Open...", Qt::CTRL + Qt::Key_O, this, "open");
   connect(mpaOpen, SIGNAL(activated()), this, SLOT(slotFileOpen()));
 
-  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "COP&ASI Files...", CTRL + Key_A, this, "copasifiles");
+  mpaOpenCopasiFiles = new QAction(QPixmap(fileopen), "COP&ASI Files...", Qt::CTRL + Qt::Key_A, this, "copasifiles");
   connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
 
-  mpaOpenSBMLFiles = new QAction(QPixmap(fileopen), "S&BML Files...", CTRL + Key_B, this, "sbmlfiles");
+  mpaOpenSBMLFiles = new QAction(QPixmap(fileopen), "S&BML Files...", Qt::CTRL + Qt::Key_B, this, "sbmlfiles");
   connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
 
-  mpaSave = new QAction(QPixmap(filesave), "&Save", CTRL + Key_S, this, "save");
+  mpaSave = new QAction(QPixmap(filesave), "&Save", Qt::CTRL + Qt::Key_S, this, "save");
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
 
-  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", SHIFT + CTRL + Key_S, this, "saveas");
+  mpaSaveAs = new QAction(QPixmap(filesave), "Save &As...", Qt::SHIFT + Qt::CTRL + Qt::Key_S, this, "saveas");
   connect(mpaSaveAs, SIGNAL(activated()), this, SLOT(slotFileSaveAs()));
 
-  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", CTRL + Key_I, this, "importsbml");
+  mpaImportSBML = new QAction(QPixmap(fileopen), "&Import SBML...", Qt::CTRL + Qt::Key_I, this, "importsbml");
   connect(mpaImportSBML, SIGNAL(activated()), this, SLOT(slotImportSBML()));
 
-  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML...", CTRL + Key_E, this, "exportsbml");
+  mpaExportSBML = new QAction(QPixmap(filesave), "&Export SBML...", Qt::CTRL + Qt::Key_E, this, "exportsbml");
   connect(mpaExportSBML, SIGNAL(activated()), this, SLOT(slotExportSBML()));
 
-  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", CTRL + Key_M, this, "exportode");
+  mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", Qt::CTRL + Qt::Key_M, this, "exportode");
   connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
 
   mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", 0, this, "showsliders");
@@ -371,7 +374,7 @@ void CopasiUI3Window::createActions()
 
 void CopasiUI3Window::createToolBar()
 {
-  QToolBar *tbMain = new QToolBar(this, "MainToolBar");
+  Q3ToolBar *tbMain = new Q3ToolBar(this, "MainToolBar");
 
   //new
   //   QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
@@ -404,7 +407,7 @@ void CopasiUI3Window::createToolBar()
   mpBoxSelectFramework->insertItem("Concentrations");
   mpBoxSelectFramework->insertItem("Particle Numbers");
 
-  tbMain->setCloseMode(QDockWindow::Never);
+  tbMain->setCloseMode(Q3DockWindow::Never);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
 
@@ -456,13 +459,13 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
 
-  QPopupMenu * pFileMenu = new QPopupMenu(this);
+  Q3PopupMenu * pFileMenu = new Q3PopupMenu(this);
   menuBar()->insertItem("&File", pFileMenu);
 
   mpaNew->addTo(pFileMenu);
   mpaOpen->addTo(pFileMenu);
 
-  mpMenuExamples = new QPopupMenu(this);
+  mpMenuExamples = new Q3PopupMenu(this);
   pFileMenu->insertItem("Examples", mpMenuExamples);
   mpaOpenCopasiFiles->addTo(mpMenuExamples);
   mpaOpenSBMLFiles->addTo(mpMenuExamples);
@@ -478,22 +481,22 @@ void CopasiUI3Window::createMenuBar()
 
   pFileMenu->insertSeparator();
 
-  mpMenuRecentFiles = new QPopupMenu(this);
+  mpMenuRecentFiles = new Q3PopupMenu(this);
   pFileMenu->insertItem("Recent Files", mpMenuRecentFiles);
   refreshRecentFileMenu();
 
-  mpMenuRecentSBMLFiles = new QPopupMenu(this);
+  mpMenuRecentSBMLFiles = new Q3PopupMenu(this);
   pFileMenu->insertItem("Recent SBML Files", mpMenuRecentSBMLFiles);
   refreshRecentSBMLFileMenu();
 
   pFileMenu->insertSeparator();
 
-  pFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
+  pFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), Qt::CTRL + Qt::Key_Q);
 
 #ifdef COPASI_SBW_INTEGRATION
 
   // create and populate SBW menu
-  mpMenuSBW = new QPopupMenu(this);
+  mpMenuSBW = new Q3PopupMenu(this);
   menuBar()->insertItem("&SBW", mpMenuSBW);
   refreshSBWMenu();
 
@@ -501,7 +504,7 @@ void CopasiUI3Window::createMenuBar()
 
   //****** tools menu **************
 
-  QPopupMenu* tools = new QPopupMenu(this);
+  Q3PopupMenu* tools = new Q3PopupMenu(this);
   menuBar()->insertItem("&Tools", tools);
 
   //tools->insertSeparator();
@@ -526,7 +529,7 @@ void CopasiUI3Window::createMenuBar()
   mpaUpdateMIRIAM->addTo(tools);
 
   tools->insertSeparator();
-  tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), CTRL + Key_P, 3);
+  tools->insertItem("&Preferences...", this, SLOT(slotPreferences()), Qt::CTRL + Qt::Key_P, 3);
 
 #ifdef COPASI_LICENSE_COM
   tools->insertSeparator();
@@ -537,16 +540,16 @@ void CopasiUI3Window::createMenuBar()
 
   menuBar()->insertSeparator();
 
-  QPopupMenu * help = new QPopupMenu(this);
+  Q3PopupMenu * help = new Q3PopupMenu(this);
   menuBar()->insertItem("&Help", help);
 
   help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
   help->insertSeparator();
-  help->insertItem("&About", this, SLOT(about()), Key_F1);
+  help->insertItem("&About", this, SLOT(about()), Qt::Key_F1);
   help->insertItem("&License", this, SLOT(license()));
   help->insertItem("About &Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
-  help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
+  help->insertItem("What's &This", this, SLOT(whatsThis()), Qt::SHIFT + Qt::Key_F1);
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******
@@ -571,7 +574,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
                                           str, "COPASI Files (*.cps);;All Files (*.*);;",
                                           "Choose a filename to save under");
 
-      if (!tmp) return false;
+      if (tmp.isNull()) return false;
 
       if (!tmp.endsWith(".cps") &&
           !tmp.endsWith(".")) tmp += ".cps";
@@ -582,7 +585,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
       if (Answer == QMessageBox::Cancel) return false;
     }
 
-  if (dataModel && tmp)
+  if (dataModel && !tmp.isNull())
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
@@ -694,7 +697,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   // gives the file information to the datamodel to handle it
 
-  if (newFile)
+  if (!newFile.isNull())
     {
       if (dataModel && CCopasiDataModel::Global->isChanged())
         {
@@ -1158,7 +1161,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   else
     SBMLFile = file;
 
-  if (SBMLFile)
+  if (!SBMLFile.isNull())
     {
       if (dataModel && CCopasiDataModel::Global->isChanged())
         {
@@ -1263,7 +1266,7 @@ void CopasiUI3Window::slotExportSBML()
       tmp = nameAndVersion.first;
       sbmlLevel = nameAndVersion.second.first;
       sbmlVersion = nameAndVersion.second.second;
-      if (!tmp) return;
+      if (tmp.isNull()) return;
 
       if (!tmp.endsWith(".xml") && !tmp.endsWith("."))
         tmp += ".xml";
@@ -1275,7 +1278,7 @@ void CopasiUI3Window::slotExportSBML()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  if (dataModel && tmp)
+  if (dataModel && !tmp.isNull())
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
@@ -1340,7 +1343,7 @@ void CopasiUI3Window::slotExportMathModel()
             "C Files (*.c);;Berkeley Madonna Files (*.mmd);;XPPAUT (*.ode)",
             "Choose an export format.");
 
-      if (!tmp) return;
+      if (tmp.isNull()) return;
 
       tmp = tmp.remove(QRegExp("\\.$"));
 
@@ -1363,7 +1366,7 @@ void CopasiUI3Window::slotExportMathModel()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  if (dataModel && tmp)
+  if (dataModel && !tmp.isNull())
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
@@ -1425,7 +1428,7 @@ void CopasiUI3Window::slotShowSliders(bool flag)
 DataModelGUI* CopasiUI3Window::getDataModel()
 {return dataModel;}
 
-void CopasiUI3Window::listViewsFolderChanged(QListViewItem* item)
+void CopasiUI3Window::listViewsFolderChanged(Q3ListViewItem* item)
 {
   C_INT32 id = ((FolderListItem*)item)->getFolder()->getId();
   this->mpSliders->setCurrentFolderId(id);
@@ -1646,7 +1649,7 @@ void CopasiUI3Window::slotCheckModel()
   // MA.writeReport(ss, true, false);
   MA.writeReport(ss, true, true);
 
-  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
+  Q3TextEdit* pTE = new Q3TextEdit(FROM_UTF8(ss.str()));
   pTE->setReadOnly(true);
   pTE->resize(512, 640);
   pTE->show();

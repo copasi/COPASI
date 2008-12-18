@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/06 11:57:46 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,6 @@
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-// Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,7 +28,7 @@ class CQEventsWidget : public CopasiTableWidget
     Q_OBJECT
 
   public:
-    CQEventsWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
+    CQEventsWidget(QWidget *parent, const char * name = 0, Qt::WFlags f = 0)
         : CopasiTableWidget(parent, false, name, f)
     {init();}
 

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/12 00:41:15 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,12 +19,16 @@
 #define OBJECTBROWSERDIALOG_H
 
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3Frame>
+#include <Q3GridLayout>
+#include <QCloseEvent>
 #include <vector>
 
 class QPushButton;
 class ObjectBrowserWidget;
-class QGridLayout;
-class QFrame;
+class Q3GridLayout;
+class Q3Frame;
 class QSpacerItem;
 class CopasiUI3Window;
 class CCopasiObject;
@@ -42,10 +51,10 @@ class ObjectBrowserDialog : public QDialog
     QPushButton* toggleViewButton;
     QPushButton* cancelButton;
     QPushButton* okButton;
-    QFrame* Line1;
+    Q3Frame* Line1;
     QSpacerItem* spacer;
     ObjectBrowserWidget* objectBrowserWidget;
-    QGridLayout* ObjectBrowserDialogLayout;
+    Q3GridLayout* ObjectBrowserDialogLayout;
 
   public slots:
     void cancelClicked();

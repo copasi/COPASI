@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,7 +242,7 @@ void CQModelValue::slotTypeChanged(int type)
     {
     case CModelEntity::FIXED:
       // remove expression layout from GUI screen
-      CQModelValueLayout->remove(mpLblExpression);
+      gridLayout->remove(mpLblExpression);
 
       // hide label, widget, and all buttons
       mpLblExpression->hide();
@@ -258,7 +258,7 @@ void CQModelValue::slotTypeChanged(int type)
 
     case CModelEntity::ASSIGNMENT:
       // add expression layout
-      CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
+      gridLayout->addWidget(mpLblExpression, 2, 0);
 
       // show label, widget, and correct buttons
       mpLblExpression->show();   // show the label
@@ -275,7 +275,7 @@ void CQModelValue::slotTypeChanged(int type)
 
     case CModelEntity::ODE:
       // add expression layout
-      CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
+      gridLayout->addWidget(mpLblExpression, 2, 0);
 
       // show label, widget, and correct buttons
       mpLblExpression->show();   // show the label
@@ -447,7 +447,7 @@ void CQModelValue::save()
           CQMessageBox::information(this,
                                     "Unable to rename Quantity",
                                     msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
 
           mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
         }
@@ -522,7 +522,7 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
   if (useInitialAssignment)  // use Initial Expression (ie. the mpBoxUseInitialExpression is checked)
     {
       // add the layout of initial expression to the CQModelValueLayout
-      CQModelValueLayout->addWidget(mpLblInitialExpression, 4, 0);
+      gridLayout->addWidget(mpLblInitialExpression, 4, 0);
 
       // show label, widget, and the correct buttons
       mpLblInitialExpression->show();  // show the label
@@ -537,7 +537,7 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
   else  // mpBoxUseInitialExpression is not checked
     {
       // remove the layout of initial expression from GUI screen
-      CQModelValueLayout->remove(mpLblInitialExpression);
+      gridLayout->remove(mpLblInitialExpression);
 
       // hide label, widget, and all buttons
       mpLblInitialExpression->hide();

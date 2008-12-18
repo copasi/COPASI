@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/08 18:10:21 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,8 +42,8 @@ void CQEFMWidget::init()
   addMethodSelectionBox(CEFMTask::ValidMethods, 0);
 #endif
 
-  CQEFMWidgetLayout->insertWidget(0, mpHeaderWidget);
-  CQEFMWidgetLayout->addWidget(mpBtnWidget);
+  vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->addWidget(mpBtnWidget);
 }
 
 void CQEFMWidget::destroy()
@@ -51,9 +51,9 @@ void CQEFMWidget::destroy()
 
 void CQEFMWidget::loadFluxModes()
 {
-  mpListView->clear();
+  Ui::CQEFMWidget::mpListView->clear();
 
-  QListViewItem* item;
+  Q3ListViewItem* item;
 
   CEFMTask * pTask =
     dynamic_cast< CEFMTask * >(mpTask);
@@ -63,7 +63,7 @@ void CQEFMWidget::loadFluxModes()
       unsigned C_INT32 const noOfModesRows = pTask->getFluxModeSize();
       mpEditFluxModes->setText(QString::number(noOfModesRows));
 
-      mpListView->setColumnText(0, "Reversibility");
+      Ui::CQEFMWidget::mpListView->setColumnText(0, "Reversibility");
 #ifdef COPASI_SSA
       bool ssatask = pTask->getMethod()->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis;
       if (ssatask)
@@ -75,7 +75,7 @@ void CQEFMWidget::loadFluxModes()
 #ifdef COPASI_SSA
           if (ssatask)
             {
-              item = new QListViewItem(mpListView, "");
+              item = new Q3ListViewItem(mpListView, "");
 
               std::string title;
               switch (dynamic_cast<CSSAMethod *>(pTask->getMethod())->isMixingStable(j))
@@ -99,11 +99,11 @@ void CQEFMWidget::loadFluxModes()
 #endif // COPASI_SSA
               if (pTask->isFluxModeReversible(j) == true)
                 {
-                  item = new QListViewItem(mpListView, "Reversible");
+                  item = new Q3ListViewItem(Ui::CQEFMWidget::mpListView, "Reversible");
                 }
               else
                 {
-                  item = new QListViewItem(mpListView, "Irreversible");
+                  item = new Q3ListViewItem(Ui::CQEFMWidget::mpListView, "Irreversible");
                 }
 #ifdef COPASI_SSA
             }

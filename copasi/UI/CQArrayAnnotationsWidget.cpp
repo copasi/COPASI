@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/10 16:04:01 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 // All rights reserved.
 
 #include <qlayout.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qlabel.h>
 
 #ifdef __SUNPRO_CC
@@ -294,17 +294,19 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
 //******************************************************************
 //******************************************************************
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, WFlags fl,
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name, Qt::WFlags fl,
     bool barChart, bool slider, bool barChartFirst)
-    : QVBox(parent, name, fl),
+    : Q3VBox(parent, name, fl),
     mpColorScale(NULL)
 {
   showBarChart = false;
   mBarChartFilled = false;
 
   showBarChart = barChart;
-  mpHBoxSelection = new QHBox(this);
-  mpSelectionTable = new QTable(mpHBoxSelection);
+
+  mpHBoxSelection = new Q3HBox(this);
+  mpSelectionTable = new Q3Table(mpHBoxSelection);
+
   mpSelectionTable->verticalHeader()->hide();
   mpSelectionTable->setLeftMargin(0);
   mpSelectionTable->horizontalHeader()->hide();
@@ -315,9 +317,9 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   mpButton = new QPushButton(mpHBoxSelection);
   mpButton->setFixedSize (70, 30);
   mpHBoxSelection->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-  mpHBoxContents = new QHBox(this);
-  mpStack = new QWidgetStack(mpHBoxContents);
-  mpContentTable = new QTable(mpStack);
+  mpHBoxContents = new Q3HBox(this);
+  mpStack = new Q3WidgetStack(mpHBoxContents);
+  mpContentTable = new Q3Table(mpStack);
   mpContentTable->setReadOnly(true);
   mpContentTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   mpStack->addWidget(mpContentTable, 0);
@@ -437,7 +439,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       combolist.prepend("In columns");
       combolist.prepend("In rows");
 
-      mpSelectionTable->setItem(i, 1, new QComboTableItem(mpSelectionTable, combolist));
+      mpSelectionTable->setItem(i, 1, new Q3ComboTableItem(mpSelectionTable, combolist));
       //mpSelectionTable->adjustRow(i);
 
       //set first combobox to "In rows", second to "In colums" and all other to the
@@ -493,8 +495,8 @@ void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
 
 C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)
 {
-  QComboTableItem * item = dynamic_cast<QComboTableItem*>
-                           (mpSelectionTable->item(row, 1));
+  Q3ComboTableItem * item = dynamic_cast<Q3ComboTableItem*>
+                            (mpSelectionTable->item(row, 1));
 
   if (!item) return - 1;
 
@@ -504,8 +506,8 @@ C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)
 void CQArrayAnnotationsWidget::setCurrentItem(C_INT32 row, C_INT32 index)
 {
   storeCurrentCombos();
-  QComboTableItem * item = dynamic_cast<QComboTableItem*>
-                           (mpSelectionTable->item(row, 1));
+  Q3ComboTableItem * item = dynamic_cast<Q3ComboTableItem*>
+                            (mpSelectionTable->item(row, 1));
 
   if (!item) return;
 
@@ -648,7 +650,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_I
           {
             C_FLOAT64 number = (*mpArray->array())[index];
             QColor color = mpColorScale->getColor(number);
-            mpContentTable->setItem(i, j, new ColorTableItem(mpContentTable, QTableItem::Never, color,
+            mpContentTable->setItem(i, j, new ColorTableItem(mpContentTable, Q3TableItem::Never, color,
                                     QString::number(number)));
           }
       }
@@ -703,7 +705,7 @@ void CQArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
         {
           C_FLOAT64 number = (*mpArray->array())[index];
           QColor color = mpColorScale->getColor(number);
-          mpContentTable->setItem(i, 0, new ColorTableItem(mpContentTable, QTableItem::Never, color,
+          mpContentTable->setItem(i, 0, new ColorTableItem(mpContentTable, Q3TableItem::Never, color,
                                   QString::number(number)));
         }
     }

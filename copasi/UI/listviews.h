@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 19:49:53 $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 
 #include <set>
 #include <qsplitter.h>
-#include <qlistview.h>
+#include <q3listview.h>
 
 #include "copasi.h"
 #include "UI/Tree.h"
@@ -93,10 +93,10 @@ class CQLayoutsWidget;
 
 //*********************************************************************************
 
-class FolderListItem : public QListViewItem
+class FolderListItem : public Q3ListViewItem
   {
   public:
-    FolderListItem(QListView *parent, const IndexedNode *f, bool recurs = true);
+    FolderListItem(Q3ListView *parent, const IndexedNode *f, bool recurs = true);
     FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs = true);
     void createSubFolders();
     void deleteSubFolders();
@@ -122,6 +122,9 @@ class ListViews : public QSplitter
     ListViews(QWidget *parent = 0, const char *name = 0);
     ~ListViews();
 
+#ifdef DELETE
+#undef DELETE
+#endif
     // CHANGE does not include RENAME
     enum Action {CHANGE = 0, ADD, DELETE, RENAME};
     enum ObjectType {METABOLITE = 0
@@ -162,12 +165,12 @@ class ListViews : public QSplitter
     void ConstructNodeWidgets();
     void setupFolders();
 
-    void setTheRightPixmap(QListViewItem* lvi);
+    void setTheRightPixmap(Q3ListViewItem* lvi);
 
     FolderListItem* findListViewItem(C_INT32 id, std::string key); //should always return a valid item
 
   private slots:
-    void slotFolderChanged(QListViewItem*);
+    void slotFolderChanged(Q3ListViewItem*);
 
   private:
     static DataModelGUI* dataModel;
@@ -175,7 +178,7 @@ class ListViews : public QSplitter
     static std::set< const CCopasiObject * > mChangedObjects;
     static int mFramework;
 
-    QListViewItem* lastSelection;
+    Q3ListViewItem* lastSelection;
     CopasiWidget* currentWidget;
     std::string lastKey;
 
@@ -209,7 +212,7 @@ class ListViews : public QSplitter
     static void updateMIRIAMResourceContents();
 
     //the widgets
-    QListView *folders;
+    Q3ListView *folders;
 
     CMCAResultWidget* mpCMCAResultWidget;
     CQMCAWidget* mpCQMCAWidget;

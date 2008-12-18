@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDateTimeEditTableItem.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/02/20 19:06:28 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #include "CQDateTimeEditTableItem.h"
 
 CQDateTimeEditTableItem::CQDateTimeEditTableItem(CopasiTableWidget* table, int row, int col, QWidget * parent, const char * name)
-    : QDateTimeEdit(parent, name)
+    : Q3DateTimeEdit(parent, name)
 {
   mpTable = table;
   mRow = row;
@@ -25,7 +25,7 @@ CQDateTimeEditTableItem::CQDateTimeEditTableItem(CopasiTableWidget* table, int r
 }
 
 CQDateTimeEditTableItem::CQDateTimeEditTableItem(CopasiTableWidget* table, int row, int col, const QDateTime & datetime, QWidget * parent, const char * name)
-    : QDateTimeEdit(datetime, parent, name)
+    : Q3DateTimeEdit(datetime, parent, name)
 {
   mpTable = table;
   mRow = row;

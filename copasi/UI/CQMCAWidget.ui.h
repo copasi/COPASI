@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMCAWidget.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,7 +28,7 @@
  *****************************************************************************/
 
 #include <qmessagebox.h>
-#include <qtable.h>
+#include <q3table.h>
 
 #include "CMCAResultWidget.h"
 #include "UI/CQTaskBtnWidget.h"
@@ -120,8 +125,8 @@ void CQMCAWidget::init()
   mpHeaderWidget->setTaskName("Metabolic Control Analysis");
   mpHeaderWidget->mpUpdateModel->hide();
 
-  CQMCAWidgetLayout->insertWidget(0, mpHeaderWidget);
-  CQMCAWidgetLayout->addWidget(mpBtnWidget);
+  vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->addWidget(mpBtnWidget);
 
   addMethodParameterTable(0, 0);
 }
@@ -142,7 +147,7 @@ bool CQMCAWidget::loadParameterTable()
     }
 
   mpTblParameter->setNumRows(NumRows);
-  QHeader *rowHeader = mpTblParameter->verticalHeader();
+  Q3Header *rowHeader = mpTblParameter->verticalHeader();
 
   unsigned C_INT32 i, k;
   CCopasiParameter::Type Type;

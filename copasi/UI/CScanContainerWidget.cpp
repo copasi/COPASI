@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-  $Revision: 1.7 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 20:40:09 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
+$Revision: 1.8 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 19:57:33 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,7 +22,7 @@
 #include "CUpDownSubwidget.h"
 
 CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name)
-    : QTable(parent, name)
+    : Q3Table(parent, name)
 {
   if (!name)
     setName("CScanContainerWidget");
@@ -36,8 +36,8 @@ CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name)
 
   setNumCols(2);
 
-  setSelectionMode(QTable::NoSelection);
-  setFocusStyle(QTable::FollowStyle);
+  setSelectionMode(Q3Table::NoSelection);
+  setFocusStyle(Q3Table::FollowStyle);
 
   mCopyEnabled = false;
   //TODO maybe reemplement paintFocus() to make the focus completely invisible

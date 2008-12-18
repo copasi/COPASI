@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CPlotSelectionDialog.h,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CPlotSelectionDialog.h,v $
+ $Revision: 1.3 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:56:21 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,7 +39,7 @@ class CPlotSelectionDialog: public QDialog
     Q_OBJECT
 
   public:
-    CPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = FALSE, WFlags f = 0);
+    CPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, WFlags f = 0);
     virtual ~CPlotSelectionDialog();
     void setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2);
     void setModel(CModel* model);

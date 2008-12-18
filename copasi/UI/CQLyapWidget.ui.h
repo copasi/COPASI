@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQLyapWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,9 +29,9 @@
 
 #include <qmessagebox.h>
 
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
-#include "UI/CProgressBar.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
+#include "CProgressBar.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "lyap/CLyapTask.h"
@@ -133,8 +138,8 @@ void CQLyapWidget::init()
 {
   mpHeaderWidget->setTaskName("Lyapunov Exponents");
 
-  CQLyapWidgetLayout->insertWidget(0, mpHeaderWidget);
-  CQLyapWidgetLayout->addWidget(mpBtnWidget);
+  vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->addWidget(mpBtnWidget);
 
   //  addMethodSelectionBox(CLyapTask::ValidMethods);
   addMethodParameterTable(0, 2);

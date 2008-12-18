@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/06 10:28:46 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,11 +24,14 @@
 #define AboutDialog_H__
 
 #include "qdialog.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3VBoxLayout>
 
-class QTextEdit;
+class Q3TextEdit;
 class QPushButton;
 class QPixmap;
-class QVBoxLayout;
+class Q3VBoxLayout;
 
 class AboutDialog: public QDialog
   {
@@ -48,9 +51,9 @@ class AboutDialog: public QDialog
 
   protected:
     QPushButton* closeButton;
-    QTextEdit* textEdit;
+    Q3TextEdit* textEdit;
     QPixmap* backgroundPixmap;
-    QVBoxLayout* mainLayout;
+    Q3VBoxLayout* mainLayout;
   };
 
 #endif

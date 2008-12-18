@@ -1,29 +1,36 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
+ $Revision: 1.12 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:58:29 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "TSSWidget.h"
 #include "DataModelGUI.h"
@@ -45,7 +52,7 @@
  *  Constructs a TSSWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TSSWidget::TSSWidget(QWidget* parent, const char* name, WFlags fl)
+TSSWidget::TSSWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : TaskWidget(parent, name, fl)
 {
   if (!name)
@@ -53,7 +60,7 @@ TSSWidget::TSSWidget(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("TSSWidget"));
 
   //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  mpMethodLayout = new QGridLayout(this, 1, 1, 11, 6, "mpMethodLayout");
+  mpMethodLayout = new Q3GridLayout(this, 1, 1, 11, 6, "mpMethodLayout");
 
   //TSSWidgetLayout->insertWidget(0, mpHeaderWidget);
 

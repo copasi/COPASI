@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 18:30:36 $
+//   $Date: 2008/12/18 19:57:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ void CQReportDefinition::btnAdvancedClicked()
                                  "Do you want to proceed?",
                                  QMessageBox::Ok,
                                  QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 QMessageBox::NoButton) == QMessageBox::Ok)
+                                 Qt::NoButton) == QMessageBox::Ok)
         {
           // We convert the body without the separators to a table.
           mpTableList->clear();
@@ -121,7 +121,7 @@ void CQReportDefinition::btnItemClicked()
 
   if (SelectedVector.size() != 0)
     {
-      QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+      Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
       std::vector< const CCopasiObject * >::const_iterator it = SelectedVector.begin();
       std::vector< const CCopasiObject * >::const_iterator end = SelectedVector.end();
 
@@ -142,7 +142,7 @@ void CQReportDefinition::btnSeparatorClicked()
   else
     Separator = (const char *) mpSeparator->text().utf8();
 
-  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
   new CQReportListItem(pList, Separator.getCN());
 
   mChanged = true;
@@ -157,7 +157,7 @@ void CQReportDefinition::btnTextClicked()
       pDialog->getText() != "")
     {
       CCopasiStaticString Text((const char *) pDialog->getText().utf8());
-      QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+      Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
       new CQReportListItem(pList, Text.getCN());
     }
 
@@ -169,8 +169,8 @@ void CQReportDefinition::btnTextClicked()
 
 void CQReportDefinition::btnDeleteClicked()
 {
-  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
-  QListBoxItem * pNewSelection = NULL;
+  Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
+  Q3ListBoxItem * pNewSelection = NULL;
   unsigned C_INT32 i, multipleSelection;
 
   for (i = pList->count() - 1, multipleSelection = 0; i < ULONG_MAX; i--)
@@ -197,7 +197,7 @@ void CQReportDefinition::btnDeleteClicked()
   if (pNewSelection)
     {
       pList->setCurrentItem(pNewSelection);
-      pList->setSelected(pNewSelection, TRUE);
+      pList->setSelected(pNewSelection, true);
     }
 
   return;
@@ -205,11 +205,11 @@ void CQReportDefinition::btnDeleteClicked()
 
 void CQReportDefinition::btnUpClicked()
 {
-  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
   unsigned C_INT32 i, multipleSelection;
 
-  QListBoxItem * pAfter = NULL;
-  QListBoxItem * pMove;
+  Q3ListBoxItem * pAfter = NULL;
+  Q3ListBoxItem * pMove;
 
   for (i = pList->count() - 1, multipleSelection = 0; i < ULONG_MAX; i--)
     if (pList->isSelected(i))
@@ -240,10 +240,10 @@ void CQReportDefinition::btnUpClicked()
 
 void CQReportDefinition::btnDownClicked()
 {
-  QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
+  Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
   unsigned C_INT32 i, imax, multipleSelection, before = C_INVALID_INDEX;
 
-  QListBoxItem * pMove;
+  Q3ListBoxItem * pMove;
 
   // Find the index of the first selected item.
   for (i = 0, imax = pList->count(), multipleSelection = 0; i < imax; i++)
@@ -301,7 +301,7 @@ void CQReportDefinition::btnDeleteReportClicked()
                                  msg,
                                  QMessageBox::Ok,
                                  QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 QMessageBox::NoButton) == QMessageBox::Cancel)
+                                 Qt::NoButton) == QMessageBox::Cancel)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)
@@ -359,10 +359,10 @@ void CQReportDefinition::init()
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     mpTaskBox->insertItem(FROM_UTF8(CCopasiTask::TypeName[i]));
 
-  mpHeaderList->setSelectionMode(QListBox::Multi);
-  mpBodyList->setSelectionMode(QListBox::Multi);
-  mpFooterList->setSelectionMode(QListBox::Multi);
-  mpTableList->setSelectionMode(QListBox::Multi);
+  mpHeaderList->setSelectionMode(Q3ListBox::Multi);
+  mpBodyList->setSelectionMode(Q3ListBox::Multi);
+  mpFooterList->setSelectionMode(Q3ListBox::Multi);
+  mpTableList->setSelectionMode(Q3ListBox::Multi);
 }
 
 void CQReportDefinition::destroy()
@@ -478,7 +478,7 @@ bool CQReportDefinition::save()
           CQMessageBox::information(this,
                                     "Unable to rename Report",
                                     msg,
-                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
 
           mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
         }

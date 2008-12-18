@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:54:48 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,7 @@ void CQTSSAResultSubWidget::saveDataToFile()
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += fileName.utf8();
+      s += (const char *) fileName.utf8();
       QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }
@@ -138,7 +138,7 @@ void CQTSSAResultSubWidget::init()
 {
 
   tabWidget2->setTabEnabled(TabPage, false);
-  tabWidget2->setTabEnabled(TabPage_4, false);
+  tabWidget2->setTabEnabled(tab4, false);
 
   mpTimeScaleWidgetILDM = new CQTSSATimeScaleWidget();
   mTabWidget->addTab(mpTimeScaleWidgetILDM, "Timescale");

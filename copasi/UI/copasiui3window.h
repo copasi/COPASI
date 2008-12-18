@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/10/02 16:32:34 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,14 @@
 
 #include <string>
 
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qdialog.h>
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include "qvariant.h"
+//Added by qt3to4:
+#include <QLabel>
+#include <Q3PopupMenu>
+#include <QCloseEvent>
 
 #ifdef COPASI_SBW_INTEGRATION
 
@@ -41,7 +45,7 @@ class SBWListener;
 #include "../MIRIAM/CMIRIAMResource.h"
 
 class QToolButton;
-class QListViewItem;
+class Q3ListViewItem;
 class ListViews;
 class DataModelGUI;
 class SliderDialog;
@@ -50,15 +54,15 @@ class SteadyStateWidget;
 class ScanWidget;
 class QPushButton;
 class QLabel;
-class QHBox;
-class QScrollView;
+class Q3HBox;
+class Q3ScrollView;
 class QAction;
 class ObjectBrowserDialog;
 class QComboBox;
 class CMIRIAMResources;
 class CMIRIAMResourceObject;
 
-class CopasiUI3Window : public QMainWindow
+class CopasiUI3Window : public Q3MainWindow
 #ifdef COPASI_SBW_INTEGRATION
       // A SBW listener can catch messages from SBW ... used here to allow copasi to be shut down
       , public SBWListener
@@ -157,7 +161,7 @@ class CopasiUI3Window : public QMainWindow
     void slotQuit();
     void slotConvertToIrreversible();
     void closeEvent(QCloseEvent* e);
-    void listViewsFolderChanged(QListViewItem* item);
+    void listViewsFolderChanged(Q3ListViewItem* item);
     void slotOpenRecentFile(int index);
     void slotOpenRecentSBMLFile(int index);
     bool slotRegistration();
@@ -187,7 +191,7 @@ class CopasiUI3Window : public QMainWindow
     QStringList _oAnalyzerServices;
 
     // the SBW menu
-    QPopupMenu * mpMenuSBW;
+    Q3PopupMenu * mpMenuSBW;
 
     // method to populate the SBW menu
     void refreshSBWMenu();
@@ -239,12 +243,12 @@ class CopasiUI3Window : public QMainWindow
     QTimer *mpAutoSaveTimer;
     bool mSuspendAutoSave;
 
-    QPopupMenu * mpMenuExamples;
+    Q3PopupMenu * mpMenuRecentFiles;
+    Q3PopupMenu * mpMenuExamples;
 
-    QPopupMenu * mpMenuRecentFiles;
     void refreshRecentFileMenu();
 
-    QPopupMenu * mpMenuRecentSBMLFiles;
+    Q3PopupMenu * mpMenuRecentSBMLFiles;
     void refreshRecentSBMLFileMenu();
 
     CMIRIAMResources * mpMIRIAMResources;

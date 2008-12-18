@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/08 11:41:20 $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -298,7 +298,7 @@ void CQMetabolite::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
-      CQMetaboliteLayout->remove(mpLblExpression);
+      gridLayout->remove(mpLblExpression);
 
       mpLblExpression->hide();
       mpExpressionEMW->hide();
@@ -308,7 +308,7 @@ void CQMetabolite::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ASSIGNMENT:
-      CQMetaboliteLayout->addWidget(mpLblExpression, 3, 0);
+      gridLayout->addWidget(mpLblExpression, 3, 0);
 
       mpLblExpression->show();
       mpExpressionEMW->show();
@@ -320,7 +320,7 @@ void CQMetabolite::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ODE:
-      CQMetaboliteLayout->addWidget(mpLblExpression, 3, 0);
+      gridLayout->addWidget(mpLblExpression, 3, 0);
 
       mpLblExpression->show();
       mpExpressionEMW->show();
@@ -332,7 +332,7 @@ void CQMetabolite::slotTypeChanged(int type)
       break;
 
     case CModelEntity::REACTIONS:
-      CQMetaboliteLayout->remove(mpLblExpression);
+      gridLayout->remove(mpLblExpression);
 
       mpLblExpression->hide();
       mpExpressionEMW->hide();
@@ -353,7 +353,7 @@ void CQMetabolite::slotInitialTypeChanged(bool useInitialExpression)
 {
   if (useInitialExpression)
     {
-      CQMetaboliteLayout->addWidget(mpLblInitialExpression, 5, 0);
+      gridLayout->addWidget(mpLblInitialExpression, 5, 0);
 
       mpLblInitialExpression->show();
       mpInitialExpressionEMW->show();
@@ -363,7 +363,7 @@ void CQMetabolite::slotInitialTypeChanged(bool useInitialExpression)
     }
   else
     {
-      CQMetaboliteLayout->remove(mpLblInitialExpression);
+      gridLayout->remove(mpLblInitialExpression);
 
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
@@ -559,7 +559,7 @@ void CQMetabolite::save()
           CQMessageBox::information(this,
                                     "Unable to rename Species",
                                     msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
 
           mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
         }
@@ -586,7 +586,7 @@ void CQMetabolite::save()
           CQMessageBox::information(this,
                                     "Unable to move Species",
                                     msg,
-                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
 
           // Revert the changes
           mpComboBoxCompartment->setCurrentText(FROM_UTF8(CompartmentToRemove));
@@ -660,7 +660,7 @@ void CQMetabolite::save()
 void CQMetabolite::destroy()
 {}
 
-void CQMetabolite::slotReactionTableCurrentChanged(QListViewItem * pItem)
+void CQMetabolite::slotReactionTableCurrentChanged(Q3ListViewItem * pItem)
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
   if (pModel == NULL) return;
@@ -671,7 +671,7 @@ void CQMetabolite::slotReactionTableCurrentChanged(QListViewItem * pItem)
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
   std::string s1, s2;
-  s1 = pItem->text(0).utf8();
+  s1 = (const char *) pItem->text(0).utf8();
   s1 = s1.substr(0, s1.length() - 2);
 
   C_INT32 i = 0;
@@ -745,13 +745,13 @@ void CQMetabolite::loadReactionTable()
   for (; it != end; ++it, ++i)
     {
       pReaction = static_cast< const CReaction * >(*it);
-      new QListViewItem(mpReactionTable,
-                        FROM_UTF8(pReaction->getObjectName()) + ": ",
-                        FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReaction, false)));
+      new Q3ListViewItem(mpReactionTable,
+                         FROM_UTF8(pReaction->getObjectName()) + ": ",
+                         FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReaction, false)));
     }
 
   if (i == 0)
-    new QListViewItem(mpReactionTable, "none");
+    new Q3ListViewItem(mpReactionTable, "none");
 
   return;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/03 17:40:33 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 #ifndef SimpleSelectionTree_H__
 #define SimpleSelectionTree_H__
 
-#include "qlistview.h"
+#include "q3listview.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -26,12 +26,12 @@
 template <class CType> class CCopasiVector;
 
 class CCopasiObject;
-class QListViewItem;
+class Q3ListViewItem;
 class QWidget;
 class CModel;
 class CMetab;
 
-class CCopasiSimpleSelectionTree: public QListView
+class CCopasiSimpleSelectionTree: public Q3ListView
   {
     Q_OBJECT
 
@@ -57,7 +57,7 @@ class CCopasiSimpleSelectionTree: public QListView
       NO_RESTRICTION = -1
     };
 
-    CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
+    CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, Qt::WFlags fl = 0);
     ~CCopasiSimpleSelectionTree();
 
     void populateTree(const CModel * pModel, const SelectionFlag & flag);
@@ -67,39 +67,39 @@ class CCopasiSimpleSelectionTree: public QListView
     virtual void commitClicked();
 
   protected:
-    QListViewItem* mpTimeSubtree;
-    QListViewItem* mpReactionSubtree;
-    QListViewItem* mpReactionParameterSubtree;
-    QListViewItem* mpReactionFluxConcentrationSubtree;
-    QListViewItem* mpReactionFluxNumberSubtree;
-    QListViewItem* mpMetaboliteSubtree;
-    QListViewItem* mpMetaboliteTransientConcentrationSubtree;
-    QListViewItem* mpMetaboliteTransientNumberSubtree;
-    QListViewItem* mpMetaboliteInitialConcentrationSubtree;
-    QListViewItem* mpMetaboliteInitialNumberSubtree;
-    QListViewItem* mpMetaboliteRateConcentrationSubtree;
-    QListViewItem* mpMetaboliteRateNumberSubtree;
-    QListViewItem* mpModelQuantitySubtree;
-    QListViewItem* mpModelQuantityTransientValueSubtree;
-    QListViewItem* mpModelQuantityInitialValueSubtree;
-    QListViewItem* mpModelQuantityRateSubtree;
-    QListViewItem* mpCompartmentSubtree;
-    QListViewItem* mpCompartmentTransientVolumeSubtree;
-    QListViewItem* mpCompartmentInitialVolumeSubtree;
-    QListViewItem* mpCompartmentRateSubtree;
-    QListViewItem* mpExpertSubtree;
+    Q3ListViewItem* mpTimeSubtree;
+    Q3ListViewItem* mpReactionSubtree;
+    Q3ListViewItem* mpReactionParameterSubtree;
+    Q3ListViewItem* mpReactionFluxConcentrationSubtree;
+    Q3ListViewItem* mpReactionFluxNumberSubtree;
+    Q3ListViewItem* mpMetaboliteSubtree;
+    Q3ListViewItem* mpMetaboliteTransientConcentrationSubtree;
+    Q3ListViewItem* mpMetaboliteTransientNumberSubtree;
+    Q3ListViewItem* mpMetaboliteInitialConcentrationSubtree;
+    Q3ListViewItem* mpMetaboliteInitialNumberSubtree;
+    Q3ListViewItem* mpMetaboliteRateConcentrationSubtree;
+    Q3ListViewItem* mpMetaboliteRateNumberSubtree;
+    Q3ListViewItem* mpModelQuantitySubtree;
+    Q3ListViewItem* mpModelQuantityTransientValueSubtree;
+    Q3ListViewItem* mpModelQuantityInitialValueSubtree;
+    Q3ListViewItem* mpModelQuantityRateSubtree;
+    Q3ListViewItem* mpCompartmentSubtree;
+    Q3ListViewItem* mpCompartmentTransientVolumeSubtree;
+    Q3ListViewItem* mpCompartmentInitialVolumeSubtree;
+    Q3ListViewItem* mpCompartmentRateSubtree;
+    Q3ListViewItem* mpExpertSubtree;
 #ifdef COPASI_DEBUG
-    QListViewItem* matrixSubtree;
+    Q3ListViewItem* matrixSubtree;
 #endif //COPASI_DEBUG
-    std::map< QListViewItem *, const CCopasiObject * > treeItems;
+    std::map< Q3ListViewItem *, const CCopasiObject * > treeItems;
     std::vector< const CCopasiObject * > * mpOutputVector;
 
     bool treeHasSelection();
     bool isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites);
-    QListViewItem * findListViewItem(const CCopasiObject * object);
+    Q3ListViewItem * findListViewItem(const CCopasiObject * object);
     void selectObjects(std::vector< const CCopasiObject * > * objects);
     std::vector<const CCopasiObject * > * getTreeSelection();
-    void removeEmptySubTree(QListViewItem ** ppSubTree);
+    void removeEmptySubTree(Q3ListViewItem ** ppSubTree);
   protected:
 
   public:

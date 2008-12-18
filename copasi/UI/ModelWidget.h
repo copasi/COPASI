@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/14 20:29:12 $
+//   $Date: 2008/12/18 19:57:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -21,13 +26,19 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 #include "UI/copasiWidget.h"
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QFrame;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
+class Q3Frame;
 class QSpacerItem;
 class QLineEdit;
 class QLabel;
@@ -40,7 +51,7 @@ class ModelWidget : public CopasiWidget
     Q_OBJECT
 
   public:
-    ModelWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ModelWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~ModelWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -60,13 +71,13 @@ class ModelWidget : public CopasiWidget
     std::string objKey;
     QString mOldComment;
 
-    QGridLayout* ModelWidgetLayout;
-    QHBoxLayout* Layout5;
-    QVBoxLayout* showMarkupLayout;
+    Q3GridLayout* ModelWidgetLayout;
+    Q3HBoxLayout* Layout5;
+    Q3VBoxLayout* showMarkupLayout;
     QSpacerItem* spacer;
     QLineEdit* LineEdit;
     // QTextBrowser* textBrowser;
-    QTextEdit* mpEditComment;
+    Q3TextEdit* mpEditComment;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
     QLabel* TextLabel3;

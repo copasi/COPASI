@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:32:58 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,9 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -39,20 +41,20 @@
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent, const char* name, WFlags fl)
+CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("CQMathMatrixWidget");
   setCaption("CQMathMatrixWidget");
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQMathMatrixWidgetLayout");
+  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQMathMatrixWidgetLayout");
 
   // **********  Label **************
   //mLabelTitle = new QLabel(this, "MatrixLabel");
   //mLabelTitle->setText("Matrices");
-  //mLabelTitle->setAlignment(int(QLabel::AlignVCenter
-  //                              | QLabel::AlignLeft));
+  //mLabelTitle->setAlignment(int(Qt::AlignVCenter
+  //                              | Qt::AlignLeft));
   //mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   //mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 

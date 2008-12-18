@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:55:10 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,9 +29,9 @@
 
 #include "copasi.h"
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qcombobox.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qtabwidget.h>
 
 #include "UI/CQTSSAResultSubWidget.h"
@@ -74,8 +74,8 @@ void CQTSSAWidget::init()
 
   mpHeaderWidget->setTaskName("Time Scale Separation Analysis");
 
-  CQTSSAWidgetLayout->insertWidget(0, mpHeaderWidget);
-  CQTSSAWidgetLayout->addWidget(mpBtnWidget);
+  vboxLayout->insertWidget(0, mpHeaderWidget);
+  vboxLayout->addWidget(mpBtnWidget);
 
   addMethodSelectionBox(CTSSATask::ValidMethods);
   addMethodParameterTable(0);
@@ -108,8 +108,8 @@ void CQTSSAWidget::slotDuration()
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok,
-                                QMessageBox::NoButton,
-                                QMessageBox::NoButton);
+                                Qt::NoButton,
+                                Qt::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
@@ -131,8 +131,8 @@ void CQTSSAWidget::slotIntervalSize()
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok,
-                                QMessageBox::NoButton,
-                                QMessageBox::NoButton);
+                                Qt::NoButton,
+                                Qt::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
@@ -153,8 +153,8 @@ void CQTSSAWidget::slotIntervals()
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
                                 QMessageBox::Ok,
-                                QMessageBox::NoButton,
-                                QMessageBox::NoButton);
+                                Qt::NoButton,
+                                Qt::NoButton);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));

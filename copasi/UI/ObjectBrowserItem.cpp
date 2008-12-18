@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-   $Revision: 1.49 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
+ $Revision: 1.50 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:57:54 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,7 +21,6 @@ Version : 1.xx  <first>
 Description:
 Date: 04/03
 Comment : Copasi Object Browser including:
-
 
 CBrowserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject,
@@ -54,8 +58,8 @@ CBrowserObject::~CBrowserObject()
 /**
  *   Constructs a new ObjectBrowserItem
  */
-ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList)
-    : QListViewItem(parent, after)
+ObjectBrowserItem::ObjectBrowserItem (Q3ListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList)
+    : Q3ListViewItem(parent, after)
 {
   if (mObject != NULL)
     {
@@ -97,7 +101,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, ObjectList* pList)
-    : QListViewItem(parent, after)
+    : Q3ListViewItem(parent, after)
 {
   if (mObject != NULL)
     {

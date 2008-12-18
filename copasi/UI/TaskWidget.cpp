@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:11 $
+//   $Date: 2008/12/18 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,18 +16,21 @@
 // All rights reserved.
 
 #include <qcheckbox.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qvalidator.h>
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qapplication.h>
 #include <qcombobox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3VBoxLayout>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
@@ -53,7 +56,7 @@
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TaskWidget::TaskWidget(QWidget* parent, const char* name, WFlags fl)
+TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
@@ -89,18 +92,18 @@ void TaskWidget::addHeaderToGrid(unsigned int row)
 {
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new QGridLayout(0, 2, 2, 0, 6, "mpMethodLayout");
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      mpMethodLayout = new Q3GridLayout(0, 2, 2, 0, 6, "mpMethodLayout");
+      static_cast<Q3VBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
   mpMethodLayout->addMultiCellWidget(mpHeaderWidget, row, row, 1, 2);
 }
 
-bool TaskWidget::addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol)
+bool TaskWidget::addHLineToGrid(Q3GridLayout* grid, unsigned int row, unsigned int maxcol)
 {
-  QFrame * line = new QFrame(this, "line");
-  line->setFrameShape(QFrame::HLine);
-  line->setFrameShadow(QFrame::Sunken);
+  Q3Frame * line = new Q3Frame(this, "line");
+  line->setFrameShape(Q3Frame::HLine);
+  line->setFrameShadow(Q3Frame::Sunken);
   grid->addMultiCellWidget(line, row, row, 0, maxcol);
 
   return true;
@@ -112,8 +115,8 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned
 
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      mpMethodLayout = new Q3GridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
+      static_cast<Q3VBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
       //Row = 0;
     }
 
@@ -121,12 +124,12 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned
 
   mpLblParameter = new QLabel(pParent, "mpLblParameter");
   mpLblParameter->setText(tr("Method Parameter"));
-  mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+  mpLblParameter->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-  mpTblParameter = new QTable(pParent, "mpTblParameter");
-  mpTblParameter->setFocusPolicy(QWidget::WheelFocus);
-  mpTblParameter->setFocusStyle(QTable::SpreadSheet);
-  mpTblParameter->setSelectionMode(QTable::Single);
+  mpTblParameter = new Q3Table(pParent, "mpTblParameter");
+  mpTblParameter->setFocusPolicy(Qt::WheelFocus);
+  mpTblParameter->setFocusStyle(Q3Table::SpreadSheet);
+  mpTblParameter->setSelectionMode(Q3Table::Single);
   mpTblParameter->setNumRows(std::max<unsigned C_INT32>(0, rows));
   mpTblParameter->setNumCols(1);
 
@@ -154,17 +157,17 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
 {
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
-      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      mpMethodLayout = new Q3GridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
+      static_cast<Q3VBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
   QWidget* pParent = mpMethodLayout->mainWidget();
 
   mpLblMethod = new QLabel(pParent, "mpLblMethod");
   mpLblMethod->setText(tr("Method"));
-  mpLblMethod->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+  mpLblMethod->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-  mpBoxMethod = new QComboBox(FALSE, pParent, "mpBoxMethod");
+  mpBoxMethod = new QComboBox(false, pParent, "mpBoxMethod");
 
   unsigned C_INT32 i;
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
@@ -298,7 +301,7 @@ bool TaskWidget::loadMethod()
       QString strname;
 
       mpTblParameter->setNumRows(mpMethod->size());
-      QHeader *rowHeader = mpTblParameter->verticalHeader();
+      Q3Header *rowHeader = mpTblParameter->verticalHeader();
 
       unsigned C_INT32 i;
       CCopasiParameter::Type Type;

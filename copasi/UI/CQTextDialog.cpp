@@ -1,72 +1,31 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTextDialog.cpp,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTextDialog.cpp,v $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:11 $
+// End CVS Header
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
-
-/****************************************************************************
- ** Form implementation generated from reading ui file 'CQTextDialog.ui'
- **
- ** Created: Thu May 12 07:13:06 2005
- **      by: The User Interface Compiler ($Id: CQTextDialog.cpp,v 1.2 2006/04/27 01:27:42 shoops Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
 
 #include "CQTextDialog.h"
 
 #include <qvariant.h>
-#include <qtextedit.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
 #include "CQTextDialog.ui.h"
-
 /*
  *  Constructs a CQTextDialog as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
+ *  true to construct a modal dialog.
  */
-CQTextDialog::CQTextDialog(QWidget* parent, const char* name, bool modal, WFlags fl)
+CQTextDialog::CQTextDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
     : QDialog(parent, name, modal, fl)
 {
-  if (!name)
-    setName("CQTextDialog");
-  setSizeGripEnabled(TRUE);
-  CQTextDialogLayout = new QVBoxLayout(this, 11, 6, "CQTextDialogLayout");
-
-  mpTextEdit = new QTextEdit(this, "mpTextEdit");
-  CQTextDialogLayout->addWidget(mpTextEdit);
-
-  mpBtnLayout = new QHBoxLayout(0, 0, 6, "mpBtnLayout");
-  mpSpacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  mpBtnLayout->addItem(mpSpacer);
-
-  mpBtnOK = new QPushButton(this, "mpBtnOK");
-  mpBtnOK->setAutoDefault(TRUE);
-  mpBtnOK->setDefault(TRUE);
-  mpBtnLayout->addWidget(mpBtnOK);
-
-  mpBtnCancel = new QPushButton(this, "mpBtnCancel");
-  mpBtnCancel->setAutoDefault(TRUE);
-  mpBtnLayout->addWidget(mpBtnCancel);
-  CQTextDialogLayout->addLayout(mpBtnLayout);
-  languageChange();
-  resize(QSize(495, 178).expandedTo(minimumSizeHint()));
-  clearWState(WState_Polished);
-
-  // signals and slots connections
-  connect(mpBtnOK, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(mpBtnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  setupUi(this);
 }
 
 /*
@@ -83,9 +42,5 @@ CQTextDialog::~CQTextDialog()
  */
 void CQTextDialog::languageChange()
 {
-  setCaption(tr("Text Dialog"));
-  mpBtnOK->setText(tr("&OK"));
-  mpBtnOK->setAccel(QKeySequence(QString::null));
-  mpBtnCancel->setText(tr("&Cancel"));
-  mpBtnCancel->setAccel(QKeySequence(QString::null));
+  retranslateUi(this);
 }

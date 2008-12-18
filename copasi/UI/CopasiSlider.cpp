@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/18 18:15:46 $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,8 +22,10 @@
 #include "qslider.h"
 #include "qpixmap.h"
 #include "qtoolbutton.h"
-#include "qvbox.h"
+#include "q3vbox.h"
 #include "qtooltip.h"
+//Added by qt3to4:
+#include <Q3Frame>
 
 #include "copasi.h"
 
@@ -28,18 +35,18 @@
 #include "icons/closeSlider.xpm"
 #include "icons/editSlider.xpm"
 
-CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QHBox(parent), mpCSlider(pSlider) , mpQSlider(NULL), mpLabel(NULL), mpCloseButton(NULL), mpEditButton(NULL), mValueOutOfRange(false)
+CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): Q3HBox(parent), mpCSlider(pSlider) , mpQSlider(NULL), mpLabel(NULL), mpCloseButton(NULL), mpEditButton(NULL), mValueOutOfRange(false)
 {
-  this->setFrameShape(QFrame::Box);
+  this->setFrameShape(Q3Frame::Box);
   this->setSpacing(2);
   this->setMargin(2);
-  QVBox* sliderLayout = new QVBox(this);
+  Q3VBox* sliderLayout = new Q3VBox(this);
   this->mpLabel = new QLabel(sliderLayout);
   this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   this->mpQSlider = new QSlider(Qt::Horizontal, sliderLayout);
   this->mpQSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-  QVBox* buttonLayout = new QVBox(this);
+  Q3VBox* buttonLayout = new Q3VBox(this);
   buttonLayout->setSpacing(0);
   QPixmap icons[2] = {closeSlider, editSlider};
   this->mpCloseButton = new QToolButton(buttonLayout);

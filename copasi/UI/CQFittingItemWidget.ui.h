@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,11 +25,11 @@
 
 #include <qapplication.h>
 
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/CQValidator.h"
-#include "UI/CQExperimentSelection.h"
-#include "UI/CQStartValueReset.h"
-#include "UI/qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
+#include "CQValidator.h"
+#include "CQExperimentSelection.h"
+#include "CQStartValueReset.h"
+#include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
@@ -422,6 +422,7 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
     static_cast<std::vector< COptItem * > *>(mpItems->CCopasiParameter::getValue().pVOID)->begin();
 
   unsigned C_INT32 i;
+
   for (i = 0; it != end; ++it, ++src, ++i)
     {
       switch (mItemType)
@@ -1406,7 +1407,7 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
   // Update selection
   mpTable->clearSelection();
   for (; it != end; ++it)
-    mpTable->addSelection(QTableSelection(*it, 0, *it, 0));
+    mpTable->addSelection(Q3TableSelection(*it, 0, *it, 0));
 
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/02 18:38:42 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,17 +18,23 @@
 #ifndef CQARRAYANN_H
 #define CQARRAYANN_H
 
-#include <qvbox.h>
-#include <qhbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <QLabel>
+#include "utilities/CAnnotatedMatrix.h"
+#include "mathematics.h"
+
+#include <q3hbox.h>
 #include <qpushbutton.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 
 #include "copasi/UI/CQBarChart.h"
 #include "copasi/utilities/CAnnotatedMatrix.h"
 #include "copasi/mathematics.h"
 
-class QGridLayout;
-class QTable;
+class Q3GridLayout;
+class Q3Table;
 class QLabel;
 
 /**
@@ -226,13 +232,13 @@ class CColorScaleBiLog : public CColorScale
 /**
  * This Widget displays a CArrayAnnotation (no editing yet)
  */
-class CQArrayAnnotationsWidget : public QVBox
+class CQArrayAnnotationsWidget : public Q3VBox
   {
     Q_OBJECT
 
   public:
 
-    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool barChart = true, bool slider = true, bool barChartFirst = false);
+    CQArrayAnnotationsWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, bool barChart = true, bool slider = true, bool barChartFirst = false);
     ~CQArrayAnnotationsWidget();
 
     void setArrayAnnotation(const CArrayAnnotation * pArray);
@@ -313,9 +319,9 @@ class CQArrayAnnotationsWidget : public QVBox
 
     CQBarChart* plot3d;
 
-    QHBox* mpHBoxSelection;
-    QHBox* mpHBoxContents;
-    QWidgetStack* mpStack;
+    Q3HBox* mpHBoxSelection;
+    Q3HBox* mpHBoxContents;
+    Q3WidgetStack* mpStack;
 
     bool showBarChart;
     QPushButton* mpButton;
@@ -325,8 +331,8 @@ class CQArrayAnnotationsWidget : public QVBox
     void switchToTable();
     void switchToBarChart();
 
-    QTable* mpSelectionTable;
-    QTable* mpContentTable;
+    Q3Table* mpSelectionTable;
+    Q3Table* mpContentTable;
 
     const CArrayAnnotation * mpArray;
 

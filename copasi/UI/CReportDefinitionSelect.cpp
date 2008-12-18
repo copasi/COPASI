@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/05/16 11:27:29 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,15 +26,17 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qpushbutton.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qfiledialog.h>
+#include <q3whatsthis.h>
+#include <q3filedialog.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -51,7 +53,7 @@ Contact: Please contact lixu1@vt.edu.
  *  name 'name' and widget flags set to 'f'.
  */
 
-CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, WFlags fl)
+CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, Qt::WFlags fl)
     : QDialog(parent, name, fl),
     pListView((ListViews*)parent),
     mpReport(NULL),
@@ -59,12 +61,12 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 {
   if (!name)
     setName("CReportDefinitionSelect");
-  CReportDefinitionSelectLayout = new QGridLayout(this, 1, 1, 11, 6, "CReportDefinitionSelectLayout");
+  CReportDefinitionSelectLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CReportDefinitionSelectLayout");
 
-  frame5 = new QFrame(this, "frame5");
-  frame5->setFrameShape(QFrame::Box);
-  frame5->setFrameShadow(QFrame::Sunken);
-  frame5Layout = new QGridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
+  frame5 = new Q3Frame(this, "frame5");
+  frame5->setFrameShape(Q3Frame::Box);
+  frame5->setFrameShadow(Q3Frame::Sunken);
+  frame5Layout = new Q3GridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
 
   reportLabel = new QLabel(frame5, "reportLabel");
 
@@ -78,7 +80,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   frame5Layout->addMultiCellWidget(appendChecked, 2, 2, 1, 2);
 
-  reportDefinitionNameList = new QComboBox(FALSE, frame5, "reportDefinitionNameList");
+  reportDefinitionNameList = new QComboBox(false, frame5, "reportDefinitionNameList");
 
   frame5Layout->addWidget(reportDefinitionNameList, 0, 1);
 
@@ -106,7 +108,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   CReportDefinitionSelectLayout->addWidget(cancelButton, 1, 1);
   languageChange();
-  clearWState(WState_Polished);
+  //clearWState(WState_Polished);
 
   // tab order
   setTabOrder(reportDefinitionNameList, confirmButton);
@@ -238,7 +240,7 @@ void CReportDefinitionSelect::jumpToFileBrowser()
   QString reportFile =
     CopasiFileDialog::getSaveFileName(this, "Save File Dialog", QString::null, "TEXT Files (*.txt);;All Files (*.*);;",
                                       "Choose to create a new a file");
-  if (reportFile)
+  if (!reportFile.isNull())
     {
       targetEdit->setText(reportFile);
     }

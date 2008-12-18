@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/12/18 19:56:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 
 #include <qmessagebox.h>
 #include <qregexp.h>
+#include "Qt3Support/Q3ScrollView"
 
 #include "model/CMMLOutput.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -48,7 +49,7 @@
 void CQDifferentialEquations::init()
 {
   mpScrollView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  mpScrollView->setResizePolicy(QScrollView::AutoOneFit);
+  mpScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
 
   mpMMLWidget = new QtMmlWidget(mpScrollView->viewport());
   mpMMLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -136,7 +137,7 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
+  ofile << UTF8_TO_CHAR(latexStr);
   ofile.close();
 }
 
@@ -157,7 +158,7 @@ void CQDifferentialEquations::slotSave()
             "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
             "Save Formula to Disk");
 
-      if (!outfilename) return;
+      if (outfilename.isNull()) return;
 
       // Checks whether the file exists
       Answer = checkSelection(outfilename);

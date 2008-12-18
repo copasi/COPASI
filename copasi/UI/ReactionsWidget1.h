@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 16:33:33 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,13 +29,19 @@
 
 #include "UI/copasiWidget.h"
 #include "model/CReactionInterface.h"
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QCheckBox;
 class QComboBox;
-class QFrame;
+class Q3Frame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -42,7 +53,7 @@ class ReactionsWidget1 : public CopasiWidget
     Q_OBJECT
 
   public:
-    ReactionsWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~ReactionsWidget1();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -71,8 +82,8 @@ class ReactionsWidget1 : public CopasiWidget
     std::string objKey;
     CReactionInterface * mpRi;
 
-    QGridLayout* ReactionsWidget1Layout;
-    QHBoxLayout* Layout1;
+    Q3GridLayout* ReactionsWidget1Layout;
+    Q3HBoxLayout* Layout1;
     QLabel* TextLabel4;
     QLabel* TextLabel7;
     QPushButton* commitChanges;
@@ -80,14 +91,14 @@ class ReactionsWidget1 : public CopasiWidget
     QPushButton* newReaction;
     QPushButton* deleteReaction;
     QLabel* TextLabel8;
-    QFrame* Line2;
-    QFrame* Line1;
-    QFrame* Line3;
+    Q3Frame* Line2;
+    Q3Frame* Line1;
+    Q3Frame* Line3;
     QLabel* TextLabel6;
     QLineEdit* LineEdit1;
     MyLineEdit* LineEdit2;
     QComboBox* ComboBox1;
-    QFrame* Line4;
+    Q3Frame* Line4;
     ParameterTable* table;
     QLineEdit* LineEdit3;
     QLabel* TextLabel5;

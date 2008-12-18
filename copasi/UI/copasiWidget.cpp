@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2008/03/24 15:51:21 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,13 +19,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include <qapplication.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 #include "copasiWidget.h"
 #include "listviews.h"
 #include "copasiui3window.h"
 
-CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
+CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
     : QWidget (parent, name, f),
     mpListView(static_cast<ListViews *>(parent)),
     mIgnoreUpdates(false),

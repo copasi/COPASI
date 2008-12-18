@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,12 +19,15 @@
 
 #include <qvariant.h>
 #include <qpushbutton.h>
-#include <qheader.h>
-#include <qlistview.h>
+#include <q3header.h>
+#include <q3listview.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3VBoxLayout>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
@@ -41,11 +44,11 @@
 #define COL_VALUE 2
 #define COL_UNIT 3
 
-class CParameterListItem : public QListViewItem
+class CParameterListItem : public Q3ListViewItem
   {
   public:
-    CParameterListItem(QListView *parent, const QString & text)
-        : QListViewItem(parent, text),
+    CParameterListItem(Q3ListView *parent, const QString & text)
+        : Q3ListViewItem(parent, text),
         mpObject(NULL),
         mIsChanged(false)
     {
@@ -54,7 +57,7 @@ class CParameterListItem : public QListViewItem
     }
 
     CParameterListItem(CParameterListItem *parent, const QString & text)
-        : QListViewItem(parent, text),
+        : Q3ListViewItem(parent, text),
         mpObject(NULL),
         mIsChanged(false)
     {
@@ -64,7 +67,7 @@ class CParameterListItem : public QListViewItem
 
     CParameterListItem(CParameterListItem *parent, const QString & name,
                        CCopasiObject* obj, C_FLOAT64 value, const QString & unit, int framework = 0)
-        : QListViewItem(parent, name, "", QString::number(value), unit),
+        : Q3ListViewItem(parent, name, "", QString::number(value), unit),
         mpObject(obj),
         mIsChanged(false)
     {
@@ -124,7 +127,7 @@ class CParameterListItem : public QListViewItem
     //this constructor is used for global parameters in reactions
     CParameterListItem(CParameterListItem *parent, const QString & name,
                        CCopasiObject* obj, const QString & value, const QString & unit)
-        : QListViewItem(parent, name, "", value, unit),
+        : Q3ListViewItem(parent, name, "", value, unit),
         mpObject(obj),
         mIsChanged(false)
     {
@@ -150,7 +153,7 @@ class CParameterListItem : public QListViewItem
     virtual void okRename (int col)
     {
       QString oldText = text(COL_VALUE);
-      QListViewItem::okRename(col);
+      Q3ListViewItem::okRename(col);
       QString newText = text(COL_VALUE);
       if (oldText == newText) return;
 
@@ -162,12 +165,12 @@ class CParameterListItem : public QListViewItem
 
 //****************************************************************************
 
-ParametersWidget::ParametersWidget(QWidget* parent, const char* name, WFlags fl)
+ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("ParametersWidget");
-  ParametersWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ParametersWidgetLayout");
+  ParametersWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ParametersWidgetLayout");
 
   commitButton = new QPushButton(this, "commitButton");
   commitButton->setText("Commit");
@@ -180,23 +183,23 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, WFlags fl)
   spacer2 = new QSpacerItem(414, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   ParametersWidgetLayout->addItem(spacer2, 2, 3);
 
-  listView = new QListView(this, "listView");
+  listView = new Q3ListView(this, "listView");
   listView->addColumn("Name");
   listView->addColumn("Status");
   listView->addColumn("Value");
   listView->addColumn("Unit");
-  listView->setSelectionMode(QListView::Single);
-  listView->setAllColumnsShowFocus(TRUE);
+  listView->setSelectionMode(Q3ListView::Single);
+  listView->setAllColumnsShowFocus(true);
   listView->setItemMargin(1);
-  listView->setResizeMode(QListView::LastColumn);
-  listView->setDefaultRenameAction(QListView::Accept);
+  listView->setResizeMode(Q3ListView::LastColumn);
+  listView->setDefaultRenameAction(Q3ListView::Accept);
 
   ParametersWidgetLayout->addMultiCellWidget(listView, 0, 0, 2, 3);
 
-  layoutLeft = new QVBoxLayout(0, 0, 6, "layoutLeft");
+  layoutLeft = new Q3VBoxLayout(0, 0, 6, "layoutLeft");
 
   labelTitle = new QLabel(this, "labelTitle");
-  labelTitle->setAlignment(int(QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight));
+  labelTitle->setAlignment(int(Qt::WordBreak | Qt::AlignVCenter | Qt::AlignRight));
   labelTitle->setText("<h2>Model parameters</h2>");
   layoutLeft->addWidget(labelTitle);
   spacer1 = new QSpacerItem(20, 261, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -205,19 +208,19 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, WFlags fl)
   ParametersWidgetLayout->addMultiCellLayout(layoutLeft, 0, 1, 0, 1);
   //languageChange();
   //resize(QSize(511, 572).expandedTo(minimumSizeHint()));
-  clearWState(WState_Polished);
+  //clearWState(WState_Polished);
 
   // signals and slots connections
   connect(commitButton, SIGNAL(clicked()), this, SLOT(commitPressed()));
   connect(revertButton, SIGNAL(clicked()), this, SLOT(revertPressed()));
 
-  connect(listView, SIGNAL(clicked(QListViewItem*, const QPoint &, int)),
-          this, SLOT(editItem(QListViewItem*, const QPoint &, int)));
+  connect(listView, SIGNAL(clicked(Q3ListViewItem*, const QPoint &, int)),
+          this, SLOT(editItem(Q3ListViewItem*, const QPoint &, int)));
 
-  connect(listView, SIGNAL(returnPressed(QListViewItem*)),
-          this, SLOT(editItem(QListViewItem*)));
-  connect(listView, SIGNAL(spacePressed(QListViewItem*)),
-          this, SLOT(editItem(QListViewItem*)));
+  connect(listView, SIGNAL(returnPressed(Q3ListViewItem*)),
+          this, SLOT(editItem(Q3ListViewItem*)));
+  connect(listView, SIGNAL(spacePressed(Q3ListViewItem*)),
+          this, SLOT(editItem(Q3ListViewItem*)));
 }
 
 /*
@@ -351,7 +354,7 @@ bool ParametersWidget::saveToModel()
   if (listView->isRenaming())
     {
       //the following is a hack to force termination of an active editor
-      QListViewItem* tmp = listView->currentItem();
+      Q3ListViewItem* tmp = listView->currentItem();
       listView->setCurrentItem(listView->firstChild());
       if (tmp)
         {
@@ -451,7 +454,7 @@ bool ParametersWidget::saveToModel()
 }
 
 //slot
-void ParametersWidget::editItem(QListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
+void ParametersWidget::editItem(Q3ListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
 {
   if (!item) return;
   if (c == COL_VALUE) //column 1
@@ -459,7 +462,7 @@ void ParametersWidget::editItem(QListViewItem * item, const QPoint & C_UNUSED(pn
 }
 
 //slot
-void ParametersWidget::editItem(QListViewItem * item)
+void ParametersWidget::editItem(Q3ListViewItem * item)
 {
   if (!item) return;
   item->startRename(COL_VALUE);

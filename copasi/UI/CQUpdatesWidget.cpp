@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/17 16:23:34 $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,9 @@
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "copasi.h"
 
@@ -36,20 +38,20 @@
  *  Constructs a CQUpdatesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, WFlags fl)
+CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("CQUpdatesWidget");
   setCaption("CQUpdatesWidget");
 
-  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQUpdatesWidgetLayout");
+  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQUpdatesWidgetLayout");
 
   // **********  Label **************
   mLabelTitle = new QLabel(this, "updatesLabel");
   mLabelTitle->setText("Sequences of assignments");
-  mLabelTitle->setAlignment(int(QLabel::AlignVCenter
-                                | QLabel::AlignLeft));
+  mLabelTitle->setAlignment(int(Qt::AlignVCenter
+                                | Qt::AlignLeft));
   mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 
@@ -62,19 +64,19 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, WFlags fl)
   mpMainTab->addTab(mpTab, "Update Sequences");
 
   // 0
-  mpTable0 = new QTable(mpTab, "Table0");
+  mpTable0 = new Q3Table(mpTab, "Table0");
   mpTab->addTab(mpTable0, "Initial Assignments");
 
   // 1
-  mpTable1 = new QTable(mpTab, "Table1");
+  mpTable1 = new Q3Table(mpTab, "Table1");
   mpTab->addTab(mpTable1, "Constant Assignments");
 
   // 2
-  mpTable2 = new QTable(mpTab, "Table2");
+  mpTable2 = new Q3Table(mpTab, "Table2");
   mpTab->addTab(mpTable2, "Assignments during Simulation");
 
   // 3
-  mpTable3 = new QTable(mpTab, "Table3");
+  mpTable3 = new Q3Table(mpTab, "Table3");
   mpTab->addTab(mpTable3, "Assignments for output");
 
   // tab widget 2
@@ -82,11 +84,11 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, WFlags fl)
   mpMainTab->addTab(mpTab2, "Object Lists");
 
   //objects table
-  mpTableObj = new QTable(mpTab2, "TableObj");
+  mpTableObj = new Q3Table(mpTab2, "TableObj");
   mpTab2->addTab(mpTableObj, "Species");
 
   //state table
-  mpTableState = new QTable(mpTab2, "TableState");
+  mpTableState = new Q3Table(mpTab2, "TableState");
   mpTab2->addTab(mpTableState, "State");
 }
 
@@ -140,7 +142,7 @@ void CQUpdatesWidget::loadWidget()
   loadObjectsTable(pModel);
 }
 
-void CQUpdatesWidget::loadOneTable(QTable* pTable, const std::vector< Refresh * > & list)
+void CQUpdatesWidget::loadOneTable(Q3Table* pTable, const std::vector< Refresh * > & list)
 {
   pTable->setNumCols(2);
 
@@ -190,7 +192,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (pM->getStatus() == CModelEntity::ODE) c = QColor(150, 250, 250);
       if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableObj->setItem(i, 0, new ColorTableItem(mpTableObj, QTableItem::Never, c,
+      mpTableObj->setItem(i, 0, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(pM->getObjectName())));
       //mpTableObj->setText(i, 0, FROM_UTF8(pM->getObjectName()));
       std::string tmpString = CModelEntity::StatusName[pM->getStatus()];
@@ -203,7 +205,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       else
         tmpString += "CalculatedOnce = false)";
 
-      mpTableObj->setItem(i, 1, new ColorTableItem(mpTableObj, QTableItem::Never, c,
+      mpTableObj->setItem(i, 1, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(tmpString)));
       //mpTableObj->setText(i, 1, FROM_UTF8(tmpString));
     }
@@ -225,7 +227,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (pM->getStatus() == CModelEntity::ODE) c = QColor(150, 250, 250);
       if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableObj->setItem(i, 3, new ColorTableItem(mpTableObj, QTableItem::Never, c,
+      mpTableObj->setItem(i, 3, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(pM->getObjectName())));
       //mpTableObj->setText(i, 3, FROM_UTF8(pM->getObjectName()));
 
@@ -238,7 +240,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
         tmpString += "CalculatedOnce = true)";
       else
         tmpString += "CalculatedOnce = false)";
-      mpTableObj->setItem(i, 4, new ColorTableItem(mpTableObj, QTableItem::Never, c,
+      mpTableObj->setItem(i, 4, new ColorTableItem(mpTableObj, Q3TableItem::Never, c,
                           FROM_UTF8(tmpString)));
       //      mpTableObj->setText(i, 4, FROM_UTF8(tmpString));
     }
@@ -268,7 +270,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (dynamic_cast<CCompartment*>(pME)) c = QColor(100, 250, 100);
       if (dynamic_cast<CModelValue*>(pME)) c = QColor(100, 100, 250);
 
-      mpTableState->setItem(i, 0, new ColorTableItem(mpTableState, QTableItem::Never, c,
+      mpTableState->setItem(i, 0, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
                             FROM_UTF8(pME->getObjectDisplayName())));
       //      mpTableState->setText(i, 0,FROM_UTF8(pME->getObjectDisplayName()));
 
@@ -290,20 +292,20 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (pME->getStatus() == CModelEntity::ODE) c = QColor(150, 250, 250);
       if (pME->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
 
-      mpTableState->setItem(i, 1, new ColorTableItem(mpTableState, QTableItem::Never, c,
+      mpTableState->setItem(i, 1, new ColorTableItem(mpTableState, Q3TableItem::Never, c,
                             FROM_UTF8(tmpString)));
       //mpTableState->setText(i, 1, FROM_UTF8(tmpString));
     }
 
   QColor c(200, 250, 250);
   for (i = st.beginIndependent() - st.getEntities(); i < st.endIndependent() - st.getEntities(); ++i)
-    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, QTableItem::Never, c, ""));
+    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
   c = QColor(250, 200, 250);
   for (i = st.beginDependent() - st.getEntities(); i < st.endDependent() - st.getEntities(); ++i)
-    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, QTableItem::Never, c, ""));
+    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
   c = QColor(200, 200, 200);
   for (i = st.beginFixed() - st.getEntities(); i < st.endFixed() - st.getEntities(); ++i)
-    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, QTableItem::Never, c, ""));
+    mpTableState->setItem(i, 2, new ColorTableItem(mpTableState, Q3TableItem::Never, c, ""));
 
   int tmpint = st.beginIndependent() - st.getEntities();
   mpTableState->setText(tmpint, 2, "beginIndependent ");

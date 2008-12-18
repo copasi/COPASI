@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
-   $Revision: 1.45 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
+ $Revision: 1.46 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/12/18 19:57:53 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,7 +21,6 @@ Version : 1.xx  <first>
 Description:
 Date: 04/03
 Comment : Copasi Object Browser including:
-
 
 CBrowserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a CBrowserObject,
@@ -33,10 +37,10 @@ Contact: Please contact lixu1@vt.edu.
 #define OBJECT_BROWSER_ITEM_H
 
 #include "copasi.h"
-#include "qlistview.h"
+#include "q3listview.h"
 
-class QListViewItem;
-class QListView;
+class Q3ListViewItem;
+class Q3ListView;
 class CCopasiObject;
 
 /* Macro:
@@ -74,7 +78,7 @@ class CBrowserObject
 /* class ObjectBrowserItem
  define the UI wrapper for a CBrowserObject
  */
-class ObjectBrowserItem : public QListViewItem
+class ObjectBrowserItem : public Q3ListViewItem
   {
   private:
     static long KeySpace;
@@ -103,7 +107,7 @@ class ObjectBrowserItem : public QListViewItem
         return mKey;
       }
 
-    ObjectBrowserItem (QListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
+    ObjectBrowserItem (Q3ListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     virtual ~ObjectBrowserItem()
     {

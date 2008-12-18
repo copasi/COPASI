@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2008/12/18 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
  *****************************************************************************/
 
 #include <qpainter.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
 
@@ -75,7 +75,7 @@ void TimeSeriesSubWidget::saveDataToFile()
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += fileName.utf8();
+      s += (const char *) fileName.utf8();
       CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }

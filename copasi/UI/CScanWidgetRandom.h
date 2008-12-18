@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:49 $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,57 +11,266 @@
 // and The University of Manchester.
 // All rights reserved.
 
-/****************************************************************************
- ** Form interface generated from reading ui file 'CScanWidgetRandom.ui'
- **
- ** Created: Thu Jul 31 17:06:25 2008
- **      by: The User Interface Compiler ($Id: CScanWidgetRandom.h,v 1.6 2008/09/01 16:55:49 shoops Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
-
 #ifndef CSCANWIDGETRANDOM_H
 #define CSCANWIDGETRANDOM_H
 
 #include <qvariant.h>
-#include <qpixmap.h>
-#include <qwidget.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QLabel>
+#include <Q3Frame>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QSpacerItem;
-class QFrame;
-class QLabel;
-class QLineEdit;
-class QToolButton;
-class QComboBox;
-class QCheckBox;
 class CCopasiParameterGroup;
 class CCopasiObject;
 class CScanProblem;
 class CModel;
 
-class CScanWidgetRandom : public QWidget
+#include <Qt3Support/Q3Frame>
+#include <QtCore/QVariant>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <Qt3Support/Q3ButtonGroup>
+#include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
+#include <Qt3Support/Q3GridLayout>
+#include <Qt3Support/Q3HBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QToolButton>
+#include <Qt3Support/Q3VBoxLayout>
+#include <QtGui/QWidget>
+
+QT_BEGIN_NAMESPACE
+
+class Ui_CScanWidgetRandom
+  {
+  public:
+    Q3VBoxLayout *vboxLayout;
+    Q3Frame *frame;
+    Q3VBoxLayout *vboxLayout1;
+    QLabel *labelTitle;
+    Q3HBoxLayout *hboxLayout;
+    QLabel *labelObject;
+    QLineEdit *lineEditObject;
+    QToolButton *buttonObject;
+    Q3GridLayout *gridLayout;
+    QComboBox *comboBoxType;
+    QLabel *labelType;
+    QLineEdit *lineEditMax;
+    QLineEdit *lineEditMin;
+    QLabel *labelMin;
+    QLabel *labelMax;
+    QCheckBox *checkBoxLog;
+
+    void setupUi(QWidget *CScanWidgetRandom)
+    {
+      if (CScanWidgetRandom->objectName().isEmpty())
+        CScanWidgetRandom->setObjectName(QString::fromUtf8("CScanWidgetRandom"));
+      CScanWidgetRandom->resize(374, 146);
+      vboxLayout = new Q3VBoxLayout(CScanWidgetRandom);
+      vboxLayout->setSpacing(6);
+      vboxLayout->setMargin(5);
+      vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
+      frame = new Q3Frame(CScanWidgetRandom);
+      frame->setObjectName(QString::fromUtf8("frame"));
+      frame->setFrameShape(Q3Frame::StyledPanel);
+      frame->setFrameShadow(Q3Frame::Raised);
+      vboxLayout1 = new Q3VBoxLayout(frame);
+      vboxLayout1->setSpacing(6);
+      vboxLayout1->setMargin(6);
+      vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
+      labelTitle = new QLabel(frame);
+      labelTitle->setObjectName(QString::fromUtf8("labelTitle"));
+      labelTitle->setWordWrap(false);
+
+      vboxLayout1->addWidget(labelTitle);
+
+      hboxLayout = new Q3HBoxLayout();
+      hboxLayout->setSpacing(6);
+      hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
+      labelObject = new QLabel(frame);
+      labelObject->setObjectName(QString::fromUtf8("labelObject"));
+      labelObject->setWordWrap(false);
+
+      hboxLayout->addWidget(labelObject);
+
+      lineEditObject = new QLineEdit(frame);
+      lineEditObject->setObjectName(QString::fromUtf8("lineEditObject"));
+
+      hboxLayout->addWidget(lineEditObject);
+
+      buttonObject = new QToolButton(frame);
+      buttonObject->setObjectName(QString::fromUtf8("buttonObject"));
+      const QIcon icon = qt_get_icon(image0_ID);
+      buttonObject->setIcon(icon);
+
+      hboxLayout->addWidget(buttonObject);
+
+      vboxLayout1->addLayout(hboxLayout);
+
+      gridLayout = new Q3GridLayout(1, 1);
+      gridLayout->setSpacing(6);
+      gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+      comboBoxType = new QComboBox(frame);
+      comboBoxType->setObjectName(QString::fromUtf8("comboBoxType"));
+
+      gridLayout->addWidget(comboBoxType, 1, 0, 1, 1);
+
+      labelType = new QLabel(frame);
+      labelType->setObjectName(QString::fromUtf8("labelType"));
+      labelType->setWordWrap(false);
+
+      gridLayout->addWidget(labelType, 0, 0, 1, 1);
+
+      lineEditMax = new QLineEdit(frame);
+      lineEditMax->setObjectName(QString::fromUtf8("lineEditMax"));
+
+      gridLayout->addWidget(lineEditMax, 1, 2, 1, 1);
+
+      lineEditMin = new QLineEdit(frame);
+      lineEditMin->setObjectName(QString::fromUtf8("lineEditMin"));
+
+      gridLayout->addWidget(lineEditMin, 1, 1, 1, 1);
+
+      labelMin = new QLabel(frame);
+      labelMin->setObjectName(QString::fromUtf8("labelMin"));
+      labelMin->setWordWrap(false);
+
+      gridLayout->addWidget(labelMin, 0, 1, 1, 1);
+
+      labelMax = new QLabel(frame);
+      labelMax->setObjectName(QString::fromUtf8("labelMax"));
+      labelMax->setWordWrap(false);
+
+      gridLayout->addWidget(labelMax, 0, 2, 1, 1);
+
+      vboxLayout1->addLayout(gridLayout);
+
+      checkBoxLog = new QCheckBox(frame);
+      checkBoxLog->setObjectName(QString::fromUtf8("checkBoxLog"));
+
+      vboxLayout1->addWidget(checkBoxLog);
+
+      vboxLayout->addWidget(frame);
+
+      retranslateUi(CScanWidgetRandom);
+      QObject::connect(buttonObject, SIGNAL(clicked()), CScanWidgetRandom, SLOT(slotChooseObject()));
+      QObject::connect(comboBoxType, SIGNAL(activated(int)), CScanWidgetRandom, SLOT(changeType()));
+
+      QMetaObject::connectSlotsByName(CScanWidgetRandom);
+    } // setupUi
+
+    void retranslateUi(QWidget *CScanWidgetRandom)
+    {
+      CScanWidgetRandom->setWindowTitle(QApplication::translate("CScanWidgetRandom", "Form1", 0, QApplication::UnicodeUTF8));
+      labelTitle->setText(QApplication::translate("CScanWidgetRandom", "<h2>Random Distribution</h2>", 0, QApplication::UnicodeUTF8));
+      labelObject->setText(QApplication::translate("CScanWidgetRandom", "Parameter", 0, QApplication::UnicodeUTF8));
+      buttonObject->setText(QString());
+      comboBoxType->clear();
+      comboBoxType->insertItems(0, QStringList()
+                                << QApplication::translate("CScanWidgetRandom", "Uniform distribution", 0, QApplication::UnicodeUTF8)
+                                << QApplication::translate("CScanWidgetRandom", "Normal distribution", 0, QApplication::UnicodeUTF8)
+                                << QApplication::translate("CScanWidgetRandom", "Poisson distribution", 0, QApplication::UnicodeUTF8)
+);
+      labelType->setText(QApplication::translate("CScanWidgetRandom", "Type", 0, QApplication::UnicodeUTF8));
+      labelMin->setText(QApplication::translate("CScanWidgetRandom", "min", 0, QApplication::UnicodeUTF8));
+      labelMax->setText(QApplication::translate("CScanWidgetRandom", "max", 0, QApplication::UnicodeUTF8));
+      checkBoxLog->setText(QApplication::translate("CScanWidgetRandom", "logarithmic", 0, QApplication::UnicodeUTF8));
+      Q_UNUSED(CScanWidgetRandom);
+    } // retranslateUi
+
+  protected:
+    enum IconID
+    {
+      image0_ID,
+      unknown_ID
+    };
+    static QPixmap qt_get_icon(IconID id)
+    {
+      static const unsigned char image0_data[] =
+        {
+          0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+          0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
+          0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
+          0x51, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x8d, 0x93, 0xdb, 0x53, 0x52,
+          0x51, 0x14, 0x87, 0x7f, 0x1b, 0x37, 0x17, 0xe3, 0x2e, 0x8e, 0x98, 0x97,
+          0x22, 0x01, 0x51, 0xb0, 0xcb, 0x28, 0x8c, 0x3a, 0xa6, 0x65, 0x4d, 0x33,
+          0xdd, 0xa6, 0x9e, 0x7d, 0xe9, 0xef, 0xeb, 0xc5, 0xe9, 0xb1, 0x97, 0xa6,
+          0x51, 0x31, 0x72, 0x72, 0x86, 0xd1, 0x20, 0x06, 0x27, 0x27, 0xec, 0x88,
+          0xe0, 0x81, 0x40, 0xe0, 0x40, 0x9c, 0xa3, 0x70, 0x56, 0x0f, 0x8d, 0x34,
+          0x27, 0xa3, 0xda, 0x8f, 0x7b, 0xad, 0xef, 0x9b, 0xbd, 0xd6, 0xda, 0x8b,
+          0xc5, 0x62, 0x31, 0xfc, 0xcf, 0x29, 0x88, 0x97, 0x49, 0x91, 0x55, 0xd8,
+          0x6c, 0x7a, 0xd8, 0x9d, 0x59, 0x76, 0x7e, 0xcf, 0xff, 0x06, 0x7d, 0xd9,
+          0x1f, 0x20, 0xe1, 0xa0, 0x81, 0x7c, 0xae, 0x89, 0x62, 0x51, 0x00, 0xd3,
+          0x31, 0x78, 0xbd, 0x66, 0x3c, 0x7e, 0xf6, 0x2b, 0xa7, 0xab, 0x60, 0xfd,
+          0xad, 0x99, 0xd2, 0xa9, 0x1c, 0x0c, 0x06, 0x8e, 0xc9, 0x29, 0x07, 0x96,
+          0xee, 0x98, 0x30, 0x7c, 0xf5, 0x98, 0x01, 0x8a, 0x26, 0xef, 0x8f, 0x82,
+          0xd5, 0x97, 0x7a, 0x3a, 0x3a, 0xaa, 0xc2, 0xeb, 0xb3, 0xe0, 0xc9, 0x73,
+          0x99, 0x01, 0x95, 0xae, 0xaf, 0xd4, 0x08, 0x92, 0xbb, 0x0e, 0xfa, 0xf0,
+          0xfe, 0x04, 0x92, 0xd4, 0xc4, 0x74, 0xd8, 0x89, 0xc5, 0x65, 0x89, 0x75,
+          0x03, 0x2f, 0x08, 0x76, 0xe3, 0x26, 0xda, 0x8c, 0x0a, 0x30, 0x1a, 0x2d,
+          0x58, 0x5c, 0xee, 0xc7, 0x74, 0xb8, 0xf2, 0x4f, 0x58, 0x23, 0xd8, 0x8a,
+          0x89, 0xb0, 0x5a, 0x55, 0xcc, 0x2f, 0x38, 0xe0, 0x0f, 0x5c, 0x84, 0xbd,
+          0x8d, 0x0c, 0x29, 0xcd, 0x1a, 0x94, 0x96, 0x04, 0xa6, 0xd7, 0xa3, 0xe0,
+          0x9a, 0x65, 0x1d, 0xc1, 0xab, 0xd5, 0x0a, 0xa9, 0x44, 0x88, 0xcc, 0x8e,
+          0xc2, 0x1f, 0xa8, 0x69, 0xe0, 0xa1, 0xbd, 0x75, 0x2a, 0xa5, 0x13, 0x48,
+          0x89, 0x39, 0x54, 0x65, 0x05, 0x27, 0x44, 0x60, 0x1c, 0x18, 0xf6, 0x44,
+          0x69, 0xe2, 0xe1, 0x0a, 0x78, 0xee, 0x90, 0xd3, 0xe1, 0xd7, 0x1c, 0x66,
+          0xc2, 0x7e, 0x4c, 0x86, 0xea, 0x1d, 0x78, 0xbc, 0x16, 0x27, 0x31, 0x16,
+          0xc5, 0x5e, 0x3a, 0x8b, 0xfc, 0x99, 0x05, 0xad, 0xc1, 0x29, 0xb8, 0x6f,
+          0x78, 0xe0, 0xeb, 0xb7, 0xe2, 0xb4, 0x94, 0xc1, 0x51, 0x72, 0x1b, 0x7d,
+          0x87, 0x19, 0xf0, 0x5a, 0x59, 0xc4, 0x40, 0xdf, 0x19, 0x16, 0x96, 0xf4,
+          0x1d, 0x78, 0xac, 0xbc, 0x45, 0xc2, 0xc6, 0x6b, 0x64, 0x04, 0xa0, 0x7d,
+          0x65, 0x1e, 0x9e, 0xd0, 0x2d, 0x18, 0x02, 0x63, 0x9d, 0x78, 0x9b, 0x19,
+          0xe9, 0x58, 0x4e, 0xc0, 0x5e, 0xd6, 0x81, 0xab, 0x6d, 0x05, 0x0e, 0xab,
+          0xaa, 0xa9, 0xb7, 0x94, 0x58, 0xc7, 0x27, 0xc1, 0x08, 0x43, 0xe8, 0x01,
+          0x46, 0xef, 0x47, 0x2e, 0xf4, 0x23, 0xba, 0x16, 0x47, 0x51, 0x54, 0xe0,
+          0x33, 0xb9, 0xc0, 0x0d, 0x66, 0x2b, 0xc4, 0x92, 0xd0, 0x09, 0x06, 0x75,
+          0x7b, 0x94, 0x3a, 0x29, 0x20, 0xab, 0x8b, 0x20, 0x12, 0xf0, 0x6b, 0xc0,
+          0x6a, 0x2a, 0x4e, 0x3b, 0xef, 0xb6, 0x90, 0xfd, 0x9c, 0x87, 0x77, 0x2a,
+          0x88, 0xc1, 0x60, 0x80, 0x71, 0xa7, 0xc3, 0x0e, 0x55, 0xd5, 0x61, 0x73,
+          0xad, 0x44, 0xb7, 0xef, 0xba, 0x58, 0x93, 0xf7, 0xc3, 0x64, 0x33, 0xa3,
+          0xb7, 0x95, 0x06, 0x09, 0x26, 0xd8, 0x64, 0x23, 0x49, 0x55, 0x09, 0x89,
+          0x74, 0x01, 0xfb, 0xe9, 0x03, 0xc8, 0x0a, 0xc7, 0xa8, 0xef, 0x26, 0xee,
+          0xbd, 0x58, 0xf9, 0x39, 0x05, 0x97, 0x5b, 0x65, 0x81, 0xe0, 0x35, 0x4a,
+          0x7e, 0x14, 0x20, 0x35, 0x38, 0xcd, 0x5c, 0x77, 0xc2, 0xee, 0x7e, 0x04,
+          0xa7, 0x6d, 0x03, 0x3b, 0x6f, 0x36, 0xb1, 0xad, 0xb4, 0xd1, 0x62, 0x3d,
+          0xa8, 0xcb, 0x3d, 0x20, 0xdb, 0x08, 0x7c, 0xb3, 0x73, 0x08, 0x3f, 0x9d,
+          0xeb, 0x94, 0xc5, 0xce, 0xb7, 0x31, 0xbe, 0xfd, 0x9d, 0x12, 0xc9, 0x6f,
+          0x28, 0x8a, 0x15, 0xb0, 0xb3, 0x32, 0x5a, 0x8d, 0x3a, 0xea, 0xd5, 0x53,
+          0xf0, 0x1e, 0x60, 0x68, 0xc4, 0x82, 0xf1, 0x80, 0x1b, 0x13, 0xa1, 0x11,
+          0xb8, 0xc7, 0x5d, 0x9a, 0x9e, 0xb0, 0xdf, 0xd7, 0x39, 0x9f, 0x33, 0x52,
+          0xa3, 0xde, 0x00, 0xb5, 0x75, 0xe0, 0x9c, 0xa3, 0xf7, 0x92, 0x01, 0x83,
+          0xc3, 0x72, 0xd7, 0x5f, 0xf9, 0x03, 0x51, 0x05, 0xf9, 0xb7, 0x62, 0x99,
+          0xad, 0xe4, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42,
+          0x60, 0x82
+        };
+
+      switch (id)
+        {
+        case image0_ID: {QImage img; img.loadFromData(image0_data, sizeof(image0_data), "PNG"); return QPixmap::fromImage(img);}
+        default: return QPixmap();
+        } // switch
+    } // icon
+  };
+
+namespace Ui
+  {
+  class CScanWidgetRandom: public Ui_CScanWidgetRandom {};
+} // namespace Ui
+
+QT_END_NAMESPACE
+
+class CScanWidgetRandom : public QWidget, public Ui::CScanWidgetRandom
   {
     Q_OBJECT
 
   public:
-    CScanWidgetRandom(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CScanWidgetRandom(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
     ~CScanWidgetRandom();
-
-    QFrame* frame;
-    QLabel* labelTitle;
-    QLabel* labelObject;
-    QLineEdit* lineEditObject;
-    QToolButton* buttonObject;
-    QComboBox* comboBoxType;
-    QLabel* labelType;
-    QLineEdit* lineEditMax;
-    QLineEdit* lineEditMin;
-    QLabel* labelMin;
-    QLabel* labelMax;
-    QCheckBox* checkBoxLog;
 
     virtual bool initFromScanItem(CCopasiParameterGroup * pg, const CModel * model);
     virtual bool saveToScanItem(CScanProblem * pg) const;
@@ -70,11 +279,6 @@ class CScanWidgetRandom : public QWidget
     const CModel* mpModel;
     const CCopasiObject* mpObject;
 
-    QVBoxLayout* CScanWidgetRandomLayout;
-    QVBoxLayout* frameLayout;
-    QHBoxLayout* layout8;
-    QGridLayout* layout2;
-
   protected slots:
     virtual void languageChange();
 
@@ -82,8 +286,6 @@ class CScanWidgetRandom : public QWidget
     virtual void changeType();
 
   private:
-    QPixmap image0;
-
     void init();
   };
 
