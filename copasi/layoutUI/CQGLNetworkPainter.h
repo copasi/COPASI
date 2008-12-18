@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/10 16:25:53 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,14 +22,17 @@
 #include <qgl.h>
 // #include <GL/glut.h>
 // #include <GL/gl.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qaction.h>
 #include <qevent.h>
 #include <qcolor.h>
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qfont.h>
 #include <qfontmetrics.h>
 #include <qimage.h>
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <QResizeEvent>
 
 #include <vector>
 #include <string>

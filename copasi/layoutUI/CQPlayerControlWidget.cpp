@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQPlayerControlWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/04 18:51:38 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,9 +15,11 @@
 
 #include <qtoolbutton.h>
 #include <qpixmap.h>
-#include <qiconset.h>
+#include <qicon.h>
 #include <qlayout.h>
 #include <qaction.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 #include "play.xpm"
 #include "stop.xpm"
@@ -29,7 +31,7 @@
 
 CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent, const char* name): QWidget(pParent, name), mNumSteps(0), mCurrentStep(0), mPlaying(false)
 {
-  QGridLayout* pLayout = new QGridLayout(this, 2, 3);
+  Q3GridLayout* pLayout = new Q3GridLayout(this, 2, 3);
   this->mpStepBackwardButton = new QToolButton(this);
   this->mpStepBackwardButton->setIconSet(QPixmap(backward_single_xpm));
   pLayout->addWidget(this->mpStepBackwardButton, 0, 0);
@@ -66,19 +68,19 @@ CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent, const char* name)
 
 void CQPlayerControlWidget::createActions()
 {
-  this->mpPlayAction = new QAction(QPixmap(play_xpm), "play", QKeySequence(), this);
+  this->mpPlayAction = new QAction(QPixmap(play_xpm), "play", this);
   connect(this->mpPlayAction, SIGNAL(activated()), this, SLOT(slot_play_clicked()));
-  this->mpPauseAction = new QAction(QPixmap(pause_xpm), "pause", QKeySequence(), this);
+  this->mpPauseAction = new QAction(QPixmap(pause_xpm), "pause", this);
   connect(this->mpPauseAction, SIGNAL(activated()), this, SLOT(slot_pause_clicked()));
-  this->mpStopAction = new QAction(QPixmap(stop_xpm), "stop", QKeySequence(), this);
+  this->mpStopAction = new QAction(QPixmap(stop_xpm), "stop", this);
   connect(this->mpStopAction, SIGNAL(activated()), this, SLOT(slot_stop_clicked()));
-  this->mpForwardAction = new QAction(QPixmap(forward_xpm), "forward", QKeySequence(), this);
+  this->mpForwardAction = new QAction(QPixmap(forward_xpm), "forward", this);
   connect(this->mpForwardAction, SIGNAL(activated()), this, SLOT(slot_forward_clicked()));
-  this->mpBackwardAction = new QAction(QPixmap(backward_xpm), "backward", QKeySequence(), this);
+  this->mpBackwardAction = new QAction(QPixmap(backward_xpm), "backward", this);
   connect(this->mpBackwardAction, SIGNAL(activated()), this, SLOT(slot_backward_clicked()));
-  this->mpStepForwardAction = new QAction(QPixmap(forward_single_xpm), "step forward", QKeySequence(), this);
+  this->mpStepForwardAction = new QAction(QPixmap(forward_single_xpm), "step forward", this);
   connect(this->mpStepForwardAction, SIGNAL(activated()), this, SLOT(slot_step_forward_clicked()));
-  this->mpStepBackwardAction = new QAction(QPixmap(backward_single_xpm), "step backward", QKeySequence(), this);
+  this->mpStepBackwardAction = new QAction(QPixmap(backward_single_xpm), "step backward", this);
   connect(this->mpStepBackwardAction, SIGNAL(activated()), this, SLOT(slot_step_backward_clicked()));
 }
 

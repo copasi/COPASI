@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/06 13:28:37 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,8 @@
 #include "layoutUI/CDataEntity.h"
 
 class QPushButton;
-class QTable;
-class QHeader;
+class Q3Table;
+class Q3Header;
 
 class CQCurrentValueTable : public QWidget
   {
@@ -33,7 +33,7 @@ class CQCurrentValueTable : public QWidget
 
   protected:
     std::map<int, std::string> mIndexMap;
-    QTable* mpTable;
+    Q3Table* mpTable;
     QPushButton* mpCheckAllButton;
     QPushButton* mpUncheckAllButton;
 
@@ -46,7 +46,8 @@ class CQCurrentValueTable : public QWidget
     void updateRowInTable(int row, C_FLOAT64 val);
     void setRowInTable(int row, std::string key, std::string s, C_FLOAT64 val);
     int numRows() const;
-    QHeader* verticalHeader();
+
+    Q3Header* verticalHeader();
     std::string getKeyForRow(int row) const;
     bool getValueForRow(int row) const;
 

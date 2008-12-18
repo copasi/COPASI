@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/07 11:18:17 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,25 +11,25 @@
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 #include "CQLayoutMainWindow.h"
 
 #include <qaction.h>
 #include <qcombobox.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qpushbutton.h>
 #include <qsplitter.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qfiledialog.h>
 #include <qwt_slider.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <QPixmap>
+#include <QCloseEvent>
 
 #include <iostream>
 #include <math.h>
@@ -48,20 +48,20 @@
 
 using namespace std;
 
-CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : QMainWindow(parent, name)
+CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : Q3MainWindow(parent, name)
 {
   mpLayout = pLayout;
   mCurrentPlace = QString::null;
   mDataPresent = false;
   mpVisParameters = new CVisParameters();
   setCaption(tr("Reaction network graph"));
-  mpMainBox = new QVBox(this);
+  mpMainBox = new Q3VBox(this);
 
   // create split window with parameter panel and graph panel
   mpSplitter = new QSplitter(Qt::Horizontal, mpMainBox);
   mpSplitter->setCaption("Test");
 
-  mpInfoBox = new QVBox(mpSplitter);
+  mpInfoBox = new Q3VBox(mpSplitter);
 
   mpParaPanel = new CQParaPanel(mpInfoBox);
 
@@ -77,7 +77,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
     }
   mpSplitter->setResizeMode(mpInfoBox, QSplitter::KeepSize);
 
-  mpFrame = new QFrame(mpMainBox);
+  mpFrame = new Q3Frame(mpMainBox);
 
   this->mpControlWidget = new CQPlayerControlWidget(mpFrame);
   connect(this->mpControlWidget, SIGNAL(play()), this, SLOT(startAnimation()));
@@ -98,7 +98,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   connect(mpTimeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
-  QGridLayout* bottomBoxlayout = new QGridLayout(mpFrame, 2, 2, 3, 6);
+  Q3GridLayout* bottomBoxlayout = new Q3GridLayout(mpFrame, 2, 2, 3, 6);
   bottomBoxlayout->addMultiCellWidget(mpTimeSlider, 0, 1, 1, 1, Qt::AlignTop);
   bottomBoxlayout->addMultiCellWidget(this->mpControlWidget, 0, 1, 0, 0, Qt::AlignTop);
   QSpacerItem* theSpacer = new QSpacerItem(20, 20);
@@ -114,7 +114,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const 
   createActions();
   createMenus();
 
-  this->mpToolbar = new QToolBar(this, "layout toolbar");
+  this->mpToolbar = new Q3ToolBar(this, "layout toolbar");
   this->mpLoadDataAction->addTo(this->mpToolbar);
   this->mpToolbar->addSeparator();
   QLabel* pLabel = new QLabel("zoom factor:", this->mpToolbar);
@@ -288,71 +288,56 @@ void CQLayoutMainWindow::createActions()
   //   openDataFile->setStatusTip("Load simulation data");
   //   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
 
-  mpCloseAction = new QAction ("close",
-                               "Close Window",
-                               CTRL + Key_Q ,
-                               this);
+  mpCloseAction = new QAction ("Close Window", this);
+  mpCloseAction->setShortcut(Qt::CTRL + Qt::Key_Q);
   mpCloseAction->setStatusTip("Close Layout Window");
   connect(mpCloseAction, SIGNAL(activated()), this, SLOT(closeApplication()));
 
   mDataPresent = false;
 
-  mpCreatePicture = new QAction("image",
-                                "Create image",
-                                CTRL + Key_I,
-                                this);
+  mpCreatePicture = new QAction("Create image", this);
+  mpCreatePicture->setShortcut(Qt::CTRL + Qt::Key_I);
   mpCreatePicture->setStatusTip("create a picture from the current view and save it to file");
   connect(mpCreatePicture, SIGNAL(activated()), this, SLOT(saveImage()));
 
-  mpRectangluarShape = new QAction ("rectangle",
-                                    "rectangle",
-                                    CTRL + Key_R ,
-                                    this);
+  mpRectangluarShape = new QAction ("rectangle", this);
+  mpRectangluarShape->setShortcut(Qt::CTRL + Qt::Key_R);
   mpRectangluarShape->setStatusTip("Show labels as rectangles");
   connect(mpRectangluarShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
 
-  mpCircularShape = new QAction ("circle",
-                                 "circle",
-                                 CTRL + Key_C ,
-                                 this);
+  mpCircularShape = new QAction ("circle", this);
+  mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
   connect(mpCircularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
   mpCircularShape->setStatusTip("Show labels as circles");
 
-  mpMimaNodeSizes = new QAction ("minmax",
-                                 "Set Min/Max Node Sizes",
-                                 CTRL + Key_M,
-                                 this);
+  mpMimaNodeSizes = new QAction ("Set Min/Max Node Sizes", this);
+  mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
 
   connect(mpMimaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
   mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
 
-  mpSFontSize = new QAction("fontsiz",
-                            "Set Font Size",
-                            CTRL + Key_F,
-                            this);
+  mpSFontSize = new QAction("Set Font Size", this);
+  mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
 
   connect(mpSFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
 
-  this->mpLoadDataAction = new QAction(QPixmap(load_data_xpm),
-                                       "load data",
-                                       QKeySequence(),
-                                       this);
+  this->mpLoadDataAction = new QAction(QPixmap(load_data_xpm), "load data", this);
   connect(this->mpLoadDataAction, SIGNAL(activated()), this, SLOT(loadData()));
 }
 
 void CQLayoutMainWindow::createMenus()
 {
-  mpFileMenu = new QPopupMenu(this);
+  mpFileMenu = new Q3PopupMenu(this);
   mpFileMenu->insertSeparator();
   mpCloseAction->addTo(mpFileMenu);
 
-  mpLabelShapeMenu = new QPopupMenu(this);
+  mpLabelShapeMenu = new Q3PopupMenu(this);
 
   mpRectangluarShape->addTo(mpLabelShapeMenu);
   mpCircularShape->addTo(mpLabelShapeMenu);
   // play menu
-  this->mpPlayMenu = new QPopupMenu(this);
+  this->mpPlayMenu = new Q3PopupMenu(this);
   this->mpControlWidget->getPlayAction()->addTo(this->mpPlayMenu);
   this->mpControlWidget->getPauseAction()->addTo(this->mpPlayMenu);
   this->mpControlWidget->getStopAction()->addTo(this->mpPlayMenu);
@@ -366,7 +351,7 @@ void CQLayoutMainWindow::createMenus()
   this->mpLoadDataAction->addTo(this->mpPlayMenu);
 
   // view menu
-  mpViewMenu = new QPopupMenu(this);
+  mpViewMenu = new Q3PopupMenu(this);
   mpViewMenu->insertItem("parameters", 1001);
   mpViewMenu->setItemChecked(1001, TRUE);
   mpViewMenu->insertItem("value table", 1002);
@@ -378,7 +363,7 @@ void CQLayoutMainWindow::createMenus()
   connect(this->mpViewMenu, SIGNAL(activated(int)), this, SLOT(slotViewActivated(int)));
   mpViewMenu->insertSeparator();
   mpViewMenu->insertItem("Reset View", this, SLOT(slotResetView()));
-  mpZoomMenu = new QPopupMenu(this);
+  mpZoomMenu = new Q3PopupMenu(this);
   mpViewMenu->insertItem("Zoom", mpZoomMenu);
   int id;
   id = mpZoomMenu->insertItem("1%", 1);
@@ -417,7 +402,7 @@ void CQLayoutMainWindow::createMenus()
   this->mpViewMenu->insertSeparator();
   mpCreatePicture->addTo(mpViewMenu);
 
-  mpOptionsMenu = new QPopupMenu(this);
+  mpOptionsMenu = new Q3PopupMenu(this);
   mpOptionsMenu->insertItem("Shape of Label", mpLabelShapeMenu);
   mpMimaNodeSizes->addTo(mpOptionsMenu);
   mpSFontSize->addTo(mpOptionsMenu);
@@ -593,8 +578,9 @@ void CQLayoutMainWindow::startAnimation()
 void CQLayoutMainWindow::saveImage()
 {
   QImage img = mpGLViewport->getPainter()->getImage();
+  //QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", "Choose a filename to save the image under");
   QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
-  if (filename)
+  if (!filename.isNull())
     {
       img.save(filename, "PNG");
       mCurrentPlace = filename;
@@ -615,11 +601,11 @@ void CQLayoutMainWindow::endOfAnimationReached()
 {
   if (this->mLooping)
     {
-      this->mpControlWidget->getBackwardAction()->activate();
+      this->mpControlWidget->getBackwardAction()->activate(QAction::Trigger);
     }
   else
     {
-      this->mpControlWidget->getPauseAction()->activate();
+      this->mpControlWidget->getPauseAction()->activate(QAction::Trigger);
     }
 }
 
@@ -712,7 +698,7 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
 {
   if (maybeSave())
     {
-      this->mpControlWidget->getPauseAction()->activate();
+      this->mpControlWidget->getPauseAction()->activate(QAction::Trigger);
       event->accept();
     }
   else
@@ -721,7 +707,7 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-QIconSet CQLayoutMainWindow::createStartIcon()
+QIcon CQLayoutMainWindow::createStartIcon()
 {
   QImage img = QImage();
   C_INT32 w = 19;
@@ -752,12 +738,12 @@ QIconSet CQLayoutMainWindow::createStartIcon()
 
   QPixmap *pixmap = new QPixmap();
   pixmap->convertFromImage(img);
-  QIconSet iconset = QIconSet(*pixmap);
+  QIcon iconset = QIcon(*pixmap);
   delete pixmap;
   return iconset;
 }
 
-QIconSet CQLayoutMainWindow::createStopIcon()
+QIcon CQLayoutMainWindow::createStopIcon()
 {
   QImage img = QImage();
   C_INT32 w = 20;
@@ -786,7 +772,7 @@ QIconSet CQLayoutMainWindow::createStopIcon()
 
   QPixmap *pixmap = new QPixmap();
   pixmap->convertFromImage(img);
-  QIconSet iconset = QIconSet(*pixmap);
+  QIcon iconset = QIcon(*pixmap);
   delete pixmap;
   return iconset;
 }

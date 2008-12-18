@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/10 16:25:53 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,10 +25,14 @@
 #include <qsize.h>
 #include <qcolor.h>
 #include <qtimer.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 
 #include <qfontinfo.h>
 #include <qfontdatabase.h>
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <Q3ValueList>
+#include <Q3PopupMenu>
 
 #include <iostream>
 #include <limits>
@@ -1538,8 +1542,8 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
 
   QPixmap pixmap(width, height);
   pixmap.fill(QColor(255, 255, 255));
-  QCanvas canvas(width, height);
-  QCanvasText canvasText(QString(text.c_str()), &canvas);
+  Q3Canvas canvas(width, height);
+  Q3CanvasText canvasText(QString(text.c_str()), &canvas);
   canvasText.setFont(font);
   canvasText.setColor(QColor(0, 0, 0));
   // also move one to the right and one down to generate one column
@@ -2419,22 +2423,16 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
 
 void CQGLNetworkPainter::createActions()
 {
-  zoomInAction = new QAction ("zoom in",
-                              "Zoom in",
-                              CTRL + Key_P,
-                              this);
+  zoomInAction = new QAction ("Zoom in", this);
+  zoomInAction->setShortcut(Qt::CTRL + Qt::Key_P);
   connect(zoomInAction, SIGNAL(activated()), this, SLOT(zoomIn()));
 
-  zoomOutAction = new QAction ("zoom out",
-                               "Zoom out",
-                               CTRL + Key_M,
-                               this);
+  zoomOutAction = new QAction ("Zoom out", this);
+  zoomOutAction->setShortcut(Qt::CTRL + Qt::Key_M);
   connect(zoomOutAction, SIGNAL(activated()), this, SLOT(zoomOut()));
 
-  setFontSizeAction = new QAction("set font size",
-                                  "Set Font Size",
-                                  CTRL + Key_F,
-                                  this);
+  setFontSizeAction = new QAction("Set Font Size", this);
+  setFontSizeAction->setShortcut(Qt::CTRL + Qt::Key_F);
   connect(setFontSizeAction, SIGNAL(activated()), this, SLOT(setFontSize()));
 }
 
@@ -2572,7 +2570,7 @@ QImage CQGLNetworkPainter::getImage()
 
 void CQGLNetworkPainter::contextMenuEvent(QContextMenuEvent *cme)
 {
-  QPopupMenu *contextMenu = new QPopupMenu(this);
+  Q3PopupMenu *contextMenu = new Q3PopupMenu(this);
   zoomInAction->addTo(contextMenu);
   zoomOutAction->addTo(contextMenu);
   setFontSizeAction->addTo(contextMenu);
@@ -2791,8 +2789,8 @@ void CQGLNetworkPainter::printAvailableFonts()
         {
           QString style = *s;
           QString dstyle = "\t" + style + " (";
-          QValueList<int> smoothies = fdb.smoothSizes(family, style);
-          for (QValueList<int>::Iterator points = smoothies.begin();
+          Q3ValueList<int> smoothies = fdb.smoothSizes(family, style);
+          for (Q3ValueList<int>::Iterator points = smoothies.begin();
                points != smoothies.end(); ++points)
             {
               dstyle += QString::number(*points) + " ";

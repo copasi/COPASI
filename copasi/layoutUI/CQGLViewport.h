@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/07 11:18:17 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,7 +11,9 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <qframe.h>
+#include <q3frame.h>
+//Added by qt3to4:
+#include <QResizeEvent>
 
 class CQGLNetworkPainter;
 class QScrollBar;
@@ -21,7 +23,7 @@ class CLayout;
  * This class is supposed to act as a sort of scrollview for a
  * CQGLNetworkPainter.
  */
-class CQGLViewport : public QFrame
+class CQGLViewport : public Q3Frame
   {
     Q_OBJECT
 
@@ -34,7 +36,7 @@ class CQGLViewport : public QFrame
     /**
      * Constructor.
      */
-    CQGLViewport(QWidget* pParent = 0, const char* name = 0, WFlags f = 0);
+    CQGLViewport(QWidget* pParent = 0, const char* name = 0, Qt::WFlags f = 0);
 
     /**
      * Destructor.

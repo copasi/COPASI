@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/07 11:18:17 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,8 +16,12 @@
 #include <qgl.h>
 #include <qscrollbar.h>
 #include <qrect.h>
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <Q3VBoxLayout>
+#include <Q3Frame>
 
 #include <iostream>
 
@@ -28,10 +32,10 @@
 /**
  * Constructor.
  */
-CQGLViewport::CQGLViewport(QWidget* pParent, const char* name, WFlags f): QFrame(pParent, name, f)
+CQGLViewport::CQGLViewport(QWidget* pParent, const char* name, Qt::WFlags f): Q3Frame(pParent, name, f)
 {
-  QVBoxLayout* pVBoxLayout = new QVBoxLayout(this);
-  QHBox* pHBox = new QHBox(this);
+  Q3VBoxLayout* pVBoxLayout = new Q3VBoxLayout(this);
+  Q3HBox* pHBox = new Q3HBox(this);
   pVBoxLayout->addWidget(pHBox);
   QGLFormat format;
   format.setDoubleBuffer(TRUE);
@@ -54,7 +58,7 @@ CQGLViewport::~CQGLViewport()
 void CQGLViewport::resizeEvent(QResizeEvent* e)
 {
   this->updateScrollbars();
-  QFrame::resizeEvent(e);
+  Q3Frame::resizeEvent(e);
 }
 
 const CQGLNetworkPainter* CQGLViewport::getPainter() const

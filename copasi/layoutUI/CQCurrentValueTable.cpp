@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/06 13:28:37 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,11 +12,13 @@
 // All rights reserved.
 #include "CQCurrentValueTable.h"
 
-#include <qheader.h>
-#include <qtable.h>
+#include <q3header.h>
+#include <q3table.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
-#include <qhbox.h>
+#include <q3hbox.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 
 #include <iostream>
 
@@ -32,13 +34,13 @@ CQCurrentValueTable::CQCurrentValueTable(QWidget *parent, const char *name)
 
 void CQCurrentValueTable::init()
 {
-  QVBoxLayout* pLayout = new QVBoxLayout(this);
-  this->mpTable = new QTable(this);
+  Q3VBoxLayout* pLayout = new Q3VBoxLayout(this);
+  this->mpTable = new Q3Table(this);
   pLayout->addWidget(this->mpTable);
   this->mpTable->setNumRows(1);
   this->mpTable->setNumCols(2);
   // set default entry
-  QHeader *header = this->mpTable->horizontalHeader();
+  Q3Header *header = this->mpTable->horizontalHeader();
   header->setLabel(0, "Metabolite");
   header->setLabel(1, "Concentration");
   header = this->verticalHeader();
@@ -47,7 +49,7 @@ void CQCurrentValueTable::init()
   this->mpTable->setText(0, 0, "*** no time series load ***");
   this->mpTable->setText(0, 1, "NaN");
   this->mpTable->setColumnReadOnly(1, TRUE);
-  QHBox* pHBox = new QHBox(this);
+  Q3HBox* pHBox = new Q3HBox(this);
   pLayout->addWidget(pHBox);
   this->mpCheckAllButton = new QPushButton("Check all", pHBox);
   this->mpUncheckAllButton = new QPushButton("Uncheck all", pHBox);
@@ -63,7 +65,7 @@ CQCurrentValueTable::~CQCurrentValueTable()
 // sets complete row: 1. name of reactant 2. concentration (or number of particles) value
 void CQCurrentValueTable::setRowInTable(int row, std::string key, std::string s, C_FLOAT64 val)
 {
-  QCheckTableItem * pCheckItem = new QCheckTableItem(this->mpTable, FROM_UTF8(s));
+  Q3CheckTableItem * pCheckItem = new Q3CheckTableItem(this->mpTable, FROM_UTF8(s));
   pCheckItem->setChecked(true); // initially checked
   this->mpTable->setItem(row, 0, pCheckItem);
   this->mpTable->setText(row, 1, QString::number(val));
@@ -87,10 +89,10 @@ void CQCurrentValueTable::setAllBoxesChecked(bool checked)
   int i;
   for (i = 0;i < this->mpTable->numRows();i++)
     {
-      QTableItem *pCell = this->mpTable->item(i, 0);
+      Q3TableItem *pCell = this->mpTable->item(i, 0);
       if (pCell->rtti() == 2)
         {// is cell a QCheckTableItem?
-          QCheckTableItem *pCheckItem = dynamic_cast<QCheckTableItem *> (pCell);
+          Q3CheckTableItem *pCheckItem = dynamic_cast<Q3CheckTableItem *> (pCell);
           // set checkbox item checked
           pCheckItem->setChecked(checked);
           CQLayoutMainWindow * pTmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
@@ -130,9 +132,9 @@ std::string CQCurrentValueTable::getKeyForRow(int row) const
 
 bool CQCurrentValueTable::getValueForRow(int row) const
   {
-    QTableItem *pCell = this->mpTable->item(row, 0);
+    Q3TableItem *pCell = this->mpTable->item(row, 0);
     assert(pCell != NULL);
-    QCheckTableItem *pCheckItem = dynamic_cast<QCheckTableItem *> (pCell);
+    Q3CheckTableItem *pCheckItem = dynamic_cast<Q3CheckTableItem *> (pCell);
     assert(pCheckItem != NULL);
     return pCheckItem->isChecked();
   }
@@ -162,7 +164,7 @@ int CQCurrentValueTable::numRows() const
     return this->mpTable->numRows();
   }
 
-QHeader* CQCurrentValueTable::verticalHeader()
+Q3Header* CQCurrentValueTable::verticalHeader()
 {
   return this->mpTable->verticalHeader();
 }

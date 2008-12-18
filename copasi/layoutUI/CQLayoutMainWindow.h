@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/06 15:51:45 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,15 +11,15 @@
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 #ifndef SIMGUI_H_
 #define SIMGUI_H_
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qstring.h>
-#include <qiconset.h>
+#include <qicon.h>
+//Added by qt3to4:
+#include <QCloseEvent>
+#include <Q3Frame>
+#include <Q3PopupMenu>
 
 #include <string>
 
@@ -32,19 +32,19 @@ class CQGLViewport;
 class QSplitter;
 class QComboBox;
 class QAction;
-class QPopupMenu;
+class Q3PopupMenu;
 class CVisParameters;
 class CQParaPanel;
 class CQCurrentValueTable;
 class QSplitter;
 class QwtSlider;
-class QFrame;
-class QVBox;
-class QToolBar;
+class Q3Frame;
+class Q3VBox;
+class Q3ToolBar;
 class CLayout;
 class CQPlayerControlWidget;
 
-class CQLayoutMainWindow : public QMainWindow
+class CQLayoutMainWindow : public Q3MainWindow
   {
 
     Q_OBJECT      // must include this if you use Qt signals/slots
@@ -119,16 +119,16 @@ class CQLayoutMainWindow : public QMainWindow
     void createActions();
     void createMenus();
     bool maybeSave();
-    QIconSet createStartIcon();
-    QIconSet createStopIcon();
+    QIcon createStartIcon();
+    QIcon createStopIcon();
 
     CVisParameters *mpVisParameters;
-    QPopupMenu *mpFileMenu;
-    QPopupMenu *mpOptionsMenu;
-    QPopupMenu *mpLabelShapeMenu;
-    QPopupMenu *mpViewMenu;
-    QPopupMenu *mpZoomMenu;
-    QPopupMenu *mpPlayMenu;
+    Q3PopupMenu *mpFileMenu;
+    Q3PopupMenu *mpOptionsMenu;
+    Q3PopupMenu *mpLabelShapeMenu;
+    Q3PopupMenu *mpViewMenu;
+    Q3PopupMenu *mpZoomMenu;
+    Q3PopupMenu *mpPlayMenu;
 
     QAction *mpCreatePicture;
     QAction *mpOpenSBMLFile;
@@ -145,16 +145,16 @@ class CQLayoutMainWindow : public QMainWindow
     QSplitter* mpSplitter;
     QwtSlider *mpTimeSlider;
 
-    QFrame *mpFrame;
-    QVBox *mpMainBox;
+    Q3Frame *mpFrame;
+    Q3VBox *mpMainBox;
 
-    QVBox *mpInfoBox;
+    Q3VBox *mpInfoBox;
 
     CQPlayerControlWidget* mpControlWidget;
 
     bool mDataPresent; // shows whether time series data already load
     QString mCurrentPlace;
-    QToolBar* mpToolbar;
+    Q3ToolBar* mpToolbar;
     QComboBox* mpZoomComboBox;
     bool mLooping;
     int mLoopItemId;
