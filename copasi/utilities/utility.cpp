@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.28 $
+$Revision: 1.29 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/12/18 19:26:08 $
+$Date: 2008/12/18 20:20:08 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,11 +266,11 @@ void FixXHTML(const std::string &original, std::string &fixed)
   fixed.erase();
   for (i = 0; i != -1;)
     {
-      p = Str.find_first_of("&><\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
+      p = Str.find_first_of("&><\"ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя");
       fixed += Str.substr(0, p)
 ;
       len = Str.length();
-      i = Str.find_first_of("&><\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
+      i = Str.find_first_of("&><\"ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя");
       if (i != -1)
         {
           switch (Str[i])
@@ -287,289 +287,289 @@ void FixXHTML(const std::string &original, std::string &fixed)
             case '"':
               fixed += "&quot; ";
               break;
-            case 'пїЅ':
+            case 'Ў':
               fixed += "&#161; ";
               break;
-            case 'пїЅ':
+            case 'ў':
               fixed += "&#162; ";
               break;
-            case 'пїЅ':
+            case 'Ј':
               fixed += "&#163; ";
               break;
-            case 'пїЅ':
+            case '¤':
               fixed += "&#164; ";
               break;
-            case 'пїЅ':
+            case 'Ґ':
               fixed += "&#165; ";
               break;
-            case 'пїЅ':
+            case '¦':
               fixed += "&#166; ";
               break;
-            case 'пїЅ':
+            case '§':
               fixed += "&#167; ";
               break;
-            case 'пїЅ':
+            case 'Ё':
               fixed += "&#168; ";
               break;
-            case 'пїЅ':
+            case '©':
               fixed += "&#169; ";
               break;
-            case 'пїЅ':
+            case 'Є':
               fixed += "&#170; ";
               break;
-            case 'пїЅ':
+            case '«':
               fixed += "&#171; ";
               break;
-            case 'пїЅ':
+            case '¬':
               fixed += "&#172; ";
               break;
-            case 'пїЅ':
+            case '­':
               fixed += "&#173; ";
               break;
-            case 'пїЅ':
+            case '®':
               fixed += "&#174; ";
               break;
-            case 'пїЅ':
+            case 'Ї':
               fixed += "&#175; ";
               break;
-            case 'пїЅ':
+            case '°':
               fixed += "&#176; ";
               break;
-            case 'пїЅ':
+            case '±':
               fixed += "&#177; ";
               break;
-            case 'пїЅ':
+            case 'І':
               fixed += "&#178; ";
               break;
-            case 'пїЅ':
+            case 'і':
               fixed += "&#179; ";
               break;
-            case 'пїЅ':
+            case 'ґ':
               fixed += "&#180; ";
               break;
-            case 'пїЅ':
+            case 'µ':
               fixed += "&#181; ";
               break;
-            case 'пїЅ':
+            case '¶':
               fixed += "&#182; ";
               break;
-            case 'пїЅ':
+            case '·':
               fixed += "&#183; ";
               break;
-            case 'пїЅ':
+            case 'ё':
               fixed += "&#184; ";
               break;
-            case 'пїЅ':
+            case '№':
               fixed += "&#185; ";
               break;
-            case 'пїЅ':
+            case 'є':
               fixed += "&#186; ";
               break;
-            case 'пїЅ':
+            case '»':
               fixed += "&#187; ";
               break;
-            case 'пїЅ':
+            case 'ј':
               fixed += "&#188; ";
               break;
-            case 'пїЅ':
+            case 'Ѕ':
               fixed += "&#189; ";
               break;
-            case 'пїЅ':
+            case 'ѕ':
               fixed += "&#190; ";
               break;
-            case 'пїЅ':
+            case 'ї':
               fixed += "&#191; ";
               break;
-            case 'пїЅ':
+            case 'А':
               fixed += "&#192; ";
               break;
-            case 'пїЅ':
+            case 'Б':
               fixed += "&#193; ";
               break;
-            case 'пїЅ':
+            case 'В':
               fixed += "&#194; ";
               break;
-            case 'пїЅ':
+            case 'Г':
               fixed += "&#195; ";
               break;
-            case 'пїЅ':
+            case 'Д':
               fixed += "&#196; ";
               break;
-            case 'пїЅ':
+            case 'Е':
               fixed += "&#197; ";
               break;
-            case 'пїЅ':
+            case 'Ж':
               fixed += "&#198; ";
               break;
-            case 'пїЅ':
+            case 'З':
               fixed += "&#199; ";
               break;
-            case 'пїЅ':
+            case 'И':
               fixed += "&#200; ";
               break;
-            case 'пїЅ':
+            case 'Й':
               fixed += "&#201; ";
               break;
-            case 'пїЅ':
+            case 'К':
               fixed += "&#202; ";
               break;
-            case 'пїЅ':
+            case 'Л':
               fixed += "&#203; ";
               break;
-            case 'пїЅ':
+            case 'М':
               fixed += "&#204; ";
               break;
-            case 'пїЅ':
+            case 'Н':
               fixed += "&#205; ";
               break;
-            case 'пїЅ':
+            case 'О':
               fixed += "&#206; ";
               break;
-            case 'пїЅ':
+            case 'П':
               fixed += "&#207; ";
               break;
-            case 'пїЅ':
+            case 'Р':
               fixed += "&#208; ";
               break;
-            case 'пїЅ':
+            case 'С':
               fixed += "&#209; ";
               break;
-            case 'пїЅ':
+            case 'Т':
               fixed += "&#210; ";
               break;
-            case 'пїЅ':
+            case 'У':
               fixed += "&#211; ";
               break;
-            case 'пїЅ':
+            case 'Ф':
               fixed += "&#212; ";
               break;
-            case 'пїЅ':
+            case 'Х':
               fixed += "&#213; ";
               break;
-            case 'пїЅ':
+            case 'Ц':
               fixed += "&#214; ";
               break;
-            case 'пїЅ':
+            case 'Ч':
               fixed += "&#215; ";
               break;
-            case 'пїЅ':
+            case 'Ш':
               fixed += "&#216; ";
               break;
-            case 'пїЅ':
+            case 'Щ':
               fixed += "&#217; ";
               break;
-            case 'пїЅ':
+            case 'Ъ':
               fixed += "&#218; ";
               break;
-            case 'пїЅ':
+            case 'Ы':
               fixed += "&#219; ";
               break;
-            case 'пїЅ':
+            case 'Ь':
               fixed += "&#220; ";
               break;
-            case 'пїЅ':
+            case 'Э':
               fixed += "&#221; ";
               break;
-            case 'пїЅ':
+            case 'Ю':
               fixed += "&#222; ";
               break;
-            case 'пїЅ':
+            case 'Я':
               fixed += "&#223; ";
               break;
-            case 'пїЅ':
+            case 'а':
               fixed += "&#224; ";
               break;
-            case 'пїЅ':
+            case 'б':
               fixed += "&#225; ";
               break;
-            case 'пїЅ':
+            case 'в':
               fixed += "&#226; ";
               break;
-            case 'пїЅ':
+            case 'г':
               fixed += "&#227; ";
               break;
-            case 'пїЅ':
+            case 'д':
               fixed += "&#228; ";
               break;
-            case 'пїЅ':
+            case 'е':
               fixed += "&#229; ";
               break;
-            case 'пїЅ':
+            case 'ж':
               fixed += "&#230; ";
               break;
-            case 'пїЅ':
+            case 'з':
               fixed += "&#231; ";
               break;
-            case 'пїЅ':
+            case 'и':
               fixed += "&#232; ";
               break;
-            case 'пїЅ':
+            case 'й':
               fixed += "&#233; ";
               break;
-            case 'пїЅ':
+            case 'к':
               fixed += "&#234; ";
               break;
-            case 'пїЅ':
+            case 'л':
               fixed += "&#235; ";
               break;
-            case 'пїЅ':
+            case 'м':
               fixed += "&#236; ";
               break;
-            case 'пїЅ':
+            case 'н':
               fixed += "&#237; ";
               break;
-            case 'пїЅ':
+            case 'о':
               fixed += "&#238; ";
               break;
-            case 'пїЅ':
+            case 'п':
               fixed += "&#239; ";
               break;
-            case 'пїЅ':
+            case 'р':
               fixed += "&#240; ";
               break;
-            case 'пїЅ':
+            case 'с':
               fixed += "&#241; ";
               break;
-            case 'пїЅ':
+            case 'т':
               fixed += "&#242; ";
               break;
-            case 'пїЅ':
+            case 'у':
               fixed += "&#243; ";
               break;
-            case 'пїЅ':
+            case 'ф':
               fixed += "&#244; ";
               break;
-            case 'пїЅ':
+            case 'х':
               fixed += "&#245; ";
               break;
-            case 'пїЅ':
+            case 'ц':
               fixed += "&#246; ";
               break;
-            case 'пїЅ':
+            case 'ч':
               fixed += "&#247; ";
               break;
-            case 'пїЅ':
+            case 'ш':
               fixed += "&#248; ";
               break;
-            case 'пїЅ':
+            case 'щ':
               fixed += "&#249; ";
               break;
-            case 'пїЅ':
+            case 'ъ':
               fixed += "&#250; ";
               break;
-            case 'пїЅ':
+            case 'ы':
               fixed += "&#251; ";
               break;
-            case 'пїЅ':
+            case 'ь':
               fixed += "&#252; ";
               break;
-            case 'пїЅ':
+            case 'э':
               fixed += "&#253; ";
               break;
-            case 'пїЅ':
+            case 'ю':
               fixed += "&#254; ";
               break;
-            case 'пїЅ':
+            case 'я':
               fixed += "&#255; ";
               break;
             }
