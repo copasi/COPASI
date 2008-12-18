@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/unittests.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/01/16 16:07:36 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/12/18 17:21:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -65,3 +65,5 @@ PRE_TARGETDEPS += unittests.jar
 
 QMAKE_CLEAN += unittests.jar
 QMAKE_CLEAN += org/COPASI/unittests/*.class
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 

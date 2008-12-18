@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/layout.pro,v $
-#   $Revision: 1.5 $
+#   $Revision: 1.6 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:26 $
+#   $Date: 2008/12/18 17:35:20 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,3 +45,5 @@ SOURCES += CLayout.cpp \
 
 DISTFILES += layout.vcproj
 
+#The following line was inserted by qt3to4
+QT +=  qt3support 

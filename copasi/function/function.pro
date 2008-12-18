@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/function.pro,v $
-#   $Revision: 1.27 $
+#   $Revision: 1.28 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:35 $
+#   $Date: 2008/12/18 17:33:22 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.27 $ $Author: shoops $ $Date: 2008/07/08 16:06:35 $
+# $Revision: 1.28 $ $Author: shoops $ $Date: 2008/12/18 17:33:22 $
 ######################################################################
 
 LIB = function
@@ -97,3 +97,5 @@ contains(BUILD_PARSER, yes) {
 DISTFILES += function.vcproj \
              CEvaluationParser.ypp \
              CEvaluationLexer.lpp
+#The following line was inserted by qt3to4
+QT +=  qt3support 

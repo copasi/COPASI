@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 22:47:57 $
+//   $Date: 2008/12/18 17:25:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,19 +15,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2008/03/11 22:47:57 $
-   End CVS Header */
-
-// Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#include "copasi.h"
+#include <stdlib.h>
 
 #ifdef WIN32
 # include <windows.h>
@@ -46,6 +34,8 @@
 
 #include <sstream>
 #include <errno.h>
+
+#include "copasi.h"
 
 #include "COptionParser.h"
 #include "COptions.h"

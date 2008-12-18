@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 18:17:31 $
+//   $Date: 2008/12/18 17:20:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,14 +21,18 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qslider.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qaction.h>
 #include <qmenubar.h>
-#include <qpopupmenu.h>
-#include <qtoolbar.h>
+#include <q3popupmenu.h>
+#include <q3toolbar.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 #include <iostream>
 
 /*
@@ -36,28 +40,28 @@
  *  name 'name' and widget flags set to 'f'.
  *
  */
-BaseWidget::BaseWidget(QWidget* parent, const char* name, WFlags fl, bool showSlider)
+BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl, bool showSlider)
     : QWidget(parent, name, fl)
 {
   if (!name)
     setName("BaseWidget");
 
-  mpBaseWidgetLayout = new QGridLayout(this, 1, 1, 0, 0, "BaseWidgetLayout");
+  mpBaseWidgetLayout = new Q3GridLayout(this, 1, 1, 0, 0, "BaseWidgetLayout");
 
-  mpVBoxBig = new QVBoxLayout(0, "VBoxBig");
+  mpVBoxBig = new Q3VBoxLayout(0, "VBoxBig");
 
-  mpHBoxBig = new QHBoxLayout(0, "HBoxBig");
+  mpHBoxBig = new Q3HBoxLayout(0, "HBoxBig");
 
-  mpFrame = new QFrame(this, "Frame");
-  mpFrame->setFrameShape(QFrame::StyledPanel);
-  mpFrame->setFrameShadow(QFrame::Sunken);
+  mpFrame = new Q3Frame(this, "Frame");
+  mpFrame->setFrameShape(Q3Frame::StyledPanel);
+  mpFrame->setFrameShadow(Q3Frame::Sunken);
   mpHBoxBig->addWidget(mpFrame, 0, 0);
 
-  mpVBoxSmall = new QVBoxLayout(0, "VBoxSmall");
+  mpVBoxSmall = new Q3VBoxLayout(0, "VBoxSmall");
   mpHBoxBig->addLayout(mpVBoxSmall, 0);
 
   mpVBoxBig->addLayout(mpHBoxBig, 0);
-  mpHBoxSmall = new QHBoxLayout(0, "HBoxSmall");
+  mpHBoxSmall = new Q3HBoxLayout(0, "HBoxSmall");
 
   mpVBoxBig->addLayout(mpHBoxSmall, 0);
   mpBaseWidgetLayout->addLayout(mpVBoxBig, 0, 0);
@@ -83,7 +87,7 @@ void BaseWidget::activateSlider()
   mpSliderRow->setMinValue(0);
   mpSliderRow->setMaxValue(0);
   mpSliderRow->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-  mpSliderRow->setOrientation(QSlider::Vertical);
+  mpSliderRow->setOrientation(Qt::Vertical);
   mpVBoxSmall->addWidget(mpSliderRow, 0, 0);
 
   mpLabelColumn = new QLabel(this, "LabelColumn");
@@ -93,7 +97,7 @@ void BaseWidget::activateSlider()
   mpSliderColumn->setMinValue(0);
   mpSliderColumn->setMaxValue(0);
   mpSliderColumn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  mpSliderColumn->setOrientation(QSlider::Horizontal);
+  mpSliderColumn->setOrientation(Qt::Horizontal);
   mpHBoxSmall->addWidget(mpSliderColumn, 0, 0);
   mpHBoxSmall->addSpacing(24);
 

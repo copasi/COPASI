@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.145 $
+#   $Revision: 1.146 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/10/06 18:04:24 $
+#   $Date: 2008/12/18 17:29:16 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.145 $ $Author: shoops $ $Date: 2008/10/06 18:04:24 $
+# $Revision: 1.146 $ $Author: shoops $ $Date: 2008/12/18 17:29:16 $
 ######################################################################
 
 TEMPLATE = app
@@ -40,6 +40,17 @@ contains(BUILD_OS, WIN32) {
 
   release {
     distribution.extra = C:\cygwin\bin\bash ../../admin/mkbuild.sh $${BUILD_OS}
+  }
+ 
+!isEmpty(QWT_PATH) {
+    QMAKE_CXXFLAGS   += -I"$${QWT_PATH}\include"
+    QMAKE_LFLAGS += /LIBPATH:"$${QWT_PATH}\lib"
+  }
+
+
+!isEmpty(QWT3D_PATH) {
+    QMAKE_CXXFLAGS   += -I"$${QWT3D_PATH}\include"
+    QMAKE_LFLAGS += /LIBPATH:"$${QWT3D_PATH}\lib"
   }
 }
 
@@ -141,3 +152,5 @@ release {
 DISTFILES += CopasiUI.vcproj \
              CopasiUI.rc
 
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 

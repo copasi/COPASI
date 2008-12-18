@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/23 10:23:43 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:20:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,7 +23,10 @@
 #include <qmenubar.h>
 #include <qcursor.h>
 
-#include "qwt3d_surfaceplot.h"
+#include <qwt3d_surfaceplot.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <QContextMenuEvent>
 #include "copasi/barChart/qwt3dBars.h"
 #include "copasi/barChart/qwt3dScale.h"
 #include "copasi/barChart/qwt3dColor.h"
@@ -54,7 +62,7 @@ class Plot3d : public BaseWidget
     virtual ~Plot3d();
     Qwt3D::SurfacePlot* mpPlot;
     Bar *mpBar;
-    QGridLayout *mpGrid;
+    Q3GridLayout *mpGrid;
     QString mTitle;
     double** data;
     const std::vector<std::string> *mpColumnScale;

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/05/15 13:46:07 $
+//   $Date: 2008/12/18 17:30:00 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,11 +19,11 @@
  *  CFluxScore class.
  *  Used to compare flux modes
  *
- *  Created for Copasi by Stefan Hoops 2002-05-08
+ *  Created for COPASI by Stefan Hoops 2002-05-08
  * (C) Stefan Hoops 2002
  */
 
-#include <limits>
+#include <limits.h>
 
 #include "copasi.h"
 #include "CFluxScore.h"

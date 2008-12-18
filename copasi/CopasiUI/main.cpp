@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/21 14:12:02 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:29:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     {
       CQMessageBox::critical(NULL, "Initialization Error",
                              msg.what(),
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+                             QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
 
       return 1;
     }

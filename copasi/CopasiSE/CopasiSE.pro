@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.36 $
+#   $Revision: 1.37 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/07/08 16:06:28 $
+#   $Date: 2008/12/18 17:28:39 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.36 $ $Author: shoops $ $Date: 2008/07/08 16:06:28 $
+# $Revision: 1.37 $ $Author: shoops $ $Date: 2008/12/18 17:28:39 $
 ######################################################################
 
 TEMPLATE = app
@@ -100,3 +100,5 @@ release {
 }
 
 DISTFILES += CopasiSE.vcproj
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 

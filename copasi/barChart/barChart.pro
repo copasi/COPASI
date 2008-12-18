@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/barChart.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/09/18 07:22:27 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/12/18 17:20:46 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -42,3 +42,5 @@ SOURCES += qwt3dBars.cpp \
   qwt3dColor.cpp\
   qwt3dBaseWidget.cpp 
   
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 

@@ -1,33 +1,44 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/12 17:01:07 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:20:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef BASE_WIDGET_H
 #define BASE_WIDGET_H
 
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3Frame>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QLabel;
 class QSlider;
-class QFrame;
+class Q3Frame;
 
 class BaseWidget : public QWidget
   {
     Q_OBJECT
 
   public:
-    BaseWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, bool showSlider = false);
+    BaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, bool showSlider = false);
     ~BaseWidget();
 
     bool mpSlider;
@@ -36,18 +47,18 @@ class BaseWidget : public QWidget
     QLabel* mpLabelRow;
     QSlider* mpSliderColumn;
     QSlider* mpSliderRow;
-    QFrame* mpFrame;
+    Q3Frame* mpFrame;
 
-    QHBoxLayout* mpHBoxBig;
-    QVBoxLayout* mpVBoxBig;
-    QVBoxLayout* mpVBoxSmall;
-    QHBoxLayout* mpHBoxSmall;
+    Q3HBoxLayout* mpHBoxBig;
+    Q3VBoxLayout* mpVBoxBig;
+    Q3VBoxLayout* mpVBoxSmall;
+    Q3HBoxLayout* mpHBoxSmall;
 
     void activateSlider();
     virtual void sliderMoved(int column, int row);
 
   protected:
-    QGridLayout* mpBaseWidgetLayout;
+    Q3GridLayout* mpBaseWidgetLayout;
 
   protected slots:
     virtual void languageChange();

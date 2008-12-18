@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.93 $ 
+#   $Revision: 1.94 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/10/08 00:44:02 $ 
+#   $Date: 2008/12/18 17:19:24 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.93 $ $Author: shoops $ $Date: 2008/10/08 00:44:02 $  
+# $Revision: 1.94 $ $Author: shoops $ $Date: 2008/12/18 17:19:24 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -127,14 +127,13 @@ contains(BUILD_OS, Darwin) {
     LIBS += -lraptor
   }
 
-  !isEmpty(SBW_PATH){
-    LIBS+=  $${SBW_PATH}/lib/libSBW.a
-    INCLUDEPATH += $${SBW_PATH}/include
-    DEFINES += COPASI_SBW_INTEGRATION
-    DEFINES += LINUX DARWIN 
-  } 
-   
   contains(CONFIG, qt) {
+    !isEmpty(SBW_PATH){
+      LIBS+=  $${SBW_PATH}/lib/libSBW.a
+      INCLUDEPATH += $${SBW_PATH}/include
+      DEFINES += COPASI_SBW_INTEGRATION
+      DEFINES += LINUX DARWIN 
+    } 
   
     !isEmpty(QWT_PATH){
        LIBS+=  $${QWT_PATH}/lib/libqwt.a
@@ -149,12 +148,6 @@ contains(BUILD_OS, Darwin) {
     } else {
       LIBS += -lqwtplot3d
     }
- 
-    LIBS += $(QTDIR)/lib/libqt-mt.a
-    
-    
-    QMAKE_LIBS_QT =
-    QMAKE_LIBS_QT_THREAD = 
   }
 
   LIBS += -framework Accelerate
@@ -172,10 +165,10 @@ contains(BUILD_OS, WIN32) {
    
   debug {
     !win32-msvc2005 {
-      QMAKE_LFLAGS += /NODEFAULTLIB:"libcmt.lib"
+      QMAKE_LFLAGS += /NODEFAULTLIB:\"libcmt.lib\"
     }
 
-    QMAKE_LFLAGS += /NODEFAULTLIB:"msvcrt.lib"
+    QMAKE_LFLAGS += /NODEFAULTLIB:\"msvcrt.lib\"
   }
   
   #Release code optimization
@@ -187,15 +180,15 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    QMAKE_CXXFLAGS += -I"$${MKL_PATH}\include"
-    QMAKE_LFLAGS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
-    QMAKE_LFLAGS += /LIBPATH:"$${MKL_PATH}\..\Compiler\C++\9.0\IA32\Lib"
+    QMAKE_CXXFLAGS += -I\"$${MKL_PATH}\include\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\ia32\lib\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${MKL_PATH}\..\Compiler\C++\9.0\IA32\Lib\"
     LIBS += mkl_c.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
-      QMAKE_CXXFLAGS   += -I"$${CLAPACK_PATH}\include"
-      QMAKE_LFLAGS += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      QMAKE_CXXFLAGS   += -I\"$${CLAPACK_PATH}\include\"
+      QMAKE_LFLAGS += /LIBPATH:\"$${CLAPACK_PATH}\lib\"
       LIBS += clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
@@ -203,11 +196,11 @@ contains(BUILD_OS, WIN32) {
   }
 
   !isEmpty(EXPAT_PATH) {
-    QMAKE_CXXFLAGS   += -I"$${EXPAT_PATH}\Source\lib"
-    QMAKE_CXXFLAGS   += -I"$${EXPAT_PATH}\include"
-    QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
-    QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\bin"
-    QMAKE_LFLAGS += /LIBPATH:"$${EXPAT_PATH}\lib"
+    QMAKE_CXXFLAGS   += -I\"$${EXPAT_PATH}\Source\lib\"
+    QMAKE_CXXFLAGS   += -I\"$${EXPAT_PATH}\include\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${EXPAT_PATH}\StaticLibs\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${EXPAT_PATH}\bin\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${EXPAT_PATH}\lib\"
     contains(STATIC_LINKAGE, yes) {
       LIBS += libexpatMT.lib
     } else {
@@ -230,9 +223,9 @@ contains(BUILD_OS, WIN32) {
   }
   
   !isEmpty(SBML_PATH) {
-    QMAKE_CXXFLAGS   += -I"$${SBML_PATH}\include"
-    QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\lib"
-    QMAKE_LFLAGS += /LIBPATH:"$${SBML_PATH}\bin"
+    QMAKE_CXXFLAGS   += -I\"$${SBML_PATH}\include\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${SBML_PATH}\lib\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${SBML_PATH}\bin\"
   } else {
     error( "SBML_PATH must be specified" )
   }
@@ -246,8 +239,8 @@ contains(BUILD_OS, WIN32) {
   }
     
   !isEmpty(RAPTOR_PATH) {
-    QMAKE_CXXFLAGS   += -I"$${RAPTOR_PATH}\include"
-    QMAKE_LFLAGS += /LIBPATH:"$${RAPTOR_PATH}\lib"
+    QMAKE_CXXFLAGS   += -I\"$${RAPTOR_PATH}\include\"
+    QMAKE_LFLAGS += /LIBPATH:\"$${RAPTOR_PATH}\lib\"
   } else {
     error( "RAPTOR_PATH must be specified" )
   }
@@ -459,7 +452,8 @@ contains(BUILD_OS, Linux) {
           LIBS += -L$${LAPACK_PATH}/lib
           LIBS += -llapack 
           LIBS += -lblas
-          LIBS += -lg2c
+          HAVE_G2C = $$system(locate libg2c)
+          !isEmpty(HAVE_G2C) LIBS += -lg2c
         }
       } else {
         error( "Either MKL_PATH, CLAPACK_PATH, or LAPACK_PATH must be specified" )

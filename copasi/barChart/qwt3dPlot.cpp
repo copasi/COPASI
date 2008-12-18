@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 18:17:31 $
+//   $Date: 2008/12/18 17:20:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,12 +16,16 @@
 // All rights reserved.
 
 #include "qwt3dPlot.h"
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <Q3GridLayout>
+#include <Q3PopupMenu>
 
 Plot3d::Plot3d(QWidget* parent, const char* name)
     : BaseWidget(parent, name)
 {
 
-  mpGrid = new QGridLayout(mpFrame, 0, 0);
+  mpGrid = new Q3GridLayout(mpFrame, 0, 0);
   mpPlot = new Qwt3D::SurfacePlot(mpFrame);
   mpGrid->addWidget(mpPlot, 0, 0);
   mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -412,7 +416,7 @@ void Plot3d::emptyPlot()
 
 void Plot3d::contextMenuEvent(QContextMenuEvent *)
 {
-  QPopupMenu* mpContextMenu = new QPopupMenu(this);
+  Q3PopupMenu* mpContextMenu = new Q3PopupMenu(this);
   Q_CHECK_PTR(mpContextMenu);
   mpContextMenu->insertItem("handling information", this, SLOT(hotKeysMessage()));
   if (mColorLegend)
@@ -420,7 +424,7 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
   else
     mpContextMenu->insertItem("show legend", this, SLOT(showLegend()));
 
-  QPopupMenu* mpSubmenu = new QPopupMenu(this);
+  Q3PopupMenu* mpSubmenu = new Q3PopupMenu(this);
   Q_CHECK_PTR(mpSubmenu);
   //mpSubmenu->insertItem("&Print to printer", this, SLOT(saveDataToFile()));
   mpSubmenu->insertItem("Print to &file", this, SLOT(saveDataToFile()));
@@ -441,7 +445,7 @@ void Plot3d::saveDataToFile()
         CopasiFileDialog::getSaveFileNameAndFilter(newFilter, this, "Save File Dialog",
             "ILDMResults-barsPrint", "BMP Files (*.bmp);;PS Files (*.ps);;PDF Files (*.pdf);;", "Save to");
 
-      if (!fileName) return;
+      if (fileName.isNull()) return;
 
       fileName = fileName.remove(QRegExp("\\.$"));
 
@@ -479,7 +483,7 @@ void Plot3d::saveDataToFile()
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += fileName.utf8();
+      s += (const char *) fileName.utf8();
       QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }

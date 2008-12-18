@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.31 $ 
+#   $Revision: 1.32 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/04/21 12:48:58 $ 
+#   $Author: shoops $ 
+#   $Date: 2008/12/18 17:21:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -223,3 +223,5 @@ QMAKE_CLEAN += java_files/org/COPASI/*.class
 SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of progject files
 
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 

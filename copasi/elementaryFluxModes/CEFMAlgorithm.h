@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-  $Revision: 1.14 $
-  $Name:  $
-  $Author: tjohann $
-  $Date: 2008/07/02 08:06:12 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
+$Revision: 1.15 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/12/18 17:30:00 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,12 +19,14 @@
  *  CEFMAlgorithm class.
  *  Used to calculate elementary flux modes
  *
- *  Created for Copasi by Stefan Hoops 2002-05-08
+ *  Created for COPASI by Stefan Hoops 2002-05-08
  * (C) Stefan Hoops 2002
  */
 
 #ifndef COPASI_CEFMAlgorithm
 #define COPASI_CEFMAlgorithm
+
+#include <vector>
 
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CFluxMode.h"
@@ -85,7 +87,6 @@ class CEFMAlgorithm: public CEFMMethod
 
     /**
      * Initialize arrays and pointer called by calculate.
-     * @return bool success
      */
     void calculateNextTableau();
 
@@ -99,7 +100,7 @@ class CEFMAlgorithm: public CEFMMethod
     CModel * mpModel;
 
     /**
-     * Matrix conatining the reorderd stoichiometry matrix.
+     * Matrix containing the reordered stoichiometry matrix.
      */
     std::vector< std::vector< C_FLOAT64 > > mStoi;
 

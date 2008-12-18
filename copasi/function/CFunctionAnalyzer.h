@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/10/26 12:58:10 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 17:33:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +19,8 @@
 #define COPASI_CFunctionAnalyzer
 
 #include <vector>
+#include <iostream>
+#include <string>
 
 class CEvaluationNode;
 class CModel;
@@ -131,7 +138,7 @@ class CFunctionAnalyzer
       public:
 
         /**
-         * This contains low level infomation about one function. The Result class contains
+         * This contains low level information about one function. The Result class contains
          * three instances of this structure: For the complete function and for the forward and
          * backwards part of a reversible function
          */
@@ -184,7 +191,7 @@ class CFunctionAnalyzer
     const Result & getResult() const {return mResult;};
 
     /**
-     * Mode tells how to interprete an object in CValue arithmetics.
+     * Mode tells how to interpret an object in CValue arithmetics.
      * NOOBJECT means objects are invalid (e.g. for functions, where no object nodes should occur).
      * GENERAL means concentrations and volumes are positive, all other values positive, zero, or negative.
      * POSITIVE means all objects are positive. ACTUAL means the actual value is used for local parameters and constant values.

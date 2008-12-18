@@ -1,21 +1,27 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/21 18:27:06 $
+//   $Date: 2008/12/18 17:33:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <sstream>
+#include <stdlib.h>
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
 
 #include "sbml/math/ASTNode.h"
-
-#include <sstream>
 
 CEvaluationNodeNumber::CEvaluationNodeNumber():
     CEvaluationNode(CEvaluationNode::INVALID, "")
