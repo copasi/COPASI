@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.29.4.3 $
+//   $Revision: 1.29.4.3.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/04 17:14:45 $
+//   $Date: 2008/12/19 15:15:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -455,7 +455,10 @@ bool SensitivitiesWidget::loadTask()
         FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
     }
   else
-    FunctionChooser->setCurrentObjectList(tmp.getListType());
+    {
+      mpSingleFunction = NULL;
+      FunctionChooser->setCurrentObjectList(tmp.getListType());
+    }
 
   //variables 1
   if (problem->getNumberOfVariables() > 0)
