@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/29 13:41:56 $
+//   $Date: 2008/12/19 15:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@ bool CStructureParser::startDocument()
   return TRUE;
 }
 
-bool CStructureParser::startElement(const QString& str1, const QString& str2,
+bool CStructureParser::startElement(const QString& /* str1 */, const QString& /* str2 */,
                                     const QString& qName,
                                     const QXmlAttributes& attr)
 {
@@ -416,12 +416,12 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
   return TRUE;
 }
 
-bool CStructureParser::ignorableWhitespace (const QString& str)
+bool CStructureParser::ignorableWhitespace (const QString& /* str */)
 {
   return TRUE;
 }
 
-bool CStructureParser::skippedEntity (const QString& str)
+bool CStructureParser::skippedEntity (const QString& /* str */)
 {
   return TRUE;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.8.2.9.2.2 $
+//   $Revision: 1.8.2.9.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/16 19:47:36 $
+//   $Date: 2008/12/19 15:18:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1638,7 +1638,7 @@ void CCSPMethod::setVectors(int fast)
   C_INT i, r, m;
   C_INT reacs_size = mpModel->getReactions().size();
 
-  for (i = 0; i < (unsigned C_INT32) mData.dim; i++)
+  for (i = 0; i < mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
   mVec_SlowModes.push_back(mCurrentStep);

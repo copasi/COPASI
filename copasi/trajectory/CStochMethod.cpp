@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.68.8.2 $
+//   $Revision: 1.68.8.2.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/29 00:59:03 $
+//   $Author: shoops $
+//   $Date: 2008/12/19 15:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -210,7 +210,7 @@ void CStochMethod::start(const CState * initialState)
 
   mHasAssignments = modelHasAssignments(mpModel);
 
-  unsigned C_INT32 i, imax;
+  unsigned C_INT32 i;
 
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.

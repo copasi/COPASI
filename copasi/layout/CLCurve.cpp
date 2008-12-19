@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/17 14:23:00 $
+//   $Author: shoops $
+//   $Date: 2008/12/19 15:18:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,8 @@ void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<CCopasiOb
     c->setBasePoint2(this->getBase2().getX(), this->getBase2().getY());
   }
 
-void CLLineSegment::exportToSBMLLineSegment(LineSegment * l, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLLineSegment::exportToSBMLLineSegment(LineSegment * l,
+    const std::map<CCopasiObject*, SBase*> & /* copasimodelmap */) const
   {
     if (!l) return;
 

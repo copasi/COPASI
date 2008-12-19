@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.5.8.2 $
+//   $Revision: 1.5.8.2.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/25 15:06:45 $
+//   $Author: shoops $
+//   $Date: 2008/12/19 15:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -325,7 +325,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   //add absolute Tolerances to table
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
   tmpint = st.beginIndependent() - st.getEntities();
-  for (i = 0; i < atolv.size(); ++i)
+  for (i = 0; i < (int) atolv.size(); ++i)
     {
       mpTableState->setText(i + tmpint, 3, QString::number(atolv[i]));
 
