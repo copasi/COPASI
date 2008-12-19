@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.45.6.1 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2008/07/02 08:06:13 $
+//   $Author: nsimus $
+//   $Date: 2008/11/13 12:40:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -210,6 +210,15 @@ class CCopasiMethod : public CCopasiParameterGroup
      * @return ostream & os
      */
     friend std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o);
+
+    /**
+     *  This is the output method for any result of a method. The default implementation
+     *  provided with CCopasiMethod. Does only print "Not implmented." To overide this
+     *  default behaviour one needs to reimplement the virtual printResult function.
+     *  @param std::ostream * ostream
+     **/
+
+    virtual void printResult(std::ostream * ostream) const;
   };
 
 #endif // COPASI_CCopasiMethod

@@ -1,20 +1,21 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/30 17:13:49 $
-   End CVS Header */
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.cpp,v $
+//   $Revision: 1.1.28.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/11/11 17:19:46 $
+// End CVS Header
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQEFMWidget.ui'
  **
- ** Created: Wed Aug 30 12:36:10 2006
- **      by: The User Interface Compiler ($Id: CQEFMWidget.cpp,v 1.1 2006/08/30 17:13:49 shoops Exp $)
+ ** Created: Tue Nov 11 12:13:27 2008
+ **      by: The User Interface Compiler ($Id: CQEFMWidget.cpp,v 1.1.28.1 2008/11/11 17:19:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,12 +26,12 @@
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <qpushbutton.h>
 #include <qheader.h>
 #include <qlistview.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "TaskWidget.h"
 #include "CQEFMWidget.ui.h"
 
 /*
@@ -50,19 +51,22 @@ CQEFMWidget::CQEFMWidget(QWidget* parent, const char* name)
   mpLine->setFrameShape(QFrame::HLine);
   CQEFMWidgetLayout->addWidget(mpLine);
 
-  mpLayoutFluxModes = new QHBoxLayout(0, 0, 6, "mpLayoutFluxModes");
+  layout2 = new QHBoxLayout(0, 0, 6, "layout2");
 
   mpLblFluxModes = new QLabel(this, "mpLblFluxModes");
-  mpLayoutFluxModes->addWidget(mpLblFluxModes);
+  layout2->addWidget(mpLblFluxModes);
 
   mpEditFluxModes = new QLineEdit(this, "mpEditFluxModes");
   mpEditFluxModes->setFrameShape(QLineEdit::LineEditPanel);
   mpEditFluxModes->setFrameShadow(QLineEdit::Sunken);
   mpEditFluxModes->setReadOnly(TRUE);
-  mpLayoutFluxModes->addWidget(mpEditFluxModes);
-  mpSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  mpLayoutFluxModes->addItem(mpSpacer);
-  CQEFMWidgetLayout->addLayout(mpLayoutFluxModes);
+  layout2->addWidget(mpEditFluxModes);
+  mpSpacer = new QSpacerItem(16, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout2->addItem(mpSpacer);
+
+  mpBtnSave = new QPushButton(this, "mpBtnSave");
+  layout2->addWidget(mpBtnSave);
+  CQEFMWidgetLayout->addLayout(layout2);
 
   mpListView = new QListView(this, "mpListView");
   mpListView->addColumn(tr("Reversibility"));
@@ -70,8 +74,15 @@ CQEFMWidget::CQEFMWidget(QWidget* parent, const char* name)
   mpListView->addColumn(tr("Reaction Equation"));
   CQEFMWidgetLayout->addWidget(mpListView);
   languageChange();
-  resize(QSize(366, 168).expandedTo(minimumSizeHint()));
+  resize(QSize(314, 137).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(mpBtnSave, SIGNAL(clicked()), this, SLOT(slotSave()));
+
+  // tab order
+  setTabOrder(mpEditFluxModes, mpBtnSave);
+  setTabOrder(mpBtnSave, mpListView);
   init();
 }
 
@@ -92,6 +103,7 @@ void CQEFMWidget::languageChange()
 {
   setCaption(tr("Elementary Flux Modes"));
   mpLblFluxModes->setText(tr("Flux Modes"));
+  mpBtnSave->setText(tr("Save Result"));
   mpListView->header()->setLabel(0, tr("Reversibility"));
   mpListView->header()->setLabel(1, tr("Reaction Name"));
   mpListView->header()->setLabel(2, tr("Reaction Equation"));

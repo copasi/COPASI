@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:31:45 $
+//   $Author: ssahle $
+//   $Date: 2008/10/17 15:34:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,15 @@ class CSteadyStateTask : public CCopasiTask
      * Destructor
      */
     virtual ~CSteadyStateTask();
+
+    /**
+     * Resizes result matrices and updates array annotations for a specific task.
+     * This is used when we need to know about the data structures of a task result
+     * without actually performing the task, e.g. when selecting objects for output.
+     * For now we assume that this functionality is also performed when
+     * initialize() is called.
+     */
+    virtual bool updateMatrices();
 
     /**
      * Initialize the task. If an ostream is given this ostream is used

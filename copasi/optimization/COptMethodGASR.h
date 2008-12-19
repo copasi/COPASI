@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:43:32 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
+  $Revision: 1.9.24.1 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2008/11/06 08:05:05 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,6 +21,8 @@
 
 #ifndef COPASI_COptMethodGASR
 #define COPASI_COptMethodGASR
+
+#include <limits.h>
 
 #include "optimization/COptMethod.h"
 #include "utilities/CVector.h"

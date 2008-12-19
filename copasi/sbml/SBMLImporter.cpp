@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.217 $
+//   $Revision: 1.217.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/09 14:40:17 $
+//   $Author: shoops $
+//   $Date: 2008/11/18 02:47:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1636,7 +1636,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
         }
       if (sbmlDoc->getModel() == NULL)
         {
-          CCopasiMessage Message(CCopasiMessage::ERRoR, MCSBML + 2);
+          CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
           if (mpImportHandler) mpImportHandler->finish(mhImportStep);
           return NULL;
         }
@@ -1783,7 +1783,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             {
               if (u->getScale() == 1)
                 {
-                  CCopasiMessage Message(CCopasiMessage::ERRoR, MCSBML + 30);
+                  CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 30);
                 }
               else
                 {
@@ -3843,7 +3843,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
         {
           // if it is an assignment rule we do nothing, if it is an ode rule,
           // we need to issue a warning or an error
-          CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
         }
     }
   pME->setStatus(status);
@@ -4099,7 +4099,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*compartmentIt)->getStatus() == CModelValue::FIXED || (*compartmentIt)->getStatus() == CModelValue::ODE) && (*compartmentIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 45, pSBMLCompartment->getId().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 45, pSBMLCompartment->getId().c_str());
 
               (*compartmentIt)->setInitialValue(1.0);
               changedObjects.insert((*compartmentIt)->getInitialValueReference());
@@ -4121,7 +4121,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
         {
           if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
             {
-              CCopasiMessage Message(CCopasiMessage::ERRoR, MCSBML + 20, pSBMLSpecies->getId().c_str());
+              CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 20, pSBMLSpecies->getId().c_str());
             }
 
           // set the initial value
@@ -4143,7 +4143,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*metabIt)->getStatus() == CModelValue::FIXED || (*metabIt)->getStatus() == CModelValue::REACTIONS || (*metabIt)->getStatus() == CModelValue::ODE) && (*metabIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 41, pSBMLSpecies->getId().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 41, pSBMLSpecies->getId().c_str());
 
               (*metabIt)->setInitialConcentration(1.0);
               changedObjects.insert((*metabIt)->getInitialConcentrationReference());
@@ -4177,7 +4177,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           if (((*mvIt)->getStatus() == CModelValue::FIXED || (*mvIt)->getStatus() == CModelValue::ODE) && (*mvIt)->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
-              CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 43, pSBMLParameter->getId().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 43, pSBMLParameter->getId().c_str());
 
               (*mvIt)->setInitialValue(1.0);
               changedObjects.insert((*mvIt)->getInitialValueReference());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.35.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2008/11/11 18:12:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,14 +112,9 @@ bool CRandomSearch::optimise()
 
   if (!initialize()) return false;
 
-  C_FLOAT64 la;
-
   unsigned C_INT32 j;
 
-  C_FLOAT64 mn;
-  C_FLOAT64 mx;
-
-  // initialise the population
+  // Initialize the population
   // first individual is the initial guess
   for (j = 0; j < mVariableSize; j++)
     {
@@ -159,31 +154,9 @@ bool CRandomSearch::optimise()
         {
           // CALCULATE lower and upper bounds
           COptItem & OptItem = *(*mpOptItem)[j];
-          mn = *OptItem.getLowerBoundValue();
-          mx = *OptItem.getUpperBoundValue();
-
           C_FLOAT64 & mut = mIndividual[j];
 
-          try
-            {
-              // determine if linear or log scale
-              if ((mn < 0.0) || (mx <= 0.0))
-                mut = mn + mpRandom->getRandomCC() * (mx - mn);
-              else
-                {
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
-
-                  if (la < 1.8)
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
-                  else
-                    mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
-                }
-            }
-
-          catch (...)
-            {
-              mut = (mx + mn) * 0.5;
-            }
+          mut = OptItem.getRandomValue(mpRandom);
 
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))

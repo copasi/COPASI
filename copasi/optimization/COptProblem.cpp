@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.101.2.5.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 23:32:58 $
+//   $Author: shoops $
+//   $Date: 2008/12/17 20:30:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,13 +162,15 @@ bool COptProblem::elevateChildren()
   if (mpParmSubtaskCN != NULL)
     {
       CCopasiParameter * pParameter;
-      if ((pParameter = getParameter("Steady-State")) != NULL)
+      if ((pParameter = getParameter("Steady-State")) != NULL &&
+          *pParameter->getValue().pSTRING != "")
         {
           setSubtaskType(CCopasiTask::steadyState);
           removeParameter("Steady-State");
         }
 
-      if ((pParameter = getParameter("Time-Course")) != NULL)
+      if ((pParameter = getParameter("Time-Course")) != NULL &&
+          *pParameter->getValue().pSTRING != "")
         {
           setSubtaskType(CCopasiTask::timeCourse);
           removeParameter("Time-Course");
@@ -263,17 +265,21 @@ bool COptProblem::initializeSubtaskBeforeOutput()
       ListOfContainer.push_back(getObjectAncestor("Vector"));
       mpSubtask =
         dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
-    }
-  else
-    mpSubtask = NULL;
 
-  if (mpSubtask != NULL)
-    {
-      return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      //      ContainerList.push_back(mpSubtask);
+      try
+        {
+          if (mpSubtask != NULL)
+            return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+        }
+
+    catch (...) {}
+
+      return false;
     }
-  else
-    return false;
+
+  // We have a CFitProblem for which it is OK not to have a subtask.
+  mpSubtask = NULL;
+  return true;
 }
 
 bool COptProblem::initialize()
@@ -304,26 +310,8 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  //   if (mpParmSubtaskCN != NULL)
-  //     {
-  //       std::vector< CCopasiContainer * > ListOfContainer;
-  //       ListOfContainer.push_back(getObjectAncestor("Vector"));
-  //       mpSubtask =
-  //         dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
-  //}
-  //   else
-  //     mpSubtask = NULL;
-
   if (mpSubtask != NULL)
-    {
-      //      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      ContainerList.push_back(mpSubtask);
-    }
-  else
-    {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 7);
-      success = false;
-    }
+    ContainerList.push_back(mpSubtask);
 
   unsigned C_INT32 i;
   unsigned C_INT32 Size = mpOptItems->size();
@@ -340,7 +328,7 @@ bool COptProblem::initialize()
 
   if (it == end)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 6);
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 6);
       return false;
     }
 
@@ -357,8 +345,6 @@ bool COptProblem::initialize()
 
   changedObjects.erase(NULL);
   mInitialRefreshMethods = mpModel->buildInitialRefreshSequence(changedObjects);
-
-  if (!success) return false;
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
@@ -385,7 +371,7 @@ bool COptProblem::initialize()
       !mpFunction->compile(ContainerList))
     {
       mRefreshMethods.clear();
-      CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 5);
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
 
@@ -408,7 +394,7 @@ bool COptProblem::restore(const bool & updateModel)
 
   if (updateModel && mSolutionValue != mInfinity)
     {
-      // Set the model values ans start values to the solution values
+      // Set the model values and start values to the solution values
       pTmp = mSolutionVariables.array();
 
       for (; it != end; ++it, pTmp++)
@@ -596,7 +582,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
   mStoreResults = false;
 
-  // Make sure the timer is acurate.
+  // Make sure the timer is accurate.
   (*mCPUTime.getRefresh())();
 
   return true;
@@ -607,6 +593,9 @@ const C_FLOAT64 & COptProblem::getCalculateValue() const
 
 const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
   {return mSolutionVariables;}
+
+const CVector< C_FLOAT64 > & COptProblem::getVariableGradients() const
+  {return mGradient;}
 
 bool COptProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)

@@ -14,7 +14,7 @@
 #endif
 #define yyerror(__str) \
   if (yychar != YYERRCODE) correctErrorPosition(); \
-  CCopasiMessage(CCopasiMessage::ERRoR, MCFunction + 1, mPosition)
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
 #include "copasi.h"
 #include "CEvaluationNode.h"

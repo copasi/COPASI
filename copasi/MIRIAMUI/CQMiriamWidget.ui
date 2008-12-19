@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
-<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Revision: 1.2.6.1 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2008/06/11 19:18:05 $ </comment>
+<comment>   $Date: 2008/11/25 16:49:07 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -21,8 +21,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>501</width>
-            <height>410</height>
+            <width>507</width>
+            <height>389</height>
         </rect>
     </property>
     <property name="caption">
@@ -44,6 +44,14 @@
             <property name="name">
                 <cstring>mpDTCreated</cstring>
             </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>3</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
         </widget>
         <spacer row="0" column="2">
             <property name="name">
@@ -53,11 +61,11 @@
                 <enum>Horizontal</enum>
             </property>
             <property name="sizeType">
-                <enum>Expanding</enum>
+                <enum>MinimumExpanding</enum>
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>180</width>
+                    <width>80</width>
                     <height>20</height>
                 </size>
             </property>
@@ -266,7 +274,6 @@
     <include location="local" impldecl="in implementation">CReferencesWidget.h</include>
     <include location="local" impldecl="in implementation">CBiologicalDescriptionsWidget.h</include>
     <include location="local" impldecl="in implementation">CModifiedWidget.h</include>
-    <include location="local" impldecl="in implementation">CQMiriamWidget.ui.h</include>
 </includes>
 <forwards>
     <forward>class CMIRIAMInfo;</forward>

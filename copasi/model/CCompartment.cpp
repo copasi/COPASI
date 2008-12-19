@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.69.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/03 23:11:28 $
+//   $Author: shoops $
+//   $Date: 2008/11/19 19:24:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 // Derived from Gepasi's ccompart.cpp
 // (C) Pedro Mendes 1995-2000
 //
-// Converted for Copasi by Pedro Mendes
+// Converted for COPASI by Pedro Mendes
 
 #include <iostream>
 #include <float.h>
@@ -126,7 +126,7 @@ CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
   {return mMetabolites;}
 
-/* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.
+/* Note: the metabolite stored in mMetabolites has definitely mpCompartment set.
    In the case the compartment is part of a model also mpModel is set. */
 bool CCompartment::createMetabolite(const CMetab & metabolite)
 {
@@ -156,20 +156,6 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
 
   return success;
 }
-
-bool CCompartment::removeMetabolite(CMetab * pMetabolite)
-{
-  unsigned C_INT32 index = mMetabolites.CCopasiVector < CMetab >::getIndex(pMetabolite);
-  if (index == C_INVALID_INDEX)
-    return false;
-
-  mMetabolites.CCopasiVector < CMetab >::remove(index);
-
-  return true;
-}
-
-//bool CCompartment::isValidName(const std::string & name) const
-//{return (name.find_first_of(" ") == std::string::npos);}
 
 void CCompartment::initObjects()
 {

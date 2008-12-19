@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.2.3.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/07 16:22:29 $
+//   $Author: ssahle $
+//   $Date: 2008/12/15 15:39:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,30 +231,36 @@ void CArrayAnnotation::resize()
     resizeOneDimension(i);
 }
 
-const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index)
-{
-  //generate the index string
-  std::string tmp;
-  std::ostringstream indexString;
-  unsigned C_INT32 ii = 0;
-  for (ii = 0; ii < index.size(); ++ii)
-    {
-      indexString << "[" << index[ii] << "]";
-    }
+const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index) const
+  {
+    //generate the index string
+    std::string tmp;
+    std::ostringstream indexString;
+    unsigned C_INT32 ii = 0;
+    for (ii = 0; ii < index.size(); ++ii)
+      {
+        indexString << "[" << index[ii] << "]";
+      }
 
-  return this->getObject(indexString.str());
-}
+    //handle zero-dimensional arrays
+    if (index.size() == 0)
+      indexString << "[.]";
 
-const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v)
-{
-  CCopasiAbstractArray::index_type index;
-  index.push_back(u);
-  index.push_back(v);
-  return addElementReference(index);
-}
+    return this->getObject(indexString.str());
+  }
+
+const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
+  {
+    CCopasiAbstractArray::index_type index;
+    index.push_back(u);
+    index.push_back(v);
+    return addElementReference(index);
+  }
 
 const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
   {
+    //std::cout << "CArrayAnnotation::getObject() " << cn << std::endl;
+
     if (cn == "")
       {
         return this;
@@ -279,6 +285,7 @@ const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) 
             ++ii;
           }
     */
+
     //first get the index string
     std::string tmp;
     std::string indexString;
@@ -404,6 +411,36 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
 
   return os;
 }
+
+bool CArrayAnnotation::isEmpty()
+{
+  // either the dimension itself ...
+  int dim = dimensionality();
+  //  std::cout << "Dimensionality = " << dim << std::endl;
+  if (dim == 0) return false;
+
+  // ... or the size of each dimension should be greater than zero.
+  int idx = 0;
+  for (idx = 0; idx < dim; idx++)
+    {
+      // std::cout << "size of dim " << idx << " = " << getAnnotationsString(idx, true).size()
+      //     << " -vs- " << getAnnotationsCN(idx).size() << " -vs- " << size()[idx] << std::endl;
+      // if (!getAnnotationsCN(idx).size()) // -> incl. 'sink' and 'source'
+      if (!size()[idx])
+        return true;
+    }
+
+  return false;
+}
+
+std::string CArrayAnnotation::getObjectDisplayName(bool regular, bool richtext) const
+  {
+    std::string part;
+    if (getObjectParent() && getObjectParent()->getObjectType() != "Model")
+      part = getObjectParent()->getObjectDisplayName(regular, richtext) + ".";
+
+    return part + getObjectName() + "[[]]";
+  }
 
 // void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const
 //   {

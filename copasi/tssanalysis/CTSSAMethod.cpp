@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 18:16:27 $
+//   $Author: nsimus $
+//   $Date: 2008/12/08 11:53:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "copasi.h"
 
 #include "CTSSAMethod.h"
+#include "CTSSAProblem.h"
 #include "CILDMMethod.h"
 #include "CILDMModifiedMethod.h"
 #include "CCSPMethod.h"
@@ -56,11 +57,9 @@ CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
       pMethod = new CILDMModifiedMethod();
       break;
 
-#ifdef WITH_CSPMETHOD
     case tssCSP:
       pMethod = new CCSPMethod();
       break;
-#endif // WITH_CSPMETHOD
 
     default:
       fatalError();
@@ -115,7 +114,7 @@ void CTSSAMethod::setProblem(CTSSAProblem * problem)
  *  starting with the current state, i.e., the result of the previous
  *  step.
  *  The new state (after deltaT) is expected in the current state.
- *  The return value is the actual timestep taken.
+ *  The return value is the actual time step taken.
  *  @param "const double &" deltaT
  */
 void CTSSAMethod::step(const double & C_UNUSED(deltaT))
@@ -125,7 +124,7 @@ void CTSSAMethod::step(const double & C_UNUSED(deltaT))
  *  This instructs the method to calculate a a time step of deltaT
  *  starting with the initialState given.
  *  The new state (after deltaT) is expected in the current state.
- *  The return value is the actual timestep taken.
+ *  The return value is the actual time step taken.
  *  @param "double &" deltaT
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
@@ -145,6 +144,17 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  if (pTP->getModel()->getCompartments().size() != 1)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 13);
+      return false;
+    }
+
+  if (pTP->getModel()->getNumODEMetabs() != 0 || pTP->getModel()->getNumAssignmentMetabs() != 0)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 14);
+      return false;
+    }
   return true;
 }
 
@@ -273,15 +283,15 @@ void CTSSAMethod::integrationStep(const double & deltaT)
          &ITOL, //  6. error control
          &mRtol, //  7. relative tolerance array
          mAtol.array(), //  8. absolute tolerance array
-         &mState, //  9. output by overshoot & interpolatation
+         &mState, //  9. output by overshoot & interpolation
          &mLsodaStatus, // 10. the state control variable
-         &one, // 11. futher options (one)
+         &one, // 11. further options (one)
          mDWork.array(), // 12. the double work array
          &DSize, // 13. the double work array size
          mIWork.array(), // 14. the int work array
          &ISize, // 15. the int work array size
          NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of jacobian calculate (2)
+         &mJType);        // 17. the type of Jacobian calculate (2)
 
   if (mLsodaStatus == -1)
     mLsodaStatus = 2;
@@ -486,8 +496,7 @@ MAT_ANAL_fast_space:  mathematical analysis of matrices mTdInverse for post-anal
 
 void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
 {
-  C_FLOAT64 denom, length;
-  C_FLOAT64 scalar_product, absolute_value_1, absolute_value_2;
+  C_FLOAT64 scalar_product, absolute_value_1;
   C_INT i, j, k, dim;
 
   dim = mData.dim;
@@ -724,7 +733,7 @@ void CTSSAMethod::schur(C_INT &info)
 
   if (info)
     {
-      std::cout << "Problems with schur decomposition " << std::endl;
+      //  std::cout << "Problems with Schur decomposition " << std::endl;
 
       return;
     }
@@ -1152,7 +1161,7 @@ void CTSSAMethod::schur_desc(C_INT &info)
 
   if (info)
     {
-      std::cout << "Problems with schur decomposition " << std::endl;
+      //   std::cout << "Problems with schur decomposition " << std::endl;
 
       return;
     }
@@ -1387,7 +1396,7 @@ void CTSSAMethod::schur_desc(C_INT &info)
 /**
 SYLVESTER:
 Solution of Sylvester equation for given slow, mQ,mR
-Output: mTd, mTdinverse, mQz (is used later for newton iterations)
+Output: mTd, mTdinverse, mQz (is used later for Newton iterations)
  */
 
 void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
@@ -1524,7 +1533,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   /*  if (info) TODO*/
   if (info)
     {
-      std::cout << "Problems with the solution of sylvester equation" << std::endl;
+      //    std::cout << "Problems with the solution of Sylvester equation" << std::endl;
       return;
     }
 
@@ -1615,9 +1624,9 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
 
   if (flag_sylvester == 0)
     {
-      std::cout << " Matrix S = mTdInverse *Jacobian * mTd  " << std::endl;
-      std::cout << S << std::endl;
-      std::cout << std::endl;
+      // std::cout << " Matrix S = mTdInverse *Jacobian * mTd  " << std::endl;
+      // std::cout << S << std::endl;
+      // std::cout << std::endl;
     }
 
   for (i = 0; i < dim; i++)
@@ -1885,15 +1894,15 @@ void CTSSAMethod::initializeAtol()
   C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 * pEnd = pAtol + mAtol.size();
 
-  CModelEntity **ppEntity = mpModel->getStateTemplate().beginIndependent();
-  CMetab * pMetab;
+  CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
+  const CMetab * pMetab;
 
   for (; pAtol != pEnd; ++pAtol, ++ppEntity)
     {
       *pAtol = *pTolerance;
 
       // Rescale for metabolites as we are using particle numbers
-      if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
           *pAtol *=
             pMetab->getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();
@@ -1929,7 +1938,7 @@ void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * yd
 //  flag_jacob=0  to print Jacobian
 //  flag_schur=0  to print matrices of Schur decomposition
 //  flag_tab =0 to print the Tabs with slow space Analysis
-//  flag_deufl=0 to prove the deuflhard algorithm
+//  flag_deufl=0 to prove the Deuflhard algorithm
 //  flag_Td =0  to print the transformation matrices mTd and mTdInverse
 //  flag_sylvester=0  to print the transformed Jacobian:  mTdInverse*Jacobian_initial*mTd (should be diagonal)
 //  flag_norm =0 for printing "norm story"
@@ -1952,23 +1961,23 @@ void CTSSAMethod::emptyVectors()
 {}
 
 /**
- *upgrade all vectors with values from actually calculalion for current step
+ *upgrade all vectors with values from actually calculation for current step
  **/
-void CTSSAMethod::setVectors(int slowMode)
+void CTSSAMethod::setVectors(int /* slowMode */)
 {}
 
 /**
  * Create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget.
- * Input for each CArraAnnotations is a seperate CMatrix.
+ * Input for each CArraAnnotations is a separate CMatrix.
  **/
 void CTSSAMethod::createAnnotationsM()
 {}
 /**
  * Set the every CArrayAnnotation for the requested step.
- * Set also the desription of CArayAnnotation for both dimensions:
- *    - dimension description could consists of some std::srings
+ * Set also the description of CArayAnnotation for both dimensions:
+ *    - dimension description could consists of some std::strings
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-void CTSSAMethod::setAnnotationM(int step)
+void CTSSAMethod::setAnnotationM(int /* step */)
 {}

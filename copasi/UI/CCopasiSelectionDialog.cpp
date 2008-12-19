@@ -1,9 +1,7 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 17:13:43 $
+//   $Author: ssahle $
+//   $Date: 2008/12/15 15:51:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +31,7 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
+#include "CQMessageBox.h"
 
 CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
     QDialog(parent, name, modal),
@@ -151,16 +150,36 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
+  //std::cout << "Size = " << Selection.size() << std::endl;
+  //std::cout << "parent: " << parent->name() << " - class: " << parent->className() << std::endl;
+
   int Result = pDialog->exec();
 
   if (Result == QDialog::Accepted && Selection.size() != 0)
-    //    return Selection[0];
     {
       const CCopasiObject *pObject = Selection[0];
+      const CArrayAnnotation * pArray;
 
-      chooseCellMatrix(pObject);
+      // if the selected object is an array then select firstly one cell of it
+      if ((pArray = dynamic_cast< const CArrayAnnotation * >(pObject)))
+        {
+          //std::cout << "pArray->getCN() = " << pArray->getCN() << std::endl;
 
-      return Selection[0];
+          if (flag == CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION ||
+              flag == CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE ||
+              flag == CCopasiSimpleSelectionTree::PLOT_OBJECT)
+            pObject = chooseCellMatrix(pArray, true, true)[0];
+
+          if (!pObject) return NULL;
+        }
+
+      // just only show the object value
+      /*
+      C_FLOAT64 *pValue = (C_FLOAT64 *) pObject->getValuePointer();
+      if (pValue != NULL)
+      std::cout << "value = " << *pValue << std::endl;
+      */
+      return pObject;
     }
 
   if (Result == QDialog::Rejected && pCurrentObject != NULL)
@@ -182,91 +201,157 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 
+  //std::cout << "Parent widget = " << parent->className() << " - " << parent->name() << std::endl;
+
   if (pDialog->exec() == QDialog::Rejected && pCurrentSelection)
-    return *pCurrentSelection; // TO DO: What is different between *pCurrentSelection and Selection ??
+    return *pCurrentSelection;
   else
     //    return Selection;
     {
-      std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
-
-      for (; itSelection != Selection.end(); ++itSelection)
+      if (flag == CCopasiSimpleSelectionTree::REPORT_ITEM)
         {
-          const CCopasiObject *pObject = *itSelection;
-          QString str = FROM_UTF8(pObject->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectName());
+          std::vector<const CCopasiObject *> newSelection;
 
-          if (str == "Reference=Annotated Matrix")
+          std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
+          for (; itSelection != Selection.end(); ++itSelection)
             {
-              const CArrayAnnotation * tmp;
+              // if the current object is an array then select firstly one cell of it
+              const CArrayAnnotation * pArray;
+              if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
+                {
+                  // second parameter is false in order 'ALL' options on the matrix dialog to appear
+                  std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
+                  std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+                  for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
+                    newSelection.push_back(*tmpit);
+                }
+              // otherwise, just put it into newSelection
+              else
+                {
+                  newSelection.push_back(*itSelection);
+                }
+            }
+          return newSelection;
+        }
+      return Selection;
+    }
 
-              QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());
-              //  tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName(strAux)));
-              tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName((const char*) strAux.utf8())));
-              if (!tmp)
-                return std::vector< const CCopasiObject * >();
-              /*     if (!tmp && pCurrentSelection)
-                  return *pCurrentSelection;
-              //     if (!tmp)
-              //    return NULL;
-              */
-              int nRows = tmp->getAnnotationsCN(0).size();
-              int nCols = tmp->getAnnotationsCN(1).size();
+  //  return Selection;
+}
 
-              if (!nRows || !nCols)
-                return std::vector< const CCopasiObject * >();
+std::vector<const CCopasiObject*>
+CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value, std::string caption)
+{
+  std::vector< const CCopasiObject* > returnVector;
+  if (single)
+  {returnVector.resize(1); returnVector[0] = NULL;}
+  else
+    returnVector.resize(0);
+
+  if (!pArrayAnnotation) return returnVector;
+
+  //handle zero-dimensional array
+  if (pArrayAnnotation->size().size() == 0)
+    {
+      CCopasiAbstractArray::index_type index;
+      index.resize(0);
+      returnVector.resize(1);
+      returnVector[0] = pArrayAnnotation->addElementReference(index);
+      return returnVector;
+    }
+
+  CQMatrixDialog * pDialog = new CQMatrixDialog();
+
+  pDialog->setCaption(tr(FROM_UTF8(caption) + "Cell Selection of " + FROM_UTF8(pArrayAnnotation->getObjectName())));
+  pDialog->setArray(pArrayAnnotation, single);
+
+  int Result = pDialog->exec();
+
+  if (Result == QDialog::Accepted)
+    {
+      CCopasiAbstractArray::index_type index;
+      index.resize(pArrayAnnotation->dimensionality());
+      if (index.size() > 2)
+        CQMessageBox::warning(0, "Dimensionality Problem", "Need more handle for high dimension of array",
+                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+
+      if (single)
+        {
+          // single cell selection
+          if (value)
+            {
+              index[0] = pDialog->mpCBRow->currentItem();
+              index[1] = pDialog->mpCBColumn->currentItem();
               /*
-                if (!nRows || !nCols)
-                  return *pCurrentSelection;
-              //    return NULL;
+                  C_FLOAT64 value = (*pArrayAnnotation->array())[index];
+                  std::cout << "its value = " << value << std::endl;
               */
-              CQMatrixDialog *dialog = new CQMatrixDialog();
-              dialog->setArray(tmp);
+              returnVector[0] = pArrayAnnotation->addElementReference(index);
+            }
 
-              int Result = dialog->exec();
-              /*
-                if (Result == QDialog::Rejected)
-                  return *pCurrentSelection;
-              //  if (Result == QDialog::Rejected)
-              //    return NULL;
-              */
-              if (Result == QDialog::Rejected)
-                return std::vector< const CCopasiObject * >();
-              else if (Result == QDialog::Accepted)
-                std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
+          return returnVector;
+        }
+
+      // multi cell selection
+
+      //if "All" is selected for both rows and columns, and an object with numerical value
+      //is not requested,, return the array annotation as such
+      if (pDialog->mpCBRow->currentItem() == 0 && pDialog->mpCBColumn->currentItem() == 0
+          && !value)
+        {
+          // whole matrix should be chosen -> the object itself will be returned
+          //std::cout << "whole matrix should be chosen" << std::endl;
+          returnVector.resize(1);
+          returnVector[0] = (CCopasiObject *) pArrayAnnotation;
+          return returnVector;
+        }
+
+      int minRows, maxRows, minCols, maxCols;
+      int i, j;
+
+      if (pDialog->mpCBRow->currentItem())
+        {
+          // not ALL option
+          minRows = pDialog->mpCBRow->currentItem() - 1;
+          maxRows = minRows + 1;
+        }
+      else
+        {
+          // ALL option
+          minRows = 0;
+          maxRows = pArrayAnnotation->size()[0];
+        }
+
+      if (pDialog->mpCBColumn->currentItem())
+        {
+          // not ALL option
+          minCols = pDialog->mpCBColumn->currentItem() - 1;
+          maxCols = minCols + 1;
+        }
+      else
+        {
+          // ALL option
+          minCols = 0;
+          maxCols = pArrayAnnotation->size()[1];
+        }
+
+      for (i = minRows; i < maxRows; ++i)
+        {
+          for (j = minCols; j < maxCols; ++j)
+            {
+              returnVector.push_back(pArrayAnnotation->addElementReference(i, j));
             }
         }
 
-      return Selection;
+      return returnVector;
     }
-}
 
-void CCopasiSelectionDialog::chooseCellMatrix(const CCopasiObject *pObject)
-{
-  QString str = FROM_UTF8(pObject->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectName());
-
-  if (str == "Reference=Annotated Matrix")
+  else
     {
-      const CArrayAnnotation * tmp;
+      // Rejected case
+      if (single)
+        returnVector[0] = NULL;
 
-      QString strAux = FROM_UTF8(pObject->getObjectParent()->getObjectType()) + "=" + FROM_UTF8(pObject->getObjectParent()->getObjectName());
-      //      tmp = dynamic_cast<const CArrayAnnotation *> (pModel->getObject(CCopasiObjectName(strAux)));
-      tmp = dynamic_cast<const CArrayAnnotation *> (pObject->getObjectParent()->getObject(CCopasiObjectName((const char*) strAux.utf8())));
-      if (!tmp)
-        return;
-
-      int nRows = tmp->getAnnotationsCN(0).size();
-      int nCols = tmp->getAnnotationsCN(1).size();
-
-      if (!nRows || !nCols)
-        return;
-
-      CQMatrixDialog *dialog = new CQMatrixDialog();
-      dialog->setArray(tmp);
-
-      int Result = dialog->exec();
-
-      if (Result == QDialog::Rejected)
-        return;
-      else if (Result == QDialog::Accepted)
-        std::cout << dialog->mpCBRow->currentText() << " AND " << dialog->mpCBColumn->currentText() << std::endl;
+      return returnVector;
     }
 }

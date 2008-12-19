@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.27.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/12 14:32:08 $
+//   $Date: 2008/10/15 15:17:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,10 +101,14 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 
 const C_FLOAT64 & CExpression::calcValue()
 {
+  if (!mUsable)
+    return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   try
     {
       return mValue = mpRoot->value();
     }
+
   catch (...)
     {
       return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();

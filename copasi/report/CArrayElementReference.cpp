@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/08 12:54:32 $
+//   $Date: 2008/12/15 15:40:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,16 +20,16 @@ CArrayElementReference::CArrayElementReference(const std::string & index, const 
                     CCopasiObject::Reference |
                     CCopasiObject::NonUniqueName |
                     CCopasiObject::ValueDbl),
-    mpReference(NULL),
+    //    mpReference(NULL),
     mIndex(index)
 {
   assert(pParent != NULL);
 }
 
-void CArrayElementReference::updateMethod(const CCopasiAbstractArray::data_type & value)
+void CArrayElementReference::updateMethod(const CCopasiAbstractArray::data_type & /*value*/)
 {
-  if (mpReference)
-    *mpReference = value;
+  //  if (mpReference)
+  //    *mpReference = value;
 }
 
 void * CArrayElementReference::getValuePointer() const
@@ -41,8 +41,11 @@ void * CArrayElementReference::getValuePointer() const
     //this could be done in the constructor, actually
     unsigned C_INT32 ii = 0;
     CCopasiArray::index_type index;
-    while (mIndex.getElementName(ii, false) != "")
+    std::string tmpIndexString;
+    while ((tmpIndexString = mIndex.getElementName(ii, false)) != "")
       {
+        if (tmpIndexString == ".")
+          break; //"." indicates 0-dimensional array. This means index should stay empty
         index.push_back(mIndex.getElementIndex(ii));
         ++ii;
       }
@@ -66,7 +69,19 @@ void * CArrayElementReference::getValuePointer() const
 std::string CArrayElementReference::getObjectDisplayName(bool regular, bool richtext) const
   {
     if (getObjectParent())
-      return getObjectParent()->getObjectDisplayName(regular, richtext) + mIndex;
+      {
+        //if the array has as task as ancestor, use the task (skip the problem/method)
+        CCopasiContainer* pT = getObjectAncestor("Task");
+
+        std::string part;
+        if (pT)
+          part = pT->getObjectDisplayName(regular, richtext) + ".";
+        else if (getObjectParent()->getObjectParent() && getObjectParent()->getObjectParent()->getObjectType() != "Model")
+          part = getObjectParent()->getObjectParent()->getObjectDisplayName(regular, richtext) + ".";
+
+        //now part contains the display name of the task, or the parent of the parent
+        return part + getObjectParent()->getObjectName() + mIndex;
+      }
     else
       return "Array" + mIndex;
   }

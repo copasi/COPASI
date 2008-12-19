@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/04 15:45:49 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
+  $Revision: 1.8.24.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/11/13 18:30:33 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,7 +47,7 @@ class CExperimentObjectMap: public CCopasiParameterGroup
                     const CCopasiContainer * pParent = NULL);
 
         /**
-         * Specific constructor used for reading copasi files
+         * Specific constructor used for reading COPASI files
          * @param const CCopasiParameterGroup & group
          * @param const CCopasiContainer * pParent (default: NULL)
          */
@@ -63,7 +68,7 @@ class CExperimentObjectMap: public CCopasiParameterGroup
 
       public:
         /**
-         * Assignement operator
+         * Assignment operator
          * @param const CDataColumn & rhs
          * @return CDataColumn & lhs
          */
@@ -97,7 +102,7 @@ class CExperimentObjectMap: public CCopasiParameterGroup
         bool setObjectCN(const std::string & objectCN);
 
         /**
-         * Retreive the object CN of the object mapped to the column
+         * Retrieve the object CN of the object mapped to the column
          * @return std::string objctCN
          */
         std::string getObjectCN() const;
@@ -110,13 +115,13 @@ class CExperimentObjectMap: public CCopasiParameterGroup
         bool setWeight(const C_FLOAT64 & weight);
 
         /**
-         * Retreive the weight of the column
+         * Retrieve the weight of the column
          * @return C_FLOAT64 weight
          */
         C_FLOAT64 getWeight() const;
 
         /**
-         * Retreive the default weight of the column
+         * Retrieve the default weight of the column
          * @return C_FLOAT64 weight
          */
         C_FLOAT64 getDefaultWeight() const;
@@ -189,6 +194,13 @@ class CExperimentObjectMap: public CCopasiParameterGroup
     unsigned C_INT32 getLastNotIgnoredColumn() const;
 
     /**
+     * Retrieve the name of a parameter or subgroup
+     * @param const unsigned C_INT32 & index
+     * @return std::string name
+     */
+    virtual const std::string & getName(const unsigned C_INT32 & index) const;
+
+    /**
      * Set the role of the indexed column
      * @param const unsigned C_INT32 & index
      * @param const CExperiment::Type & role
@@ -214,7 +226,7 @@ class CExperimentObjectMap: public CCopasiParameterGroup
                      const std::string & objectCN);
 
     /**
-     * Retreive the object CN of the object mapped to the indexed column
+     * Retrieve the object CN of the object mapped to the indexed column
      * @param const unsigned C_INT32 & index
      * @return std::stringobjctCN
      */
@@ -230,14 +242,14 @@ class CExperimentObjectMap: public CCopasiParameterGroup
                    const C_FLOAT64 & weight);
 
     /**
-     * Retreive the weight of the indexed column
+     * Retrieve the weight of the indexed column
      * @param const unsigned C_INT32 & index
      * @return C_FLOAT64 weight
      */
     C_FLOAT64 getWeight(const unsigned C_INT32 & index) const;
 
     /**
-     * Retreive the default weight according to the saelected weight method
+     * Retrieve the default weight according to the selected weight method
      * of the indexed column
      * @param const unsigned C_INT32 & index
      * @return C_FLOAT64 weight

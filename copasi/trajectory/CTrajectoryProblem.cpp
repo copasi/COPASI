@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.44.16.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/08/22 15:44:06 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:13:22 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -20,6 +25,8 @@
 
 #include <math.h>
 #include <string>
+
+#include <limits.h>
 
 #include "copasi.h"
 #include "CTrajectoryProblem.h"

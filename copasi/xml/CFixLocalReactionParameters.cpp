@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CFixLocalReactionParameters.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.6.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/01 10:57:06 $
+//   $Author: shoops $
+//   $Date: 2008/10/23 14:11:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,13 +57,13 @@ void CFixLocalReactionParameters::checkModel()
 
       for (; itParameter != endParameter; ++itParameter)
         {
-          // Check for all entities' expressions and inititial expressions
+          // Check for all entities' expressions and initial expressions
           // whether the CN of the parameter appears in the infix.
           // Note '>' is already properly escaped in the CN
           std::string CN = "<" + (*itParameter)->getCN() + ",Reference=Value>";
 
-          CModelEntity **ppEntity = mpModel->getStateTemplate().getEntities();
-          CModelEntity **ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
+          CModelEntity *const*ppEntity = mpModel->getStateTemplate().getEntities();
+          CModelEntity *const*ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
           for (; ppEntity != ppEntityEnd; ++ppEntity)
             {
               if ((*ppEntity)->getExpression().find(CN) != std::string::npos)
@@ -135,7 +135,7 @@ void CFixLocalReactionParameters::changeModel()
           << " is replaced by " << pModelValue->getObjectName() << std::endl;
         }
 
-      // We need to destinguish between initial and other expressions.
+      // We need to distinguish between initial and other expressions.
       if (itChanges->second->getObjectName().compare(0, 7, "Initial") == 0)
         NewCN = NewCNBase + "Initial";
       else
@@ -144,7 +144,7 @@ void CFixLocalReactionParameters::changeModel()
       // Replace the OldCN of the parameter with the NewCN of global quantity in all expressions.
       Infix = itChanges->second->getInfix();
 
-      // There may be more than one occurance.
+      // There may be more than one occurrence.
       Start = 0;
       while ((Start = Infix.find(OldCN), Start) != std::string::npos)
         Infix.replace(Start, OldCN.length(), NewCN);

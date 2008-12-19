@@ -1,18 +1,25 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/04 15:45:49 $
-   End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
+ $Revision: 1.13.24.2 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/11/13 18:30:33 $
+ End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <vector>
 #include <limits>
 #include <math.h>
+
+#include <stdlib.h>
 
 #include "copasi.h"
 
@@ -107,6 +114,20 @@ unsigned C_INT32 CExperimentObjectMap::getLastNotIgnoredColumn() const
         }
 
     return LastNotIgnored;
+  }
+
+// virtual
+const std::string & CExperimentObjectMap::getName(const unsigned C_INT32 & index) const
+  {
+    static const std::string NoName("");
+
+    const CDataColumn * pColumn =
+      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+
+    if (pColumn)
+      return pColumn->getObjectName();
+    else
+      return NoName;
   }
 
 bool CExperimentObjectMap::setRole(const unsigned C_INT32 & index,

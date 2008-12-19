@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.80.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Date: 2008/11/19 19:22:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,9 +311,9 @@ template < class CType > class CCopasiVector:
           {
             iterator Target = begin() + index;
             erase(Target, Target + 1);
-
-            success = false;
           }
+        else
+          success = false;
 
         success &= CCopasiContainer::remove(pObject);
 
@@ -591,7 +591,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {
         if (!isInsertAllowed(&src))
           {
-            CCopasiMessage(CCopasiMessage::ERRoR,
+            CCopasiMessage(CCopasiMessage::ERROR,
                            MCCopasiVector + 2, src.getObjectName().c_str());
             return false;
           }
@@ -624,7 +624,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       {
         if (!isInsertAllowed(src))
           {
-            CCopasiMessage(CCopasiMessage::ERRoR,
+            CCopasiMessage(CCopasiMessage::ERROR,
                            MCCopasiVector + 2, src->getObjectName().c_str());
             return false;
           }
@@ -645,7 +645,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
         if (Index == C_INVALID_INDEX)
           {
-            CCopasiMessage(CCopasiMessage::ERRoR,
+            CCopasiMessage(CCopasiMessage::ERROR,
                            MCCopasiVector + 1, name.c_str());
             return;
           }

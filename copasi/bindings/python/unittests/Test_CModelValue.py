@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModelValue.py,v $ 
-#   $Revision: 1.12 $ 
+#   $Revision: 1.12.6.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Date: 2008/11/12 20:18:05 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -85,16 +85,16 @@ class Test_CModelValue(unittest.TestCase):
     value=self.mv.isUsed()
     self.assert_(type(value)==BooleanType)
 
-  def test_setUsedOnce(self):
+  def test_setCalculatedOnce(self):
     v=True
-    self.mv.setUsedOnce(v)
-    self.assert_(v==self.mv.isUsedOnce())
+    self.mv.setCalculatedOnce(v)
+    self.assert_(v==self.mv.isCalculatedOnce())
     v=False
-    self.mv.setUsedOnce(v)
-    self.assert_(v==self.mv.isUsedOnce())
+    self.mv.setCalculatedOnce(v)
+    self.assert_(v==self.mv.isCalculatedOnce())
 
-  def test_isUsedOnce(self):
-    value=self.mv.isUsedOnce()
+  def test_isCalculatedOnce(self):
+    value=self.mv.isCalculatedOnce()
     self.assert_(type(value)==BooleanType)
 
   def test_setExpression(self):
@@ -127,8 +127,8 @@ def suite():
          ,'test_getInitialExpression'
          ,'test_isUsed'
          ,'test_setUsed'
-         ,'test_isUsedOnce'
-         ,'test_setUsedOnce'
+         ,'test_isCalculatedOnce'
+         ,'test_setCalculatedOnce'
          ,'test_setExpression'
          ,'test_setInitialExpression'
         ]

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:48 $
+//   $Author: gauges $
+//   $Date: 2008/10/21 14:57:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include "CRDFParser.h"
 #include "CRDFWriter.h"
 #include "CRDFGraph.h"
+#include "CRDFUtilities.h"
 
 #include "utilities/CCopasiMessage.h"
 
@@ -112,6 +113,10 @@ CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
 // static
 bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
 {
+  // Fix the the broken SBML RDF
+  if (CRDFUtilities::fixSBMLRdf(XML))
+    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 75);
+
   // Create the RDF graph
   CRDFGraph * pGraph = CRDFParser::graphFromXml(XML);
   if (pGraph == NULL)
@@ -203,7 +208,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
 {
   CRDFPredicate::Path CurrentPath = triplet.pObject->getPath();
 
-  unsigned SubPathIndex = C_INVALID_INDEX;
+  unsigned C_INT32 SubPathIndex = C_INVALID_INDEX;
 
   while (SubPathIndex == C_INVALID_INDEX && SubPathIndex > 0)
     {

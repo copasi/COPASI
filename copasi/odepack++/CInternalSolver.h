@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CInternalSolver.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:38:41 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CInternalSolver.h,v $
+  $Revision: 1.6.24.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/10/17 19:08:14 $
+  End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 //
@@ -25,7 +30,7 @@ class CInternalSolver
 
   protected:
     CInternalSolver():
-        mxerrwd(),
+        mxerrwd(true),
         mpdls001_(NULL),
         mpdlsa01_(NULL),
         mpdlsr01_(NULL)

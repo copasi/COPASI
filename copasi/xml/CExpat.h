@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-  $Revision: 1.20 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/09/16 18:30:14 $
-  End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
+$Revision: 1.20.2.2 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/11/18 02:47:39 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -28,6 +28,7 @@
 
 #include <assert.h>
 #include <expat.h>
+#include <string.h>
 
 #include "utilities/CCopasiMessage.h"
 
@@ -656,7 +657,7 @@ class CExpatTemplate
         if (attributes[i]) return attributes[i + 1];
 
         if (required)
-          CCopasiMessage(CCopasiMessage::ERRoR, MCXML + 1,
+          CCopasiMessage(CCopasiMessage::ERROR, MCXML + 1,
                          name.c_str(), getCurrentLineNumber());
         return NULL;
       }

@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/01 14:28:29 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
+  $Revision: 1.11.30.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/11/13 03:26:21 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -116,7 +121,7 @@ class COptions
               const CType & value)
       {return mOptions[name]->compareValue(value);}
 
-    static void init(C_INT argc, char *argv[]);
+    static void init(C_INT argc = 0, char *argv[] = NULL);
 
     static void cleanup();
 

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.180 $
+#   $Revision: 1.180.2.6 $
 #   $Name:  $
-#   $Author: akoenig $
-#   $Date: 2008/10/09 15:36:55 $
+#   $Author: shoops $
+#   $Date: 2008/11/14 13:37:06 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.180 $ $Author: akoenig $ $Date: 2008/10/09 15:36:55 $
+# $Revision: 1.180.2.6 $ $Author: shoops $ $Date: 2008/11/14 13:37:06 $
 ######################################################################
 
 LIB = UI
@@ -31,7 +31,8 @@ INCLUDEPATH	+= ..
 
 # Input
 HEADERS	+= \
-        AboutDialog.h \
+  AboutDialog.h \
+  CColorScale.h \
 	CCopasiPlotSelectionDialog.h \
 #	CCopasi3dPlotSelectionDialog.h \
 	CCopasiSelectionDialog.h \
@@ -58,6 +59,7 @@ HEADERS	+= \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
+	CQMatrixDialog.ui.h \
 #	CQQwt3dSurfacePlot.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
@@ -91,16 +93,16 @@ HEADERS	+= \
 	StateWidget.h \
 	SteadyStateWidget.h \
 	TableDefinition.h \
-	OptimizationResultWidget.h \
 	TaskWidget.h \
 	TimeSeriesWidget.h \
 	Tree.h \
 	TSSWidget.h \
-        CQExpressionMmlWidgetStack.h \
+    CQExpressionMmlWidgetStack.h \
 	CQMmlScrollView.h
 
 SOURCES	+= \
-        AboutDialog.cpp \
+  AboutDialog.cpp \
+  CColorScale.cpp \
 	CCopasiPlotSelectionDialog.cpp \
 #	CCopasi3dPlotSelectionDialog.cpp \
 	CCopasiSelectionDialog.cpp \
@@ -116,7 +118,6 @@ SOURCES	+= \
 	copasiui3window.cpp \
 	CProgressBar.cpp \
 	CTabWidget.cpp \
-	OptimizationResultWidget.cpp \
 	CQArrayAnnotationsWidget.cpp \
 	CQBarChart.cpp \
 	CQDateTimeEditTableItem.cpp \
@@ -164,7 +165,7 @@ SOURCES	+= \
 	TimeSeriesWidget.cpp \
 	Tree.cpp \
 	TSSWidget.cpp \
-        CQExpressionMmlWidgetStack.cpp \
+  CQExpressionMmlWidgetStack.cpp \
 	CQMmlScrollView.cpp
 
 !contains(DEFINES, COPASI_TSS) {
@@ -191,6 +192,7 @@ SOURCES	+= \
 # FORMS += CQMoietiesTaskWidget.ui
 # FORMS += CQMoietiesTaskResult.ui
 # FORMS += CQOptimizationWidget.ui
+# FORMS += CQOptimizationResult.ui
 # FORMS += CQPreferenceDialog.ui
 # FORMS += CQProgressDialog.ui
 # FORMS += CQProgressItem.ui
@@ -232,8 +234,8 @@ HEADERS += \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
-	   CQExpressionMmlWidget.ui.h \
-	   CQExpressionMmlWidget.h \
+           CQExpressionMmlWidget.ui.h \
+           CQExpressionMmlWidget.h \
            CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
@@ -259,6 +261,8 @@ HEADERS += \
            CQMoietiesTaskWidget.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
+           CQOptimizationResult.h \
+           CQOptimizationResult.ui.h \
            CQPreferenceDialog.h \
            CQPreferenceDialog.ui.h \
            CQProgressDialog.h \
@@ -314,7 +318,7 @@ SOURCES += \
            CQEventWidget1.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
-	   CQExpressionMmlWidget.cpp \
+           CQExpressionMmlWidget.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
            CQFittingResult.cpp \
@@ -328,6 +332,7 @@ SOURCES += \
            CQMoietiesTaskResult.cpp \
            CQMoietiesTaskWidget.cpp \
            CQOptimizationWidget.cpp \
+           CQOptimizationResult.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
@@ -411,6 +416,11 @@ DISTFILES += UI.vcproj \
              icons/stois.xpm \
              icons/substrate.xpm \
              icons/unlocked.xpm \
+             icons/MIRIAM.xpm \
+             icons/saveIcon.xpm \
+             icons/edit_Icon.xpm \
+             icons/photo.xpm
+             
 
 
 

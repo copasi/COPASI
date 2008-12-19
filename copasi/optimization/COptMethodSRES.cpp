@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2008/12/16 19:47:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -632,7 +632,7 @@ C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
 bool COptMethodSRES::optimise()
 {
   bool Continue = true;
-  unsigned BestIndex = C_INVALID_INDEX;
+  unsigned C_INT32 BestIndex = C_INVALID_INDEX;
 
 #ifdef RANDOMIZE
   // Counters to determine whether the optimization process has stalled

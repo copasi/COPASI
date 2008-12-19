@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.25 $
+#   $Revision: 1.25.2.1 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2008/09/15 15:03:39 $
+#   $Author: shoops $
+#   $Date: 2008/11/13 17:04:15 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,3 +66,11 @@ FORMS = ParaPanel.ui \
 INCLUDEPATH += $${QWT_PATH}/include/
 
 DISTFILES += layoutUI.vcproj
+DISTFILES += load_data.xpm
+DISTFILES += play.xpm
+DISTFILES += stop.xpm
+DISTFILES += pause.xpm
+DISTFILES += forward.xpm
+DISTFILES += backward.xpm
+DISTFILES += forward_single.xpm
+DISTFILES += backward_single.xpm

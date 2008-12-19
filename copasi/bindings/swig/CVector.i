@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.2.6.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/21 10:27:08 $ 
+//   $Date: 2008/11/12 15:18:48 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -30,6 +30,10 @@
 %ignore operator = (const CType & value);
 %ignore operator = (const CVector <CType> & rhs);
 %ignore array() const;
+
+
+%warnfilter(362) operator=;
+%warnfilter(389) operator[];
 
 
 %include "utilities/CVector.h"

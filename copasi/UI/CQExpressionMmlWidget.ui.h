@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/11/14 15:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,11 +28,16 @@
 #include "qtUtilities.h" // for UTF8
 
 #include "CopasiFileDialog.h"
+
+#ifdef HAVE_MML
+# include "mml/qtmmlwidget.h"
+#endif // HAVE_MML
+
 #include "tex/CMathMLToTeX.h"
 
 void CQExpressionMmlWidget::slotGoExpressionWidget()
 {
-  std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << mpExpressionWidget->text() << std::endl;
+  // std::cout << "CQEMW::slotGoExpressionWidget(): mpExpressionWidget->text() = " << mpExpressionWidget->text() << std::endl;
   mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
 }
 
@@ -73,6 +78,9 @@ void CQExpressionMmlWidget::updateWidget()
 void CQExpressionMmlWidget::init()
 {
   //  mpBtnViewExpression->setEnabled(FALSE);
+#ifndef HAVE_MML
+  mpBtnViewExpression->hide();
+#endif // not HAVE_MML
 }
 
 // add 22.07.08
@@ -118,7 +126,7 @@ void CQExpressionMmlWidget::saveMML(const QString outfilename)
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
   //  ofile << mml.str();
-  ofile << MMLStr.latin1();
+  mpExpressionWidget->mpValidator->getExpression()->writeMathML(ofile, false, 0);
 
   ofile << "</math>" << std::endl;
 
@@ -127,13 +135,17 @@ void CQExpressionMmlWidget::saveMML(const QString outfilename)
 
 void CQExpressionMmlWidget::saveTeX(const QString outfilename)
 {
-  QString latexStr(MMLStr.latin1());
+  std::ostringstream mml;
+  mpExpressionWidget->mpValidator->getExpression()->writeMathML(mml, false, 0);
+
+  QString latexStr(FROM_UTF8(mml.str()));
 
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
-  //  ofile << mml.str() << std::endl;
+
+  ofile << (const char *) latexStr.utf8();
+
   ofile.close();
 }

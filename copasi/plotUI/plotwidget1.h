@@ -1,23 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.17.14.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:07 $
+//   $Author: ssahle $
+//   $Date: 2008/10/24 01:34:49 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
-/****************************************************************************
- ** Form interface generated from reading ui file 'plotwidget1.ui'
- **
- ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.17 2007/10/02 18:18:07 shoops Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef PLOTWIDGET1_H
 #define PLOTWIDGET1_H
@@ -60,20 +56,37 @@ class PlotWidget1 : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
+    /**
+     * creates tabs for histograms from a list of objects. objects[0] is skipped,
+     * so objects.size()-1 histogram descriptions are generated.
+     * incr is used for all of them.
+     * This method is called from HistoWidget, so that when the user chooses several
+     * objects from the object selection widget several histograms can be generated
+     * accordingly.
+     */
+    void createHistograms(std::vector<const CCopasiObject* >objects, const C_FLOAT64 & incr);
+
   protected:
     bool loadFromPlotSpec(const CPlotSpecification *);
     bool saveToPlotSpec();
+
+    /**
+     * creates curve widget and adds it to the tab bar
+     */
     void addCurveTab(const std::string & title,
                      const CPlotDataChannelSpec & x,
                      const CPlotDataChannelSpec & y);
+
+    /**
+     * creates histogram widget and adds it to the tab bar
+     */
     void addHisto1DTab(const std::string & title,
-                       const CPlotDataChannelSpec & x);
+                       const CPlotDataChannelSpec & x,
+                       const C_FLOAT64 & incr);
 
     std::string objKey;
 
     CPlotItem::Type mType;
-
-    //CPlotSpecification *mpPlotSpec;
 
     QGridLayout* PlotWidget1Layout;
     QHBoxLayout* layoutTitle;
@@ -91,8 +104,6 @@ class PlotWidget1 : public CopasiWidget
     QCheckBox* checkLogY;
     QFrame* lineButtons;
     QTabWidget* tabs;
-    //    QWidget* tab;
-    //    QWidget* tab_2;
     QLabel* labelCurves;
     QToolButton* addCurveButton;
     QToolButton* addHistoButton;
@@ -106,47 +117,53 @@ class PlotWidget1 : public CopasiWidget
 
   protected slots:
 
-    /*
-     * adds a CurveGroupBox
+    /**
+     * slots that are connected to the buttons for adding curves/histograms
      */
     void addCurveSlot();
     void addHistoSlot();
 
-    /*
-     * removes the CurveGroupBox in focus and delete the corresponding record
+    /**
+     * deletes the current tab
      */
     void removeCurve();
 
-    /*
-     * if a new plot (window) is specified, a call to the method creates a new PlotTaskSpec object
-     * and starts the plot. otherwise, it reloads/restarts the specified plot.
+    /**
+     *
      */
-    void startPlot();
+    void commitPlot();
 
-    /*
+    /**
      * deletes the current plot spec.
      */
     void deletePlot();
 
-    /*
-     * presents a blank form to accept user input for a new plot spec
+    /**
+     * create a new plot definition
      */
     void addPlot();
 
-    /*
-     * this method resets the plot specification to that as saved in the model...
+    /**
+     * cancels changes to the plot definition
      */
     void resetPlot();
 
     void typeChanged();
 
-    /*
-     * this is called when the plot window is closed; it enables all the input fields and appropriate buttons
-     */
-    void plotFinished();
-
   protected:
+    /**
+     * this specifically handles the creation of a 2d curve. It is called when
+     * the corresponding button is pressed and the plot is actually 2D.
+     * The dialogs for choosing objects for the axes is called from here and one
+     * or several curve descriptions are generated.
+     */
     void addCurve2D();
+
+    /**
+     * this specifically handles the creation of a histogram. It is called when
+     * the corresponding button is pressed and the plot is actually 2D.
+     * An empty histogram description is generated.
+     */
     void addHisto1D();
   };
 

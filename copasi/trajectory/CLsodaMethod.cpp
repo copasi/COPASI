@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.48.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/05 19:51:57 $
+//   $Author: shoops $
+//   $Date: 2008/10/23 14:11:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,9 +168,9 @@ void CLsodaMethod::step(const double & deltaT)
          &ITOL, //  6. error control
          &mRtol, //  7. relative tolerance array
          mAtol.array(), //  8. absolute tolerance array
-         &mState, //  9. output by overshoot & interpolatation
+         &mState, //  9. output by overshoot & interpolation
          &mLsodaStatus, // 10. the state control variable
-         &one, // 11. futher options (one)
+         &one, // 11. further options (one)
          mDWork.array(), // 12. the double work array
          &DSize, // 13. the double work array size
          mIWork.array(), // 14. the int work array
@@ -219,7 +219,9 @@ void CLsodaMethod::start(const CState * initialState)
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
-  initializeAtol();
+
+  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
+  mAtol = mpModel->initializeAtolVector(*pTolerance, mReducedModel);
 
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
@@ -231,40 +233,6 @@ void CLsodaMethod::start(const CState * initialState)
   mIWork[8] = * getValue("BDF Max Order").pUINT;
 
   return;
-}
-
-void CLsodaMethod::initializeAtol()
-{
-  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
-
-  mAtol.resize(mData.dim);
-  C_FLOAT64 * pAtol = mAtol.array();
-  C_FLOAT64 * pEnd = pAtol + mAtol.size();
-  C_FLOAT64 InitialValue;
-  C_FLOAT64 Limit;
-
-  CModelEntity **ppEntity = mpModel->getStateTemplate().beginIndependent();
-  CMetab * pMetab;
-
-  for (; pAtol != pEnd; ++pAtol, ++ppEntity)
-    {
-      *pAtol = *pTolerance;
-
-      InitialValue = fabs((*ppEntity)->getInitialValue());
-
-      if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
-        {
-          Limit =
-            fabs(pMetab->getCompartment()->getInitialValue()) * mpModel->getQuantity2NumberFactor();
-
-          if (InitialValue != 0.0)
-            *pAtol *= std::min(Limit, InitialValue);
-          else
-            *pAtol *= std::max(1.0, Limit);
-        }
-      else if (InitialValue != 0.0)
-        *pAtol *= std::min(1.0, InitialValue);
-    }
 }
 
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)

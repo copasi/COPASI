@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.21.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/12 18:04:11 $
+//   $Date: 2008/10/14 19:47:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,12 +160,6 @@ class CFitProblem : public COptProblem
      * @return const C_FLOAT64 & stdDeviation
      */
     const C_FLOAT64 & getStdDeviation() const;
-
-    /**
-     * Retreive the gradients for each solution variable.
-     * @return const CVector< C_FLOAT64 > & variableGradients
-     */
-    const CVector< C_FLOAT64 > & getVariableGradients() const;
 
     /**
      * Retreive the std. deviation  for each solution variable.

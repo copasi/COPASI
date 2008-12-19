@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.86.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/07 11:18:17 $
+//   $Author: shoops $
+//   $Date: 2008/11/11 16:26:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <stdlib.h>
 
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
@@ -48,7 +49,8 @@
 
 using namespace std;
 
-CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : QMainWindow(parent, name)
+CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
+    QMainWindow(NULL, name)
 {
   mpLayout = pLayout;
   mCurrentPlace = QString::null;
@@ -430,7 +432,7 @@ void CQLayoutMainWindow::createMenus()
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
-  std::cout << "load SBMLfile" << std::endl;
+  // std::cout << "load SBMLfile" << std::endl;
   CListOfLayouts *pLayoutList;
   if (CCopasiDataModel::Global != NULL)
     {
@@ -644,6 +646,7 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 void CQLayoutMainWindow::setIndividualScaling()
 {
   mpVisParameters->mScalingMode = mpVisParameters->INDIVIDUAL_SCALING;
+  mpGLViewport->getPainter()->setScaleMode(mpVisParameters->INDIVIDUAL_SCALING);
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->INDIVIDUAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
@@ -651,6 +654,7 @@ void CQLayoutMainWindow::setIndividualScaling()
 void CQLayoutMainWindow::setGlobalScaling()
 {
   mpVisParameters->mScalingMode = mpVisParameters->GLOBAL_SCALING;
+  mpGLViewport->getPainter()->setScaleMode(mpVisParameters->GLOBAL_SCALING);
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->GLOBAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
@@ -791,7 +795,7 @@ QIconSet CQLayoutMainWindow::createStopIcon()
   return iconset;
 }
 
-// returns true because window is opened from Copasi and can be easily reopened
+// returns true because window is opened from COPASI and can be easily reopened
 bool CQLayoutMainWindow::maybeSave()
 {
   //  int ret = QMessageBox::warning(this, "SimWiz",

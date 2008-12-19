@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-  $Revision: 1.109 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/09/16 18:30:12 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
+ $Revision: 1.109.2.1 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2008/11/18 02:47:44 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -211,7 +211,7 @@ C_INT32 TestException()
   try
     {
       cout << "Entering exception test." << endl;
-      CCopasiMessage Error(CCopasiMessage::ERRoR, "Fatal Error");
+      CCopasiMessage Error(CCopasiMessage::ERROR, "Fatal Error");
       cout << "Leaving exception test." << endl;
     }
 
@@ -1792,7 +1792,7 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 
   if (repeats)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
+      CCopasiMessage(CCopasiMessage::ERROR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
     }
   else
     {

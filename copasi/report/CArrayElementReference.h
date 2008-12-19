@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CArrayElementReference.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.4.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/08 12:54:32 $
+//   $Date: 2008/10/15 21:32:14 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -30,7 +30,7 @@ class CArrayElementReference: public CCopasiObject
   {
 
   private:
-    CCopasiAbstractArray::data_type * mpReference;
+    //CCopasiAbstractArray::data_type * mpReference;
 
     /**
      * this contains the index in string format, e.g. "[2][7]"
@@ -48,6 +48,9 @@ class CArrayElementReference: public CCopasiObject
      */
     CArrayElementReference(const CArrayElementReference & src);
 
+    /**
+     * this method does nothing at the moment!
+     */
     void updateMethod(const CCopasiAbstractArray::data_type & value);
 
   public:
@@ -76,7 +79,7 @@ class CArrayElementReference: public CCopasiObject
     virtual void print(std::ostream * ostream) const;
 
     /**
-     *
+     * generate a display name.
      */
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 

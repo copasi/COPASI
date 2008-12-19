@@ -2,9 +2,11 @@
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
+SCP=${COPASI_SCP:-scp}
+
 pushd ../..
 
-AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer 6.4"
+AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
 VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
 if [ x"$#" = x1 ]; then
@@ -36,6 +38,7 @@ if [ x"$#" = x1 ]; then
     mkdir copasi/share/copasi/doc/html/figures
     mkdir copasi/share/copasi/examples
     mkdir copasi/share/copasi/icons
+    mkdir copasi/share/copasi/config
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README.txt
@@ -57,9 +60,9 @@ if [ x"$#" = x1 ]; then
     cp ~/environment/distribution/* copasi/bin
 
     if [ x"$license" = xUS ]; then
-      scp copasi/bin/CopasiSE.exe \
+      ${SCP} copasi/bin/CopasiSE.exe \
         copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build.exe
-      scp ~/environment/distribution/libexpat.dll \
+      ${SCP} ~/environment/distribution/libexpat.dll \
           ~/environment/distribution/libsbml.dll \
           ~/environment/distribution/msvcp80.dll \
           ~/environment/distribution/msvcr80.dll \
@@ -67,6 +70,9 @@ if [ x"$#" = x1 ]; then
         copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/
     fi
     
+    cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
+    chmod 444 copasi/share/copasi/config/*
+
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
@@ -148,7 +154,7 @@ if [ x"$#" = x1 ]; then
       strip ${TMPDIR}/copasi/CopasiSE
       
       if [ x"$license" = xUS ]; then
-        scp ${TMPDIR}/copasi/CopasiSE \
+        ${SCP} ${TMPDIR}/copasi/CopasiSE \
           copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
        fi
     fi  
@@ -171,6 +177,12 @@ echo "Set the icon in the Info.plist file."
       ${TMPDIR}/copasi/CopasiUI.app/Contents/Info.plist > ${TMPDIR}/tmp.plist
     mv ${TMPDIR}/tmp.plist ${TMPDIR}/copasi/CopasiUI.app/Contents/Info.plist
 
+# copy default configuration
+    echo "Make directory for default configuration"
+    mkdir -p ${TMPDIR}/copasi/config
+    echo "Copy default configuration files"
+    cp ./copasi/MIRIAM/MIRIAMResources.xml ${TMPDIR}/copasi/config
+
 # copy the examples into the Resources directory
     echo "Make example directory."
     mkdir -p ${TMPDIR}/copasi/examples
@@ -188,6 +200,7 @@ echo "Set the icon in the Info.plist file."
       ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/doc/html/
     cp -r ./copasi/wizard/help_html/figures \
       ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/doc/html/
+    
 # add the readme to the image
     echo "Copying readme file."
     cp README_MAC.rtf ${TMPDIR}/copasi/COPASI-README.rtf
@@ -227,6 +240,7 @@ echo "Set the icon in the Info.plist file."
     mkdir copasi/share/copasi/doc/html/figures
     mkdir copasi/share/copasi/examples
     mkdir copasi/share/copasi/icons
+    mkdir copasi/share/copasi/config
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README
@@ -243,14 +257,17 @@ echo "Set the icon in the Info.plist file."
 
     if [ x"$license" = xUS ]; then
       if [ x"$DYNAMIC" == "xTRUE" ]; then
-        scp copasi/bin/CopasiSE \
+        ${SCP} copasi/bin/CopasiSE \
           copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
       else
-        scp copasi/bin/CopasiSE \
+        ${SCP} copasi/bin/CopasiSE \
           copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
       fi
     fi
     
+    cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
+    chmod 444 copasi/share/copasi/config/*
+
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
@@ -275,7 +292,7 @@ echo "Set the icon in the Info.plist file."
     ;;
   esac
 
-  scp Copasi-$build-$1*.* \
+  ${SCP} Copasi-$build-$1*.* \
     copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
 
 else

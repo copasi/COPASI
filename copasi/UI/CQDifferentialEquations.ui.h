@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/11/13 20:32:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
-#endif // Have_MML
+#endif // HAVE_MML
 
 #include "CopasiFileDialog.h"
 

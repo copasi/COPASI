@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/08/18 09:08:58 $
+//   $Date: 2008/10/17 13:42:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQMatrixDialog.ui'
  **
- ** Created: Fri Aug 8 13:10:01 2008
- **      by: The User Interface Compiler ($Id: CQMatrixDialog.cpp,v 1.2 2008/08/18 09:08:58 pwilly Exp $)
+ ** Created: Fri Oct 17 14:53:50 2008
+ **      by: The User Interface Compiler ($Id: CQMatrixDialog.cpp,v 1.2.4.1 2008/10/17 13:42:49 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

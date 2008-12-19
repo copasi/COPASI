@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.21 $ 
+//   $Revision: 1.21.6.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/21 10:27:08 $ 
+//   $Date: 2008/11/24 10:13:11 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,124 +21,122 @@
 
 %}
 
-template < class CType > class CCopasiVector:
-        protected std::vector< CType * >, public CCopasiContainer
+%ignore operator<< ;
+%ignore operator<< <>;
+
+#ifdef SWIGJAVA
+// disable some operator for Java to get rid of the warnings
+
+%ignore CCopasiVector::operator [];
+%ignore CCopasiVector::operator =;
+%ignore CCopasiVectorN::operator =;
+%ignore CCopasiVectorN::operator [];
+%ignore CCopasiVector::begin();
+%ignore CCopasiVector::begin() const;
+%ignore CCopasiVector::end();
+%ignore CCopasiVector::end() const;
+#endif // SWIGJAVA
+
+
+%rename(addCopy) CCopasiVector::add(const CType&);
+
+/*
+ * The following code should make sure that an object that is added to a vector
+ * which takes ownership for the object is not deleted by python.
+ * Unfortunatelly the SWIG documentation for this is a bit scarse and the fact
+ * that the code has to be indented correctly, makes this difficult.
+ * For now this is disabled and it will be added to the documentation that the
+ * user has to call .__disown__() on the object that is added to a vector.
+#ifdef SWIGPYTHON
+%pythonprepend CCopasiVector::add(CType*) %{
+        # disown the given object
+        if(length(args)==2):
+          args[1].__disown__()
+        else if(length(args)==3 and args[2]==true):
+          args[1].__disown__()
+%}
+
+%pythonprepend CCopasiVectorN::add(CType*) %{
+        # disown the given object
+        if(length(args)==2):
+          args[1].__disown__()
+        else if(length(args)==3 and args[2]==true):
+          args[1].__disown__()
+%}
+#endif // SWIGPYTHON
+*/
+
+%include "utilities/CCopasiVector.h"
+
+%extend CCopasiVector
 {
+  virtual value_type& get(unsigned C_INT32 index)
+  {
+      return (*self)[index];
+  }
 
-%rename(removeObject) remove(CCopasiObject* pObject);
-
-    public:
-      typedef typename std::vector< CType * >::value_type value_type;
-      typedef typename std::vector< CType * >::iterator iterator;
-      typedef typename std::vector< CType * >::const_iterator const_iterator;
-
-      CCopasiVector(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = NULL,
-                    const unsigned C_INT32 &
-                    flag = CCopasiObject::Vector);
-
-      CCopasiVector(const CCopasiVector < CType > & src,
-                    const CCopasiContainer * pParent = NULL);
-
-      virtual ~CCopasiVector();
-      virtual void swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
-      virtual bool add(CType * src, bool adopt = false);
-      virtual void remove(const unsigned C_INT32 & index);
-      virtual bool remove(CCopasiObject * pObject);
-      virtual unsigned C_INT32 size() const;
-      virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
-
-      %extend
-      {
-        virtual value_type& get(unsigned C_INT32 index)
-        {
-            return (*self)[index];
-        }
-
-      }
-};
+}
 
 
-template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
+
+%extend CCopasiVectorN
 {
+  virtual value_type& getByName(const std::string& name)
+  {
+      return (*self)[name];
+  }
+}
 
-%rename(removeByName) remove(const std::string& name);
-%rename(getIndexByName) getIndex(const std::string& name) const;
-
-    public:
-      typedef typename std::vector< CType * >::value_type value_type;
-      typedef typename std::vector< CType * >::iterator iterator;
-      typedef typename std::vector< CType * >::const_iterator const_iterator;
-      CCopasiVectorN(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = NULL);
-
-      CCopasiVectorN(const CCopasiVectorN < CType > & src,
-                     const CCopasiContainer * pParent = NULL);
-
-      virtual ~CCopasiVectorN();
-      virtual bool add(CType * src, bool adopt = false);
-      virtual void remove(const std::string & name);
-      virtual unsigned C_INT32 getIndex(const std::string &name) const;
-
-      %extend
-      {
-        virtual value_type& getByName(const std::string& name)
-        {
-            return (*self)[name];
-        }
-      }
-};
-
-
-template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
-{
-    public:
-      typedef typename std::vector< CType * >::value_type value_type;
-      typedef typename std::vector< CType * >::iterator iterator;
-      typedef typename std::vector< CType * >::const_iterator const_iterator;
-      /**
-       *  Default constructor
-       */
-      CCopasiVectorNS(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = NULL);
-
-      /**
-       *  Copy constructor
-       */
-      CCopasiVectorNS(const CCopasiVectorNS < CType > & src,
-                      const CCopasiContainer * pParent = NULL) ;
-
-      /**
-       *  Destructor
-       */
-      virtual ~CCopasiVectorNS();
-
-};
+%rename(removeObject) CCopasiVector<CCopasiTask>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CCopasiTask>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CCopasiTask>::getIndex(const std::string& name) const;
 
 %template(TaskStdVector) std::vector<CCopasiTask*>;
 %template(TaskVector) CCopasiVector<CCopasiTask>;
 %template(TaskVectorN) CCopasiVectorN<CCopasiTask>;
 
+%rename(removeObject) CCopasiVector<CModelValue>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CModelValue>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CModelValue>::getIndex(const std::string& name) const;
+
 %template(ModelValueStdVector) std::vector<CModelValue*>;
 %template(ModelValueVector) CCopasiVector<CModelValue>;
 %template(ModelValueVectorN) CCopasiVectorN<CModelValue>;
+
+%rename(removeObject) CCopasiVector<CReportDefinition>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CReportDefinition>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CReportDefinition>::getIndex(const std::string& name) const;
 
 %template(ReportDefinitionStdVector) std::vector<CReportDefinition*>;
 %template(ReportDefinitionVector) CCopasiVector<CReportDefinition>;
 %template(ReportDefinitionVectorN) CCopasiVectorN<CReportDefinition>;
 
+%rename(removeObject) CCopasiVector<CMoiety>::remove(CCopasiObject* pObject);
+
 %template(MoietyStdVector) std::vector<CMoiety*>;
 %template(MoietyVector) CCopasiVector<CMoiety>;
+
+%rename(removeObject) CCopasiVector<CMetab>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CMetab>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CMetab>::getIndex(const std::string& name) const;
 
 %template(MetabStdVector) std::vector<CMetab*>;
 %template(MetabVector) CCopasiVector<CMetab>;
 %template(MetabVectorN) CCopasiVectorN<CMetab>;
 %template(MetabVectorNS) CCopasiVectorNS<CMetab>;
 
+%rename(removeObject) CCopasiVector<CCompartment>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CCompartment>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CCompartment>::getIndex(const std::string& name) const;
+
 %template(CompartmentStdVector) std::vector<CCompartment*>;
 %template(CompartmentVector) CCopasiVector<CCompartment>;
 %template(CompartmentVectorN) CCopasiVectorN<CCompartment>;
 %template(CompartmentVectorNS) CCopasiVectorNS<CCompartment>;
+
+%rename(removeObject) CCopasiVector<CReaction>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CReaction>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CReaction>::getIndex(const std::string& name) const;
 
 %template(ReactionStdVector) std::vector<CReaction*>;
 %template(ReactionVector) CCopasiVector<CReaction>;
@@ -149,9 +147,15 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
 %template(CFunctionStdVector) std::vector<CFunction*>;
 
+%rename(removeObject) CCopasiVector<CEvaluationTree>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CEvaluationTree>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CEvaluationTree>::getIndex(const std::string& name) const;
+
 %template(CEvaluationTreeStdVector) std::vector<CEvaluationTree*>;
 %template(CEvaluationTreeVector) CCopasiVector<CEvaluationTree>;
 %template(CEvaluationTreeVectorN) CCopasiVectorN<CEvaluationTree>;
+
+%rename(removeObject) CCopasiVector<CChemEqElement>::remove(CCopasiObject* pObject);
 
 %template(CChemEqElementStdVector) std::vector<CChemEqElement*>;
 %template(CChemEqElementVector) CCopasiVector<CChemEqElement>;

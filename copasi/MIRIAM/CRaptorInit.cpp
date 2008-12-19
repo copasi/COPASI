@@ -1,15 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRaptorInit.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/01/29 15:00:39 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 07:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include <string.h>
 
 #include <raptor.h>
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.16.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:12 $
+//   $Date: 2008/11/18 02:47:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasc
   if (testInfile && !overwriteFile)
     {
       // create a CCopasiMessage with the appropriate error
-      CCopasiMessage(CCopasiMessage::ERRoR, MCDirEntry + 1, mmasciiFilename.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, mmasciiFilename.c_str());
       return false;
     }
 

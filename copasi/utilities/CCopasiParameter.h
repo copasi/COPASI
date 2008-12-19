@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.28 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2007/01/09 13:43:23 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
+  $Revision: 1.28.24.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/11/19 19:23:11 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,7 +33,7 @@ class CReadConfig;
  *  This class is used to describe parameters. This class is intended
  *  to be used with integration or optimization methods or reactions.
  *
- *  Created for Copasi by Stefan Hoops 2002
+ *  Created for COPASI by Stefan Hoops 2002
  */
 class CCopasiParameter: public CCopasiContainer
   {
@@ -89,7 +94,7 @@ class CCopasiParameter: public CCopasiContainer
 
   protected:
     /**
-     *  The size alloactaed for the value of the parameter.
+     *  The size allocated for the value of the parameter.
      */
     unsigned C_INT32 mSize;
 
@@ -203,7 +208,7 @@ class CCopasiParameter: public CCopasiContainer
 
     /**
      * Check whether the value corresponds to the type
-     * @param const unsigend C_INT32 & value
+     * @param const unsigned C_INT32 & value
      * @return bool isValidValue
      */
     bool isValidValue(const unsigned C_INT32 & value) const;
@@ -239,7 +244,7 @@ class CCopasiParameter: public CCopasiContainer
     /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
+     * to print the object.To override this default behavior one needs to
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */

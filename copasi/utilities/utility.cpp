@@ -1,18 +1,26 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.27 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/30 19:37:19 $
-   End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
+$Revision: 1.27.24.3 $
+$Name:  $
+$Author: shoops $
+$Date: 2008/11/10 21:18:58 $
+End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "mathematics.h"
 #include <stdio.h>
 #include <time.h>
+
+#include <string.h>
+#include <stdlib.h>
 
 #ifdef WIN32
 # include <windows.h>
@@ -90,12 +98,12 @@ std::string StringPrint(const char * format, ...)
 
   char *Text = NULL;
 
-  va_list Arguments; // = NULL;
-  va_start(Arguments, format);
-
   Text = new char[TextSize + 1];
 
+  va_list Arguments; // = NULL;
+  va_start(Arguments, format);
   Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+  va_end(Arguments);
 
   while (Printed < 0 || TextSize < Printed)
     {
@@ -104,9 +112,11 @@ std::string StringPrint(const char * format, ...)
       (Printed < 0) ? TextSize *= 2 : TextSize = Printed;
       Text = new char[TextSize + 1];
 
-      Printed = vsnprintf(Text, TextSize, format, Arguments);
+      va_list Arguments; // = NULL;
+      va_start(Arguments, format);
+      Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
+      va_end(Arguments);
     }
-  va_end(Arguments);
 
   std::string Result = Text;
 
@@ -607,44 +617,44 @@ std::string utf8ToLocale(const std::string & utf8)
 #ifdef WIN32
   C_INT32 size;
 
-  size = MultiByteToWideChar(CP_UTF8,              // code page
+  size = MultiByteToWideChar(CP_UTF8, // code page
                              MB_ERR_INVALID_CHARS, // character-type options
-                             utf8.c_str(),         // address of string to map
-                             -1,                   // NULL terminated
-                             NULL,                 // address of wide-character buffer
+                             utf8.c_str(), // address of string to map
+                             -1, // NULL terminated
+                             NULL, // address of wide-character buffer
                              0) + 1;               // size of buffer
 
   WCHAR * pWideChar = new WCHAR[size];
 
-  MultiByteToWideChar(CP_UTF8,              // code page
+  MultiByteToWideChar(CP_UTF8, // code page
                       MB_ERR_INVALID_CHARS, // character-type options
-                      utf8.c_str(),         // address of string to map
-                      -1,                   // NULL terminated
-                      pWideChar,            // address of wide-character buffer
+                      utf8.c_str(), // address of string to map
+                      -1, // NULL terminated
+                      pWideChar, // address of wide-character buffer
                       size);                // size of buffer
 
   int UsedDefaultChar = 0;
 
-  size = WideCharToMultiByte(CP_THREAD_ACP,          // code page
+  size = WideCharToMultiByte(CP_THREAD_ACP, // code page
                              WC_COMPOSITECHECK |
-                             WC_DEFAULTCHAR,         // performance and mapping flags
-                             pWideChar,              // address of wide-character string
-                             -1,                     // NULL terminated
-                             NULL,                   // address of buffer for new string
-                             0,                      // size of buffer
-                             "?",                    // address of default for unmappable characters
+                             WC_DEFAULTCHAR, // performance and mapping flags
+                             pWideChar, // address of wide-character string
+                             -1, // NULL terminated
+                             NULL, // address of buffer for new string
+                             0, // size of buffer
+                             "?", // address of default for unmappable characters
                              & UsedDefaultChar) + 1; // address of flag set when default char used
 
   char * pLocal = new char[size];
 
-  WideCharToMultiByte(CP_THREAD_ACP,          // code page
+  WideCharToMultiByte(CP_THREAD_ACP, // code page
                       WC_COMPOSITECHECK |
-                      WC_DEFAULTCHAR,         // performance and mapping flags
-                      pWideChar,              // address of wide-character string
-                      -1,                     // NULL terminated
-                      pLocal,                 // address of buffer for new string
-                      size,                   // size of buffer
-                      "?",                    // address of default for unmappable characters
+                      WC_DEFAULTCHAR, // performance and mapping flags
+                      pWideChar, // address of wide-character string
+                      -1, // NULL terminated
+                      pLocal, // address of buffer for new string
+                      size, // size of buffer
+                      "?", // address of default for unmappable characters
                       & UsedDefaultChar);     // address of flag set when default char used
 
   std::string Local = pLocal;
@@ -737,42 +747,40 @@ std::string localeToUtf8(const std::string & locale)
 #ifdef WIN32
   C_INT32 size;
 
-  size = MultiByteToWideChar(CP_THREAD_ACP,        // code page
+  size = MultiByteToWideChar(CP_THREAD_ACP, // code page
                              MB_ERR_INVALID_CHARS, // character-type options
-                             locale.c_str(),       // address of string to map
-                             -1,                   // NULL terminated
-                             NULL,                 // address of wide-character buffer
+                             locale.c_str(), // address of string to map
+                             -1, // NULL terminated
+                             NULL, // address of wide-character buffer
                              0) + 1;               // size of buffer
 
   WCHAR * pWideChar = new WCHAR[size];
 
-  MultiByteToWideChar(CP_THREAD_ACP,        // code page
+  MultiByteToWideChar(CP_THREAD_ACP, // code page
                       MB_ERR_INVALID_CHARS, // character-type options
-                      locale.c_str(),       // address of string to map
-                      -1,                   // NULL terminated
-                      pWideChar,            // address of wide-character buffer
+                      locale.c_str(), // address of string to map
+                      -1, // NULL terminated
+                      pWideChar, // address of wide-character buffer
                       size);                // size of buffer
 
-  int UsedDefaultChar = 0;
-
-  size = WideCharToMultiByte(CP_UTF8,   // code page
-                             0,         // performance and mapping flags
+  size = WideCharToMultiByte(CP_UTF8, // code page
+                             0, // performance and mapping flags
                              pWideChar, // address of wide-character string
-                             -1,        // NULL terminated
-                             NULL,      // address of buffer for new string
-                             0,         // size of buffer
-                             NULL,      // address of default for unmappable characters
+                             -1, // NULL terminated
+                             NULL, // address of buffer for new string
+                             0, // size of buffer
+                             NULL, // address of default for unmappable characters
                              NULL) + 1; // address of flag set when default char used
 
   char * pUtf8 = new char[size];
 
-  WideCharToMultiByte(CP_UTF8,   // code page
-                      0,         // address of wide-character string
+  WideCharToMultiByte(CP_UTF8, // code page
+                      0, // address of wide-character string
                       pWideChar, // address of wide-character string
-                      -1,        // NULL terminated
-                      pUtf8,     // address of buffer for new string
-                      size,      // size of buffer
-                      NULL,      // address of default for unmappable characters
+                      -1, // NULL terminated
+                      pUtf8, // address of buffer for new string
+                      size, // size of buffer
+                      NULL, // address of default for unmappable characters
                       NULL);     // address of flag set when default char used
 
   std::string Utf8 = pUtf8;

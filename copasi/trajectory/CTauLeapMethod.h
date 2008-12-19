@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
-   $Revision: 1.10 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
+  $Revision: 1.10.26.1 $
+  $Name:  $
+  $Author: jpahle $
+  $Date: 2008/12/19 00:59:58 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -261,6 +266,29 @@ class CTauLeapMethod : public CTrajectoryMethod
      */
     C_FLOAT64 sq, alxm, g, oldm;
     static const C_FLOAT64 cof[6];
+
+    /**
+     * indicates if the correction N^2 -> N*(N-1) should be performed
+     */
+    bool mDoCorrection;
+
+    /**
+     * Indicates whether the model has global quantities with assignment rules.
+     * If it has, we will use a less efficient way to update the model
+     * state to handle this.
+     */
+    bool mHasAssignments;
+
+    /**
+     * tests if the model contains a global value with an assignment rule that is
+     * used in calculations
+     */
+    static bool modelHasAssignments(const CModel* pModel);
+
+    /**
+     * index of first metab in a CState
+     */
+    unsigned C_INT32 mFirstMetabIndex;
   };
 
 #endif // COPASI_CTauLeapMethod

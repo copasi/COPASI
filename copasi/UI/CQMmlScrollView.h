@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.6.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/04/18 08:28:59 $
+//   $Author: shoops $
+//   $Date: 2008/11/14 13:37:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,9 @@ class CQMmlScrollView : public QScrollView
 
     void updateWidget(std::ostringstream &mml);
 
+#ifdef HAVE_MML
     QtMmlWidget* mpMmlWidget;
+#endif // HAVE_MML
   };
 
 #endif // MMLSCROLLVIEW_H

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.4.1 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2008/08/18 09:09:47 $
+//   $Date: 2008/10/17 13:42:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQMatrixDialog.ui'
  **
- ** Created: Fri Aug 8 13:10:00 2008
- **      by: The User Interface Compiler ($Id: CQMatrixDialog.h,v 1.2 2008/08/18 09:09:47 pwilly Exp $)
+ ** Created: Fri Oct 17 14:53:32 2008
+ **      by: The User Interface Compiler ($Id: CQMatrixDialog.h,v 1.2.4.1 2008/10/17 13:42:49 pwilly Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -55,7 +55,7 @@ class CQMatrixDialog : public QDialog
     QPushButton* mpCancelBtn;
 
   public slots:
-    virtual void setArray(const CArrayAnnotation * tmp);
+    virtual void setArray(const CArrayAnnotation * tmp, bool single);
 
   protected:
     QVBoxLayout* CQMatrixDialogLayout;

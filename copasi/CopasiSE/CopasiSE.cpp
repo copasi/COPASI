@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.41.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:47 $
+//   $Date: 2008/10/22 18:46:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -343,10 +343,10 @@ int main(int argc, char *argv[])
               Argv[0] = argv[0];
               Argv[1] = Help.c_str();
 
-              copasi::COptionParser * pParser = new copasi::COptionParser;
+              copasi::COptionParser Parser;
               try
                 {
-                  pParser->parse(2, (char **) Argv);
+                  Parser.parse(2, (char **) Argv);
                 }
 
               catch (copasi::autoexcept &e)

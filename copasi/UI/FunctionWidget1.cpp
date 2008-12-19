@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159 $
+//   $Revision: 1.159.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/29 21:36:26 $
+//   $Date: 2008/11/14 15:02:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,8 +57,9 @@
 
 #ifdef HAVE_MML
 # include "mml/qtmmlwidget.h"
+#endif // HAVE_MML
+
 #include "tex/CMathMLToTeX.h"
-#endif // Have_MML
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CMetab.h"
@@ -127,7 +128,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mStack->addWidget(textBrowser, 0);
   mStack->raiseWidget(0);
 
-#ifdef HAVE_MML
   // A box which contains the MathML ScrollView with the Formula,
   //  and - if not ReadOnly -
   //   a button to switch to (editable) plain text view.
@@ -139,11 +139,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   mStack->addWidget(mMmlViewBox, 1);
 
+#ifdef HAVE_MML
   mMmlWidget = new QtMmlWidget(mScrollView->viewport());
   mMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
   mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
   mScrollView->addChild(mMmlWidget);
+#endif // HAVE_MML
 
   mScrollView->setResizePolicy(QScrollView::AutoOneFit);
   //mScrollView->show();
@@ -157,7 +159,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   mpFormulaVBL = new QVBoxLayout(0, 0, 6, "mpFormulaVBL");
 
   //mMmlViewBox->insertChild(mFormulaEditToggleButton);
-#endif // HAVE_MML
 
   //  FunctionWidget1Layout->addWidget(mStack, 1, 1);
 
@@ -329,20 +330,19 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(newFcn, SIGNAL(clicked()), this, SLOT(slotNewButtonClicked()));
   connect(deleteFcn, SIGNAL(clicked()), this, SLOT(slotDeleteButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
-  connect(mpSaveBtn, SIGNAL(clicked()), this, SLOT(slotSave()));
 
   connect(RadioButton1, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
 
-#ifdef HAVE_MML
-  connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
-          SLOT(slotToggleFcnDescriptionEdit()));
-#endif // HAVE_MML
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 
-  QToolTip::add(mFormulaEditToggleButton, tr("edit formula"));
   QToolTip::add(mpSaveBtn, tr("save formula"));
+  connect(mpSaveBtn, SIGNAL(clicked()), this, SLOT(slotSave()));
+
+  connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
+          SLOT(slotToggleFcnDescriptionEdit()));
+  QToolTip::add(mFormulaEditToggleButton, tr("edit formula"));
 }
 
 //! Destructor
@@ -432,8 +432,12 @@ bool FunctionWidget1::loadParameterTable()
         }
 
       // col. 0
+      QString Name = FROM_UTF8(params[j]->getObjectName());
+      if (!params[j]->isUsed())
+        Name += " (unused)";
+
       Table1->setItem(j, COL_NAME, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
-                      FROM_UTF8(params[j]->getObjectName())));
+                      Name));
 
       // col. 1
       //QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
@@ -455,7 +459,7 @@ bool FunctionWidget1::loadParameterTable()
   return true;
 }
 
-//! Function to generate the text reperesentation of the usage restrictions
+//! Function to generate the text representation of the usage restrictions
 bool FunctionWidget1::loadUsageTable()
 {
   std::vector<std::string> stringlist;
@@ -1122,10 +1126,12 @@ void FunctionWidget1::slotNewButtonClicked()
 
   mFormulaEditToggleButton->hide();
 
+#ifdef HAVE_MML
   mpSaveBtn->setEnabled(false);
+#endif // HAVE_MML
 }
 
-//! Slot for being activated wehenver Delete button is clicked
+//! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotDeleteButtonClicked()
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
@@ -1332,14 +1338,16 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
 //***********  slot for editing requests on the function formula (mMmlWidget) *****
 
-//! Slot for being activated wehenver Edit button under Functions display is clicked
+//! Slot for being activated whenever Edit button under Functions display is clicked
 void FunctionWidget1::slotToggleFcnDescriptionEdit()
 {
   mStack->raiseWidget(textBrowser);
 
   mFormulaEditToggleButton->hide();
 
+#ifdef HAVE_MML
   mpSaveBtn->setEnabled(false);
+#endif // HAVE_MML
 }
 
 //! Function to update the function formula
@@ -1376,11 +1384,13 @@ void FunctionWidget1::updateMmlWidget()
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   mScrollView->setMinimumHeight(mMmlWidget->sizeHint().height() + 30);
-
+#else
+  mStack->raiseWidget(textBrowser);
+  mFormulaEditToggleButton->hide();
 #endif // HAVE_MML
 }
 
-//************************  standard interface to copasi widgets ******************
+//************************  standard interface to COPASI widgets ******************
 
 //! Function to update the COPASI widgets
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -1463,8 +1473,9 @@ void FunctionWidget1::saveMML(const QString outfilename)
   ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
   ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
 
-  //  ofile << mml.str();
-  ofile << MMLStr.latin1();
+  std::vector<std::vector<std::string> > params;
+  mpFunction->createListOfParametersForMathML(params);
+  mpFunction->writeMathML(ofile, params, true, false, 0);
 
   ofile << "</math>" << std::endl;
 
@@ -1474,13 +1485,19 @@ void FunctionWidget1::saveMML(const QString outfilename)
 // add 21.07.08
 void FunctionWidget1::saveTeX(const QString outfilename)
 {
-  QString latexStr(MMLStr.latin1());
+  std::ostringstream mml;
+  std::vector<std::vector<std::string> > params;
+  mpFunction->createListOfParametersForMathML(params);
+  mpFunction->writeMathML(mml, params, true, false, 0);
+
+  QString latexStr(FROM_UTF8(mml.str()));
 
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
   ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << latexStr;
-  //  ofile << mml.str() << std::endl;
+
+  ofile << (const char *) latexStr.utf8();
+
   ofile.close();
 }

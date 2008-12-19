@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.35.22.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/03/09 09:54:42 $
+//   $Author: shoops $
+//   $Date: 2008/11/10 20:22:41 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,7 +48,8 @@ class CFunctionParameter : public CCopasiContainer
       PARAMETER,
       VOLUME,
       TIME,
-      VARIABLE
+      VARIABLE,
+      TEMPORARY
     };
 
     /**
@@ -83,6 +89,11 @@ class CFunctionParameter : public CCopasiContainer
      *  Possible usage is SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER
      */
     Role mUsage;
+
+    /**
+     * Specifies whether the parameter is used in the function
+     */
+    bool mIsUsed;
 
   public:
     /**
@@ -161,6 +172,18 @@ class CFunctionParameter : public CCopasiContainer
      *  @param "const string" & usage
      */
     void setUsage(Role usage);
+
+    /**
+     * Set whether the parameter is used within a function
+     * @param const bool & isUsed
+     */
+    void setIsUsed(const bool & isUsed);
+
+    /**
+     * Retrieve whether the parameter is used within a function
+     * @return const bool & isUsed
+     */
+    const bool & isUsed() const;
 
     /**
      * insert operator

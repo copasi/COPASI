@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReport.i,v $ 
+//   $Revision: 1.2.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,77 +21,8 @@
 
 %}
 
-class CReport : public CCopasiContainer, public COutputInterface
-  {
-    /**
-     * Enumeration of the report states.
-     */
-    enum State
-    {
-      Invalid = -1,
-      Compiled = 0,
-      HeaderHeader,
-      HeaderBody,
-      HeaderFooter,
-      BodyHeader,
-      BodyBody,
-      BodyFooter,
-      FooterHeader,
-      FooterBody,
-      FooterFooter,
-    };
+%include "report/CReport.h"
 
-  public:
-    /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReport(const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor.
-     * @param const CReport & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CReport(const CReport & src,
-            const CCopasiContainer * pParent);
-    
-    /**
-     *  Destructor.
-     */
-    ~CReport();
-
-    /**
-     * returns the reference of the Report Tag
-     */
-    CReportDefinition* getReportDefinition();
-
-    /**
-     * sets the reference to the report
-     */
-    void setReportDefinition(CReportDefinition *reportDef);
-
-    /**
-     * returns the target of the Report Tag
-     */
-    const std::string& getTarget() const;
-
-    /**
-     * sets the reference to the report
-     */
-    void setTarget(std::string target);
-
-    /**
-     * Returns whether the Report Tag is appended or not
-     */
-    bool append() const;
-
-    /**
-     * sets the append attribute if the report tag
-     */
-    void setAppend(bool append);
-
-  };
 
 
 

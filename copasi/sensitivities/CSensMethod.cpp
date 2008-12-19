@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.26.2.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/10/09 00:14:46 $
+//   $Date: 2008/12/04 00:18:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,11 +58,11 @@ CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
     mpProblem(NULL)
 {
   addParameter("Delta factor",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-4);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-3);
   mpDeltaFactor = (C_FLOAT64*)getValue("Delta factor").pUDOUBLE;
 
   addParameter("Delta minimum",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-9);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-12);
   mpMinDelta = (C_FLOAT64*)getValue("Delta minimum").pUDOUBLE;
 
   CONSTRUCTOR_TRACE;

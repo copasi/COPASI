@@ -25,6 +25,16 @@ showtabs=false,                 % show tabs within strings adding particular und
 escapeinside={\%*}{*)}          % if you want to add a comment within your code
 }
 
+
+% !!!TODO!!! when adding documentation for the vector classes and the
+% CCopasiParameterGroup, make sure to document that the add methods in the
+% vector classes and the addParameter method for the parameter group (might) take
+% ownership of the onjects they are passed. In python this problem can be
+% solved by calling .__disown__() on the passed object. FOr java I haven't
+% found an equivalent solution yet. According the the SWIG documentation this
+% can be achieved via typemaps.
+%
+
 \title{Documentation for the Java bindings for COPASI}
 \author{Ralph Gauges}
 \date{\today}
@@ -280,6 +290,8 @@ boolean addMetabolite(CMetab metabolite);
 /**
  * Removes the given metabolite from the compartment.
  * If the operation succeeded, true is returned, else false.
+ * This method is obsolete and should no longer be used.
+ * Future versions of the bindings might not contain this method.
  */
 boolean removeMetabolite(CMetab metabolite);
 \end{lstlisting}
@@ -588,7 +600,7 @@ container.add(metab.getObject(new CCopasiObjectName("Reference=InitialConcentrat
 \end{verbatim}
 }
 The same procedure can be used for the initial volume of compartments, he initial value of parameters and the value of local reaction parameters. The respective strings to initialize the CCopasiObjectName instance are \verb$"Reference=InitialVolume"$, \verb$"Reference=InitialValue"$ and \verb$"Reference=Value"$.
-Once all changed values have been added to the container, \textit{updateInitialValues} can be called on the instance of \textit{CModel} with the container as the only argument. 
+Once all changed values have been added to the container, \textit{updateInitialValues} can by called on the instance of \textit{CModel} with the container as the only argument. 
 
 
 
@@ -1167,7 +1179,7 @@ Unfortunately those results are not stored in memory, so right now the only way 
 
 \subsection{Running Optimizations}
 In order to run an optimization, the general procedure is the same as with the other tasks. One has to acquire or create an instance of \textit{COptTask}, choose the desired method to use for the task out of the set of methods COPASI provides for the optimization, set the desired parameter values on the instance of \textit{COptProblem} that can be fetched from the \textit{COptTask} instance and maybe set some parameter values on the method to change the methods behaviour.
-At the time of writing, an optimization can either be done with a time course calculation or a steady state calculation. In order to tell the problem which of the two to use, the problem has two parameters that hold the key of the task that should be used for the optimization. If the optimization is to be run with a steady state calculation, the parameter named "Steady-State" has to contain the key of the steady state task, likewise if the optimization is to use a time course calculation, the parameter named "Time-Course" has to be set to the key of the time course task instance. The parameter corresponding to the task that is not going to be used should be set to an empty string. Setting both keys, or setting an invalid key or a key of an object that is not a steady state task or a time course might lead to undesired behaviour.
+At the time of writing, an optimization can either be done with a time course calculation or a steady state calculation. In order to tell the problem which of the two to use, the problem has a method called setSubtaskType. Valid arguments for the method are CCopasiTask.steadyState or CCopasiTask.timeCourse;
 The parameters that can be set on the methods very much depend on the method that is being used. So if you want to find out which parameters each method provides you will have to read the COPASI manual which if you are lucky does list them.
 Before running the optimization, two more items have to be set. One is the object that should be optimized, e.g. the initial value of some parameter, the other item is the objective function that the optimization uses the determine the optimal result.
 The object(s) that are going to be optimized are determined by one or more instances of \textit{COptItem}. Each \textit{COptItem} object stores a reference to the model object to optimize, the start value with which the optimization process will begin and an upper and a lower bound for the value of the object. The optimization method will then try to find values for all objects so that the objective function will (in the optimal case) become minimal.
@@ -1200,12 +1212,9 @@ String objectiveFunction=object.getCN().getString();
 objectiveFunction="<"+objectiveFunction+">";
 // set the objective function on the problem
 optProblem.setObjectiveFunction(objectiveFunction);
-// set the problem parameters to indicate that the optimization
+// set the problems subtask type to indicate that the optimization
 // is to be run on a time course simulation
-CCopasiParameter param=optProblem.getParameter("Steady-State");
-param.setStringValue("");
-param=optProblem.getParameter("Time-Course");
-param.setStringValue(timeCourseTask.getKey());
+optProblem.setSubtaskType(CCopasiTask.timeCourse);
 
 // create an optimization item for the 
 // initial value of some model parameter
@@ -1238,6 +1247,131 @@ catch(Exception e)
 After the optimization has been run, the solution of the optimization is stored in the problem instance.
 In order to get the lowest value COPASI was able to find for the objective function, use the call to \textit{getSolutionValue}.
 The values for the \textit{COptItem} objects corresponding to that result, use \textit{getSolutionVariables}. This method returns a container with double values. The size of the container can be queried with its \textit{size} method and individual values can be acquire by calling \textit{get} with the index of the value. The value for index \textbf{i} belongs to the \textit{COptItem} with index \textbf{i} in the list of \textit{COptItem}s.  To get a container with all defined \textit{COptItem}s, use \textit{getOptItemList}.
+
+\subsection{Fitting parameters}
+\label{ParameterFitting}
+
+Parameter fitting can be used to determine the value of certain model entities with the help of experimental data.
+The API for doing parameter fitting is very similar to the one for running an optimization (see above). This is because the classes for parameter fitting are derived from the optimization classes.
+This makes sense since the actions for running an optimization are very similar to what COPASI does when doing parameter fitting. The major difference is that for an optimization, the user has to provide an objective function that is minimized whereas for the parameter fitting, the user provides experimental data and some information about the data and COPASI determines the objective function from that information.
+
+The first step when doing parameter fitting is to get an instance of \textit{CFitTask}. Either there is already one in the list of tasks which can be used, or we simplify add one, as demonstrated in the example below.
+The \textit{CFitTask} has the methods \textit{getMethod} and \textit{getProblem} which provide the method and the problem for the task.
+
+The methods that can be used for parameter fitting should be the same set of methods that is available for the optimization. The methods that are available can be queried with \textit{getValidMethods} in \textit{CFitTask} and a specific method can be set with \textit{setMethodType} also in \textit{CFitTask}.
+
+Most settings for the parameter fitting however are done in the problem. The problem contains a parameter group called \textbf{Experiment Set} which contains the information about the experimental data against which the parameters should be fitted.
+The information for each experiment is stored in an instance of \textit{CExperiment}. The information that needs to be provided for each experment is 
+\begin{itemize}
+\item{the name of the file where the experimental data can be found}
+\item{the row number where the data for the experiment starts}
+\item{the row number where the data for the experiment ends}
+\item{the type of experiment that the data represents (time course or steady state)}
+\item{the number of data columns in the data set}
+\item{the mapping of the columns to the entities in the model and their role}
+\end{itemize}
+
+Another useful piece of information that can be set for the experiment is the separator that is used in the data file to separate the individual columns. This separator can be set with the \textit{setSeparator} method in \textit{CExperiment}. It takes a string as its only argument. One thing to watch out for is the fact that COPASI tries to match the separator exactly. That is, if the separator is set to be one space character, having two space characters between two columns in the file will lead COPASI to think that there is an empty column. Unfortunately there is no way right now to tell COPASI that the delimiter for the columns is e.g. one or more space characters.
+
+The information about the mapping from data columns to model entities is stored in an instance of \textit{CExperimentObjectmap} which can be aquired with the \textit{getObjectMap} method from \textit{CExperiment}.
+After the information for the experiment has been set, the experiment needs to be added to the experiment set. The \textit{addExperiment} method creates a copy of the experiment that is added, so make sure that you get the experiment from the experiment set before you make further modifications or use it, e.g. to add it to the fit item (see below).
+
+Next we need to create the fit items which correspond to the optimization items in the optimization task. Fit items are instances of \textit{CFitItem} and they have an upper bound, a lower bound and a start value just like optimization items.
+By default each fit item is influenced by all experiments. if you want to limit a fit item to be only influenced by certain experiments, you have to add those experiments to the fit item with the \textit{addExperiment} method of \textit{CFitItem}.
+
+There is no specialized method to add fit items to the fit problem, so we have to use the generic methods provided be \textit{CCopasiParameterGroup} to do this. The fit problem contains a parameter group called \textbf{OptimizationItemList} which holds all the fit items. Since the problem itself is derived from \textit{CCopasiParameterGroup}, we can use the \textit{getParameter} method with the name of the parameter in order to get the parameter group. Now we can add the fit items with the \textit{addParameter} method to the group.
+Just like the \textit{addExperiment} method above, this method makes a copy of its argument, so if you are planning to use the fit item again, be sure to get the fit item from the group again.
+
+A fit problem can actually contain many experiments and many fit items, but the example code below only uses one experiment and one fit item to fit the reaction parameter of a simple system. The code assumes that the models consists of only one compartment with two species named \textit{A} and \textit{B} as well as one reaction with a local reaction parameter (which is fitted).
+
+\begin{lstlisting}
+ CFitTask fitTask=
+   (CFitTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.parameterFitting);
+ // the method in a fit task is an instance of COptMethod or a subclass of
+ // it.
+ COptMethod fitMethod=(COptMethod)fitTask.getMethod();
+ // the object must be an instance of COptMethod or a subclass thereof
+ // (CFitMethod)
+ CFitProblem fitProblem=(CFitProblem)fitTask.getProblem();
+ CExperimentSet experimentSet=(CExperimentSet)fitProblem.getParameter("Experiment Set");
+ // first experiment
+ CExperiment experiment=new CExperiment();
+ experiment.setFileName("parameter_fitting_data_simple.txt");
+ experiment.setFirstRow(1);
+ experiment.setLastRow(22);
+ experiment.setHeaderRow(1);
+ experiment.setExperimentType(CCopasiTask.timeCourse);
+ experiment.setNumColumns(3);
+ CExperimentObjectMap objectMap=experiment.getObjectMap();
+ boolean result=objectMap.setNumCols(3);
+ result=objectMap.setRole(0,CExperiment.time);
+ CModel model=CCopasiDataModel.getGlobal().getModel();
+ // create the common name for time (column 0)
+ CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
+ objectMap.setObjectCN(0,timeReference.getCN().getString());
+ CMetab metabA=model.getMetabolite(0);
+ CMetab metabB=null;
+ if(metabA.getObjectName()!="A")
+ {
+     metabB=metabA;
+     metabA=model.getMetabolite(1);
+ }
+ else
+ {
+     metabB=model.getMetabolite(1);
+ }
+ // set the role to dependent
+ objectMap.setRole(1,CExperiment.dependent);
+ // create the common name for the particle number of A (column 1)
+ CCopasiObject particleReference=
+     metabA.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+ objectMap.setObjectCN(1,particleReference.getCN().getString());
+ // set the role to dependent
+ objectMap.setRole(2,CExperiment.dependent);
+ // create the common name for the particle number of B (column 1)
+ particleReference=metabB.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+ objectMap.setObjectCN(2,particleReference.getCN().getString());
+ // getObjectCN returns a string whereas getCN returns a
+ // CCopasiObjectname
+ assertTrue(objectMap.getObjectCN(2).equals(particleReference.getCN().getString()));
+ experimentSet.addExperiment(experiment);
+ // addExperiment makes a copy, so we need to get the added experiment
+ // again
+ experiment=experimentSet.getExperiment(0);
+
+ CReaction reaction=model.getReaction(0);
+ CCopasiParameter parameter=reaction.getParameters().getParameter(0);
+ 
+ // define CFitItems
+ CCopasiObject parameterReference=
+     parameter.getObject(new CCopasiObjectName("Reference=Value"));
+ CFitItem fitItem=new CFitItem();
+ fitItem.setObjectCN(parameterReference.getCN());
+ fitItem.setStartValue(4.0);
+ fitItem.setLowerBound(new CCopasiObjectName("0.0001"));
+ fitItem.setUpperBound(new CCopasiObjectName("10"));
+ // add the experiment to the fit item
+ //fitItem.addExperiment(experiment.getKey())
+ // add the fit item to the correct parameter group
+ CCopasiParameterGroup optimizationItemGroup=
+     (CCopasiParameterGroup)fitProblem.getParameter("OptimizationItemList");
+ optimizationItemGroup.addParameter(fitItem);
+ // addParameter makes a copy of the fit item, so we have to get it back
+ fitItem=(CFitItem)optimizationItemGroup.getParameter(0);
+ result=true;
+ try
+ {
+   result=fitTask.process(true);
+ }
+ catch(Exception e)
+ {
+   result=false;
+ }
+ // get the fitted value for the reaction parameter
+ double fittedK=fitItem.getLocalValue();
+\end{lstlisting}
+
+After running the fitting task, the fit result is stored in the individual fit items. The best value that was achived during parameter fitting can be queried by the \textit{getLocalValue} method from each fit item.
 
 \section{Creating Reports}
 \label{CreatingReports}
@@ -1314,5 +1448,101 @@ report.setAppend(false);
 report.setTarget("table.xhtml");
  ...
 \end{lstlisting}
+
+\section{Error Messages}
+\label{ErrorMessages}
+COPASI uses a message deque to store certain warning and error messages that occur during a process, e.g. during import and export of SBML files.
+The methods to work with the message deque are part of the CCopasiMessage class.
+
+It is always a good idea to check the message deque after doing complex things like running a certain task, or loading models.
+
+The following methods are available to work with the message deque in COPASI.
+
+\begin{lstlisting}
+/**
+ * This static method peeks at the first message created in COPASI.
+ * If no more messages are in the deque the message
+ * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+ */
+CCopasiMessage peekFirstMessage();
+
+/**
+ * This static method peeks at the last message created in COPASI.
+ * If no more messages are in the deque the message
+ * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+ */
+CCopasiMessage peekLastMessage();
+
+/**
+ * This static method retrieves the first message created in COPASI.
+ * Consecutive calls allow for the retrieval of all generated
+ * messages in chronological order. If no more messages are in
+ * the deque the message (MCCopasiMessage + 1, "Message (1):
+ * No more messages." is returned.
+ */
+CCopasiMessage getFirstMessage();
+
+/**
+ * This static method retrieves the last message created in COPASI.
+ * Consecutive calls allow for the retrieval of all generated
+ * messages in reverse chronological order. If no more messages
+ * are in the deque the message (MCCopasiMessage + 1, "Message
+ * (1): No more messages." is returned.
+ */
+CCopasiMessage getLastMessage();
+
+/**
+ * Static method that retrieves the text of all messages in the deque in chronological
+ * or reverse chronological order. If more than on message is in
+ * the deque the messages are seperated by an empty line.
+ */
+String getAllMessageText(boolean chronological);
+
+/**
+ * Static method that clears the message deque.
+ */
+void clearDeque();
+
+/**
+ * Static method that retreives the size of the message deque
+ */
+long size();
+
+/**
+ * Static methosd that retrieves the highest severity of the messages in the deque.
+ * The returned severity can be CCopasiMessage.RAW, CCopasiMessage.TRACE,
+ * CCopasiMessage.COMMANDLINE, CCopasiMessage.WARNING, CCopasiMessage.ERROR,
+ * CCopasiMessage.EXCEPTION, CCopasiMessage.RAW_FILTERED,
+ * CCopasiMessage.TRACE_FILTERED, CCopasiMessage.COMMANDLINE_FILTERED,
+ * CCopasiMessage.WARNING_FILTERED, CCopasiMessage.ERROR_FILTERED or 
+ * CCopasiMEssage.EXCEPTION_FILTERED.
+ * 
+ * The most common of those are WARNING, ERROR or EXCEPTION.
+ */
+int getHighestSeverity();
+
+/**
+ * Static method that checks whether a message with the given number is in the deque
+ */
+boolean checkForMessage(long number);
+
+/**
+ *  Retrieves the text of the message instance.
+ */
+String getText();
+
+/**
+ *  Retrieves the type of the message instance.
+ */
+int getType();
+
+/**
+ *  Retrieves the number of the message instance.
+ */
+long getNumber();
+
+\end{lstlisting}
+
+
 
 \end{document}

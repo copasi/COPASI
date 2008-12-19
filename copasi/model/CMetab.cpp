@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.136.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Date: 2008/10/23 14:11:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,7 +249,7 @@ void CMetab::setStatus(const CModelEntity::Status & status)
       mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
       mpConcReference->setRefresh(this, &CMetab::calculate);
 
-      // The dependecies and refresh of the rate are correct (see CModelEntity::setStatus).
+      // The dependencies and refresh of the rate are correct (see CModelEntity::setStatus).
 
       mpConcRateReference->setDirectDependencies(mpRateReference->getDirectDependencies());
       mpConcRateReference->clearRefresh();
@@ -324,11 +324,11 @@ bool CMetab::compile()
   mpRateReference->setDirectDependencies(Dependencies);
   mpRateReference->clearRefresh();
 
-  // Concetration Rate
+  // Concentration Rate
   mpConcRateReference->setDirectDependencies(Dependencies);
   mpConcRateReference->clearRefresh();
 
-  // Transisition Time
+  // Transition Time
   mpTTReference->setDirectDependencies(Dependencies);
   mpTTReference->clearRefresh();
 

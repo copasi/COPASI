@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.19.16.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/09/20 14:06:35 $
+//   $Date: 2008/11/10 21:18:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +19,8 @@
 #include <sys/timeb.h>
 #include <math.h>
 #include <algorithm>
+
+#include <string.h>
 
 #include "copasi.h"
 #include "CRandom.h"
@@ -180,11 +187,10 @@ int ftime(struct timeb * pTime)
 
 unsigned C_INT32 CRandom::getSystemSeed()
 {
-  /* :TODO: MacOS X does not provide ftime we need to supply it */
   struct timeb init_time;
   ftime(&init_time);
 
-  return ((init_time.time & 0xffff) + 1) * 1000 + init_time.millitm;
+  return ((((unsigned C_INT32) init_time.time) & 0xffff) + 1) * 1000 + init_time.millitm;
 }
 
 void CRandom::initialize(unsigned C_INT32 C_UNUSED(seed))

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidgetStack.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.8.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/03/26 02:42:38 $
+//   $Author: shoops $
+//   $Date: 2008/11/13 20:32:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@
 
 #ifdef HAVE_MML
 #include "mml/qtmmlwidget.h"
-#endif // Have_MML
+#endif // HAVE_MML
 
 #include "CQExpressionWidget.h"
 
@@ -76,7 +76,7 @@ CQExpressionMmlWidgetStack::CQExpressionMmlWidgetStack(QWidget* parent, const ch
 
   mScrollView->setResizePolicy(QScrollView::AutoOneFit);
 
-#endif
+#endif // HAVE_MML
 }
 
 /*!

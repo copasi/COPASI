@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.6.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/05 15:34:56 $
+//   $Date: 2008/11/25 16:49:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,69 +95,206 @@ public:
 
   public:
     // Methods
+    /**
+     * Default constructor
+     * @param const ePredicateType & type (default CRDFPredicate::end)
+     */
     CRDFPredicate(const ePredicateType & type = end);
 
+    /**
+     * Specific constructor
+     * @param const std::string & uri
+     */
     CRDFPredicate(const std::string & uri);
 
+    /**
+     * Copy constructor
+     * @param const CRDFPredicate & src
+     */
     CRDFPredicate(const CRDFPredicate & src);
 
+    /**
+     * Destructor
+     */
     ~CRDFPredicate();
 
+    /**
+     * Assignment operator.
+     * @param const ePredicateType & type
+     * @return CRDFPredicate predicate
+     */
     CRDFPredicate operator = (const ePredicateType & type);
 
+    /**
+     * Retrieve the URI.
+     * @return const std::string & URI
+     */
     const std::string & getURI() const;
 
+    /**
+     * Set the URI.
+     * @param const std::string & URI
+     */
     void setURI(const std::string & uri);
 
+    /**
+     * Comparison operator for equality.
+     * @param const CRDFPredicate & rhs
+     * @return bool isEqual
+     */
     bool operator == (const CRDFPredicate & rhs) const;
 
-    operator ePredicateType() const;
+    /**
+     * Comparison operator for inequality.
+     * @param const CRDFPredicate & rhs
+     * @return bool isNotEqual
+     */
+    bool operator != (const CRDFPredicate & rhs) const;
 
+    /**
+     * Comparison operator for less.
+     * @param const CRDFPredicate & rhs
+     * @return bool isLess
+     */
+    bool operator < (const CRDFPredicate & rhs) const;
+
+    /**
+     * Retrieve the type og the predicate.
+     * @return const ePredicateType & type
+     */
+    const ePredicateType & getType() const;
+
+    /**
+     * Retrieve the list of allowed locations in the RDF graph for the given predicate
+     * @param const ePredicateType & predicate
+     * @return const AllowedLocationList & listOfAllowedLocations
+     */
     static const AllowedLocationList & getAllowedLocationList(const ePredicateType & predicate);
 
-    static const std::string & getURI(const ePredicateType & predicate);
+    /**
+     * Retrieve the URI for the given predicate
+     * @param const CRDFPredicate & predicate
+     * @return const std::string & uri
+     */
+    static const std::string & getURI(const CRDFPredicate & predicate);
 
+    /**
+     * Retrieve the type of predicate for the given URI
+     * @param const std::string & URI
+     * @return ePredicateType type
+     */
     static ePredicateType getPredicateFromURI(const std::string & URI);
 
-    static const std::string & getDisplayName(const ePredicateType & predicate);
+    /**
+     * Retrieve the display name for the given predicate
+     * @param const CRDFPredicate & predicate
+     * @return const std::string & displayName
+     */
+    static const std::string & getDisplayName(const CRDFPredicate & predicate);
 
-    static ePredicateType getPredicateFromDisplayName(const std::string & URI);
+    /**
+     * Retrieve the type of predicate from the given display name
+     * @param const std::string & displayName
+     * @return ePredicateType type
+     */
+    static ePredicateType getPredicateFromDisplayName(const std::string & displayName);
 
+    /**
+     * Retrieve the index of the next path element of the full path beyond the current path.
+     * If the current path is not part of the full path C_INVALID_INDEX is returned
+     * @param const Path & fullPath
+     * @param const Path & currentPath
+     * @return unsigned int index
+     */
     static unsigned int getSubPathIndex(const Path & fullPath, const Path & currentPath);
 
+    /**
+     * Checks whether the element pointed to by the current path is read-only
+     * @param const Path & currentPath
+     * @return bool isReadOnly
+     */
     static bool isReadOnly(const Path & currentPath);
+
+    /**
+     * Friend declaration of ostream operator
+     * @param std::ostream & os
+     * @param const CRDFPredicate & p
+     * @return std::ostream & os
+     */
+    friend std::ostream & operator << (std::ostream & os, const CRDFPredicate & p);
 
   private:
     // Methods
+    /**
+     * Initialize the static information
+     */
     static void initialize();
 
+    /**
+     * Initialize the map from URI to predicate
+     */
     static void createURI2Predicate();
 
+    /**
+     * Initialize the map from display name to predicate
+     */
     static void createDisplayName2Predicate();
 
+    /**
+     * Create the list of relative allowed locations for each predicate
+     */
     static void createAllowedLocationsRelative();
 
+    /**
+     * Create the list of absolute allowed locations for each predicate
+     */
     static void createAllowedLocationsAbsolute();
 
+    /**
+     * Create the list of absolute allowed locations for the given predicate
+     * @param const ePredicateType & predicate
+     */
     static void createAllowedLocationsAbsolute(const ePredicateType & predicate);
 
     // Attributes
+    /**
+     * The type of the predicate
+     */
     ePredicateType mType;
 
+    /**
+     * The URI
+     */
     std::string mURI;
 
-    static CRDFPredicate Factory;
-
+    /**
+     * Static strings for URIs
+     */
     static const std::string PredicateURI[];
 
+    /**
+     * Map from URI to predicate type
+     */
     static std::map< std::string, ePredicateType > URI2Predicate;
 
+    /**
+     * Static strings for display names
+     */
     static const std::string PredicateDisplayName[];
 
+    /**
+     * Map from display name to predicate type
+     */
     static std::map< std::string, ePredicateType > DisplayName2Predicate;
 
+    /**
+     * Vector of relative allowed locations
+     */
     static std::vector< AllowedLocationList > Predicate2AllowedLocationsRelative;
 
+    /**
+     * Vector of absolute allowed locations
+     */
     static std::vector< AllowedLocationList > Predicate2AllowedLocationsAbsolute;
   };
 

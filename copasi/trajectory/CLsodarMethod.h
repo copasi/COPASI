@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/13 14:50:36 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.h,v $
+  $Revision: 1.4.26.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2008/10/23 14:11:20 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -55,7 +60,7 @@ class CLsodarMethod : public CTrajectoryMethod
     C_FLOAT64 * mY;
 
     /**
-     * Vector containig the derivatives after calling eval
+     * Vector containing the derivatives after calling eval
      */
     CVector< C_FLOAT64 > mYdot;
 
@@ -163,7 +168,7 @@ class CLsodarMethod : public CTrajectoryMethod
      *  starting with the current state, i.e., the result of the previous
      *  step.
      *  The new state (after deltaT) is expected in the current state.
-     *  The return value is the actual timestep taken.
+     *  The return value is the actual time step taken.
      *  @param "const double &" deltaT
      */
     virtual void step(const double & deltaT);
@@ -174,11 +179,6 @@ class CLsodarMethod : public CTrajectoryMethod
      *  @param "const CState *" initialState
      */
     virtual void start(const CState * initialState);
-
-    /**
-     * Calculate the individual absolute tolerance
-     */
-    void initializeAtol();
 
     static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
@@ -196,7 +196,7 @@ class CLsodarMethod : public CTrajectoryMethod
 
   private:
     /**
-     * Intialize the method parameter
+     * Initialize the method parameter
      */
     void initializeParameter();
   };

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT type="Advanced Installer" CreateVersion="3.9" version="6.4" modules="freeware" RootPath="." Language="en">
+<DOCUMENT type="Advanced Installer" CreateVersion="3.9" version="6.6" modules="freeware" RootPath="." Language="en">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="ALLUSERS" Value="2"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install COPASI." ValueLocId="*"/>
@@ -22,6 +22,7 @@
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="bin_DIR" Directory_Parent="APPDIR" DefaultDir="bin"/>
+    <ROW Directory="config_DIR" Directory_Parent="copasi_DIR" DefaultDir="config"/>
     <ROW Directory="copasi_DIR" Directory_Parent="share_DIR" DefaultDir="copasi"/>
     <ROW Directory="doc_DIR" Directory_Parent="copasi_DIR" DefaultDir="doc"/>
     <ROW Directory="examples_DIR" Directory_Parent="copasi_DIR" DefaultDir="examples"/>
@@ -35,10 +36,11 @@
     <ROW Component="Content_Type_1" ComponentId="{A9E97BA0-7F2F-4A90-8974-B52295DBA363}" Directory_="APPDIR" Attributes="4" KeyPath="Content_Type_1"/>
     <ROW Component="Copasi.ico" ComponentId="{E37635C7-A3FD-444F-AAF6-444770EFEB7D}" Directory_="icons_DIR" Attributes="0" KeyPath="Copasi.ico" Type="0"/>
     <ROW Component="CopasiSE.exe" ComponentId="{101CD7DD-A216-4E32-A410-5617737AD08D}" Directory_="bin_DIR" Attributes="0" KeyPath="CopasiSE.exe" Type="0"/>
-    <ROW Component="CopasiUI.exe" ComponentId="{45944BA8-B4F7-4312-9B14-22214E4AFFB5}" Directory_="bin_DIR" Attributes="0" KeyPath="CopasiUI.exe" Type="0"/>
+    <ROW Component="CopasiUI.exe" ComponentId="{45944BA8-B4F7-4312-9B14-22214E4AFFB5}" Directory_="bin_DIR" Attributes="0" Type="0"/>
     <ROW Component="DefaultIcon" ComponentId="{D2E06D5F-858D-42E1-83BB-013676FB8A0D}" Directory_="APPDIR" Attributes="4" KeyPath="__5"/>
     <ROW Component="DefaultPlotAdded.jpg" ComponentId="{86F18583-AF22-4C15-8483-4FA2E943766C}" Directory_="figures_DIR" Attributes="0" KeyPath="TimeCourseDialog.png" Type="0"/>
     <ROW Component="LICENSE.txt" ComponentId="{87B4EA4F-8063-4F76-BDF7-99350150AEE3}" Directory_="APPDIR" Attributes="0" KeyPath="LICENSE.txt" Type="0"/>
+    <ROW Component="MIRIAMResources.xml" ComponentId="{799962BC-34C7-4444-888B-1213EF6AC444}" Directory_="config_DIR" Attributes="0" KeyPath="MIRIAMResources.xml" Type="0"/>
     <ROW Component="PerceivedType_1" ComponentId="{DF030F8B-A766-45B8-A8AE-D3AB00BEC798}" Directory_="APPDIR" Attributes="4" KeyPath="PerceivedType_1"/>
     <ROW Component="README.txt" ComponentId="{4F9D3A12-77E9-41D2-AC58-E4684E63A4EE}" Directory_="APPDIR" Attributes="0" KeyPath="README.txt" Type="0"/>
     <ROW Component="SBW.dll" ComponentId="{EA794F50-8F7C-4DD5-84DB-C70CA0917DAC}" Directory_="bin_DIR" Attributes="0" KeyPath="SBW.dll"/>
@@ -56,7 +58,7 @@
     <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon raptor.dll libexpat.dll libsbml.dll msvcp80.dll msvcr80.dll qt_mt338.dll SBW.dll"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon raptor.dll libexpat.dll libsbml.dll msvcp80.dll msvcr80.dll qt_mt338.dll SBW.dll MIRIAMResources.xml"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -68,6 +70,7 @@
     <ROW File="DimericMWC_stiff.cps" Component_="brusselator.cps" FileName="Dimeri~1.cps|DimericMWC-stiff.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\DimericMWC-stiff.cps" SelfReg="false" Sequence="19"/>
     <ROW File="Genetic_2000Elo.xml" Component_="brusselator.cps" FileName="Geneti~1.xml|Genetic-2000Elo.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\Genetic-2000Elo.xml" SelfReg="false" Sequence="12"/>
     <ROW File="LICENSE.txt" Component_="LICENSE.txt" FileName="LICENSE.txt" Attributes="0" SourcePath="..\setup\copasi\LICENSE.txt" SelfReg="false" Sequence="3"/>
+    <ROW File="MIRIAMResources.xml" Component_="MIRIAMResources.xml" FileName="MIRIAM~1.xml|MIRIAMResources.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\config\MIRIAMResources.xml" SelfReg="false" Sequence="41"/>
     <ROW File="Metabolism_2000Poo.xml" Component_="brusselator.cps" FileName="Metabo~1.xml|Metabolism-2000Poo.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\Metabolism-2000Poo.xml" SelfReg="false" Sequence="13"/>
     <ROW File="ModelSettingsDialog.png" Component_="DefaultPlotAdded.jpg" FileName="ModelS~1.png|ModelSettingsDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ModelSettingsDialog.png" SelfReg="false" Sequence="33"/>
     <ROW File="NF_kappaB.cps" Component_="brusselator.cps" FileName="NF-kap~1.cps|NF-kappaB.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\NF-kappaB.cps" SelfReg="false" Sequence="20"/>

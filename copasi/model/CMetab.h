@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.88.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Date: 2008/10/23 14:11:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 /**
  *  CMetab class.
  *  Derived from Gepasi's cmetab.cpp. (C) Pedro Mendes 1995-2000.
- *  Converted for Copasi by Stefan Hoops 2001
+ *  Converted for COPASI by Stefan Hoops 2001
  */
 
 #ifndef COPASI_CMetab
@@ -199,7 +199,7 @@ class CMetab : public CModelEntity
     virtual void calculate();
 
     /**
-     * Retreive the list of deleted numeric child objects;
+     * Retrieve the list of deleted numeric child objects;
      * @return std::set< const CCopasiObject * > deletedObjects
      */
     virtual std::set< const CCopasiObject * > getDeletedObjects() const;
@@ -225,13 +225,13 @@ class CMetab : public CModelEntity
     const C_FLOAT64 & getInitialConcentration() const;
 
     /**
-     * Retreive object referencing the initial concentration
+     * Retrieve object referencing the initial concentration
      * @return CCopasiObject * initialConcentrationReference
      */
     CCopasiObject * getInitialConcentrationReference() const;
 
     /**
-     * Retreive object referencing the concentration
+     * Retrieve object referencing the concentration
      * @return CCopasiObject * concentrationReference
      */
     CCopasiObject * getConcentrationReference() const;
@@ -275,7 +275,7 @@ class CMetab : public CModelEntity
     C_FLOAT64 getConcentrationRate() const;
 
     /**
-     * Calculate the conctration rate.
+     * Calculate the concentration rate.
      */
     void refreshConcentrationRate();
 
@@ -297,7 +297,7 @@ class CMetab : public CModelEntity
     void setDependentOn(const CMoiety * pMoiety);
 
     /**
-     * Retreive whether the metabolite dependent
+     * Retrieve whether the metabolite dependent
      * @return bool dependent
      */
     bool isDependent() const;

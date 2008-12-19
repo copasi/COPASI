@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347 $
+//   $Revision: 1.347.2.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Author: nsimus $
+//   $Date: 2008/12/08 11:54:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,16 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+//
+
+#include <string.h>
+#include <limits.h>
+#include <string>
+#include <vector>
+#include <limits>
+#include <float.h>
+#include <cmath>
+#include <algorithm>
 
 #ifdef SunOS
 # include <ieeefp.h>
@@ -22,13 +32,6 @@
 #endif
 
 #include "copasi.h"
-
-#include <string>
-#include <vector>
-#include <limits>
-#include <float.h>
-#include <cmath>
-#include <algorithm>
 
 // #define DEBUG_MATRIX
 
@@ -50,6 +53,7 @@
 #include "utilities/CProcessReport.h"
 #include "CReactionInterface.h"
 #include "utilities/CAnnotatedMatrix.h"
+#include "CMetabNameInterface.h"
 
 #include "blaswrap.h"
 #include "clapackwrap.h"
@@ -68,7 +72,7 @@ const char * CModel::VolumeUnitNames[] =
 const char * CModel::TimeUnitNames[] =
   {"d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
-// "mol" is the correct name, however in the copasi xml files "Mol" is used
+// "mol" is the correct name, however in the COPASI XML files "Mol" is used
 // up to build 18
 
 const char * CModel::QuantityUnitOldXMLNames[] =
@@ -138,7 +142,7 @@ CModel::CModel():
   forceCompile(NULL);
 
   /* This following 2 lines added by Liang Xu
-  Becaues of the failure to initialize the parameter when creating a new models
+  Because of the failure to initialize the parameter when creating a new models
   */
   setQuantityUnit(mQuantityUnit); // set the factors
   setVolumeUnit(mVolumeUnit); // set the factors
@@ -209,7 +213,7 @@ CModel::~CModel()
   pdelete(mpLinkMatrixAnnotation);
 
   GlobalKeys.remove(mKey);
-  //cleanup();
+
   DESTRUCTOR_TRACE;
 }
 
@@ -336,8 +340,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       (*pMetabolite) = *(*CCopasiDataModel::Global->pOldMetabolites)[i];
     }
 
-  //DebugFile << mCompartments;       //debug
-
   initializeMetabolites();
 
   if ((Fail = CCopasiDataModel::Global->getFunctionList()->load(configBuffer))) // slow
@@ -349,12 +351,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mSteps.load(configBuffer, Size); // slow
 
-  // DebugFile << std::endl << mSteps << std::endl;  //debug
-
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(/*mCompartments*/);
-
-  // DebugFile << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
   CCopasiDataModel::Global->pOldMetabolites->cleanup();
 
@@ -380,7 +378,7 @@ bool CModel::compile()
                      &totalSteps);
     }
 
-  // To assure that we do not produce access violations we clear the refres sequences
+  // To assure that we do not produce access violations we clear the refresh sequences
   // first
   mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
@@ -460,22 +458,10 @@ void CModel::compileDefaultMetabInitialValueDependencies()
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
-  //if (flag) std::cout << "* model dirty flag set. " << std::endl;
-
-  // We need to move this and do not do this automatically
-  // if (flag) initializeMetabolites();
 }
 
 bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 {
-  /*
-  std::cout << "** compiling a CModel is requested. ";
-  if (mCompileIsNecessary)
-    std::cout << "It will be done...." << std::endl;
-  else
-    std::cout << " " << std::endl;
-  */
-
   if (!mCompileIsNecessary)
     {
       this->compileDefaultMetabInitialValueDependencies();
@@ -544,7 +530,7 @@ void CModel::buildStoi()
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
       if (!(*itStep)->getFunction()->isUsable())
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 11,
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 11,
                        (*itStep)->getObjectName().c_str(),
                        (*itStep)->getFunction()->getObjectName().c_str());
 
@@ -662,7 +648,7 @@ bool CModel::handleUnusedMetabolites()
   for (; itUsedMetabolites != itMetabolitesEnd; ++itUsedMetabolites, ++itMetab)
     *itMetab = *itUsedMetabolites;
 
-  // Handle metabolites determined by assignement and marked as fixed
+  // Handle metabolites determined by assignment and marked as fixed
   // This is just a shift of NumUnused.
   endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
   for (; itMetab != endMetab; ++itMetab)
@@ -822,7 +808,7 @@ void CModel::initializeMetabolites()
 
       for (; itMetab != endMetab; ++itMetab)
         {
-          // Reset all moities
+          // Reset all moieties
           (*itMetab)->setDependentOn(NULL);
           mMetabolites.add(*itMetab);
         }
@@ -940,6 +926,9 @@ unsigned C_INT32 CModel::getNumVariableMetabs() const
 unsigned C_INT32 CModel::getNumODEMetabs() const
   {CCHECK return mNumMetabolitesODE;}
 
+unsigned C_INT32 CModel::getNumAssignmentMetabs() const
+  {CCHECK return mNumMetabolitesAssignment;}
+
 unsigned C_INT32 CModel::getNumIndependentReactionMetabs() const
   {CCHECK return mNumMetabolitesReactionIndependent;}
 
@@ -990,6 +979,9 @@ const CModel::CLinkMatrixView & CModel::getL() const
 
 const CMatrix< C_FLOAT64 > & CModel::getL0() const
   {return mL;}
+
+const CStateTemplate & CModel::getStateTemplate() const
+  {CCHECK return mStateTemplate;}
 
 CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
@@ -1067,14 +1059,14 @@ void CModel::applyInitialValues()
   // Copy the initial state to the current state,
   setState(mInitialState);
 
-  // Update all "constant" dependend values.
+  // Update all "constant" dependent values.
   // Here "constant" means do not change during simulation.
   std::vector< Refresh * >::const_iterator itRefresh = mConstantRefreshes.begin();
   std::vector< Refresh * >::const_iterator endRefresh = mConstantRefreshes.end();
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
-  // Update all dependend objects needed for simulation.
+  // Update all dependent objects needed for simulation.
   updateSimulatedValues(false);
 }
 
@@ -1252,7 +1244,7 @@ bool CModel::buildInitialSequence()
 
 bool CModel::updateInitialValues()
 {
-  // :TODO: We should have a seperate flag to handle this but the impact on the performance is minor.
+  // :TODO: We should have a separate flag to handle this but the impact on the performance is minor.
   if (mCompileIsNecessary)
     buildInitialSequence();
 
@@ -1659,7 +1651,7 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
 {
   C_FLOAT64 * pTmp = derivatives;
 
-  // First retreive derivatives of quantities determined by ODE
+  // First retrieve derivatives of quantities determined by ODE
   // The offset 1 is for the model time which is always the first
   // state variable.
   CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
@@ -1686,7 +1678,7 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 {
   C_FLOAT64 * pTmp = derivativesX;
 
-  // First retreive derivatives of quantities determined by ODE
+  // First retrieve derivatives of quantities determined by ODE
   // The offset 1 is for the model time which is always the first
   // state variable.
   CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
@@ -1729,7 +1721,7 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
   for (itEntity = beginEntity, Col = 0; itEntity != endEntity; ++itEntity, ++Col)
     {
       // :TODO: This only works for entities of type metabolites.
-      //        The scaling factor for other entites should be 1.
+      //        The scaling factor for other entities should be 1.
       const C_FLOAT64 invVolume =
         1.0 / static_cast<CMetab *>(*itEntity)->getCompartment()->getValue();
       C_FLOAT64 * pX =
@@ -2416,12 +2408,9 @@ bool CModel::removeMetabolite(const std::string & key,
         removeModelValue((*it)->getKey(), false);
     }
 
-  /* Check if metabolite with that name exists */
-  unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);
-  if (index == C_INVALID_INDEX)
-    return false;
-
-  mMetabolites.remove(index);
+  /* Assure that all references are removed */
+  mMetabolites.remove(pMetabolite);
+  mMetabolitesX.remove(pMetabolite);
 
   pdelete(pMetabolite);
 
@@ -2684,12 +2673,12 @@ bool CModel::removeEvent(const std::string & key,
 
 bool CModel::convert2NonReversible()
 {
-  //TODO check if there are any reversible reactions
-  //TODO warn the user
-  //TOD tell the gui about changes -> not from here
-  //TODO generate report ?
-  //TODO check if newly generated reaction names are valid
-  //TODO map, so that the same function is split only once
+  // TODO check if there are any reversible reactions
+  // TODO warn the user
+  // TODO tell the GUI about changes -> not from here
+  // TODO generate report ?
+  // TODO check if newly generated reaction names are valid
+  // TODO map, so that the same function is split only once
 
   bool success = true;
 
@@ -2737,7 +2726,7 @@ bool CModel::convert2NonReversible()
             if ((tmp.first == NULL) || (tmp.second == NULL))
               {
                 // Create a message that the conversion for this reaction failed.
-                CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 12,
+                CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 12,
                                reac0->getObjectName().c_str(), fn.c_str());
                 success = false;
 
@@ -2995,9 +2984,9 @@ std::string CModel::suitableForStochasticSimulation() const
         if (mSteps[i]->isReversible() != 0)
           return "At least one reaction is reversible. That means stochastic simulation is not possible. \nYou can use \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you should check the kinetics afterwards.";
 
-        // TEST integer stoichometry
+        // TEST integer stoichiometry
         // Iterate through each the metabolites
-        // juergen: the number of rows of mStoi equals the number of non-fixed metabs!
+        // Juergen: the number of rows of mStoi equals the number of non-fixed metabs!
         //  for (j=0; i<metabSize; j++)
         for (j = 0; j < mStoi.numRows(); j++)
           {
@@ -3061,7 +3050,7 @@ void CModel::buildLinkZero()
   C_INT LWORK = -1;
   C_INT INFO;
 
-  // QR factorization of the stoichimetry matrix
+  // QR factorization of the stoichiometry matrix
   /*
    *  -- LAPACK routine (version 3.0) --
    *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
@@ -3177,10 +3166,10 @@ void CModel::buildLinkZero()
   mL.resize(N - independent, independent);
   if (N == independent || independent == 0) return;
 
-  /* to take care of differences between fortran's and c's memory  acces,
+  /* to take care of differences between fortran's and c's memory  access,
      we need to take the transpose, i.e.,the upper triangular */
   char cL = 'U';
-  char cU = 'N'; /* 1 in the diaogonal of R */
+  char cU = 'N'; /* 1 in the diagonal of R */
 
   // Calculate Row Echelon form of R.
   // First invert R_1,1
@@ -3288,25 +3277,29 @@ const bool & CModel::isAutonomous() const
 
 void CModel::determineIsAutonomous()
 {
-  if (mCompartments.size() == 0 &&
-      mValues.size() == 0)
+  mIsAutonomous = true;
+
+  // If the model is not empty we check whether anything depends on time
+  if (mCompartments.size() != 0 ||
+      mValues.size() != 0)
     {
-      mIsAutonomous = false;
-      return;
+      std::set< const CCopasiObject * > TimeDependent;
+
+      appendDependentReactions(getDeletedObjects(), TimeDependent);
+      appendDependentMetabolites(getDeletedObjects(), TimeDependent);
+      appendDependentCompartments(getDeletedObjects(), TimeDependent);
+      appendDependentModelValues(getDeletedObjects(), TimeDependent);
+
+      mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
     }
 
-  std::set< const CCopasiObject * > TimeDependent;
-
-  appendDependentReactions(getDeletedObjects(), TimeDependent);
-  appendDependentMetabolites(getDeletedObjects(), TimeDependent);
-  appendDependentCompartments(getDeletedObjects(), TimeDependent);
-  appendDependentModelValues(getDeletedObjects(), TimeDependent);
-
-  mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
+  // An autonomous models always start simulation at T = 0
+  if (mIsAutonomous)
+    setInitialValue(0.0);
 }
 
 const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const
-  {return mInitialRefreshes;}
+{return mInitialRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
   {return mSimulatedRefreshes;}
@@ -3332,7 +3325,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
   const CModelEntity * pEntity;
   CMetab * pMetab;
 
-  // If the changed objects are empty we assume that all changable objects have been changed
+  // If the changed objects are empty we assume that all changeable objects have been changed
   if (changedObjects.size() == 0)
     {
       // The objects which are changed are all initial values of of all model entities including
@@ -3354,7 +3347,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
           // Metabolites have two initial values
           if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
             {
-              // The cocentration is assumed to be fix accept when this would lead to circular dependencies,
+              // The concentration is assumed to be fix accept when this would lead to circular dependencies,
               // for the parent's compartment's initial volume.
               if (pMetab->isInitialConcentrationChangeAllowed())
                 changedObjects.insert(pMetab->getInitialConcentrationReference());
@@ -3425,7 +3418,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
         }
     }
 
-  // We need to add the total particle number of moities.
+  // We need to add the total particle number of moieties.
   CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
   CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
 
@@ -3505,4 +3498,145 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
     }
 
   return UpdateVector;
+}
+
+CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const bool & reducedModel) const
+  {
+    CVector< C_FLOAT64 > Atol;
+
+    if (reducedModel)
+      Atol.resize(mStateTemplate.getNumIndependent());
+    else
+      Atol.resize(mStateTemplate.getNumIndependent() + mStateTemplate.getNumDependent());
+
+    C_FLOAT64 * pAtol = Atol.array();
+    C_FLOAT64 * pEnd = pAtol + Atol.size();
+
+    C_FLOAT64 InitialValue;
+    C_FLOAT64 Limit;
+
+    CModelEntity *const* ppEntity = getStateTemplate().beginIndependent();
+    const CMetab * pMetab;
+
+    for (; pAtol != pEnd; ++pAtol, ++ppEntity)
+      {
+        *pAtol = atol;
+
+        InitialValue = fabs((*ppEntity)->getInitialValue());
+
+        if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+          {
+            Limit =
+              fabs(pMetab->getCompartment()->getInitialValue()) * mQuantity2NumberFactor;
+
+            if (InitialValue != 0.0)
+              *pAtol *= std::min(Limit, InitialValue);
+            else
+              *pAtol *= std::max(1.0, Limit);
+          }
+        else if (InitialValue != 0.0)
+          *pAtol *= std::min(1.0, InitialValue);
+      }
+
+    return Atol;
+  }
+
+#include "utilities/CDimension.h"
+
+std::string CModel::printParameterOverview()
+{
+  std::ostringstream oss;
+  CModel* model = this;
+
+  oss << "Initial time: " << model->getInitialTime() << " " << model->getTimeUnitName() << std::endl;
+
+  oss << std::endl;
+
+  unsigned C_INT32 i, imax, j, jmax;
+
+  //Compartments
+  const CCopasiVector< CCompartment > & comps = model->getCompartments();
+  imax = comps.size();
+  if (imax)
+    {
+      oss << "Initial volumes:\n\n";
+      for (i = 0; i < imax; ++i)
+        oss << comps[i]->getObjectName() << " \t" << comps[i]->getInitialValue()
+        << " " << model->getVolumeUnitName() << "\n";
+      oss << "\n";
+    }
+
+  //Species
+  const CCopasiVector< CMetab > & metabs = model->getMetabolites();
+  imax = metabs.size();
+  if (imax)
+    {
+      oss << "Initial concentrations:\n\n";
+      for (i = 0; i < imax; ++i)
+        oss << CMetabNameInterface::getDisplayName(model, *metabs[i]) << " \t"
+        << metabs[i]->getInitialConcentration() << " "
+        << model->getConcentrationUnitName() << "\n";
+      oss << "\n";
+    }
+
+  //global Parameters
+  const CCopasiVector< CModelValue > & params = model->getModelValues();
+  imax = params.size();
+  if (imax)
+    {
+      oss << "Initial values of global quantities:\n\n";
+      for (i = 0; i < imax; ++i)
+        oss << params[i]->getObjectName() << " \t"
+        << params[i]->getInitialValue() << "\n";
+      oss << "\n";
+    }
+
+  //Reactions
+  const CCopasiVector< CReaction > & reacs = model->getReactions();
+  imax = reacs.size();
+  if (imax)
+    {
+      oss << "Reaction parameters:\n\n";
+      CReaction* reac;
+      for (i = 0; i < imax; ++i)
+        {
+          reac = reacs[i];
+          oss << reac->getObjectName() << "\n";
+
+          //calculate units
+          CFindDimensions units(reac->getFunction());
+          units.setUseHeuristics(true);
+          units.setChemicalEquation(&reac->getChemEq());
+          units.findDimensions(reac->getCompartmentNumber() > 1);
+
+          const CFunctionParameters & params = reac->getFunctionParameters();
+          jmax = params.size();
+          for (j = 0; j < jmax; ++j)
+            if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
+              {
+                CCopasiObject * obj = GlobalKeys.get(reac->getParameterMappings()[j][0]);
+                if (!obj) continue;
+
+                if (reac->isLocalParameter(j))
+                  {
+                    CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
+                    if (!par) continue; //or rather fatal error?
+                    oss << "    " << params[j]->getObjectName() << " \t"
+                    << *par->getValue().pDOUBLE << " "
+                    << units.getDimensions()[j].getDisplayString() << "\n";
+                  }
+                else
+                  {
+                    CModelValue * par = dynamic_cast<CModelValue*>(obj); //must be a CModelValue
+                    if (!par) continue; //or rather fatal error?
+                    oss << "    " << params[j]->getObjectName() << " \t"
+                    << "-> " + par->getObjectName()
+                    << " (" << units.getDimensions()[j].getDisplayString() << ")\n";
+                  }
+              }
+          oss << "\n";
+        }
+    }
+
+  return oss.str();
 }

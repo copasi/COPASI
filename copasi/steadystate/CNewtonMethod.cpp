@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.88.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:14 $
+//   $Date: 2008/11/18 02:47:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,8 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
   assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
   assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
+  assertParameter("Maximum duration for forward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e9);
+  assertParameter("Maximum duration for backward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e6);
   //assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
   //assertParameter("Keep Protocol", CCopasiParameter::BOOL, true);
 
@@ -181,8 +183,10 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
 CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 {
   C_FLOAT64 iterationFactor = forward ? 10.0 : 2.0;
-  C_FLOAT64 maxDuration = forward ? 1e10 : -1e8;
-  C_FLOAT64 minDuration = forward ? 1e-1 : -1e-2;
+  C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
+  //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
+  C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
+                              : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   unsigned C_INT32 hProcess;
@@ -211,7 +215,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   bool stepLimitReached;
   C_FLOAT64 duration;
 
-  for (duration = minDuration; fabs(duration) < fabs(maxDuration); duration *= iterationFactor, Step++)
+  for (duration = minDuration; fabs(duration) <= fabs(maxDuration); duration *= iterationFactor, Step++)
     {
       if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
@@ -565,7 +569,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   //start progress bar
   unsigned C_INT32 hProcess;
   if (mpProgressHandler)
-    hProcess = mpProgressHandler->addItem("newton method...",
+    hProcess = mpProgressHandler->addItem("Newton method...",
                                           CCopasiParameter::UINT,
                                           & k,
                                           & mIterationLimit);
@@ -605,7 +609,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
         mMethodLog << "   Failed: Target criterium not matched after reaching iteration limit. " << targetValue << "\n";
     }
 
-  //do an additional newton step to refine the result
+  //do an additional Newton step to refine the result
   if ((CNewtonMethod::found == result) && mForceNewton && targetValue > 0.0)
     {
       bool tmp = true;
@@ -680,15 +684,16 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   {
     C_FLOAT64 tmp, store = 0;
 
-    // First we look at the ODE determined rates of non metabolites
+    // We look at all ODE determined entity and dependent species rates.
     const C_FLOAT64 * pIt = particlefluxes.array();
-    const C_FLOAT64 * pEnd =
-      pIt + mpModel->getStateTemplate().getNumIndependent()
-      - mpModel->getNumODEMetabs() - mpModel->getNumIndependentReactionMetabs();
+    const C_FLOAT64 * pEnd = pIt + particlefluxes.size();
+    const C_FLOAT64 * pAtol = mAtol.array();
+    CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
 
-    for (; pIt != pEnd; ++pIt)
+    for (; pIt != pEnd; ++pIt, ++pAtol, ++ppEntity)
       {
-        tmp = fabs(*pIt);
+        tmp = fabs(*pIt) / std::min(*pAtol, std::max(100.0 * DBL_MIN, fabs((*ppEntity)->getValue())));
+
         if (tmp > store)
           store = tmp;
 
@@ -696,25 +701,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
           return DBL_MAX;
       }
 
-    // Scale to account for the scaling in the return value.
-    store *= mpModel->getQuantity2NumberFactor();
-
-    // Now all metabolites determined by ODEs and reactions (only independent)
-    pEnd = particlefluxes.array() + mpModel->getStateTemplate().getNumIndependent();
-    for (; pIt != pEnd; ++pIt)
-      {
-        tmp = fabs(*pIt);
-        if (tmp > store)
-          store = tmp;
-
-        if (isnan(tmp))
-          {
-            store = DBL_MAX;
-            break;
-          }
-      }
-
-    return store * mpModel->getNumber2QuantityFactor();
+    return store;
   }
 
 //virtual
@@ -729,7 +716,18 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
         || (* getValue("Use Back Integration").pBOOL)))
     {
       //would do nothing
-      CCopasiMessage(CCopasiMessage::ERRoR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
+      CCopasiMessage(CCopasiMessage::ERROR, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
+      return false;
+    }
+
+  if (*getValue("Maximum duration for forward integration").pUDOUBLE <= 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Maximum duration for forward integration needs to be positive.");
+      return false;
+    }
+  if (*getValue("Maximum duration for backward integration").pUDOUBLE <= 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Maximum duration for backward integration needs to be positive.");
       return false;
     }
 
@@ -763,6 +761,10 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mKeepProtocol = true;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
+
+  mMaxDurationForward = *getValue("Maximum duration for forward integration").pUDOUBLE;
+  mMaxDurationBackward = *getValue("Maximum duration for backward integration").pUDOUBLE;
+
   //mFactor = * getValue("Derivation Factor").pUDOUBLE;
   //mSSResolution = * getValue("Steady State Resolution").pUDOUBLE;
   //mScaledResolution =
@@ -775,6 +777,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   mDimension = mpProblem->getModel()->getStateTemplate().getNumIndependent();
 
+  mAtol = mpModel->initializeAtolVector(1.0, true);
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);

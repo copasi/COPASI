@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.14.1 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/23 10:23:43 $
+//   $Author: ssahle $
+//   $Date: 2008/10/27 16:58:17 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,17 +22,18 @@
 #include <qslider.h>
 #include <qmenubar.h>
 #include <qcursor.h>
+#include <qmessagebox.h>
+#include <qregexp.h>
 
-#include "qwt3d_surfaceplot.h"
-#include "copasi/barChart/qwt3dBars.h"
-#include "copasi/barChart/qwt3dScale.h"
-#include "copasi/barChart/qwt3dColor.h"
-#include "copasi/barChart/qwt3dBaseWidget.h"
-#include "../UI/CopasiFileDialog.h"
+#include <qwt3d_surfaceplot.h>
+
+#include "qwt3dBars.h"
+#include "qwt3dScale.h"
+#include "qwt3dColor.h"
+#include "qwt3dBaseWidget.h"
+#include "UI/CopasiFileDialog.h"
 #include "UI/qtUtilities.h"
 #include "copasi.h"
-#include "qmessagebox.h"
-#include "qregexp.h"
 
 class Plot3d : public BaseWidget
   {

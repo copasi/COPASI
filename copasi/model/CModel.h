@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.163.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/05 19:51:57 $
+//   $Author: nsimus $
+//   $Date: 2008/12/08 11:54:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,13 +61,13 @@ class CModel : public CModelEntity
     static const char * TimeUnitNames[];
 
     /**
-     *  Enum of valid quantitye units
+     *  Enum of valid quantity units
      */
     enum QuantityUnit {Mol = 0, mMol, microMol, nMol, pMol, fMol, number};
 
     /**
      * String representation of valid quantity units as used in old (up to Build 18)
-     * copasi files
+     * COPASI files
      */
     static const char * QuantityUnitOldXMLNames[];
 
@@ -114,7 +114,7 @@ class CModel : public CModelEntity
         ~CLinkMatrixView();
 
         /**
-         * Assignement operator
+         * Assignment operator
          * @param const CLinkMatrixView & rhs
          * @return CLinkMatrixView & lhs
          */
@@ -266,7 +266,7 @@ class CModel : public CModelEntity
     void buildRedStoi();
 
     /**
-     *  Build the Moities based on the LU decomposition
+     *  Build the moieties based on the LU decomposition
      */
     void buildMoieties();
 
@@ -307,10 +307,16 @@ class CModel : public CModelEntity
     unsigned C_INT32 getNumVariableMetabs() const;
 
     /**
-     *  Get the number of metabolites determinet by ODEs
+     *  Get the number of metabolites determined by ODEs
      *  @return unsigned C_INT32 dimension
      */
     unsigned C_INT32 getNumODEMetabs() const;
+
+    /**
+     *  Get the number of metabolites determined by assigments
+     *  @return unsigned C_INT32 dimension
+     */
+    unsigned C_INT32 getNumAssignmentMetabs() const;
 
     /**
      *  Get the number of independent metabolites determined by reactions
@@ -363,7 +369,7 @@ class CModel : public CModelEntity
     unsigned C_INT32 getTotSteps() const;
 
     /**
-     * Retreive the vector of particle fluxes from the model
+     * Retrieve the vector of particle fluxes from the model
      * @return const CVector< C_FLOAT64 > & particleFlux
      */
     const CVector< C_FLOAT64 > & getParticleFlux() const;
@@ -420,7 +426,7 @@ class CModel : public CModelEntity
     void setInitialTime(const C_FLOAT64 & time);
 
     /**
-     * Retreive the initial time
+     * Retrieve the initial time
      * @return const C_FLOAT64 & time
      */
     const C_FLOAT64 & getInitialTime() const;
@@ -432,7 +438,7 @@ class CModel : public CModelEntity
     void setTime(const C_FLOAT64 & time);
 
     /**
-     * Retreive the actual model time
+     * Retrieve the actual model time
      * @return const C_FLOAT64 & time
      */
     const C_FLOAT64 & getTime() const;
@@ -482,7 +488,7 @@ class CModel : public CModelEntity
     unsigned C_INT32 findMetabByName(const std::string & Target) const;
 
     /**
-     * Returns the index of the Moiety
+     * Returns the index of the moiety
      * @param const std::string & Target
      * @return index
      */
@@ -600,7 +606,7 @@ class CModel : public CModelEntity
                            const C_FLOAT64 & resolution);
 
     /**
-     * Calculates the jacobian of the reduced model for the current
+     * Calculates the Jacobian of the reduced model for the current
      * state and stores it in the provided matrix. calculateElasticityMatrix()
      * needs to be called before.
      * @param const C_FLOAT64 & derivationFactor,
@@ -614,14 +620,14 @@ class CModel : public CModelEntity
     /**
      * Calculates the divergence for the current state.
      * calculateElasticityMatrix() needs to be called before.
-     * It makes only sense to use this method if the joacobian
+     * It makes only sense to use this method if the Jacobian
      * is not also calculated. In this case it would be more
-     * efficient to use the trace of the jacobian
+     * efficient to use the trace of the Jacobian
      */
     C_FLOAT64 calculateDivergence() const;
 
     /**
-     * Set the unit for volumes. If copasi recognises
+     * Set the unit for volumes. If COPASI recognizes
      * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const std::string & name
@@ -630,7 +636,7 @@ class CModel : public CModelEntity
     bool setVolumeUnit(const std::string & name);
 
     /**
-     * Set the unit for volumes. If copasi recognises
+     * Set the unit for volumes. If COPASI recognizes
      * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const CModel::VolumeUnit & unit
@@ -651,7 +657,7 @@ class CModel : public CModelEntity
     CModel::VolumeUnit getVolumeUnitEnum() const;
 
     /**
-     * Set the unit for time. If copasi recognises
+     * Set the unit for time. If COPASI recognizes
      * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const std::string & name
@@ -660,7 +666,7 @@ class CModel : public CModelEntity
     bool setTimeUnit(const std::string & name);
 
     /**
-     * Set the unit for time. If copasi recognises
+     * Set the unit for time. If COPASI recognizes
      * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const const CModel::TimeUnit & unit
@@ -681,7 +687,7 @@ class CModel : public CModelEntity
     CModel::TimeUnit getTimeUnitEnum() const;
 
     /**
-     * Set the unit for quantities. If copasi recognises
+     * Set the unit for quantities. If COPASI recognizes
      * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const std::string & name
@@ -690,7 +696,7 @@ class CModel : public CModelEntity
     bool setQuantityUnit(const std::string & name);
 
     /**
-     * Set the unit for quantities. If copasi recognises
+     * Set the unit for quantities. If COPASI recognizes
      * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const CModel::QuantityUnit & unit
@@ -718,7 +724,7 @@ class CModel : public CModelEntity
     void setModelType(const ModelType & modelType);
 
     /**
-     * Retreive the type of the model.
+     * Retrieve the type of the model.
      * @return const ModelType & modelType
      */
     const ModelType & getModelType() const;
@@ -823,7 +829,7 @@ class CModel : public CModelEntity
                            const bool & recursive = true);
 
     /**
-     * Add a new rection to the model
+     * Add a new reaction to the model
      * @param const std::string &name
      * @return bool success (false if failed)
      */
@@ -864,8 +870,14 @@ class CModel : public CModelEntity
     const CVector< unsigned C_INT32 > & getMetabolitePermutation() const;
 
     /**
-     * Retreive the state template
-     * @return CModel::CStateTemplate & stateTemplate
+     * Retrieve the state template
+     * @return const CModel::CStateTemplate & stateTemplate
+     */
+    const CStateTemplate & getStateTemplate() const;
+
+    /**
+     * Retrieve the state template
+     * @return const CModel::CStateTemplate & stateTemplate
      */
     CStateTemplate & getStateTemplate();
 
@@ -876,10 +888,33 @@ class CModel : public CModelEntity
      */
     const std::set< const CCopasiObject * > & getUptoDateObjects() const;
 
-    const std::vector< Refresh * > & getListOfInitialRefreshes() const; //mInitialRefreshes;
-    const std::vector< Refresh * > & getListOfSimulatedRefreshes() const; //mSimulatedRefreshes;
-    const std::vector< Refresh * > & getListOfConstantRefreshes() const; //mConstantRefreshes;
-    const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const; //mNonSimulatedRefreshes;
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * initial values
+     * @return const std::vector< Refresh * > & initialRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfInitialRefreshes() const;
+
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * simulated values
+     * @return const std::vector< Refresh * > & simulatedRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfSimulatedRefreshes() const;
+
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * constant values
+     * @return const std::vector< Refresh * > & constantRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfConstantRefreshes() const;
+
+    /**
+     * Retrieve the sequence of refresh calls to be executed for updating the
+     * non simulated values
+     * @return const std::vector< Refresh * > & nonsimulatedRefreshSequence
+     */
+    const std::vector< Refresh * > & getListOfNonSimulatedRefreshes() const;
 
     /**
      * Check whether the model contains reversible reactions
@@ -908,12 +943,26 @@ class CModel : public CModelEntity
      */
     std::vector< Refresh * > buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
 
+    /**
+     * Initialize a vector of individual absolute tolerances
+     * @param const C_FLOAT64 & baseTolerance
+     * @param const bool & reducedModel
+     * @return CVector< C_FLOAT64 > absoluteTolerances
+     */
+    CVector< C_FLOAT64 > initializeAtolVector(const C_FLOAT64 & baseTolerance, const bool & reducedModel) const;
+
+    /**
+     * generates a string that contains a text description of all model parameters
+     * (initial values and reaction parameters)
+     */
+    std::string printParameterOverview();
+
   private:
 
     bool compile();
 
     /**
-     * Handles unused metbolites and moves them to the end of mMetabolites.
+     * Handles unused metabolites and moves them to the end of mMetabolites.
      * Rows of the stoichiometry matrix dealing with unused metabolites are removed.
      * @return bool found
      */
@@ -1025,8 +1074,6 @@ class CModel : public CModelEntity
 
     /**
      *  for array of compartments
-     *  @supplierCardinality 0..*
-     *  @associates <{CCompartment}>
      */
     CCopasiVectorNS < CCompartment > mCompartments;
 
@@ -1122,7 +1169,7 @@ class CModel : public CModelEntity
     unsigned C_INT32 mNumMetabolitesReaction;
 
     /**
-     * The number of metabs determined by assignements in the model
+     * The number of metabs determined by assignments in the model
      */
     unsigned C_INT32 mNumMetabolitesAssignment;
 
@@ -1165,6 +1212,10 @@ class CModel : public CModelEntity
      */
     bool mCompileIsNecessary;
 
+    /**
+     * A pointer to the process report. If not NULL the compile progress is
+     * reported to it.
+     */
     CProcessReport * mpCompileHandler;
 
     /**

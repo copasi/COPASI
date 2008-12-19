@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CReportDefinitionVector.i,v $ 
+//   $Revision: 1.4.24.1 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/12 15:18:48 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,20 +21,7 @@
 
 %}
 
+%include "report/CReportDefinitionVector.h"
 
-class CReportDefinitionVector: public CCopasiVectorN< CReportDefinition >
-{
-  public:
-    CReportDefinitionVector(const std::string & name = "ReportDefinitions",
-                            const CCopasiContainer* pParent = &RootContainer);
-
-    ~CReportDefinitionVector();
-    CReportDefinition* createReportDefinition(const std::string & name, const std::string & comment);
-    
-    bool removeReportDefinition(const std::string & key);
-
-    const std::string& getKey();
-
-};
 
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.24.2.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/27 12:49:18 $
+//   $Author: ssahle $
+//   $Date: 2008/10/13 09:49:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,6 +129,15 @@ class CSBMLExporter
      * annotation in addition to SBML MIRIAM.
      */
     void setExportCOPASIMIRIAM(bool exportMIRIAM);
+
+    /**
+     * Create a unique id for an SBML object.
+     * I can't just take the Copasi key of the object since this might conflict
+     * with an already existing sbml id which came from the sbmlid attribute in a
+     * copasi file or directly by importing an SBML file.
+     */
+    static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix);
+
   protected:
 
     /**
@@ -220,14 +229,6 @@ class CSBMLExporter
      * Create the SBML function definition from the given COPASI function.
      */
     void createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel);
-
-    /**
-     * Create a unique id for an SBML object.
-     * I can't just take the Copasi key of the object since this might conflict
-     * with an already existing sbml id which came from the sbmlid attribute in a
-     * copasi file or directly by importing an SBML file.
-     */
-    static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix);
 
     /**
      * Checks all assignments (initial and transient) for references to objects

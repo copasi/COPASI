@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.6.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:19 $
+//   $Author: ssahle $
+//   $Date: 2008/10/13 09:48:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,23 +15,16 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <iostream>
+#include "SBMLDocumentLoader.h"
 
-#define USE_LAYOUT 1
-
-#include <sbml/xml/XMLError.h>
+#include <sbml/layout/Layout.h>
 #include <sbml/layout/SpeciesGlyph.h>
 #include <sbml/layout/ReactionGlyph.h>
 #include <sbml/layout/SpeciesReferenceGlyph.h>
 #include <sbml/layout/TextGlyph.h>
-#include <sbml/layout/BoundingBox.h>
-#include <sbml/layout/Point.h>
-#include <sbml/layout/Dimensions.h>
+#include <sbml/ListOf.h>
 
-#include "SBMLDocumentLoader.h"
 #include "report/CKeyFactory.h"
-
-//#include "myTypes.h"
 
 #include "CListOfLayouts.h"
 #include "CLayout.h"
@@ -39,57 +32,6 @@
 #include "CLGlyphs.h"
 
 #include "sbml/SBMLUtils.h" //from the copasi sbml dir
-
-CLayout* SBMLDocumentLoader::loadDocument(const char *filename)
-{
-
-  SBMLReader *reader = SBMLReader_create();
-  this->sbmlDocP = reader->readSBML(filename);
-  //std::vector<node*> nodeVector;
-  CLayout* pLayout = new CLayout();
-  //cout << this->sbmlDocP << endl;
-  unsigned C_INT32 i = 0, iMax = this->sbmlDocP->getNumErrors();
-  bool fatalFound = false;
-
-  while (!fatalFound && i < iMax)
-    {
-      const XMLError* pError = this->sbmlDocP->getError(i);
-      fatalFound = (pError->getSeverity() == LIBSBML_SEV_FATAL);
-      ++i;
-    }
-  if (!fatalFound)
-    {
-      // check whether layout is included in SBML file
-      modelP = this->sbmlDocP->getModel();
-      if (modelP != NULL)
-        {
-          //layoutList = &modelP->getListOfLayouts();
-          int numberOfLayouts = modelP->getListOfLayouts()->size();
-          std::cout << "number of layouts: " << numberOfLayouts << "  " << std::endl;
-          if (numberOfLayouts > 0)
-            {
-              //Layout *layout = modelP->getLayout(0); // take first layout stored
-              //        pLayout = mapLayoutToGraph(modelP,layout);
-            }
-        }
-    }
-  else
-    {
-      unsigned int numberOfErrors = 1;
-      while (i < iMax)
-        {
-          const XMLError* pError = this->sbmlDocP->getError(i);
-          if (pError->getSeverity() == LIBSBML_SEV_FATAL)
-            {
-              ++numberOfErrors;
-              std::cerr << "LIBSBML Error " << pError->getErrorId() << "at line " << pError->getLine() << " column " << pError->getColumn() << ": " << pError->getMessage() << std::endl;
-            }
-          ++i;
-        }
-      std::cout << numberOfErrors << "  error(s)" << std::endl;
-    }
-  return pLayout;
-}
 
 //static
 void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
@@ -240,152 +182,3 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
         pTg->setGraphicalObjectKey(it->second);
     }
 }
-// for the moment just create a vector of pointers to the nodes that are represented by the SpeciesGlyph
-/*  network* SBMLDocumentLoader::mapLayoutToGraph(Model *model,Layout *layout){
-    // check size of graph
-    Dimensions& dimGraph = layout->getDimensions();
-    double width = dimGraph.getWidth();
-    double height = dimGraph.getHeight();
-    // get nodes
-    ListOf listOfSpeciesGlyphs = layout->getListOfSpeciesGlyphs();
-    int numberOfSpeciesGlyphs = listOfSpeciesGlyphs->size();
-    std::vector<node*> nodePVec(numberOfSpeciesGlyphs);
-    //nodePVec.resize(numberOfSpeciesGlyphs);
-    for (int i=0;i<numberOfSpeciesGlyphs;i++){
-      SpeciesGlyph *glyph = (SpeciesGlyph*)listOfSpeciesGlyphs->get(i);
-      BoundingBox box = glyph->getBoundingBox();
-      Point p = box.getPosition();
-      Dimensions dim = box.getDimensions();
-      node *n = new node(p.getXOffset() + (dim.getWidth() / 2.0),
-                p.getYOffset() + (dim.getHeight() / 2.0));
-        nodePVec[i] = n;
-        //nodePVec.push_back(n);
-    }
-
-    // now get reactions
-    ListOf listOfReactionGlyphs = layout->getListOfReactionGlyphs();
-    int numberOfReactionGlyphs = listOfReactionGlyphs->size();
-    std::vector<reaction*> reactionPVec(numberOfReactionGlyphs);
-    //reactionPVec.resize(numberOfReactionGlyphs);
-    cout << "number of reactions: " << numberOfReactionGlyphs << endl;
-    int i;
-    for (i=0;i<numberOfReactionGlyphs;i++){
-      //cout << "reaction: " << i << endl;
-      ReactionGlyph *rGlyphP= (ReactionGlyph*)listOfReactionGlyphs->get(i);
-      // now extract id (from model, if present), reaction curce and speciesReferenceGlyph info
-      string id = rGlyphP->getReactionId();
-
-      Curve *curve = rGlyphP->getCurve(); // get curve defining reaction arrow
-      vector <curveSegment*> reactionCurveSegments = this->getCurveSegments(curve);
-
-      // get edges to reactants (stored in speciesReferences)
-      ListOf& listOfSpeciesReferenceGlyphs = rGlyphP->getListOfSpeciesReferenceGlyphs ();
-      int numberOfSpecRefGlyphs = listOfSpeciesReferenceGlyphs->size();
-      SpeciesReferenceGlyph *specRefGl;
-      string speciesGlId;
-      vector <curveSegment*> reactantCurveSegments;
-      vector <edge*>  edges;
-      roleType role;
-      edge *e;
-      node *n;
-      vector<node*>::iterator itPos;
-      //cout << "number of speciesReferenceGlyphs: " << numberOfSpecRefGlyphs << endl;
-      //edges.resize(numberOfSpecRefGlyphs); // allocate space for numberOfSpecRefGlyphs edges
-      //edges = vector <edge*>(numberOfSpecRefGlyphs);
-      int j;
-      for (j=0;j<numberOfSpecRefGlyphs;j++){
-        specRefGl = (SpeciesReferenceGlyph*)listOfSpeciesReferenceGlyphs->get(j);
-        speciesGlId = specRefGl->getSpeciesGlyphId(); // string id of species glyph
-        // now find corresponding node
-        //itPos = find_if(nodePVec.begin(),nodePVec.end(),std::bind2nd(ptr_fun(node::hasID),speciesGlId));
-        //find_if(nodePVec.begin(),nodePVec.end(),mem_fun(&node::hasID));
-        itPos = find_if(nodePVec.begin(),nodePVec.end(),std::bind2nd(mem_fun(&node::hasID),speciesGlId));
-        if (itPos != nodePVec.end()){
-          n = *itPos;
-          // cout << "id 1: " << (*itPos)->getID() << endl;
-          // cout << "id 2: " << speciesGlId << endl;
-        }
-        else {// create "empty" node
-          n = new node(); // will get id="empty"
-        }
-        curve = specRefGl->getCurve();
-        reactantCurveSegments = getCurveSegments(curve);
-        if (specRefGl->isSetRole()){
-          string rStr = specRefGl->getRoleString();
-          role = typeConverter::mapStringToRole(rStr);
-          //cout << n->getID() << "  "  << rStr << endl;
-        }
-        else
-          role = undefined;
-        e = new edge(n,reactantCurveSegments,role);
-        edges.push_back(e);
-      }
-      // now create reaction data structure
-      reaction *r = new reaction(id,reactionCurveSegments,edges);
-      reactionPVec[i] = r;
-      edges.clear();
-    }
-    // now get text labels
-    ListOf& listOfTextGlyphs = layout->getListOfTextGlyphs();
-    int numberOfTextGlyphs = listOfTextGlyphs->size();
-    vector<label*> labelPVec;
-    label *labelP;
-    TextGlyph  *tGlyphP;
-    int j;
-    string text;
-
-    for (j=0;j<numberOfTextGlyphs;j++){
-        tGlyphP = (TextGlyph*)listOfTextGlyphs->get(j);
-        text = tGlyphP->getText();
-        if (text == "") // if there is no text attribute (i.e.empty)
-          text = tGlyphP->getOriginOfTextId(); // try other attribute
-        BoundingBox &box = tGlyphP->getBoundingBox();
-        Point &pos = box.getPosition();
-        Dimensions &dim = box.getDimensions();
-        labelP = new label(text,pos.getXOffset(),pos.getYOffset(),dim.getWidth(), dim.getHeight());
-        //labelP->printLabel();
-        labelPVec.push_back(labelP);
-        //cout << "text: " << tGlyphP->getText() << endl;
-        //cout << "origin: " << tGlyphP->getOriginOfTextId() << endl;
-    }
-
-    network* netP = new network(width, height, nodePVec,reactionPVec,labelPVec);
-    return netP;
-  }*/
-
-//  bool SBMLDocumentLoader::hasID(node *n,const string& s){
-//  string idstring = n->getID();
-//  if (((idstring.compare(s)) == 0) ||
-//    ((idstring.find(s)) == string::npos))
-//    return true;
-//  else
-//  return false;
-//}
-
-//   vector <curveSegment*> SBMLDocumentLoader::getCurveSegments(Curve *curve){
-//       ListOf& listOfCurveSegments = curve->getListOfCurveSegments ();
-//       int numberOfCurveSegments = listOfCurveSegments->size();
-//       vector <curveSegment*> mySegments;
-//       //mySegments.resize(numberOfCurveSegments);
-//       LineSegment *lineSeg;
-//       curveSegment *mySegment;
-//       Point p1,p2;
-//       for (int j=0;j<numberOfCurveSegments;j++){
-//         lineSeg = (LineSegment*)listOfCurveSegments->get(j);
-//         p1 = lineSeg->getStart();
-//         p2 = lineSeg->getEnd();
-//         // now get base points on potential curve, if defined
-//         // to be filled............
-//
-//         // create new data structure
-//         coordList coords = vector<coord>();
-//         coords.push_back(make_pair(p1.getXOffset(),p1.getYOffset()));
-//         coords.push_back(make_pair(p2.getXOffset(),p2.getYOffset()));
-//
-//         mySegment = new curveSegment(coords); // list of start + end points
-//         mySegments.push_back(mySegment);
-//         //mySegment->printSegment();
-//}
-//       return mySegments;
-//}
-//

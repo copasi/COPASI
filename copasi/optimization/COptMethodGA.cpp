@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.49.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 08:01:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,9 @@
 // All rights reserved.
 
 #include <float.h>
+
+#include <limits.h>
+#include <string.h>
 
 #include "copasi.h"
 #include "mathematics.h"

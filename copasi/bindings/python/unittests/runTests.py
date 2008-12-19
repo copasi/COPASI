@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/runTests.py,v $ 
-#   $Revision: 1.9 $ 
+#   $Revision: 1.9.6.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Date: 2008/11/12 20:18:05 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -26,7 +26,7 @@ import Test_CCopasiParameterGroup
 import Test_CCopasiProblem
 import Test_CCopasiStaticString
 import Test_CCopasiTask
-import Test_CCopasiVector
+#import Test_CCopasiVector
 import Test_CEvaluationTree
 import Test_CFunction
 import Test_CFunctionDB
@@ -63,7 +63,7 @@ suites=[
          ,Test_CMetab.suite()
 	 ,Test_CChemEq.suite()
 	 ,Test_CChemEqElement.suite()
-         ,Test_CCopasiVector.suite()
+#         ,Test_CCopasiVector.suite()
          ,Test_CMatrix.suite()
          ,Test_CCopasiStaticString.suite()
          ,Test_CCopasiObjectName.suite()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.20.2.1.2.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/16 18:30:09 $
+//   $Author: jpahle $
+//   $Date: 2008/12/19 00:59:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,13 +74,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
     {
       // Error: TauLeap simulation impossible
       /*    case - 3:      // non-integer stoichiometry
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 1);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
       case - 2:      // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
       case - 1:      // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
       // Everything all right: Hybrid simulation possible
     case 1:
@@ -182,7 +182,7 @@ void CTauLeapMethod::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
   // MetabolitesX which is not the case if we have metabolites of type ODE.
@@ -199,6 +199,15 @@ void CTauLeapMethod::start(const CState * initialState)
   mpModel = mpProblem->getModel();
   mpModel->setState(*mpCurrentState);
 
+  if (mpModel->getModelType() == CModel::deterministic)
+    mDoCorrection = true;
+  else
+    mDoCorrection = false;
+
+  mHasAssignments = modelHasAssignments(mpModel);
+
+  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
+
   // call init of the simulation method, can be overloaded in derived classes
   initMethod();
 
@@ -214,31 +223,33 @@ void CTauLeapMethod::start(const CState * initialState)
  */
 void CTauLeapMethod::initMethod()
 {
-  unsigned C_INT32 i, imax;
+  unsigned C_INT32 i;
 
   mpReactions = &mpModel->getReactions();
   mNumReactions = mpReactions->size();
-  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolites()));
+  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolitesX()));
   mAmu.clear();
   mAmu.resize(mpReactions->size());
   mK.clear();
   mK.resize(mpReactions->size());
 
-  mNumNumbers = mpCurrentState->getNumVariable();
+  mNumNumbers = mpModel->getMetabolitesX().size();
   mNumbers.clear();
   mNumbers.resize(mNumNumbers);
 
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
-  for (i = 0; i < mNumNumbers; ++i, Dbl++)
+  for (i = 0; i < mNumNumbers; ++i)
     {
-      mNumbers[i] = (C_INT64) * Dbl;
-      *Dbl = floor(*Dbl);
+      mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
+      mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
+      mpModel->getMetabolitesX()[i]->refreshConcentration();
     }
   //TODO also put fixed variables here
 
-  imax = mpCurrentState->getNumFixed();
-  for (i = 0; i < imax; ++i, Dbl++)
-    *Dbl = floor(*Dbl);
+  mpModel->updateSimulatedValues(false); //for assignments
+
+  //  imax = mpCurrentState->getNumFixed();
+  //  for (i = 0; i < imax; ++i, Dbl++)
+  //    *Dbl = floor(*Dbl);
 
   /* get configuration data */
   mTau = * getValue("Tau").pDOUBLE;
@@ -356,7 +367,7 @@ void CTauLeapMethod::setupBalances()
       for (j = 0; j < balances->size(); j++)
         {
           newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
+          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
           if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
@@ -367,7 +378,7 @@ void CTauLeapMethod::setupBalances()
       for (j = 0; j < balances->size(); j++)
         {
           newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
+          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
 
@@ -397,6 +408,12 @@ void CTauLeapMethod::updatePropensities()
 
 C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
 {
+  if (!mDoCorrection)
+    {
+      mAmu[index] = mpModel->getReactions()[index]->calculateParticleFlux();
+      return 0;
+    }
+
   // We need the product of the cmu and hmu for this step.
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
@@ -491,13 +508,31 @@ void CTauLeapMethod::updateSystem()
 {
   unsigned C_INT32 i;
   std::vector<CHybridBalance>::const_iterator it;
+  CMetab* pTmpMetab;
 
   for (i = 0; i < mNumReactions; i++)
     for (it = mLocalBalances[i].begin(); it != mLocalBalances[i].end(); it++)
-      mNumbers[it->mIndex] += mK[i] * (C_INT64)(it->mMultiplicity);
+      {
+        mNumbers[it->mIndex] += mK[i] * (C_INT64)(it->mMultiplicity);
+        pTmpMetab = mpModel->getMetabolitesX()[it->mIndex];
+        pTmpMetab->setValue(mNumbers[it->mIndex]);
+        pTmpMetab->refreshConcentration();
+      }
 
-  for (i = 0; i < mNumNumbers; i++)
-    mpModel->getMetabolites()[i]->setValue(mNumbers[i]);
+  if (mHasAssignments)
+    {
+      mpModel->updateSimulatedValues(false);
+
+      for (i = 0; i < mNumNumbers; ++i)
+        {
+          if (mpModel->getMetabolitesX()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+            {
+              mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
+              mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
+              mpModel->getMetabolitesX()[i]->refreshConcentration();
+            }
+        }
+    }
   return;
 }
 
@@ -534,4 +569,43 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   return true;
+}
+
+//static
+bool CTauLeapMethod::modelHasAssignments(const CModel* pModel)
+{
+  C_INT32 i, imax = pModel->getNumModelValues();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getModelValues()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getNumMetabs();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getMetabolites()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getCompartments().size();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getCompartments()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  return false;
 }

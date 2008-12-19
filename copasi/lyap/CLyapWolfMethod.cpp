@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.6.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:58:00 $
+//   $Author: gauges $
+//   $Date: 2008/11/06 07:51:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <string.h>
 
 #include "copasi.h"
 

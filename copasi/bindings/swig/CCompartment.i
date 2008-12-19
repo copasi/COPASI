@@ -1,55 +1,45 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCompartment.i,v $ 
+//   $Revision: 1.5.24.3 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2008/11/20 13:07:08 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
 #include "model/CCompartment.h"  
-  
+#include <assert.h>  
 %}
 
 
-class CCompartment : public CModelEntity
-{
-  public:
-    /**
-     * Default constructor.
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCompartment(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL);
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CCompartment::getMetabolites() const;
+
+#endif // SWIGJAVA
+
+%include "model/CCompartment.h"
+
+%extend CCompartment{
 
     /**
-     * Copy constructor.
-     * @param "const CCompartment &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * This method is there for backwards compatibility and will be
+     * removed eventually.
      */
-    CCompartment(const CCompartment & src,
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor.
-     *  The destructor does nothing.
-     */
-    ~CCompartment();
-
-    /**
-     *
-     */
-    CCopasiVectorNS < CMetab > & getMetabolites();
-
-    bool removeMetabolite(CMetab *metabolite);
-
-    /**
-     *  Sets the initial volume of this compartment.
-     *  @param volume the volume of the compartment.
-     *  @return bool success
-     *  @see mVolume
-     */
-    virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-};
-
-
-
+    bool removeMetabolite(CMetab* metab)
+    {
+       CModel* pModel=dynamic_cast<CModel*>($self->getObjectParent()->getObjectParent());
+       assert(pModel!=NULL);
+       return pModel->removeMetabolite(metab->getKey());
+    }
+}
