@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 23:27:57 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 19:05:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,8 @@ bool CScanTask::initialize(const OutputFlag & of,
 
   initSubtask(pOutputHandler);
 
+  CCopasiMessage::clearDeque();
+
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
@@ -86,7 +88,7 @@ bool CScanTask::initialize(const OutputFlag & of,
 void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
 {}
 
-bool CScanTask::process(const bool & /* useInitialValues */)
+bool CScanTask::process(const bool & useInitialValues)
 {
   if (!mpProblem) fatalError();
   if (!mpMethod) fatalError();
@@ -103,11 +105,15 @@ bool CScanTask::process(const bool & /* useInitialValues */)
 
   //initSubtask();
 
-  pMethod->setProblem(pProblem);
+  if (useInitialValues)
+    {
+      mpProblem->getModel()->applyInitialValues();
+    }
 
   //TODO: reports
 
   //initialize the method (parsing the ScanItems)
+  pMethod->setProblem(pProblem);
   if (!pMethod->init()) return false;
 
   //init progress bar

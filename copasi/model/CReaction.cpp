@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.177 $
+//   $Revision: 1.178 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Date: 2009/01/07 19:00:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 // Derived from Gepasi's cstep.cpp
 // (C) Pedro Mendes 1995-2000
 //
-// Converted for Copasi by Stefan Hoops
+// Converted for COPASI by Stefan Hoops
 
 #include "copasi.h"
 
@@ -116,7 +116,7 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 
     if (Name == "ParticleFlux")
       return "1/" + pModel->getTimeUnitName();
-    else if (Name == "Fux")
+    else if (Name == "Flux")
       return pModel->getConcentrationRateUnitName();
 
     return "";
@@ -233,7 +233,7 @@ bool CReaction::setFunction(const std::string & functionName)
   CFunction * pFunction =
     dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findLoadFunction(functionName));
   if (!pFunction)
-    CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 1, functionName.c_str());
+    CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
   return setFunction(pFunction);
 }
@@ -260,14 +260,16 @@ bool CReaction::setFunction(CFunction * pFunction)
 
 // TODO: check if function is set and map initialized in the following methods
 
-void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 value, bool updateStatus)
+void CReaction::setParameterValue(const std::string & parameterName,
+                                  const C_FLOAT64 & value,
+                                  const bool & updateStatus)
 {
   if (!mpFunction) fatalError();
   mParameters.setValue(parameterName, value);
 
   if (!updateStatus) return;
 
-  //make shure that this local parameter is actually used:
+  //make sure that this local parameter is actually used:
 
   //first find index
   CFunctionParameter::DataType Type;
@@ -294,7 +296,7 @@ const CCopasiParameterGroup & CReaction::getParameters() const
 CCopasiParameterGroup & CReaction::getParameters()
 {return mParameters;}
 
-void CReaction::setParameterMapping(C_INT32 index, const std::string & key)
+void CReaction::setParameterMapping(const C_INT32 & index, const std::string & key)
 {
   //std::cout << "CReaction::setParameterMapping, index = " << index << ", key = " << key << std::endl;
   if (!mpFunction) fatalError();
@@ -303,7 +305,7 @@ void CReaction::setParameterMapping(C_INT32 index, const std::string & key)
   mMetabKeyMap[index][0] = key;
 }
 
-void CReaction::addParameterMapping(C_INT32 index, const std::string & key)
+void CReaction::addParameterMapping(const C_INT32 & index, const std::string & key)
 {
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
@@ -366,7 +368,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   mMetabKeyMap[index].clear();
 }
 
-void CReaction::clearParameterMapping(C_INT32 index)
+void CReaction::clearParameterMapping(const C_INT32 & index)
 {
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError();
@@ -386,7 +388,7 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
     return mMetabKeyMap[index];
   }
 
-bool CReaction::isLocalParameter(C_INT32 index) const
+bool CReaction::isLocalParameter(const C_INT32 & index) const
   {
     unsigned C_INT32 i, imax = mParameters.size();
     for (i = 0; i < imax; ++i)
@@ -500,15 +502,14 @@ void CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
-                {
-                  pObject = GlobalKeys.get(mMetabKeyMap[i][j]);
-                  mMap.addCallParameter(paramName, pObject);
-                  Dependencies.insert(pObject->getValueObject());
-                }
+                if ((pObject = GlobalKeys.get(mMetabKeyMap[i][j])) != NULL)
+                  {
+                    mMap.addCallParameter(paramName, pObject);
+                    Dependencies.insert(pObject->getValueObject());
+                  }
             }
-          else
+          else if ((pObject = GlobalKeys.get(mMetabKeyMap[i][0])) != NULL)
             {
-              pObject = GlobalKeys.get(mMetabKeyMap[i][0]);
               mMap.setCallParameter(paramName, pObject);
               Dependencies.insert(pObject->getValueObject());
             }
@@ -618,7 +619,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
                                   1, CChemEq::MODIFIER);
         }
 
-      //just throw away the rest (the gepasi files gives all metabs, not only
+      //just throw away the rest (the Gepasi files gives all species, not only
       //those that influence the kinetics)
       for (i = imax; i < n; i++)
         {
@@ -736,9 +737,6 @@ unsigned C_INT32 CReaction::getCompartmentNumber() const
 const CCompartment & CReaction::getLargestCompartment() const
   {return mChemEq.getLargestCompartment();}
 
-/*const CCompartment & CReaction::getSmallestCompartment() const
-{return mChemEq.getSmallestCompartment();}*/
-
 void CReaction::setScalingFactor()
 {
   const CCompartment * pCompartment = NULL;
@@ -779,9 +777,9 @@ void CReaction::setScalingFactor()
         {
           unsigned C_INT32 nr = Exc.getMessage().getNumber();
           if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
-            CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 2, getObjectName().c_str());
+            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
           if (MCChemEq + 1 == nr)
-            CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 3, getObjectName().c_str());
+            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getObjectName().c_str());
           throw;
         }
     }
@@ -819,7 +817,7 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
   os << "CReaction:  " << d.getObjectName() << std::endl;
-  os << "   sbml id:  " << d.mSBMLId << std::endl;
+  os << "   SBML id:  " << d.mSBMLId << std::endl;
 
   os << "   mChemEq " << std::endl;
   os << d.mChemEq;
@@ -901,7 +899,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      // check wether it is a substrate, a product or a modifier
+                      // check whether it is a substrate, a product or a modifier
                       bool found = false;
                       const CCopasiVector<CChemEqElement>* v = &this->getChemEq().getSubstrates();
                       unsigned int i;
@@ -997,7 +995,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               else
                 {
                   // error
-                  CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 4);
+                  CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
                 }
             }
         }
@@ -1031,7 +1029,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
       else
         {
           // error
-          CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 4);
+          CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
         }
     }
   return pVariableNode;
@@ -1165,7 +1163,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       break;
     case CEvaluationNode::VARIABLE:
       // error variables may not be in an expression
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 6);
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
       break;
     case CEvaluationNode::WHITESPACE:
       pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
@@ -1196,10 +1194,10 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       break;
     case CEvaluationNode::MV_FUNCTION:
       // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "MV_FUNCTION");
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "INVALID");
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1226,7 +1224,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           // later I might have to find out if I have to create a generic
           // function or a kinetic function
           // this can be distinguished by looking if the replacement map
-          // constains CFunctionParameters that don't have the usage PARAMETER
+          // contains CFunctionParameters that don't have the usage PARAMETER
 
           // create a unique name first
           std::string functionName = "function_4_" + this->getObjectName();
@@ -1407,10 +1405,10 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       break;
     case CEvaluationNode::MV_FUNCTION:
       // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "MV_FUNCTION");
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReaction + 5, "INVALID");
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1505,4 +1503,6 @@ std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
   }
 
 void CReaction::printDebug() const
-  {std::cout << *this;}
+  {
+    // std::cout << *this;
+  }

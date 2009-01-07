@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:04:22 $
+//   $Date: 2009/01/07 19:03:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@
 
 // class CCopasiObjectName;
 
-// nan are ignored bounding rectangle
+// NaN are ignored bounding rectangle
 class MyQwtCPointerData : public QwtCPointerData
   {
   public:
@@ -54,7 +54,7 @@ class MyQwtCPointerData : public QwtCPointerData
     virtual QwtDoubleRect boundingRect() const;
   };
 
-//nan in data splits curve
+// NaN in data splits curve
 class MyQwtPlotCurve : public QwtPlotCurve
   {
   public:
@@ -122,22 +122,28 @@ class CopasiPlot : public QwtPlot, public COutputInterface
     virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & activity);
 
     /**
-     * Finsh the output
+     * Finish the output
      */
     virtual void finish();
 
     /**
-     * Save tab delimeted data to file
+     * Save tab delimited data to file
      * @param const std::string & filename
      * @return bool success
      */
     bool saveData(const std::string & filename);
+
+    /**
+     * Shows or hide all curves depending on whether visibility is false or true
+     * @param const bool & visibility
+     */
+    void setCurvesVisibility(const bool & visibility);
 
   private:
     /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:20:46 $
+//   $Date: 2009/01/07 18:52:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,9 @@
  *  name 'name' and widget flags set to 'f'.
  *
  */
-BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl, bool showSlider)
-    : QWidget(parent, name, fl)
+BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+    : QWidget(parent, name, fl),
+    mpSlider(false)
 {
   if (!name)
     setName("BaseWidget");
@@ -65,10 +66,6 @@ BaseWidget::BaseWidget(QWidget* parent, const char* name, Qt::WFlags fl, bool sh
 
   mpVBoxBig->addLayout(mpHBoxSmall, 0);
   mpBaseWidgetLayout->addLayout(mpVBoxBig, 0, 0);
-
-  // activateSlider();
-  //  mpSlider = true;
-  mpSlider = false;
 }
 
 /*
@@ -113,9 +110,6 @@ void BaseWidget::setSlider()
   if (!mpSlider) return;
   sliderMoved(mpSliderColumn->value() / 1000, mpSliderRow->value() / 1000);
 }
-
-void BaseWidget::sliderMoved(int column, int row)
-{}
 
 void BaseWidget::languageChange()
 {}

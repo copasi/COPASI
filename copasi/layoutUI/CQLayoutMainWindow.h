@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:41:15 $
+//   $Date: 2009/01/07 18:56:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,11 +11,15 @@
 // and The University of Manchester.
 // All rights reserved.
 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef SIMGUI_H_
 #define SIMGUI_H_
 #include <q3mainwindow.h>
 #include <qstring.h>
-#include <qicon.h>
+#include <qiconset.h>
 //Added by qt3to4:
 #include <QCloseEvent>
 #include <Q3Frame>
@@ -53,7 +57,7 @@ class CQLayoutMainWindow : public Q3MainWindow
     void signal_close(const CQLayoutMainWindow* pWindow);
 
   public:
-    CQLayoutMainWindow(CLayout* pLayout = NULL, QWidget *parent = 0, const char *name = 0);
+    CQLayoutMainWindow(CLayout* pLayout = NULL, const char *name = 0);
     void setIndividualScaling();
     void setGlobalScaling();
     void setSizeMode();
@@ -119,8 +123,8 @@ class CQLayoutMainWindow : public Q3MainWindow
     void createActions();
     void createMenus();
     bool maybeSave();
-    QIcon createStartIcon();
-    QIcon createStopIcon();
+    QIconSet createStartIcon();
+    QIconSet createStopIcon();
 
     CVisParameters *mpVisParameters;
     Q3PopupMenu *mpFileMenu;

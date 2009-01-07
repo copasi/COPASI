@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:04:22 $
+//   $Date: 2009/01/07 19:03:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,8 @@
 #include "copasi.h"
 #include "UI/CopasiFileDialog.h"
 #include "utilities/COutputHandler.h"
+
+class QAction;
 
 class CopasiPlot;
 class CPlotSpecification;
@@ -51,6 +53,9 @@ class PlotWindow : public Q3MainWindow, public COutputInterface
     QToolButton * print2Button;
     QToolButton * saveButton;
 
+    QToolButton * mpSelectAll;
+    QToolButton * mpDeselectAll;
+
     ~PlotWindow();
 
     /**
@@ -67,7 +72,7 @@ class PlotWindow : public Q3MainWindow, public COutputInterface
     virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & activity);
@@ -78,7 +83,7 @@ class PlotWindow : public Q3MainWindow, public COutputInterface
     virtual void finish();
 
     /**
-     * Retreive the list of objects handled by the interface
+     * Retrieve the list of objects handled by the interface
      * @return const std::set< const CCopasiObject * > & objects
      */
     virtual const std::set< const CCopasiObject * > & getObjects() const;
@@ -99,4 +104,14 @@ class PlotWindow : public Q3MainWindow, public COutputInterface
 
     /// Zoom out
     void slotZoomOut();
+
+    /**
+     * Show all curves.
+     */
+    void slotSelectAll();
+
+    /**
+     * Hide all curves.
+     */
+    void slotDeselectAll();
   };

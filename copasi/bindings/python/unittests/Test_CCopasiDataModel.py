@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiDataModel.py,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Author: shoops $ 
+#   $Date: 2009/01/07 18:51:32 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -95,13 +95,13 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.datamodel.loadModel(CPS_FILE)
     fileName=self.datamodel.getFileName()
     self.assert_(type(fileName)==StringType)
-    self.assert_(fileName==CPS_FILE)
+    self.assert_(fileName.endswith(CPS_FILE))
 
   def test_getSBMLFileName(self):
     self.datamodel.importSBML(SBML_FILE)
     fileName=self.datamodel.getSBMLFileName()
     self.assert_(type(fileName)==StringType)
-    self.assert_(fileName==SBML_FILE)
+    self.assert_(fileName.endswith(SBML_FILE))
 
   def test_getFunctionList(self):
     functions=self.datamodel.getFunctionList()

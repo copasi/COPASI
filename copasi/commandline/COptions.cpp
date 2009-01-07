@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:25:09 $
+//   $Date: 2009/01/07 18:53:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <string.h>
 #include <stdlib.h>
+
+#include "copasi.h"
 
 #ifdef WIN32
 # include <windows.h>
@@ -35,8 +38,6 @@
 #include <sstream>
 #include <errno.h>
 
-#include "copasi.h"
-
 #include "COptionParser.h"
 #include "COptions.h"
 
@@ -55,11 +56,40 @@ COptions::~COptions()
 
 void COptions::init(C_INT argc, char *argv[])
 {
-  setValue("Self", localeToUtf8(argv[0]));
+  char **ArgV = new char * [argc];
+  C_INT ArgC = 0;
+
+  if (argc > 0)
+    setValue("Self", localeToUtf8(argv[0]));
+  else
+    setValue("Self", std::string(""));
+
   setValue("PWD", getPWD());
 
+  // First we must clean up the command line by
+  // taking out any SBW commands like -sbwregister and -sbwmodule
+
+  // The default settings for SBW related options
+  setValue("SBWRegister", false);
+  setValue("SBWModule", false);
+
+  C_INT i;
+  for (i = 0; i < argc; i++)
+    {
+      if (strcmp(argv[i], "-sbwregister") == 0)
+        setValue("SBWRegister", true);
+      else if (strcmp(argv[i], "-sbwmodule") == 0)
+        setValue("SBWModule", true);
+      else
+        {
+          ArgV[ArgC] = argv[i];
+          ArgC++;
+        }
+    }
+
+  // Now we are ready to start the Clo++ generated parser.
   copasi::COptionParser * pPreParser = new copasi::COptionParser;
-  pPreParser->parse(argc, argv);
+  pPreParser->parse(ArgC, ArgV);
 
   const copasi::options &PreOptions = pPreParser->get_options();
 
@@ -102,12 +132,15 @@ void COptions::init(C_INT argc, char *argv[])
      and on the OS. */
 
 #ifdef Darwin
+  setValue("DefaultConfigDir", CDirEntry::dirName(CopasiDir) + "/config");
   setValue("ExampleDir", CDirEntry::dirName(CopasiDir) + "/examples");
   setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
 #elif WIN32
+  setValue("DefaultConfigDir", CopasiDir + "\\share\\copasi\\config");
   setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
   setValue("WizardDir", CopasiDir + "\\share\\copasi\\doc\\html");
-#else // All unix flavors have the same installation structure.
+#else // All Unix flavors have the same installation structure.
+  setValue("DefaultConfigDir", CopasiDir + "/share/copasi/config");
   setValue("ExampleDir", CopasiDir + "/share/copasi/examples");
   setValue("WizardDir", CopasiDir + "/share/copasi/doc/html");
 #endif
@@ -136,6 +169,7 @@ void COptions::init(C_INT argc, char *argv[])
 #endif // COPASI_LICENSE_COM
 
   delete pPreParser;
+  delete [] ArgV;
 }
 
 void COptions::cleanup()

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.37 $
+#   $Revision: 1.38 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 17:28:39 $
+#   $Date: 2009/01/07 18:53:48 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.37 $ $Author: shoops $ $Date: 2008/12/18 17:28:39 $
+# $Revision: 1.38 $ $Author: shoops $ $Date: 2009/01/07 18:53:48 $
 ######################################################################
 
 TEMPLATE = app
@@ -36,6 +36,7 @@ contains(BUILD_OS, WIN32) {
   CONFIG += console
 
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
+  LIBS += delayimp.lib
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 }
@@ -73,6 +74,7 @@ contains(BUILD_OS, SunOS) {
   LIBS = -L../lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
+  LIBS += -lxnet -lnsl -ldl
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }

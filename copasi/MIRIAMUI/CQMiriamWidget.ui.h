@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/07 18:59:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@ void CQMiriamWidget::destroy()
 
 void CQMiriamWidget::slotBtnOKClicked()
 {
-  // This forces that changes to the current table cell are commited.
+  // This forces that changes to the current table cell are committed.
   mpBtnCommit->setFocus();
 
   leave();
@@ -92,7 +92,11 @@ void CQMiriamWidget::slotBtnClearClicked()
       delete mpDTCreated;
 
       mpDTCreated = new Q3DateTimeEdit(this, "mpDTCreated");
-      gridLayout->addWidget(mpDTCreated, 0, 1);
+      mpDTCreated->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 3,
+                                             (QSizePolicy::SizeType) 0, 0, 0,
+                                             mpDTCreated->sizePolicy().hasHeightForWidth()));
+      gridLayout->addWidget(mpDTCreated, 0, 1, 1, 1);
+
       mpDTCreated->show();
       return;
     }
@@ -140,16 +144,16 @@ bool CQMiriamWidget::leave()
   std::vector< CopasiTableWidget * >::const_iterator it;
   std::vector< CopasiTableWidget * >::const_iterator end = mWidgets.end();
 
-  for (it = mWidgets.begin(); it != end; it++)
-    (*it)->setIgnoreUpdates(true);
-
   bool changed = false;
 
   //Now update.
   // Created at
   std::string DT = "";
   if (mpDTCreated->dateTime().isValid())
-    DT = std::string((const char *) mpDTCreated->dateTime().toString(Qt::ISODate).utf8()) + "Z";
+    {
+      DT = (const char *) mpDTCreated->dateTime().toString(Qt::ISODate).utf8();
+      DT += "Z";
+    }
 
   if (DT != mpMIRIAMInfo->getCreatedDT())
     {
@@ -167,13 +171,16 @@ bool CQMiriamWidget::leave()
     {
       mpMIRIAMInfo->save();
 
-      protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
-    }
+      // Set the mIgnoreUpdates.
+      for (it = mWidgets.begin(); it != end; it++)
+        (*it)->setIgnoreUpdates(true);
 
-  // Reset the mIgnoreUpdates.
-  setIgnoreUpdates(false);
-  for (it = mWidgets.begin(); it != end; it++)
-    (*it)->setIgnoreUpdates(false);
+      protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
+
+      // Reset the mIgnoreUpdates.
+      for (it = mWidgets.begin(); it != end; it++)
+        (*it)->setIgnoreUpdates(false);
+    }
 
   return true;
 }
@@ -194,7 +201,10 @@ bool CQMiriamWidget::enter(const std::string & key)
       delete mpDTCreated;
 
       mpDTCreated = new Q3DateTimeEdit(this, "mpDTCreated");
-      gridLayout->addWidget(mpDTCreated, 0, 1);
+      mpDTCreated->setSizePolicy(QSizePolicy((QSizePolicy::SizeType) 3,
+                                             (QSizePolicy::SizeType) 0, 0, 0,
+                                             mpDTCreated->sizePolicy().hasHeightForWidth()));
+      gridLayout->addWidget(mpDTCreated, 0, 1, 1, 1);
       mpDTCreated->show();
     }
 

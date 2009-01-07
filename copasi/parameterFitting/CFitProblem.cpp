@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/01 16:31:26 $
+//   $Date: 2009/01/07 19:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -737,6 +737,7 @@ bool CFitProblem::calculate()
                   for (; itRefresh != endRefresh; ++itRefresh)
                     (**itRefresh)();
 
+                  ppConstraint = mExperimentConstraints[i];
                   ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
                   for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
                     if (*ppConstraint) (*ppConstraint)->calculateConstraintViolation();
@@ -1576,9 +1577,6 @@ const C_FLOAT64 & CFitProblem::getRMS() const
 
 const C_FLOAT64 & CFitProblem::getStdDeviation() const
   {return mSD;}
-
-const CVector< C_FLOAT64 > & CFitProblem::getVariableGradients() const
-  {return mGradient;}
 
 const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
   {return mParameterSD;}

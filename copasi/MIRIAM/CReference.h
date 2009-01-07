@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 18:08:05 $
+//   $Date: 2009/01/07 18:58:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,19 +40,19 @@ class CReference : public CCopasiContainer
     CRDFPredicate::Path mNodePath;
 
     /**
-     * The key of the object needed for the copasi tables.
+     * The key of the object needed for the COPASI tables.
      */
     std::string mKey;
 
     /**
-     * MIRIAM resource for holding the PubMed Id
+     * Triplet in the RDF graph representing the reference.
      */
-    CMIRIAMResourceObject mPubMed;
+    CRDFTriplet mIdTriplet;
 
     /**
-     * MIRIAM resource for holding the DOI
+     * MIRIAM resource for holding database and Id.
      */
-    CMIRIAMResourceObject mDOI;
+    CMIRIAMResourceObject mResource;
 
   public:
     // Operations
@@ -87,21 +87,64 @@ class CReference : public CCopasiContainer
      */
     ~CReference();
 
+    /**
+     * Retrieve the RDF triplet holding the information for this reference.
+     * @return const CRDFTriplet & triplet
+     */
     const CRDFTriplet & getTriplet() const;
 
+    /**
+     * Retrieve the key for the object
+     * @return const std::string & key
+     */
     virtual const std::string & getKey() const;
 
-    const std::string & getPubmedId() const;
+    /**
+     * Retrieve the MIRIAM resource for the reference.
+     * @return std::string resource
+     */
+    std::string getResource() const;
 
-    const std::string & getDOI() const;
+    /**
+     * Retrieve the id of the reference in the MIRIAM resource.
+     * @return const std::string & id
+     */
+    const std::string & getId() const;
 
+    /**
+     * Retrieve the description for the reference.
+     * @return std::string description
+     */
     const std::string & getDescription() const;
 
-    void setPubmedId(const std::string &pubmedId);
+    /**
+     * Retrieve the URI (comprised of resource an id) specifying this reference.
+     * @return std::string uri
+     */
+    std::string getURI() const;
 
-    void setDOI(const std::string & DOI);
+    /**
+     * Set the MIRIAM resource for the reference
+     * @param const std::string & resource
+     */
+    void setResource(const std::string & resource);
 
+    /**
+     * Set the id of the reference in the MIRIAM resource.
+     * @param const std::string & id
+     */
+    void setId(const std::string & id);
+
+    /**
+     * Set the description for the reference.
+     * @param std::string description
+     */
     void setDescription(const std::string & description);
+
+    /**
+     * Remove invalid combinations of resource and id
+     */
+    void clearInvalidEntries();
   };
 
 #endif //COPASI_CReference

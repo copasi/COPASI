@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/07 18:59:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,6 @@
 
 #include <vector>
 #include "UI/CopasiTableWidget.h"
-#include "commandline/CConfigurationFile.h"
 
 class CBiologicalDescriptionsWidget : public CopasiTableWidget
   {

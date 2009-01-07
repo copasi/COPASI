@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/16 18:30:10 $
+//   $Date: 2009/01/07 18:54:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,7 +246,7 @@ bool CEvaluationTree::parse()
   if (success && hasCircularDependency())
     {
       success = false;
-      CCopasiMessage(CCopasiMessage::ERRoR, MCFunction + 4, mErrorPosition);
+      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 4, mErrorPosition);
     }
 
   return success;
@@ -282,7 +282,7 @@ bool CEvaluationTree::compileNodes()
         mErrorPosition += (*it)->getData().length();
 
       mErrorPosition -= (*--it)->getData().length();
-      CCopasiMessage(CCopasiMessage::ERRoR, MCFunction + 3, mErrorPosition);
+      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, mErrorPosition);
     }
   else
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/COptTask.i,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2008/01/16 09:03:14 $ 
+//   $Author: shoops $ 
+//   $Date: 2009/01/07 18:51:30 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -29,5 +29,18 @@
 
 %include "optimization/COptTask.h"
 
+%extend COptTask{
+  std::vector<C_INT32> getValidMethods() const
+    {
+      std::vector<C_INT32> validMethods;
+      unsigned int i=0;
+      while($self->ValidMethods[i]!=CCopasiMethod::unset)
+      {
+        validMethods.push_back($self->ValidMethods[i]);
+        i++;
+      }
+      return validMethods;
+    } 
+}
 
 

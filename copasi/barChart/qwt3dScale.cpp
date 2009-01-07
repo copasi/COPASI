@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dScale.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2007/11/20 08:32:24 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 18:52:46 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -109,7 +114,6 @@ QString ValueScale::ticLabel(unsigned int idx) const
   {
     if (idx < majors_p.size())
       {
-        double val = majors_p[idx];
         return QString::number(majors_p[idx]);
       }
     return QString("");

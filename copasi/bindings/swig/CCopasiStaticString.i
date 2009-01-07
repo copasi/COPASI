@@ -1,6 +1,19 @@
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiStaticString.i,v $ 
+//   $Revision: 1.5 $ 
+//   $Name:  $ 
+//   $Author: shoops $ 
+//   $Date: 2009/01/07 18:51:30 $ 
+// End CVS Header 
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 %{
 
@@ -8,39 +21,14 @@
 
 %}  
 
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CCopasiStaticString::operator =;
+%ignore CCopasiReportSeparator::operator =;
 
-class CCopasiStaticString: public CCopasiObject
-{
-  public:
-
-   CCopasiStaticString(const std::string & name = "",
-                        const CCopasiContainer * pParent = NULL,
-                        const std::string & type = "String",
-                        const unsigned C_INT32 & flag = CCopasiObject::StaticString);
-
-    CCopasiStaticString(const CCopasiStaticString & src,
-                        const CCopasiContainer * pParent = NULL);
-
-    ~CCopasiStaticString();
+#endif // SWIGJAVA
 
 
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
-
-    const std::string & getStaticString() const;
-  };
-
-class CCopasiReportSeparator: public CCopasiStaticString
-{
-  public:
-   CCopasiReportSeparator(const std::string & name = "",
-                           const CCopasiContainer * pParent = NULL);
-
-    CCopasiReportSeparator(const CCopasiStaticString & src,
-                           const CCopasiContainer * pParent = NULL);
-
-    ~CCopasiReportSeparator();
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
-
-};
+%include "report/CCopasiStaticString.h"
 
 

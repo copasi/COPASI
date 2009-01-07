@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/Attic/qwt3dBaseWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:20:46 $
+//   $Date: 2009/01/07 18:52:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ class BaseWidget : public QWidget
     Q_OBJECT
 
   public:
-    BaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, bool showSlider = false);
+    BaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
     ~BaseWidget();
 
     bool mpSlider;
@@ -55,7 +55,7 @@ class BaseWidget : public QWidget
     Q3HBoxLayout* mpHBoxSmall;
 
     void activateSlider();
-    virtual void sliderMoved(int column, int row);
+    virtual void sliderMoved(int column, int row) = 0;
 
   protected:
     Q3GridLayout* mpBaseWidgetLayout;

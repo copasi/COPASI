@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.24 $ 
+#   $Revision: 1.25 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/12/18 17:22:11 $ 
+#   $Date: 2009/01/07 18:51:31 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,16 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CVersion.i \
                      ../swig/CVector.i \
                      ../swig/compare_utilities.i \
+                     ../swig/CFitMethod.i \
+                     ../swig/CFitProblem.i \
+                     ../swig/CFitTask.i \
+                     ../swig/CExperimentFileInfo.i \
+                     ../swig/CExperiment.i \
+                     ../swig/CExperimentSet.i \
+                     ../swig/CExperimentObjectMap.i \
+                     ../swig/CFitItem.i \
                      ../swig/copasi.i \
+                     ../swig/CCopasiArray.i
 
 
 

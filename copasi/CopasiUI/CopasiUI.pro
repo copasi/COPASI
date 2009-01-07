@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.146 $
+#   $Revision: 1.147 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 17:29:16 $
+#   $Date: 2009/01/07 18:53:48 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.146 $ $Author: shoops $ $Date: 2008/12/18 17:29:16 $
+# $Revision: 1.147 $ $Author: shoops $ $Date: 2009/01/07 18:53:48 $
 ######################################################################
 
 TEMPLATE = app
@@ -40,17 +40,6 @@ contains(BUILD_OS, WIN32) {
 
   release {
     distribution.extra = C:\cygwin\bin\bash ../../admin/mkbuild.sh $${BUILD_OS}
-  }
- 
-!isEmpty(QWT_PATH) {
-    QMAKE_CXXFLAGS   += -I"$${QWT_PATH}\include"
-    QMAKE_LFLAGS += /LIBPATH:"$${QWT_PATH}\lib"
-  }
-
-
-!isEmpty(QWT3D_PATH) {
-    QMAKE_CXXFLAGS   += -I"$${QWT3D_PATH}\include"
-    QMAKE_LFLAGS += /LIBPATH:"$${QWT3D_PATH}\lib"
   }
 }
 
@@ -115,7 +104,7 @@ contains(BUILD_OS, SunOS) {
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
-  LIBS += -lICE -ldl
+  LIBS += -lGLU -lICE -ldl
 
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/08/02 14:10:31 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 18:54:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,7 +266,7 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 
 void CEvaluationNode::printRecursively() const
   {
-    this->printRecursively(std::cout, 0);
+    // this->printRecursively(std::cout, 0);
   }
 
 /**
@@ -309,8 +309,6 @@ void CEvaluationNode::replaceRoot(ConverterASTNode* sourceNode)
       ConverterASTNode* divideNode = new ConverterASTNode(AST_DIVIDE);
       ConverterASTNode* oneNode = new ConverterASTNode(AST_REAL);
       oneNode->setValue(1.0);
-      List* l = new List();
-      l->add(divideNode);
       divideNode->addChild(oneNode);
       divideNode->addChild(child1);
 

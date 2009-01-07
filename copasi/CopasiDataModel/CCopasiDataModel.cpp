@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.125 $
+//   $Revision: 1.126 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Date: 2009/01/07 18:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -195,7 +195,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       CReadConfig inbuf(FileName.c_str());
       if (inbuf.getVersion() >= "4")
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          "Can't handle Gepasi Files with Version>=4.");
           return false;
         }
@@ -298,7 +298,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCXML + 13, FileName.c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, MCXML + 13, FileName.c_str());
       return false;
     }
 
@@ -332,7 +332,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
     {
       if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 1,
                          FileName.c_str());
           return false;
@@ -340,7 +340,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
       if (!CDirEntry::isWritable(FileName))
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 2,
                          FileName.c_str());
           return false;
@@ -673,7 +673,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
     {
       if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 1,
                          FileName.c_str());
           return false;
@@ -681,7 +681,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
       if (!CDirEntry::isWritable(FileName))
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 2,
                          FileName.c_str());
           return false;
@@ -745,7 +745,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
     {
       if (!overwriteFile)
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 1,
                          fileName.c_str());
           return false;
@@ -753,7 +753,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
       if (!CDirEntry::isWritable(fileName))
         {
-          CCopasiMessage(CCopasiMessage::ERRoR,
+          CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 2,
                          fileName.c_str());
           return false;
@@ -1045,6 +1045,26 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
       pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
       break;
+
+      //**************************************************************************
+#ifdef COPASI_TSSA
+    case CCopasiTask::tssAnalysis:
+      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      pReport->setTaskType(taskType);
+      pReport->setComment("Automatically generated report.");
+      pReport->setIsTable(false);
+      pReport->setTitle(false);
+      pReport->setSeparator(CCopasiReportSeparator("\t"));
+
+      // Header
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description"));
+
+      // Footer
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
+      break;
+#endif //COPASI_TSSA
+
     default:
       return pReport;
     }

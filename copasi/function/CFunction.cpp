@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:51 $
+//   $Date: 2009/01/07 18:54:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,10 +81,14 @@ const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callPa
 {
   mpCallParameters = & callParameters;
 
+  if (!mUsable)
+    return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   try
     {
       return mValue = mpRoot->value();
     }
+
   catch (...)
     {
       return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/07 18:59:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,9 @@
 class CReferencesWidget : public CopasiTableWidget
   {
     Q_OBJECT
+  private:
+    QStringList mResources;
+
   public:
     CReferencesWidget(QWidget *parent, const char * name = 0, Qt::WFlags f = 0);
     ~CReferencesWidget();
@@ -69,7 +72,10 @@ class CReferencesWidget : public CopasiTableWidget
      */
     virtual QString defaultObjectName() const;
 
+    void updateResourcesList();
+
     virtual void slotDoubleClicked(int, int, int, const QPoint &);
+    virtual void slotValueChanged(int row, int col);
   };
 
 #endif // COPASI_CReferencesWidget

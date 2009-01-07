@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.19 $ 
+//   $Revision: 1.20 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2007/06/23 12:45:46 $ 
+//   $Author: shoops $ 
+//   $Date: 2009/01/07 18:51:31 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -15,14 +20,36 @@
 // All rights reserved.
 
 /**
+ * Convert CFitItem objects into the most specific type possible.
+ */
+%typemap(out) CFitItem*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCFitItem($1), 0);
+}
+
+/**
+ * Convert COptItem objects into the most specific type possible.
+ */
+%typemap(out) COptItem*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptItem($1), 0);
+}
+
+/**
+ * Convert CExperimentSet objects into the most specific type possible.
+%typemap(out) CExperimentSet*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCExperimentSet($1), 0);
+}
+ */
+
+/**
  * Convert CCopasiAbstractArray objects into the most specific type possible.
  */
 %typemap(out) CCopasiAbstractArray*
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiAbstractArray($1), 0);
 }
-
-
 
 /**
  * Convert CEvaluationTree objects into the most specific type possible.
@@ -33,6 +60,15 @@
 }
 
 /**
+ * Convert COptTask objects into the most specific type possible.
+ */
+%typemap(out) COptTask*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptTask($1), 0);
+}
+
+
+/**
  * Convert Task objects into the most specific type possible.
  */
 %typemap(out) CCopasiTask*
@@ -41,11 +77,27 @@
 }
 
 /**
+ * Convert COptProblem objects into the most specific type possible.
+ */
+%typemap(out) COptProblem*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptProblem($1), 0);
+}
+
+/**
  * Convert Problem objects into the most specific type possible.
  */
 %typemap(out) CCopasiProblem*
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForProblem($1), 0);
+}
+
+/**
+ * Convert COptMethod objects into the most specific type possible.
+ */
+%typemap(out) COptMethod*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptMethod($1), 0);
 }
 
 
@@ -99,9 +151,13 @@ import types
 
 %include "../swig/copasi.i"
 
+%{
+#include "report/CCopasiContainer.h"
+#include "commandline/COptions.h"
+%}
+
 %init %{
 
-#include "report/CCopasiContainer.h"
 // Taken from CopasiSE.cpp
 
 // Create the root container
@@ -110,6 +166,10 @@ CCopasiContainer::init();
 // Create the global data model
 CCopasiDataModel::Global = new CCopasiDataModel;
 
+// initialize COptions
+// this is needed for handling of relative file names when
+// loading or importing models from file
+COptions::init(0,NULL);
 %}
 
 %pythoncode %{

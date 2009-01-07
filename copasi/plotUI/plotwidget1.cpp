@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:04:22 $
+//   $Date: 2009/01/07 19:03:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.54 2008/12/18 19:04:22 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.55 2009/01/07 19:03:24 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -50,6 +50,7 @@
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
+#include "utilities/CAnnotatedMatrix.h"
 #include "UI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -57,6 +58,8 @@
 
 //temporary
 #include "mathematics.h"
+
+#include "UI/CCopasiSelectionDialog.h"
 
 //-----------------------------------------------------------------------------
 
@@ -201,7 +204,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, Qt::WFlags fl)
   connect(addCurveButton, SIGNAL(clicked()), this, SLOT(addCurveSlot()));
   connect(addHistoButton, SIGNAL(clicked()), this, SLOT(addHistoSlot()));
   connect(deleteCurveButton, SIGNAL(clicked()), this, SLOT(removeCurve()));
-  connect(startPlotButton, SIGNAL(clicked()), this, SLOT(startPlot()));
+  connect(startPlotButton, SIGNAL(clicked()), this, SLOT(commitPlot()));
   connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
   connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
   connect(resetButton, SIGNAL(clicked()), this, SLOT(resetPlot()));
@@ -251,62 +254,97 @@ void PlotWidget1::addCurveTab(const std::string & title,
 void PlotWidget1::addCurve2D()
 {
   CCopasiPlotSelectionDialog* pBrowser = new CCopasiPlotSelectionDialog();
-  std::vector< const CCopasiObject * > * pVector1 = new std::vector< const CCopasiObject * >();
-  std::vector< const CCopasiObject * > * pVector2 = new std::vector< const CCopasiObject * >();
-  pBrowser->setOutputVectors(pVector1, pVector2);
-  pBrowser->setModel(CCopasiDataModel::Global->getModel(),
-                     CCopasiSimpleSelectionTree::NUMERIC);
+  std::vector< const CCopasiObject * > vector1;
+  std::vector< const CCopasiObject * > vector2;
+  pBrowser->setOutputVectors(&vector1, &vector2);
+  pBrowser->setModel(CCopasiDataModel::Global->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
 
   if (pBrowser->exec () == QDialog::Rejected)
     {
-      //pdelete(pBrowser1);
-      pdelete(pVector1);
-      pdelete(pVector2);
       return;
     }
 
-  if (pVector1->size() == 0 || pVector2->size() == 0)
+  //this assumes that the vector is empty if nothing was chosen
+  if (vector1.size() == 0 || vector2.size() == 0)
     {
-      //pdelete(pBrowser1);
-      pdelete(pVector1);
-      pdelete(pVector2);
       return;
     }
 
-  std::string cn;
   std::vector<CCopasiObjectName> objects1, objects2;
   unsigned C_INT32 i;
   std::vector<CCopasiObjectName>::const_iterator sit;
+  const CArrayAnnotation *pArray;
 
-  //translate to CNs and remove duplicates
-  for (i = 0; i < pVector1->size(); i++)
-    if ((*pVector1)[i])
-      {
-        cn = (*pVector1)[i]->getCN();
-        for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-          if (*sit == cn) break;
-        if (sit == objects1.end())
-          {
-            objects1.push_back(cn);
-            //std::cout << "***" << cn << std::endl;
-          }
-      }
+  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
+  // 2. translate to CNs and remove duplicates
 
-  for (i = 0; i < pVector2->size(); i++)
-    if ((*pVector2)[i])
-      {
-        cn = (*pVector2)[i]->getCN();
-        for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-          if (*sit == cn) break;
-        if (sit == objects2.end())
-          {
-            objects2.push_back(cn);
-            //std::cout << "---" << cn << std::endl;
-          }
-      }
+  // x-axis is set for single cell selection
+  std::string cn;
+  for (i = 0; i < vector1.size(); i++)
+    {
+      if (vector1[i])  // the object is not empty
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector1[i])))
+            {
+              // second argument is true as only single cell here is allowed. In this case we
+              //can assume that the size of the return vector is 1.
+              const CCopasiObject * pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+              if (!pObject) continue;
 
-  //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
-  //if (!pspec) return;
+              cn = pObject->getCN();
+            }
+          else
+            cn = vector1[i]->getCN();
+
+          // check whether cn is already on objects1
+          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
+            {
+              if (*sit == cn) break;
+            }
+
+          // if not exist, input cn into objects1
+          if (sit == objects1.end())
+            {
+              objects1.push_back(cn);
+            }
+        }
+    }
+
+  for (i = 0; i < vector2.size(); i++)
+    {
+      if (vector2[i])
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
+            {
+              // second argument is set false for multi selection
+              std::vector<const CCopasiObject*> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
+              std::vector<const CCopasiObject*>::const_iterator it;
+              for (it = vvv.begin(); it != vvv.end(); ++it)
+                {
+                  if (!*it) continue;
+                  cn = (*it)->getCN();
+
+                  //check if the CN already is in the list, if not add it.
+                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                    if (*sit == cn) break;
+                  if (sit == objects2.end())
+                    objects2.push_back(cn);
+                }
+            }
+          else
+            {
+              cn = vector2[i]->getCN();
+
+              //check if the CN already is in the list, if not add it.
+              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                if (*sit == cn) break;
+              if (sit == objects2.end())
+                objects2.push_back(cn);
+            }
+        }
+    }
 
   C_INT32 storeTab = tabs->count();
 
@@ -348,16 +386,14 @@ void PlotWidget1::addCurve2D()
     }
 
   tabs->setCurrentPage(storeTab);
-
-  pdelete(pVector1);
-  pdelete(pVector2);
 }
 
 void PlotWidget1::addHisto1DTab(const std::string & title,
-                                const CPlotDataChannelSpec & x)
+                                const CPlotDataChannelSpec & x, const C_FLOAT64 & incr)
 {
   CPlotItem* item = new CPlotItem(title, NULL, CPlotItem::histoItem1d);
   item->addChannel(x);
+  item->setValue("increment", incr);
 
   HistoWidget * curveWidget = new HistoWidget(tabs);
   curveWidget->setModel(CCopasiDataModel::Global->getModel());
@@ -370,7 +406,24 @@ void PlotWidget1::addHisto1DTab(const std::string & title,
 void PlotWidget1::addHisto1D()
 {
   C_INT32 storeTab = tabs->count();
-  addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")));
+  addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")), 1.0);
+  tabs->setCurrentPage(storeTab);
+}
+
+void PlotWidget1::createHistograms(std::vector<const CCopasiObject* >objects, const C_FLOAT64 & incr)
+{
+  C_INT32 storeTab = tabs->count();
+
+  unsigned C_INT32 i;
+  for (i = 1; i < objects.size(); ++i)
+    {
+      if (objects[i])
+        addHisto1DTab("Histogram: " + objects[i]->getObjectDisplayName(),
+                      CPlotDataChannelSpec(objects[i]->getCN()), incr);
+
+      //         lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
+    }
+
   tabs->setCurrentPage(storeTab);
 }
 
@@ -383,20 +436,11 @@ void PlotWidget1::removeCurve()
 
 //-----------------------------------------------------------------------------
 
-void PlotWidget1::startPlot()
+void PlotWidget1::commitPlot()
 {
   saveToPlotSpec();
 
   loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(GlobalKeys.get(objKey)));
-
-  //commented for testing
-  //startPlotButton->setEnabled(false);
-  /*    deletePlotButton->setEnabled(false);
-      addCurveButton->setEnabled(false);
-      deleteCurveButton->setEnabled(false);
-      titleLineEdit->setEnabled(false);
-      scrollView->setEnabled(false);
-    */
 }
 
 //-----------------------------------------------------------------------------
@@ -454,15 +498,6 @@ void PlotWidget1::addPlot()
 void PlotWidget1::resetPlot()
 {
   loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(GlobalKeys.get(objKey)));
-}
-
-//-----------------------------------------------------------------------------
-
-// not properly used for now
-void PlotWidget1::plotFinished()
-{
-  startPlotButton->setEnabled(true);
-  // ...and enable all other input fields
 }
 
 void PlotWidget1::typeChanged()

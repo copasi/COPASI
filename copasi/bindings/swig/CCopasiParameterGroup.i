@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.7 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2008/01/14 10:43:46 $ 
+//   $Author: shoops $ 
+//   $Date: 2009/01/07 18:51:30 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,168 +21,50 @@
 
 %}
 
+%rename(addParameterCopy) CCopasiParameterGroup::addParameter(const CCopasiParameter&);
+%rename(getKeyForParameter) CCopasiParameterGroup::getKey;
+%ignore operator==;
 
-class CCopasiParameterGroup : public CCopasiParameter
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CCopasiParameterGroup::operator =;
+
+%ignore CCopasiParameterGroup::getParameter(const std::string&) const;
+%ignore CCopasiParameterGroup::getParameter(const unsigned long&) const;
+%ignore CCopasiParameterGroup::getGroup(const std::string&) const;
+%ignore CCopasiParameterGroup::getGroup(const unsigned long&) const;
+%ignore CCopasiParameterGroup::getValue(const std::string&) const;
+%ignore CCopasiParameterGroup::getValue(const unsigned long&) const;
+
+
+#endif // SWIGJAVA
+
+/*
+ * The following code should make sure that an object that is added to a group
+ * which takes ownership for the parameter is not deleted by python.
+ * Unfortunatelly the SWIG documentation for this is a bit scarse and the fact
+ * that the code has to be indented correctly, makes this difficult.
+ * For now this is disabled and it will be added to the documentation that the
+ * user has to call .__disown__() on the parameter that is added to a
+ * parameter group.
+#ifdef SWIGPYTHON
+%pythonprepend CCopasiParameterGroup::addParameter(CCopasiParameter*) %{
+        # disown the given object
+        if(length(args)==2):
+          args[1].__disown__()
+%}
+#endif // SWIGPYTHON
+*/
+
+%include "utilities/CCopasiParameterGroup.h"
+
+
+%extend CCopasiParameterGroup
 {
-  public:
-    typedef std::vector< CCopasiParameter * > parameterGroup;
-    typedef parameterGroup::iterator index_iterator;
-    typedef CCopasiContainer::objectMap::iterator name_iterator;
-
- protected:
-    /**
-     * Default constructor
-     */
-    CCopasiParameterGroup();
-
-  public:
-    /**
-     * Copy constructor
-     * @param "const CCopasiParameterGroup &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                          const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Specific constructor
-     * @param const string & name
-     * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & objectType (default: "ParameterGroup")
-     */
-    CCopasiParameterGroup(const std::string & name,
-                          const CCopasiContainer * pParent = NULL,
-                          const std::string & objectType = "ParameterGroup");
-
-    /**
-     * Destructor
-     */
-    virtual ~CCopasiParameterGroup();
-
-    /**
-     * Add a parameter
-     * @param const CCopasiParameter & parameter
-     * @return bool success
-     */
-    bool addParameter(const CCopasiParameter & parameter);
-
-
-    /**
-     * Add a parameter to the group
-     * @param const std::string & name
-     * @param const CCopasiParameter::Type type
-     * @return bool success
-     */
-    bool addParameter(const std::string & name,
-                      const CCopasiParameter::Type type);
-
-
-    /**
-     * Add a subgroup to the group
-     * @param const std::string & name
-     * @return bool success
-     */
-    bool addGroup(const std::string & name);
-
-    /**
-     * Remove a parameter or subgroup from the group
-     * @param const std::string & name
-     * @return bool success
-     */
-    bool removeParameter(const std::string & name);
-
-    /**
-     * Remove a parameter or subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return bool success
-     */
-    bool removeParameter(const unsigned C_INT32 & index);
-
-    /**
-     * Retrieve a parameter or subgroup from the group
-     * @param const std::string & name
-     * @return CCopasiParameter * parameter
-     */
-    CCopasiParameter * getParameter(const std::string & name);
-
-    /**
-     * Retrieve a parameter or subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameter * parameter
-     */
-    CCopasiParameter * getParameter(const unsigned C_INT32 & index);
-
-    /**
-     * Retrieve a subgroup from the group
-     * @param const std::string & name
-     * @return CCopasiParameterGroup * group
-     */
-    CCopasiParameterGroup * getGroup(const std::string & name);
-
-    /**
-     * Retrieve a subgroup from the group
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameterGroup * parameter
-     */
-    CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index);
-
-
-    /**
-     * Retreive the type of a parameter or subgroup
-     * @param const std::string & name
-     * @return CCopasiParameter::Type
-     */
-    CCopasiParameter::Type getType(const std::string & name) const;
-
-    /**
-     * Retreive the type of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return CCopasiParameter::Type
-     */
-    CCopasiParameter::Type getType(const unsigned C_INT32 & index) const;
-
-    /**
-     * Retreive the key of a parameter or subgroup
-     * @param const std::string & name
-     * @return std::string key
-     */
-    std::string getKey(const std::string & name) const;
-
-    /**
-     * Retreive the key of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return std::string key
-     */
-    std::string getKey(const unsigned C_INT32 & index) const;
-
-    /**
-     * Retreive the name of a parameter or subgroup
-     * @param const unsigned C_INT32 & index
-     * @return std::string name
-     *
-     */
-    const std::string & getName(const unsigned C_INT32 & index) const;
-
-    /**
-     * The size of the parameter group
-     * @ return unsigned C_INT32 size
-     */
-    unsigned C_INT32 size() const;
-
-    /**
-     * Clear all parameters and subgroups
-     */
-    void clear();
-
-    /**
-     * Retrieve the index of a parameter or subgroup with a given name
-     * @param const std::string & name
-     * @return unsigned C_INT32 index
-     */
-    unsigned C_INT32 getIndex(const std::string & name) const;
-
-
-};
-
-
+    // for backward compatibility
+    unsigned C_INT32 getIndex(const std::string& name) const
+    {
+        return $self->getIndexByName(name);
+    }
+}
 

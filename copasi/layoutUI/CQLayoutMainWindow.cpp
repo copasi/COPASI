@@ -1,14 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:41:15 $
+//   $Date: 2009/01/07 18:56:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQLayoutMainWindow.h"
@@ -33,6 +37,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <stdlib.h>
 
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
@@ -48,7 +53,8 @@
 
 using namespace std;
 
-CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, QWidget *parent, const char *name) : Q3MainWindow(parent, name)
+CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
+    Q3MainWindow(NULL, name)
 {
   mpLayout = pLayout;
   mCurrentPlace = QString::null;
@@ -288,7 +294,7 @@ void CQLayoutMainWindow::createActions()
   //   openDataFile->setStatusTip("Load simulation data");
   //   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
 
-  mpCloseAction = new QAction ("Close Window", this);
+  mpCloseAction = new QAction("Close Window", this);
   mpCloseAction->setShortcut(Qt::CTRL + Qt::Key_Q);
   mpCloseAction->setStatusTip("Close Layout Window");
   connect(mpCloseAction, SIGNAL(activated()), this, SLOT(closeApplication()));
@@ -300,29 +306,27 @@ void CQLayoutMainWindow::createActions()
   mpCreatePicture->setStatusTip("create a picture from the current view and save it to file");
   connect(mpCreatePicture, SIGNAL(activated()), this, SLOT(saveImage()));
 
-  mpRectangluarShape = new QAction ("rectangle", this);
+  mpRectangluarShape = new QAction("Rectangle", this);
   mpRectangluarShape->setShortcut(Qt::CTRL + Qt::Key_R);
   mpRectangluarShape->setStatusTip("Show labels as rectangles");
   connect(mpRectangluarShape, SIGNAL(activated()), this, SLOT(mapLabelsToRectangles()));
 
-  mpCircularShape = new QAction ("circle", this);
+  mpCircularShape = new QAction("Circle", this);
   mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
-  connect(mpCircularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
   mpCircularShape->setStatusTip("Show labels as circles");
+  connect(mpCircularShape, SIGNAL(activated()), this, SLOT(mapLabelsToCircles()));
 
-  mpMimaNodeSizes = new QAction ("Set Min/Max Node Sizes", this);
+  mpMimaNodeSizes = new QAction("Set Min/Max Node Sizes", this);
   mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
-
-  connect(mpMimaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
   mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
+  connect(mpMimaNodeSizes, SIGNAL(activated()), this, SLOT(changeMinMaxNodeSizes()));
 
   mpSFontSize = new QAction("Set Font Size", this);
   mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
-
-  connect(mpSFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
+  connect(mpSFontSize, SIGNAL(activated()), this, SLOT(changeFontSize()));
 
-  this->mpLoadDataAction = new QAction(QPixmap(load_data_xpm), "load data", this);
+  mpLoadDataAction = new QAction(QPixmap(load_data_xpm), "Load data", this);
   connect(this->mpLoadDataAction, SIGNAL(activated()), this, SLOT(loadData()));
 }
 
@@ -415,7 +419,7 @@ void CQLayoutMainWindow::createMenus()
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
-  std::cout << "load SBMLfile" << std::endl;
+  // std::cout << "load SBMLfile" << std::endl;
   CListOfLayouts *pLayoutList;
   if (CCopasiDataModel::Global != NULL)
     {
@@ -578,7 +582,6 @@ void CQLayoutMainWindow::startAnimation()
 void CQLayoutMainWindow::saveImage()
 {
   QImage img = mpGLViewport->getPainter()->getImage();
-  //QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", "Choose a filename to save the image under");
   QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
   if (!filename.isNull())
     {
@@ -630,6 +633,7 @@ void CQLayoutMainWindow::changeStepValue(C_INT32 i)
 void CQLayoutMainWindow::setIndividualScaling()
 {
   mpVisParameters->mScalingMode = mpVisParameters->INDIVIDUAL_SCALING;
+  mpGLViewport->getPainter()->setScaleMode(mpVisParameters->INDIVIDUAL_SCALING);
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->INDIVIDUAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
@@ -637,6 +641,7 @@ void CQLayoutMainWindow::setIndividualScaling()
 void CQLayoutMainWindow::setGlobalScaling()
 {
   mpVisParameters->mScalingMode = mpVisParameters->GLOBAL_SCALING;
+  mpGLViewport->getPainter()->setScaleMode(mpVisParameters->GLOBAL_SCALING);
   mpGLViewport->getPainter()->rescaleDataSets(mpVisParameters->GLOBAL_SCALING);
   showStep(this->mpTimeSlider->value());
 }
@@ -707,7 +712,7 @@ void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-QIcon CQLayoutMainWindow::createStartIcon()
+QIconSet CQLayoutMainWindow::createStartIcon()
 {
   QImage img = QImage();
   C_INT32 w = 19;
@@ -738,12 +743,12 @@ QIcon CQLayoutMainWindow::createStartIcon()
 
   QPixmap *pixmap = new QPixmap();
   pixmap->convertFromImage(img);
-  QIcon iconset = QIcon(*pixmap);
+  QIconSet iconset = QIconSet(*pixmap);
   delete pixmap;
   return iconset;
 }
 
-QIcon CQLayoutMainWindow::createStopIcon()
+QIconSet CQLayoutMainWindow::createStopIcon()
 {
   QImage img = QImage();
   C_INT32 w = 20;
@@ -772,12 +777,12 @@ QIcon CQLayoutMainWindow::createStopIcon()
 
   QPixmap *pixmap = new QPixmap();
   pixmap->convertFromImage(img);
-  QIcon iconset = QIcon(*pixmap);
+  QIconSet iconset = QIconSet(*pixmap);
   delete pixmap;
   return iconset;
 }
 
-// returns true because window is opened from Copasi and can be easily reopened
+// returns true because window is opened from COPASI and can be easily reopened
 bool CQLayoutMainWindow::maybeSave()
 {
   //  int ret = QMessageBox::warning(this, "SimWiz",

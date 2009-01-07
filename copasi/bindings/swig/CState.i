@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CState.i,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.7 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2007/08/20 10:58:39 $ 
+//   $Author: shoops $ 
+//   $Date: 2009/01/07 18:51:30 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -16,33 +21,119 @@
 
 %{
 
+#include <limits>
 #include "model/CState.h"
 
 %}
 
 
-class CState
+%ignore CStateTemplate::getEntities() const;
+%ignore CStateTemplate::beginIndependent() const;
+%ignore CStateTemplate::endIndependent() const;
+%ignore CStateTemplate::beginDependent() const;
+%ignore CStateTemplate::endDependent() const;
+%ignore CStateTemplate::beginFixed() const;
+%ignore CStateTemplate::endFixed() const;
+%ignore CState::getEntities() const;
+%ignore CState::beginIndependent() const;
+%ignore CState::endIndependent() const;
+%ignore CState::beginDependent() const;
+%ignore CState::endDependent() const;
+%ignore CState::beginFixed() const;
+%ignore CState::endFixed() const;
+     
+%ignore CState::check; // not implemented
+
+#ifdef SWIGJAVA
+// remove some const methods to get rid of warnings
+%ignore CState::operator =;
+
+#endif // SWIGJAVA
+
+
+%include "model/CState.h"
+
+%extend CStateTemplate
 {
-  public:
-    CState();
-    CState(const CState & src);
-    ~CState();
-    const C_FLOAT64 & getTime() const;
-    void setTime(const C_FLOAT64 & time);
+    CModelEntity* getEntity(unsigned C_INT32 index)
+    {
+        return (index<$self->size())?$self->getEntities()[index]:NULL;
+    }
 
+    CModelEntity* getIndependent(unsigned C_INT32 index)
+    {
+        if(index < $self->getNumIndependent())
+        {
+            return $self->beginIndependent()[index];
+        }
+        else
+        {
+            return NULL;
+        }
+    }
 
-    unsigned C_INT32 getNumIndependent() const;
-    unsigned C_INT32 getNumDependent() const;
-    unsigned C_INT32 getNumVariable() const;
-    unsigned C_INT32 getNumFixed() const;
+    CModelEntity* getDependent(unsigned C_INT32 index)
+    {
+        if(index < $self->getNumDependent())
+        {
+            return $self->beginDependent()[index];
+        }
+        else
+        {
+            return NULL;
+        }
+    }
 
-    /*
-     ** This has been commented out in CState.h
-    void setUpdateDependentRequired(const bool & required);
-    const bool & isUpdateDependentRequired() const;
-    */
+    CModelEntity* getFixed(unsigned C_INT32 index)
+    {
+        if(index < $self->getNumFixed())
+        {
+            return $self->beginFixed()[index];
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+}
 
+%extend CState
+{
+    C_FLOAT64 getIndependent(unsigned C_INT32 index)
+    {
+        if(index < $self->getNumIndependent())
+        {
+            return $self->beginIndependent()[index];
+        }
+        else
+        {
+            return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
+    }
 
-};
+    C_FLOAT64 getDependent(unsigned C_INT32 index)
+    {
+        if(index < $self->getNumDependent())
+        {
+            return $self->beginDependent()[index];
+        }
+        else
+        {
+            return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
+    }
+
+    C_FLOAT64 getFixed(unsigned C_INT32 index)
+    {
+        if(index < $self->getNumFixed())
+        {
+            return $self->beginFixed()[index];
+        }
+        else
+        {
+            return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
+    }
+}
 
 

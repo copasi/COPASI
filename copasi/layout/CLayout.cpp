@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/17 15:59:18 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 18:56:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,9 +21,11 @@
 #include "sbml/layout/Layout.h"
 
 #include "copasi.h"
-#include "report/CKeyFactory.h"
 
 #include "CLayout.h"
+
+#include "report/CKeyFactory.h"
+#include "sbml/CSBMLExporter.h"
 
 CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)
@@ -51,7 +53,7 @@ CLayout::CLayout(const CLayout & src,
     mvGraphicalObjects(src.mvGraphicalObjects, this)
 {
   //TODO references from one glyph to another have to be reconstructed after
-  //     copying. This applies to Labels and metab reference glyphs
+  //     copying. This applies to Labels and species reference glyphs
 }
 
 CLayout::CLayout(const Layout & sbml,
@@ -162,7 +164,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
   {
     os << "digraph G {\n";
 
-    //metab glyphs
+    //species glyphs
     unsigned C_INT32 i, imax = mvMetabs.size();
     for (i = 0; i < imax; ++i)
       {
@@ -186,8 +188,8 @@ void CLayout::exportToDotFile(std::ostream & os) const
               writeDotEdge(os, mrg->getMetabGlyphKey(), mvReactions[i]->getKey() + "_S");
             else if (mrg->getRole() == CLMetabReferenceGlyph::PRODUCT)
               writeDotEdge(os, mvReactions[i]->getKey() + "_P", mrg->getMetabGlyphKey());
-            else
-              std::cout << "!!!!" << std::endl;
+            // else
+            //   std::cout << "!!!!" << std::endl;
           }
       }
 
@@ -215,13 +217,32 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
     os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
   }
 
-void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap) const
+void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase*> & copasimodelmap,
+                           std::map<std::string, const SBase*>& sbmlIDs) const
   {
     if (!layout) return;
+
+    //Name and ID
+    std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_");
+    layout->setId(id);
+    sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, layout));
+    //we do not check if the layout is already present in the libsbml data
+    //structures. This is no big deal since at the moment no software
+    //relies on persistent IDs for layout elements.
 
     //Dimensions
     Dimensions tmpDim = mDimensions.getSBMLDimensions();
     layout->setDimensions(&tmpDim);
+
+    //some of the following code is not used at the moment:  the COPASI model map
+    //does not contain glyphs. Since this may change in the future I leave the code
+    //below.
+
+    // create a map from COPASI layout object to SBML objects. We do not put
+    //the layout objects into the global map (copasimodelmap) but we need to have
+    //access to all objects in the current layout since speciesReferenceGlyph and
+    //textGlyph need to reference other graphical objects.
+    std::map<const CLBase*, const SBase*> layoutmap;
 
     //Compartment glyphs
     unsigned C_INT32 i, imax = mvCompartments.size();
@@ -244,7 +265,8 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pCG = dynamic_cast<CompartmentGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pCG, copasimodelmap);
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pCG));
+        tmp->exportToSBML(pCG, copasimodelmap, sbmlIDs);
       }
 
     //Species glyphs
@@ -268,7 +290,8 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<SpeciesGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
     //Reaction glyphs
@@ -292,7 +315,11 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<ReactionGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
+        //we need to pass the layoutmap here for 2 reasons:
+        //1. the metabreferenceglyphs need to be added
+        //2. the metabreferenceglyphs need to resolve the reference to the metabglyph
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs, layoutmap);
       }
 
     //Text glyphs
@@ -316,7 +343,8 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<TextGlyph*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
       }
 
     //generic glyphs
@@ -340,6 +368,22 @@ void CLayout::exportToSBML(Layout * layout, const std::map<CCopasiObject*, SBase
             pG = dynamic_cast<GraphicalObject*>(it->second);
           }
 
-        tmp->exportToSBML(pG, copasimodelmap);
+        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
+      }
+
+    //now that we have all graphical objects in the layoutmap we can resolve the references
+    //in the text glyphs
+    imax = mvLabels.size();
+    for (i = 0; i < imax; ++i)
+      {
+        const CLTextGlyph * tmp = mvLabels[i];
+
+        //find the corresponding SBML object
+        std::map<const CLBase*, const SBase*>::const_iterator it = layoutmap.find(tmp);
+        if (it != layoutmap.end() && it->second && dynamic_cast<const TextGlyph*>(it->second))
+          {
+            tmp->exportReferenceToSBML(const_cast<TextGlyph*>(dynamic_cast<const TextGlyph*>(it->second)), layoutmap);
+          }
       }
   }

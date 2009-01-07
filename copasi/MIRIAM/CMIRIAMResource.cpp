@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/30 18:17:54 $
+//   $Date: 2009/01/07 18:58:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,15 +11,31 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
-
-#include "CMIRIAMResource.h"
+// These are treated as external includes and must appear first
 #include "WebServicesIssues/soapH.h"
 #include "WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.h"
 #include "WebServicesIssues/MiriamWebServicesSoapBinding.nsmap"
-#include "MIRIAM/CConstants.h"
+
+#include "copasi.h"
+
+#include "CMIRIAMResource.h"
+#include "CConstants.h"
 
 #include "utilities/CCopasiException.h"
+
+// static
+CMIRIAMResource * CMIRIAMResources::pUnknownResource = NULL;
+
+// static
+void CMIRIAMResources::initializeUnkownResource()
+{
+  if (pUnknownResource == NULL)
+    {
+      pUnknownResource = new CMIRIAMResource("Unknown Resource");
+      pUnknownResource->setMIRIAMDisplayName("-- select --");
+      pUnknownResource->setMIRIAMURI("urn:miriam:unknown");
+    }
+}
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CCopasiContainer * pParent) :
@@ -57,6 +73,8 @@ void CMIRIAMResources::initializeParameter()
 
   createDisplayNameMap();
   createURIMap();
+
+  initializeUnkownResource();
 }
 
 void CMIRIAMResources::addMIRIAMResource(CMIRIAMResource * mimriamResource)
@@ -138,7 +156,12 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
               pMIRIAMResource->setMIRIAMURI(pURI);
               pMIRIAMResource->setMIRIAMPattern(pPattern);
               pMIRIAMResource->setMIRIAMRegExp(strcmp(pRegExp, "true") == 0);
-              pMIRIAMResource->setMIRIAMCitation(false);
+              if (!strcmp(pURI, "urn:miriam:arxiv") ||
+                  !strcmp(pURI, "urn:miriam:doi") ||
+                  !strcmp(pURI, "urn:miriam:pubmed"))
+                pMIRIAMResource->setMIRIAMCitation(true);
+              else
+                pMIRIAMResource->setMIRIAMCitation(false);
 
               pTmpCpyCMIRIAMResources->addParameter(pMIRIAMResource);
             }
@@ -156,13 +179,15 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 
   if (!success)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR,
+      CCopasiMessage(CCopasiMessage::ERROR,
                      "Connection to MIRIRAM Web Services failed.\n%s\n%s",
                      pProxy->soap_fault_string(),
                      pProxy->soap_fault_detail());
     }
   else
     {
+      // TODO add a resource for local objects, i.e., within the current model.
+
       setMIRIAMLastUpdateDate();
       *mpMIRIAMResources = *pTmpCpyCMIRIAMResources;
       elevateChildren();
@@ -253,7 +278,9 @@ void CMIRIAMResources::createURIMap()
 
 const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const unsigned C_INT32 index) const
   {
-    assert(index < mpMIRIAMResources->size());
+    if (index >= mpMIRIAMResources->size())
+      return * pUnknownResource;
+
     return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
   }
 
@@ -299,6 +326,7 @@ unsigned C_INT32 CMIRIAMResources::getResourceIndexFromDisplayName(const std::st
         // unknown is indicated by an invalid index.
         return C_INVALID_INDEX;
       }
+
     return it->second;
   }
 
@@ -374,17 +402,6 @@ void CMIRIAMResource::initializeParameter()
   mpCitation = assertParameter("Citation", CCopasiParameter::BOOL,
                                false)->getValue().pBOOL;
   mpDeprecated = assertGroup("Deprecated");
-}
-
-bool CMIRIAMResource::elevateChildren()
-{
-  bool success = true;
-
-  mpDeprecated =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("Deprecated"));
-  if (!mpDeprecated) success = false;
-
-  return success;
 }
 
 CMIRIAMResource::~CMIRIAMResource()

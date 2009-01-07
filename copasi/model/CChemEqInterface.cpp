@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:05:40 $
+//   $Date: 2009/01/07 19:00:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -428,7 +428,7 @@ void CChemEqInterface::addModifier(const std::string & name)
 
   //is the name already in the list
   std::vector< std::string >::const_iterator it, itEnd = mModifierNames.end();
-  std::vector< std::string >::const_iterator itComp = mModifierCompartments.end();
+  std::vector< std::string >::const_iterator itComp = mModifierCompartments.begin();
   for (it = mModifierNames.begin(); it != itEnd; ++it, ++itComp)
     if (Modifier.first == *it &&
         Modifier.second == *itComp) break;

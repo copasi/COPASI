@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/07 18:59:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "commandline/CConfigurationFile.h"
 #include "report/CCopasiObject.h"
 #include "report/CKeyFactory.h"
 #include "UI/qtUtilities.h"
@@ -113,14 +114,17 @@ void CBiologicalDescriptionsWidget::updateResourcesList()
   const CMIRIAMResources * pResource = &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources();
   mResources.push_back("-- select --");
 
-  CCopasiParameterGroup::index_iterator it = pResource->getResourceList().beginIndex();
-  CCopasiParameterGroup::index_iterator end = pResource->getResourceList().endIndex();
-  unsigned C_INT32 Index = 0;
-  for (; it != end; ++it)
-    {
-      mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(Index).getMIRIAMDisplayName()));
-      Index++;
-    }
+  unsigned C_INT32 i, imax = pResource->getResourceList().size();
+  for (i = 0; i < imax; i++)
+    if (!pResource->getMIRIAMResource(i).getMIRIAMCitation())
+      mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+
+  // We need to update each currently shown ComboBox
+  Q3ComboTableItem * pComboBox = NULL;
+  imax = table->numCols();
+  for (i = 0; i < imax; i++)
+    if ((pComboBox = dynamic_cast<Q3ComboTableItem *>(table->item(i, COL_RESOURCE))) != NULL)
+      delete pComboBox;
 }
 
 void CBiologicalDescriptionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -177,6 +181,8 @@ void CBiologicalDescriptionsWidget::tableLineToObject(unsigned C_INT32 row, CCop
 
   QString ID = table->text(row, COL_ID);
   pBiologicalDescription->setId((const char *) ID.utf8());
+
+  pBiologicalDescription->clearInvalidEntries();
 }
 
 void CBiologicalDescriptionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)

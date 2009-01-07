@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/01 08:39:28 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 19:04:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("time");
   if (pUdef != NULL)
     {
-      // check if it is the same unit as the exisiting one if there is one
+      // check if it is the same unit as the existing one if there is one
       // if yes, return, else replace the existing one
       if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
         {
@@ -194,7 +194,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("volume");
   if (pUdef != NULL)
     {
-      // check if it is the same unit as the exisiting one if there is one
+      // check if it is the same unit as the existing one if there is one
       // if yes, return, else replace the existing one
       if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
         {
@@ -252,7 +252,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("substance");
   if (pUdef != NULL)
     {
-      // check if it is the same unit as the exisiting one if there is one
+      // check if it is the same unit as the existing one if there is one
       // if yes, return, else replace the existing one
       if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
         {
@@ -274,7 +274,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
  */
 void CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
 {
-  // make sure the SBML Document already exists anf that it has a Model set
+  // make sure the SBML Document already exists and that it has a Model set
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
   CCopasiVectorNS<CCompartment>::const_iterator it = dataModel.getModel()->getCompartments().begin(), endit = dataModel.getModel()->getCompartments().end();
   while (it != endit)
@@ -349,7 +349,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
     }
   else
     {
-      // do this expolicitly since we might handle an exisiting object from an
+      // do this explicitly since we might handle an existing object from an
       // earlier import that had it attribute set already
       if (this->mSBMLLevel != 1)
         {
@@ -386,7 +386,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
  */
 void CSBMLExporter::createMetabolites(CCopasiDataModel& dataModel)
 {
-  // make sure the SBML Document already exists anf that it has a Model set
+  // make sure the SBML Document already exists and that it has a Model set
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
   CCopasiVector<CMetab>::const_iterator it = dataModel.getModel()->getMetabolites().begin(), endit = dataModel.getModel()->getMetabolites().end();
   while (it != endit)
@@ -441,7 +441,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       // set, the meaning of the model is different when the user changed
       // to size of the corresponding compartment
       // So if the amount had been set, we try to keep this.
-      // we also have to set the iniital amount if the model has variable
+      // we also have to set the initial amount if the model has variable
       // volumes since those models export all species with the
       // hasOnlySubstanceUnits flag set to true
       if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true)
@@ -484,7 +484,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
     }
   else if (status == CModelEntity::FIXED)
     {
-      // do this explicitly since we might handle an exisiting object from an
+      // do this explicitly since we might handle an existing object from an
       // earlier import that had it attribute set already
       if (this->mSBMLLevel != 1)
         {
@@ -525,7 +525,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
  */
 void CSBMLExporter::createParameters(CCopasiDataModel& dataModel)
 {
-  // make sure the SBML Document already exists anf that it has a Model set
+  // make sure the SBML Document already exists and that it has a Model set
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
   CCopasiVectorN<CModelValue>::const_iterator it = dataModel.getModel()->getModelValues().begin(), endit = dataModel.getModel()->getModelValues().end();
   while (it != endit)
@@ -598,7 +598,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
     }
   else
     {
-      // do this expolicitly since we might handle an exisiting object from an
+      // do this explicitly since we might handle an existing object from an
       // earlier import that had it attribute set already
       if (this->mSBMLLevel != 1)
         {
@@ -629,7 +629,7 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
  */
 void CSBMLExporter::createReactions(CCopasiDataModel& dataModel)
 {
-  // make sure the SBML Document already exists anf that it has a Model set
+  // make sure the SBML Document already exists and that it has a Model set
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
   CCopasiVectorNS<CReaction>::const_iterator it = dataModel.getModel()->getReactions().begin(), endit = dataModel.getModel()->getReactions().end();
   while (it != endit)
@@ -748,7 +748,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
         }
     }
   /* create the kinetic law */
-  /* if there is one on copasi */
+  /* if there is one on COPASI */
   if ((reaction.getFunction()) != dataModel.mpUndefined)
     {
       KineticLaw* pKineticLaw = this->createKineticLaw(reaction, dataModel);
@@ -1015,7 +1015,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
                   // check if the compartment is fixed
                   if (pMetab->getCompartment()->getStatus() != CModelEntity::FIXED)
                     {
-                      CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 52, pMetab->getObjectName().c_str());
+                      CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
                     }
                 }
               pOldRule = this->mpSBMLDocument->getModel()->createRateRule();
@@ -1024,7 +1024,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
         }
       else
         {
-          // readd the rule to the model
+          // Read the rule to the model
           this->mpSBMLDocument->getModel()->getListOfRules()->appendAndOwn(pOldRule);
         }
       // set the math
@@ -1234,9 +1234,9 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
 
 /**
  * Create a unique id for an SBML object.
- * I can't just take the Copasi key of the object since this might conflict
- * with an already existing sbml id which came from the sbmlid attribute in a
- * copasi file or directly by importing an SBML file.
+ * I can't just take the COPASI key of the object since this might conflict
+ * with an already existing SBML id which came from the sbmlid attribute in a
+ * COPASI file or directly by importing an SBML file.
  */
 const std::string CSBMLExporter::createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix)
 {
@@ -1451,7 +1451,7 @@ void CSBMLExporter::isModelSBMLL2V3Compatible(const CCopasiDataModel& /*dataMode
 /**
  * Checks whether the model contains a metabolite that is defined by an ODE
  * expression and that is located in a variable volume. Since COPASI
- * interprets the expression differntly from SBML, we can not correctly
+ * interprets the expression differently from SBML, we can not correctly
  * export this yet. See Bug 903.
  */
 void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility> result)
@@ -1827,7 +1827,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
 
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
     dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
-        dataModel.getCopasi2SBMLMap());
+        dataModel.getCopasi2SBMLMap(), mIdMap);
 
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
@@ -1889,7 +1889,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
   createUnits(dataModel);
-  // try to find a parameter that represents avogadros number
+  // try to find a parameter that represents Avogadros number
   findAvogadro(dataModel);
 
   createCompartments(dataModel);
@@ -1918,7 +1918,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   createFunctionDefinitions(dataModel);
   if (this->mSBMLLevel == 1)
     {
-      // do sbml Level1 Voodoo
+      // do SBML Level1 Voodoo
       // e.g. replace some of the unsupported nodes with workarounds
       convertToLevel1();
       // delete all function definitions since L1 does not have functions
@@ -1998,14 +1998,14 @@ bool CSBMLExporter::exportModel(CCopasiDataModel& dataModel, const std::string& 
   std::string str = this->exportModelToString(dataModel, sbmlLevel, sbmlVersion);
   if (!str.empty())
     {
-      /* check if the file already exisits.
+      /* check if the file already exists.
          If yes, write if overwrite is true,
          else create an appropriate  CCopasiMessage. */
       std::ifstream testInfile(utf8ToLocale(filename).c_str(), std::ios::in);
       if (testInfile && !overwrite)
         {
           // create a CCopasiMessage with the appropriate error
-          CCopasiMessage(CCopasiMessage::ERRoR, MCDirEntry + 1, filename.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, filename.c_str());
           return false;
         }
       /* write the document to a file */
@@ -2037,7 +2037,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
   checkForODESpeciesInNonfixedCompartment(dataModel, result);
 
   // check if the model contains references to model entities that can not be
-  // represented in SBML like the inital value of something as opposed to the
+  // represented in SBML like the initial value of something as opposed to the
   // transient value
   // check if the model contains calls to functions that are not supported in
   // the given version of SBML
@@ -2251,7 +2251,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
     }
   else
     {
-      // readd the event to the model
+      // Read the event to the model
       this->mpSBMLDocument->getModel()->getListOfEvents()->appendAndOwn(pSBMLEvent);
     }
   // add the object to the COPASI2SBMLMap
@@ -3045,7 +3045,7 @@ const std::set<CFunction*> CSBMLExporter::createFunctionSetFromFunctionNames(con
           pFun = dynamic_cast<CFunction*>(pFunDB->findFunction(*it));
           if (pFun == NULL)
             {
-              CCopasiMessage(CCopasiMessage::ERRoR, MCSBML + 15, (*it).c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 15, (*it).c_str());
             }
           else
             {
@@ -3933,7 +3933,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                             }
                           else
                             {
-                              // Level 1 doesn't knoiw the constant flag and
+                              // Level 1 doesn't know the constant flag and
                               // libSBML does not drop it automatically
                               pSBMLAvogadro->setConstant(true);
                             }
@@ -4049,7 +4049,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           if (pMetab != NULL)
                             {
                               // if yes, check if pLeft is a parameter that corresponds
-                              // to avogadros number
+                              // to Avogadros number
                               if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
                                 {
                                   const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
@@ -4186,13 +4186,13 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     {
       pDescription = descriptions[i];
       assert(pDescription != NULL);
-      switch (pDescription->getTriplet().Predicate)
+      switch (pDescription->getTriplet().Predicate.getType())
         {
         case CRDFPredicate::bqbiol_encodes:
         case CRDFPredicate::copasi_encodes:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_ENCODES);
           break;
@@ -4200,7 +4200,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_hasPart:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_HAS_PART);
           break;
@@ -4208,7 +4208,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_hasVersion:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_HAS_VERSION);
           break;
@@ -4216,7 +4216,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_is:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_IS);
           break;
@@ -4227,7 +4227,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_isEncodedBy:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_IS_ENCODED_BY);
           break;
@@ -4235,7 +4235,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_isHomologTo:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_IS_HOMOLOG_TO);
           break;
@@ -4243,7 +4243,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_isPartOf:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_IS_PART_OF);
           break;
@@ -4251,7 +4251,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         case CRDFPredicate::copasi_isVersionOf:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
           break;
@@ -4261,14 +4261,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           //case CRDFPredicate::copasi_occursIn:
           //    cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           //    // libsbml does not reset the model qualifier type and the
-          //    // biologicasl qualifier type if the qualifier type is set
+          //    // biological qualifier type if the qualifier type is set
           //    cvTerm.setModelQualifierType(BQM_UNKNOWN);
           //    cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
           //    break;
         case CRDFPredicate::bqmodel_is:
           cvTerm.setQualifierType(MODEL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
           cvTerm.setModelQualifierType(BQM_IS);
           break;
@@ -4283,14 +4283,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
         }
       if (cvTerm.getQualifierType() != UNKNOWN_QUALIFIER)
         {
-          // now we set the ressources
-          // TODO In COPASI there is only one ressource per CBiologicalDescription
-          // TODO object, I will have to check if libsbml puts all ressources with the
-          // TODO same prediucate into one ressource object since in libsbml a CVTerm
-          // TODO can have several ressources.
+          // now we set the resources
+          // TODO In COPASI there is only one resource per CBiologicalDescription
+          // TODO object, I will have to check if libsbml puts all resources with the
+          // TODO same predicate into one resource object since in libsbml a CVTerm
+          // TODO can have several resources.
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
-          cvTerm.addResource(pDescription->getResource());
+          cvTerm.addResource(pDescription->getURI());
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4301,20 +4301,46 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     {
       pReference = references[i];
       assert(pReference != NULL);
-      switch (pReference->getTriplet().Predicate)
+
+      CRDFPredicate::ePredicateType Predicates[] =
+        {
+          CRDFPredicate::copasi_isDescribedBy,
+          CRDFPredicate::bqbiol_isDescribedBy,
+          CRDFPredicate::bqmodel_isDescribedBy,
+          CRDFPredicate::end
+        };
+
+      std::set< CRDFTriplet > Triples;
+      CRDFTriplet IdTriplet;
+      CRDFPredicate::ePredicateType * pPredicate = Predicates;
+      std::set< CRDFTriplet >::iterator it;
+
+      for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
+        {
+          Triples = pReference->getTriplet().pObject->getDescendantsWithPredicate(*pPredicate);
+          it = Triples.begin();
+
+          if (it != Triples.end())
+            IdTriplet = *it;
+        }
+
+      if (!IdTriplet)
+        continue;
+
+      switch (IdTriplet.Predicate.getType())
         {
         case CRDFPredicate::bqbiol_isDescribedBy:
         case CRDFPredicate::copasi_isDescribedBy:
           cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setModelQualifierType(BQM_UNKNOWN);
           cvTerm.setBiologicalQualifierType(BQB_IS_DESCRIBED_BY);
           break;
         case CRDFPredicate::bqmodel_isDescribedBy:
           cvTerm.setQualifierType(MODEL_QUALIFIER);
           // libsbml does not reset the model qualifier type and the
-          // biologicasl qualifier type if the qualifier type is set
+          // biological qualifier type if the qualifier type is set
           cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
           cvTerm.setModelQualifierType(BQM_IS_DESCRIBED_BY);
           break;
@@ -4322,11 +4348,17 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           cvTerm.setQualifierType(UNKNOWN_QUALIFIER);
           break;
         }
-      // set the ressources which consist of the pubmed id and the DOI
+      // set the resources which consist of the pubmed id and the DOI
       if (cvTerm.getQualifierType() != UNKNOWN_QUALIFIER)
         {
-          cvTerm.addResource(pReference->getPubmedId());
-          cvTerm.addResource(pReference->getDOI());
+          // now we set the resources
+          // TODO In COPASI there is only one resource per CBiologicalDescription
+          // TODO object, I will have to check if libsbml puts all resources with the
+          // TODO same predicate into one resource object since in libsbml a CVTerm
+          // TODO can have several resources.
+          // TODO If this isn't handled automatically by libsbml, I will have to add
+          // TODO code that does this.
+          cvTerm.addResource(pReference->getURI());
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4348,7 +4380,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           pCreator = creators[i];
           assert(pCreator != NULL);
           // a model creator can have a family name, a given name, and email
-          // address and an organisation
+          // address and an organization
           modelCreator.setFamilyName(pCreator->getFamilyName());
           modelCreator.setGivenName(pCreator->getGivenName());
           modelCreator.setEmail(pCreator->getEmail());
@@ -4393,7 +4425,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
     }
   if (this->mExportCOPASIMIRIAM == true)
     {
-      // add the copasi RDF stuff as an annotation in the COPASI namespace
+      // add the COPASI RDF stuff as an annotation in the COPASI namespace
       XMLNode* pCOPASIAnnotation = NULL;
       XMLNode* pAnnotation = NULL;
       int COPASIAnnotationIndex = -1;
@@ -4423,7 +4455,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                 }
             }
         }
-      // replace the meta ids in the miriam annotation string
+      // replace the meta ids in the MIRIAM annotation string
       if (miriamAnnotationString.find_first_not_of("\t\r\n ") != std::string::npos)
         {
           std::string metaId;
@@ -4433,7 +4465,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             }
           else
             {
-              CSBMLExporter::createUniqueId(metaIds, "metaid");
+              metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
               metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
               pSBMLObject->setMetaId(metaId);
             }
@@ -4452,7 +4484,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<COPASI xmlns=\"http://www.copasi.org/static/sbml\"></COPASI>");
               // now we have to make an additional copy since otherwise we would
               // need a const_cast later on.
-              // This is due to a limitiation in the libsbml API.
+              // This is due to a limitation in the libsbml API.
               XMLNode* pTmpNode = pCOPASIAnnotation->getChild(0).clone();
               delete pCOPASIAnnotation;
               pCOPASIAnnotation = pTmpNode;
@@ -4463,7 +4495,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pCOPASIAnnotation->unsetEnd();
               assert(pCOPASIAnnotation != NULL);
               // add the RDF stuff
-              // we add the first child of the miriam node since it was created
+              // we add the first child of the MIRIAM node since it was created
               // with convertStrngToXMLNode which creates a dummy node as the
               // root node
               pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
@@ -4472,7 +4504,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             }
           else
             {
-              // replace the old rdf annotation from the COPASI subtree if there
+              // replace the old RDF annotation from the COPASI subtree if there
               // is one, else add the new one
               if (oldRDFAnnotationIndex != -1)
                 {
@@ -4486,7 +4518,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                 }
               else
                 {
-                  // we add the first child of the miriam node since it was created
+                  // we add the first child of the MIRIAM node since it was created
                   // with convertStrngToXMLNode which creates a dummy node as the
                   // root node
                   pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
@@ -4528,6 +4560,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   // we have to delete pCOPASIAnnotation since replaceChild makes a copy
                   delete pCOPASIAnnotation;
                   pSBMLObject->setAnnotation(pAnnotation);
+                  delete pAnnotation;
                 }
               else
                 {
@@ -4551,7 +4584,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             {
               if (pCOPASIAnnotation->getNumChildren() == 1)
                 {
-                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // we have to call getAnnotation on the SBML object instead of reusing
                   // the annotation we got above because libsbml deletes the annotation
                   //  object when it syncs the annotation. So the annotation object we
                   //  got above is most likely deleted already
@@ -4563,7 +4596,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   else
                     {
                       // only delete the COPASI subtree
-                      // we have to call getAnnotation on the SBML object instead of resuing
+                      // we have to call getAnnotation on the SBML object instead of reusing
                       // the annotation we got above because libsbml deletes the annotation
                       //  object when it syncs the annotation. So the annotation object we
                       //  got above is most likely deleted already
@@ -4581,7 +4614,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
                   // replace the COPASI tree in pAnnotation
                   pCOPASIAnnotation = CSBMLExporter::replaceChild(pCOPASIAnnotation, NULL, oldRDFAnnotationIndex);
                   assert(pCOPASIAnnotation != NULL);
-                  // we have to call getAnnotation on the SBML object instead of resuing
+                  // we have to call getAnnotation on the SBML object instead of reusing
                   // the annotation we got above because libsbml deletes the annotation
                   //  object when it syncs the annotation. So the annotation object we
                   //  got above is most likely deleted already
@@ -5487,7 +5520,7 @@ void CSBMLExporter::collectIds(Model* pModel, std::map<std::string, const SBase*
                           pSBase = pKLaw->getParameter(j);
                           assert(pSBase != NULL);
                           // local parameters have their ids in a
-                          // differerent namespace
+                          // different namespace
                           if (pSBase->isSetMetaId())
                             {
                               id = pSBase->getMetaId();
@@ -5675,7 +5708,7 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
             }
           this->mIdMap.insert(std::make_pair(id, (const SBase*)NULL));
           pFun->setSBMLId(id);
-          // add the id,pointer pair to the fucntion id map so that we know
+          // add the id,pointer pair to the function id map so that we know
           // that this id has been used for that function
           this->mFunctionIdMap.insert(std::pair<std::string, const CEvaluationTree*>(id, pFun));
         }
@@ -5786,7 +5819,7 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
       else
         {
           // This should never happen since I assume that COPASI will have
-          // the same restiction as SBML with respect to unique assignments
+          // the same restriction as SBML with respect to unique assignments
           // within an event
           if (nonUniqueObjectKeys.find(key) == nonUniqueObjectKeys.end())
             {

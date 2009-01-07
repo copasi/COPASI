@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:55 $
+//   $Date: 2009/01/07 19:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,17 +29,6 @@
 #include "CFitMethod.h"
 
 #include "utilities/CCopasiMethod.h"
-
-unsigned C_INT32 CFitTask::validMethods[] =
-  {
-    CCopasiMethod::GeneticAlgorithm,
-    CCopasiMethod::GeneticAlgorithmSR,
-    CCopasiMethod::EvolutionaryProgram,
-    CCopasiMethod::RandomSearch,
-    CCopasiMethod::SteepestDescent,
-    CCopasiMethod::Praxis,
-    CCopasiMethod::unset
-  };
 
 CFitTask::CFitTask(const CCopasiTask::Type & type,
                    const CCopasiContainer * pParent):

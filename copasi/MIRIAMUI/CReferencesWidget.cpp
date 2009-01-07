@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/07 18:59:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "MIRIAM/CReference.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "commandline/CConfigurationFile.h"
 #include "report/CCopasiObject.h"
 #include "report/CKeyFactory.h"
 #include "UI/qtUtilities.h"
@@ -29,8 +30,8 @@
 
 #define COL_MARK               0
 #define COL_DUMMY              1
-#define COL_PUBMED_ID          2
-#define COL_DOI                3
+#define COL_RESOURCE           2
+#define COL_ID                 3
 #define COL_DESCRIPTION        4
 
 /*
@@ -81,20 +82,55 @@ void CReferencesWidget::init()
   //Setting table headers
   Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
-  tableHeader->setLabel(COL_DUMMY, "Dummy");
-  tableHeader->setLabel(COL_PUBMED_ID, "Pubmed ID");
-  tableHeader->setLabel(COL_DOI, "DOI");
+  tableHeader->setLabel(COL_RESOURCE, "Resource");
+  tableHeader->setLabel(COL_ID, "ID");
   tableHeader->setLabel(COL_DESCRIPTION, "Description");
   table->hideColumn(COL_DUMMY);
-  //table->setColumnWidth(COL_DESCRIPTION, 200);
+
+  updateResourcesList();
+}
+
+void CReferencesWidget::updateResourcesList()
+{
+  mResources.clear();
+  // Build the list of known resources
+  const CMIRIAMResources * pResource = &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources();
+  mResources.push_back("-- select --");
+
+  unsigned C_INT32 i, imax = pResource->getResourceList().size();
+  for (i = 0; i < imax; i++)
+    if (pResource->getMIRIAMResource(i).getMIRIAMCitation())
+      mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+
+  // We need to update each currently shown ComboBox
+  Q3ComboTableItem * pComboBox = NULL;
+  imax = table->numCols();
+  for (i = 0; i < imax; i++)
+    if ((pComboBox = dynamic_cast<Q3ComboTableItem *>(table->item(i, COL_RESOURCE))) != NULL)
+      delete pComboBox;
 }
 
 void CReferencesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
   const CReference *pReference = (const CReference*)obj;
-  table->setText(row, COL_PUBMED_ID, FROM_UTF8(pReference->getPubmedId()));
-  table->setText(row, COL_DOI, FROM_UTF8(pReference->getDOI()));
+
+  table->setText(row, COL_DUMMY, QString::number(row));
+
+  Q3ComboTableItem * pComboBox = NULL;
+  if ((pComboBox = dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE))) == NULL)
+    {
+      pComboBox = new Q3ComboTableItem(table, mResources);
+      table->setItem(row, COL_RESOURCE, pComboBox);
+    }
+
+  std::string Resource = pReference->getResource();
+  if (Resource == "")
+    pComboBox->setCurrentItem(0);
+  else
+    pComboBox->setCurrentItem(FROM_UTF8(Resource));
+
+  table->setText(row, COL_ID, FROM_UTF8(pReference->getId()));
   table->setText(row, COL_DESCRIPTION, FROM_UTF8(pReference->getDescription()));
 }
 
@@ -103,18 +139,29 @@ void CReferencesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!obj) return;
   CReference * pReference = static_cast< CReference * >(obj);
 
-  pReference->setPubmedId((const char *) table->text(row, COL_PUBMED_ID).utf8());
-  pReference->setDOI((const char *) table->text(row, COL_DOI).utf8());
+  if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE)))
+    {
+      QString resource = static_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE))->currentText();
+      pReference->setResource((const char *) resource.utf8());
+    }
+
+  QString ID = table->text(row, COL_ID);
+  pReference->setId((const char *) ID.utf8());
   pReference->setDescription((const char *) table->text(row, COL_DESCRIPTION).utf8());
+  pReference->clearInvalidEntries();
 }
 
 void CReferencesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != COL_PUBMED_ID)
-    table->clearCell(row, COL_PUBMED_ID);
+  if (exc != COL_RESOURCE)
+    {
+      Q3ComboTableItem * pComboBox = new Q3ComboTableItem(table, mResources);
+      pComboBox->setCurrentItem(0);
+      table->setItem(row, COL_RESOURCE, pComboBox);
+    }
 
-  if (exc != COL_DOI)
-    table->clearCell(row, COL_DOI);
+  if (exc != COL_ID)
+    table->clearCell(row, COL_ID);
 
   if (exc != COL_DESCRIPTION)
     table->clearCell(row, COL_DESCRIPTION);
@@ -161,3 +208,23 @@ void CReferencesWidget::deleteObjects(const std::vector<std::string> & keys)
 void CReferencesWidget::slotDoubleClicked(int C_UNUSED(row), int C_UNUSED(col),
     int C_UNUSED(m), const QPoint & C_UNUSED(n))
 {}
+
+void CReferencesWidget::slotValueChanged(int row, int col)
+{
+  if (col == COL_RESOURCE)
+    {
+      int selectedItem = -1;
+      if (row == table->numRows() - 1) //new Object
+        {
+          if (dynamic_cast<Q3ComboTableItem *>(table->item(row, col)))
+            {
+              selectedItem = static_cast<Q3ComboTableItem *>(table->item(row, col))->currentItem();
+            }
+        }
+      CopasiTableWidget::slotValueChanged(row, col);
+      if (selectedItem > -1)
+      {static_cast<Q3ComboTableItem *>(table->item(row, col))->setCurrentItem(selectedItem);}
+    }
+  else
+  {CopasiTableWidget::slotValueChanged(row, col);}
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:04:22 $
+//   $Date: 2009/01/07 19:03:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
   CPlotItem* pItem;
-  QColor curveColours[7] = {Qt::darkRed, Qt::blue, Qt::darkGreen, Qt::cyan, Qt::magenta, Qt::yellow, Qt::gray} ; //TODO
+  QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO
 
   mCurves.resize(kmax);
   mCurveTypes.resize(kmax);
@@ -278,7 +278,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
-      pCurve->setPen(curveColours[k % 5]);
+      pCurve->setPen(curveColours[k % 6]);
       pCurve->attach(this);
 
       showCurve(pCurve, Visible);
@@ -299,7 +299,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               break;
             case 2:          //symbols
               pCurve->setStyle(QwtPlotCurve::NoCurve);
-              const QColor &c = curveColours[k % 5];
+              const QColor &c = curveColours[k % 6];
               pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
               break;
             }
@@ -879,7 +879,24 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
   item->setItemAttribute(QwtPlotItem::AutoScale, on);
   QWidget *w = legend()->find(item);
   if (w && w->inherits("QwtLegendItem"))
-    ((QwtLegendItem *)w)->setChecked(on);
+    static_cast< QwtLegendItem * >(w)->setChecked(on);
+
+  replot();
+}
+
+void CopasiPlot::setCurvesVisibility(const bool & visibility)
+{
+  std::map< std::string, QwtPlotCurve * >::iterator it = mCurveMap.begin();
+  std::map< std::string, QwtPlotCurve * >::iterator end = mCurveMap.end();
+
+  for (; it != end; ++it)
+    {
+      it->second->setVisible(visibility);
+      it->second->setItemAttribute(QwtPlotItem::AutoScale, visibility);
+      QWidget *w = legend()->find(it->second);
+      if (w && w->inherits("QwtLegendItem"))
+        static_cast< QwtLegendItem * >(w)->setChecked(visibility);
+    }
 
   replot();
 }

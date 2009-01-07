@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/RunTests.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2008/04/21 10:27:06 $ 
+//   $Author: shoops $ 
+//   $Date: 2009/01/07 18:51:32 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,6 +24,7 @@ public class RunTests extends TestSuite
     suite.addTestSuite( org.COPASI.unittests.Test_CreateSimpleModel.class );
     suite.addTestSuite( org.COPASI.unittests.Test_RunSimulations.class );
     suite.addTestSuite( org.COPASI.unittests.Test_RunOptimization.class );
+    suite.addTestSuite( org.COPASI.unittests.Test_RunParameterFitting.class );
     return suite;
   }
 }
