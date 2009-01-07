@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.35 $
+$Revision: 1.36 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/12/18 19:58:12 $
+$Date: 2009/01/07 19:43:40 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,15 +81,16 @@ class SliderDialog: public QDialog
 
     static C_INT32 numMappings;
     static C_INT32 folderMappings[][2];
-    static C_INT32 knownTaskIDs[];
-    static const char* knownTaskNames[];
-    static C_INT32 numKnownTasks;
+    //    static C_INT32 knownTaskIDs[];
+    //    static const char* knownTaskNames[];
+    //    static C_INT32 numKnownTasks;
 
     virtual void contextMenuEvent(QContextMenuEvent* e);
 
     virtual void runTimeCourse();
     virtual void runScanTask();
     virtual void runSteadyStateTask();
+    virtual void runMCATask();
     virtual void closeEvent(QCloseEvent* e);
 
     virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);

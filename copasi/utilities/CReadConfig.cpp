@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-$Revision: 1.20 $
+$Revision: 1.21 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/12/18 19:26:08 $
+$Date: 2009/01/07 19:38:35 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,7 +163,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
         }
 
       // We should never reach this line!!!
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 1, name.c_str(),
+      CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 1, name.c_str(),
                      mFilename.c_str(), mLineNumber);
     }
 
@@ -230,7 +230,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 5, type.c_str(),
+      CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 5, type.c_str(),
                      name.c_str());
       mFail = 1; //Error
     }
@@ -263,7 +263,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 5, type.c_str(),
+      CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 5, type.c_str(),
                      name.c_str());
       mFail = 1; //Error
     }
@@ -279,7 +279,7 @@ C_INT32 CReadConfig::initInputBuffer()
   std::ifstream File(utf8ToLocale(mFilename).c_str());
 
   if (File.fail())
-    CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 2,
+    CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
                    mFilename.c_str());
 
   while (true)
@@ -290,7 +290,7 @@ C_INT32 CReadConfig::initInputBuffer()
         break;
 
       if (File.fail())
-        CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 3,
+        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 3,
                        mFilename.c_str());
 
       mBuffer << c;
@@ -301,7 +301,7 @@ C_INT32 CReadConfig::initInputBuffer()
   File.close();
 
   if (File.fail())
-    CCopasiMessage(CCopasiMessage::ERRoR, MCReadConfig + 4,
+    CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 4,
                    mFilename.c_str());
 
   return mFail;

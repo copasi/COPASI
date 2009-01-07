@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 17:01:30 $
+//   $Date: 2009/01/07 19:34:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,11 @@
 #include "CSensProblem.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
+CSensItem::CSensItem()
+    : mSingleObjectCN(),
+    mListType(CObjectLists::SINGLE_OBJECT)
+{}
+
 bool CSensItem::isSingleObject() const
   {
     return (mListType == CObjectLists::SINGLE_OBJECT);
@@ -29,8 +34,8 @@ bool CSensItem::isSingleObject() const
 void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
 {
   mSingleObjectCN = cn;
-  if (cn != "")
-    setListType(CObjectLists::SINGLE_OBJECT);
+  //  if (cn != "")
+  setListType(CObjectLists::SINGLE_OBJECT);
 }
 
 const CCopasiObjectName & CSensItem::getSingleObjectCN() const

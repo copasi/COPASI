@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
- $Revision: 1.28 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/10/07 15:31:45 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
+$Revision: 1.29 $
+$Name:  $
+$Author: shoops $
+$Date: 2009/01/07 19:38:35 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -344,7 +344,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @return std::string name
      *
      */
-    const std::string & getName(const unsigned C_INT32 & index) const;
+    virtual const std::string & getName(const unsigned C_INT32 & index) const;
 
     /**
      * Set the value of a parameter or subgroup.
@@ -469,14 +469,14 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 {
   if (!pParm)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
       return NULL;
     }
 
   ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
   if (!pFrom)
     {
-      CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
       return NULL;
     }
 
@@ -498,7 +498,7 @@ ElevateTo * elevate(CCopasiParameter * pParm)
 
       if (it == end)
         {
-          CCopasiMessage(CCopasiMessage::ERRoR, MCParameter + 5);
+          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
           return NULL;
         }
 

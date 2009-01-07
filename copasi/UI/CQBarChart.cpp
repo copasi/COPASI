@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQBarChart.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,7 @@ void CQBarChart::setPlotTitle(QString title)
 
 bool CQBarChart::sliderActive()
 {
+  if (!mpPlot) return false;
   if (mpPlot->mpSlider)
     return true;
   else

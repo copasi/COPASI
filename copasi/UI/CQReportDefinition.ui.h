@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:10 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,8 @@ void CQReportDefinition::btnItemClicked()
   if (!pModel) return;
 
   std::vector< const CCopasiObject * > SelectedVector =
-    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NO_RESTRICTION);
+    //    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NO_RESTRICTION);
+    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::REPORT_ITEM);
 
   if (SelectedVector.size() != 0)
     {

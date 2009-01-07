@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:51 $
+//   $Date: 2009/01/07 19:43:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,6 @@
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CCopasiSelectionDialog.h"
-#include "UI/OptimizationResultWidget.h"
 #include "UI/qtUtilities.h"
 #include "UI/CQExpressionWidget.h"
 
@@ -59,7 +58,7 @@ bool CQOptimizationWidget::saveTask()
       //      if (!pProblem->setObjectiveFunction(((CQExpressionWidget *)mpEditExpression->widget(0))->getExpression()))
       if (!pProblem->setObjectiveFunction(mpExpressionEMW->mpExpressionWidget->getExpression()))
         {
-          CCopasiMessage(CCopasiMessage::ERRoR, MCOptimization + 5);
+          CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
           return false;
         }
 
@@ -72,10 +71,10 @@ bool CQOptimizationWidget::saveTask()
       pProblem->setSubtaskType((CCopasiTask::Type) mSubtaskMap[(const char *) mpBoxSubtask->currentText().utf8()]);
     }
 
-  if (mpCheckMaximize->isChecked() != pProblem->maximize())
+  if (mpBtnMaximize->isChecked() != pProblem->maximize())
     {
       mChanged = true;
-      pProblem->setMaximize(mpCheckMaximize->isChecked());
+      pProblem->setMaximize(mpBtnMaximize->isChecked());
     }
 
   mChanged |= mpParameters->save(NULL, NULL);
@@ -102,25 +101,10 @@ bool CQOptimizationWidget::loadTask()
   if (!pProblem) return false;
 
   // expression
-  //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpression(pProblem->getObjectiveFunction());
   mpExpressionEMW->mpExpressionWidget->setExpression(pProblem->getObjectiveFunction());
-  /*  if (pProblem->getObjectiveFunction().empty())
-      {
-        // empty
-        mpBtnObject->show();
-        mpBtnEdit->hide();
-      }
-    else
-      {
-        // not-empty
-        mpBtnObject->hide();
-        mpBtnEdit->show();
-      }
-  */
-  //  mpEditExpression->updateExpressionWidget();
   mpExpressionEMW->updateWidget();
 
-  mpCheckMaximize->setChecked(pProblem->maximize());
+  mpBtnMaximize->setChecked(pProblem->maximize());
 
   mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
@@ -137,11 +121,6 @@ bool CQOptimizationWidget::runTask()
 {
   // --- expression
 
-  // objective function exist !!
-  //  mpBtnObject->hide();
-  //  mpBtnEdit->show();
-
-  //  mpEditExpression->updateExpressionWidget();
   mpExpressionEMW->updateWidget();
 
   // ----
@@ -155,10 +134,6 @@ bool CQOptimizationWidget::runTask()
   bool success = commonRunTask();
 
   commonAfterRunTask();
-
-  OptimizationResultWidget *pResult =
-    dynamic_cast< OptimizationResultWidget * >(mpListView->findWidgetFromId(321));
-  if (pResult) pResult->loadFromBackend();
 
   return success;
 }
@@ -188,10 +163,9 @@ void CQOptimizationWidget::slotConstraintNumberChanged(int number)
 
 void CQOptimizationWidget::init()
 {
-  mpHeaderWidget->setTaskName("Optimization");
+  std::string taskName = "Optimization";
 
-  //  ((CQExpressionWidget *)mpEditExpression->widget(0))->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OBJECTIVE_EXPRESSION);
+  mpHeaderWidget->setTaskName(taskName);
 
   vboxLayout->insertWidget(0, mpHeaderWidget);
   vboxLayout->addWidget(mpBtnWidget);
@@ -199,18 +173,25 @@ void CQOptimizationWidget::init()
   addMethodSelectionBox(COptTask::ValidMethods);
   addMethodParameterTable();
 
-  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
-  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION);
+
+  mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
+
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;
+  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::timeCourse]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::timeCourse]] = CCopasiTask::timeCourse;
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::mca]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::mca]] = CCopasiTask::mca;
   mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::lyap]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;
+  mpBoxSubtask->insertItem(FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
 
   mpParameterPageLayout = new Q3HBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
 
   mpParameters = new CQFittingItemWidget(mpParametersPage);
+  //  mpParameters->setName(FROM_UTF8(taskName));
 
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
   mpParameterPageLayout->addWidget(mpParameters);
@@ -218,6 +199,8 @@ void CQOptimizationWidget::init()
 
   mpConstraintPageLayout = new Q3HBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
+  //  mpConstraints->setName(FROM_UTF8(taskName));
+
   mpConstraints->setItemType(CQFittingItemWidget::OPT_CONSTRAINT);
   mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
@@ -238,16 +221,7 @@ void CQOptimizationWidget::slotExpressionValid(bool valid)
     for being able to type a new mathematical expression or edit the existing one
  */
 void CQOptimizationWidget::slotEditExpression()
-{
-  /*  // activate editor page of the Expression widget stack
-    //  mpEditFcnExpression->raiseWidget(mpEditExpression);
-    mpEditExpression->raiseWidget(0);
-    // show the button of object selector
-    mpBtnObject->show();
-    // hide the button of going back to the expression editor
-    mpBtnEdit->hide();
-  */
-}
+{}
 
 void CQOptimizationWidget::slotSubtaskChanged(const QString & /* subtask */)
 {}

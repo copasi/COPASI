@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:54:59 $
+//   $Date: 2009/01/07 19:43:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@ class Q3VBoxLayout;
 class Q3HBoxLayout;
 class CCopasiObject;
 class CModel;
+class CArrayAnnotation;
 
 class CCopasiSelectionDialog: public QDialog
   {
@@ -76,6 +77,14 @@ class CCopasiSelectionDialog: public QDialog
         const CCopasiSimpleSelectionTree::SelectionFlag & flag,
         const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
 
-    static void chooseCellMatrix(const CCopasiObject *pObject);
+    /**
+     * single=true means only one object can be returned (in the first element of the return vector)
+     *  when single=true and the dialog is canceled the return vector will have size=1 and contain the NULL pointer.
+     *  when single=false and the dialog is canceled the return vector will be empty.
+     * value=true means only objects that have a value (i.e. arrayElementReferences) are allowed.
+     * otherwise also the whole array annotation may be returned.
+     */
+    static std::vector<const CCopasiObject*> chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation,
+        bool single, bool value, std::string caption = "");
   };
 #endif /* SimpleSelectionDialog_H__ */

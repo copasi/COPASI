@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:14:19 $
+//   $Date: 2009/01/07 19:36:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,14 +188,14 @@ CHybridMethodLSODA *CHybridMethodLSODA::createHybridMethodLSODA(CTrajectoryProbl
   switch (result)
     {
       /*    case - 3:        // non-integer stoichometry
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 1);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
       case - 2:        // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
       case - 1:        // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
     default:

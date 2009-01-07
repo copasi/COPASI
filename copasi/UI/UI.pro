@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.181 $
+#   $Revision: 1.182 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 19:58:29 $
+#   $Date: 2009/01/07 19:43:40 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.181 $ $Author: shoops $ $Date: 2008/12/18 19:58:29 $
+# $Revision: 1.182 $ $Author: shoops $ $Date: 2009/01/07 19:43:40 $
 ######################################################################
 
 LIB = UI
@@ -32,7 +32,8 @@ INCLUDEPATH += $${QWT3D_PATH}/include
 
 # Input
 HEADERS	+= \
-        AboutDialog.h \
+  AboutDialog.h \
+  CColorScale.h \
 	CCopasiPlotSelectionDialog.h \
 #	CCopasi3dPlotSelectionDialog.h \
 	CCopasiSelectionDialog.h \
@@ -59,6 +60,7 @@ HEADERS	+= \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
+	CQMatrixDialog.ui.h \
 #	CQQwt3dSurfacePlot.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
@@ -92,16 +94,16 @@ HEADERS	+= \
 	StateWidget.h \
 	SteadyStateWidget.h \
 	TableDefinition.h \
-	OptimizationResultWidget.h \
 	TaskWidget.h \
 	TimeSeriesWidget.h \
 	Tree.h \
 	TSSWidget.h \
-        CQExpressionMmlWidgetStack.h \
+    CQExpressionMmlWidgetStack.h \
 	CQMmlScrollView.h
 
 SOURCES	+= \
-        AboutDialog.cpp \
+  AboutDialog.cpp \
+  CColorScale.cpp \
 	CCopasiPlotSelectionDialog.cpp \
 #	CCopasi3dPlotSelectionDialog.cpp \
 	CCopasiSelectionDialog.cpp \
@@ -117,7 +119,6 @@ SOURCES	+= \
 	copasiui3window.cpp \
 	CProgressBar.cpp \
 	CTabWidget.cpp \
-	OptimizationResultWidget.cpp \
 	CQArrayAnnotationsWidget.cpp \
 	CQBarChart.cpp \
 	CQDateTimeEditTableItem.cpp \
@@ -165,7 +166,7 @@ SOURCES	+= \
 	TimeSeriesWidget.cpp \
 	Tree.cpp \
 	TSSWidget.cpp \
-        CQExpressionMmlWidgetStack.cpp \
+  CQExpressionMmlWidgetStack.cpp \
 	CQMmlScrollView.cpp
 
 !contains(DEFINES, COPASI_TSS) {
@@ -173,50 +174,51 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
-# FORMS += CMCAResultSubwidget.ui
-# FORMS += CQCompartment.ui
-# FORMS += CQDifferentialEquations.ui
-# FORMS += CQEFMWidget.ui
-# FORMS += CQExperimentData.ui
-# FORMS += CQExperimentSelection.ui
-# FORMS += CQFileDialogBtnGrp.ui
-# FORMS += CQFittingItemWidget.ui
-# FORMS += CQFittingResult.ui
-# FORMS += CQFittingResultTab1.ui
-# FORMS += CQFittingWidget.ui
-# FORMS += CQLyapWidget.ui
-# FORMS += CQMCAWidget.ui
-# FORMS += CQMessageBox.ui
-# FORMS += CQMetabolite.ui
-# FORMS += CQModelValue.ui
-# FORMS += CQMoietiesTaskWidget.ui
-# FORMS += CQMoietiesTaskResult.ui
-# FORMS += CQOptimizationWidget.ui
-# FORMS += CQPreferenceDialog.ui
-# FORMS += CQProgressDialog.ui
-# FORMS += CQProgressItem.ui
-# FORMS += CQProgressItemBar.ui
-# FORMS += CQProgressItemText.ui
-# FORMS += CQReportDefinition.ui
-# FORMS += CQSplashWidget.ui
-# FORMS += CQStartValueReset.ui
-# FORMS += CQTaskBtnWidget.ui
-# FORMS += CQTaskHeaderWidget.ui
-# FORMS += CQTextDialog.ui
-# FORMS += CQTrajectoryWidget.ui
-# FORMS += CScanWidgetBreak.ui
-# FORMS += CScanWidgetRandom.ui
-# FORMS += CScanWidgetRepeat.ui
-# FORMS += CScanWidgetScan.ui
-# FORMS += CScanWidgetTask.ui
-# FORMS += CUpDownSubwidget.ui
-# FORMS += DefaultplotDialog.ui
-# FORMS += SliderSettingsDialog.ui
-# FORMS += StateSubwidget.ui
-# FORMS += TimeSeriesSubwidget.ui
-# FORMS += objectdebug.ui
-# FORMS += CQExpressionMmlWidget.ui
-# FORMS += CQEventWidget1.ui
+# FORMS3 += CMCAResultSubwidget.ui
+# FORMS3 += CQCompartment.ui
+# FORMS3 += CQDifferentialEquations.ui
+FORMS3 += CQEFMWidget.ui
+# FORMS3 += CQExperimentData.ui
+# FORMS3 += CQExperimentSelection.ui
+# FORMS3 += CQFileDialogBtnGrp.ui
+# FORMS3 += CQFittingItemWidget.ui
+# FORMS3 += CQFittingResult.ui
+# FORMS3 += CQFittingResultTab1.ui
+# FORMS3 += CQFittingWidget.ui
+# FORMS3 += CQLyapWidget.ui
+# FORMS3 += CQMCAWidget.ui
+# FORMS3 += CQMessageBox.ui
+# FORMS3 += CQMetabolite.ui
+# FORMS3 += CQModelValue.ui
+# FORMS3 += CQMoietiesTaskWidget.ui
+# FORMS3 += CQMoietiesTaskResult.ui
+FORMS3 += CQOptimizationWidget.ui
+FORMS3 += CQOptimizationResult.ui
+# FORMS3 += CQPreferenceDialog.ui
+# FORMS3 += CQProgressDialog.ui
+# FORMS3 += CQProgressItem.ui
+# FORMS3 += CQProgressItemBar.ui
+# FORMS3 += CQProgressItemText.ui
+# FORMS3 += CQReportDefinition.ui
+# FORMS3 += CQSplashWidget.ui
+# FORMS3 += CQStartValueReset.ui
+# FORMS3 += CQTaskBtnWidget.ui
+# FORMS3 += CQTaskHeaderWidget.ui
+# FORMS3 += CQTextDialog.ui
+# FORMS3 += CQTrajectoryWidget.ui
+# FORMS3 += CScanWidgetBreak.ui
+# FORMS3 += CScanWidgetRandom.ui
+# FORMS3 += CScanWidgetRepeat.ui
+# FORMS3 += CScanWidgetScan.ui
+# FORMS3 += CScanWidgetTask.ui
+# FORMS3 += CUpDownSubwidget.ui
+# FORMS3 += DefaultplotDialog.ui
+# FORMS3 += SliderSettingsDialog.ui
+# FORMS3 += StateSubwidget.ui
+# FORMS3 += TimeSeriesSubwidget.ui
+# FORMS3 += objectdebug.ui
+# FORMS3 += CQExpressionMmlWidget.ui
+# FORMS3 += CQEventWidget1.ui
 
 # headers generated from .ui files
 HEADERS += \
@@ -225,7 +227,6 @@ HEADERS += \
            CQCompartment.h \
            CQCompartment.ui.h \
            CQDifferentialEquations.h \
-           CQEFMWidget.h \
            CQEFMWidget.ui.h \
            CQEventWidget1.h \
            CQEventWidget1.ui.h \
@@ -233,8 +234,8 @@ HEADERS += \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
-	   CQExpressionMmlWidget.ui.h \
-	   CQExpressionMmlWidget.h \
+           CQExpressionMmlWidget.ui.h \
+           CQExpressionMmlWidget.h \
            CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
@@ -258,8 +259,8 @@ HEADERS += \
            CQMoietiesTaskResult.ui.h \
            CQMoietiesTaskWidget.h \
            CQMoietiesTaskWidget.ui.h \
-           CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
+           CQOptimizationResult.ui.h \
            CQPreferenceDialog.h \
            CQPreferenceDialog.ui.h \
            CQProgressDialog.h \
@@ -311,11 +312,10 @@ SOURCES += \
            CMCAResultSubwidget.cpp \
            CQCompartment.cpp \
            CQDifferentialEquations.cpp \
-           CQEFMWidget.cpp \
            CQEventWidget1.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
-	   CQExpressionMmlWidget.cpp \
+           CQExpressionMmlWidget.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
            CQFittingResult.cpp \
@@ -328,7 +328,6 @@ SOURCES += \
            CQModelValue.cpp \
            CQMoietiesTaskResult.cpp \
            CQMoietiesTaskWidget.cpp \
-           CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
@@ -377,7 +376,7 @@ contains(DEFINES, COPASI_TSSA) {
 
 #ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
-# FORMS += CQRegistrationDialog.ui
+# FORMS3 += CQRegistrationDialog.ui
 
 HEADERS += CQRegistrationDialog.h \
            CQRegistrationDialog.ui.h
@@ -412,6 +411,11 @@ DISTFILES += UI.vcproj \
              icons/stois.xpm \
              icons/substrate.xpm \
              icons/unlocked.xpm \
+             icons/MIRIAM.xpm \
+             icons/saveIcon.xpm \
+             icons/edit_Icon.xpm \
+             icons/photo.xpm
+             
 
 
 

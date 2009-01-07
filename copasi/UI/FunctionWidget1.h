@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-$Revision: 1.55 $
+$Revision: 1.56 $
 $Name:  $
 $Author: shoops $
-$Date: 2008/12/18 19:57:54 $
+$Date: 2009/01/07 19:43:40 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,13 +134,13 @@ class FunctionWidget1 : public CopasiWidget
     Q3WidgetStack* mStack;
     Q3VBox* mMmlViewBox;
     Q3ScrollView* mScrollView;
-#ifdef HAVE_MML
-    //    QPushButton* mFormulaEditToggleButton;
     QToolButton* mFormulaEditToggleButton;
+
+#ifdef HAVE_MML
     QtMmlWidget* mMmlWidget;
+#endif // HAVE_MML
 
     QString MMLStr;
-#endif // HAVE_MML
     CFunction * mpFunction;
 
     QToolButton *mpSaveBtn;
@@ -150,10 +150,9 @@ class FunctionWidget1 : public CopasiWidget
 
   private:
 
-#ifdef HAVE_MML
-    void saveTeX(const QString filename);
     void saveMML(const QString filename);
-#endif // HAVE_MML
+
+    void saveTeX(const QString filename);
   };
 
 #endif // FunctionWidget1

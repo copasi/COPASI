@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,7 @@ class ParametersWidget : public CopasiWidget
 
     QPushButton* commitButton;
     QPushButton* revertButton;
+    QPushButton* saveButton;
     Q3ListView* listView;
     QLabel* labelTitle;
 
@@ -76,6 +77,7 @@ class ParametersWidget : public CopasiWidget
   protected slots:
     virtual void commitPressed();
     virtual void revertPressed();
+    virtual void savePressed();
 
     virtual void editItem(Q3ListViewItem * item, const QPoint & pnt, int c);
     virtual void editItem(Q3ListViewItem * item);

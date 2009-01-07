@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:54:59 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,9 @@ class CCopasiSimpleSelectionTree: public Q3ListView
       BASE_TRANSIENT = 0x08,
       BASE_EXPRESSION = 0x10,
       BASE_MODEL = 0x20,
-      BASE_GLOBAL = 0x40
+      BASE_GLOBAL = 0x40,
+      BASE_TASK = 0x80,
+      BASE_ARRAY = 0x100
     };
 
   public:
@@ -53,8 +55,14 @@ class CCopasiSimpleSelectionTree: public Q3ListView
       TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
       INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
       TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
-      OBJECTIVE_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION,
-      NO_RESTRICTION = -1
+      TARGET_EVENT = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
+      INITIAL_PARAMETER = BASE_DOUBLE | BASE_INITIAL | BASE_TASK,
+      NO_RESTRICTION = -1,
+      OPTIMIZATION_EXPRESSION = BASE_DOUBLE | BASE_EXPRESSION | BASE_ARRAY,
+      SENSITIVITY_VARIABLE = INITIAL_VALUE | BASE_ARRAY,
+      //   ARRAY = BASE_ARRAY,
+      PLOT_OBJECT = BASE_ARRAY,
+      REPORT_ITEM = BASE_ARRAY
     };
 
     CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, Qt::WFlags fl = 0);
@@ -88,9 +96,12 @@ class CCopasiSimpleSelectionTree: public Q3ListView
     Q3ListViewItem* mpCompartmentInitialVolumeSubtree;
     Q3ListViewItem* mpCompartmentRateSubtree;
     Q3ListViewItem* mpExpertSubtree;
-#ifdef COPASI_DEBUG
-    Q3ListViewItem* matrixSubtree;
-#endif //COPASI_DEBUG
+    Q3ListViewItem* mpModelMatrixSubtree;
+    Q3ListViewItem* mpResultMatrixSubtree;
+    Q3ListViewItem* mpResultSteadyStateSubtree;
+    Q3ListViewItem* mpResultSensitivitySubtree;
+    Q3ListViewItem* mpResultMCASubtree;
+
     std::map< Q3ListViewItem *, const CCopasiObject * > treeItems;
     std::vector< const CCopasiObject * > * mpOutputVector;
 

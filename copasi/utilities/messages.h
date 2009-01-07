@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:53:36 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 19:38:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,6 +228,7 @@ const MESSAGES Messages[] =
     {MCSBML + 72, "SBML (72): Error in eventassignment. Eventassignments may only assign values to compartments, species or global parameters, object with id \"%s\" is neither compartment, species or global parameter. Ignoring assignment."},
     {MCSBML + 73, "SBML (73): Could not export %s. %s has been ignored."},
     {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
+    {MCSBML + 75, "SBML (75): Invalid id RDF/XML found and corrected."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
@@ -315,6 +316,7 @@ const MESSAGES Messages[] =
     {MCTSSAMethod + 11, "CILDMModifiedMethod (11): At time t='%f'  no reduction is possible."},
     {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
     {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
+    {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assigments or ODE are presenting. "},
 
     // CTSSAProblem
     {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},

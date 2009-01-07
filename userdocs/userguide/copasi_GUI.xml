@@ -1,10 +1,10 @@
 <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.55 $ -->
+<!--   $Revision: 1.56 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2008/09/01 17:01:32 $ -->
+<!--   $Date: 2009/01/07 19:41:09 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1258,7 +1258,7 @@ differential equations using a set of global parameters which have the
 type ode.
 </para>
 </sect1>
-
+<!--
 <sect1 id="events" xreflabel="Events">
 <title>Events</title>
 <para>An event in COPASI sets the values of one or more model elements at a certain point in time. The exact timepoint at which the assignments are executed depends on a condition called trigger and on an optional time delay.</para>
@@ -1267,9 +1267,11 @@ In order to be usable, an event needs a trigger expression that determines when 
 Naturally the trigger expression can also be a combination of boolean subexpressions that are combined by logical operators <emphasis>and</emphasis>, <emphasis>or</emphasis>, <emphasis>not</emphasis> and <emphasis>xor</emphasis>. 
 </para>
 <para>
+-->
 <!--
 Expression Examples
 -->
+<!--
 </para>
 <para>
 As described above, the trigger expression determines when an event is triggered. The exact point when the event is triggered is that point in time where the result of the evaluated trigger expression changes from false to true. The event is triggered each time this happens, so an event can be triggered more than once. If the result of the trigger expression is true at the start of a simulation, the event is not triggered since the result of the expression did not make a transition from true to false.
@@ -1278,22 +1280,22 @@ As described above, the trigger expression determines when an event is triggered
 Since an event is only triggered when the trigger expression makes a transition from true to false, it does not make much sense to use the constants <emphasis>true/TRUE</emphasis> or <emphasis>false/FALSE</emphasis> within the trigger expression.
 </para>
 <para>
-Since computers usually calculate numbers with limited precission, it is not always easy to for a program to find out if an event has been triggered or not. But in most cases it is possible to come up with trigger expressions that make this takes a bit easier.
+Since computers usually calculate numbers with limited precision, it is not always easy to for a program to find out if an event has been triggered or not. But in most cases it is possible to come up with trigger expressions that make this takes a bit easier.
 </para>
 <para>
-Even so, as has been described above, one can build trigger expressions, using all comparison operators, only <emphasis>lt</emphasis> and <emphasis>gt</emphasis> make sense. One could also use <emphasis>le</emphasis> and <emphasis>ge</emphasis> respectively to build trigger expressions, but due to the limited proecision of the calculations, this is numerically the same as using <emphasis>lt</emphasis> and <emphasis>gt</emphasis>. While using <emphasis>le</emphasis> and <emphasis>ge</emphasis> is just redundant, using <emphasis>eq</emphasis> or <emphasis>ne</emphasis> to build trigger expressions will most likely lead to undesirable effects, meaning that the program will mostl likely not be able to find out that the trigger expression has changed from false to true. Why is this?
+Even so, as has been described above, one can build trigger expressions, using all comparison operators, only <emphasis>lt</emphasis> and <emphasis>gt</emphasis> make sense. One could also use <emphasis>le</emphasis> and <emphasis>ge</emphasis> respectively to build trigger expressions, but due to the limited precision of the calculations, this is numerically the same as using <emphasis>lt</emphasis> and <emphasis>gt</emphasis>. While using <emphasis>le</emphasis> and <emphasis>ge</emphasis> is just redundant, using <emphasis>eq</emphasis> or <emphasis>ne</emphasis> to build trigger expressions will most likely lead to undesirable effects, meaning that the program will most likely not be able to find out that the trigger expression has changed from false to true. Why is this?
 </para>
 <para>
-The algorithms that are used to calculate a time course in COPASI  do not calculate values for all possible time points between the start time and the endtime because there is an infinity number of those. All the algorithm can do is calculate values for all model entities for a finite number of steps between the start and the endtime. "Smart" algorithms even go one step further and try to limit the number of steps to the necessary minimum. But exactly herin lies the problem if <emphasis>eq</emphasis> and <emphasis>ne</emphasis> are used to build trigger expressions. The trigger expressions are calculated for each time step that the solver makes, that means that the trigger expressions are evaluated at discrete time points. So if a trigger expression evaluates to false at timepoint n and evaluatates to true at timepoint n+1, the solver knows that the event has been triggered and can now try to located the exact timepoint where the event has been triggered which must be located somewere between timepoint n and timepoint n+1. Now lets assume that we have a trigger expression "time eq 3.1", this expression evaluates to true when the simulation time is exactly 3.1, everywhere else, this expression evaluates to false. So lets also assume that the solver calculates one time step at t=3.0 and the next time step after that at t=3.2. At both of those time steps, the trigger expression above would evaluate to <emphasis>false</emphasis> and the algorithm would assume that the event has not been triggered at all. So it is very important to think about how to build trigger expressions. If you wanted to express that the event should fire once when the simulation has reached time=3.1 you could have written "time gt 3.1" instead "time eq 3.1". 
+The algorithms that are used to calculate a time course in COPASI  do not calculate values for all possible time points between the start time and the endtime because there is an infinity number of those. All the algorithm can do is calculate values for all model entities for a finite number of steps between the start and the endtime. "Smart" algorithms even go one step further and try to limit the number of steps to the necessary minimum. But exactly herin lies the problem if <emphasis>eq</emphasis> and <emphasis>ne</emphasis> are used to build trigger expressions. The trigger expressions are calculated for each time step that the solver makes, that means that the trigger expressions are evaluated at discrete time points. So if a trigger expression evaluates to false at timepoint n and evaluates to true at timepoint n+1, the solver knows that the event has been triggered and can now try to located the exact timepoint where the event has been triggered which must be located somewhere between timepoint n and timepoint n+1. Now lets assume that we have a trigger expression "time eq 3.1", this expression evaluates to true when the simulation time is exactly 3.1, everywhere else, this expression evaluates to false. So lets also assume that the solver calculates one time step at t=3.0 and the next time step after that at t=3.2. At both of those time steps, the trigger expression above would evaluate to <emphasis>false</emphasis> and the algorithm would assume that the event has not been triggered at all. So it is very important to think about how to build trigger expressions. If you wanted to express that the event should fire once when the simulation has reached time=3.1 you could have written "time gt 3.1" instead "time eq 3.1". 
 </para>
 <para>
-This problem is not restricted to the logical operators <emphasis>eq</emphasis> and <emphasis>ne</emphasis>, but it is generaly also a bad idea to use the logical <emphasis>and</emphasis> to build logical expressions in COPASI. E.g. the expression "(time gt 3.05) and (time lt 3.06)" suffers from the same general problem. The time span in which the expression is <emphasis>true</emphasis> might be to short for the simulation algorithm to recognize that the event has been triggered. 
+This problem is not restricted to the logical operators <emphasis>eq</emphasis> and <emphasis>ne</emphasis>, but it is generally also a bad idea to use the logical <emphasis>and</emphasis> to build logical expressions in COPASI. E.g. the expression "(time gt 3.05) and (time lt 3.06)" suffers from the same general problem. The time span in which the expression is <emphasis>true</emphasis> might be to short for the simulation algorithm to recognize that the event has been triggered. 
 </para>
 <para>
 While most event triggers can be expressed in COPASI without problems, some can't be expressed in a safe way and you should be aware of this problem when you use logical expressions anywhere in COPASI, e.g. in an <emphasis>if</emphasis> statement within a algebraic expression.
 </para>
 <para>
-In addition to the trigger, the user can set a so called delay expression. This expresion is evaluated when the event is triggered and the numerical result from evaluating the expression is the time delay from the time point when the event was triggered until the assignments actually happen. The delay expression is a normal mathematical expression and it has to evaluate to a positive number or zero. Negative numbers are not allowed because this would mean that the assignments would have to be made before the event has even been triggered.
+In addition to the trigger, the user can set a so called delay expression. This expression is evaluated when the event is triggered and the numerical result from evaluating the expression is the time delay from the time point when the event was triggered until the assignments actually happen. The delay expression is a normal mathematical expression and it has to evaluate to a positive number or zero. Negative numbers are not allowed because this would mean that the assignments would have to be made before the event has even been triggered.
 </para>
 <para>
 Last but not least, each event can have one or more assignments which consists of a model entity (compartment, species or global parameter) that is the target for the assignment and an expression that determines the value that the target is set to. This is very similar to setting an assignment on a model entity as described in , the only difference is that the event assignment is only executed if the event has been triggered whereas the normal assignment is done in each timestep of a simulation.
@@ -1302,18 +1304,66 @@ Last but not least, each event can have one or more assignments which consists o
 There are a few more things one has to be aware of when working with events in COPASI. Firstly, the values for the event assignments are calculated when an event is fired, that is if an event assignment references some model entity in the assignment expression, the value taken to evaluate the assignment expression is the value that the model entity has at the time the event is triggered. So if the same event also has a delay that is not zero, the assignment values are calculated when the event is triggered, but they are only applied once the delay time has passed.
 </para>
 <para>
-The seond thing one has to be aware of is the fact that event assignments within the same event do no influence each other and that the order of the event assignments is irrelevant for the calculations. All values that are referenced in an event assignment are taken prior to applying any event assignments. That is if there is an event assignment for species A which references species B and vice versa within the same event, it does not matter which event assignment is applied first, the result is always the same since the referenced values are taken before any of the two events is applied.
+The second thing one has to be aware of is the fact that event assignments within the same event do no influence each other and that the order of the event assignments is irrelevant for the calculations. All values that are referenced in an event assignment are taken prior to applying any event assignments. That is if there is an event assignment for species A which references species B and vice versa within the same event, it does not matter which event assignment is applied first, the result is always the same since the referenced values are taken before any of the two events is applied.
 </para>
 <para>
 Last but not least, it is possible that applying the assignments of an event triggers one or more other events. The order in which those events are fired is the order in which they have been defined in the model since this is the order in which the solver will find that they have fired. The values referenced in those events fired by other events are taken after all assignments from the event that has lead the other event(s) to fire, have been applied.
 </para>
 <para>
-Since the assignments in one event can lead to the triggering of other events, a whole cascade of events can be triggered by one event bying fired and sometimes this can lead to infinity loops whithin the event cascade. It is not trivial to find out if an event cascade is actually infinite or only very long. If any event within a cascade is fired a second time with exactly the same state of the model, we can assume that the cascade would be infinite (I am not sure if this is actually true due to the branching that can happen in the cascade) and COPASI will stop evaluating the events and interrupt the simulation with an error message. COPASI will also stop to evaluate event if the number of events in the event cascade has exceded a certain limit (10000). 
+Since the assignments in one event can lead to the triggering of other events, a whole cascade of events can be triggered by one event being fired and sometimes this can lead to infinity loops within the event cascade. It is not trivial to find out if an event cascade is actually infinite or only very long. If any event within a cascade is fired a second time with exactly the same state of the model, we can assume that the cascade would be infinite (I am not sure if this is actually true due to the branching that can happen in the cascade) and COPASI will stop evaluating the events and interrupt the simulation with an error message. COPASI will also stop to evaluate event if the number of events in the event cascade has exceeded a certain limit (10000). 
 </para>
 <para>
-<!--
-Do we excecute events depth first or breadth first? This might make a difference!
 -->
+<!--
+Do we execute events depth first or breadth first? This might make a difference!
+-->
+<!--
+</para>
+</sect1>
+-->
+<sect1 id="annotation" xrefLabel="annotation">
+<title>Annotating models and model elements</title>
+<para>
+Sometimes it would be beneficial to include additional information in a model that describes the model creation process or that gives biological information about the individual model elements. Especially when you get a model from someone or load some published model from the authors webpage or some model repository, this information sometimes comes in handy.
+</para>
+<para>
+In order to standardize the process of model annotation, the <ulink url="http://www.ebi.ac.uk/miriam/">MIRIAM (Minimal Information Requested in the Annotation of biochemical Models)</ulink> guidelines have been developed at the EBI in Hingston. These guidelines specify what information is needed to create properly annotated models that are suitable for publication.
+</para>
+<para>
+Current versions of COPASI allow the user to annotate the model and all model elements according to the MIRIAM guidelines.
+For this, the model widget, as well as the widgets for the compartment, the species, the reaction and the global quantities have two additional tabs at the top of the widgets. One tab is called <guibutton>Annotation</guibutton> the other tab is called <guibutton>RDF Browser</guibutton>. 
+</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MIRIAM_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Widget showing the annotation to model 123 from the biomodels database.</phrase>
+ </textobject>
+ <caption>
+  <para>Annotation widget with annotation from model 123 from biomodels</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+Before you use the annotation feature for the first time, you have to update the MIRIAM annotation that COPASI uses to create the list of ressources that can be associated with an element. You update the list by pressing the the <guibutton>update MIRIAM</guibutton> button in the toolbar. Pressing this button triggers the download of the MIRIAM ressources from the internet, so this will only work if you are connected to the internet (once this is done, you should restart COPASI).
+</para>
+<para>
+COPASI (as well as SBML) use RDF (Ressource Description Framework) to store the annotation in the model file. To view the resulting RDF tree, you can select the <guibutton>RDF Browser</guibutton> tab. This is purely for displaying and not for editing. You will probably not look at this information very often.
+</para>
+<para>
+If you select the <guibutton>Annotation</guibutton> tab, the same annotation is presented in a more user friendly way. There are different pieces of information that can be  given for a certain model element, e.g. the author you added the element or created the model or for species some biological information to the identity of the species.
+</para>
+<para>
+Each piece of information is stored as a triplet that is composed of the relationship, the ressource for that relationship and the corresponding id. The relationship can be chosen from a limited set of relationships. The same goes for the ressource. E.g. if you want to specify that species A in the model corresponds to ATP, the relationship would be set to <emphasis>is</emphasis> and the ressource could for example be the <ulink url="http://www.ebi.ac.uk/chebi/">ChEBI (Chemical Entities of Biological Interest)</ulink> dictionary. The id would then be the ChEBI identifier for ATP, which is <ulink url="http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI%3A15422">CHEBI:A15422</ulink>.
+</para>
+<para>
+The COPASI GUI allows the user to store more information than the MIRIAM guidelines for SBML allow, so if you export your model to SBML after annotating it, some information might not be available for other SBML tools.
+</para>
+<para>
+There is also a <ulink url="http://www.copasi.org/tiki-index.php?page_ref_id=155">webpage</ulink> on the COPASI webserver that has some more technical details about the way annotations are stored in COPASI.
 </para>
 </sect1>
 
@@ -4810,4 +4860,108 @@ loaded in XPPAUT.
 </caution>
 </sect1>
 </chapter>  
-
+<chapter id="diagrams" xreflabel="Diagrams">
+<title>Diagrams</title>
+<para>Starting with version 4.4.28, COPASI has the possibility to read and display layout information from COPASI and SBML files. An additional feature that comes with the diagram display is the possibility to display animations of time course data from simulations.</para>
+<para>Currently there is no way to create new diagrams within COPASI, but we hope to change that in the future.</para>
+<para>The layout information can either be obtained in the form of the SBML layout extension (see the <ulink url="http://otto.bioquant.uni-heidelberg.de/sbml/">SBML Layout Extension Specification</ulink> for further information) or from a COPASI file that includes layout information.</para>
+<para>Since there is no way to create new diagrams in COPASI, the only way to come up with a COPASI file that includes layout information is to create an SBML file with layout information and convert it to a COPASI file. The layout in COPASI files is also stored in the form of the SBML layout extension. Only that the SBML object ids are replaced by the corresponding COPASI keys.</para>
+<para>
+There are several ways to create layout information for an SBML model. The <ulink url="http://sycamore.eml.org">Sycamore webapplication</ulink> allows you to load SBML files, create layout information for the model in the file and save the model with the layout information back to file. It provides different methods for generating the layout and the layout can be modified manually as well.
+</para>
+<para>
+<ulink url="http://sabio.bioquant.uni-heidelberg.de/">SABIO-RK</ulink> is a reaction kinetics database that allows you to create SBML models from the entries in the database. The model can be saved as an SBML file and it can also create layout information for the model.
+</para>
+<para>
+Another web application that allows the user to add layout information to an SBML file is Frank Bergmanns <ulink url="http://sbw.kgi.edu/Layout/">SBML Layout Viewer</ulink>. It allows the user to influence the layout creation by setting some parameters.
+</para>
+<para>
+Franks Bermanns layout creation tool is also part of <ulink url="http://sbw.kgi.edu/">SBW</ulink> and since the latest Versions of COPASI do include some SBW support, it is possible to send a model from COPASI to the layout tool and get back a model with layout information. 
+</para>
+<para>If the model file you loaded contains layout information, the diagram table contains an entry for every layout that is contained in the file. In order to display a specific layout, you have to either click on the show button beside the layout or double click on the layout entry in the table.</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Diagrams_01.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Diagram table with one diagram entry.</phrase>
+ </textobject>
+ <caption>
+  <para>diagram table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+In the layout window that comes up, you can see some controls on the left side and on the right side you see the actual layout. When the layout is first openend, all species are displayed as rectangles.
+</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Diagrams_02.png" format="PNG" scale="50" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Diagram before loading simulation data. Some controls are disabled.</phrase>
+ </textobject>
+ <caption>
+  <para>diagram window with some controls disabled due to missing simulation data</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+Currently the menu bar at the top contains two control elements. The first one is a button that allows you to read time course data from COPASI if any has been calculated. If a time course has already been calculated when the laoyut window is openend, this time course data is imported automatically. Each time you rerun the time course simulation in COPASI, you have to reimport it to the layout if you want to display it.
+</para>
+<para>
+Since the time course data is copied when it is imported to the layout, you have to take care that you  have enough memory in your machine if you either have very large simulations or if you want to animate the data in many different layout windows. In the future we will try to handle this more intelligently.
+</para>
+<para>
+The second control element in the toolbar is for zooming in and out of the layout view.
+</para>
+<para>
+If there is no time course data yet, many of the controls on the right side are disabled since they only make sense in the context of animating simulation data. Once simulation data has been loaded via the button in the toolbar, those controls are enabled.
+</para>
+<para>
+If you don't need the controls, but just want to look at the diagram, the individual controls can be hidden via the <guimenu>View</guimenu> menu in the menu bar.
+</para>
+<para>
+In order to animate your simulation data, you can use the player controls at the bottom of the screen. The controls look like the controls on a CD player and it should be easy to figure out what the individual buttons do. There are buttons to start and stop the animation, as well as buttons to forward and rewind or sngle step through the animation. You can also drag the slider beside the buttons to go to a certain time point within the animation.
+</para>
+<para>
+During the animation, the species are displayed as colored balls. The speed of the animation can be controlled by the <guibutton>Frame rate</guibutton> element at the top of the controls.
+</para>
+<screenshot>
+<screeninfo>Produced with COPASI 4.4 (Build 29) on Leopard on 12/15/2008</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Diagrams_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Diagram window with paused animation in size mode. Individual species are displayed as red balls, all controls are enabled.</phrase>
+ </textobject>
+ <caption>
+  <para>diagram window with paused animation in size mode</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<para>
+Depending on the <guibutton>Mapping mode</guibutton> that is controled by the radio button group with the same name, either the size of the balls or the color changes to reflect the concentration of the species at a given time point.
+</para>
+<para>
+The radio button group above the <guibutton>Mapping</guibutton> group, called <guibutton>Scheduling Mode</guibutton> determines how the size or color of a species is determined during an animation. 
+</para>
+<para>
+If the control is set to <emphasis>Individual Scaling</emphasis>, the size (or color) of a species is determined by the minimum and maximum value of that species. If the control is set to <emphasis>Global Scaling</emphasis>, the size or color is determined by the minimum and maximum values of all species in the model.
+</para>
+<para>
+The last control element is the table with the names and concentrations of all species contained in the layout. The concentration displayed is the concentration of the species at the given time point of the simulation. All species that are checked vary their size or color during the animation, species tha are unchecked don't.
+</para>
+<para>
+There is also the possibility to export the current layout as a bitmap. In order to do this, you select the <guisubmenu>Create Image</guisubmenu> menu item from the <guimenu>View</guimenu> menu.
+Currently, this only allows you the create a bitmap of the layout as it is displayed. Parts that are not displayed because the window is to small are not written to the bitmap. So in order to make a bitmap from large layouts, you might have to hide the controls as described above, make the layout window as large as possible and change the zoom factor until the full layout is displayed in the layout window. We also hope to make this more convenient in the future.
+</para>
+<para>
+Since this is an early version of the diagram display, there certainly are still many issues, but we hope that it might be helpful nevertheless. If you have suggestions or complaints, please tell us, preferably via the <ulink url="http://www.copasi.org/tiki-view_forum.php?forumId=1">COPASI user forum</ulink> or if you think it is a bug via our <ulink url="http://www.copasi.org/tracker/">issue tracking system</ulink>.
+</para>
+</chapter>

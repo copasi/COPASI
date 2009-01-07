@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 21:08:03 $
+//   $Date: 2009/01/07 19:37:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -274,7 +274,7 @@ class CCSPMethod : public CTSSAMethod
     /**
      * compute  the norm C  of the off-diagonal blocks
      **/
-    bool isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 _small);
+    bool isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small);
 
     /**
      *  Start procedure of the CSP algorithm.
@@ -282,12 +282,6 @@ class CCSPMethod : public CTSSAMethod
      *  26, pp. 461-486, 1994
      */
     void cspstep(const double & deltaT, C_INT & n, C_INT & m, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
-
-    /**
-     * CSP output
-     **/
-
-    void CSPOutput(C_INT & N, C_INT & M, C_INT & R);
 
     /**
      * CSP output : empty
@@ -350,7 +344,7 @@ class CCSPMethod : public CTSSAMethod
     /**
      * upgrade all vectors with values from actually calculalion for current step
      **/
-    void setVectors();
+    void setVectors(int fast);
 
     /**
     * empty every vector to be able to fill them with new values for a
@@ -369,5 +363,11 @@ class CCSPMethod : public CTSSAMethod
     * set the desription of CArayAnnotation for both dimensions
     **/
     void setAnnotationM(int step);
+
+    /**
+     *  print of the standart report sequence for ILDM Method
+     *  @param std::ostream * ostream
+     **/
+    void printResult(std::ostream * ostream) const;
   };
 #endif // COPASI_CCSPMethod

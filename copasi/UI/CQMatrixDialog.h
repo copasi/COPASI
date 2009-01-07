@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,7 +158,7 @@ class CQMatrixDialog : public QDialog, public Ui::CQMatrixDialog
     ~CQMatrixDialog();
 
   public slots:
-    virtual void setArray(const CArrayAnnotation * tmp);
+    virtual void setArray(const CArrayAnnotation * tmp, bool single);
 
   protected slots:
     virtual void languageChange();

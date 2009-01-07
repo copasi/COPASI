@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/05 19:56:01 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 19:34:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
  * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Stefan Hoops 2002
+ * Created for COPASI by Stefan Hoops 2002
  */
 
 #include "copasi.h"
@@ -142,6 +142,55 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
     return mEigenValuesX;
   }
 
+bool CSteadyStateTask::updateMatrices()
+{
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
+  if (!mpProblem->getModel()) return false;
+
+  const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
+
+  //init Jacobians
+  unsigned C_INT32 sizeX = stateTemplate.getNumIndependent();
+  mJacobianX.resize(sizeX, sizeX);
+  unsigned C_INT32 size = sizeX + stateTemplate.getNumDependent();
+  mJacobian.resize(size, size);
+
+  //jacobian annotations
+
+  mpJacobianAnn->resize();
+  CModelEntity *const* ppEntities = stateTemplate.getEntities();
+  const unsigned C_INT32 * pUserOrder = stateTemplate.getUserOrder().array();
+  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + stateTemplate.getUserOrder().size();
+
+  pUserOrder++; // We skip the time which is the first.
+
+  unsigned C_INT32 i, imax = size;
+  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
+    {
+      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
+      if (Status == CModelEntity::ODE ||
+          (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
+        {
+          mpJacobianAnn->setAnnotationCN(0 , i, ppEntities[*pUserOrder]->getCN());
+          mpJacobianAnn->setAnnotationCN(1 , i, ppEntities[*pUserOrder]->getCN());
+
+          i++;
+        }
+    }
+
+  mpJacobianXAnn->resize();
+
+  ppEntities = stateTemplate.beginIndependent();
+  imax = sizeX;
+  for (i = 0; i < imax; ++i, ++ppEntities)
+    {
+      mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
+      mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
+    }
+
+  return true;
+}
+
 bool CSteadyStateTask::initialize(const OutputFlag & of,
                                   COutputHandler * pOutputHandler,
                                   std::ostream * pOstream)
@@ -152,17 +201,21 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
+  if (!updateMatrices())
+    return false;
+
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   //init states
-  if (!mpProblem->getModel()) return false;
+  // if (!mpProblem->getModel()) return false;
 
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
 
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
 
-  //init jacobians
+#ifdef xxxx
+  //init Jacobians
   unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();
@@ -201,6 +254,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
       mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
       mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
     }
+#endif
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);

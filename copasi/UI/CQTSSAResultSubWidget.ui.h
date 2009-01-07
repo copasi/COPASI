@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Date: 2009/01/07 19:43:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,21 +98,18 @@ void CQTSSAResultSubWidget::saveDataToFile()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  const CTimeSeries* timeSeries = this->table()->getTimeSeries();
-  int failed = 0;
-  if (timeSeries)
-    {
-      QCursor oldCursor = cursor();
-      setCursor(Qt::WaitCursor);
-      failed = timeSeries->save((const char *)fileName.utf8(), !(this->table()->doShowConcentrations()), "\t");
-      setCursor(oldCursor);
-    }
-  if (failed)
-    {
-      std::string s = "Could not save data to ";
-      s += (const char *) fileName.utf8();
-      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
-    }
+  std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
+  if (file.fail()) return;
+
+  CCopasiTask* mpTask =
+    dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+  if (!mpTask) return;
+
+  CCopasiProblem* mpProblem = mpTask->getProblem();
+
+  mpProblem->printResult(&file);
+
+  return;
 }
 
 void CQTSSAResultSubWidget::displayOptimizationTab(bool displayOptTab)
@@ -128,10 +125,10 @@ void CQTSSAResultSubWidget::displayOptimizationTab(bool displayOptTab)
 
 void CQTSSAResultSubWidget::toggleView()
 {
-  if (comboBox->currentItem() == 0)
-    dataTable->showConcentrations(true);
-  else
-    dataTable->showConcentrations(false);
+  /*  if (comboBox->currentItem() == 0)
+      dataTable->showConcentrations(true);
+    else
+      dataTable->showConcentrations(false);*/
 }
 
 void CQTSSAResultSubWidget::init()
@@ -144,9 +141,9 @@ void CQTSSAResultSubWidget::init()
   mTabWidget->addTab(mpTimeScaleWidgetILDM, "Timescale");
 
   //set colorsettings for ArrayAnnotationWidgets
-  CColorScaleAdvanced * tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
+  CColorScaleAdvanced * tcs ; //= new CColorScaleAdvanced();
+  //tcs->setColorMin(QColor(240, 240, 240));
+  //tcs->setColorMax(QColor(0, 255, 0));
 
   // ILDM
   // mVslow_metab widget
@@ -173,12 +170,14 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget4->setColorCoding(tcs);
   pArrayWidget4->setColorScalingAutomatic(true);
+
   //NEW TAB
   // mReacSlowSpace widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget_3_2->setColorCoding(tcs);
+  CColorScaleSimple* pcss = new CColorScaleSimple();
+  //tcs->setColorMin(QColor(240, 240, 240));
+  //tcs->setColorMax(QColor(0, 255, 0));
+  pcss->setSymmetric(true);
+  pArrayWidget_3_2->setColorCoding(pcss);
   pArrayWidget_3_2->setColorScalingAutomatic(true);
 
   // ILDM Modified
@@ -229,17 +228,19 @@ void CQTSSAResultSubWidget::init()
   tcs->setColorMax(QColor(0, 255, 0));
   pArrayWidget3_3->setColorCoding(tcs);
   pArrayWidget3_3->setColorScalingAutomatic(true);
+
   // Participation Index widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget4_3->setColorCoding(tcs);
+
+  CColorScaleSimple* pics = new CColorScaleSimple();
+  pics->setSymmetric(true);
+  pArrayWidget4_3->setColorCoding(pics);
   pArrayWidget4_3->setColorScalingAutomatic(true);
-  // Participation Index widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget4_3_2->setColorCoding(tcs);
+
+  // Importance Index widget
+
+  CColorScaleSimple* iics = new CColorScaleSimple();
+  iics->setSymmetric(true);
+  pArrayWidget4_3_2->setColorCoding(iics);
   pArrayWidget4_3_2->setColorScalingAutomatic(true);
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeILDMInterval()));
@@ -250,9 +251,13 @@ void CQTSSAResultSubWidget::init()
 
   dataTable->setNumRows(10);
   displayOptimizationTab(false);
+
 #ifndef WITH_CSPMETHOD
   displayCSPDevelopment(false);
 #endif
+
+  //the combobox for switching particle number/concentration is obsolete and does not work
+  comboBox->hide();
 }
 
 CTimeSeriesTable* CQTSSAResultSubWidget::table()
@@ -425,15 +430,23 @@ void CQTSSAResultSubWidget::changeCSPInterval()
  **/
 void CQTSSAResultSubWidget::hideButtons()
 {
+
   if ((tabWidget2->currentPageIndex() == 1) || (tabWidget2->currentPageIndex() == 2) || (tabWidget2->currentPageIndex() == 3))
     {
-      ButtonSaveData->setDisabled(true);
       comboBox->setDisabled(true);
     }
   else
     {
-      ButtonSaveData->setEnabled(true);
       comboBox->setEnabled(true);
+    }
+
+  if ((tabWidget2->currentPageIndex() == 3))
+    {
+      ButtonSaveData->setDisabled(true);
+    }
+  else
+    {
+      ButtonSaveData->setEnabled(true);
     }
 }
 /**
@@ -507,7 +520,7 @@ void CQTSSAResultSubWidget::changeILDMModifiedInterval()
   mpTimeScaleWidgetILDMModified->paintTimeScale(pILDMModifiedMethod->getVec_TimeScale(step));
 }
 
-void CQTSSAResultSubWidget::displayCSPDevelopment(bool displayCSPTab)
+void CQTSSAResultSubWidget::displayCSPDevelopment(bool /* displayCSPTab */)
 {
   tabWidget2->removePage(TabPage_CSP);
 }

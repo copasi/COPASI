@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:54:59 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,6 +243,7 @@ void CopasiTableWidget::saveTable()
           if (!mFlagDelete[j])
             {
               CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
+              if (!pObj) continue;
               if (mShowNewObjectWarning && pObj->getObjectName() != (const char *)table->text(j, 1).utf8())
                 {
                   QString msg;
@@ -305,8 +306,6 @@ void CopasiTableWidget::saveTable()
   if (flagDelete) deleteObjects(delKeys);
 
   if (mChanged) CCopasiDataModel::Global->changed();
-
-  //mIgnoreUpdates = false;
 
   return;
 }
@@ -543,7 +542,7 @@ void CopasiTableWidget::slotBtnNewClicked()
     }
 }
 
-//*********** Standard Interface to Copasi Widgets ******************
+//*********** Standard Interface to COPASI Widgets ******************
 
 bool CopasiTableWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {

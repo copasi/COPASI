@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:14:19 $
+//   $Date: 2009/01/07 19:36:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,14 +168,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
   switch (result)
     {
       /*    case - 3:        // non-integer stoichometry
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 1);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
       case - 2:        // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
       case - 1:        // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERRoR, MCTrajectoryMethod + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
     default:
@@ -215,10 +215,16 @@ void CHybridMethod::step(const double & deltaT)
     }
   mpCurrentState->setTime(time);
 
+  if ((i >= mMaxSteps) && (!mMaxStepsReached))
+    {
+      mMaxStepsReached = true; //only report this message once
+      CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
+    }
+
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
@@ -237,7 +243,14 @@ void CHybridMethod::start(const CState * initialState)
   else
     mDoCorrection = false;
 
+  mHasAssignments = modelHasAssignments(mpModel);
+
+  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
+
   mpProblem->getModel()->setState(*mpCurrentState);
+
+  mpModel->updateSimulatedValues(false); //for assignments
+  //mpModel->updateNonSimulatedValues(); //for assignments
 
   // call init of the simulation method, can be overloaded in derived classes
   initMethod(mpCurrentState->getTime());
@@ -261,6 +274,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mAmuOld.resize(mpReactions->size());
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolitesX()));
   mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
+  //  mNumVariableMetabs = mpCurrentState->getNumVariable(); // mpBeginFixed - mpBeginIndependent
 
   temp.clear();
   temp.resize(mNumVariableMetabs);
@@ -301,6 +315,8 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   setupMetab2React(); // initialize mMetab2React
   setupPartition(); // initialize mReactionFlags
   setupPriorityQueue(start_time); // initialize mPQ
+
+  mMaxStepsReached = false;
 
   //deprecated:  mOutputFileName = string(DEFAULT_OUTPUT_FILE);
   //deprecated:  mOutputFile.open(DEFAULT_OUTPUT_FILE); // DEFAULT_OUTPUT_FILE in CHybridMethod.h
@@ -532,7 +548,9 @@ void CHybridMethod::setState(std::vector <C_FLOAT64> & source)
   for (i = 0; i < mNumVariableMetabs; i++)
     {
       (*mpMetabolites)[i]->setValue(source[i]);
+      (*mpMetabolites)[i]->refreshConcentration();
     }
+  mpModel->updateSimulatedValues(false); //for assignments
   return;
 }
 
@@ -603,15 +621,34 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
   C_INT32 index;
   std::set <C_INT32>::iterator iter, iterEnd;
 
-  // iterate through the set of affected reactions and update the stochastic ones in the priority queue
-  for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
+  //if the model contains assignments we use a less efficient loop over all (stochastic) reactions to capture all changes
+  // we do not know the exact dependencies. TODO: this should be changed later in order to get a more efficient update scheme
+  if (mHasAssignments)
     {
-      if (mReactionFlags[*iter].mpPrev == NULL) // reaction is stochastic!
+      mpModel->updateSimulatedValues(false);
+      for (index = 0; index < (C_INT32)mpReactions->size(); index++)
         {
-          index = *iter;
-          mAmuOld[index] = mAmu[index];
-          calculateAmu(index);
-          if (*iter != rIndex) updateTauMu(index, time);
+          if (mReactionFlags[index].mpPrev == NULL) // Reaction is stochastic!
+            {
+              mAmuOld[index] = mAmu[index];
+              calculateAmu(index);
+              if (mAmuOld[index] != mAmu[index])
+                if (index != rIndex) updateTauMu(index, time);
+            }
+        }
+    }
+  else
+    {
+      // iterate through the set of affected reactions and update the stochastic ones in the priority queue
+      for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
+        {
+          if (mReactionFlags[*iter].mpPrev == NULL) // reaction is stochastic!
+            {
+              index = *iter;
+              mAmuOld[index] = mAmu[index];
+              calculateAmu(index);
+              if (*iter != rIndex) updateTauMu(index, time);
+            }
         }
     }
 
@@ -654,8 +691,8 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   C_FLOAT64 amu = 1; // initially
   //C_INT32 total_substrates = 0;
   C_INT32 num_ident = 0;
-  C_INT32 number = 0;
-  C_INT32 lower_bound;
+  C_INT64 number = 0;
+  C_INT64 lower_bound;
   // substrate_factor - The substrates, raised to their multiplicities,
   // multiplied with one another. If there are, e.g. m substrates of type m,
   // and n of type N, then substrate_factor = M^m * N^n.
@@ -676,7 +713,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
       if (num_ident > 1)
         {
           flag = 1;
-          number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
+          number = static_cast<C_INT64>(floor((*mpMetabolites)[substrates[i].mIndex]->getValue()));
           lower_bound = number - num_ident;
           //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
           substrate_factor = substrate_factor * pow((double) number, (int) num_ident - 1); //optimization
@@ -866,7 +903,7 @@ void CHybridMethod::setupDependencyGraph()
       // Get the set of metabolites which are affected when this reaction takes place
       Affects.push_back(getAffects(i));
     }
-
+  mDG.resize(numReactions);
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
   for (i = 0; i < numReactions; i++)
@@ -1009,6 +1046,7 @@ void CHybridMethod::setupPartition()
         {
           mMetabFlags[i] = LOW;
           (*mpMetabolites)[i]->setValue(floor((*mpMetabolites)[i]->getValue()));
+          (*mpMetabolites)[i]->refreshConcentration();
         }
       else
         mMetabFlags[i] = HIGH;
@@ -1124,6 +1162,7 @@ void CHybridMethod::partitionSystem()
         {
           mMetabFlags[i] = LOW;
           (*mpMetabolites)[i]->setValue(floor((*mpMetabolites)[i]->getValue()));
+          (*mpMetabolites)[i]->refreshConcentration();
           // go through all corresponding reactions and update flags
           for (iter = mMetab2React[i].begin(), iterEnd = mMetab2React[i].end(); iter != iterEnd; iter++)
             {
@@ -1678,4 +1717,43 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
   // nothing to be done here
 
   return true;
+}
+
+//static
+bool CHybridMethod::modelHasAssignments(const CModel* pModel)
+{
+  C_INT32 i, imax = pModel->getNumModelValues();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getModelValues()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getNumMetabs();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getMetabolites()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  imax = pModel->getCompartments().size();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pModel->getCompartments()[i]->isUsed())
+          {
+            //used assignment found
+            return true;
+          }
+    }
+
+  return false;
 }

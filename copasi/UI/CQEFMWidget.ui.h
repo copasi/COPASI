@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,11 +17,13 @@
 
 #include <qmessagebox.h>
 #include <qcheckbox.h>
+#include <qregexp.h>
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/qtUtilities.h"
+#include "UI/CopasiFileDialog.h"
 
 #include "copasi.h"
 
@@ -29,7 +31,9 @@
 #include "model/CReaction.h"
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CEFMTask.h"
+#ifdef COPASI_SSA
 #include "elementaryFluxModes/CSSAMethod.h"
+#endif // COPASI_SSA
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
 
@@ -165,4 +169,38 @@ CCopasiMethod * CQEFMWidget::createMethod(const CCopasiMethod::SubType & type)
 {
   mpTask->setMethodType(type);
   return mpTask->getMethod();
+}
+
+void CQEFMWidget::slotSave()
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+
+      if (fileName.isEmpty()) return;
+
+      if (!fileName.endsWith(".txt") &&
+          !fileName.endsWith(".")) fileName += ".txt";
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
+
+  if (file.fail())
+    return;
+
+  if (mpTask != NULL)
+    file << mpTask->getResult();
+
+  return;
 }

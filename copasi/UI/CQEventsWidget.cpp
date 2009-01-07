@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:20 $
+//   $Date: 2009/01/07 19:43:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@ void CQEventsWidget::init()
   tableHeader->setLabel(4, "Assignment Target");
   tableHeader->setLabel(5, "Assignment Expression");
 
-  //for sbml ids
+  //for SBML ids
   //tableHeader->setLabel(numCols - 1, "SBML ID");
   //table->setColumnReadOnly(numCols - 1, true);
 
@@ -94,7 +94,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
       QString sObjectName = sKeyDisplay[0];
       QString sObjectIndex = sKeyDisplay[1];
 
-      std::cout << "pEv->getAssignmentObjectKey(" << i << ") = " << pEv->getAssignmentObjectKey(i) << std::endl;
+      // std::cout << "pEv->getAssignmentObjectKey(" << i << ") = " << pEv->getAssignmentObjectKey(i) << std::endl;
 
       if (sObjectName == "Compartment")
         //        assignmentTarget += FROM_UTF8(CCopasiDataModel::Global->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
@@ -107,7 +107,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
         assignmentTarget += FROM_UTF8(GlobalKeys.get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName());
       else
         {
-          std::cout << "sObjectName = " << UTF8_TO_CHAR(sObjectName) << std::endl;
+          // std::cout << "sObjectName = " << UTF8_TO_CHAR(sObjectName) << std::endl;
           assignmentTarget += "ERROR";
         }
       assignmentExpression += FROM_UTF8(pEv->getAssignmentExpressionStr(i));
@@ -317,7 +317,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                   // Yes or Enter
+      case 0:                                  // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -330,7 +330,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                   // No or Escape
+      default:                                  // No or Escape
         break;
       }
   */

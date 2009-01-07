@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/25 22:40:02 $
+//   $Author: shoops $
+//   $Date: 2009/01/07 19:38:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,18 +190,24 @@ class CArrayAnnotation: public CCopasiContainer
      * most of the work will be done by getObject(). If the element already
      * exists, the existing element will be returned.
      */
-    const CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index);
+    const CCopasiObject* addElementReference(CCopasiAbstractArray::index_type index) const;
 
     /**
      * a convenience function for 2-dimensional arrays.
      */
-    const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v);
+    const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v) const;
 
     /**
      * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
      * Since this is also a container, this is not necessarily the case.
      */
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
+
+    /**
+     * Check whether the size of array is greater than 0 for each dimension.
+     * Return true, if so. Otherwise, false.
+     */
+    bool isEmpty();
 
   private:
     /**
@@ -228,6 +234,12 @@ class CArrayAnnotation: public CCopasiContainer
                           const std::vector<std::vector<std::string> > & display) const;
 
   public:
+
+    /**
+     * generate a display name for the array annotation.
+     */
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+
     virtual void print(std::ostream * ostream) const;
 
     friend std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o);

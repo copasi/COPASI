@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:20 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,18 +22,14 @@
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <Qt3Support/Q3Frame>
-#include <Qt3Support/Q3HBoxLayout>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QFrame>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
-#include <Qt3Support/Q3VBoxLayout>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <QLabel>
-#include <Q3Frame>
+#include <QtGui/QVBoxLayout>
 #include "TaskWidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,31 +37,32 @@ QT_BEGIN_NAMESPACE
 class Ui_CQEFMWidget
   {
   public:
-    Q3VBoxLayout *vboxLayout;
-    Q3Frame *mpLine;
-    Q3HBoxLayout *hboxLayout;
+    QVBoxLayout *vboxLayout;
+    QFrame *mpLine;
+    QHBoxLayout *hboxLayout;
     QLabel *mpLblFluxModes;
     QLineEdit *mpEditFluxModes;
     QSpacerItem *mpSpacer;
+    QPushButton *mpBtnSave;
     Q3ListView *mpListView;
 
     void setupUi(TaskWidget *CQEFMWidget)
     {
       if (CQEFMWidget->objectName().isEmpty())
         CQEFMWidget->setObjectName(QString::fromUtf8("CQEFMWidget"));
-      CQEFMWidget->resize(366, 168);
-      vboxLayout = new Q3VBoxLayout(CQEFMWidget);
+      CQEFMWidget->resize(314, 137);
+      vboxLayout = new QVBoxLayout(CQEFMWidget);
       vboxLayout->setSpacing(6);
       vboxLayout->setMargin(11);
       vboxLayout->setObjectName(QString::fromUtf8("vboxLayout"));
-      mpLine = new Q3Frame(CQEFMWidget);
+      mpLine = new QFrame(CQEFMWidget);
       mpLine->setObjectName(QString::fromUtf8("mpLine"));
-      mpLine->setFrameShape(Q3Frame::HLine);
-      mpLine->setFrameShadow(Q3Frame::Sunken);
+      mpLine->setFrameShape(QFrame::HLine);
+      mpLine->setFrameShadow(QFrame::Sunken);
 
       vboxLayout->addWidget(mpLine);
 
-      hboxLayout = new Q3HBoxLayout();
+      hboxLayout = new QHBoxLayout();
       hboxLayout->setSpacing(6);
       hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
       mpLblFluxModes = new QLabel(CQEFMWidget);
@@ -80,9 +77,14 @@ class Ui_CQEFMWidget
 
       hboxLayout->addWidget(mpEditFluxModes);
 
-      mpSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+      mpSpacer = new QSpacerItem(16, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
       hboxLayout->addItem(mpSpacer);
+
+      mpBtnSave = new QPushButton(CQEFMWidget);
+      mpBtnSave->setObjectName(QString::fromUtf8("mpBtnSave"));
+
+      hboxLayout->addWidget(mpBtnSave);
 
       vboxLayout->addLayout(hboxLayout);
 
@@ -100,7 +102,11 @@ class Ui_CQEFMWidget
 
       vboxLayout->addWidget(mpListView);
 
+      QWidget::setTabOrder(mpEditFluxModes, mpBtnSave);
+      QWidget::setTabOrder(mpBtnSave, mpListView);
+
       retranslateUi(CQEFMWidget);
+      QObject::connect(mpBtnSave, SIGNAL(clicked()), CQEFMWidget, SLOT(slotSave()));
 
       QMetaObject::connectSlotsByName(CQEFMWidget);
     } // setupUi
@@ -109,6 +115,7 @@ class Ui_CQEFMWidget
     {
       CQEFMWidget->setCaption(QApplication::translate("CQEFMWidget", "Elementary Flux Modes", 0, QApplication::UnicodeUTF8));
       mpLblFluxModes->setText(QApplication::translate("CQEFMWidget", "Flux Modes", 0, QApplication::UnicodeUTF8));
+      mpBtnSave->setText(QApplication::translate("CQEFMWidget", "Save Result", 0, QApplication::UnicodeUTF8));
       mpListView->header()->setLabel(0, QApplication::translate("CQEFMWidget", "Reversibility", 0, QApplication::UnicodeUTF8));
       mpListView->header()->setLabel(1, QApplication::translate("CQEFMWidget", "Reaction Name", 0, QApplication::UnicodeUTF8));
       mpListView->header()->setLabel(2, QApplication::translate("CQEFMWidget", "Reaction Equation", 0, QApplication::UnicodeUTF8));
@@ -143,6 +150,9 @@ class CQEFMWidget : public TaskWidget, public Ui::CQEFMWidget
     void init();
     void destroy();
     void loadFluxModes();
+
+  private slots:
+    void slotSave();
   };
 
 #endif // CQEFMWIDGET_H

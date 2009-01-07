@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:15:45 $
+//   $Date: 2009/01/07 19:37:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 
 #include "copasi.h"
 #include "CTSSAProblem.h"
+#include "CTSSATask.h"
 #include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -194,27 +195,6 @@ bool CTSSAProblem::timeSeriesRequested() const
   {return *mpTimeSeriesRequested;}
 
 /**
- * Load a trajectory problem
- * @param "CReadConfig &" configBuffer
- */
-void CTSSAProblem::load(CReadConfig & configBuffer,
-                        CReadConfig::Mode C_UNUSED(mode))
-{
-  if (configBuffer.getVersion() < "4.0")
-    {
-      mpModel = CCopasiDataModel::Global->getModel();
-      configBuffer.getVariable("EndTime", "C_FLOAT64",
-                               mpDuration,
-                               CReadConfig::LOOP);
-      configBuffer.getVariable("Points", "C_INT32",
-                               mpStepNumber);
-      mStepNumberSetLast = true;
-
-      sync();
-    }
-}
-
-/**
  * This function synchronizes step size and number
  */
 bool CTSSAProblem::sync()
@@ -295,3 +275,19 @@ C_FLOAT64 CTSSAProblem::getDeufelhardTol()
 {
   return *getValue("Deuflhard Tolerance").pDOUBLE;
 }
+
+void CTSSAProblem::printResult(std::ostream * ostream) const
+  {
+    std::ostream & os = *ostream;
+
+    CCopasiTask* mpTask =
+      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+
+    if (!mpTask) return;
+
+    CCopasiMethod* mpMethod = mpTask->getMethod();
+
+    this->print(&os);
+
+    mpMethod->printResult(&os);
+  }

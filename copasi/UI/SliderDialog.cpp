@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@
 #include "CQTrajectoryWidget.h"
 #include "SteadyStateWidget.h"
 #include "ScanWidget.h"
+#include "CQMCAWidget.h"
 #include "SliderSettingsDialog.h"
 #include "CQMessageBox.h"
 #include "CopasiSlider.h"
@@ -67,9 +68,9 @@ C_INT32 SliderDialog::folderMappings[][2] = {
       {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
     };
 
-C_INT32 SliderDialog::numKnownTasks = 4;
-C_INT32 SliderDialog::knownTaskIDs[] = {21, 23, 24, 31};
-const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
+//C_INT32 SliderDialog::numKnownTasks = 4;
+//C_INT32 SliderDialog::[] = {21, 23, 24, 31};
+//const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
     QDialog(parent, name, modal, fl),
@@ -148,6 +149,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   taskMap[23] = &SliderDialog::runTimeCourse;
   taskMap[21] = &SliderDialog::runSteadyStateTask;
   taskMap[31] = &SliderDialog::runScanTask;
+  taskMap[24] = &SliderDialog::runMCATask;
 
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -573,6 +575,15 @@ void SliderDialog::runScanTask()
     {
       pParentWindow->getScanWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
       pParentWindow->getScanWidget()->runTask();
+    }
+}
+
+void SliderDialog::runMCATask()
+{
+  if (pParentWindow)
+    {
+      pParentWindow->getMCAWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
+      pParentWindow->getMCAWidget()->runTask();
     }
 }
 

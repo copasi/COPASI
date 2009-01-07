@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/07 19:43:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,8 @@
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
 #include "utilities/CDimension.h"
+#include "CopasiFileDialog.h"
+#include "CQMessageBox.h"
 
 #define COL_NAME 0
 #define COL_STATUS 1
@@ -202,6 +204,11 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   labelTitle->setAlignment(int(Qt::WordBreak | Qt::AlignVCenter | Qt::AlignRight));
   labelTitle->setText("<h2>Model parameters</h2>");
   layoutLeft->addWidget(labelTitle);
+
+  saveButton = new QPushButton(this, "saveButton");
+  saveButton->setText("Save data...");
+  layoutLeft->addWidget(saveButton);
+
   spacer1 = new QSpacerItem(20, 261, QSizePolicy::Minimum, QSizePolicy::Expanding);
   layoutLeft->addItem(spacer1);
 
@@ -213,6 +220,7 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   // signals and slots connections
   connect(commitButton, SIGNAL(clicked()), this, SLOT(commitPressed()));
   connect(revertButton, SIGNAL(clicked()), this, SLOT(revertPressed()));
+  connect(saveButton, SIGNAL(clicked()), this, SLOT(savePressed()));
 
   connect(listView, SIGNAL(clicked(Q3ListViewItem*, const QPoint &, int)),
           this, SLOT(editItem(Q3ListViewItem*, const QPoint &, int)));
@@ -238,6 +246,38 @@ void ParametersWidget::commitPressed()
 void ParametersWidget::revertPressed()
 {
   loadFromModel();
+}
+
+void ParametersWidget::savePressed()
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+
+      if (fileName.isEmpty()) return;
+
+      if (!fileName.endsWith(".txt") &&
+          !fileName.endsWith(".")) fileName += ".txt";
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
+  if (file.fail()) return;
+
+  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
+  if (!model) return;
+
+  file << model->printParameterOverview() << std::endl;
 }
 
 bool ParametersWidget::loadFromModel()
