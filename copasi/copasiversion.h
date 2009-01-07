@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasiversion.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:55:47 $
+//   $Date: 2009/01/07 18:42:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 #define COPASI_VERSION_MAJOR 4
 #define COPASI_VERSION_MINOR 4
-#define COPASI_VERSION_BUILD 27
+#define COPASI_VERSION_BUILD 29
 #define COPASI_VERSION_COMMENT "development"
 
 #endif // COPASI_VERSION

@@ -66,6 +66,17 @@ AC_ARG_ENABLE([release],
   [ENABLE_RELEASE=\$enable_release],
   [ENABLE_RELEASE="no"])
   
+AC_ARG_ENABLE([package],
+  AS_HELP_STRING([--enable-package],
+                 [enable package build (disables debug, enables release default: disabled)]),
+  [ENABLE_PACKAGE=\$enable_package],
+  [ENABLE_PACKAGE="no"])
+
+if test x"\${ENABLE_PACKAGE}" != x"no"; then
+  ENABLE_RELEASE=\${ENABLE_PACKAGE}
+  QMAKE_ARG="\$QMAKE_ARG PACKAGE=\${ENABLE_PACKAGE}"
+fi;
+
 if test x"\${ENABLE_RELEASE}" != x"yes" -a x"\${ENABLE_DEBUG}" != x"no"; then
   QMAKE_ARG="\$QMAKE_ARG CONFIG+=debug CONFIG-=release"
 else
@@ -106,6 +117,17 @@ if test x"\${QWT_PATH}" != x""; then
 fi
 
 
+dnl qwt3d library
+AC_ARG_WITH([qwt3d],
+  AS_HELP_STRING([--with-qwt3d=PATH],
+                 [Path to QWT3D Library ]),
+  [QWT3D_PATH=\$withval])
+
+if test x"\${QWT3D_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG QWT3D_PATH=\$QWT3D_PATH"
+fi
+
+
 dnl expat library   
 AC_ARG_WITH([expat],
   AC_HELP_STRING([--with-expat=PATH],
@@ -114,6 +136,38 @@ AC_ARG_WITH([expat],
 
 if test x"\${EXPAT_PATH}" != x""; then
   QMAKE_ARG="\$QMAKE_ARG EXPAT_PATH=\$EXPAT_PATH"
+fi
+
+
+dnl raptor library   
+AC_ARG_WITH([raptor],
+  AC_HELP_STRING([--with-raptor=PATH],
+                 [Path to raptor RDF Library ]),
+  [RAPTOR_PATH=\$withval])
+
+if test x"\${RAPTOR_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG RAPTOR_PATH=\$RAPTOR_PATH"
+fi
+
+
+dnl cppunit library
+AC_ARG_WITH([cppunit],
+  AS_HELP_STRING([--with-cppunit=PATH],
+                 [Path to CPPUNIT Library ]),
+  [CPPUNIT_PATH=\$withval])
+
+if test x"\${CPPUNIT_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG CPPUNIT_PATH=\$CPPUNIT_PATH"
+fi
+
+dnl sbw library
+AC_ARG_WITH([sbw],
+  AS_HELP_STRING([--with-sbw=PATH],
+                 [Path to SBW Library ]),
+  [SBW_PATH=\$withval])
+
+if test x"\${SBW_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG SBW_PATH=\$SBW_PATH"
 fi
 
 
@@ -159,14 +213,125 @@ if test x"\${MKL_PATH}" != x""; then
 fi
 
 
+dnl bindings
+AC_ARG_WITH([swig],
+  AS_HELP_STRING([--with-swig=PATH],
+                 [Path to swig]),
+  [SWIG_PATH=\$withval])
 
-dnl Determine whether any lex and yacc sources shall be builf
-AC_ARG_WITH([build-parser],
-  AS_HELP_STRING([--with-build-parser],
-                 [Specify whether to build lex and yacc sources.]),
-  [BUILD_PARSER=\$withval])
+if test x"\${SWIG_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG SWIG_PATH=\$SWIG_PATH"
+fi
 
-if test x"\$BUILD_PARSER" = x"yes"; then
+
+AC_ARG_ENABLE([python],
+  AS_HELP_STRING([--enable-python],
+                 [build python wrappers (default: disabled)]),
+  [ENABLE_PYTHON=\$enable_python],
+  [ENABLE_PYTHON="no"])
+
+if test x"\${ENABLE_PYTHON}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG ENABLE_PYTHON=\$ENABLE_PYTHON"
+fi
+
+
+AC_ARG_WITH([python],
+  AS_HELP_STRING([--with-python=PATH],
+                 [Path to python]),
+  [PYTHON_PATH=\$withval;PYTHON_INCLUDE_PATH=\$PYTHON_PATH/include;PYTHON_LIB_PATH=\$PYTHON_PATH/lib])
+
+
+AC_ARG_WITH([python-includes],
+  AS_HELP_STRING([--with-python-includes=PATH],
+                 [Path to python include files]),
+  [PYTHON_INCLUDE_PATH=\$withval])
+
+if test x"\${PYTHON_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG PYTHON_INCLUDE_PATH=\$PYTHON_INCLUDE_PATH"
+fi
+
+
+AC_ARG_WITH([python-libs],
+  AS_HELP_STRING([--with-python-libs=PATH],
+                 [Path to python library files]),
+  [PYTHON_LIB_PATH=\$withval])
+
+if test x"\${PYTHON_LIB_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG PYTHON_LIB_PATH=\$PYTHON_LIB_PATH"
+fi
+
+
+AC_ARG_ENABLE([java],
+  AS_HELP_STRING([--enable-java],
+                 [build java wrappers (default: disabled)]),
+  [ENABLE_JAVA=\$enable_java],
+  [ENABLE_JAVA="no"])
+
+if test x"\${ENABLE_JAVA}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG ENABLE_JAVA=\$ENABLE_JAVA"
+fi
+
+
+AC_ARG_WITH([java],
+  AS_HELP_STRING([--with-java=PATH],
+                 [Path to Java]),
+  [JAVA_PATH=\$withval;JAVA_HOME=\$withval;JAVA_INCLUDE_PATH=\$JAVA_PATH/include;JAVA_LIB_PATH=\$JAVA_PATH/lib])
+
+if test x"\${JAVA_HOME}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG JAVA_HOME=\$JAVA_HOME"
+fi
+
+
+AC_ARG_WITH([java-includes],
+  AS_HELP_STRING([--with-java-includes=PATH],
+                 [Path to Java include files]),
+  [JAVA_INCLUDE_PATH=\$withval])
+
+if test x"\${JAVA_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG JAVA_INCLUDE_PATH=\$JAVA_INCLUDE_PATH"
+fi
+
+
+AC_ARG_WITH([java-libs],
+  AS_HELP_STRING([--with-java-libs=PATH],
+                 [Path to Java libraries]),
+  [JAVA_LIB_PATH=\$withval])
+
+if test x"\${JAVA_LIB_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG JAVA_LIB_PATH=\$JAVA_LIB_PATH"
+fi
+
+AC_ARG_WITH([junit],
+  AS_HELP_STRING([--with-junit=PATH],
+                 [Path to junit]),
+  [JUNIT_PATH=\$withval;])
+
+if test x"\${JUNIT_PATH}" != x""; then
+  QMAKE_ARG="\$QMAKE_ARG JUNIT_PATH=\$JUNIT_PATH"
+fi
+
+
+
+dnl Handle COPASI license
+AC_ARG_WITH([copasi-license],
+  AS_HELP_STRING([--with-copasi-license],
+                 [Specify whether to use the German (DE), US (US) or Commercial (COM) license.]),
+  [COPASI_LICENSE=\$withval])
+
+if test x"\${COPASI_LICENSE}" = x"DE" -o x"\${COPASI_LICENSE}" = x"COM"; then
+  QMAKE_ARG="\$QMAKE_ARG USE_LICENSE=\$COPASI_LICENSE"
+else
+  QMAKE_ARG="\$QMAKE_ARG USE_LICENSE=US"
+fi
+
+
+AC_ARG_ENABLE([lex-yacc],
+  AS_HELP_STRING([--enable-lex-yacc],
+                 [Specify whether to compile lex and yacc sources (default: no).]),
+  [ENABLE_LEX_YACC=\$enable_lex_yacc],
+  [ENABLE_LEX_YACC="no"])
+  
+if test x"\$ENABLE_LEX_YACC" = x"yes"; then
   QMAKE_ARG="\$QMAKE_ARG BUILD_PARSER=yes"
 fi
 
@@ -185,10 +350,11 @@ dnl to prevent calling aclocal, automake and configure again
  touch Makefile.in
  touch configure
 
+ find copasi -type f -name Makefile -exec rm {} \\;
+
  cd copasi && \\
  echo executing in \`pwd\`: && \\
  rm -f .qmake.internal.cache */.qmake.internal.cache && \\
- rm -f Makefile */Makefile && \\
  echo "  qmake \$QMAKE_ARG" && \\
  \$QTDIR/bin/qmake \$QMAKE_ARG && \\
  cat Makefile | \\
