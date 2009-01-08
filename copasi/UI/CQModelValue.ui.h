@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ void CQModelValue::slotBtnNew()
     {
       i++;
       name = "quantity_";
-      name += (const char *) QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
     }
 
   enter(mpModelValue->getKey());
@@ -436,9 +436,9 @@ void CQModelValue::save()
   if (mpModelValue == NULL) return;
 
   // set name of quantitiy
-  if (mpModelValue->getObjectName() != (const char *) mpEditName->text().utf8())
+  if (mpModelValue->getObjectName() != TO_UTF8(mpEditName->text()))
     {
-      if (!mpModelValue->setObjectName((const char *) mpEditName->text().utf8()))  // the new name is rejected as it has been used
+      if (!mpModelValue->setObjectName(TO_UTF8(mpEditName->text())))  // the new name is rejected as it has been used
         {
           QString msg;
           msg = "Unable to rename quantity '" + FROM_UTF8(mpModelValue->getObjectName()) + "'\n"

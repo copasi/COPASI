@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:35:30 $
+//   $Date: 2009/01/08 16:07:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,12 +289,12 @@ bool CStructureParser::characters(const QString& str)
 
 bool CStructureParser::endElement(const QString&, const QString&, const QString& qName)
 {
-  std::cout << std::endl << "on End Element of " << (const char *) qName.utf8() << std::endl;
+  std::cout << std::endl << "on End Element of " << TO_UTF8(qName) << std::endl;
 
   std::cout << "BEFORE: List of Uncompleted Tags: " << std::endl;
   Q3ValueList<QString>::iterator itL;
   for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
-    std::cout << (const char *) itL->utf8() << std::endl;
+    std::cout << TO_UTF8(*itL) << std::endl;
   std::cout << std::endl;
 
   indent.remove((uint)0, 4);
@@ -323,7 +323,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mrow")
     {
-      std::cout << std::endl << "on End Element of mrow, mListOfUncompletedTags = " << (const char *) mListOfUncompletedTags.last().utf8() << std::endl;
+      std::cout << std::endl << "on End Element of mrow, mListOfUncompletedTags = " << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
 
       if (mListOfUncompletedTags.last() == "mrow")
         mListOfUncompletedTags.pop_back();
@@ -332,7 +332,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
       tex += " } ";
 
-      std::cout << "on endElement of mrow, tex = " << (const char *) tex.utf8() << std::endl;
+      std::cout << "on endElement of mrow, tex = " << TO_UTF8(tex) << std::endl;
     }
 
   if (qName == "mfenced")
@@ -353,9 +353,9 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
-          std::cout << (const char *) last.utf8()
+          std::cout << TO_UTF8(last)
           << " --> split: "
-          << (const char *) lastUncompletedTags.utf8()
+          << TO_UTF8(lastUncompletedTags)
           << " & " << idx << std::endl;
           idx++;
 
@@ -363,7 +363,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           last = lastUncompletedTags + "_" + QString::number(idx);
 
           std::cout << "mfenced L" << __LINE__ << std::endl;
-          std::cout << (const char *) mListOfUncompletedTags.last().utf8() << std::endl;
+          std::cout << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
 
           if (lastUncompletedTags.contains("msub") && idx == 2)
             tex += "_";
@@ -376,14 +376,14 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
-          std::cout << (const char *) last.utf8() << " --> split: " << (const char *) lastUncompletedTags.utf8() << " & " << idx << std::endl;
+          std::cout << TO_UTF8(last) << " --> split: " << TO_UTF8(lastUncompletedTags) << " & " << idx << std::endl;
           idx++;
 
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
 
           std::cout << "mfenced L" << __LINE__ << std::endl;
-          std::cout << (const char *) mListOfUncompletedTags.last().utf8() << std::endl;
+          std::cout << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
 
           if (lastUncompletedTags.contains("msup") && idx == 2)
             tex += "^";
@@ -416,7 +416,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   std::cout << "AFTER: List of Uncompleted Tags: " << std::endl;
   for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
-    std::cout << (const char *) itL->utf8() << std::endl;
+    std::cout << TO_UTF8(*itL) << std::endl;
   std::cout << std::endl;
 
   return TRUE;

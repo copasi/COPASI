@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.196 $
+//   $Revision: 1.197 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -253,7 +253,7 @@ bool ReactionsWidget1::saveToReaction()
   bool createdMetabs = mpRi->createMetabolites();
   bool createdObjects = mpRi->createOtherObjects();
 
-  mpRi->setReactionName((const char *)LineEdit1->text().utf8());
+  mpRi->setReactionName(TO_UTF8(LineEdit1->text()));
 
   //this writes all changes to the reaction
   if (!mpRi->writeBackToReaction(NULL))
@@ -324,7 +324,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   // tell the reaction interface
-  mpRi->setFunctionAndDoMapping((const char *)p2.utf8());
+  mpRi->setFunctionAndDoMapping(TO_UTF8(p2));
 
   // update the widget
   FillWidgetFromRI();
@@ -333,9 +333,9 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-  //std::string rName = (const char *)LineEdit1->text().utf8();
+  //std::string rName = TO_UTF8(LineEdit1->text());
 
-  std::string eq = (const char *)LineEdit2->text().utf8();
+  std::string eq = TO_UTF8(LineEdit2->text());
 
   //first check if the string is a valid equation
   if (!CChemEqInterface::isValidEq(eq))
@@ -354,7 +354,7 @@ void ReactionsWidget1::slotLineEditChanged()
 
 void ReactionsWidget1::slotNameChanged()
 {
-  std::string rName = (const char *)LineEdit1->text().utf8();
+  std::string rName = TO_UTF8(LineEdit1->text());
   mpRi->setReactionName(rName);
 }
 
@@ -369,7 +369,7 @@ void ReactionsWidget1::slotBtnNewClicked()
     {
       i++;
       name = "reaction_";
-      name += (const char *) QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
     }
   protectedNotify(ListViews::REACTION, ListViews::ADD);
   enter(CCopasiDataModel::Global->getModel()->getReactions()[name]->getKey());
@@ -594,18 +594,18 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
       if (mpRi->isLocalValue(index))
         mpRi->setLocalValue(index, newValue.toDouble()); // TODO: check
       else
-        mpRi->setMapping(index, (const char *)newValue.utf8());
+        mpRi->setMapping(index, TO_UTF8(newValue));
     }
   else if (mpRi->getUsage(index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
-      mpRi->setMapping(index, (const char *)newValue.utf8());
+      mpRi->setMapping(index, TO_UTF8(newValue));
     }
   else
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mpRi->setMapping(index, (const char *)table->text(table->mIndex2Line[index], 3).utf8());
+          mpRi->setMapping(index, TO_UTF8(table->text(table->mIndex2Line[index], 3)));
         }
     }
 
@@ -636,7 +636,7 @@ void ReactionsWidget1::slotNewFunction()
   // fw->show();
   // TODO: we could think about calling the function widget as a dialogue here...
 
-  std::string name = std::string("Rate Law for ") + (const char *)LineEdit1->text().utf8();
+  std::string name = std::string("Rate Law for ") + TO_UTF8(LineEdit1->text());
   std::string nname = name;
   int i = 0;
   CCopasiVectorN<CEvaluationTree>& FunctionList
@@ -647,7 +647,7 @@ void ReactionsWidget1::slotNewFunction()
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
 
   CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);

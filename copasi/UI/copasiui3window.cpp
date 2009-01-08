@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.244 $
+//   $Revision: 1.245 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,7 @@ extern const char * CopasiLicense;
 #include "CQPreferenceDialog.h"
 #include "CQSBMLFileDialog.h"
 #include "SteadyStateWidget.h"
+#include "copasi/UI/qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -586,7 +587,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (success = dataModel->saveModel((const char *) tmp.utf8(), true))
+      if (success = dataModel->saveModel(TO_UTF8(tmp), true))
         {
           CCopasiDataModel::Global->changed(false);
           updateTitle();
@@ -730,7 +731,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
       try
         {
-          success = dataModel->loadModel((const char *)newFile.utf8());
+          success = dataModel->loadModel(TO_UTF8(newFile));
         }
       catch (...)
         {
@@ -767,8 +768,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
-      if (strcasecmp(CDirEntry::suffix((const char *)newFile.utf8()).c_str(), ".cps") == 0 &&
-          CDirEntry::isWritable((const char *)newFile.utf8()))
+      if (strcasecmp(CDirEntry::suffix(TO_UTF8(newFile)).c_str(), ".cps") == 0 &&
+          CDirEntry::isWritable(TO_UTF8(newFile)))
         mSaveAsRequired = false;
       else
         mSaveAsRequired = true;
@@ -1194,7 +1195,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
       try
         {
-          success = dataModel->importSBML((const char *)SBMLFile.utf8());
+          success = dataModel->importSBML(TO_UTF8(SBMLFile));
         }
 
       catch (...)
@@ -1282,7 +1283,7 @@ void CopasiUI3Window::slotExportSBML()
       bool success = false;
       try
         {
-          success = dataModel->exportSBML((const char *) tmp.utf8(), true, sbmlLevel, sbmlVersion, exportIncomplete);
+          success = dataModel->exportSBML(TO_UTF8(tmp), true, sbmlLevel, sbmlVersion, exportIncomplete);
         }
       catch (CCopasiException except)
         {
@@ -1367,7 +1368,7 @@ void CopasiUI3Window::slotExportMathModel()
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (!dataModel->exportMathModel((const char *) tmp.utf8(), (const char *) newFilter.utf8(), true))
+      if (!dataModel->exportMathModel(TO_UTF8(tmp), TO_UTF8(newFilter), true))
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
@@ -1527,7 +1528,7 @@ void CopasiUI3Window::updateTitle()
 
   std::string BaseName;
   if (!FileName.isEmpty())
-    BaseName = CDirEntry::baseName((const char *) FileName.utf8()) + " - ";
+    BaseName = CDirEntry::baseName(TO_UTF8(FileName)) + " - ";
 
   setCaption(FROM_UTF8(BaseName) + FixedTitle + " " + FileName);
 }

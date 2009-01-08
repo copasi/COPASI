@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,13 +69,13 @@ void TimeSeriesSubWidget::saveDataToFile()
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      failed = timeSeries->save((const char *)fileName.utf8(), !(this->table()->doShowConcentrations()), "\t");
+      failed = timeSeries->save(TO_UTF8(fileName), !(this->table()->doShowConcentrations()), "\t");
       setCursor(oldCursor);
     }
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += (const char *) fileName.utf8();
+      s += TO_UTF8(fileName);
       CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }

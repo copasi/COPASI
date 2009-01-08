@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,8 +116,8 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
 
   if (checked)
     Number = "-inf";
-  else if (isNumber((const char *) mpEditLower->text().utf8()))
-    Number = (const char *) mpEditLower->text().utf8();
+  else if (isNumber(TO_UTF8(mpEditLower->text())))
+    Number = TO_UTF8(mpEditLower->text());
   else if (mpLowerObject)
     Number = mpLowerObject->getCN();
   else return;
@@ -150,8 +150,8 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
   if (checked)
     Number = "inf";
-  else if (isNumber((const char *) mpEditUpper->text().utf8()))
-    Number = (const char *) mpEditUpper->text().utf8();
+  else if (isNumber(TO_UTF8(mpEditUpper->text())))
+    Number = TO_UTF8(mpEditUpper->text());
   else if (mpUpperObject)
     Number = mpUpperObject->getCN();
   else return;
@@ -380,7 +380,7 @@ void CQFittingItemWidget::slotExperiments()
               unsigned C_INT32 i, imax = mpBoxExperiments->count();
 
               for (i = 0; i < imax && imax < (*mppExperimentSet)->getExperimentCount(); i++)
-                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppExperimentSet)->getExperiment((const char *) mpBoxExperiments->text(i).utf8())->CCopasiParameter::getKey());
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppExperimentSet)->getExperiment(TO_UTF8(mpBoxExperiments->text(i)))->CCopasiParameter::getKey());
 
               setTableText(*it, (*mpItemsCopy)[*it]);
             }
@@ -1350,15 +1350,15 @@ void CQFittingItemWidget::saveSelection()
 
       if (mpCheckLowerInf->isChecked())
         pItem->setLowerBound(CCopasiObjectName("-inf"));
-      else if (isNumber((const char *) mpEditLower->text().utf8()))
-        pItem->setLowerBound(CCopasiObjectName((const char *) mpEditLower->text().utf8()));
+      else if (isNumber(TO_UTF8(mpEditLower->text())))
+        pItem->setLowerBound(CCopasiObjectName(TO_UTF8(mpEditLower->text())));
 
       if (mpCheckUpperInf->isChecked())
         pItem->setUpperBound(CCopasiObjectName("inf"));
-      else if (isNumber((const char *) mpEditUpper->text().utf8()))
-        pItem->setUpperBound(CCopasiObjectName((const char *) mpEditUpper->text().utf8()));
+      else if (isNumber(TO_UTF8(mpEditUpper->text())))
+        pItem->setUpperBound(CCopasiObjectName(TO_UTF8(mpEditUpper->text())));
 
-      if (isNumber((const char *) mpEditStart->text().utf8()))
+      if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
 
       mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
@@ -1414,7 +1414,7 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
 
 void CQFittingItemWidget::slotLowerLostFocus()
 {
-  std::string Number = (const char *) mpEditLower->text().utf8();
+  std::string Number = TO_UTF8(mpEditLower->text());
 
   if (!isNumber(Number) &&
       !(Number[0] == '-' &&
@@ -1448,7 +1448,7 @@ void CQFittingItemWidget::slotLowerLostFocus()
 
 void CQFittingItemWidget::slotUpperLostFocus()
 {
-  std::string Number = (const char *) mpEditUpper->text().utf8();
+  std::string Number = TO_UTF8(mpEditUpper->text());
 
   if (!isNumber(Number) &&
       !(Number[0] == '+' &&
@@ -1533,7 +1533,7 @@ void CQFittingItemWidget::slotReset()
 
 void CQFittingItemWidget::slotStartLostFocus()
 {
-  if (!isNumber((const char *) mpEditStart->text().utf8())) return;
+  if (!isNumber(TO_UTF8(mpEditStart->text()))) return;
 
   C_FLOAT64 Number = mpEditStart->text().toDouble();
 
@@ -1569,7 +1569,7 @@ void CQFittingItemWidget::slotCrossValidations()
               unsigned C_INT32 i, imax = mpBoxCrossValidations->count();
 
               for (i = 0; i < imax && imax < (*mppCrossValidationSet)->getExperimentCount(); i++)
-                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment((const char *) mpBoxCrossValidations->text(i).utf8())->CCopasiParameter::getKey());
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment(TO_UTF8(mpBoxCrossValidations->text(i)))->CCopasiParameter::getKey());
 
               setTableText(*it, (*mpItemsCopy)[*it]);
             }

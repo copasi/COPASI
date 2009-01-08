@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,7 +97,7 @@ void CQMetabolite::slotBtnNew()
     {
       i++;
       name = "species_";
-      name += (const char *)QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
     }
 
   switch (mFramework)
@@ -276,7 +276,7 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
 
   QString Compartment = mpComboBoxCompartment->text(compartment);
   const CCompartment * pNewCompartment =
-    CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()];
+    CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)];
 
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
@@ -551,9 +551,9 @@ void CQMetabolite::save()
   if (mpMetab == NULL) return;
 
   // Name
-  if (mpMetab->getObjectName() != (const char *) mpEditName->text().utf8())
+  if (mpMetab->getObjectName() != TO_UTF8(mpEditName->text()))
     {
-      if (!mpMetab->setObjectName((const char *) mpEditName->text().utf8()))
+      if (!mpMetab->setObjectName(TO_UTF8(mpEditName->text())))
         {
           QString msg;
           msg = "Unable to rename species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
@@ -579,7 +579,7 @@ void CQMetabolite::save()
       QString Compartment = mpComboBoxCompartment->currentText();
       std::string CompartmentToRemove = mpMetab->getCompartment()->getObjectName();
 
-      if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(mpMetab))
+      if (!CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(mpMetab))
         {
           QString msg;
           msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
@@ -674,7 +674,7 @@ void CQMetabolite::slotReactionTableCurrentChanged(Q3ListViewItem * pItem)
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
   std::string s1, s2;
-  s1 = (const char *) pItem->text(0).utf8();
+  s1 = TO_UTF8(pItem->text(0));
   s1 = s1.substr(0, s1.length() - 2);
 
   C_INT32 i = 0;

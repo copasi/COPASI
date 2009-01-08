@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:03:24 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.55 2009/01/07 19:03:24 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.56 2009/01/08 16:07:10 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -55,6 +55,7 @@
 #include "model/CMetabNameInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "UI/DataModelGUI.h"
+#include "copasi/UI/qtUtilities.h"
 
 //temporary
 #include "mathematics.h"
@@ -479,13 +480,13 @@ void PlotWidget1::addPlot()
   std::string name = "plot_";
   int i = 0;
   CPlotSpecification* pPl = NULL;
-  name += (const char *)QString::number(i).utf8();
+  name += TO_UTF8(QString::number(i));
 
   while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(name, CPlotItem::plot2d)))
     {
       i++;
       name = "plot_";
-      name += (const char *)QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
     }
 
   protectedNotify(ListViews::PLOT, ListViews::ADD);
@@ -590,9 +591,9 @@ bool PlotWidget1::saveToPlotSpec()
   pspec->cleanup();
 
   //title
-  if (pspec->getTitle() != (const char*)titleLineEdit->text().utf8())
+  if (pspec->getTitle() != TO_UTF8(titleLineEdit->text()))
     {
-      pspec->setTitle((const char*)titleLineEdit->text().utf8());
+      pspec->setTitle(TO_UTF8(titleLineEdit->text()));
       protectedNotify(ListViews::PLOT, ListViews::RENAME, objKey);
     }
 

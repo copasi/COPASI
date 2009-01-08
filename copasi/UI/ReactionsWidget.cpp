@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,17 +104,17 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   ri.initFromReaction(obj->getKey());
 
   QString equation(table->text(row, 2));
-  if ((const char *)equation.utf8() != ri.getChemEqString())
+  if (TO_UTF8(equation) != ri.getChemEqString())
     {
       //first check if the string is a valid equation
-      if (!CChemEqInterface::isValidEq((const char *)equation.utf8()))
+      if (!CChemEqInterface::isValidEq(TO_UTF8(equation)))
         {
           return;
         }
       else
         {
           //tell the reaction interface
-          ri.setChemEqString((const char *)equation.utf8(), "");
+          ri.setChemEqString(TO_UTF8(equation), "");
         }
     }
 
@@ -160,7 +160,7 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
   return pRea;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ void CQDifferentialEquations::init()
 void CQDifferentialEquations::saveMML(const QString outfilename)
 {
   std::ofstream ofile;
-  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
   ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
@@ -136,8 +136,8 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
-  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
-  ofile << UTF8_TO_CHAR(latexStr);
+  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
+  ofile << TO_UTF8(latexStr);
   ofile.close();
 }
 

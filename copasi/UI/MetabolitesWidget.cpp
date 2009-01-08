@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,11 +202,11 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   // This must be set first for setInitialConcentration and
   // setInitialNumber to work correctly.
   QString Compartment(table->text(row, COL_COMPARTMENT));
-  if (((const char *)Compartment.utf8() != pMetab->getCompartment()->getObjectName()) //has changed
+  if ((TO_UTF8(Compartment) != pMetab->getCompartment()->getObjectName()) //has changed
       && (Compartment != ""))
     {
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
-      if (!CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab))
+      if (!CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(pMetab))
         {
           QString msg;
           msg = "Unable to move species '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
@@ -331,7 +331,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
   return pMetab;
 }
@@ -537,7 +537,7 @@ void MetabolitesWidget::initialConcentrationChanged(unsigned C_INT32 row)
   const CCompartment * pCompartment = NULL;
 
   unsigned C_INT32 Index =
-    CCopasiDataModel::Global->getModel()->getCompartments().getIndex((const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8());
+    CCopasiDataModel::Global->getModel()->getCompartments().getIndex(TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT)));
   if (Index != C_INVALID_INDEX)
     {
       pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[Index];
@@ -560,7 +560,7 @@ void MetabolitesWidget::initialNumberChanged(unsigned C_INT32 row)
   const CCompartment * pCompartment = NULL;
   try
     {
-      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT))];
     }
   catch (...) {}
 
@@ -583,7 +583,7 @@ void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
   const CCompartment * pCompartment = NULL;
   try
     {
-      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_CURRENTCOMPARTMENT).utf8()];
+      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT))];
     }
   catch (...) {}
 
@@ -595,7 +595,7 @@ void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
   table->setText(row, COL_CURRENTCOMPARTMENT, Compartment);
 
   pCompartment
-  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()];
+  = CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)];
   Factor *= pCompartment->getInitialValue();
 
   table->setText(row, COL_INUMBER,

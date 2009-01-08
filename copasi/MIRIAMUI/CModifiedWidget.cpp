@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ void CModifiedWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
       CQDateTimeEditTableItem * pDTE = static_cast<CQDateTimeEditTableItem *> (table->cellWidget(row, COL_DATE_MODIFIED));
       std::string dt = "";
       if (pDTE->dateTime().isValid())
-        dt = std::string((const char *) pDTE->dateTime().toString(Qt::ISODate).utf8()) + "Z";
+        dt = std::string(TO_UTF8(pDTE->dateTime().toString(Qt::ISODate))) + "Z";
 
       pModified->setDate(dt);
     }
@@ -152,7 +152,7 @@ CCopasiObject* CModifiedWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
 
   return pModified;

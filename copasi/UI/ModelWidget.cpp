@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,15 +271,15 @@ bool ModelWidget::saveToModel()
 
   bool success = true;
 
-  if ((const char *)LineEdit->text().utf8() != model->getObjectName())
+  if (TO_UTF8(LineEdit->text()) != model->getObjectName())
     {
-      model->setTitle((const char *)LineEdit->text().utf8());
+      model->setTitle(TO_UTF8(LineEdit->text()));
       changed = true;
     }
 
   if (mOldComment != mpEditComment->text())
     {
-      std::string Richtext = (const char *)mpEditComment->text().utf8();
+      std::string Richtext = TO_UTF8(mpEditComment->text());
 
       // remove leading whitepsaces
       std::string::size_type pos = Richtext.find_first_not_of("\x0a\x0d\t ");
@@ -326,21 +326,21 @@ bool ModelWidget::saveToModel()
       changed = true;
     }
 
-  if ((const char *)ComboBox1->currentText().utf8() != model->getTimeUnitName())
+  if (TO_UTF8(ComboBox1->currentText()) != model->getTimeUnitName())
     {
-      model->setTimeUnit((const char *)ComboBox1->currentText().utf8());
+      model->setTimeUnit(TO_UTF8(ComboBox1->currentText()));
       changed = true;
     }
 
-  if ((const char *)ComboBox2->currentText().utf8() != model->getVolumeUnitName())
+  if (TO_UTF8(ComboBox2->currentText()) != model->getVolumeUnitName())
     {
-      model->setVolumeUnit((const char *)ComboBox2->currentText().utf8());
+      model->setVolumeUnit(TO_UTF8(ComboBox2->currentText()));
       changed = true;
     }
 
-  if ((const char *)ComboBox3->currentText().utf8() != model->getQuantityUnitName())
+  if (TO_UTF8(ComboBox3->currentText()) != model->getQuantityUnitName())
     {
-      model->setQuantityUnit((const char *)ComboBox3->currentText().utf8());
+      model->setQuantityUnit(TO_UTF8(ComboBox3->currentText()));
       changed = true;
     }
 

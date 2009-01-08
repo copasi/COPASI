@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,7 +166,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       reportDefinitionNameList->setCurrentItem(1);
       mpReport->setReportDefinition((*CCopasiDataModel::Global->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
-      mpReport->setTarget((const char *)targetEdit->text().utf8());
+      mpReport->setTarget(TO_UTF8(targetEdit->text()));
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
       if (QMessageBox::question(NULL, "No Report Definition Defined",
                                 "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
@@ -181,7 +181,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       row = reportDefinitionNameList->currentItem();
       mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(appendChecked->isChecked());
-      mpReport->setTarget((const char *)targetEdit->text().utf8());
+      mpReport->setTarget(TO_UTF8(targetEdit->text()));
       return;
     }
   else
@@ -214,7 +214,7 @@ void CReportDefinitionSelect::confirmClicked()
   row = reportDefinitionNameList->currentItem();
   mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
   mpReport->setAppend(appendChecked->isChecked());
-  mpReport->setTarget((const char *)targetEdit->text().utf8());
+  mpReport->setTarget(TO_UTF8(targetEdit->text()));
   cleanup();
   QDialog::done(QDialog::Accepted);
   //  delete this;

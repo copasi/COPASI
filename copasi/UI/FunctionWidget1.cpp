@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.161 $
+//   $Revision: 1.162 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -735,7 +735,7 @@ bool FunctionWidget1::saveToFunction()
 
   //name
   QString name(LineEdit1->text());
-  if (func->getObjectName() != (const char *)name.utf8())
+  if (func->getObjectName() != TO_UTF8(name))
     {
       // We need to check whether other trees call the current one.
       std::set<std::string> dependentTrees;
@@ -768,7 +768,7 @@ bool FunctionWidget1::saveToFunction()
           return false;
         }
 
-      if (!func->setObjectName((const char *)name.utf8()))
+      if (!func->setObjectName(TO_UTF8(name)))
         {
           QString msg;
           msg = "Unable to rename function '" + FROM_UTF8(func->getObjectName()) + "'\n"
@@ -837,7 +837,7 @@ void FunctionWidget1::slotFcnDescriptionChanged()
 
   try
     {
-      if (mpFunction->setInfix((const char *)textBrowser->text().utf8()) &&
+      if (mpFunction->setInfix(TO_UTF8(textBrowser->text())) &&
           mpFunction->compile())
         isValid = true;
       else
@@ -1093,7 +1093,7 @@ void FunctionWidget1::slotCommitButtonClicked()
   //update pFunction values
 
   /* Remove line breaks from the function description */
-  /*std::string desc = (const char *)textBrowser->text().utf8();
+  /*std::string desc = TO_UTF8(textBrowser->text());
   unsigned int loc = 0;
   while (1)
     {
@@ -1120,7 +1120,7 @@ void FunctionWidget1::slotNewButtonClicked()
     {
       i++;
       name = "function_";
-      name += (const char *)QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
     }
 
   CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(name), true);
@@ -1471,7 +1471,7 @@ void FunctionWidget1::slotSave()
 void FunctionWidget1::saveMML(const QString outfilename)
 {
   std::ofstream ofile;
-  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
   ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
   ofile << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"HTMLFiles/xhtml-math11-f.dtd\">" << std::endl;
@@ -1499,9 +1499,9 @@ void FunctionWidget1::saveTeX(const QString outfilename)
   CMathMLToTeX::convert(latexStr);
 
   std::ofstream ofile;
-  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
+  ofile.open(utf8ToLocale(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
-  ofile << (const char *) latexStr.utf8();
+  ofile << TO_UTF8(latexStr);
 
   ofile.close();
 }

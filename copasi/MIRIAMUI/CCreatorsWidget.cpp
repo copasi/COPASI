@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,10 +106,10 @@ void CCreatorsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   if (!obj) return;
   CCreator * pCreator = static_cast< CCreator * >(obj);
 
-  pCreator->setFamilyName((const char *) table->text(row, COL_FAMILY_NAME).utf8());
-  pCreator->setGivenName((const char *) table->text(row, COL_GIVEN_NAME).utf8());
-  pCreator->setEmail((const char *) table->text(row, COL_EMAIL).utf8());
-  pCreator->setORG((const char *) table->text(row, COL_ORG).utf8());
+  pCreator->setFamilyName(TO_UTF8(table->text(row, COL_FAMILY_NAME)));
+  pCreator->setGivenName(TO_UTF8(table->text(row, COL_GIVEN_NAME)));
+  pCreator->setEmail(TO_UTF8(table->text(row, COL_EMAIL)));
+  pCreator->setORG(TO_UTF8(table->text(row, COL_ORG)));
 }
 
 void CCreatorsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -143,7 +143,7 @@ CCopasiObject* CCreatorsWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
 
   return pCreator;

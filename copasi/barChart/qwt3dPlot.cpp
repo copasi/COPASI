@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:20:46 $
+//   $Date: 2009/01/08 16:07:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -483,7 +483,7 @@ void Plot3d::saveDataToFile()
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += (const char *) fileName.utf8();
+      s += TO_UTF8(fileName);
       QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }

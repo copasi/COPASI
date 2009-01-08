@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -242,9 +242,9 @@ void CopasiTableWidget::saveTable()
         {
           if (!mFlagDelete[j])
             {
-              CCopasiObject* pObj = createNewObject((const char *)table->text(j, 1).utf8());
+              CCopasiObject* pObj = createNewObject(TO_UTF8(table->text(j, 1)));
               if (!pObj) continue;
-              if (mShowNewObjectWarning && pObj->getObjectName() != (const char *)table->text(j, 1).utf8())
+              if (mShowNewObjectWarning && pObj->getObjectName() != TO_UTF8(table->text(j, 1)))
                 {
                   QString msg;
                   msg = "Unable to create object '" + table->text(j, 1)
@@ -281,7 +281,7 @@ void CopasiTableWidget::saveTable()
             }
           if (mFlagRenamed[j])
             {
-              if (!GlobalKeys.get(mKeys[j])->setObjectName((const char *)table->text(j, 1).utf8()))
+              if (!GlobalKeys.get(mKeys[j])->setObjectName(TO_UTF8(table->text(j, 1))))
                 {
                   QString msg;
                   msg = "Unable to rename object '" + FROM_UTF8(GlobalKeys.get(mKeys[j])->getObjectName()) + "'\n"

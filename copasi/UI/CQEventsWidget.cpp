@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:39 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ CCopasiObject* CQEventsWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
   //std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
   return pEv;
@@ -317,7 +317,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                  // Yes or Enter
+      case 0:                                 // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
@@ -330,7 +330,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                  // No or Escape
+      default:                                 // No or Escape
         break;
       }
   */

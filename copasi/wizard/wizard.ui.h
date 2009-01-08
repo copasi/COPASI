@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:18:58 $
+//   $Date: 2009/01/08 16:07:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,7 +74,7 @@ void WizardDialog::init()
   if (!WizardDir.empty())
     {
       // the next line will hopefully ensure that this works under windows as well.
-      WizardDialog::helpPath = QDir(WizardDir.c_str()).absPath().utf8();
+      WizardDialog::helpPath = QDir(WizardDir.c_str()).absolutePath();
       QString source = WizardDialog::helpPath + "/" + WizardDialog::texts[0];
       this->textBrowser->setSource(source);
     }

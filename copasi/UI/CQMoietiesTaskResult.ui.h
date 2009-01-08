@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:51 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -217,7 +217,7 @@ void CQMoietiesTaskResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
+  std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
 
   if (file.fail())
     return;
@@ -242,7 +242,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(int row)
 
   int i = 0;
   while (pMV == NULL)
-    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + std::string(QString::number(++i).utf8()));
+    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + TO_UTF8(QString::number(++i)));
 
   pMV->setInitialExpression(pMoiety->getExpression());
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD);

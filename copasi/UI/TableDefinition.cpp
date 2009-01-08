@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ void TableDefinition::tableLineToObject(unsigned C_INT32 /*row*/, CCopasiObject*
 {
   if (!obj) return;
   //CReportDefinition* pRep = (CReportDefinition*)obj;
-  //  pRep->setComment((const char *)table->text(row, 2).utf8());
+  //  pRep->setComment(TO_UTF8(table->text(row, 2)));
 }
 
 void TableDefinition::defaultTableLineContent(unsigned C_INT32 /*row*/, unsigned C_INT32 /*exc*/)
@@ -100,7 +100,7 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
     {
       i++;
       nname = name;
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
 
   return pRep;

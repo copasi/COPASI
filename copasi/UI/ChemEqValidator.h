@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ChemEqValidator.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ChemEqValidator.h,v $
+  $Revision: 1.4 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2009/01/08 16:07:44 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,7 +30,7 @@ class ChemEqValidator : public QValidator
 
     virtual State validate (QString & input, int & C_UNUSED(pos)) const
       {
-        std::string eq = (const char *)input.utf8();
+        std::string eq = TO_UTF8(input);
         if (CChemEqInterface::isValidEq(eq))
           return Acceptable;
         else

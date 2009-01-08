@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:03:24 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,7 +80,7 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
     //if (!(mpObjectX && mpObjectY)) return false;
 
     //title
-    curve->setTitle((const char*)mpEditTitle->text().utf8());
+    curve->setTitle(TO_UTF8(mpEditTitle->text()));
 
     //channels
     curve->getChannels().clear();

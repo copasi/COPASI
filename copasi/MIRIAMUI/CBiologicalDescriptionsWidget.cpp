@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:59:41 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,18 +169,18 @@ void CBiologicalDescriptionsWidget::tableLineToObject(unsigned C_INT32 row, CCop
 
   if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP)))
     {
-      const std::string relationship = (const char *) static_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP))->currentText().utf8();
+      const std::string relationship = TO_UTF8(static_cast<Q3ComboTableItem *>(table->item(row, COL_RELATIONSHIP))->currentText());
       pBiologicalDescription->setPredicate(relationship);
     }
 
   if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE)))
     {
       QString resource = static_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE))->currentText();
-      pBiologicalDescription->setResource((const char *) resource.utf8());
+      pBiologicalDescription->setResource(TO_UTF8(resource));
     }
 
   QString ID = table->text(row, COL_ID);
-  pBiologicalDescription->setId((const char *) ID.utf8());
+  pBiologicalDescription->setId(TO_UTF8(ID));
 
   pBiologicalDescription->clearInvalidEntries();
 }

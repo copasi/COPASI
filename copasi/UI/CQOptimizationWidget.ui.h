@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:39 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ bool CQOptimizationWidget::saveTask()
   if (mpBoxSubtask->currentText() != FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]))
     {
       mChanged = true;
-      pProblem->setSubtaskType((CCopasiTask::Type) mSubtaskMap[(const char *) mpBoxSubtask->currentText().utf8()]);
+      pProblem->setSubtaskType((CCopasiTask::Type) mSubtaskMap[TO_UTF8(mpBoxSubtask->currentText())]);
     }
 
   if (mpBtnMaximize->isChecked() != pProblem->maximize())

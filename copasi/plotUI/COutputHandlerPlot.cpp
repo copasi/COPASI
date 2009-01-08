@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:31:05 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
+  $Revision: 1.16 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2009/01/08 16:07:10 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -15,6 +20,7 @@
 #include "COutputHandlerPlot.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plotwindow.h"
+#include "copasi/UI/qtUtilities.h"
 
 COutputHandlerPlot::COutputHandlerPlot():
     COutputHandler(),
@@ -52,7 +58,7 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
           if (!mPlotMap.count(key))
             mPlotMap[key] = new PlotWindow(this, pSpecification);
           else if ("Copasi Plot: " + pSpecification->getTitle() !=
-                   (const char *)mPlotMap[key]->caption().utf8())
+                   TO_UTF8(mPlotMap[key]->caption()))
             mPlotMap[key] = new PlotWindow(this, pSpecification);
           else
             mPlotMap[key]->initFromSpec(pSpecification);

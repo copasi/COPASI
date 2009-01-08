@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:53 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,7 +97,7 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
   CFunction* pFunc = (CFunction*) obj;
 
   if (CEvaluationTree::TypeName[pFunc->getType()] !=
-      (const char *) table->text(row, 2).utf8())
+      TO_UTF8(table->text(row, 2)))
     {
       QString msg;
       msg = "Type must not be changed for '" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
@@ -107,9 +107,9 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
                                 msg,
                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
-  if (pFunc->getInfix() != (const char *) table->text(row, 3).utf8())
+  if (pFunc->getInfix() != TO_UTF8(table->text(row, 3)))
     {
-      if (!pFunc->setInfix((const char *) table->text(row, 3).utf8()))
+      if (!pFunc->setInfix(TO_UTF8(table->text(row, 3))))
         {
           QString msg;
           msg = "Incorrect  mathematical description'" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
@@ -147,7 +147,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
 
   CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);

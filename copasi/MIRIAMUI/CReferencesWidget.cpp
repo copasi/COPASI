@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:59:41 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,12 +142,12 @@ void CReferencesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (dynamic_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE)))
     {
       QString resource = static_cast<Q3ComboTableItem *>(table->item(row, COL_RESOURCE))->currentText();
-      pReference->setResource((const char *) resource.utf8());
+      pReference->setResource(TO_UTF8(resource));
     }
 
   QString ID = table->text(row, COL_ID);
-  pReference->setId((const char *) ID.utf8());
-  pReference->setDescription((const char *) table->text(row, COL_DESCRIPTION).utf8());
+  pReference->setId(TO_UTF8(ID));
+  pReference->setDescription(TO_UTF8(table->text(row, COL_DESCRIPTION)));
   pReference->clearInvalidEntries();
 }
 
@@ -183,7 +183,7 @@ CCopasiObject* CReferencesWidget::createNewObject(const std::string & name)
     {
       i++;
       nname = name + "_";
-      nname += (const char *)QString::number(i).utf8();
+      nname += TO_UTF8(QString::number(i));
     }
 
   return pReference;

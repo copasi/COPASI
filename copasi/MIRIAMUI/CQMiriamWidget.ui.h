@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQMiriamWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:59:41 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,7 @@ bool CQMiriamWidget::leave()
   std::string DT = "";
   if (mpDTCreated->dateTime().isValid())
     {
-      DT = (const char *) mpDTCreated->dateTime().toString(Qt::ISODate).utf8();
+      DT = TO_UTF8(mpDTCreated->dateTime().toString(Qt::ISODate));
       DT += "Z";
     }
 

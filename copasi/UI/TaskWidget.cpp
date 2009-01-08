@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,7 +238,7 @@ void TaskWidget::changeMethod(int /* index */)
     pdelete(mpMethod);
 
   CCopasiMethod::SubType Type =
-    CCopasiMethod::TypeNameToEnum((const char *) mpBoxMethod->currentText().utf8());
+    CCopasiMethod::TypeNameToEnum(TO_UTF8(mpBoxMethod->currentText()));
 
   mpMethod = createMethod(Type);
 

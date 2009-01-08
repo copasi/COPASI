@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,7 @@ void CQReportDefinition::btnSeparatorClicked()
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
-    Separator = (const char *) mpSeparator->text().utf8();
+    Separator = TO_UTF8(mpSeparator->text());
 
   Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
   new CQReportListItem(pList, Separator.getCN());
@@ -157,7 +157,7 @@ void CQReportDefinition::btnTextClicked()
   if (pDialog->exec() == QDialog::Accepted &&
       pDialog->getText() != "")
     {
-      CCopasiStaticString Text((const char *) pDialog->getText().utf8());
+      CCopasiStaticString Text(TO_UTF8(pDialog->getText()));
       Q3ListBox * pList = static_cast<Q3ListBox *>(mpReportSectionTab->currentPage());
       new CQReportListItem(pList, Text.getCN());
     }
@@ -335,7 +335,7 @@ void CQReportDefinition::btnNewReportClicked()
     {
       i++;
       Name = "report_";
-      Name += (const char *) QString::number(i).utf8();
+      Name += TO_UTF8(QString::number(i));
     }
 
   protectedNotify(ListViews::REPORT, ListViews::ADD);
@@ -468,9 +468,9 @@ bool CQReportDefinition::save()
   if (!mChanged) return true;
   if (!mpReportDefinition) return false;
 
-  if (mpReportDefinition->getObjectName() != (const char*) mpName->text().utf8())
+  if (mpReportDefinition->getObjectName() != TO_UTF8(mpName->text()))
     {
-      if (!mpReportDefinition->setObjectName((const char*) mpName->text().utf8()))
+      if (!mpReportDefinition->setObjectName(TO_UTF8(mpName->text())))
         {
           QString msg;
           msg = "Unable to rename report '" + FROM_UTF8(mpReportDefinition->getObjectName()) + "'\n"
@@ -488,13 +488,13 @@ bool CQReportDefinition::save()
     }
 
   mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentItem());
-  mpReportDefinition->setComment((const char*) mpCommentEdit->text().utf8());
+  mpReportDefinition->setComment(TO_UTF8(mpCommentEdit->text()));
 
   CCopasiReportSeparator Separator;
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
-    Separator = (const char *) mpSeparator->text().utf8();
+    Separator = TO_UTF8(mpSeparator->text());
   mpReportDefinition->setSeparator(Separator);
 
   mpReportDefinition->setPrecision(mpPrecision->text().toULong());

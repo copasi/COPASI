@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.ui.h,v $
-   $Revision: 1.1 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/15 21:25:53 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.ui.h,v $
+  $Revision: 1.2 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2009/01/08 16:07:44 $
+  End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -57,9 +62,9 @@ void CQRegistrationDialog::destroy()
 
 void CQRegistrationDialog::slotBtnValidate()
 {
-  mpRegistration->setRegisteredUser((const char *) mpEditName->text().utf8());
-  mpRegistration->setRegisteredEmail((const char *) mpEditEmail->text().utf8());
-  mpRegistration->setRegistrationCode((const char *) mpEditCode->text().utf8());
+  mpRegistration->setRegisteredUser(TO_UTF8(mpEditName->text()));
+  mpRegistration->setRegisteredEmail(TO_UTF8(mpEditEmail->text()));
+  mpRegistration->setRegistrationCode(TO_UTF8(mpEditCode->text()));
 
   if (!mpRegistration->isValidRegistration())
     mpEditStatus->setText(FROM_UTF8(CCopasiMessage::getLastMessage().getText()));

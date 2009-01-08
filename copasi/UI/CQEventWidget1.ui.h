@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:39 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,7 +228,7 @@ void CQEventWidget1::slotBtnNewClicked()
     {
       i++;
       name = "event_";
-      name += (const char *) QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
       // std::cout << "NAME = " << name << std::endl;
     }
   protectedNotify(ListViews::EVENT, ListViews::ADD);
@@ -245,7 +245,7 @@ void CQEventWidget1::slotBtnRevertClicked()
 void CQEventWidget1::slotNameChanged()
 {
   // std::cout << "CQEW1::slotNameChanged - rName = ";
-  std::string rName = (const char *)mpLineEditName->text().utf8();
+  std::string rName = TO_UTF8(mpLineEditName->text());
   // std::cout << rName << std::endl;
 }
 
@@ -684,9 +684,9 @@ void CQEventWidget1::saveToEvent()
   // std::cout << "-> A mEventKey = " << mEventKey << std::endl;
 
   // set name of event
-  if (mpEvent->getObjectName() != (const char *) mpLineEditName->text().utf8())
+  if (mpEvent->getObjectName() != TO_UTF8(mpLineEditName->text()))
     {
-      if (!mpEvent->setObjectName((const char *) mpLineEditName->text().utf8()))  // the new name is rejected as it has been used
+      if (!mpEvent->setObjectName(TO_UTF8(mpLineEditName->text())))  // the new name is rejected as it has been used
         {
           QString msg;
           msg = "Unable to rename event '" + FROM_UTF8(mpEvent->getObjectName()) + "'\n"

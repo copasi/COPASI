@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:03:24 $
+//   $Date: 2009/01/08 16:07:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,7 +108,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
   {
     //title
-    curve->setTitle((const char*)lineEditTitle->text().utf8());
+    curve->setTitle(TO_UTF8(lineEditTitle->text()));
 
     //channels
     curve->getChannels().clear();

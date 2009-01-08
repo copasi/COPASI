@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,7 @@ class CQExperimentDataValidator: public CQValidatorNotEmpty
                 setColor(Invalid);
                 return Intermediate;
               }
-            if (mpContext->mpExperimentSetCopy->getParameter((const char *) input.utf8()))
+            if (mpContext->mpExperimentSetCopy->getParameter(TO_UTF8(input)))
               {
                 setColor(Invalid);
                 return Intermediate;
@@ -386,7 +386,7 @@ void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
 {
   std::string Name;
   if (pItem)
-    Name = (const char *) pItem->text().utf8();
+    Name = TO_UTF8(pItem->text());
 
   saveExperiment(mpExperiment, true);
 
@@ -420,7 +420,7 @@ void CQExperimentData::slotExperimentDelete()
   if (index == C_INVALID_INDEX) return;
 
   std::string key =
-    mpFileInfo->getExperiment((const char *) mpBoxExperiment->item(index)->text().utf8())->CCopasiParameter::getKey();
+    mpFileInfo->getExperiment(TO_UTF8(mpBoxExperiment->item(index)->text()))->CCopasiParameter::getKey();
 
   // change selection
   if (mpBoxExperiment->count() > 1)
@@ -476,10 +476,10 @@ void CQExperimentData::slotFileAdd()
   unsigned C_INT32 i;
 
   for (; it != end; ++it)
-    if (it->second == (const char *) File.utf8())
+    if (it->second == TO_UTF8(File))
       {
         for (i = 0; i < mpBoxFile->count(); i++)
-          if (it->first == (const char *) mpBoxFile->item(i)->text().utf8())
+          if (it->first == TO_UTF8(mpBoxFile->item(i)->text()))
             {
               mpBoxFile->setSelected(i, true);
               break;
@@ -487,13 +487,13 @@ void CQExperimentData::slotFileAdd()
         return;
       }
 
-  std::string FileName = CDirEntry::fileName((const char *) File.utf8());
+  std::string FileName = CDirEntry::fileName(TO_UTF8(File));
 
   i = 0;
   while (mFileMap.find(FileName) != mFileMap.end())
-    FileName = StringPrint("%s_%d", CDirEntry::fileName((const char *) File.utf8()).c_str(), i++);
+    FileName = StringPrint("%s_%d", CDirEntry::fileName(TO_UTF8(File)).c_str(), i++);
 
-  mFileMap[FileName] = (const char *) File.utf8();
+  mFileMap[FileName] = TO_UTF8(File);
   mpBoxFile->insertItem(FROM_UTF8(FileName));
 
   mpBoxFile->setSelected(mpBoxFile->count() - 1, true);
@@ -518,7 +518,7 @@ void CQExperimentData::slotFileChanged(Q3ListBoxItem * pItem)
       slotExperimentChanged(NULL); // Assure that changes are saved.
       mpBoxExperiment->clear();
 
-      if (mpFileInfo->setFileName(mFileMap[(const char *) pItem->text().utf8()]))
+      if (mpFileInfo->setFileName(mFileMap[TO_UTF8(pItem->text())]))
         {
           // fill experiment list box
 
@@ -551,7 +551,7 @@ void CQExperimentData::slotFileDelete()
   unsigned C_INT32 index = mpBoxFile->currentItem();
   if (index == C_INVALID_INDEX) return;
 
-  std::string FileName = mFileMap[(const char *) mpBoxFile->item(index)->text().utf8()];
+  std::string FileName = mFileMap[TO_UTF8(mpBoxFile->item(index)->text())];
 
   // change selection
   if (mpBoxFile->count() > 1)
@@ -565,7 +565,7 @@ void CQExperimentData::slotFileDelete()
     slotFileChanged(NULL);
 
   // remove file
-  mFileMap.erase((const char *) mpBoxFile->item(index)->text().utf8());
+  mFileMap.erase(TO_UTF8(mpBoxFile->item(index)->text()));
   mpBoxFile->removeItem(index);
 
   // delete all experiments in current file.
@@ -885,7 +885,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
   if (mpCheckTab->isChecked())
     pExperiment->setSeparator("\t");
   else
-    pExperiment->setSeparator((const char *) mpEditSeparator->text().utf8());
+    pExperiment->setSeparator(TO_UTF8(mpEditSeparator->text()));
 
   value = mpEditFirst->text();
   pos = value.length();
@@ -934,10 +934,10 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
 
 void CQExperimentData::syncExperiments()
 {
-  std::string Current = (const char *) mpBoxExperiment->currentText().utf8();
+  std::string Current = TO_UTF8(mpBoxExperiment->currentText());
   std::string Shown;
   if (mShown != C_INVALID_INDEX)
-    Shown = (const char *) mpBoxExperiment->item(mShown)->text().utf8();
+    Shown = TO_UTF8(mpBoxExperiment->item(mShown)->text());
 
   mpFileInfo->sync();
 
@@ -1133,7 +1133,7 @@ void CQExperimentData::slotTypeChanged(int row)
   bool BtnEnabled = true;
   C_INT32 i, imax = mpTable->numRows();
 
-  CCopasiObjectName CN = CCopasiObjectName((const char *) mpTable->text(row, COL_OBJECT_HIDDEN).utf8());
+  CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->text(row, COL_OBJECT_HIDDEN)));
 
   switch (NewType)
     {
@@ -1237,7 +1237,7 @@ void CQExperimentData::slotSeparator()
   if (mpCheckTab->isChecked())
     mpExperiment->setSeparator("\t");
   else
-    mpExperiment->setSeparator((const char *) mpEditSeparator->text().utf8());
+    mpExperiment->setSeparator(TO_UTF8(mpEditSeparator->text()));
 
   mpExperiment->setNumColumns(mpExperiment->guessColumnNumber());
   mpExperiment->readColumnNames();
@@ -1268,9 +1268,9 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
           Changed = true;
         }
 
-      if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
+      if (ObjectMap.getObjectCN(i) != TO_UTF8(mpTable->text(i, COL_OBJECT_HIDDEN)))
         {
-          ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
+          ObjectMap.setObjectCN(i, TO_UTF8(mpTable->text(i, COL_OBJECT_HIDDEN)));
           Changed = true;
         }
 
@@ -1313,7 +1313,7 @@ void CQExperimentData::slotCheckFrom(bool checked)
     {
       // Load the information from the previous experiment
       CExperiment * pPrevious =
-        mpFileInfo->getExperiment((const char *) mpBoxExperiment->text(Current - 1).utf8());
+        mpFileInfo->getExperiment(TO_UTF8(mpBoxExperiment->text(Current - 1)));
 
       unsigned C_INT32 OldWeightMethod = mOldWeightMethod;
       loadExperiment(pPrevious);

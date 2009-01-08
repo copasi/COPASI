@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * n
   */
 QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
   {
-    if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()) &&
+    if (const_cast< CExpression * >(&mExpression)->setInfix(TO_UTF8(input)) &&
         const_cast< CExpression * >(&mExpression)->compile())
       {
         QString Input = mpLineEdit->text();
@@ -391,7 +391,7 @@ std::string CQExpressionWidget::getExpression() const
     std::string DisplayName = "";
     std::string InfixCN = "";
 
-    std::string InfixDispayName = (const char *)text().utf8();
+    std::string InfixDispayName = TO_UTF8(text());
     std::map< std::string, const CCopasiObject *>::const_iterator it;
 
     unsigned int i;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/01/08 16:07:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ void CQCompartment::slotBtnNew()
     {
       i++;
       name = "compartment_";
-      name += (const char *)QString::number(i).utf8();
+      name += TO_UTF8(QString::number(i));
     }
 
   enter(mpCompartment->getKey());
@@ -468,9 +468,9 @@ void CQCompartment::save()
   if (mpCompartment == NULL) return;
 
   // Name
-  if (mpCompartment->getObjectName() != (const char *) mpEditName->text().utf8())
+  if (mpCompartment->getObjectName() != TO_UTF8(mpEditName->text()))
     {
-      if (!mpCompartment->setObjectName((const char *) mpEditName->text().utf8()))
+      if (!mpCompartment->setObjectName(TO_UTF8(mpEditName->text())))
         {
           QString msg;
           msg = "Unable to rename compartment '" + FROM_UTF8(mpCompartment->getObjectName()) + "'\n"
@@ -545,7 +545,7 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem)
   if (mpCompartment == NULL) return;
 
   std::string s1, s2;
-  s1 = (const char *) pItem->text(0).utf8();
+  s1 = TO_UTF8(pItem->text(0));
 
   std::multimap< const std::string, CCopasiObject * >::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
