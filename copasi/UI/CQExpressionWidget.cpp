@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/08 17:53:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -301,7 +301,7 @@ void CQExpressionWidget::doKeyboardAction(Q3TextEdit::KeyboardAction action)
       break;
 
     case Q3TextEdit::ActionDelete:
-      if ((unsigned int) pos == text().length()) return;
+      if (pos == text().length()) return;
       if (text(para)[pos] == '<')
         {
           QString tmp = text(para);
