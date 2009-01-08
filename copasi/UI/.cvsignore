@@ -1,3 +1,9 @@
 auto
 moc_*.cpp
 Makefile
+CQOptimizationWidget.h
+CQEFMWidget.cpp
+CQOptimizationResult.h
+CQOptimizationWidget.cpp
+CQOptimizationResult.cpp
+CQEFMWidget.h
