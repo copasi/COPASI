@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.96 $ 
+#   $Revision: 1.97 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/07 18:42:46 $ 
+#   $Date: 2009/01/09 18:45:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.96 $ $Author: shoops $ $Date: 2009/01/07 18:42:46 $  
+# $Revision: 1.97 $ $Author: shoops $ $Date: 2009/01/09 18:45:56 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -69,6 +69,8 @@ isEmpty(COPASI_SRC_PACKAGE) {
 contains(STATIC_LINKAGE, yes) {
   DEFINES+=XML_STATIC
   DEFINES+=LIBSBML_STATIC
+  DEFINES+=LIBLAX_STATIC
+  DEFINES+=RAPTOR_STATIC
 }
 
 !contains(BUILD_OS, WIN32) {
@@ -164,12 +166,10 @@ contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE
    
   debug {
-    !win32-msvc2005 {
-      QMAKE_LFLAGS += /NODEFAULTLIB:\"libcmt.lib\"
-    }
-
     QMAKE_LFLAGS += /NODEFAULTLIB:\"msvcrt.lib\"
   }
+
+  QMAKE_LFLAGS += /NODEFAULTLIB:\"libcmt.lib\"
   
   #Release code optimization
   QMAKE_CFLAGS_RELEASE -= -O1
@@ -212,11 +212,12 @@ contains(BUILD_OS, WIN32) {
 
   # Add libsbml
   win32-msvc2005 {
-    release {
-      LIBS += libsbml.lib
-    }
-    debug {
-      LIBS += libsbmlD.lib
+    contains(STATIC_LINKAGE, yes) {
+      release: LIBS += libsbmlStatic.lib
+      debug:   LIBS += libsbmlStaticD.lib
+    } else {
+      release: LIBS += libsbml.lib
+      debug:   LIBS += libsbmlD.lib
     }
   } else {
     LIBS += libsbml.lib
@@ -231,11 +232,12 @@ contains(BUILD_OS, WIN32) {
   }
 
 # The raptor library
-  release {
-    LIBS += raptor.lib
-  }
-  debug {
-    LIBS += raptorD.lib
+  contains(STATIC_LINKAGE, yes) {
+    release: LIBS += raptorStatic.lib
+    debug:   LIBS += raptorStaticD.lib
+  } else {
+    release: LIBS += raptor.lib
+    debug:   LIBS += raptorD.lib
   }
     
   !isEmpty(RAPTOR_PATH) {
