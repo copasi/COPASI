@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.15.4.3 $
+//   $Revision: 1.15.4.3.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/20 11:07:01 $
+//   $Author: shoops $
+//   $Date: 2009/01/12 17:58:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,8 +53,8 @@ class CCopasiSimpleSelectionTree: public QListView
       NUMERIC = BASE_DOUBLE | BASE_INTEGER,
       INITIAL_VALUE = BASE_DOUBLE | BASE_INITIAL | BASE_MODEL,
       TRANSIENT_VALUE = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
-      INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
-      TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL | BASE_GLOBAL,
+      INITIAL_EXPRESSION = BASE_DOUBLE | BASE_INITIAL | BASE_EXPRESSION | BASE_MODEL,
+      TRANSIENT_EXPRESSION = BASE_DOUBLE | BASE_TRANSIENT | BASE_EXPRESSION | BASE_MODEL,
       TARGET_EVENT = BASE_DOUBLE | BASE_TRANSIENT | BASE_MODEL,
       INITIAL_PARAMETER = BASE_DOUBLE | BASE_INITIAL | BASE_TASK,
       NO_RESTRICTION = -1,
