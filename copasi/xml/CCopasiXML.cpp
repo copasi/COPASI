@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.109.2.1 $
+//   $Revision: 1.109.2.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 14:11:21 $
+//   $Date: 2009/01/12 17:57:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,9 +184,6 @@ bool CCopasiXML::load(std::istream & is,
       mpTaskList = Parser.getTaskList();
       mpPlotList = Parser.getPlotList();
       mpLayoutList = Parser.getLayoutList();
-
-      CFixLocalReactionParameters FixLocalReactionParameters;
-      FixLocalReactionParameters.fixModel(mpModel);
     }
 
   if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())
