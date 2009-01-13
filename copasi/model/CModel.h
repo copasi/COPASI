@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163.4.4 $
+//   $Revision: 1.163.4.4.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/12/08 11:54:43 $
+//   $Author: shoops $
+//   $Date: 2009/01/13 18:07:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -835,9 +835,13 @@ class CModel : public CModelEntity
      */
     CReaction* createReaction(const std::string &name);
 
-    /** Remove a reaction from the model*/
+    /** Remove a reaction from the model */
     bool removeReaction(const std::string & key,
                         const bool & recursive = true);
+
+    /** Remove a local reaction parameter from the model */
+    bool removeLocalReactionParameter(const std::string & key,
+                                      const bool & recursive = true);
 
     /**
      * Add a new event to the model

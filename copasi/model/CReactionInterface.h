@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.19.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:57:59 $
+//   $Date: 2009/01/13 18:07:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -267,6 +267,12 @@ class CReactionInterface
      */
     bool isLocked(unsigned C_INT32 index) const;
     bool isLocked(CFunctionParameter::Role usage) const;
+
+    /**
+     * Retrieve the list of parameters which will be deleted
+     * @return std::set< const CCopasiObject * > DeletedParameters
+     */
+    std::set< const CCopasiObject * > getDeletedParameters() const;
 
 #ifdef COPASI_DEBUG
     void printDebug() const;

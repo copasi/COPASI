@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 19:57:59 $
+//   $Date: 2009/01/13 18:07:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -193,6 +193,8 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
   //CReaction *rea;
   if (rea == NULL)
     rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
+
+  if (rea == NULL) return false;
 
   if (!rea->setObjectName(mReactionName))
     success = false;
@@ -472,6 +474,53 @@ bool CReactionInterface::isLocked(CFunctionParameter::Role usage) const
         break;
       }
     return false;
+  }
+
+std::set< const CCopasiObject * > CReactionInterface::getDeletedParameters() const
+  {
+    std::set< const CCopasiObject * > ToBeDeleted;
+
+    // We need to compare the current visible local parameter with the one stored
+    // in the reaction.
+    const CReaction * pReaction
+    = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
+
+    if (pReaction == NULL)
+      return ToBeDeleted;
+
+    if (pReaction->getFunction() == NULL)
+      return ToBeDeleted;
+
+    const CFunctionParameters & OriginalParameters
+    = pReaction->getFunction()->getVariables();
+
+    C_INT32 j, jmax = size();
+    C_INT32 i, imax = OriginalParameters.size();
+    const CFunctionParameter * pParameter;
+
+    for (i = 0; i < imax; ++i)
+      {
+        pParameter = OriginalParameters[i];
+
+        if (pParameter->getUsage() == CFunctionParameter::PARAMETER &&
+            pReaction->isLocalParameter(i))
+          {
+            const std::string & Name = pParameter->getObjectName();
+
+            //find parameter with same name in current parameters
+            for (j = 0; j < jmax; ++j)
+              if (Name == getParameterName(j)) break;
+
+            if (j < jmax && mIsLocal[j])
+              continue;
+
+            // The old parameter is either not found or is no longer local, i.e., it needs to
+            // be added to values to be deleted.
+            ToBeDeleted.insert(pReaction->getParameters().getParameter(Name));
+          }
+      }
+
+    return ToBeDeleted;
   }
 
 void CReactionInterface::initMapping()

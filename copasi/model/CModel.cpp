@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.9 $
+//   $Revision: 1.347.2.9.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/12/08 11:54:43 $
+//   $Author: shoops $
+//   $Date: 2009/01/13 18:07:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2185,6 +2185,22 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
     for (; it != end; ++it)
       if (candidates.find(*it) == candidates.end())
         {
+          std::set< const CCopasiObject * > Ignored;
+
+          // We need to ignore our own local reaction parameters.
+          CCopasiParameterGroup::index_iterator itParameter = (*it)->getParameters().beginIndex();
+          CCopasiParameterGroup::index_iterator endParameter = (*it)->getParameters().endIndex();
+          std::set< const CCopasiObject * >::iterator itIgnored;
+
+          for (; itParameter != endParameter; ++itParameter)
+            {
+              if ((itIgnored = candidates.find((*itParameter)->getObject(CCopasiObjectName("Reference=Value")))) != candidates.end())
+                {
+                  Ignored.insert(*itIgnored);
+                  candidates.erase(itIgnored);
+                }
+            }
+
           if ((*it)->dependsOn(candidates))
             {
               dependentReactions.insert((*it));
@@ -2202,6 +2218,11 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
                 dependentReactions.insert((*it));
                 break;
               }
+
+          // Add the ignored parameters back.
+          std::set< const CCopasiObject * >::iterator endIgnored = Ignored.end();
+          for (itIgnored = Ignored.begin(); itIgnored != endIgnored; ++itIgnored)
+            candidates.insert(*itIgnored);
         }
 
     return;
@@ -2553,6 +2574,47 @@ bool CModel::removeReaction(const std::string & key,
 
   clearMoieties();
   mCompileIsNecessary = true;
+
+  return true;
+}
+
+bool CModel::removeLocalReactionParameter(const std::string & key,
+    const bool & recursive)
+{
+  CCopasiParameter * pParameter =
+    dynamic_cast< CCopasiParameter * >(GlobalKeys.get(key));
+
+  if (pParameter == NULL)
+    return false;
+
+  if (recursive)
+    {
+      /* Before deleting  delete all the objects that are dependent */
+      std::set< const CCopasiObject * >::const_iterator it, end;
+
+      std::set< const CCopasiObject * > DeletedObjects;
+      DeletedObjects.insert(pParameter->getObject(CCopasiObjectName("Reference=Value")));
+
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
+
+      appendDependentModelObjects(DeletedObjects,
+                                  Reactions, Metabolites, Compartments, Values);
+
+      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      for (it = Values.begin(), end = Values.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
+    }
 
   return true;
 }

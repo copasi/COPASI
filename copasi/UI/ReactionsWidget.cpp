@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.100.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2009/01/13 18:07:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,11 +97,15 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+  std::string objKey = obj->getKey();
+
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL) return;
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  CReactionInterface ri(CCopasiDataModel::Global->getModel());
-  ri.initFromReaction(obj->getKey());
+  CReactionInterface ri(pModel);
+  ri.initFromReaction(objKey);
 
   QString equation(table->text(row, 2));
   if ((const char *)equation.utf8() != ri.getChemEqString())
@@ -116,6 +120,167 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
           //tell the reaction interface
           ri.setChemEqString((const char *)equation.utf8(), "");
         }
+    }
+
+  // Before we save any changes we must check whether any local reaction parameters,
+  // which are used in any mathematical expression in the model are removed.
+  // If that is the case the user must have option to cancel the changes or remove the
+  // affected expressions.
+  std::set< const CCopasiObject * > DeletedParameters = ri.getDeletedParameters();
+  if (DeletedParameters.size() != 0)
+    {
+      QString parameterList = "Are you sure you want to delete listed PARAMETERS of reaction " + table->text(row, 1) + "?\n";
+      QString affectedCompartmentList = "Following COMPARTMENT(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedMetabList = "Following METABOLITE(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedReacList = "Following REACTION(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedValueList = "Following MODEL VALUE(S) reference above PARAMETERS and will be deleted -\n";
+
+      bool compartmentFound = false;
+      bool metabFound = false;
+      bool reacFound = false;
+      bool valueFound = false;
+
+      std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
+
+      for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+        {
+          parameterList.append(FROM_UTF8((*itParameter)->getObjectName()));
+          parameterList.append(", ");
+
+          std::set< const CCopasiObject * > DeletedObjects;
+          DeletedObjects.insert((*itParameter)->getObject(CCopasiObjectName("Reference=Value")));
+
+          std::set< const CCopasiObject * > Reactions;
+          std::set< const CCopasiObject * > Metabolites;
+          std::set< const CCopasiObject * > Values;
+          std::set< const CCopasiObject * > Compartments;
+
+          pModel->appendDependentModelObjects(DeletedObjects,
+                                              Reactions, Metabolites, Compartments, Values);
+
+          if (Reactions.size() > 0)
+            {
+              reacFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+              for (it = Reactions.begin(); it != itEnd; ++it)
+                {
+                  affectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedReacList.append(", ");
+                }
+
+              affectedReacList.remove(affectedReacList.length() - 2, 2);
+              affectedReacList.append("  ---> ");
+              affectedReacList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedReacList.append("\n");
+            }
+
+          if (Metabolites.size() > 0)
+            {
+              metabFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+              for (it = Metabolites.begin(); it != itEnd; ++it)
+                {
+                  affectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedMetabList.append(", ");
+                }
+
+              affectedMetabList.remove(affectedMetabList.length() - 2, 2);
+              affectedMetabList.append("  ---> ");
+              affectedMetabList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedMetabList.append("\n");
+            }
+
+          if (Values.size() > 0)
+            {
+              valueFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+              for (it = Values.begin(); it != itEnd; ++it)
+                {
+                  affectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedValueList.append(", ");
+                }
+
+              affectedValueList.remove(affectedValueList.length() - 2, 2);
+              affectedValueList.append("  ---> ");
+              affectedValueList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedValueList.append("\n");
+            }
+
+          if (Compartments.size() > 0)
+            {
+              compartmentFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+              for (it = Compartments.begin(); it != itEnd; ++it)
+                {
+                  affectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedCompartmentList.append(", ");
+                }
+
+              affectedCompartmentList.remove(affectedCompartmentList.length() - 2, 2);
+              affectedCompartmentList.append("  ---> ");
+              affectedCompartmentList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedCompartmentList.append("\n");
+            }
+        }
+
+      parameterList.remove(parameterList.length() - 2, 2);
+
+      QString msg = parameterList;
+
+      if (compartmentFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedCompartmentList);
+        }
+
+      if (metabFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedMetabList);
+        }
+
+      if (reacFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedReacList);
+        }
+
+      if (valueFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedValueList);
+        }
+
+      C_INT32 choice = 0;
+      if (metabFound || reacFound || valueFound || valueFound)
+        choice = CQMessageBox::question(this,
+                                        "CONFIRM DELETE",
+                                        msg,
+                                        "Continue", "Cancel", 0, 1, 1);
+
+      switch (choice)
+        {
+          // Yes or Enter
+        case 0:
+          for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+            pModel->removeLocalReactionParameter((*itParameter)->getKey());
+          break;
+
+          // No or Escape
+        default:
+          return;
+          break;
+        }
+    }
+
+  // We need to check whether the current reaction still exists, since it is possible that
+  // removing a local reaction parameter triggers its deletion.
+  CReaction * reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  if (reac == NULL)
+    {
+      ri.setFunctionWithEmptyMapping("");
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+      return;
     }
 
   //first check if new metabolites need to be created
