@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:11 $
+//   $Date: 2009/01/16 19:51:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,8 @@
 #include <QContextMenuEvent>
 #include <Q3GridLayout>
 #include <Q3PopupMenu>
+
+#include "copasi/UI/CQMessageBox.h"
 
 Plot3d::Plot3d(QWidget* parent, const char* name)
     : BaseWidget(parent, name)
@@ -484,7 +486,7 @@ void Plot3d::saveDataToFile()
     {
       std::string s = "Could not save data to ";
       s += TO_UTF8(fileName);
-      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
+      CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Ok);
     }
 }
 
@@ -506,10 +508,10 @@ void Plot3d::showLegend()
 void Plot3d::hotKeysMessage()
 {
 
-  QMessageBox::information(this, "Mouse and Keyboard Handling",
-                           "You can perform shifts, turns, scales and zooms. \n \n"
-                           "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
-                           "button to get a clue (or use instead your cursor keys).\n"
+  CQMessageBox::information(this, "Mouse and Keyboard Handling",
+                            "You can perform shifts, turns, scales and zooms. \n \n"
+                            "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
+                            "button to get a clue (or use instead your cursor keys).\n"
 );
 
   return;

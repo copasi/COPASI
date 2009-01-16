@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.182 $
+#   $Revision: 1.183 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/01/07 19:43:40 $
+#   $Date: 2009/01/16 19:51:16 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.182 $ $Author: shoops $ $Date: 2009/01/07 19:43:40 $
+# $Revision: 1.183 $ $Author: shoops $ $Date: 2009/01/16 19:51:16 $
 ######################################################################
 
 LIB = UI
@@ -61,6 +61,7 @@ HEADERS	+= \
 	CQMathMatrixWidget.h \
 	CQMatrixDialog.h \
 	CQMatrixDialog.ui.h \
+    CQMessageBox.h \
 #	CQQwt3dSurfacePlot.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
@@ -129,6 +130,7 @@ SOURCES	+= \
 	CQLyapResultWidget.cpp \
 	CQMathMatrixWidget.cpp \
 	CQMatrixDialog.cpp \
+    CQMessageBox.cpp \
 #	CQQwt3dSurfacePlot.cpp \
 	CQPreferenceDialog.cpp \
 	CQReportListItem.cpp \
@@ -187,7 +189,6 @@ FORMS3 += CQEFMWidget.ui
 # FORMS3 += CQFittingWidget.ui
 # FORMS3 += CQLyapWidget.ui
 # FORMS3 += CQMCAWidget.ui
-# FORMS3 += CQMessageBox.ui
 # FORMS3 += CQMetabolite.ui
 # FORMS3 += CQModelValue.ui
 # FORMS3 += CQMoietiesTaskWidget.ui
@@ -249,8 +250,6 @@ HEADERS += \
            CQLyapWidget.ui.h \
            CQMCAWidget.h \
            CQMCAWidget.ui.h \
-           CQMessageBox.h \
-           CQMessageBox.ui.h \
            CQMetabolite.h \
            CQMetabolite.ui.h \
            CQModelValue.h \
@@ -323,7 +322,6 @@ SOURCES += \
            CQFittingWidget.cpp \
            CQLyapWidget.cpp \
            CQMCAWidget.cpp \
-           CQMessageBox.cpp \
            CQMetabolite.cpp \
            CQModelValue.cpp \
            CQMoietiesTaskResult.cpp \

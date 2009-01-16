@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,7 +269,7 @@ void ObjectBrowserWidget::updateSelectedItemsView()
   rootItem = objectItemList->getRoot()->pItem;
   outputVector = new std::vector< const CCopasiObject * >();
   eXport(rootItem, outputVector);
-  //      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
+  //      CQMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
   //   ObjectListItem* pHead;
   ObjectItemText->clear();
 

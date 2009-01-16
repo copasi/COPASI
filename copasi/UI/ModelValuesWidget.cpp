@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,11 +331,11 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
     choice = CQMessageBox::warning(this,
                                    "CONFIRM DELETE",
                                    msg,
-                                   "Continue", "Cancel", 0, 1, 1);
+                                   QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                     // Yes or Enter
+    case QMessageBox::Ok:                     // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {

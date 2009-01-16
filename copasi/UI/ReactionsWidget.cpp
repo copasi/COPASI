@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -300,11 +300,11 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
-                                    "Continue", "Cancel", 0, 1, 1);
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                                           // Yes or Enter
+    case QMessageBox::Ok:
       {
         for (i = 0; i < imax; i++)
           {

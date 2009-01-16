@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,7 @@ void CopasiTableWidget::saveTable()
                   CQMessageBox::information(this,
                                             "Unable to create",
                                             msg,
-                                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                            QMessageBox::Ok, QMessageBox::Ok);
                 }
 
               tableLineToObject(j, pObj);
@@ -291,7 +291,7 @@ void CopasiTableWidget::saveTable()
                   CQMessageBox::information(this,
                                             "Unable to rename",
                                             msg,
-                                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                            QMessageBox::Ok, QMessageBox::Ok);
                   table->setCurrentCell(j, 1);
                 }
               else

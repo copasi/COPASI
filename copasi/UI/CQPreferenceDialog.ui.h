@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:51 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <qmessagebox.h>
 
 #include "copasiui3window.h"
+#include "CQMessageBox.h"
 #include "qtUtilities.h"
 
 #include "commandline/CConfigurationFile.h"
@@ -61,7 +62,9 @@ void CQPreferenceDialog::slotBtnOk()
       {par->setValue(newMaxFiles);}
       else
         {
-          QMessageBox::critical(this, "Incorrect Setting", "Max Last Visited Files should be a number between 1 and 20.");
+          CQMessageBox::critical(this, "Incorrect Setting",
+                                 "Max Last Visited Files should be a number between 1 and 20.",
+                                 QMessageBox::Ok, QMessageBox::Ok);
           if (item)
           {item->setText(COL_VALUE, QString::number(maxFiles));}
           return;
@@ -78,7 +81,8 @@ void CQPreferenceDialog::slotBtnOk()
            {par->setValue(newMaxFiles);}
          else
            {
-             QMessageBox::critical(this, "Incorrect Setting", "Max Last Visited SBML Files should be a number between 1 and 20.");
+             CQMessageBox::critical(this, "Incorrect Setting", "Max Last Visited SBML Files should be a number between 1 and 20.",
+             QMessageBox::Ok, QMessageBox::Ok);
              if (item)
              {item->setText(COL_VALUE, QString::number(maxFiles));}
              return;
@@ -138,7 +142,8 @@ void CQPreferenceDialog::init()
       {new CPreferenceListViewItem(mpListView, "Max Last Visited SBML Files", QString::number(maxFiles));}
       */
 
-      //QMessageBox::information(this, "maxFiles", QString::number(maxFiles));
+      //CQMessageBox::information(this, "maxFiles", QString::number(maxFiles),
+      //                          QMessageBox::Ok, QMessageBox::Ok);
     }
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,9 +59,8 @@ void CQReportDefinition::btnAdvancedClicked()
       if (CQMessageBox::question(NULL, "Report Conversion",
                                  "Converting an advanced report to a table may result in loss of customization.\n"
                                  "Do you want to proceed?",
-                                 QMessageBox::Ok,
-                                 QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 Qt::NoButton) == QMessageBox::Ok)
+                                 QMessageBox::Ok | QMessageBox::Cancel,
+                                 QMessageBox::Cancel) == QMessageBox::Ok)
         {
           // We convert the body without the separators to a table.
           mpTableList->clear();
@@ -300,9 +299,8 @@ void CQReportDefinition::btnDeleteReportClicked()
       if (CQMessageBox::question(this,
                                  "CONFIRM DELETE",
                                  msg,
-                                 QMessageBox::Ok,
-                                 QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 Qt::NoButton) == QMessageBox::Cancel)
+                                 QMessageBox::Ok | QMessageBox::Cancel,
+                                 QMessageBox::Cancel) == QMessageBox::Cancel)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)
@@ -479,7 +477,7 @@ bool CQReportDefinition::save()
           CQMessageBox::information(this,
                                     "Unable to rename Report",
                                     msg,
-                                    QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
         }

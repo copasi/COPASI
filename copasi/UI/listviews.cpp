@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.257 $
+//   $Revision: 1.258 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:39 $
+//   $Date: 2009/01/16 19:51:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1315,7 +1315,7 @@ void ListViews::buildChangedObjects()
       Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
       CQMessageBox::critical(NULL, QString("COPASI Error"), Message,
-                             QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
+                             QMessageBox::Ok, QMessageBox::Ok);
       CCopasiMessage::clearDeque();
 
       mUpdateVector.clear();

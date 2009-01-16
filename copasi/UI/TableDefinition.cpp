@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,9 +147,8 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
       if (CQMessageBox::question(this,
                                  "CONFIRM DELETE",
                                  msg,
-                                 QMessageBox::Ok,
-                                 QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape,
-                                 QMessageBox::NoButton) == QMessageBox::Cancel)
+                                 QMessageBox::Ok | QMessageBox::Cancel,
+                                 QMessageBox::Cancel) == QMessageBox::Cancel)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)

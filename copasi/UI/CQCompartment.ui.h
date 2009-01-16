@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,11 +218,11 @@ void CQCompartment::slotBtnDelete()
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
-                                    "Continue", "Cancel", 0, 1, 1);
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                                 // Yes or Enter
+    case QMessageBox::Ok:                                 // Yes or Enter
       {
         unsigned C_INT32 Index =
           CCopasiDataModel::Global->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
@@ -479,7 +479,7 @@ void CQCompartment::save()
           CQMessageBox::information(this,
                                     "Unable to rename Compartment",
                                     msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
         }

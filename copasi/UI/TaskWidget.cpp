@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -447,8 +447,7 @@ bool TaskWidget::commonRunTask()
       C_INT Result =
         CQMessageBox::question(this, "Initialization Warning",
                                CCopasiMessage::getAllMessageText().c_str(),
-                               QMessageBox::Ignore | QMessageBox::Default,
-                               QMessageBox::Abort | QMessageBox::Escape);
+                               QMessageBox::Ignore | QMessageBox::Abort, QMessageBox::Ignore);
 
       if (Result == QMessageBox::Abort)
         {

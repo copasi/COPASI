@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,11 +181,11 @@ void CQEventWidget1::slotBtnDeleteClicked()
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
-                                    "Continue", "Cancel", 0, 1, 1);
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                                                     // Yes or Enter
+    case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index
         = static_cast<CCopasiVector< CEvent > *>(&CCopasiDataModel::Global->getModel()->getEvents())->getIndex(GlobalKeys.get(mEventKey));
@@ -477,7 +477,7 @@ void CQEventWidget1::slotSaveTarget()
       msg = "No object is selected as shown on Assignment Target list box.\nPlease select one object first.\n";
 
       CQMessageBox::critical(this, "Unable to save target without object", msg,
-                             QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                             QMessageBox::Ok, QMessageBox::Ok);
       return;
     }
 
@@ -487,7 +487,7 @@ void CQEventWidget1::slotSaveTarget()
       msg = "XXX - There is no expression defined on Assignment Expression widget.\nPlease fill the widget first.\n";
 
       CQMessageBox::critical(this, "Unable to save target without expression", msg,
-                             QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                             QMessageBox::Ok, QMessageBox::Ok);
       return;
     }
 
@@ -692,8 +692,8 @@ void CQEventWidget1::saveToEvent()
           msg = "Unable to rename event '" + FROM_UTF8(mpEvent->getObjectName()) + "'\n"
                 + "to '" + mpLineEditName->text() + "' since an event with that name already exists.\n";
 
-          QMessageBox::information(this, "Unable to rename Event", msg,
-                                   QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+          CQMessageBox::information(this, "Unable to rename Event", msg,
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
         }
@@ -826,8 +826,8 @@ void CQEventWidget1::saveToEvent()
       QString msg;
       msg = "The current assignment fails to be saved";
 
-      QMessageBox::critical(this, "Fail to Save Current Assignment", msg,
-                            QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+      CQMessageBox::critical(this, "Fail to Save Current Assignment", msg,
+                             QMessageBox::Ok, QMessageBox::Ok);
       return;
     }
 
@@ -936,7 +936,7 @@ void CQEventWidget1::slotSelectObject()
           msg += "\nPlease choose one of Transient Volumes, Transient Concentrations, or Transient Values.\n";
 
           CQMessageBox::critical(this, "Invalid object has been chosen", msg,
-                                 QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                                 QMessageBox::Ok, QMessageBox::Ok);
           return;
         }
 
@@ -970,7 +970,7 @@ void CQEventWidget1::slotSelectObject()
               msg += "\nPlease select another object.\n";
 
               CQMessageBox::critical(this, "Unable to save target with duplicate object", msg,
-                                     QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                                     QMessageBox::Ok, QMessageBox::Ok);
               return;
             }
         }
@@ -1085,7 +1085,7 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
       msg = "The currently active event assignment is not saved.\nPlease save it first.\n";
 
       CQMessageBox::critical(this, "Unsaved current active event assignment", msg,
-                             QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                             QMessageBox::Ok, QMessageBox::Ok);
 
       return;
     }

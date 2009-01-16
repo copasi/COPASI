@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,11 +241,11 @@ void CQMetabolite::slotBtnDelete()
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
-                                    "Continue", "Cancel", 0, 1, 1);
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                                                     // Yes or Enter
+    case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index =
           CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(mKey));
@@ -562,7 +562,7 @@ void CQMetabolite::save()
           CQMessageBox::information(this,
                                     "Unable to rename Species",
                                     msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
         }
@@ -589,7 +589,7 @@ void CQMetabolite::save()
           CQMessageBox::information(this,
                                     "Unable to move Species",
                                     msg,
-                                    QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           // Revert the changes
           mpComboBoxCompartment->setCurrentText(FROM_UTF8(CompartmentToRemove));

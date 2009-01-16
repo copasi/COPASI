@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@ void CopasiFileDialog::openExampleDir()
     LastDir = FROM_UTF8(ExampleDir);
   else
     CQMessageBox::information(NULL, "Directory Not Found", FROM_UTF8(ExampleDir),
-                              QMessageBox::Ok, 0);
+                              QMessageBox::Ok, QMessageBox::Ok);
 }
 
 // static

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,11 +202,11 @@ void CQModelValue::slotBtnDelete()
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
-                                    "Continue", "Cancel", 0, 1, 1);
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:  // Yes or Enter
+    case QMessageBox::Ok:  // Yes or Enter
       {
         unsigned C_INT32 index =
           static_cast<CCopasiVector< CModelValue > *>(&CCopasiDataModel::Global->getModel()->getModelValues())->getIndex(GlobalKeys.get(mKey));
@@ -447,7 +447,7 @@ void CQModelValue::save()
           CQMessageBox::information(this,
                                     "Unable to rename Quantity",
                                     msg,
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, Qt::NoButton, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
         }

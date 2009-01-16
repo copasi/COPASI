@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,21 +175,18 @@ C_INT32 checkSelection(const QString & file)
       if (CDirEntry::isWritable(TO_UTF8(file)))
         return CQMessageBox::question(NULL, "File exists!",
                                       "Overwrite existing file " + file + "?",
-                                      QMessageBox::Yes,
-                                      QMessageBox::No | QMessageBox::Default,
-                                      QMessageBox::Cancel | QMessageBox::Escape);
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Cancel);
       else
         {
           CQMessageBox::information(NULL, "File read-only",
                                     "The file is read-only. Please select another file!",
-                                    QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape,
-                                    QMessageBox::NoButton,
-                                    QMessageBox::NoButton);
-          return QMessageBox::No;
+                                    QMessageBox::Ok, QMessageBox::Ok);
+          return QMessageBox::Cancel;
         }
     }
   else
-    return QMessageBox::Yes;
+    return QMessageBox::Ok;
 }
 
 void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)

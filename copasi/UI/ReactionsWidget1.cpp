@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.197 $
+//   $Revision: 1.198 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,7 @@ bool ReactionsWidget1::saveToReaction()
           CQMessageBox::information(this,
                                     "Unable to rename Reaction",
                                     msg,
-                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           mpRi->setReactionName(pReaction->getObjectName());
           LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
@@ -506,11 +506,11 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
-                                    "Continue", "Cancel", 0, 1, 1);
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                                                     // Yes or Enter
+    case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index
         = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mpRi->getReactionName());

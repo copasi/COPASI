@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,7 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
       CQMessageBox::information(this,
                                 "Unable to change Function Type",
                                 msg,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
   if (pFunc->getInfix() != TO_UTF8(table->text(row, 3)))
     {
@@ -117,7 +117,7 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
           CQMessageBox::information(this,
                                     "Unable to change mathematical description",
                                     msg,
-                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
         }
     }
 }
@@ -328,7 +328,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
         }
 
       CQMessageBox::information(this, "Delete not possible",
-                                msg, "OK", 0, 0, 0, 1);
+                                msg, QMessageBox::Ok, QMessageBox::Ok);
 
       return;
     }
@@ -338,11 +338,11 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
   int choice = CQMessageBox::question(this,
                                       "CONFIRM DELETE",
                                       msg,
-                                      "Continue", "Cancel", 0, 1, 1);
+                                      QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   switch (choice)
     {
-    case 0:                          // Yes or Enter
+    case QMessageBox::Ok:
       {
         //now delete functions
         for (i = 0; i < imax; i++)
@@ -354,7 +354,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
         mChanged = true;
         break;
       }
-    default:                          // No or Escape
+    default:
       break;
     }
 }

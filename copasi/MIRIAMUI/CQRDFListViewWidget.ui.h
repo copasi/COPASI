@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/01/16 19:51:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ void CQRDFListViewWidget::load()
     {
       QString Message = FROM_UTF8(CCopasiMessage::getAllMessageText());
       CQMessageBox::warning(this, QString("RDF Warning"), Message,
-                            QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
+                            QMessageBox::Ok, QMessageBox::Ok);
     }
 
   if (mpGraph == NULL)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:11 $
+//   $Date: 2009/01/16 19:51:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,7 +139,7 @@ void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString 
   else
     {
       CQMessageBox::information(this, "Error", "Link not found",
-                                QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 }
 

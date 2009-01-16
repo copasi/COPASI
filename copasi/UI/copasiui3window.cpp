@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.245 $
+//   $Revision: 1.246 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,7 +237,7 @@ CopasiUI3Window::CopasiUI3Window():
   QImage img;
   img.loadFromData(image0_data, sizeof(image0_data), "PNG");
   QPixmap image0 = QPixmap::fromImage(img);
-  setIcon(image0);
+  setWindowIcon(image0);
 
   // Set the window caption/title
   newFlag = 0;
@@ -630,19 +630,21 @@ void CopasiUI3Window::newDoc()
 
   if (dataModel && CCopasiDataModel::Global->isChanged())
     {
-      switch (QMessageBox::information(this, "COPASI",
-                                       "The document contains unsaved changes\n"
-                                       "Do you want to save the changes before exiting?",
-                                       "&Save", "&Discard", "Cancel", 0, 2))
+      switch (CQMessageBox::question(this, "COPASI",
+                                     "The document contains unsaved changes\n"
+                                     "Do you want to save the changes before exiting?",
+                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                     QMessageBox::Save))
         {
-        case 0:                                                                                     // Save clicked or Alt+S pressed or Enter pressed.
+        case QMessageBox::Save:
           slotFileSave();
           break;
 
-        case 1:                                                                                     // Discard clicked or Alt+D pressed
+        case QMessageBox::Discard:
           break;
 
-        case 2:                                                                                     // Cancel clicked or Escape pressed
+        case QMessageBox::Cancel:
+        default:
           return;
           break;
         }
@@ -699,19 +701,21 @@ void CopasiUI3Window::slotFileOpen(QString file)
     {
       if (dataModel && CCopasiDataModel::Global->isChanged())
         {
-          switch (QMessageBox::information(this, "COPASI",
-                                           "The document contains unsaved changes\n"
-                                           "Do you want to save the changes before exiting?",
-                                           "&Save", "&Discard", "Cancel", 0, 2))
+          switch (CQMessageBox::question(this, "COPASI",
+                                         "The document contains unsaved changes\n"
+                                         "Do you want to save the changes before exiting?",
+                                         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                         QMessageBox::Save))
             {
-            case 0:                                                                                     // Save clicked or Alt+S pressed or Enter pressed.
+            case QMessageBox::Save:
               slotFileSave();
               break;
 
-            case 1:                                                                                     // Discard clicked or Alt+D pressed
+            case QMessageBox::Discard:
               break;
 
-            case 2:                                                                                     // Cancel clicked or Escape pressed
+            case QMessageBox::Cancel:
+            default:
               return;
               break;
             }
@@ -745,7 +749,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
           CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                 QMessageBox::Ok, QMessageBox::Ok);
           dataModel->createModel();
         }
 
@@ -765,7 +769,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
             }
 
           CQMessageBox::warning(this, QString("File Warning"), Message,
-                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
         }
 
       if (strcasecmp(CDirEntry::suffix(TO_UTF8(newFile)).c_str(), ".cps") == 0 &&
@@ -845,23 +849,35 @@ bool CopasiUI3Window::slotFileSave()
   File >> Line;
   File.close();
 
-  int choice = 0;
-
   if (!Line.compare(0, 8, "Version=") ||
       strcasecmp(FileName.c_str(), ".gps") == 0)
     {
       /* Ask for permission to overwrite write? */
       /* If no call slotFileSaveAs */
-      choice =
-        CQMessageBox::warning(this,
+      CQMessageBox MessageBox(QMessageBox::Question,
                               "Confirm File Version Update",
                               "You are to overwrite an existing Gepasi File.\n"
                               "This will render the file unreadable for Gepasi",
-                              "Save As", "Overwrite", 0, 0, 1);
+                              QMessageBox::Save | QMessageBox::Ok | QMessageBox::Cancel, this);
 
-      if (!choice)
+      MessageBox.setDefaultButton(QMessageBox::Save);
+      MessageBox.button(QMessageBox::Save)->setText("Save As");
+      MessageBox.button(QMessageBox::Save)->setText("Overwrite");
+
+      int choice = MessageBox.exec();
+
+      switch (choice)
         {
+        case QMessageBox::Save:
           return slotFileSaveAs(FROM_UTF8(FileName));
+          break;
+
+        case QMessageBox::Ok:
+          break;
+
+        case QMessageBox::Cancel:
+          return false;
+          break;
         }
     }
 
@@ -881,8 +897,7 @@ bool CopasiUI3Window::slotFileSave()
             {
               CQMessageBox::critical(this, "Save File Error",
                                      CCopasiMessage::getAllMessageText().c_str(),
-                                     QMessageBox::Ok | QMessageBox::Default,
-                                     QMessageBox::NoButton);
+                                     QMessageBox::Ok, QMessageBox::Ok);
               CCopasiMessage::clearDeque();
             }
         }
@@ -901,20 +916,22 @@ void CopasiUI3Window::slotQuit()
 
   if (dataModel && CCopasiDataModel::Global->isChanged())
     {
-      switch (QMessageBox::information(this, "COPASI",
-                                       "The document contains unsaved changes\n"
-                                       "Do you want to save the changes before exiting?",
-                                       "&Save", "&Discard", "Cancel", 0, 2))
+      switch (CQMessageBox::question(this, "COPASI",
+                                     "The document contains unsaved changes\n"
+                                     "Do you want to save the changes before exiting?",
+                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                     QMessageBox::Save))
         {
-        case 0:  // Save clicked or Alt+S pressed or Enter pressed.
+        case QMessageBox::Save:
           success = slotFileSave();
           break;
 
-        case 1:  // Discard clicked or Alt+D pressed
+        case QMessageBox::Discard:
           success = true;
           break;
 
-        case 2:  // Cancel clicked or Escape pressed
+        case QMessageBox::Cancel:
+        default:
           success = false;
           break;
         }
@@ -935,20 +952,22 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 
   if (dataModel && CCopasiDataModel::Global->isChanged())
     {
-      switch (QMessageBox::information(this, "COPASI",
-                                       "The document contains unsaved changes\n"
-                                       "Do you want to save the changes before exiting?",
-                                       "&Save", "&Discard", "Cancel", 0, 2))
+      switch (CQMessageBox::question(this, "COPASI",
+                                     "The document contains unsaved changes\n"
+                                     "Do you want to save the changes before exiting?",
+                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                     QMessageBox::Save))
         {
-        case 0:  // Save clicked or Alt+S pressed or Enter pressed.
+        case QMessageBox::Save:
           success = slotFileSave();
           break;
 
-        case 1:  // Discard clicked or Alt+D pressed
+        case QMessageBox::Discard:
           success = true;
           break;
 
-        case 2:  // Cancel clicked or Escape pressed
+        case QMessageBox::Cancel:
+        default:
           success = false;
           break;
         }
@@ -1065,19 +1084,21 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
     {
       if (dataModel && CCopasiDataModel::Global->isChanged())
         {
-          switch (QMessageBox::information(this, "COPASI",
-                                           "The document contains unsaved changes\n"
-                                           "Do you want to save the changes before exiting?",
-                                           "&Save", "&Discard", "Cancel", 0, 2))
+          switch (CQMessageBox::question(this, "COPASI",
+                                         "The document contains unsaved changes\n"
+                                         "Do you want to save the changes before exiting?",
+                                         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                         QMessageBox::Save))
             {
-            case 0:   /* Save clicked or Alt+S pressed or Enter pressed. */
+            case QMessageBox::Save:
               slotFileSave();
               break;
 
-            case 1:   /* Discard clicked or Alt+D pressed. */
+            case QMessageBox::Discard:
               break;
 
-            case 2:   /* Cancel clicked or Escape pressed. */
+            case QMessageBox::Cancel:
+            default:
               return;
               break;
             }
@@ -1113,7 +1134,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
           CQMessageBox::critical(this, QString("Import Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                 QMessageBox::Ok, QMessageBox::Ok);
           CCopasiMessage::clearDeque();
 
           dataModel->createModel();
@@ -1163,19 +1184,21 @@ void CopasiUI3Window::slotImportSBML(QString file)
     {
       if (dataModel && CCopasiDataModel::Global->isChanged())
         {
-          switch (QMessageBox::information(this, "COPASI",
-                                           "The document contains unsaved changes\n"
-                                           "Do you want to save the changes before exiting?",
-                                           "&Save", "&Discard", "Cancel", 0, 2))
+          switch (CQMessageBox::question(this, "COPASI",
+                                         "The document contains unsaved changes\n"
+                                         "Do you want to save the changes before exiting?",
+                                         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                         QMessageBox::Save))
             {
-            case 0:                                                                                     // Save clicked or Alt+S pressed or Enter pressed.
+            case QMessageBox::Save:
               slotFileSave();
               break;
 
-            case 1:                                                                                     // Discard clicked or Alt+D pressed
+            case QMessageBox::Discard:
               break;
 
-            case 2:                                                                                     // Cancel clicked or Escape pressed
+            case QMessageBox::Cancel:
+            default:
               return;
               break;
             }
@@ -1211,7 +1234,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
           CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                 QMessageBox::Ok, QMessageBox::Ok);
 
           dataModel->createModel();
         }
@@ -1486,22 +1509,21 @@ void CopasiUI3Window::checkPendingMessages()
 
       if (numFilteredMessages != 0)
         {
-          CQMessageBox box(this);
           if (text.isEmpty())
             text = "There were no serious issues encountered during the import of SBML. "
                    "However some minor issues have occurred, which can be viewed in the Minor "
                    "Issues tab.";
-          box.configure(QString("COPASI Message"), text, QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton, QMessageBox::NoButton);
-          box.enableFilteredMessages(true);
-          box.setFilteredMessageText(filteredText);
-          box.setMessageTabLabel(QString::number(numMessages) + QString(" Messages"));
-          box.setFilteredTabLabel(QString::number(numFilteredMessages) + QString(" Minor Issues"));
+
+          CQMessageBox box(QMessageBox::Information,
+                           QString("COPASI Message"), text, QMessageBox::Ok, this);
+          box.setDefaultButton(QMessageBox::Ok);
+          box.setFilteredText(filteredText);
           box.exec();
         }
       else
         {
           CQMessageBox::information(this, QString("COPASI Message"), text,
-                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
         }
     }
 }
@@ -1625,7 +1647,7 @@ std::string CopasiUI3Window::exportSBMLToString()
           setCursor(oldCursor); resetMenus;
           CQMessageBox::critical(this, QString("File Error"),
                                  QString("Error. Could not do SBML export!"),
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                 QMessageBox::Ok, QMessageBox::Ok);
         }
 
       setCursor(oldCursor); resetMenus;
@@ -1636,7 +1658,7 @@ std::string CopasiUI3Window::exportSBMLToString()
           Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
 
           CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                 QMessageBox::Ok, QMessageBox::Ok);
           CCopasiMessage::clearDeque();
         }
     }
@@ -1685,7 +1707,7 @@ void CopasiUI3Window::slotUpdateMIRIAM()
       QString Message = "Error while updating MIRIAM" + QString("!\n\n");
       Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
       CQMessageBox::critical(this, QString("MIRIAM Error"), Message,
-                             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                             QMessageBox::Ok, QMessageBox::Ok);
       CCopasiMessage::clearDeque();
     }
 

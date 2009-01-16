@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,9 +107,7 @@ void CQTSSAWidget::slotDuration()
     {
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
@@ -130,9 +128,7 @@ void CQTSSAWidget::slotIntervalSize()
     {
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
@@ -152,9 +148,7 @@ void CQTSSAWidget::slotIntervals()
     {
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));

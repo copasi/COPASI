@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.162 $
+//   $Revision: 1.163 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:43 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -764,7 +764,7 @@ bool FunctionWidget1::saveToFunction()
           msg1.append(trees);
 
           CQMessageBox::information(this, "Delete not possible",
-                                    msg1, "OK", 0, 0, 0, 1);
+                                    msg1, QMessageBox::Ok, QMessageBox::Ok);
           return false;
         }
 
@@ -777,7 +777,7 @@ bool FunctionWidget1::saveToFunction()
           CQMessageBox::information(this,
                                     "Unable to rename Function",
                                     msg,
-                                    QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
 
           LineEdit1->setText(FROM_UTF8(func->getObjectName()));
         }
@@ -1078,7 +1078,7 @@ void FunctionWidget1::slotCommitButtonClicked()
             }
 
           CQMessageBox::information(this, "Modification not possible",
-                                    msg, "OK", 0, 0, 0, 1);
+                                    msg, QMessageBox::Ok, QMessageBox::Ok);
 
           return;
         }
@@ -1300,7 +1300,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
         }
 
       CQMessageBox::information(this, "Delete not possible",
-                                msg, "OK", 0, 0, 0, 1);
+                                msg, QMessageBox::Ok, QMessageBox::Ok);
 
       return;
     }
@@ -1310,12 +1310,12 @@ void FunctionWidget1::slotDeleteButtonClicked()
   int choice = CQMessageBox::question(this,
                                       "CONFIRM DELETE",
                                       msg,
-                                      "Continue", "Cancel", 0, 1, 1);
+                                      QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   /* Check if user chooses to deleted Functions */
   switch (choice)
     {
-    case 0:                                                    // Yes or Enter
+    case QMessageBox::Ok:                                                    // Yes or Enter
       {
         unsigned C_INT32 index =
           CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());

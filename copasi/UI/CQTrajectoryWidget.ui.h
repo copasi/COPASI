@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:10 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,9 +93,7 @@ void CQTrajectoryWidget::slotDuration()
     {
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
@@ -121,9 +119,7 @@ void CQTrajectoryWidget::slotIntervalSize()
     {
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
@@ -148,9 +144,7 @@ void CQTrajectoryWidget::slotIntervals()
     {
       CQMessageBox::information(this, QString("Information"),
                                 FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton);
+                                QMessageBox::Ok, QMessageBox::Ok);
     }
 
   mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,9 +168,9 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(TO_UTF8(targetEdit->text()));
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
-      if (QMessageBox::question(NULL, "No Report Definition Defined",
-                                "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
-                                QMessageBox::Yes | QMessageBox::Default | QMessageBox::Escape, QMessageBox::No) == QMessageBox::Yes)
+      if (CQMessageBox::question(NULL, "No Report Definition Defined",
+                                 "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
+                                 QMessageBox::Ok | QMessageBox::No, QMessageBox::Ok) == QMessageBox::Ok)
         jumpToReportDefinitionEdit();
       return;
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/01/16 19:51:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,7 +213,7 @@ void SliderSettingsDialog::minValueChanged()
   if ((value > mOriginalValue) &&
       (CQMessageBox::question(this, "Default value out of range.",
                               "The minimum value you set is larger than the default value of the slider. The new default will be set to the minimum. Do you want to procceed?",
-                              QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != QMessageBox::Yes)
+                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
 )
     {
       mpMinValueEdit->setText(QString::number(mMinValue));
@@ -239,7 +239,7 @@ void SliderSettingsDialog::minValueChanged()
         {
           CQMessageBox::information(this, "Incorrect min value",
                                     "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
-                                    QMessageBox::Ok | QMessageBox::Default , Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
           mpLogCheckBox->setChecked(false);
           mScaling = CSlider::linear;
         }
@@ -256,7 +256,7 @@ void SliderSettingsDialog::maxValueChanged()
     {
       if (CQMessageBox::question(this, "Default value out of range.",
                                  "The maximum value you set is smaller than the default value of the slider. The new default will be set to the maximum. Do you want to procceed?",
-                                 QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape) != QMessageBox::Yes)
+                                 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
         {
           mpMaxValueEdit->setText(QString::number(mMaxValue));
           mChanged = NONE;
@@ -338,7 +338,7 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           CQMessageBox::information(this, "Invalid Object",
                                     "You chose an object that does not correspond to an integer or float value. Please choose an object that corresponds to an integet or float value.",
-                                    QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
           mpSlider = NULL;
           mpObjectNameLineEdit->setText("");
           return;
@@ -352,7 +352,7 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           CQMessageBox::information(this, "Invalid Object",
                                     "You chose an object that cannot be used as a slider. Please choose an other object.",
-                                    QMessageBox::Ok | QMessageBox::Default, Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
           mpSlider = NULL;
           mpObjectNameLineEdit->setText("");
           return;
@@ -463,7 +463,7 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
         {
           CQMessageBox::information(this, "Incorrect min value",
                                     "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
-                                    QMessageBox::Ok | QMessageBox::Default , Qt::NoButton);
+                                    QMessageBox::Ok, QMessageBox::Ok);
           mpLogCheckBox->setChecked(false);
           mScaling = CSlider::linear;
         }
