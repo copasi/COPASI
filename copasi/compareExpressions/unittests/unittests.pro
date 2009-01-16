@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/unittests.pro,v $ 
-#   $Revision: 1.14 $ 
+#   $Revision: 1.15 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/10/15 15:42:33 $ 
+#   $Date: 2009/01/16 16:29:00 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -36,7 +36,7 @@ contains(BUILD_OS, WIN32) {
 
 contains(BUILD_OS, Linux) {
 !isEmpty(CPPUNIT_PATH) {
-  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
+  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 
   LIBS = -L../lib \
@@ -44,6 +44,7 @@ contains(BUILD_OS, Linux) {
          $${LIBS}
 
    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+   PRE_TARGETDEPS += ../../sbml/unittests/utilities.o
 }
 
 }
@@ -52,13 +53,14 @@ contains(BUILD_OS, SunOS) {
   QMAKE_LFLAGS += -z rescan
 
 !isEmpty(CPPUNIT_PATH) {
-  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
+  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+   PRE_TARGETDEPS += ../../sbml/unittests/utilities.o
    }
 }  
 
@@ -66,13 +68,14 @@ contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
   
 !isEmpty(CPPUNIT_PATH) {
-  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
+  LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit ../../sbml/unittests/utilities.o
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
    
    PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+   PRE_TARGETDEPS += ../../sbml/unittests/utilities.o
 
 }
 
@@ -84,13 +87,15 @@ HEADERS +=  test_expression_comparison.hpp \
             test_node_conversion.hpp \
             test_cnormallogical.hpp \
             test_normalform.hpp \
-            test_simplify.h 
+            test_simplify.h \
+            test_compare_utilities.h
 
 SOURCES += test.cpp \
            test_expression_comparison.cpp \
            test_node_conversion.cpp \
            test_cnormallogical.cpp \
            test_normalform.cpp \
-           test_simplify.cpp 
+           test_simplify.cpp \
+           test_compare_utilities.cpp
 
 
