@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/10 13:54:53 $
+//   $Date: 2009/01/16 17:32:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 class CNormalFraction;
 class Model;
@@ -80,11 +81,25 @@ class stress_test
 
   protected:
     unsigned int mNumFunctionDefinitions;
+    unsigned int mNumExceededFunctions;
+    unsigned int mNumFailedFunctions;
     unsigned int mNumExpressions;
-    unsigned int mNumCOPASIFunctionDefinitions;
+    unsigned int mNumExceeded;
+    unsigned int mNumFailed;
+    unsigned int mNumCOPASIFunctions;
+    unsigned int mNumExceededCOPASIFunctions;
+    unsigned int mNumFailedCOPASIFunctions;
+    unsigned int mNumFiles;
+    unsigned int mNumKineticFunctions;
+    unsigned int mNumMassActionsKinetics;
+    unsigned int mNumConstantFluxKinetics;
+    unsigned int mNumMappedKineticExpressions;
+    unsigned int mNumUnmappedKineticExpressions;
     std::vector<CNormalFraction*> mNormalizedExpressions;
-    std::vector<CNormalFraction*> mNormalizedFunctionDefinitions;
-    std::vector<CNormalFraction*> mNormalizedCOPASIFunctionDefinitions;
+    std::vector<std::pair<std::string, CNormalFraction*> > mNormalizedFunctionDefinitions;
+    std::multimap<std::string, CNormalFraction*> mNormalizedCOPASIFunctionDefinitions;
+    std::vector<std::string> mUnreadableFiles;
+    std::map<std::string, unsigned int> mExpressionMappings;
   };
 
 #endif // STRESS_TEST_H__
