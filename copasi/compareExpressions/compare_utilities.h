@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/08 15:50:43 $
+//   $Date: 2009/01/16 16:29:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,9 @@ class CNormalFraction;
 class Model;
 class CNormalBase;
 class ConverterASTNode;
+class CEvaluationNode;
+class CEvaluationNodeCall;
+class CFunctionDB;
 
 ASTNode* create_expression(const ASTNode* pSource, const Model* pModel);
 
@@ -42,6 +45,12 @@ ASTNode* replace_variable_names(const ASTNode* pNode, const std::map<std::string
 ASTNode* expand_function_call(const ASTNode* pCall, const Model* pModel);
 
 ASTNode* expand_function_calls(const ASTNode* pNode, const Model* pModel);
+
+CEvaluationNode* expand_function_calls(const CEvaluationNode* pNode, CFunctionDB* pFunctionDB);
+
+CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pNode, CFunctionDB* pFunctionDB);
+
+CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std::map<std::string, const CEvaluationNode*>& argumentMap);
 
 /**
  * This function replaces a call to SEC by 1/COS.
@@ -112,5 +121,23 @@ ASTNode* replace_ARCSECH(const ASTNode* pChild);
  * This function replaces a call to ARCCSCH by log(sqrt(1+ (1/ (X^2)))+(1/X))
  */
 ASTNode* replace_ARCCSCH(const ASTNode* pChild);
+
+/**
+ * This function determines if a given kinetic law represents a constant flux
+ * reaction.
+bool isConstantFlux(const ASTNode* pNode,bool singleCompartment);
+ */
+
+/**
+ * This function determines if a given kinetic law represents an
+ * irreversible mass action kinetics.
+bool isIrevMassAction(const ASTNode* pNode,const std::vector<std::pair<std::string,double> >& substrates);
+ */
+
+/**
+ * This function determines if a given kinetic law represents an
+ * reversible mass action kinetics.
+bool isRevMassAction(const ASTNode* pNode,const std::vector<std::pair<std::string,double> >& substrates,const std::vector<std::pair<std::string,double> >& products);
+ */
 
 #endif /* COMPARE_UTILITIES_H__ */

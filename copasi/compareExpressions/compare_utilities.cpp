@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 15:27:26 $
+//   $Date: 2009/01/16 16:29:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,10 @@
 #include "CNormalTranslation.h"
 #include "ConvertToCEvaluationNode.h"
 #include "copasi/utilities/CCopasiTree.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CFunctionParameters.h"
+#include "copasi/function/CFunctionParameter.h"
 #include "copasi/function/CEvaluationTree.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeObject.h"
@@ -907,6 +911,122 @@ ASTNode* replace_ARCCSCH(const ASTNode* pChild)
       pTmpNode2->addChild(pChild->deepCopy());
       pTmpNode->addChild(pTmpNode2);
       pResult->addChild(pTmpNode);
+    }
+  return pResult;
+}
+
+/**
+ * This method expands the function calls in the given expression.
+ * On failure NULL is returned, otherwise a copy of the original node
+ * is returned where all function calls have been expanded.
+ */
+CEvaluationNode* expand_function_calls(const CEvaluationNode* pNode, CFunctionDB* pFunctionDB)
+{
+  CEvaluationNode* pResult = NULL;
+  const CEvaluationNodeCall* pCall = dynamic_cast<const CEvaluationNodeCall*>(pNode);
+  if (pCall != NULL)
+    {
+      pResult = expand_function_call(pCall, pFunctionDB);
+      if (pResult == NULL)
+        {
+          return NULL;
+        }
+      CEvaluationNode* pTmp = expand_function_calls(pResult, pFunctionDB);
+      if (pTmp == NULL)
+        {
+          delete pResult;
+          return NULL;
+        }
+      delete pResult;
+      pResult = pTmp;
+    }
+  else
+    {
+      // only make a shallow copy
+      std::vector<CEvaluationNode*> v;
+      pResult = pNode->copyNode(v);
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+      CEvaluationNode* pNewChild = NULL;
+      while (pChild != NULL)
+        {
+          pNewChild = expand_function_calls(pChild, pFunctionDB);
+          if (pNewChild == NULL)
+            {
+              delete pResult;
+              pResult = NULL;
+              break;
+            }
+          pResult->addChild(pNewChild);
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
+    }
+  return pResult;
+}
+
+/**
+ * This method expands the given function call.
+ * On failure NULL is returned, otherwise on expression of the expanded
+ * function call is returned.
+ */
+CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctionDB* pFunctionDB)
+{
+  // find the function that belongs to the call
+  CEvaluationNode* pResult = NULL;
+  const CEvaluationTree* pTree = pFunctionDB->findFunction(pCall->getData());
+  if (pTree != NULL)
+    {
+      const CFunction* pFunctionDefinition = dynamic_cast<const CFunction*>(pTree);
+      // create the mapping
+      assert(pFunctionDefinition != NULL);
+      const CFunctionParameters& functionParameters = pFunctionDefinition->getVariables();
+      unsigned int i, iMax = functionParameters.size();
+      // map the first function argument to the first child in the call etc.
+      std::map<std::string, const CEvaluationNode*> argumentMap;
+      i = 0;
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pCall->getChild());
+      while (i < iMax)
+        {
+          assert(pChild != NULL);
+          argumentMap[functionParameters[i]->getObjectName()] = pChild;
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+          ++i;
+        }
+      // create the resulting tree
+      pResult = pFunctionDefinition->getRoot()->copyBranch();
+      CEvaluationNode* pTmpNode = replace_variable_names(pResult, argumentMap);
+      assert(pTmpNode != NULL);
+      delete pResult;
+      assert(pChild == NULL);
+      pResult = pTmpNode;
+    }
+  return pResult;
+}
+
+CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std::map<std::string, const CEvaluationNode*>& argumentMap)
+{
+  CEvaluationNode* pResult = NULL;
+  if (dynamic_cast<const CEvaluationNodeVariable*>(pNode) != NULL)
+    {
+      std::map<std::string, const CEvaluationNode*>::const_iterator pos = argumentMap.find(pNode->getData());
+      if (pos != argumentMap.end())
+        {
+          pResult = pos->second->copyBranch();
+        }
+    }
+  else
+    {
+      // only make a shallow copy
+      std::vector<CEvaluationNode*> v;
+      pResult = pNode->copyNode(v);
+      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
+      CEvaluationNode* pNewChild = NULL;
+      while (pChild != NULL)
+        {
+          pNewChild = replace_variable_names(pChild, argumentMap);
+          assert(pNewChild != NULL);
+          pResult->addChild(pNewChild);
+          pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
+        }
     }
   return pResult;
 }
