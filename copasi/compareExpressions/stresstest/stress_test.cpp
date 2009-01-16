@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/12/01 13:58:04 $
+//   $Date: 2009/01/16 16:30:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,10 +40,29 @@
 #include "copasi/compareExpressions/CNormalFraction.h"
 #include "copasi/compareExpressions/CNormalTranslation.h"
 
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CMassAction.h"
+
+#include "copasi/model/CModel.h"
+
 /**
  * Constructor.
  */
-stress_test::stress_test(): mNumFunctionDefinitions(0), mNumExpressions(0), mNumCOPASIFunctionDefinitions(0)
+stress_test::stress_test(): mNumFunctionDefinitions(0),
+    mNumExceededFunctions(0),
+    mNumFailedFunctions(0),
+    mNumExpressions(0),
+    mNumExceeded(0),
+    mNumFailed(0),
+    mNumCOPASIFunctions(0),
+    mNumExceededCOPASIFunctions(0),
+    mNumFailedCOPASIFunctions(0),
+    mNumKineticFunctions(0),
+    mNumMassActionsKinetics(0),
+    mNumConstantFluxKinetics(0),
+    mNumMappedKineticExpressions(0),
+    mNumUnmappedKineticExpressions(0)
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -64,20 +83,18 @@ stress_test::~stress_test()
       ++it;
     }
   // delete normalforms of function definitions
-  it = mNormalizedFunctionDefinitions.begin();
-  endit = mNormalizedFunctionDefinitions.end();
-  while (it != endit)
+  std::vector<std::pair<std::string, CNormalFraction*> >::iterator it2 = mNormalizedFunctionDefinitions.begin(), endit2 = mNormalizedFunctionDefinitions.end();
+  while (it2 != endit2)
     {
-      delete *it;
-      ++it;
+      delete it2->second;
+      ++it2;
     }
   // delete normalforms of COPASI function definitions
-  it = mNormalizedCOPASIFunctionDefinitions.begin();
-  endit = mNormalizedCOPASIFunctionDefinitions.end();
-  while (it != endit)
+  std::multimap<std::string, CNormalFraction*>::iterator it5 = mNormalizedCOPASIFunctionDefinitions.begin(), endit5 = mNormalizedCOPASIFunctionDefinitions.end();
+  while (it5 != endit5)
     {
-      delete *it;
-      ++it;
+      delete it5->second;
+      ++it5;
     }
   // delete the COPASI data structures
   delete CCopasiDataModel::Global;
@@ -92,6 +109,11 @@ stress_test::~stress_test()
  */
 void stress_test::run(const std::vector<std::string>& filenames)
 {
+  // first normalize the COPASIm function database
+  // these normalized functions are later ued to compare
+  // against kinetic expressions and function definitions
+  normalizeFunctionDB();
+
   std::vector<std::string>::const_iterator it = filenames.begin(), endit = filenames.end();
   while (it != endit)
     {
@@ -100,9 +122,84 @@ void stress_test::run(const std::vector<std::string>& filenames)
       ++it;
     }
   // output some statistics
+  std::cout << "number of COPASI function definitions: " << mNumCOPASIFunctions << std::endl;
+  std::cout << "number of exceeded COPASI function definitions: " << mNumExceededCOPASIFunctions << std::endl;
+  std::cout << "number of failed COPASI function definitions: " << mNumFailedCOPASIFunctions << std::endl;
+  if (!mUnreadableFiles.empty())
+    {
+
+      std::cout << "the following " << mUnreadableFiles.size() << " files could not be read: " << std::endl;
+      std::vector<std::string>::const_iterator it = mUnreadableFiles.begin(), endit = mUnreadableFiles.end();
+      while (it != endit)
+        {
+          std::cout << *it << std::endl;
+          ++it;
+        }
+    }
+  std::cout << mNumFiles << " files have been processed." << std::endl;
   std::cout << "number of function definitions: " << mNumFunctionDefinitions << std::endl;
-  std::cout << "number of COPASI function definitions: " << mNumCOPASIFunctionDefinitions << std::endl;
+  std::cout << "number of exceeded function definitions: " << mNumExceededFunctions << std::endl;
+  std::cout << "number of failed function definitions: " << mNumFailedFunctions << std::endl;
   std::cout << "number of expressions: " << mNumExpressions << std::endl;
+  std::cout << "number of exceeded expressions: " << mNumExceeded << std::endl;
+  std::cout << "number of failed expressions: " << mNumFailed << std::endl;
+  // now we compare the normalized function definitons from all files to the
+  // normalized function definitions from the COPASI fucntion database
+  std::multimap<std::string, CNormalFraction*>::iterator it2 = mNormalizedCOPASIFunctionDefinitions.begin(), endit2 = mNormalizedCOPASIFunctionDefinitions.end();
+  --endit;
+  while (it2 != endit2)
+    {
+      std::multimap<std::string, CNormalFraction*>::iterator it3 = it2, endit3 = mNormalizedCOPASIFunctionDefinitions.end();
+      ++it3;
+      while (it3 != endit3)
+        {
+          if (are_equal(it2->second, it3->second))
+            {
+              std::cout << "The functions \"" << it2->first << "\" and \"" << it3->first << "\" in the COPASI database are equal." << std::endl;
+            }
+          ++it3;
+        }
+      ++it2;
+    }
+  std::vector<std::pair<std::string, CNormalFraction*> >::iterator it5 = mNormalizedFunctionDefinitions.begin(), endit5 = mNormalizedFunctionDefinitions.end();
+  unsigned int numClassified = 0;
+  unsigned int numDubious = 0;
+  while (it5 != endit5)
+    {
+      std::multimap<std::string, CNormalFraction*>::iterator it3 = mNormalizedCOPASIFunctionDefinitions.begin(), endit3 = mNormalizedCOPASIFunctionDefinitions.end();
+      bool found = false;
+      while (it3 != endit3)
+        {
+          if (are_equal(it5->second, it3->second))
+            {
+              if (found == true)
+                {
+                  ++numDubious;
+                  --numClassified;
+                  break;
+                }
+              else
+                {
+                  found = true;
+                  ++numClassified;
+                }
+            }
+          ++it3;
+        }
+      ++it5;
+    }
+  std::cout << "Number of function definitons that could be classified: " << numClassified << std::endl;
+  std::cout << "Number of function definitons that were classified incorrectly: " << numDubious << std::endl;
+  std::cout << "Number of function definitons that could not be classified: " << mNormalizedFunctionDefinitions.size() - numClassified - numDubious << std::endl;
+  std::cout << "Number of kinetic expressions that could be mapped to a function definition: " << mNumMappedKineticExpressions << std::endl;
+  std::cout << "Number of kinetic expressions that could not be mapped to a function definition: " << mNumUnmappedKineticExpressions << std::endl;
+  std::cout << "List of the number of expressions mapped to a certain function definition: " << std::endl;
+  std::map<std::string, unsigned int>::iterator it6 = mExpressionMappings.begin(), endit6 = mExpressionMappings.end();
+  while (it6 != endit6)
+    {
+      std::cout << it6->first << " : " << it6->second << std::endl;
+      ++it6;
+    }
 }
 
 /**
@@ -111,15 +208,25 @@ void stress_test::run(const std::vector<std::string>& filenames)
  */
 void stress_test::normalizeMath(const std::string& filename)
 {
+  bool result = false;
   if (CCopasiDataModel::Global != NULL)
     {
-      bool result = CCopasiDataModel::Global->importSBML(filename);
+      try
+        {
+          result = CCopasiDataModel::Global->importSBML(filename);
+          ++mNumFiles;
+        }
+      catch (...)
+        {
+          mUnreadableFiles.push_back(filename);
+        }
       if (result == true)
         {
           const SBMLDocument* pDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
           if (pDocument != NULL)
             {
               const Model* pModel = pDocument->getModel();
+
               if (pModel != NULL)
                 {
                   //this->normalizeFunctionDefinitions(pModel);
@@ -162,10 +269,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           catch (recursion_limit_exception e)
             {
               std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+              ++mNumExceeded;
             }
           catch (...)
             {
               std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+              ++mNumFailed;
             }
           ++mNumExpressions;
           delete pNewMath;
@@ -194,10 +303,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           catch (recursion_limit_exception e)
             {
               std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+              ++mNumExceeded;
             }
           catch (...)
             {
               std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+              ++mNumFailed;
             }
           ++mNumExpressions;
           delete pNewMath;
@@ -216,21 +327,97 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           pMath = pLaw->getMath();
           if (pMath != NULL)
             {
+              // TODO somewhere here, we have to determine the kinetic law
               pNewMath = create_expression(pMath, pModel);
               assert(pNewMath != NULL);
               try
                 {
                   pFraction = create_simplified_normalform(pNewMath);
                   assert(pFraction != NULL);
+                  // find the COPASI Reaction that corresponds to this reaction
+                  std::string id = pReaction->getId();
+                  const CReaction* pCOPASIReaction = NULL;
+                  unsigned int z = 0, zMax = CCopasiDataModel::Global->getModel()->getReactions().size();
+                  while (z < zMax)
+                    {
+                      if (CCopasiDataModel::Global->getModel()->getReactions()[z]->getSBMLId() == id)
+                        {
+                          pCOPASIReaction = CCopasiDataModel::Global->getModel()->getReactions()[z];
+                          break;
+                        }
+                      ++z;
+                    }
+                  assert(pCOPASIReaction != NULL);
+                  if (dynamic_cast<const CMassAction*>(pCOPASIReaction->getFunction()) == NULL)
+                    {
+                      if (pCOPASIReaction->getFunction()->getObjectName().find("Constant flux") != std::string::npos)
+                        {
+                          ++mNumMappedKineticExpressions;
+                          if (mExpressionMappings.find("Constant Action") == mExpressionMappings.end())
+                            {
+                              mExpressionMappings["Constant Flux"] = 1;
+                            }
+                          else
+                            {
+                              mExpressionMappings["Constant Flux"] = mExpressionMappings["Constant Flux"] + 1;
+                            }
+                        }
+                      else
+                        {
+                          // compare with the normalized expressions from the
+                          // function definitions
+                          std::multimap<std::string, CNormalFraction*>::iterator it = mNormalizedCOPASIFunctionDefinitions.begin(), endit = mNormalizedCOPASIFunctionDefinitions.end();
+                          bool found = false;
+                          while (it != endit)
+                            {
+                              if (are_equal(pFraction, it->second))
+                                {
+                                  // we found a match
+                                  found = true;
+                                  if (mExpressionMappings.find(it->first) == mExpressionMappings.end())
+                                    {
+                                      mExpressionMappings[it->first] = 1;
+                                    }
+                                  else
+                                    {
+                                      mExpressionMappings[it->first] = mExpressionMappings[it->first] + 1;
+                                    }
+                                  break;
+                                }
+                            }
+                          if (found)
+                            {
+                              ++mNumMappedKineticExpressions;
+                            }
+                          else
+                            {
+                              ++mNumUnmappedKineticExpressions;
+                            }
+                        }
+                    }
+                  else
+                    {
+                      ++mNumMappedKineticExpressions;
+                      if (mExpressionMappings.find("Mass Action") == mExpressionMappings.end())
+                        {
+                          mExpressionMappings["Mass Action"] = 1;
+                        }
+                      else
+                        {
+                          mExpressionMappings["Mass Action"] = mExpressionMappings["Mass Action"] + 1;
+                        }
+                    }
                   //                this->mNormalizedExpressions.push_back(pFraction);
                 }
               catch (recursion_limit_exception e)
                 {
                   std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                  ++mNumExceeded;
                 }
               catch (...)
                 {
                   std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                  ++mNumFailed;
                 }
               delete pNewMath;
               ++mNumExpressions;
@@ -261,10 +448,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                   catch (recursion_limit_exception e)
                     {
                       std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                      ++mNumExceeded;
                     }
                   catch (...)
                     {
                       std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                      ++mNumFailed;
                     }
                   ++mNumExpressions;
                   delete pNewMath;
@@ -295,10 +484,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                   catch (recursion_limit_exception e)
                     {
                       std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                      ++mNumExceeded;
                     }
                   catch (...)
                     {
                       std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                      ++mNumFailed;
                     }
                   ++mNumExpressions;
                   delete pNewMath;
@@ -332,10 +523,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
           catch (recursion_limit_exception e)
             {
               std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+              ++mNumExceeded;
             }
           catch (...)
             {
               std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+              ++mNumFailed;
             }
           ++mNumExpressions;
           delete pNewMath;
@@ -360,10 +553,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
               catch (recursion_limit_exception e)
                 {
                   std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                  ++mNumExceeded;
                 }
               catch (...)
                 {
                   std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                  ++mNumFailed;
                 }
               ++mNumExpressions;
               delete pNewMath;
@@ -391,10 +586,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
               catch (recursion_limit_exception e)
                 {
                   std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewMath) << "\"." << std::endl;
+                  ++mNumExceeded;
                 }
               catch (...)
                 {
                   std::cerr << "expression \"" << writeMathMLToString(pNewMath) << "\" could not be normalized." << std::endl;
+                  ++mNumFailed;
                 }
               ++mNumExpressions;
               delete pNewMath;
@@ -429,15 +626,17 @@ void stress_test::normalizeAndSimplifyFunctionDefinitions(const Model* pModel)
             {
               pFraction = create_simplified_normalform(pNewRoot);
               assert(pFraction != NULL);
-              //          mNormalizedFunctionDefinitions.push_back(pFraction);
+              mNormalizedFunctionDefinitions.push_back(std::pair<std::string, CNormalFraction*>(pFunDef->getId(), pFraction));
             }
           catch (recursion_limit_exception e)
             {
               std::cerr << "recursion limit exceeded for expression \"" << writeMathMLToString(pNewRoot) << "\"." << std::endl;
+              ++mNumExceededFunctions;
             }
           catch (...)
             {
               std::cerr << "expression \"" << writeMathMLToString(pNewRoot) << "\" could not be normalized." << std::endl;
+              ++mNumFailedFunctions;
             }
           ++mNumFunctionDefinitions;
         }
@@ -652,7 +851,44 @@ void stress_test::normalizeFunctionDefinitions(const Model* pModel)
  * Normalizes COPASIs function database.
  */
 void stress_test::normalizeFunctionDB()
-{}
+{
+  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  assert(pFunctionDB != NULL);
+  CCopasiVectorN< CEvaluationTree > & loadedFunctions = pFunctionDB->loadedFunctions();
+  unsigned int i = 0, iMax = loadedFunctions.size();
+  while (i < iMax)
+    {
+      CEvaluationTree* pTree = loadedFunctions[i];
+      assert(pTree != NULL);
+      if (dynamic_cast<const CFunction*>(pTree) != NULL && dynamic_cast<const CMassAction*>(pTree) == NULL)
+        {
+          // make sure it is not mass action
+          try
+            {
+              CEvaluationNode* pExpanded = expand_function_calls(pTree->getRoot(), pFunctionDB);
+              assert(pExpanded != NULL);
+              CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pExpanded);
+              delete pExpanded;
+              assert(pFraction != NULL);
+              mNormalizedCOPASIFunctionDefinitions.insert(std::pair<std::string, CNormalFraction*>(pTree->getObjectName(), pFraction));
+              ++mNumCOPASIFunctions;
+            }
+          catch (recursion_limit_exception e)
+            {
+              std::cerr << "recursion limit exceeded for expression:" << std::endl;
+              pTree->getRoot()->printRecursively();
+              ++mNumExceededCOPASIFunctions;
+            }
+          catch (...)
+            {
+              std::cerr << "expression could not be normalized: " << std::endl;
+              pTree->getRoot()->printRecursively();
+              ++mNumFailedCOPASIFunctions;
+            }
+        }
+      ++i;
+    }
+}
 
 int main(int argc, char** argv)
 {
