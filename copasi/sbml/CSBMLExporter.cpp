@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.6 $
+//   $Revision: 1.50.2.6.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/25 16:49:08 $
+//   $Author: gauges $
+//   $Date: 2009/01/21 20:54:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -848,6 +848,9 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       assert(pOrigNode != NULL);
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
+      // convert local parameters that are referenced in an expression to global
+      // parameters
+      this->replace_local_parameters(pNode, dataModel);
       if (pNode != NULL)
         {
           pInitialAssignment->setMath(pNode);
@@ -1078,6 +1081,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
             }
         }
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
+      this->replace_local_parameters(pNode, dataModel);
       delete pOrigNode;
       if (pNode != NULL)
         {
@@ -1304,6 +1308,9 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
 
   // SBML Level 2 Version 2 and above can have the same references as level 1 plus references to
   // reaction fluxes.
+
+  // Starting with COPASI Build 30 references to local parameters are allowed
+  // as well because they are converted to global parameters
   const std::vector<CEvaluationNode*>& objectNodes = expr.getNodeList();
   unsigned j, jMax = objectNodes.size();
   for (j = 0;j < jMax;++j)
@@ -1384,6 +1391,14 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                       result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "model", pObjectParent->getObjectName().c_str()));
                     }
                 }
+              else if (typeString == "Parameter")
+                {
+                  // must be a local parameter
+                  if (pObject->getObjectName() != "Value")
+                    {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "local parameter", pObjectParent->getObjectName().c_str()));
+                    }
+                }
               else
                 {
                   if (sbmlLevel == 1 || (sbmlLevel == 2 && sbmlVersion == 1))
@@ -1404,7 +1419,13 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
             }
           else
             {
-              result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+              // normally local parameters are referenced via their value and
+              // not directly, so this code should never be called
+              const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+              if (pLocalParameter == NULL)
+                {
+                  result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+                }
             }
         }
     }
@@ -1912,8 +1933,12 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       checkForInitialAssignments(dataModel, this->mIncompatibilities);
     }
   createRules(dataModel);
-  createReactions(dataModel);
   createEvents(dataModel);
+  // we have to export the reactions after all other entities that have
+  // expressions since an expression could contain a local parameter
+  // If it did, it would have to be converted to a global parameter and that
+  // has to be taken into consideration when creating the reactions
+  createReactions(dataModel);
   // find all used functions
   createFunctionDefinitions(dataModel);
   if (this->mSBMLLevel == 1)
@@ -2315,6 +2340,9 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   assert(pOrigNode != NULL);
   ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
   delete pOrigNode;
+  // convert local parameters that are referenced in an expression to global
+  // parameters
+  this->replace_local_parameters(pNode, dataModel);
   if (pNode != NULL)
     {
       Trigger* pTrigger = new Trigger(pNode);
@@ -2377,6 +2405,9 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       assert(pOrigNode != NULL);
       pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
+      // convert local parameters that are referenced in an expression to global
+      // parameters
+      this->replace_local_parameters(pNode, dataModel);
       if (pNode != NULL)
         {
           Delay* pDelay = new Delay(pNode);
@@ -2605,6 +2636,9 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
           ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
           delete pOrigNode;
+          // convert local parameters that are referenced in an expression to global
+          // parameters
+          this->replace_local_parameters(pNode, dataModel);
           if (pNode != NULL)
             {
               pAssignment->setMath(pNode);
@@ -2680,17 +2714,28 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       if (pPara->getUsage() == CFunctionParameter::PARAMETER)
         {
           // only create a parameter if it is a local parameter,
+          // and if it is not in the replacement map
           // otherwise the parameter already has been created
           if (reaction.isLocalParameter(i))
             {
-              Parameter* pSBMLPara = pKLaw->createParameter();
-
-              pSBMLPara->setId(pPara->getObjectName().c_str());
-              double value = reaction.getParameterValue(pPara->getObjectName());
-              // if the value is NaN, leave the parameter value unset.
-              if (!isnan(value))
+              std::vector<std::string> v = reaction.getParameterMapping(pPara->getObjectName());
+              assert(v.size() == 1);
+              CCopasiObject* pTmpObject = GlobalKeys.get(v[0]);
+              assert(pTmpObject != NULL);
+              CCopasiParameter* pLocalParameter = dynamic_cast<CCopasiParameter*>(pTmpObject);
+              assert(pLocalParameter != NULL);
+              if (this->mParameterReplacementMap.find(pLocalParameter->getCN()) == this->mParameterReplacementMap.end())
                 {
-                  pSBMLPara->setValue(value);
+                  Parameter* pSBMLPara = pKLaw->createParameter();
+
+                  pSBMLPara->setId(pPara->getObjectName().c_str());
+                  pSBMLPara->setName(pPara->getObjectName().c_str());
+                  double value = reaction.getParameterValue(pPara->getObjectName());
+                  // if the value is NaN, leave the parameter value unset.
+                  if (!isnan(value))
+                    {
+                      pSBMLPara->setValue(value);
+                    }
                 }
             }
         }
@@ -2716,6 +2761,10 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       delete pExpression;
       assert(pOrigNode != NULL);
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
+      // since toAST in CEvaluationNodeObject sets the CN of local parameters
+      // as the name of the node, we have to go and replace all node names
+      // that have a common name that is the CN of a local parameter
+      this->restore_local_parameters(pNode, dataModel);
       delete pOrigNode;
       assert(pNode != NULL);
       if (reaction.getCompartmentNumber() == 1)
@@ -3609,7 +3658,7 @@ void CSBMLExporter::removeUnusedObjects()
           pSBase = pList->get(i - 1);
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
-              removedObjects.push_back(pList->remove(i - i));
+              removedObjects.push_back(pList->remove(i - 1));
             }
         }
       pList = pModel->getListOfSpecies();
@@ -3618,7 +3667,7 @@ void CSBMLExporter::removeUnusedObjects()
           pSBase = pList->get(i - 1);
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
-              removedObjects.push_back(pList->remove(i - i));
+              removedObjects.push_back(pList->remove(i - 1));
             }
         }
       pList = pModel->getListOfParameters();
@@ -3627,7 +3676,7 @@ void CSBMLExporter::removeUnusedObjects()
           pSBase = pList->get(i - 1);
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
-              removedObjects.push_back(pList->remove(i - i));
+              removedObjects.push_back(pList->remove(i - 1));
             }
         }
       pList = pModel->getListOfInitialAssignments();
@@ -3638,7 +3687,7 @@ void CSBMLExporter::removeUnusedObjects()
             {
               // we don't have to store the initial assignments since
               // there are no rules or events for initial assignments
-              delete pList->remove(i - i);
+              delete pList->remove(i - 1);
             }
         }
       pList = pModel->getListOfReactions();
@@ -3649,7 +3698,7 @@ void CSBMLExporter::removeUnusedObjects()
             {
               // we don't have to store the reactions since
               // there are no rules or events for reactions
-              delete pList->remove(i - i);
+              delete pList->remove(i - 1);
             }
         }
       // check each removed object, if there is a rule or an event in
@@ -5891,4 +5940,120 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
     }
 }
 
+/**
+ * Goes through the expression tree and tries to find occurences of local
+ * parameters. If one is found, a global parameter is created and all
+ * references to the local parameters are substituted.
+ */
+void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel)
+{
+  //  go through the expression and check if it contains a local reaction
+  //  parameter, if it does, we have to create a global parameter to replace it
+  //  the replacement has to be recorded in same data structure so that we can
+  //  consider it when the reactions are created later on
+  //  In the end, we need to use this map to create a warning message.
+  if (pOrigNode != NULL)
+    {
+      // the new id for the global parameter should contain the reaction name and
+      // the parameter name
+      if (pOrigNode->getType() == AST_NAME)
+        {
+          std::string objectName = pOrigNode->getName();
+          std::vector<CCopasiContainer*> containers;
+          containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, objectName);
+          if (pObject != NULL)
+            {
+              const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+              if (pLocalParameter != NULL)
+                {
+                  // it must be a local parameter
+                  std::map<std::string, Parameter*>::iterator pos = this->mParameterReplacementMap.find(pLocalParameter->getCN());
+                  if (pos == this->mParameterReplacementMap.end())
+                    {
+                      // not found, so we create a new global parameter
+                      const CCopasiObject* pParent = pLocalParameter->getObjectParent();
+                      // find the reaction
+                      while (pParent != NULL && dynamic_cast<const CReaction*>(pParent) == NULL)
+                        {
+                          pParent = pParent->getObjectParent();
+                        }
+                      assert(pParent);
+                      // now we create a new global parameter with a unique name
+                      std::string name = pParent->getObjectName() + "_" + pLocalParameter->getObjectName();
+                      std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
+                      Parameter* pParameter = this->mpSBMLDocument->getModel()->createParameter();
+                      pParameter->setName(name);
+                      pParameter->setId(sbmlId);
+                      pParameter->setValue(*pLocalParameter->getValue().pDOUBLE);
+                      this->mParameterReplacementMap[pLocalParameter->getCN()] = pParameter;
+                      pOrigNode->setName(sbmlId.c_str());
+                      this->mHandledSBMLObjects.insert(pParameter);
+                    }
+                  else
+                    {
+                      // we set the node name to the existing parameter name
+                      pOrigNode->setName(pos->second->getId().c_str());
+                    }
+                }
+            }
+        }
+      unsigned int i = 0, iMax = pOrigNode->getNumChildren();
+      while (i < iMax)
+        {
+          this->replace_local_parameters(pOrigNode->getChild(i), dataModel);
+          ++i;
+        }
+    }
+}
+
+/**
+ * This method goes through the expression tree and tries to find node
+ * names that correspond to common names of local parameters.
+ * If the common name also occurs in the replacement map, the node name has
+ * to be set to the id of the corresponding global parameter, otherwise the name
+ * has to be set to the object name of the parameter.
+ */
+void CSBMLExporter::restore_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel)
+{
+  if (pOrigNode != NULL)
+    {
+      if (pOrigNode->getType() == AST_NAME)
+        {
+          // check if the common name is in the replacement map
+          std::string objectName = pOrigNode->getName();
+          std::map<std::string, Parameter*>::iterator pos = this->mParameterReplacementMap.find(objectName);
+          if (pos != this->mParameterReplacementMap.end())
+            {
+              // it was in the map, so we know that the local parameter has
+              // been replaced by a global parameter and we need to set the
+              // id of the global parameter as the new name of the node
+              pOrigNode->setName(pos->second->getId().c_str());
+            }
+          else
+            {
+              // we need to reset the node name to the id of the local
+              // parameter which is the object name
+              std::vector<CCopasiContainer*> containers;
+              containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+              const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, objectName);
+              if (pObject != NULL)
+                {
+                  const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+                  if (pLocalParameter != NULL)
+                    {
+                      // we set the node name to the existing parameter name
+                      pOrigNode->setName(pLocalParameter->getObjectName().c_str());
+                    }
+                }
+            }
+        }
+      unsigned int i = 0, iMax = pOrigNode->getNumChildren();
+      while (i < iMax)
+        {
+          this->restore_local_parameters(pOrigNode->getChild(i), dataModel);
+          ++i;
+        }
+    }
+}
 #endif // COPASI_DEBUG

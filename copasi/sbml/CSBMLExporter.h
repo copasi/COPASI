@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.24.2.1 $
+//   $Revision: 1.24.2.1.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/13 09:49:13 $
+//   $Author: gauges $
+//   $Date: 2009/01/21 20:54:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ class CFunctionDB;
 class Rule;
 class XMLNode;
 class Event;
+class Parameter;
 
 class CSBMLExporter
   {
@@ -72,6 +73,7 @@ class CSBMLExporter
     std::map<std::string, const CEvaluationTree*> mFunctionIdMap;
     bool mDocumentDisowned;
     bool mExportCOPASIMIRIAM;
+    std::map<std::string, Parameter*> mParameterReplacementMap;
 
   public:
     /**
@@ -573,6 +575,22 @@ class CSBMLExporter
      * exception.
      */
     void outputIncompatibilities() const;
+
+    /**
+     * Goes through the expression tree and tries to find occurences of local
+     * parameters. If one is found, a global parameter is created and all
+     * references to the local parameters are substituted.
+     */
+    void replace_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel);
+
+    /**
+     * This method goes through the expression tree and tries to find node
+     * names that correspond to common names of local parameters.
+     * If the common name also occurs in the replacement map, the node name has
+     * to be set to the id of the corresponding global parameter, otherwise the name
+     * has to be set to the object name of the parameter.
+     */
+    void restore_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel);
   };
 
 #endif // CSBLExporter_H__
