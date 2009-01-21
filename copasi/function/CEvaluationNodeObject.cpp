@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.33.6.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/23 15:40:57 $
+//   $Date: 2009/01/21 21:00:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,7 +182,10 @@ ASTNode* CEvaluationNodeObject::toAST() const
         CCopasiParameter* pPara = dynamic_cast<CCopasiParameter*>(object);
         if (pPara != NULL)
           {
-            node->setName(pPara->getObjectName().c_str());
+            // now we have to use the common name as the name for the
+            // node since we need to be able to identify local parameters
+            // in arbitrary expressions for the export
+            node->setName(pPara->getCN().c_str());
           }
         else
           {
