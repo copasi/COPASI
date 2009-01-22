@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:56:40 $
+//   $Date: 2009/01/22 15:26:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "copasi/UI/CQMessageBox.h"
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -575,7 +576,9 @@ void CQLayoutMainWindow::startAnimation()
     }
   else
     {
-      QMessageBox::warning (this, "Missing Data", "No data found: \nYou first have to create a time course.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+      CQMessageBox::warning (this, "Missing Data",
+                             "No data found: \nYou first have to create a time course.",
+                             QMessageBox::Ok, QMessageBox::Ok);
     }
 }
 
