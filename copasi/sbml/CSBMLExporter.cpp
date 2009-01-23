@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.6.4.1 $
+//   $Revision: 1.50.2.6.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/21 20:54:47 $
+//   $Date: 2009/01/23 11:51:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5985,6 +5985,7 @@ void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CCopasiDa
                       Parameter* pParameter = this->mpSBMLDocument->getModel()->createParameter();
                       pParameter->setName(name);
                       pParameter->setId(sbmlId);
+                      this->mIdMap.insert(std::pair<std::string, SBase*>(sbmlId, pParameter));
                       pParameter->setValue(*pLocalParameter->getValue().pDOUBLE);
                       this->mParameterReplacementMap[pLocalParameter->getCN()] = pParameter;
                       pOrigNode->setName(sbmlId.c_str());
