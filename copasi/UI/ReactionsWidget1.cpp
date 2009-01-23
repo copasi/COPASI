@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.195.10.1 $
+//   $Revision: 1.195.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/13 18:07:28 $
+//   $Date: 2009/01/23 17:54:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,6 +133,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   ReactionsWidget1Layout->addWidget(TextLabel6, 5, 0);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  ComboBox1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
   newKinetics = new QPushButton(this, "newKinetics");
