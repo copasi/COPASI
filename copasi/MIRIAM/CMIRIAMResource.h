@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.h,v $
-//   $Revision: 1.3.2.3 $
+//   $Revision: 1.3.2.3.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2009/01/23 14:17:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,18 +84,6 @@ class CMIRIAMResource : public CCopasiParameterGroup
     const std::string & getMIRIAMDisplayName() const;
 
     /**
-     * Set the URL of the MIRIAM Resource.
-     * @param const std::string & URL
-     */
-    void setMIRIAMURL(const std::string & URL);
-
-    /**
-     * Retrieve the URL of the MIRIAM Resource.
-     * @return const std::string & URL
-     */
-    const std::string & getMIRIAMURL() const;
-
-    /**
      * Set the URI of the MIRIAM Resource.
      * @param const std::string & URI
      */
@@ -118,18 +106,6 @@ class CMIRIAMResource : public CCopasiParameterGroup
      * @return std::string & Pattern
      */
     const std::string & getMIRIAMPattern() const;
-
-    /**
-     * Retrieve whether the pattern is a RegExp.
-     * @param const bool & isRegExp
-     */
-    void setMIRIAMRegExp(const bool & isRegExp);
-
-    /**
-     * Retrieve whether the pattern is a RegExp.
-     * @return bool & RegExp
-     */
-    const bool & getMIRIAMRegExp() const;
 
     /**
      * Set whether the resource can be used as reference.
@@ -169,11 +145,6 @@ class CMIRIAMResource : public CCopasiParameterGroup
     std::string * mpDisplayName;
 
     /**
-     * A pointer to the URL
-     */
-    std::string * mpURL;
-
-    /**
      * A pointer to the URI
      */
     std::string * mpURI;
@@ -182,11 +153,6 @@ class CMIRIAMResource : public CCopasiParameterGroup
      * A pointer to the pattern
      */
     std::string * mpPattern;
-
-    /**
-     * A pointer to a bool indicating that the pattern is a regexp
-     */
-    bool * mpRegExp;
 
     /**
      * A pointer to a bool indication the the resource an be used as reference
