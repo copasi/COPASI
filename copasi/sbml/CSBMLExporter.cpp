@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.6.4.2 $
+//   $Revision: 1.50.2.6.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/23 11:51:50 $
+//   $Date: 2009/01/23 13:04:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4340,6 +4340,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
           cvTerm.addResource(pDescription->getURI());
+          // before we set the CVTerm, we should make sure that the object has
+          // a meta id
+          if (!pSBMLObject->isSetMetaId())
+            {
+              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+              pSBMLObject->setMetaId(metaId);
+            }
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4408,6 +4416,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
           cvTerm.addResource(pReference->getURI());
+          // before we set the CVTerm, we should make sure that the object has
+          // a meta id
+          if (!pSBMLObject->isSetMetaId())
+            {
+              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+              pSBMLObject->setMetaId(metaId);
+            }
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4418,12 +4434,17 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       // the model history consists of the creators, the creation time and the
       // modification time
       // create a model history instance
+      bool modified = false;
       ModelHistory modelHistory;
       // first we add all creators
       const CCopasiVector<CCreator>& creators = miriamInfo.getCreators();
       unsigned int i, iMax = creators.size();
       const CCreator* pCreator = NULL;
       ModelCreator modelCreator;
+      if (iMax > 0)
+        {
+          modified = true;
+        }
       for (i = 0;i < iMax;++i)
         {
           pCreator = creators[i];
@@ -4439,8 +4460,12 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
       // now set the creation date
       std::string creationDateString = miriamInfo.getCreatedDT();
-      Date creationDate = Date(creationDateString);
-      modelHistory.setCreatedDate(&creationDate);
+      if (!creationDateString.empty())
+        {
+          Date creationDate = Date(creationDateString);
+          modelHistory.setCreatedDate(&creationDate);
+          modified = true;
+        }
 
       // Since SBML can have only one modification time, and we can have several,
       // we have to take the last one
@@ -4448,6 +4473,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       iMax = modifications.size();
       if (iMax != 0)
         {
+          modified = true;
           const CModification* pModification = modifications[0];
           assert(pModification != NULL);
           std::string lastDateString = pModification->getDate();
@@ -4470,7 +4496,17 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       // set the model history on the model
       Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
       assert(pSBMLModel != NULL);
-      pSBMLModel->setModelHistory(&modelHistory);
+      // make sure the model has a meta id
+      if (!pSBMLModel->isSetMetaId())
+        {
+          std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+          metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLModel));
+          pSBMLModel->setMetaId(metaId);
+        }
+      if (modified == true)
+        {
+          pSBMLModel->setModelHistory(&modelHistory);
+        }
     }
   if (this->mExportCOPASIMIRIAM == true)
     {
