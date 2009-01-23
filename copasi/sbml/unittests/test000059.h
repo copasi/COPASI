@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.8.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/06 17:00:53 $
+//   $Date: 2009/01/23 12:20:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,7 @@ class test000059 : public CppUnit::TestFixture
     CPPUNIT_TEST(test_unique_id_20);
     CPPUNIT_TEST(test_unique_id_21);
     CPPUNIT_TEST(test_unique_id_21_2);
+    CPPUNIT_TEST(test_unique_id_22);
     CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -78,6 +79,7 @@ class test000059 : public CppUnit::TestFixture
     static const char* MODEL_STRING19;
     static const char* MODEL_STRING20;
     static const char* MODEL_STRING21;
+    static const char* MODEL_STRING22;
 
   public:
     static bool checkIfIdsUnique(const Model* pSBMLModel);
@@ -113,6 +115,10 @@ class test000059 : public CppUnit::TestFixture
     // test for bug 1060
     void test_unique_id_21();
     void test_unique_id_21_2();
+
+    // additional test for exporting references to local reaction parameters
+    // (Bug 1035)
+    void test_unique_id_22();
   };
 
 #endif /* TEST000059_H__ */
