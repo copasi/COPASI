@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.10.2.1 $
+//   $Revision: 1.10.2.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2009/01/23 16:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,22 @@ unsigned C_INT32 CMIRIAMResourceObject::getResource(const std::string & URI)
 //static
 const CMIRIAMResources & CMIRIAMResourceObject::getResourceList()
 {return *mpResources;}
+
+// static
+void CMIRIAMResourceObject::unescapeId(std::string & id)
+{
+  // We have to convert all %[0-9a-fA-F][0-9a-fA-F] to utf8 characters.
+  std::string::size_type pos;
+  for (pos = 0; pos < id.length(); pos++)
+    if (id[pos] == '%' &&
+        id.find_first_not_of("0123456789abcdefABCDEF", pos + 1) > pos + 2)
+      {
+        char ascii[2];
+        ascii[0] = (unsigned char) strtol(id.substr(pos + 1 , 2).c_str(), NULL, 16);
+        ascii[1] = NULL;
+        id.replace(pos, 3, CCopasiXMLInterface::utf8(ascii));
+      }
+}
 
 CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode):
     mId(),
@@ -156,21 +172,24 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
       URI.length() > tmp.length())
     mId = URI.substr(tmp.length() + 1);
 
-  if (mId != "")
-    return;
+  if (mId == "")
+    {
+      // We need to check for deprecated URIs
+      const CCopasiParameterGroup * pDeprecated = &(mpResources->getMIRIAMResource(mResource)).getMIRIAMDeprecated();
+      CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
+      CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
 
-  // We need to check for deprecated URIs
-  const CCopasiParameterGroup * pDeprecated = &(mpResources->getMIRIAMResource(mResource)).getMIRIAMDeprecated();
-  CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
-  CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
+      for (; itDeprecated != endDeprecated; ++itDeprecated)
+        if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING &&
+            URI.length() > (*itDeprecated)->getValue().pSTRING->length())
+          {
+            mId = URI.substr((*itDeprecated)->getValue().pSTRING->length() + 1);
+            break;
+          }
+    }
 
-  for (; itDeprecated != endDeprecated; ++itDeprecated)
-    if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING &&
-        URI.length() > (*itDeprecated)->getValue().pSTRING->length())
-      {
-        mId = URI.substr((*itDeprecated)->getValue().pSTRING->length() + 1);
-        break;
-      }
+  unescapeId(mId);
+
   return;
 }
 

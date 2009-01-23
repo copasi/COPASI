@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-  $Revision: 1.48 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/11 16:05:18 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
+ $Revision: 1.48.10.1 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2009/01/23 16:25:22 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -234,22 +234,23 @@ std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & 
 
 std::string CCopasiXMLInterface::utf8(const std::string & str)
 {
-  return str;
-
   std::ostringstream utf8;
 
   /* Based on RFC 2279.
-     Since every string whithin COPASI is treated as latin1 and input
-     is only optained through QT and Expat which will provide latin1
+     Since every string within COPASI is treated as latin1 and input
+     is only obtained through QT and Expat which will provide latin1
      encoded strings the below should suffice. */
   unsigned C_INT32 i, imax;
   for (i = 0, imax = str.length(); i < imax; i++)
     {
-      if ((unsigned char) str[i] < 0x80) utf8 << str[i];
+      const unsigned char Char = str[i];
+
+      if (Char < 0x80)
+        utf8 << Char;
       else
         {
-          utf8 << 0xc0 + ((str[i] >> 6) & 0x03);
-          utf8 << 0x80 + (str[i] & 0x3f);
+          utf8 << (unsigned char) (0xc0 + ((Char >> 6) & 0x03));
+          utf8 << (unsigned char) (0x80 + (Char & 0x3f));
         }
     }
   return utf8.str();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.6.1 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:27:36 $
+//   $Author: shoops $
+//   $Date: 2009/01/23 16:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,8 @@ class CMIRIAMResourceObject
 
   private:
     static const CMIRIAMResources * mpResources;
+
+    static void unescapeId(std::string & id);
 
     unsigned C_INT32 mResource;
     std::string mId;
