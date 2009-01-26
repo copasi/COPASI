@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
- $Revision: 1.13.24.2 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/11/13 18:30:33 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
+$Revision: 1.13.24.2.4.1 $
+$Name:  $
+$Author: shoops $
+$Date: 2009/01/26 18:12:02 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -88,12 +88,23 @@ bool CExperimentObjectMap::setNumCols(const unsigned C_INT32 & numCols)
   if (numCols == mValue.pGROUP->size())
     return true;
 
+  // We only clear the vector of parameter. We do not destroy the parameter they are still
+  // accessible through CCopasiContainer::mObjects and thus will be automatically destroyed.
   mValue.pGROUP->clear();
 
   bool success = true;
 
   for (unsigned C_INT32 col = 0; col < numCols; col++)
-    success &= (elevate<CDataColumn, CCopasiParameterGroup>(assertGroup(StringPrint("%d", col))) != NULL);
+    {
+      CCopasiParameterGroup * pGrp = assertGroup(StringPrint("%d", col));
+
+      // assertGroup() adds only newly created groups to mValue.pGROUP. We need to add the existing
+      // ones.
+      if (mValue.pGROUP->size() < col + 1)
+        mValue.pGROUP->push_back(pGrp);
+
+      success &= (elevate<CDataColumn, CCopasiParameterGroup>(pGrp) != NULL);
+    }
 
   return success;
 }
