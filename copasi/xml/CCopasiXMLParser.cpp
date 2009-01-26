@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.188.2.3 $
+//   $Revision: 1.188.2.3.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/12 18:43:07 $
+//   $Date: 2009/01/26 19:36:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2304,7 +2304,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                                  // Old file format support
+    case MathML:                                                   // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -2402,7 +2402,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
       mCurrentElement = ModelValue;
       break;
 
-    case MathML:                                                  // Old file format support
+    case MathML:                                                   // Old file format support
       if (strcmp(pszName, "MathML"))
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                        pszName, "MathML", mParser.getCurrentLineNumber());
@@ -7957,9 +7957,9 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
   void * pValue = NULL;
   CCopasiParameter::Type type;
 
-  double d;
-  int i;
-  unsigned int ui;
+  C_FLOAT64 d;
+  C_INT32 i;
+  unsigned C_INT32 ui;
   bool b;
 
   switch (mCurrentElement)
