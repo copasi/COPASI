@@ -1,15 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.10.2.1.4.1 $
+//   $Revision: 1.10.2.1.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/23 16:25:22 $
+//   $Date: 2009/01/26 15:51:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include <stdlib.h>
 
 #include "copasi.h"
 
@@ -31,7 +33,7 @@ const CMIRIAMResources & CMIRIAMResourceObject::getResourceList()
 // static
 void CMIRIAMResourceObject::unescapeId(std::string & id)
 {
-  // We have to convert all %[0-9a-fA-F][0-9a-fA-F] to utf8 characters.
+  // We have to convert all %[0-9a-fA-F][0-9a-fA-F] character sequences to utf8 characters.
   std::string::size_type pos;
   for (pos = 0; pos < id.length(); pos++)
     if (id[pos] == '%' &&
