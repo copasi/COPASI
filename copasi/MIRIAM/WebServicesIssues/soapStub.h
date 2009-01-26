@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/WebServicesIssues/soapStub.h,v $
-//   $Revision: 1.3.8.1 $
+//   $Revision: 1.3.8.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/23 14:17:08 $
+//   $Date: 2009/01/26 15:29:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,12 @@
 
 #ifndef soapStub_H
 #define soapStub_H
+
+#ifdef WIN32
+#define _GLIBCXX_VECTOR 1
+# pragma warning (disable: 4100)
+#endif
+
 #ifndef _GLIBCXX_VECTOR
 #define _GLIBCXX_VECTOR 1
 #pragma GCC system_header
