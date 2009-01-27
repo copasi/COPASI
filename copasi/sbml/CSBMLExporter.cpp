@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:04:51 $
+//   $Author: gauges $
+//   $Date: 2009/01/27 17:22:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1849,7 +1849,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
   if (pOldSBMLDocument == NULL)
     {
-      this->mpSBMLDocument = new SBMLDocument();
+      this->mpSBMLDocument = new SBMLDocument(2, 3);
     }
   else
     {
