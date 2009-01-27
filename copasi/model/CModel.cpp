@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.9.4.1 $
+//   $Revision: 1.347.2.9.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/13 18:07:28 $
+//   $Author: ssahle $
+//   $Date: 2009/01/27 13:20:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,19 +67,19 @@
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
 const char * CModel::VolumeUnitNames[] =
-  {"m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
+  {"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
 const char * CModel::TimeUnitNames[] =
-  {"d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
+  {"dimensionless", "d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
 // "mol" is the correct name, however in the COPASI XML files "Mol" is used
 // up to build 18
 
 const char * CModel::QuantityUnitOldXMLNames[] =
-  {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
+  {"dimensionless", "Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
 const char * CModel::QuantityUnitNames[] =
-  {"mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
+  {"dimensionless", "mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
 
 const char * CModel::ModelTypeNames[] =
   {"deterministic", "stochastic", NULL};
@@ -2010,6 +2010,10 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
       mQuantity2NumberFactor = 1.0;
       break;
 
+    case dimensionlessQuantity:
+      mQuantity2NumberFactor = 1.0;
+      break;
+
     default:
       mQuantityUnit = number;
       mQuantity2NumberFactor = 1.0;
@@ -2061,14 +2065,52 @@ const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
 
 std::string CModel::getConcentrationUnitName() const
   {
-    return getQuantityUnitName() + "/" + getVolumeUnitName();
+    if (getQuantityUnitEnum() == dimensionlessQuantity)
+      {
+        if (getVolumeUnitEnum() == dimensionlessVolume)
+          return "";
+        else
+          return "1/" + getVolumeUnitName();
+      }
+    else
+      {
+        if (getVolumeUnitEnum() == dimensionlessVolume)
+          return getQuantityUnitName();
+        else
+          return getQuantityUnitName() + "/" + getVolumeUnitName();
+      }
   }
 
 std::string CModel::getConcentrationRateUnitName() const
   {
-    return getQuantityUnitName()
-    + "/(" + getVolumeUnitName()
-    + "*" + getTimeUnitName() + ")";
+    //std::string tmp = (getQuantityUnitEnum()==dimensionlessQuantity ? "1":getQuantityUnitName());
+
+    //denominator
+    std::string tmp;
+    if (getVolumeUnitEnum() == dimensionlessVolume)
+      {
+        if (getTimeUnitEnum() == dimensionlessTime)
+          tmp = "";
+        else
+          tmp = getTimeUnitName();
+      }
+    else
+      {
+        if (getTimeUnitEnum() == dimensionlessTime)
+          tmp = getVolumeUnitName();
+        else
+          tmp = "(" + getVolumeUnitName() + "*" + getTimeUnitName() + ")";
+      }
+
+    //nominator
+    if (tmp == "")
+      {
+        return (getQuantityUnitEnum() == dimensionlessQuantity ? "" : getQuantityUnitName());
+      }
+    else
+      {
+        return (getQuantityUnitEnum() == dimensionlessQuantity ? "1" : getQuantityUnitName()) + "/" + tmp;
+      }
   }
 
 std::string CModel::getQuantityRateUnitName() const

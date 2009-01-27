@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163.4.4.4.1 $
+//   $Revision: 1.163.4.4.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/13 18:07:28 $
+//   $Author: ssahle $
+//   $Date: 2009/01/27 13:20:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ class CModel : public CModelEntity
     /**
      * Enum of valid volume units
      */
-    enum VolumeUnit {m3 = 0, l, ml, microl, nl, pl, fl};
+    enum VolumeUnit {dimensionlessVolume = 0, m3, l, ml, microl, nl, pl, fl};
 
     /**
      * String representation of valid volume units
@@ -53,7 +53,7 @@ class CModel : public CModelEntity
     /**
      *  Enum of valid time units
      */
-    enum TimeUnit {d = 0, h, min, s, ms, micros, ns, ps, fs};
+    enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs};
 
     /**
      * String representation of valid time units
@@ -63,7 +63,7 @@ class CModel : public CModelEntity
     /**
      *  Enum of valid quantity units
      */
-    enum QuantityUnit {Mol = 0, mMol, microMol, nMol, pMol, fMol, number};
+    enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number};
 
     /**
      * String representation of valid quantity units as used in old (up to Build 18)
