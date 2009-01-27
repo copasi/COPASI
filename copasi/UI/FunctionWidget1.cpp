@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.159.2.4 $
+//   $Revision: 1.159.2.4.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/14 15:02:46 $
+//   $Author: ssahle $
+//   $Date: 2009/01/27 15:57:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -381,7 +381,9 @@ bool FunctionWidget1::loadParameterTable()
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
   //find parameter units
-  CFindDimensions ddd(mpFunction);
+  CFindDimensions ddd(mpFunction, CCopasiDataModel::Global->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                      CCopasiDataModel::Global->getModel()->getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                      CCopasiDataModel::Global->getModel()->getTimeUnitEnum() == CModel::dimensionlessTime);
   ddd.setUseHeuristics(true);
   std::vector<std::string> units = ddd.findDimensionsBoth();
 

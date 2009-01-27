@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
-  $Revision: 1.6 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 19:59:30 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
+ $Revision: 1.6.10.1 $
+ $Name:  $
+ $Author: ssahle $
+ $Date: 2009/01/27 15:55:25 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -56,14 +56,24 @@ class CDimension
     CDimension compare(const CDimension & rhs) const;
 
     /**
+     * If one of the base units is dimensionless, the corresponding exponent is
+     * adjusted to be 0.0.
+     * d1,d2,d3 indicate whether the base units are dimensionless
+     */
+    void fixDimensionless(bool d1, bool d2, bool d3);
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CDimension & d);
 
   private:
 
+    /// exponent of quantity base unit
     C_FLOAT64 mD1;
+    ///exponent of volume base unit
     C_FLOAT64 mD2;
+    ///exponent of time base unit
     C_FLOAT64 mD3;
 
     bool mUnknown;
@@ -91,12 +101,16 @@ class CChemEq;
  */
 class CFindDimensions
   {
+  private:
+    CFindDimensions();
+
   public:
 
     /**
-     * construct the class for a given function
+     * construct the class for a given function.
+     * d1,d2,d3 indicate if the base unit (for quantity, volume, time) is dimensionless
      */
-    CFindDimensions(const CFunction* function);
+    CFindDimensions(const CFunction* function, bool d1, bool d2, bool d3);
 
     /**
      * initialize the known dimensions (from the parameter roles) and
@@ -149,14 +163,18 @@ class CFindDimensions
     C_FLOAT64 mM1;
     C_FLOAT64 mM2;
 
-    //find dim for all parameters
+    bool mD1;
+    bool mD2;
+    bool mD3;
+
+    ///find dim for all parameters
     void findDimensions();
 
-    //determine dimensions for mass action kinetics
-    //chemical equation needs to be known
+    ///determine dimensions for mass action kinetics
+    ///chemical equation needs to be known
     void findDimensionsMassAction();
 
-    //find dim for one parameter
+    ///find dim for one parameter
     void findDimension(unsigned C_INT32 index);
 
     CDimension findDimension(const CEvaluationNode * node,

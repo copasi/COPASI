@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-  $Revision: 1.6 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 19:59:30 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
+ $Revision: 1.6.10.1 $
+ $Name:  $
+ $Author: ssahle $
+ $Date: 2009/01/27 15:55:25 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -194,15 +194,26 @@ std::ostream & operator<<(std::ostream &os, const CDimension & d)
   return os;
 }
 
+void CDimension::fixDimensionless(bool d1, bool d2, bool d3)
+{
+  if (d1)
+    mD1 = 0;
+  if (d2)
+    mD2 = 0;
+  if (d3)
+    mD3 = 0;
+}
+
 //*************************************************************************
 
 #include "function/CFunction.h"
 
-CFindDimensions::CFindDimensions(const CFunction* function)
+CFindDimensions::CFindDimensions(const CFunction* function, bool d1, bool d2, bool d3)
     : mpFunction(function),
     mRootDimension(),
     mUseHeuristics(false),
-    mM1(-1.0), mM2(-1.0)
+    mM1(-1.0), mM2(-1.0),
+    mD1(d1), mD2(d2), mD3(d3)
 {
   setupDimensions();
 }
@@ -236,6 +247,7 @@ void CFindDimensions::setupDimensions()
           mDimensions[i].setUnknown();
           break;
         }
+      mDimensions[i].fixDimensionless(mD1, mD2, mD3);
     }
 }
 
@@ -261,6 +273,8 @@ void CFindDimensions::findDimensions(bool isMulticompartment)
     mRootDimension.setDimension(1, 0, -1); //amount of subs/time
   else
     mRootDimension.setDimension(1, -1, -1); //conc/time
+
+  mRootDimension.fixDimensionless(mD1, mD2, mD3);
 
   findDimensions();
 }
@@ -337,6 +351,9 @@ void CFindDimensions::findDimensionsMassAction()
   if (mM1 < 0) return;
 
   CDimension conc; conc.setDimension(1.0, -1.0, 0.0);
+
+  mRootDimension.fixDimensionless(mD1, mD2, mD3);
+  conc.fixDimensionless(mD1, mD2, mD3);
 
   if (mDimensions[0].isUnknown())
     {

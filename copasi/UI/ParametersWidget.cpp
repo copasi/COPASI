@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.27.4.1 $
+//   $Revision: 1.27.4.1.4.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/11/21 14:01:00 $
+//   $Date: 2009/01/27 15:59:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,7 +337,9 @@ bool ParametersWidget::loadFromModel()
       reac = reacs[i];
 
       //calculate units
-      CFindDimensions units(reac->getFunction());
+      CFindDimensions units(reac->getFunction(), model->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                            model->getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                            model->getTimeUnitEnum() == CModel::dimensionlessTime);
       units.setUseHeuristics(true);
       units.setChemicalEquation(&reac->getChemEq());
       units.findDimensions(reac->getCompartmentNumber() > 1);
