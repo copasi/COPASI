@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.20.6.1 $ 
+#   $Revision: 1.20.6.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/01/21 20:23:19 $ 
+#   $Date: 2009/01/27 16:29:18 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -150,86 +150,88 @@ HEADERS += utilities.hpp \
            test000073.h \
            test000074.h \
            test000075.h \
-           test000076.h 
+           test000076.h \
+           test000077.h 
 
 
 SOURCES += utilities.cpp \
-           test000001.cpp \ 
-           test000002.cpp \ 
-           test000003.cpp \ 
-           test000004.cpp \ 
-           test000005.cpp \ 
-           test000006.cpp \ 
-           test000007.cpp \ 
-           test000008.cpp \ 
-           test000009.cpp \ 
-           test000010.cpp \ 
-           test000011.cpp \ 
-           test000012.cpp \ 
-           test000013.cpp \ 
-           test000014.cpp \ 
-           test000015.cpp \ 
-           test000016.cpp \ 
-           test000017.cpp \ 
-           test000018.cpp \ 
-           test000019.cpp \ 
-           test000020.cpp \ 
-           test000021.cpp \ 
-           test000022.cpp \ 
-           test000023.cpp \ 
-           test000024.cpp \ 
-           test000025.cpp \ 
-           test000026.cpp \ 
-           test000027.cpp \ 
-           test000028.cpp \ 
-           test000029.cpp \ 
-           test000030.cpp \ 
-           test000031.cpp \ 
-           test000032.cpp \ 
-           test000033.cpp \ 
-           test000034.cpp \ 
-           test000035.cpp \ 
-           test000036.cpp \ 
-           test000037.cpp \ 
-           test000038.cpp \ 
-           test000039.cpp \ 
-           test000040.cpp \ 
-           test000041.cpp \ 
-           test000042.cpp \ 
-           test000043.cpp \ 
-           test000044.cpp \ 
-           test000045.cpp \ 
-           test000046.cpp \ 
-           test000047.cpp \ 
-           test000048.cpp \ 
-           test000049.cpp \ 
-           test000050.cpp \ 
-           test000051.cpp \ 
-           test000052.cpp \ 
-           test000053.cpp \ 
-           test000054.cpp \ 
-           test000055.cpp \ 
-           test000056.cpp \ 
-           test000057.cpp \ 
-           test000058.cpp \ 
-           test000059.cpp \ 
-           test000060.cpp \ 
-           test000061.cpp \ 
-           test000062.cpp \ 
-           test000063.cpp \ 
-           test000064.cpp \ 
-           test000065.cpp \ 
-           test000066.cpp \ 
-           test000067.cpp \ 
-           test000068.cpp \ 
-           test000069.cpp \ 
-           test000070.cpp \ 
-           test000071.cpp \ 
-           test000072.cpp \ 
-           test000073.cpp \ 
-           test000074.cpp \ 
-           test000075.cpp \ 
-           test000076.cpp \ 
+           test000001.cpp \
+           test000002.cpp \
+           test000003.cpp \
+           test000004.cpp \
+           test000005.cpp \
+           test000006.cpp \
+           test000007.cpp \
+           test000008.cpp \
+           test000009.cpp \
+           test000010.cpp \
+           test000011.cpp \
+           test000012.cpp \
+           test000013.cpp \
+           test000014.cpp \
+           test000015.cpp \
+           test000016.cpp \
+           test000017.cpp \
+           test000018.cpp \
+           test000019.cpp \
+           test000020.cpp \
+           test000021.cpp \
+           test000022.cpp \
+           test000023.cpp \
+           test000024.cpp \
+           test000025.cpp \
+           test000026.cpp \
+           test000027.cpp \
+           test000028.cpp \
+           test000029.cpp \
+           test000030.cpp \
+           test000031.cpp \
+           test000032.cpp \
+           test000033.cpp \
+           test000034.cpp \
+           test000035.cpp \
+           test000036.cpp \
+           test000037.cpp \
+           test000038.cpp \
+           test000039.cpp \
+           test000040.cpp \
+           test000041.cpp \
+           test000042.cpp \
+           test000043.cpp \
+           test000044.cpp \
+           test000045.cpp \
+           test000046.cpp \
+           test000047.cpp \
+           test000048.cpp \
+           test000049.cpp \
+           test000050.cpp \
+           test000051.cpp \
+           test000052.cpp \
+           test000053.cpp \
+           test000054.cpp \
+           test000055.cpp \
+           test000056.cpp \
+           test000057.cpp \
+           test000058.cpp \
+           test000059.cpp \
+           test000060.cpp \
+           test000061.cpp \
+           test000062.cpp \
+           test000063.cpp \
+           test000064.cpp \
+           test000065.cpp \
+           test000066.cpp \
+           test000067.cpp \
+           test000068.cpp \
+           test000069.cpp \
+           test000070.cpp \
+           test000071.cpp \
+           test000072.cpp \
+           test000073.cpp \
+           test000074.cpp \
+           test000075.cpp \
+           test000076.cpp \
+           test000077.cpp \
            test.cpp
 
 
