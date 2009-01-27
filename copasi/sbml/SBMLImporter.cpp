@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.217.2.1 $
+//   $Revision: 1.217.2.1.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/18 02:47:43 $
+//   $Author: gauges $
+//   $Date: 2009/01/27 16:51:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1796,6 +1796,34 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               result = false;
             }
         }
+      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              scale == 0)
+            {
+              result = true;
+              qUnit = CModel::dimensionlessQuantity;
+            }
+          else
+            {
+              result = false;
+            }
+        }
       else
         {
           result = false;
@@ -1941,6 +1969,34 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                 {
                   result = false;
                 }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              scale == 0)
+            {
+              result = true;
+              tUnit = CModel::dimensionlessTime;
             }
           else
             {
@@ -2114,6 +2170,34 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
           else
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+            }
+        }
+      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              scale == 0)
+            {
+              result = true;
+              vUnit = CModel::dimensionlessVolume;
+            }
+          else
+            {
+              result = false;
             }
         }
       else

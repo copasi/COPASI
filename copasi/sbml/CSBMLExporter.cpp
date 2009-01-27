@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.6.4.3 $
+//   $Revision: 1.50.2.6.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/23 13:04:34 $
+//   $Date: 2009/01/27 16:51:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,6 +126,9 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
     case CModel::fs:
       unit = Unit(UNIT_KIND_SECOND, 1, -15);
       break;
+    case CModel::dimensionlessTime:
+      unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+      break;
     default:
       CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
       break;
@@ -145,6 +148,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
+      // only add it if it is not the default unit definition anyway
       if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
@@ -185,6 +189,9 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
     case CModel::m3:
       unit = Unit(UNIT_KIND_METRE, 3, 0);
       break;
+    case CModel::dimensionlessVolume:
+      unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+      break;
     default:
       CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
       break;
@@ -203,6 +210,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
+      // only add it if it is not the default unit definition anyway
       if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
@@ -243,6 +251,9 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
     case CModel::number:
       unit = Unit(UNIT_KIND_ITEM, 1, 0);
       break;
+    case CModel::dimensionlessQuantity:
+      unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+      break;
     default:
       CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
       break;
@@ -261,6 +272,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
+      // only add it if it is not the default unit definition anyway
       if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
