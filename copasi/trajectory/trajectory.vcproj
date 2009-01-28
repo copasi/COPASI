@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="nmake /f Makefile release-all"
-				ReBuildCommandLine="nmake /f Makefile relese-clean release-all"
+				ReBuildCommandLine="nmake /f Makefile release-clean release-all"
 				CleanCommandLine="nmake /f Makefile release-clean"
 				Output="../tmp/$(ConfigurationName)/trajectory.lib"
 				PreprocessorDefinitions=""
