@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.97 $ 
+#   $Revision: 1.98 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/01/09 18:45:56 $ 
+#   $Date: 2009/01/28 19:20:21 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,19 +16,30 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.97 $ $Author: shoops $ $Date: 2009/01/09 18:45:56 $  
+# $Revision: 1.98 $ $Author: shoops $ $Date: 2009/01/28 19:20:21 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
 isEmpty(BUILD_OS) {
   win32 {
     BUILD_OS = WIN32
+    
+    QT4DIR = $(QT4DIR)
+    
+    isEmpty(QT4DIR) {
+      QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
+      message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
+	} else {
+      QMAKE_QMAKE = $(QT4DIR)\bin\qmake.exe
+      message("Configuring for $${BUILD_OS} with QTDIR=$(QT4DIR).")
+	}
+
   } else {
     BUILD_OS = $$system(uname)
+    message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
   }
 }
 DEFINES += $$BUILD_OS
-message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
 
 TARGETDEPS += Makefile
 
@@ -71,6 +82,7 @@ contains(STATIC_LINKAGE, yes) {
   DEFINES+=LIBSBML_STATIC
   DEFINES+=LIBLAX_STATIC
   DEFINES+=RAPTOR_STATIC
+  DEFINES+=SBW_STATIC
 }
 
 !contains(BUILD_OS, WIN32) {
@@ -85,7 +97,8 @@ contains(STATIC_LINKAGE, yes) {
   QMAKE_CXXFLAGS_RELEASE -= -O4
   QMAKE_CXXFLAGS_RELEASE += -O3
 
-  QMAKE_QMAKE = $(QTDIR)/bin/qmake
+  QMAKE_QMAKE = $$QTDIR/bin/qmake
+  
   QMAKE_LEX = ../../admin/flex.sh
   QMAKE_YACC = ../../admin/yacc.sh
   
@@ -159,7 +172,6 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) {
-  QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
   QMAKE_LEX = C:\cygwin\bin\bash ../../admin/flex.sh
   QMAKE_YACC = C:\cygwin\bin\bash ../../admin/yacc.sh
 
@@ -249,12 +261,21 @@ contains(BUILD_OS, WIN32) {
   
   contains(CONFIG, qt) {
     !isEmpty(SBW_PATH){
-      release: LIBS += $${SBW_PATH}/lib/SBW.lib
-      debug: LIBS += $${SBW_PATH}/lib/SBWD.lib
+      contains(STATIC_LINKAGE, yes) {
+        release: LIBS += SBWStatic.lib
+        debug:   LIBS += SBWStaticD.lib
+
+        LIBS += Ws2_32.lib
+      } else {
+        release: LIBS += SBW.lib
+        debug:   LIBS += SBWD.lib
+      }
       
       INCLUDEPATH += $${SBW_PATH}/include
+      QMAKE_LFLAGS += /LIBPATH:\"$${SBW_PATH}\lib\"
+
       DEFINES += COPASI_SBW_INTEGRATION
-      DEFINES += WIN32
+      DEFINES *= WIN32
     }
      
     LIBS += -lqwt
