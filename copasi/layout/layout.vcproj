@@ -15,9 +15,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Build|Win32"
-			OutputDirectory=".\Build"
-			IntermediateDirectory=".\Build"
+			Name="Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -25,10 +25,33 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /f Makefile"
-				ReBuildCommandLine="nmake /f Makefile clean all"
-				CleanCommandLine="nmake /f Makefile clean"
-				Output="../tmp/layout.lib"
+				BuildCommandLine="nmake /f Makefile debug-all"
+				ReBuildCommandLine="nmake /f Makefile debug-clean debug-all"
+				CleanCommandLine="nmake /f Makefile debug-clean"
+				Output="../tmp/$(ConfigurationName)/layout.lib"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /f Makefile release-all"
+				ReBuildCommandLine="nmake /f Makefile release-clean release-all"
+				CleanCommandLine="nmake /f Makefile release-clean"
+				Output="../tmp/$(ConfigurationName)/layout.lib"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
 				ForcedIncludes=""
