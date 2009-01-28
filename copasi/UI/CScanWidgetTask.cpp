@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/01/28 13:06:11 $
+//   $Author: shoops $
+//   $Date: 2009/01/28 15:13:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #include "CScanWidgetTask.h"
 
-#include <iostream.h>
+#include <iostream>
 
 #include <qvalidator.h>
 
