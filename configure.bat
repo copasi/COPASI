@@ -23,29 +23,26 @@ shift
 goto LOOP
 
 :DEBUG
-shift
-set cps_plus=debug
-set cps_minus=release
-goto LOOP
-
 :RELEASE
 shift
-set cps_plus=release
-set cps_minus=debug
 goto LOOP
 
 :QMAKE
 cd copasi
-del /S Makefile
+del /S Makefile*
 del commandline\CConfigurationFile.obj
 del UI\copasiui3window.obj 
 del UI\CQSplashWidget.obj 
 del CopasiUI\main.obj 
 del CopasiSE\CopasiSE.obj
 
+if '%QT4DIR%' == ''   goto QT3
+set QTDIR=%QT4DIR%
+
+:QT3 
 echo executing in copasi:
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QTDIR%\bin\qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 nmake qmake_all
 
@@ -62,8 +59,8 @@ cd semantic-test-suite
 echo executing in semantic-test-suite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QTDIR%\bin\qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
 
@@ -72,7 +69,7 @@ cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QTDIR%\bin\qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..

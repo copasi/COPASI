@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.147 $
+#   $Revision: 1.148 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/01/07 18:53:48 $
+#   $Date: 2009/01/28 03:56:27 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.147 $ $Author: shoops $ $Date: 2009/01/07 18:53:48 $
+# $Revision: 1.148 $ $Author: shoops $ $Date: 2009/01/28 03:56:27 $
 ######################################################################
 
 TEMPLATE = app
@@ -34,11 +34,15 @@ COPASI_LIBS += COPASISE
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
 
-  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
-
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
+  debug {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../lib/debug/", ../lib/debug/, .lib)
+    TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/debug/", ../lib/debug/, .lib)
+  }
 
   release {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../lib/release/", ../lib/release/, .lib)
+    TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/release/", ../lib/release/, .lib)
+
     distribution.extra = C:\cygwin\bin\bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
 }

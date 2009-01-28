@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/lib.pri,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2008/12/18 18:49:02 $ 
+#   $Date: 2009/01/28 03:56:28 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,20 +12,28 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2008/12/18 18:49:02 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2009/01/28 03:56:28 $  
 ######################################################################
 
 TEMPLATE = lib
 
 CONFIG += staticlib
 
-DESTDIR = ../../lib
 TMPDIR = ../../tmp
 TARGET = $$LIB
 
-win32: {
-  OBJECTS += $$join(COPASI_LIBS, ".lib ../../tmp/", ../../tmp/, .lib)
+win32 {
+  debug {
+    OBJECTS = $$join(COPASI_LIBS, ".lib ../../tmp/debug/", ../../tmp/debug/, .lib)
+    DESTDIR = ../../lib/debug
+  }
+
+  release {
+    OBJECTS = $$join(COPASI_LIBS, ".lib ../../tmp/release/", ../../tmp/release/, .lib)
+    DESTDIR = ../../lib/release
+  }
 } else {
+  DESTDIR = ../../lib
   BuildLib.commands = \
     rm -rf $@; \
     $(CHK_DIR_EXISTS) $$DESTDIR || $(MKDIR) $$DESTDIR; \
