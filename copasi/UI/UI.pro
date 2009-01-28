@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.183 $
+#   $Revision: 1.184 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/01/16 19:51:16 $
+#   $Author: pwilly $
+#   $Date: 2009/01/28 13:06:11 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.183 $ $Author: shoops $ $Date: 2009/01/16 19:51:16 $
+# $Revision: 1.184 $ $Author: pwilly $ $Date: 2009/01/28 13:06:11 $
 ######################################################################
 
 LIB = UI
@@ -292,7 +292,8 @@ HEADERS += \
            CScanWidgetScan.h \
            CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \
-           CScanWidgetTask.ui.h  \
+           ui_CScanWidgetTask.h  \
+#           CScanWidgetTask4.ui.h  \
            CUpDownSubwidget.h \
            CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
