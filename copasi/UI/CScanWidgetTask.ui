@@ -1,10 +1,10 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.ui,v $ </comment>
-<comment>   $Revision: 1.10 $ </comment>
+<comment>   $Revision: 1.11 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2008/10/08 12:53:03 $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2009/01/28 13:11:39 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,255 +12,298 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CScanWidgetTask</class>
-<comment> All rights reserved. </comment>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>CScanWidgetTask</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>419</width>
-            <height>76</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Form1</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <property name="margin">
-            <number>5</number>
-        </property>
-        <widget class="QFrame">
-            <property name="name">
-                <cstring>frame</cstring>
-            </property>
-            <property name="paletteBackgroundColor">
-                <color>
-                    <red>191</red>
-                    <green>236</green>
-                    <blue>183</blue>
-                </color>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>6</number>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout1</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>labelTitle</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&lt;h2&gt;Subtask&lt;/h2&gt;</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer1</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Maximum</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>30</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QComboBox">
-                            <item>
-                                <property name="text">
-                                    <string>Steady State</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Time course</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Metabolic control analysis</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Lyapunov exponents</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Optimization</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Parameter Estimation</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Sensitivities</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>comboType</cstring>
-                            </property>
-                            <property name="currentItem">
-                                <number>1</number>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>99</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>checkInitialConditions</cstring>
-                            </property>
-                            <property name="text">
-                                <string>always use initial conditions</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>If this is activated every calculation will start with the initial conditions specified in the model. &lt;p&gt;If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation.</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer3</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Maximum</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>30</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>checkOutput</cstring>
-                            </property>
-                            <property name="text">
-                                <string>output during subtask execution</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>If this is activated output will be generated during each calculation. &lt;p&gt;If it is not activated only the state at the end of each calculation will be plotted.</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer4</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>41</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-            </vbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>comboType</sender>
-        <signal>activated(int)</signal>
-        <receiver>CScanWidgetTask</receiver>
-        <slot>typeChanged(int)</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">CScanWidgetTask.ui.h</include>
-</includes>
-<forwards>
-    <forward>class CModel;</forward>
-    <forward>class CCopasiObject;</forward>
-    <forward>class CScanProblem;</forward>
-</forwards>
-<variables>
-    <variable>CCopasiObject* mpObject;</variable>
-    <variable>const CModel* mpModel;</variable>
-</variables>
-<slots>
-    <slot access="private">typeChanged( int n )</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function returnType="bool">initFromScanProblem( CScanProblem * pg, const CModel * model )</function>
-    <function returnType="bool">saveToScanProblem( CScanProblem * pg ) const</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+ <comment> All rights reserved. </comment>
+ <class>CScanWidgetTask</class>
+ <widget class="QWidget" name="CScanWidgetTask" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>475</width>
+    <height>93</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form1</string>
+  </property>
+  <property name="autoFillBackground" >
+   <bool>false</bool>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>5</number>
+   </property>
+   <item>
+    <widget class="Q3Frame" name="frame" >
+     <property name="palette" >
+      <palette>
+       <active>
+        <colorrole role="Base" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>191</red>
+           <green>236</green>
+           <blue>183</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="Window" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>191</red>
+           <green>236</green>
+           <blue>183</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Base" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>191</red>
+           <green>236</green>
+           <blue>183</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="Window" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>191</red>
+           <green>236</green>
+           <blue>183</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Base" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>212</red>
+           <green>208</green>
+           <blue>200</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="Window" >
+         <brush brushstyle="SolidPattern" >
+          <color alpha="255" >
+           <red>191</red>
+           <green>236</green>
+           <blue>183</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="autoFillBackground" >
+      <bool>true</bool>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="labelTitle" >
+          <property name="text" >
+           <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;">&lt;span style=" font-size:x-large;">Task&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+          </property>
+          <property name="wordWrap" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacer1" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Maximum</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboType" >
+          <property name="currentIndex" >
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text" >
+            <string>Steady State</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Time course</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Metabolic control analysis</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Lyapunov exponents</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Optimization</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Parameter Estimation</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Sensitivities</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacer2" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>99</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QCheckBox" name="checkInitialConditions" >
+          <property name="toolTip" >
+           <string>If this is activated every calculation will start with the initial conditions specified in the model. &lt;p>If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation.</string>
+          </property>
+          <property name="text" >
+           <string>always use initial conditions</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacer3" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Maximum</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkOutput" >
+          <property name="toolTip" >
+           <string>If this is activated output will be generated during each calculation. &lt;p>If it is not activated only the state at the end of each calculation will be plotted.</string>
+          </property>
+          <property name="text" >
+           <string>output during subtask execution</string>
+          </property>
+          <property name="shortcut" >
+           <string/>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacer4" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>41</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>comboType</sender>
+   <signal>activated(int)</signal>
+   <receiver>CScanWidgetTask</receiver>
+   <slot>typeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>218</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>211</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>typeChanged(int)</slot>
+ </slots>
+</ui>
