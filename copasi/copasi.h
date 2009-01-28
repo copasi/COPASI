@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/09 09:31:59 $
+//   $Author: shoops $
+//   $Date: 2009/01/28 19:19:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,6 +83,7 @@
 # define vsnprintf _vsnprintf // they just have a different name for this guy
 # define snprintf  _snprintf  // they just have a different name for this guy
 # define strcasecmp _stricmp  // they just have a different name for this guy
+# define strdup _strdup       // they just have a different name for this guy
 # define isnan _isnan         // they just have a different name for this guy
 # define finite _finite       // they just have a different name for this guy
 # define min _cpp_min         // they just have a different name for this guy
