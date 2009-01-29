@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.218 $
+//   $Revision: 1.219 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:04:51 $
+//   $Author: gauges $
+//   $Date: 2009/01/29 14:36:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,19 +230,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
     }
 
-  num = sbmlModel->getNumFunctionDefinitions();
-
-  CFunctionDB* pTmpFunctionDB = new CFunctionDB();
-  for (counter = 0; counter < num;++counter)
-    {
-      FunctionDefinition* pSBMLFunDef = sbmlModel->getFunctionDefinition(counter);
-      CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB, sbmlModel, copasi2sbmlmap);
-      copasi2sbmlmap[pFun] = pSBMLFunDef;
-      this->mFunctionNameMapping[pSBMLFunDef->getId()] = pFun->getObjectName();
-      ++step;
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
-    }
-
+  CFunctionDB* pTmpFunctionDB = this->importFunctionDefinitions(sbmlModel, copasi2sbmlmap);
   // try to find global parameters that represent avogadros number
   this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
 
@@ -5539,6 +5527,97 @@ void SBMLImporter::setImportCOPASIMIRIAM(bool import)
   this->mImportCOPASIMIRIAM = import;
 }
 
+/**
+ * Starting with SBML Level 2 Version 4, function definitions no longer need to
+ * be ordered, i.e. a function definition may refer to another function
+ * definition that is defined somewhere further down in the file.
+ * So we have to import the function definitions in the correct order.
+ */
+CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  std::map<const FunctionDefinition*, std::set<std::string> > directFunctionDependencies;
+  unsigned int i = 0, iMax = pSBMLModel->getNumFunctionDefinitions();
+  // first we find all direct function dependencies for a function definition
+  for (;i < iMax;++i)
+    {
+      SBMLImporter::findDirectDependencies(pSBMLModel->getFunctionDefinition(i), directFunctionDependencies);
+    }
+  CFunctionDB* pTmpFunctionDB = new CFunctionDB();
+  std::map<const FunctionDefinition*, std::set<std::string> >::iterator it = directFunctionDependencies.begin(), endit = directFunctionDependencies.end();
+  while (it != endit)
+    {
+      // now we import all function definitions that do not have any dependencies
+      if (it->second.empty())
+        {
+          CFunction* pFun = this->createCFunctionFromFunctionDefinition(it->first, pTmpFunctionDB, pSBMLModel, copasi2sbmlmap);
+          copasi2sbmlmap[pFun] = const_cast<FunctionDefinition*>(it->first);
+          this->mFunctionNameMapping[it->first->getId()] = pFun->getObjectName();
+          // next we delete the imported function definitions from the dependencies of
+          // the other function definitions
+          directFunctionDependencies.erase(it);
+          // here we change the iterators !!!!
+          std::string id = it->first->getId();
+          it = directFunctionDependencies.begin(), endit = directFunctionDependencies.end();
+          while (it != endit)
+            {
+              it->second.erase(id);
+              ++it;
+            }
+          // start from the beginning
+          it = directFunctionDependencies.begin();
+          continue;
+        }
+      ++it;
+    }
+  // if the dependency list is not empty by now we have a problem
+  if (!directFunctionDependencies.empty())
+    {
+      std::string nameList;
+      it = directFunctionDependencies.begin(), endit = directFunctionDependencies.end();
+      while (it != endit)
+        {
+          nameList += "\"" + it->first->getId() + "\",\n";
+          ++it;
+        }
+      nameList = nameList.substr(0, nameList.size() - 2);
+      // clean up the temporary function database
+      delete pTmpFunctionDB;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 76, nameList.c_str());
+    }
+  return pTmpFunctionDB;
+}
+
+/**
+ * static method that finds all direct function dependencies of a given
+ * function definition.
+ */
+void SBMLImporter::findDirectDependencies(const FunctionDefinition* pFunDef, std::map<const FunctionDefinition*, std::set<std::string> >& dependencies)
+{
+  assert(pFunDef != NULL);
+  std::set<std::string> deps;
+  SBMLImporter::findDirectDependencies(pFunDef->getMath()->getChild(pFunDef->getMath()->getNumChildren() - 1), deps);
+  dependencies.insert(std::pair<const FunctionDefinition*, std::set<std::string> >(pFunDef, deps));
+}
+
+/**
+ * static method that recursively finds all direct function dependencies of the
+ * expression rooted at the given node.
+ */
+void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::string>& dependencies)
+{
+  assert(pNode != NULL);
+  if (pNode->getType() == AST_FUNCTION)
+    {
+      // found a function call
+      dependencies.insert(pNode->getName());
+    }
+  unsigned int i = 0, iMax = pNode->getNumChildren();
+  for (;i < iMax;++i)
+    {
+      SBMLImporter::findDirectDependencies(pNode->getChild(i), dependencies);
+    }
+}
+
 #ifdef COPASI_DEBUG
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
@@ -5733,4 +5812,5 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
     }
 }
+
 #endif // COPASI_DEBUG

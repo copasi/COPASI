@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:50 $
+//   $Author: gauges $
+//   $Date: 2009/01/29 14:36:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 #include <utility>
 #include "sbml/math/ASTNode.h"
 
@@ -438,6 +439,26 @@ class SBMLImporter
      * the given COPASI object.
      */
     bool importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASIObject);
+
+    /**
+     * Starting with SBML Level 2 Version 4, function definitions no longer need to
+     * be ordered, i.e. a function definition may refer to another function
+     * definition that is defined somewhere further down in the file.
+     * So we have to import the function definitions in the correct order.
+     */
+    CFunctionDB* importFunctionDefinitions(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * static method that finds all direct function dependencies of a given
+     * function definition.
+     */
+    static void findDirectDependencies(const FunctionDefinition* pFunDef, std::map<const FunctionDefinition*, std::set<std::string> >& dependencies);
+
+    /**
+     * static method that recursively finds all direct function dependencies of the
+     * expression rooted at the given node.
+     */
+    static void findDirectDependencies(const ASTNode* pNode, std::set<std::string>& dependencies);
 
   public:
     SBMLImporter();
