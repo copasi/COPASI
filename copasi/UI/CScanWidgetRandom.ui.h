@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-//   $Revision: 1.13.6.1 $
+//   $Revision: 1.13.6.1.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/16 08:12:55 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,9 @@ void CScanWidgetRandom::init()
 void CScanWidgetRandom::slotChooseObject()
 {
   const CCopasiObject * pObject =
-    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE,
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_PARAMETER,
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters,
                                             mpObject);
 
   if (mpObject != pObject) // Object selection changed.

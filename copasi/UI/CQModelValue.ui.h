@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.28.6.1 $
+//   $Revision: 1.28.6.1.4.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/10/16 08:04:50 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -324,10 +324,10 @@ void CQModelValue::init()
   mItemToType.push_back(CModelEntity::ODE);
 
   mExpressionValid = false;
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mInitialExpressionValid = false;
-  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
+  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
 }
 
 void CQModelValue::destroy()

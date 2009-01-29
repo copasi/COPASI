@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.27.2.5.2.1 $
+//   $Revision: 1.27.2.5.2.1.2.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/12/10 16:00:36 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,7 @@ void CQOptimizationWidget::init()
   addMethodSelectionBox(COptTask::ValidMethods);
   addMethodParameterTable();
 
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
   mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
 

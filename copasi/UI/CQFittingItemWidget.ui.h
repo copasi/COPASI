@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.32.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:16 $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,8 +168,31 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
 void CQFittingItemWidget::slotLowerEdit()
 {
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  switch (mItemType)
+    {
+    case OPT_ITEM:
+    case FIT_ITEM:
+      Classes =
+        CCopasiSimpleSelectionTree::InitialTime |
+        CCopasiSimpleSelectionTree::Parameters |
+        CCopasiSimpleSelectionTree::ObservedConstants;
+      break;
+
+    case OPT_CONSTRAINT:
+    case FIT_CONSTRAINT:
+      Classes =
+        CCopasiSimpleSelectionTree::InitialTime |
+        CCopasiSimpleSelectionTree::Parameters |
+        CCopasiSimpleSelectionTree::ObservedConstants |
+        CCopasiSimpleSelectionTree::Time |
+        CCopasiSimpleSelectionTree::Variables |
+        CCopasiSimpleSelectionTree::ObservedValues;
+      break;
+    }
+
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -201,8 +224,31 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+  switch (mItemType)
+    {
+    case OPT_ITEM:
+    case FIT_ITEM:
+      Classes =
+        CCopasiSimpleSelectionTree::InitialTime |
+        CCopasiSimpleSelectionTree::Parameters |
+        CCopasiSimpleSelectionTree::ObservedConstants;
+      break;
+
+    case OPT_CONSTRAINT:
+    case FIT_CONSTRAINT:
+      Classes =
+        CCopasiSimpleSelectionTree::InitialTime |
+        CCopasiSimpleSelectionTree::Parameters |
+        CCopasiSimpleSelectionTree::ObservedConstants |
+        CCopasiSimpleSelectionTree::Time |
+        CCopasiSimpleSelectionTree::Variables |
+        CCopasiSimpleSelectionTree::ObservedValues;
+      break;
+    }
+
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -236,30 +282,35 @@ void CQFittingItemWidget::slotParamEdit()
 {
   std::vector< const CCopasiObject * > Selection;
 
-  CCopasiSimpleSelectionTree::SelectionFlag SelectionFlag;
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
   switch (mItemType)
     {
     case OPT_ITEM:
     case FIT_ITEM:
-      SelectionFlag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
+      Classes =
+        CCopasiSimpleSelectionTree::InitialTime |
+        CCopasiSimpleSelectionTree::Parameters;
       break;
 
     case OPT_CONSTRAINT:
     case FIT_CONSTRAINT:
-      SelectionFlag = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
+      Classes =
+        CCopasiSimpleSelectionTree::Time |
+        CCopasiSimpleSelectionTree::Variables |
+        CCopasiSimpleSelectionTree::ObservedValues;
       break;
     }
 
   if (mSelection.size() > 1)
     {
       const CCopasiObject * pObject =
-        CCopasiSelectionDialog::getObjectSingle(this, SelectionFlag);
+        CCopasiSelectionDialog::getObjectSingle(this, Classes);
       if (pObject)
         Selection.push_back(pObject);
     }
   else
     Selection =
-      CCopasiSelectionDialog::getObjectVector(this, SelectionFlag);
+      CCopasiSelectionDialog::getObjectVector(this, Classes);
 
   if (Selection.size() != 0)
     {

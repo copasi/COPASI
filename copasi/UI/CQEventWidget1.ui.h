@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.14.4.3 $
+//   $Revision: 1.14.4.3.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 20:09:00 $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -266,13 +266,13 @@ void CQEventWidget1::init()
   connect(mpLBTarget, SIGNAL(highlighted(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
   mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mExpressionDelayValid = true;
-  mpExpressionDelay->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  mpExpressionDelay->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mExpressionTriggerValid = false;
   //  mpExpressionTrigger->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
 
   mExpressionEAValid = false;
-  mpExpressionEA->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  mpExpressionEA->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   // ----- correlated to GUI layout of the event assignment ----
 
@@ -903,7 +903,8 @@ bool CQEventWidget1::leave()
 /// Slot to select an object from the existing ones -only- for target.
 void CQEventWidget1::slotSelectObject()
 {
-  CCopasiSimpleSelectionTree::SelectionFlag mExpressionType = CCopasiSimpleSelectionTree::TARGET_EVENT;
+  CCopasiSimpleSelectionTree::ObjectClasses Classes =
+    CCopasiSimpleSelectionTree::Variables;
 
   QString oldText = mpLBTarget->currentText();
   QString newText = mpLBTarget->currentText();
@@ -913,12 +914,12 @@ void CQEventWidget1::slotSelectObject()
   // std::cout << "mpLBTarget->currentItem() = " << mpLBTarget->currentItem() << std::endl;
 
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, mExpressionType);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
       // Check whether the object is valid
-      if (!CCopasiSimpleSelectionTree::filter(mExpressionType, pObject))
+      if (!CCopasiSimpleSelectionTree::filter(Classes, pObject))
         {
           CQMessageBox::critical(this, "Invalid Selection",
                                  "The use of the selected object is not allowed in this type of expression.");

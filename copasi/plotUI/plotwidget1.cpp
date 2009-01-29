@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.53.6.7 $
+//   $Revision: 1.53.6.7.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/24 01:34:49 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ void PlotWidget1::addCurve2D()
   std::vector< const CCopasiObject * > vector1;
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
-  pBrowser->setModel(CCopasiDataModel::Global->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
+  pBrowser->setModel(CCopasiDataModel::Global->getModel(), CCopasiSimpleSelectionTree::NumericValues);
 
   if (pBrowser->exec () == QDialog::Rejected)
     {

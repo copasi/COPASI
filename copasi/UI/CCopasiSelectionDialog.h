@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-//   $Revision: 1.11.4.4 $
+//   $Revision: 1.11.4.4.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/22 19:53:48 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,17 +61,17 @@ class CCopasiSelectionDialog: public QDialog
     ~CCopasiSelectionDialog();
     void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
     void setModel(const CModel* model,
-                  const CCopasiSimpleSelectionTree::SelectionFlag & flag);
+                  const CCopasiSimpleSelectionTree::ObjectClasses & classes);
     void setSingleSelection(bool singleSelectionMode);
     void enableExpertMode(bool enable);
 
     static
     const CCopasiObject * getObjectSingle(QWidget * pParent,
-                                          const CCopasiSimpleSelectionTree::SelectionFlag & flag,
+                                          const CCopasiSimpleSelectionTree::ObjectClasses & classes,
                                           const CCopasiObject * pCurrentObject = NULL);
     static
     std::vector< const CCopasiObject * > getObjectVector(QWidget * pParent,
-        const CCopasiSimpleSelectionTree::SelectionFlag & flag,
+        const CCopasiSimpleSelectionTree::ObjectClasses & classes,
         const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
 
     /**

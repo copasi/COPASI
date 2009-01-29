@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.30.8.1 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/08/18 08:51:46 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
     : QTextEdit(parent, name),
     mOldPar(0),
     mOldPos(0),
-    mExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION),
+    mObjectClasses(TransientExpression),
     mpCurrentObject(NULL),
     mNewName("")
 {
@@ -427,20 +427,20 @@ CExpression *CQExpressionWidget::getExpression()
   return &(mpValidator->mExpression);
 }*/
 
-void CQExpressionWidget::setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType)
+void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
 {
-  mExpressionType = expressionType;
+  mObjectClasses = expressionType;
 }
 
 void CQExpressionWidget::slotSelectObject()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, mExpressionType);
+    CCopasiSelectionDialog::getObjectSingle(this, mObjectClasses);
 
   if (pObject)
     {
       // Check whether the object is valid
-      if (!CCopasiSimpleSelectionTree::filter(mExpressionType, pObject))
+      if (!CCopasiSimpleSelectionTree::filter(mObjectClasses, pObject))
         {
           CQMessageBox::critical(this, "Invalid Selection",
                                  "The use of the selected object is not allowed in this type of expression.");

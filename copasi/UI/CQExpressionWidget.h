@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.12.10.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/06/13 15:23:50 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,9 +88,9 @@ class CQExpressionWidget: public QTextEdit
     int mOldPos2;
 
     /**
-     * Function to indecate whether we are dealing with an INITIAL or TRANSIENT expression
+     * Function to indicate whether we are dealing with an INITIAL or TRANSIENT expression
      */
-    CCopasiSimpleSelectionTree::SelectionFlag mExpressionType;
+    CCopasiSimpleSelectionTree::ObjectClasses mObjectClasses;
 
     std::map< std::string, const CCopasiObject * > mParseList;
     const CCopasiObject * mpCurrentObject;
@@ -110,6 +110,25 @@ class CQExpressionWidget: public QTextEdit
     bool compareCursorPositions(int parold, int posold, int par, int pos);
 
   public:
+    enum ExpressionType
+    {
+      InitialExpression = CCopasiSimpleSelectionTree::InitialTime |
+                          CCopasiSimpleSelectionTree::Parameters |
+                          CCopasiSimpleSelectionTree::ObservedConstants,
+      TransientExpression = CCopasiSimpleSelectionTree::InitialTime |
+                            CCopasiSimpleSelectionTree::Parameters |
+                            CCopasiSimpleSelectionTree::ObservedConstants |
+                            CCopasiSimpleSelectionTree::Time |
+                            CCopasiSimpleSelectionTree::Variables |
+                            CCopasiSimpleSelectionTree::ObservedValues,
+      ObjectiveFunctions = CCopasiSimpleSelectionTree::InitialTime |
+                           CCopasiSimpleSelectionTree::Parameters |
+                           CCopasiSimpleSelectionTree::ObservedConstants |
+                           CCopasiSimpleSelectionTree::Time |
+                           CCopasiSimpleSelectionTree::Variables |
+                           CCopasiSimpleSelectionTree::ObservedValues |
+                           CCopasiSimpleSelectionTree::Results
+    };
     /**
      * Set the expression for the widget
      * @param const std::string & expression
@@ -124,9 +143,9 @@ class CQExpressionWidget: public QTextEdit
 
     /**
      * Set the type of the current expression
-     * @param const CCopasiSimpleSelectionTree::SelectionFlag & expressionType
+     * @param const ExpressionType & expressionType
      */
-    void setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType);
+    void setExpressionType(const ExpressionType & expressionType);
 
     void setBoolean(bool isBoolean){mpValidator->setBoolean(isBoolean);};
 

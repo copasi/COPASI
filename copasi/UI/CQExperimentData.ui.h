@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.34.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/05/07 20:03:29 $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -972,17 +972,17 @@ void CQExperimentData::slotModelObject(int row)
 {
   // :TODO: Implement object browser and update of column 'Model Object'.
 
-  CCopasiSimpleSelectionTree::SelectionFlag Flag;
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
   CExperiment::Type Type =
     static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
 
   if (Type == CExperiment::independent)
-    Flag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
+    Classes = CCopasiSimpleSelectionTree::InitialTime | CCopasiSimpleSelectionTree::Parameters;
   else
-    Flag = CCopasiSimpleSelectionTree::TRANSIENT_VALUE;
+    Classes = CCopasiSimpleSelectionTree::Variables | CCopasiSimpleSelectionTree::ObservedValues;
 
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, Flag);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -1142,14 +1142,16 @@ void CQExperimentData::slotTypeChanged(int row)
       break;
 
     case CExperiment::independent:
-      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::INITIAL_VALUE,
+      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::InitialTime |
+                                              CCopasiSimpleSelectionTree::Parameters,
                                               CCopasiContainer::ObjectFromName(CN)))
         slotModelObject(row);
       BtnEnabled = true;
       break;
 
     case CExperiment::dependent:
-      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::TRANSIENT_VALUE,
+      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::Variables |
+                                              CCopasiSimpleSelectionTree::ObservedValues,
                                               CCopasiContainer::ObjectFromName(CN)))
         slotModelObject(row);
       BtnEnabled = true;

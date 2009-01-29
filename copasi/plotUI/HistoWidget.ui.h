@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.11.22.2 $
+//   $Revision: 1.11.22.2.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/24 01:34:59 $
+//   $Author: shoops $
+//   $Date: 2009/01/29 20:25:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,10 @@ void HistoWidget::buttonPressedX()
   std::vector< const CCopasiObject * > oldSelection;
   if (mpObjectX)
     oldSelection.push_back(mpObjectX);
-  std::vector< const CCopasiObject * > objects = CCopasiSelectionDialog::getObjectVector(this,
-      CCopasiSimpleSelectionTree::PLOT_OBJECT, &oldSelection);
+  std::vector< const CCopasiObject * > objects =
+    CCopasiSelectionDialog::getObjectVector(this,
+                                            CCopasiSimpleSelectionTree::NumericValues,
+                                            &oldSelection);
 
   if (objects.size() && objects[0])
     {

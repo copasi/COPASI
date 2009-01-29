@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-//   $Revision: 1.15.4.3.4.1 $
+//   $Revision: 1.15.4.3.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/12 17:58:53 $
+//   $Date: 2009/01/29 20:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@ class CCopasiSimpleSelectionTree: public QListView
     Q_OBJECT
 
   private:
+    /*
     enum SelectionFlagBase {
       BASE_DOUBLE = 0x01,
       BASE_INTEGER = 0x02,
@@ -47,8 +48,10 @@ class CCopasiSimpleSelectionTree: public QListView
       BASE_TASK = 0x80,
       BASE_ARRAY = 0x100
     };
+    */
 
   public:
+    /*
     enum SelectionFlag {
       NUMERIC = BASE_DOUBLE | BASE_INTEGER,
       INITIAL_VALUE = BASE_DOUBLE | BASE_INITIAL | BASE_MODEL,
@@ -64,11 +67,25 @@ class CCopasiSimpleSelectionTree: public QListView
       PLOT_OBJECT = BASE_ARRAY,
       REPORT_ITEM = BASE_ARRAY
     };
+    */
+    enum ObjectClass {
+      InitialTime = 0x01,
+      Parameters = 0x02,
+      Variables = 0x04,
+      ObservedConstants = 0x08,
+      Time = 0x10,
+      ObservedValues = 0x20,
+      Results = 0x40,
+      NumericValues = 0x80,
+      AnyObject = 0x100
+    };
+
+    typedef int ObjectClasses;
 
     CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
     ~CCopasiSimpleSelectionTree();
 
-    void populateTree(const CModel * pModel, const SelectionFlag & flag);
+    void populateTree(const CModel * pModel, const ObjectClasses & classes);
     void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
 
   public slots:
@@ -114,7 +131,7 @@ class CCopasiSimpleSelectionTree: public QListView
   protected:
 
   public:
-    static bool filter(const SelectionFlag & flag, const CCopasiObject * pObject);
+    static bool filter(const ObjectClasses & classes, const CCopasiObject * pObject);
   };
 
 #endif
