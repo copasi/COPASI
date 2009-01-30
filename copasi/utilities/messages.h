@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.124 $
+//   $Revision: 1.125 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:38:35 $
+//   $Author: gauges $
+//   $Date: 2009/01/30 10:09:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,6 +229,7 @@ const MESSAGES Messages[] =
     {MCSBML + 73, "SBML (73): Could not export %s. %s has been ignored."},
     {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
     {MCSBML + 75, "SBML (75): Invalid id RDF/XML found and corrected."},
+    {MCSBML + 76, "SBML (76): Unable to resolve dependencies for the following function definitions:\n%s."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
