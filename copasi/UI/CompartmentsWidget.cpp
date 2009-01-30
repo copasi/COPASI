@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.118.8.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/08 08:32:07 $
+//   $Author: ssahle $
+//   $Date: 2009/01/30 12:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,11 +101,25 @@ void CompartmentsWidget::updateHeaderUnits()
 
   if (CCopasiDataModel::Global->getModel())
     {
-      std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnitName();
-      tableHeader->setLabel(COL_IVOLUME, "Initial Volume\n(" + FROM_UTF8(str) + ")");
-      tableHeader->setLabel(COL_VOLUME, "Volume\n(" + FROM_UTF8(str) + ")");
-      tableHeader->setLabel(COL_RATE,
-                            "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+
+      if (CCopasiDataModel::Global->getModel()->getVolumeUnitEnum() != CModel::dimensionlessVolume)
+        {
+          std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnitName();
+          tableHeader->setLabel(COL_IVOLUME, "Initial Volume\n(" + FROM_UTF8(str) + ")");
+          tableHeader->setLabel(COL_VOLUME, "Volume\n(" + FROM_UTF8(str) + ")");
+          tableHeader->setLabel(COL_RATE,
+                                "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+        }
+      else
+        {
+          tableHeader->setLabel(COL_IVOLUME, "Initial Volume");
+          tableHeader->setLabel(COL_VOLUME, "Volume");
+          if (CCopasiDataModel::Global->getModel()->getTimeUnitEnum() == CModel::dimensionlessTime)
+            tableHeader->setLabel(COL_RATE, "Rate");
+          else
+            tableHeader->setLabel(COL_RATE, "Rate\n(1/" +
+                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+        }
     }
 }
 

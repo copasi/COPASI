@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.14.6.1.4.1 $
+//   $Revision: 1.14.6.1.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Author: ssahle $
+//   $Date: 2009/01/30 12:40:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,20 +402,38 @@ void CQCompartment::load()
   if (mpCompartment == NULL) return;
 
   // Update the labels to reflect the model units
-  mpLblInitialValue->setText("Initial Volume ("
-                             + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
-  mpLblInitialExpression->setText("Initial Expression ("
-                                  + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
 
-  mpLblExpression->setText("Expression ("
-                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+  if (CCopasiDataModel::Global->getModel()->getVolumeUnitEnum() != CModel::dimensionlessVolume)
+    {
+      QString tmpUnit = FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName());
+      mpLblInitialValue->setText("Initial Volume ("
+                                 + tmpUnit + ")");
+      mpLblInitialExpression->setText("Initial Expression ("
+                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
 
-  mpLblVolume->setText("Volume ("
-                       + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+      mpLblExpression->setText("Expression ("
+                               + tmpUnit + ")");
 
-  mpLblRate->setText("Rate ("
-                     + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName())
-                     + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+      mpLblVolume->setText("Volume ("
+                           + tmpUnit + ")");
+
+      mpLblRate->setText("Rate ("
+                         + tmpUnit
+                         + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+    }
+  else
+    {
+      QString tmpUnit = FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName());
+      mpLblInitialValue->setText("Initial Volume");
+      mpLblInitialExpression->setText("Initial Expression");
+
+      mpLblExpression->setText("Expression");
+
+      mpLblVolume->setText("Volume");
+
+      mpLblRate->setText("Rate (1/"
+                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+    }
 
   // Name
   mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
