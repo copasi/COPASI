@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.122.4.3 $
+//   $Revision: 1.122.4.3.4.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2008/12/08 11:53:48 $
+//   $Author: ssahle $
+//   $Date: 2009/01/30 13:04:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,6 +110,7 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 19, "CTrajectoryMethod (19): The model contains a global quantity with an assignment rule. \nThe value of the quantity is used in the model. \nStochastic simulation of such models is not possible with this version of COPASI."}, //obsolete
     {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a species with an ODE rule.\nStochastic simulation is not possible."},
     {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
+    {MCTrajectoryMethod + 22, "CTrajectoryMethod (22): The quantity units in the model is dimensionless. \nIt is not possible to calculate particle numbers. Stochastic simulation is not possible."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
