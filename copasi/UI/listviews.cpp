@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.255.2.3 $
+//   $Revision: 1.255.2.3.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/29 19:24:12 $
+//   $Date: 2009/01/30 20:01:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1311,6 +1311,21 @@ void ListViews::buildChangedObjects()
       for (i = 0, imax = Group.size(); i < imax; i++)
         mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
     }
+
+  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrices.
+  const CArrayAnnotation * pMatrix = NULL;
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Stoichiometry(ann)")));
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Reduced stoichiometry(ann)")));
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Link matrix(ann)")));
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
 
   try
     {

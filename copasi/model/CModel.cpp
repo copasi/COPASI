@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.9.4.3 $
+//   $Revision: 1.347.2.9.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/01/27 15:56:13 $
+//   $Author: shoops $
+//   $Date: 2009/01/30 20:01:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1202,8 +1202,8 @@ bool CModel::buildInitialSequence()
   // fixed and unused once. Additionally, all kinetic parameters are possibly changed.
   // This is basically all the parameters in the parameter overview whose value is editable.
 
-  // :TODO: Theoretically, it is possible that also task parameters influence the initial
-  // state of a model but that is currently not handled.
+  // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrix.
 
   std::set< const CCopasiObject * > Objects;
 
@@ -1228,6 +1228,17 @@ bool CModel::buildInitialSequence()
       for (i = 0, imax = Group.size(); i < imax; i++)
         Objects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
     }
+
+  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrices.
+  if (mpStoiAnnotation != NULL)
+    mpStoiAnnotation->appendElementReferences(Objects);
+
+  if (mpRedStoiAnnotation != NULL)
+    mpRedStoiAnnotation->appendElementReferences(Objects);
+
+  if (mpLinkMatrixAnnotation != NULL)
+    mpLinkMatrixAnnotation->appendElementReferences(Objects);
 
   try
     {
@@ -3474,6 +3485,17 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
           for (i = 0, imax = Group.size(); i < imax; i++)
             changedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
         }
+
+      // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+      // and link matrices.
+      if (mpStoiAnnotation != NULL)
+        mpStoiAnnotation->appendElementReferences(changedObjects);
+
+      if (mpRedStoiAnnotation != NULL)
+        mpRedStoiAnnotation->appendElementReferences(changedObjects);
+
+      if (mpLinkMatrixAnnotation != NULL)
+        mpLinkMatrixAnnotation->appendElementReferences(changedObjects);
     }
   else
     {

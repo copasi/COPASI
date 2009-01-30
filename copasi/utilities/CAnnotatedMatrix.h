@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-//   $Revision: 1.22.2.3 $
+//   $Revision: 1.22.2.3.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/15 21:30:43 $
+//   $Author: shoops $
+//   $Date: 2009/01/30 20:01:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,7 @@ class CArrayAnnotation: public CCopasiContainer
      * the time the vector is set
      *
      * VECTOR_ON_THE_FLY: A CCopasiVector is provided, but the CNs are generated
-     * every time the annotations are retrieved (so that they are alway up to date).
+     * every time the annotations are retrieved (so that they are always up to date).
      *
      * STRINGS: The annotations for the rows, cols, ... are given explicitly
      * as strings.
@@ -198,6 +198,12 @@ class CArrayAnnotation: public CCopasiContainer
     const CCopasiObject* addElementReference(C_INT32 u, C_INT32 v) const;
 
     /**
+     * Appends all element references to the set of objects
+     * @param std::set< const CCopasiObject * > & objects
+     */
+    void appendElementReferences(std::set< const CCopasiObject * > & objects) const;
+
+    /**
      * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
      * Since this is also a container, this is not necessarily the case.
      */
@@ -220,7 +226,7 @@ class CArrayAnnotation: public CCopasiContainer
     //void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
 
     /**
-     *  generate the list of CNs from the copasi vector v.
+     *  generate the list of CNs from the COPASI vector v.
      *  v needs to be a CCopasiVector (or derived from it)!
      */
     bool createAnnotationsCNFromCopasiVector(unsigned int d, const CCopasiContainer* v) const;
