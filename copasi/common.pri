@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.98 $ 
+#   $Revision: 1.99 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/01/28 19:20:21 $ 
+#   $Author: gauges $ 
+#   $Date: 2009/02/02 08:42:21 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.98 $ $Author: shoops $ $Date: 2009/01/28 19:20:21 $  
+# $Revision: 1.99 $ $Author: gauges $ $Date: 2009/02/02 08:42:21 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -97,7 +97,7 @@ contains(STATIC_LINKAGE, yes) {
   QMAKE_CXXFLAGS_RELEASE -= -O4
   QMAKE_CXXFLAGS_RELEASE += -O3
 
-  QMAKE_QMAKE = $$QTDIR/bin/qmake
+  QMAKE_QMAKE = $(QTDIR)/bin/qmake
   
   QMAKE_LEX = ../../admin/flex.sh
   QMAKE_YACC = ../../admin/yacc.sh
