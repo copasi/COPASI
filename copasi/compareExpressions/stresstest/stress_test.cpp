@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/16 16:30:00 $
+//   $Date: 2009/02/02 16:13:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -870,7 +870,7 @@ void stress_test::normalizeFunctionDB()
               CNormalFraction* pFraction = CNormalTranslation::normAndSimplifyReptdly(pExpanded);
               delete pExpanded;
               assert(pFraction != NULL);
-              mNormalizedCOPASIFunctionDefinitions.insert(std::pair<std::string, CNormalFraction*>(pTree->getObjectName(), pFraction));
+              mNormalizedCOPASIFunctionDefinitions.insert(std::pair<const std::string, CNormalFraction*>(pTree->getObjectName(), pFraction));
               ++mNumCOPASIFunctions;
             }
           catch (recursion_limit_exception e)
