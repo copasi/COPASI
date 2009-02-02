@@ -5,10 +5,6 @@ echo @echo off > config.status.bat
 echo echo running: configure.bat %* >> config.status.bat
 echo configure.bat %* >> config.status.bat
 
-rem The default is debug build
-set cps_plus=debug
-set cps_minus=release
-
 set arguments=
 
 :LOOP
@@ -24,6 +20,7 @@ goto LOOP
 
 :DEBUG
 :RELEASE
+rem debug and release is ignored
 shift
 goto LOOP
 
@@ -36,13 +33,22 @@ del UI\CQSplashWidget.obj
 del CopasiUI\main.obj 
 del CopasiSE\CopasiSE.obj
 
-if '%QT4DIR%' == ''   goto QT3
-set QTDIR=%QT4DIR%
+if '%QT4DIR%' == '' goto QT4DIR_NotSet
+set QMAKE=%QT4DIR%\bin\qmake
+goto CONFIGURE
 
-:QT3 
+:QT4DIR_NotSet
+if '%QTDIR%' == '' goto QTDIR_NotSet
+set QMAKE=%QTDIR%\bin\qmake
+goto CONFIGURE
+
+:QTDIR_NotSet
+set QMAKE=qmake
+
+:CONFIGURE
 echo executing in copasi:
-echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
-%QTDIR%\bin\qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 nmake qmake_all
 
@@ -60,7 +66,7 @@ echo executing in semantic-test-suite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
-%QTDIR%\bin\qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
 
@@ -70,6 +76,6 @@ echo executing in stochastic-testsuite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
-%QTDIR%\bin\qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..

@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.99 $ 
+#   $Revision: 1.100 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/02/02 08:42:21 $ 
+#   $Author: shoops $ 
+#   $Date: 2009/02/02 18:09:57 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,22 +16,26 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.99 $ $Author: gauges $ $Date: 2009/02/02 08:42:21 $  
+# $Revision: 1.100 $ $Author: shoops $ $Date: 2009/02/02 18:09:57 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
 isEmpty(BUILD_OS) {
   win32 {
     BUILD_OS = WIN32
-    
-    QT4DIR = $(QT4DIR)
-    
-    isEmpty(QT4DIR) {
-      QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
-      message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
+
+    MY_QT4DIR = $$system(echo %QT4DIR%)
+    contains(MY_QT4DIR, %QT4DIR%) {
+      MY_QTDIR = $$system(echo %QTDIR%)
+      contains(MY_QTDIR, %QTDIR%) {
+        QMAKE_QMAKE = qmake.exe
+        !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=???.")
+      } else {
+        QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
+        !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
+      }
 	} else {
-      QMAKE_QMAKE = $(QT4DIR)\bin\qmake.exe
-      message("Configuring for $${BUILD_OS} with QTDIR=$(QT4DIR).")
+      !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QT4DIR).")
 	}
 
   } else {
@@ -97,8 +101,6 @@ contains(STATIC_LINKAGE, yes) {
   QMAKE_CXXFLAGS_RELEASE -= -O4
   QMAKE_CXXFLAGS_RELEASE += -O3
 
-  QMAKE_QMAKE = $(QTDIR)/bin/qmake
-  
   QMAKE_LEX = ../../admin/flex.sh
   QMAKE_YACC = ../../admin/yacc.sh
   
