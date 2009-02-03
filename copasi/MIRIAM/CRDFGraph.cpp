@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.38.2.3 $
+//   $Revision: 1.38.2.3.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/01 17:44:20 $
+//   $Date: 2009/02/03 21:22:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ const std::map< std::string, CRDFNode * > & CRDFGraph::getLocalResourceNodeMap()
 const std::vector< CRDFNode * > & CRDFGraph::getRemoteResourceNodes() const
   {return mRemoteResourceNodes;}
 
-bool CRDFGraph::guessGraphRoot()
+bool CRDFGraph::guessGraphRoot(const std::string & about)
 {
   mpAbout = NULL;
   CRDFNode * pNode;
@@ -107,7 +107,10 @@ bool CRDFGraph::guessGraphRoot()
     {
       pNode = itMap->second;
 
-      if (pNode->isSubjectNode() && !pNode->isObjectNode())
+      if (pNode->isSubjectNode() &&
+          !pNode->isObjectNode() &&
+          (about == " " ||
+           pNode->getSubject().getResource() == about))
         {
           if (mpAbout != NULL)
             {
@@ -365,12 +368,13 @@ std::string CRDFGraph::generatedBlankNodeId() const
 
 CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
 {
-  if (!guessGraphRoot())
+  std::string About = "#" + key;
+
+  if (!guessGraphRoot(About))
     {
       CRDFSubject subject;
       mpAbout = new CRDFNode(*this);
 
-      std::string About = "#" + key;
       subject.setType(CRDFSubject::RESOURCE);
       subject.setResource(About, true);
       mpAbout->setSubject(subject);

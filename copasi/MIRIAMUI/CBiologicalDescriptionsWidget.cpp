@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.10.2.2.2.1 $
+//   $Revision: 1.10.2.2.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/15 20:05:12 $
+//   $Date: 2009/02/03 21:22:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,6 +102,7 @@ void CBiologicalDescriptionsWidget::init()
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_occursIn)));
 
   // Build the list of known resources
   updateResourcesList();

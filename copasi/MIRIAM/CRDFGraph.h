@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/11 19:18:05 $
+//   $Date: 2009/02/03 21:22:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,9 +86,10 @@ class CRDFGraph
     /**
      * Guess the graph root element. If a unique root element is found
      * true is returned other wise falls
+     * @param const std::string & about (default: <space>)
      * @return bool success
      */
-    bool guessGraphRoot();
+    bool guessGraphRoot(const std::string & about = " ");
 
     /**
      * Add a name space including prefix to the graph. It returns false if the
