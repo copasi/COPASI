@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.26.4.10.4.1 $
+//   $Revision: 1.26.4.10.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Date: 2009/02/03 18:00:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -753,7 +753,8 @@ bool CCopasiSimpleSelectionTree::filter(const ObjectClasses & classes, const CCo
       if ((classes & Parameters) &&
           Status != CModelEntity::TIME &&
           Status != CModelEntity::ASSIGNMENT &&
-          ObjectName.compare(0, 7, "Initial") == 0)
+          ObjectName.compare(0, 7, "Initial") == 0 &&
+          pEntity->getInitialExpression() == "")
         return true;
 
       if ((classes & Variables) &&
@@ -767,10 +768,16 @@ bool CCopasiSimpleSelectionTree::filter(const ObjectClasses & classes, const CCo
 
       if ((classes & ObservedConstants) &&
           ((Status == CModelEntity::TIME &&
-            (ObjectName == "Quantity Conversion Factor" ||
-             pCheckedObject->isArray())) ||
+            (ObjectName == "Quantity Conversion Factor")) ||
+           // TODO Until we have not changed to named array elements we do not support matrix elements
+           //            || pCheckedObject->isArray())) ||
            (Status == CModelEntity::ASSIGNMENT &&
-            ObjectName.compare(0, 7, "Initial") == 0)))
+            ObjectName.compare(0, 7, "Initial") == 0) ||
+           (Status == CModelEntity::ODE ||
+            Status == CModelEntity::REACTIONS ||
+            Status == CModelEntity::FIXED) &&
+           ObjectName.compare(0, 7, "Initial") == 0 &&
+           pEntity->getInitialExpression() != ""))
         return true;
 
       if ((classes & Time) &&

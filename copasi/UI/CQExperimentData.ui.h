@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.34.10.1 $
+//   $Revision: 1.34.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Date: 2009/02/03 18:00:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -977,9 +977,14 @@ void CQExperimentData::slotModelObject(int row)
     static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
 
   if (Type == CExperiment::independent)
-    Classes = CCopasiSimpleSelectionTree::InitialTime | CCopasiSimpleSelectionTree::Parameters;
+    Classes =
+      CCopasiSimpleSelectionTree::InitialTime |
+      CCopasiSimpleSelectionTree::Parameters;
   else
-    Classes = CCopasiSimpleSelectionTree::Variables | CCopasiSimpleSelectionTree::ObservedValues;
+    Classes =
+      CCopasiSimpleSelectionTree::Variables |
+      CCopasiSimpleSelectionTree::ObservedValues |
+      CCopasiSimpleSelectionTree::ObservedConstants;
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
