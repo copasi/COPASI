@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.54.2.2 $
+//   $Revision: 1.54.2.2.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/27 19:49:35 $
+//   $Date: 2009/02/03 17:42:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,19 +109,19 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
     if (isnan(minX + maxX + minY + maxY))
       return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
-    // We need to avoid near extremely data ranges (absolute and relative)
-    C_FLOAT64 minRange = ((minX + maxX) / 2.0 * DBL_EPSILON + DBL_MIN) * 100.0;
+    // We need to avoid very small data ranges (absolute and relative)
+    C_FLOAT64 minRange = (minX + maxX) * 5.e-5 + DBL_MIN * 100.0;
     if (maxX - minX < minRange)
       {
-        minX = (minX + maxX - minRange) / 2.0;
-        maxX = (minX + maxX + minRange) / 2.0;
+        minX = minX - minRange * 0.5;
+        maxX = maxX + minRange * 0.5;
       }
 
-    minRange = ((minY + maxY) / 2.0 * DBL_EPSILON + DBL_MIN) * 100.0;
+    minRange = (minY + maxY) * 5e-5 + DBL_MIN * 100.0;
     if (maxY - minY < minRange)
       {
-        minY = (minY + maxY - minRange) / 2.0;
-        maxY = (minY + maxY + minRange) / 2.0;
+        minY = minY - minRange * 0.5;
+        maxY = maxY + minRange * 0.5;
       }
 
     return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
