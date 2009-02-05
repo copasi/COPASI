@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.10.2.2 $
+//   $Revision: 1.10.2.2.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/18 02:47:40 $
+//   $Date: 2009/02/05 04:39:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,11 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
   CRDFObject Object;
   CRDFLiteral Literal;
 
+#include <stdio.h>
+  static FILE * pTrace = fopen("Raptor.txt", "w");
+  raptor_print_statement(pTriple, pTrace);
+  fprintf(pTrace, "\n");
+
   switch (pTriple->subject_type)
     {
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
@@ -154,6 +159,7 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
 
   switch (pTriple->object_type)
     {
+    case RAPTOR_IDENTIFIER_TYPE_ORDINAL:
     case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
       Object.setType(CRDFObject::RESOURCE);
       Object.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->object),
