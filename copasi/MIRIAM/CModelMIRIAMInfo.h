@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/05 15:34:57 $
+//   $Author: aekamal $
+//   $Date: 2009/02/05 19:56:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,25 +57,27 @@ class CMIRIAMInfo : public CCopasiContainer
     bool save();
     CRDFGraph* getRDFGraph();
 
-    CCopasiVector <CCreator> & getCreators();
+    const CCopasiVector <CCreator> & getCreators() const;
     CCreator* createCreator(const std::string& objectName);
     bool removeCreator(const std::string& key);
+    bool removeCreator(int position);
     void loadCreators();
 
-    CCopasiVector <CReference> & getReferences();
+    const CCopasiVector <CReference> & getReferences() const;
     CReference* createReference(const std::string& objectName);
     bool removeReference(const std::string& key);
+    bool removeReference(int position);
     void loadReferences();
 
     const std::string getCreatedDT() const;
     void setCreatedDT(const std::string& dt);
 
-    CCopasiVector <CModification> & getModifications();
+    const CCopasiVector <CModification> & getModifications() const;
     CModification* createModification(const std::string& objectName);
     bool removeModification(const std::string& key);
     void loadModifications();
 
-    CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions();
+    const CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions() const;
     CBiologicalDescription* createBiologicalDescription();
     bool removeBiologicalDescription(const std::string& key);
     void loadBiologicalDescriptions();

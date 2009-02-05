@@ -134,6 +134,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CRDFTriplet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CRDFUtilities.cpp"
 				>
 			</File>
@@ -212,6 +216,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFSubject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFTriplet.h"
 				>
 			</File>
 			<File

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CCreatorsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:10 $
+//   $Author: aekamal $
+//   $Date: 2009/02/05 19:54:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,13 +30,6 @@
 
 #include "CQMiriamWidget.h"
 #include "CCreatorsWidget.h"
-
-#define COL_MARK               0
-#define COL_DUMMY              1
-#define COL_FAMILY_NAME        2
-#define COL_GIVEN_NAME         3
-#define COL_EMAIL              4
-#define COL_ORG                5
 
 /*
  *  Constructs a CCreatorsWidget as a child of 'parent', with the

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/01 15:41:13 $
+//   $Author: aekamal $
+//   $Date: 2009/02/05 19:56:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,8 +54,8 @@ CMIRIAMInfo::~CMIRIAMInfo()
 CRDFGraph * CMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
 
-CCopasiVector <CCreator> & CMIRIAMInfo::getCreators()
-{return mCreators;}
+const CCopasiVector <CCreator> & CMIRIAMInfo::getCreators() const
+  {return mCreators;}
 
 CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
 {
@@ -101,6 +101,22 @@ bool CMIRIAMInfo::removeCreator(const std::string & key)
   return mCreators.remove(pCreator);
 }
 
+bool CMIRIAMInfo::removeCreator(int position)
+{
+  CCreator * pCreator = mCreators[position];
+
+  if (!pCreator)
+    return false;
+
+  const CRDFTriplet & Triplet = pCreator->getTriplet();
+
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
+
+  return mCreators.remove(pCreator);
+}
+
 void CMIRIAMInfo::loadCreators()
 {
   mCreators.cleanup();
@@ -132,7 +148,7 @@ void CMIRIAMInfo::loadCreators()
   return;
 }
 
-CCopasiVector <CReference> & CMIRIAMInfo::getReferences()
+const CCopasiVector <CReference> & CMIRIAMInfo::getReferences() const
 {return mReferences;}
 
 CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
@@ -166,6 +182,22 @@ bool CMIRIAMInfo::removeReference(const std::string & key)
 {
   CReference * pReference =
     dynamic_cast< CReference * >(GlobalKeys.get(key));
+
+  if (!pReference)
+    return false;
+
+  const CRDFTriplet & Triplet = pReference->getTriplet();
+
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
+
+  return mReferences.remove(pReference);
+}
+
+bool CMIRIAMInfo::removeReference(int position)
+{
+  CReference * pReference = mReferences[position];
 
   if (!pReference)
     return false;
@@ -242,8 +274,8 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
   mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath());
 }
 
-CCopasiVector <CModification> & CMIRIAMInfo::getModifications()
-{return mModifications;}
+const CCopasiVector <CModification> & CMIRIAMInfo::getModifications() const
+  {return mModifications;}
 
 CModification * CMIRIAMInfo::createModification(const std::string & /* objectName */)
 {
@@ -304,7 +336,7 @@ void CMIRIAMInfo::loadModifications()
   return;
 }
 
-CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions()
+const CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions() const
 {return mBiologicalDescriptions;}
 
 CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()

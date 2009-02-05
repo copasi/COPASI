@@ -77,11 +77,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQCreatorDM.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQMiriamWidget.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\CQRDFListViewWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReferenceDM.cpp"
 				>
 			</File>
 			<File
@@ -115,11 +123,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQMiriamWidget.h"
+				RelativePath=".\CQCreatorDM.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CQMiriamWidget.ui.h"
+				RelativePath=".\CQMiriamWidget.h"
 				>
 			</File>
 			<File
@@ -128,6 +136,10 @@
 			</File>
 			<File
 				RelativePath=".\CQRDFListViewWidget.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReferenceDM.h"
 				>
 			</File>
 			<File

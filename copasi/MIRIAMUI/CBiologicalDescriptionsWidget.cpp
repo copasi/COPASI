@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CBiologicalDescriptionsWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:10 $
+//   $Author: aekamal $
+//   $Date: 2009/02/05 19:54:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,39 +92,6 @@ void CBiologicalDescriptionsWidget::init()
   table->hideColumn(COL_DUMMY);
 
   //table->setColumnWidth(COL_ID, 200);
-  // Build the list of supported predicates
-  mPredicates.push_back("-- select --");
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_encodes)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasPart)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasVersion)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_is)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isEncodedBy)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
-
-  // Build the list of known resources
-  updateResourcesList();
-}
-
-void CBiologicalDescriptionsWidget::updateResourcesList()
-{
-  mResources.clear();
-  // Build the list of known resources
-  const CMIRIAMResources * pResource = &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources();
-  mResources.push_back("-- select --");
-
-  unsigned C_INT32 i, imax = pResource->getResourceList().size();
-  for (i = 0; i < imax; i++)
-    if (!pResource->getMIRIAMResource(i).getMIRIAMCitation())
-      mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
-
-  // We need to update each currently shown ComboBox
-  Q3ComboTableItem * pComboBox = NULL;
-  imax = table->numCols();
-  for (i = 0; i < imax; i++)
-    if ((pComboBox = dynamic_cast<Q3ComboTableItem *>(table->item(i, COL_RESOURCE))) != NULL)
-      delete pComboBox;
 }
 
 void CBiologicalDescriptionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)

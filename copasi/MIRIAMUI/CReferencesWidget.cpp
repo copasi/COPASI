@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:10 $
+//   $Author: aekamal $
+//   $Date: 2009/02/05 19:54:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,12 +27,6 @@
 
 #include "CQMiriamWidget.h"
 #include "CReferencesWidget.h"
-
-#define COL_MARK               0
-#define COL_DUMMY              1
-#define COL_RESOURCE           2
-#define COL_ID                 3
-#define COL_DESCRIPTION        4
 
 /*
  *  Constructs a CReferencesWidget as a child of 'parent', with the
@@ -82,9 +76,6 @@ void CReferencesWidget::init()
   //Setting table headers
   Q3Header *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(COL_MARK, "Status");
-  tableHeader->setLabel(COL_RESOURCE, "Resource");
-  tableHeader->setLabel(COL_ID, "ID");
-  tableHeader->setLabel(COL_DESCRIPTION, "Description");
   table->hideColumn(COL_DUMMY);
 
   updateResourcesList();
