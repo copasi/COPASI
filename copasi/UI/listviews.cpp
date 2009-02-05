@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.258 $
+//   $Revision: 1.259 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:15 $
+//   $Author: aekamal $
+//   $Date: 2009/02/05 21:52:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,8 +87,7 @@
 #include "CQReportDefinition.h"
 #include "PlotWidget.h"
 #include "CQMathMatrixWidget.h"
-#include "MIRIAMUI/CReferencesWidget.h"
-#include "MIRIAMUI/CBiologicalDescriptionsWidget.h"
+#include "MIRIAMUI/CQMiriamWidget.h"
 
 #include "CTabWidget.h"
 
@@ -1223,16 +1222,13 @@ void ListViews::updateMIRIAMResourceContents()
 
 void ListViews::updateBiologicalDescriptionContents()
 {
-  QList <QWidget *> widgets = findChildren<QWidget *>("CopasiTableWidget");
+  QList <QWidget *> widgets = findChildren<QWidget *>("CQMiriamWidget");
   QListIterator<QWidget *> it(widgets); // iterate over the CopasiTableWidgets
   QWidget * pWidget;
 
   while ((pWidget = it.next()) != NULL)
     {
-      if (pWidget->inherits("CReferencesWidget"))
-        static_cast< CReferencesWidget * >(pWidget)->updateResourcesList();
-      else if (pWidget->inherits("CBiologicalDescriptionsWidget"))
-        static_cast< CBiologicalDescriptionsWidget * >(pWidget)->updateResourcesList();
+      static_cast< CQMiriamWidget * >(pWidget)->updateResourcesList();
     }
 }
 
