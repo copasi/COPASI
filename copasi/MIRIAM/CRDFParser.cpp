@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.10.2.2.4.1 $
+//   $Revision: 1.10.2.2.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/05 04:39:55 $
+//   $Date: 2009/02/06 15:48:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,11 +124,6 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
   std::string Predicate;
   CRDFObject Object;
   CRDFLiteral Literal;
-
-#include <stdio.h>
-  static FILE * pTrace = fopen("Raptor.txt", "w");
-  raptor_print_statement(pTriple, pTrace);
-  fprintf(pTrace, "\n");
 
   switch (pTriple->subject_type)
     {

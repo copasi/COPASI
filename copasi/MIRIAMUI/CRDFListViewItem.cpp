@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:10 $
+//   $Date: 2009/02/06 15:48:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,11 @@ void CRDFListViewItem::setTriplet(const CRDFTriplet & triplet)
       break;
 
     case CRDFObject::BLANK_NODE:
-      setText(COL_SUBJECT, FROM_UTF8(Object.getBlankNodeID()));
+      if (mTriplet. Predicate.getURI() != "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")
+        setText(COL_SUBJECT, FROM_UTF8(Object.getBlankNodeID()));
+      else
+        setText(COL_OBJECT, FROM_UTF8(Object.getBlankNodeID()));
+
       break;
     }
 }

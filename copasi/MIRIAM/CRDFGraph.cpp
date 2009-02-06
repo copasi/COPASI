@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.38.2.3.4.2 $
+//   $Revision: 1.38.2.3.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/06 01:31:27 $
+//   $Date: 2009/02/06 15:48:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,7 +108,8 @@ bool CRDFGraph::guessGraphRoot(const std::string & about)
       pNode = itMap->second;
 
       if (pNode->isSubjectNode() &&
-          !pNode->isObjectNode() &&
+          pNode->getSubject().isLocal() &&
+          pNode->getSubject().getType() == CRDFSubject::RESOURCE &&
           (about == " " ||
            pNode->getSubject().getResource() == about))
         {
@@ -155,7 +156,8 @@ CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
           if (found != mLocalResource2Node.end())
             {
               pSubjectNode = found->second;
-              pSubjectNode->setSubject(subject);
+              if (!pSubjectNode->isSubjectNode())
+                pSubjectNode->setSubject(subject);
             }
           else
             {
@@ -197,7 +199,8 @@ CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
           if (found != mLocalResource2Node.end())
             {
               pObjectNode = found->second;
-              pObjectNode->setObject(object);
+              if (!pObjectNode->isObjectNode())
+                pObjectNode->setObject(object);
             }
           else
             {
@@ -249,7 +252,7 @@ bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
       mObject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pObject, triplet));
       mPredicate2Triplet.insert(std::pair< const CRDFPredicate , CRDFTriplet >(triplet.Predicate, triplet));
 
-      DebugFile << "Inserted: " << triplet;
+      // DebugFile << "Inserted: " << triplet;
     }
 
   return true;
@@ -265,7 +268,7 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   if (!triplet)
     return;
 
-  DebugFile << "Removed: " << triplet;
+  // DebugFile << "Removed: " << triplet;
 
   // Remove the triplet
   mTriplets.erase(triplet);
@@ -331,7 +334,7 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
   Node2TripletRange Range = mObject2Triplet.equal_range(pCurrent);
   std::set< const CRDFNode * > Visited;
 
-  while (Range.first != Range.second &&
+  while ((Range.first != Range.second) &&
          pCurrent != mpAbout)
     {
       // We ignore rdf_li predicates
