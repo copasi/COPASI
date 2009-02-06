@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.14.10.1 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2009/02/06 02:28:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,12 @@ void CQRDFListViewWidget::load()
             }
         }
 
-      CRDFListViewItem * pObjectItem = mpListView->find(it->pObject);
+      CRDFListViewItem * pObjectItem = NULL;
+      if (it->Predicate.getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")
+        pObjectItem = new CRDFListViewItem(pSubjectItem, NULL);
+      else
+        pObjectItem = mpListView->find(it->pObject);
+
       if (pObjectItem == NULL)
         {
           pObjectItem = new CRDFListViewItem(pSubjectItem, NULL);
