@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFTriplet.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.2.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2009/02/06 01:29:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ std::ostream & operator << (std::ostream & os, const CRDFTriplet & triplet)
   if (triplet)
     {
       os << triplet.pSubject->getSubject() << ", ";
-      os << triplet.Predicate << ", ";
+      os << triplet.Predicate.getURI() << ", ";
       os << triplet.pObject->getObject() << std::endl;
     }
   else
