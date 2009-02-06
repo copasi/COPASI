@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/01/29 20:14:44 $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ class CRDFParser : private CRaptorInit
     CRDFGraph * parse(std::istream & stream);
 
     /**
-     * A stantic handler to interface with the C parser library. This is called
+     * A static handler to interface with the C parser library. This is called
      * whenever an RDF triple is created. Its only purpose is to add the triple
      * to the graph which must provide addTriplet(CRDFSubject, std::string, CRDFObject);
      * @param void * pGraph
@@ -68,7 +68,7 @@ class CRDFParser : private CRaptorInit
     static void TripleHandler(void * pGraph, const raptor_statement * pTriple);
 
     /**
-     * A stantic handler to interface with the C parser library. This is called
+     * A static handler to interface with the C parser library. This is called
      * whenever a namespace is declared.
      * @param void * pGraph
      * @param raptor_namespace * pNameSpace
@@ -76,7 +76,19 @@ class CRDFParser : private CRaptorInit
     static void NameSpaceHandler(void * pGraph, raptor_namespace * pNameSpace);
 
     /**
-     * A stantic handler to interface with the C parser library. This is called
+     * A static handler to interface with the C parser library. This is called
+     * whenever a node id needs to be generated.
+     * @param void * pGraph
+     * @param raptor_genid_type type
+     * @param unsigned char * userNodeId
+     * @return unsigned char * generatedId
+     */
+    static unsigned char * GenerateIdHandler(void * pGraph,
+        raptor_genid_type type,
+        unsigned char * userNodeId);
+
+    /**
+     * A static handler to interface with the C parser library. This is called
      * whenever the parser encounters a fatal error;
      * @param void * userdata (ignored)
      * @param raptor_locator * pLocator
@@ -85,7 +97,7 @@ class CRDFParser : private CRaptorInit
     static void FatalErrorHandler(void *, raptor_locator * pLocator, const char * message);
 
     /**
-     * A stantic handler to interface with the C parser library. This is called
+     * A static handler to interface with the C parser library. This is called
      * whenever the parser encounters an error;
      * @param void * userdata (ignored)
      * @param raptor_locator * pLocator
@@ -94,7 +106,7 @@ class CRDFParser : private CRaptorInit
     static void ErrorHandler(void *, raptor_locator * pLocator, const char * message);
 
     /**
-     * A stantic handler to interface with the C parser library. This is called
+     * A static handler to interface with the C parser library. This is called
      * whenever the parser encounters a warning;
      * @param void * userdata (ignored)
      * @param raptor_locator * pLocator

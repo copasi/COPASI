@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.10.2.2.4.2 $
+//   $Revision: 1.10.2.2.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/06 15:48:47 $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,7 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
 
       raptor_set_statement_handler(mpParser, pGraph, &CRDFParser::TripleHandler);
       raptor_set_namespace_handler(mpParser, pGraph, &CRDFParser::NameSpaceHandler);
+      raptor_set_generate_id_handler(mpParser, pGraph, &CRDFParser::GenerateIdHandler);
 
       while (!done)
         {
@@ -207,6 +208,21 @@ void CRDFParser::NameSpaceHandler(void * pGraph, raptor_namespace * pNameSpace)
   if (pPrefix) Prefix = (const char *) pPrefix;
 
   static_cast<CRDFGraph *>(pGraph)->addNameSpace(Prefix, URI);
+}
+
+// static
+unsigned char * CRDFParser::GenerateIdHandler(void * pGraph,
+    raptor_genid_type /* type */,
+    unsigned char * existingNodeId)
+{
+  std::string NodeId;
+
+  if (existingNodeId != NULL)
+    NodeId = static_cast<CRDFGraph *>(pGraph)->generatedNodeId((char *) existingNodeId).c_str();
+  else
+    NodeId = static_cast<CRDFGraph *>(pGraph)->generatedNodeId().c_str();
+
+  return (unsigned char *) strdup(NodeId.c_str());
 }
 
 // static

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.7.2.2 $
+//   $Revision: 1.7.2.2.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/10/21 14:57:29 $
+//   $Author: shoops $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -247,7 +247,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
       // We are now sure that the new predicate points to a blank node.
       CRDFObject Object;
       Object.setType(CRDFObject::BLANK_NODE);
-      Object.setBlankNodeId(pGraph->generatedBlankNodeId());
+      Object.setBlankNodeId(pGraph->generatedNodeId());
 
       Triplet = pGraph->addTriplet(triplet.pSubject->getSubject(),
                                    CRDFPredicate::getURI(newPath[SubPathIndex]),

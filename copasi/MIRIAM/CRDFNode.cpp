@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFNode.cpp,v $
-//   $Revision: 1.14.4.1 $
+//   $Revision: 1.14.4.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,7 +192,7 @@ bool CRDFNode::setFieldValue(const std::string & value,
           CRDFObject object;
           object.setType(pLocation->Type);
           if (object.getType() == CRDFObject::BLANK_NODE)
-            object.setBlankNodeId(mGraph.generatedBlankNodeId());
+            object.setBlankNodeId(mGraph.generatedNodeId());
 
           CRDFTriplet Triplet =
             mGraph.addTriplet(pParent->getSubject(), CRDFPredicate::getURI(predicate), object);
@@ -290,7 +290,7 @@ CRDFNode * CRDFNode::createMissingAncestors(const CRDFPredicate::Path & predicat
         {
           CRDFObject object;
           object.setType(CRDFObject::BLANK_NODE);
-          object.setBlankNodeId(mGraph.generatedBlankNodeId());
+          object.setBlankNodeId(mGraph.generatedNodeId());
 
           CRDFTriplet Triplet =
             mGraph.addTriplet(pNode->getSubject(), CRDFPredicate::getURI(predicatePath[i]), object);
@@ -353,7 +353,7 @@ CRDFTriplet CRDFNode::addEdge(const CRDFPredicate & predicate, CRDFNode * pObjec
           // We need to create a bag node, i.e., a blank node of type bag.
           CRDFSubject Subject;
           Subject.setType(CRDFSubject::BLANK_NODE);
-          Subject.setBlankNodeId(mGraph.generatedBlankNodeId());
+          Subject.setBlankNodeId(mGraph.generatedNodeId());
 
           // We add the existing object to the bag node with predicate rdf_li.
           // This automatically bagifies the node.

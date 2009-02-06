@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.h,v $
-//   $Revision: 1.25.10.1 $
+//   $Revision: 1.25.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/03 21:22:39 $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,9 +212,10 @@ class CRDFGraph
   public:
     /**
      * Generate a unique blank node id.
+     * @param const std::string & existingId (default: "")
      * @return std::string blankNodeId
      */
-    std::string generatedBlankNodeId() const;
+    std::string generatedNodeId(const std::string & existingId = "");
 
     /**
      * If no about node exists a node is created with the attribute:
@@ -293,6 +294,16 @@ class CRDFGraph
      *
      */
     Predicate2Triplet mPredicate2Triplet;
+
+    /**
+     * Memory for generated Ids
+     */
+    std::set< unsigned int > mGeneratedIds;
+
+    /**
+     * Mapping from existing Ids to newly created ones.
+     */
+    std::map< std::string, std::string > mIdMap;
   };
 
 #endif // COPASI_CRDFGraph

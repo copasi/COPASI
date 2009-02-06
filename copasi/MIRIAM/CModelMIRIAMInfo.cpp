@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.25.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/01 15:41:13 $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
   const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
   CRDFObject Object;
   Object.setType(CRDFObject::BLANK_NODE);
-  std::string Id = mpRDFGraph->generatedBlankNodeId();
+  std::string Id = mpRDFGraph->generatedNodeId();
   Object.setBlankNodeId(Id);
 
   CRDFTriplet Triplet =
@@ -140,7 +140,7 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
   const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
   CRDFObject Object;
   Object.setType(CRDFObject::BLANK_NODE);
-  std::string Id = mpRDFGraph->generatedBlankNodeId();
+  std::string Id = mpRDFGraph->generatedNodeId();
   Object.setBlankNodeId(Id);
 
   CRDFTriplet Triplet =
@@ -229,7 +229,7 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
       const CRDFSubject & Subject = mTriplet.pObject->getSubject();
       CRDFObject Object;
       Object.setType(CRDFObject::BLANK_NODE);
-      std::string Id = mpRDFGraph->generatedBlankNodeId();
+      std::string Id = mpRDFGraph->generatedNodeId();
       Object.setBlankNodeId(Id);
 
       mCreated = mpRDFGraph->addTriplet(Subject,
@@ -250,7 +250,7 @@ CModification * CMIRIAMInfo::createModification(const std::string & /* objectNam
   const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
   CRDFObject Object;
   Object.setType(CRDFObject::BLANK_NODE);
-  std::string Id = mpRDFGraph->generatedBlankNodeId();
+  std::string Id = mpRDFGraph->generatedNodeId();
   Object.setBlankNodeId(Id);
 
   CRDFTriplet Triplet =

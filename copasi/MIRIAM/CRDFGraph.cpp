@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.38.2.3.4.3 $
+//   $Revision: 1.38.2.3.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/06 15:48:47 $
+//   $Date: 2009/02/06 20:30:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,9 @@ CRDFGraph::CRDFGraph():
     mTriplets(),
     mSubject2Triplet(),
     mObject2Triplet(),
-    mPredicate2Triplet()
+    mPredicate2Triplet(),
+    mGeneratedIds(),
+    mIdMap()
 {}
 
 CRDFGraph::~CRDFGraph()
@@ -236,6 +238,11 @@ CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
       break;
     }
 
+  if (predicate == CRDFPredicate::rdf_predicate &&
+      pObjectNode->getObject().getType() == CRDFObject::RESOURCE &&
+      CRDFPredicate::getPredicateFromURI(pObjectNode->getObject().getResource()) == CRDFPredicate::rdf_li)
+    pObjectNode->getObject().setResource(CRDFPredicate::getURI(CRDFPredicate::rdf_li), false);
+
   return pSubjectNode->addEdge(predicate, pObjectNode);
 }
 
@@ -357,28 +364,39 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
   return Path;
 }
 
-std::string CRDFGraph::generatedBlankNodeId() const
-  {
-    static std::set< unsigned C_INT32 > GeneratedIds;
+std::string CRDFGraph::generatedNodeId(const std::string & existingId)
+{
+  // If we have an existing Id we check whether we have already mapped it.
+  if (existingId != "")
+    {
+      std::map< std::string, std::string >::const_iterator found = mIdMap.find(existingId);
+      if (found != mIdMap.end())
+        return found->second;
+    }
 
-    unsigned C_INT32 Id = 0;
-    if (GeneratedIds.rbegin() != GeneratedIds.rend())
-      Id = *GeneratedIds.rbegin();
+  unsigned int Id = 0;
+  if (mGeneratedIds.rbegin() != mGeneratedIds.rend())
+    Id = *mGeneratedIds.rbegin();
 
-    std::stringstream IdStream;
-    IdStream << "CopasiId" << ++Id;
+  std::stringstream IdStream;
+  IdStream << "CopasiId" << ++Id;
 
-    while (mBlankNodeId2Node.count(IdStream.str()) != 0)
-      {
-        GeneratedIds.insert(Id);
+  while (mBlankNodeId2Node.count(IdStream.str()) != 0)
+    {
+      mGeneratedIds.insert(Id);
 
-        IdStream.str("");
-        IdStream << "CopasiId" << ++Id;
-      }
+      IdStream.str("");
+      IdStream << "CopasiId" << ++Id;
+    }
 
-    GeneratedIds.insert(Id);
-    return IdStream.str();
-  }
+  mGeneratedIds.insert(Id);
+
+  // Remember the mapping for an existing Id
+  if (existingId != "")
+    mIdMap[existingId] = IdStream.str();
+
+  return IdStream.str();
+}
 
 CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
 {
