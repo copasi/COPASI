@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.6.6.1 $
+//   $Revision: 1.6.6.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2009/02/06 17:13:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,9 @@ const std::string CRDFPredicate::PredicateURI[] =
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", // rdf_type,
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#li", // rdf_li
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#_", // rdf__n
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject", //rdf_subject
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate", //rdf_predicate
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#object", //rdf_object
     "", // unknown
     // For internal use
     "about", // about
@@ -140,6 +143,9 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
     "type", // rdf_type,
     "*", // rdf_li
     "*", // rdf__n
+    "subject", // rdf_subject,
+    "predicate", // rdf_predicate,
+    "object", // rdf_object
     "", // unknown
     // For internal use
     "about", // about
@@ -492,7 +498,7 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
           StartIndex = 1;
         }
 
-      // Make sure that the absolute path of the parrent is known
+      // Make sure that the absolute path of the parent is known
       createAllowedLocationsAbsolute(Parent);
       AllowedLocationList & ParentList = Predicate2AllowedLocationsAbsolute[Parent];
 

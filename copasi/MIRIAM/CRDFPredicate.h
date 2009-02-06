@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.h,v $
-//   $Revision: 1.2.6.1 $
+//   $Revision: 1.2.6.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/25 16:49:07 $
+//   $Date: 2009/02/06 17:13:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,9 @@ class CRDFPredicate
       rdf_type,
       rdf_li,
       rdf__n,
+      rdf_subject,
+      rdf_predicate,
+      rdf_object,
       unknown,
       // For internal use
       about,
