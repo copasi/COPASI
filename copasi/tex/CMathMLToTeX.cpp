@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CMathMLToTeX.cpp,v $
-//   $Revision: 1.3.4.1 $
+//   $Revision: 1.3.4.1.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/10/17 19:08:15 $
+//   $Author: pwilly $
+//   $Date: 2009/02/09 23:21:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,8 @@ void CMathMLToTeX::replaceTrigoOperators(QString &text)
   text.replace("arcsin", "arcso");
   text.replace("sinh", "sooh");
 
-  text.replace("sin", "\\sin");
+  if (text.length() == 3)  // exactly 'sin' word
+    text.replace("sin", "\\sin");
 
   text.replace("sooh", "sinh");
   text.replace("sinh", "\\sinh");
@@ -85,7 +86,8 @@ void CMathMLToTeX::replaceTrigoOperators(QString &text)
   text.replace("arccos", "arcce");
   text.replace("cosh", "cooh");
 
-  text.replace("cos", "\\cos");
+  if (text.length() == 3)  // exactly 'cos' word
+    text.replace("cos", "\\cos");
 
   text.replace("cooh", "cosh");
   text.replace("cosh", "\\cosh");
@@ -101,7 +103,8 @@ void CMathMLToTeX::replaceTrigoOperators(QString &text)
   text.replace("arctan", "arcto");
   text.replace("tanh", "tooh");
 
-  text.replace("tan", "\\tan");
+  if (text.length() == 3)  // exactly 'tan' word
+    text.replace("tan", "\\tan");
 
   text.replace("tooh", "tanh");
   text.replace("tanh", "\\tanh");
@@ -117,7 +120,8 @@ void CMathMLToTeX::replaceTrigoOperators(QString &text)
   text.replace("arcsec", "arcso");
   text.replace("sech", "sooh");
 
-  text.replace("sec", "\\sec");
+  if (text.length() == 3)  // exactly 'sec' word
+    text.replace("sec", "\\sec");
 
   text.replace("sooh", "sech");
   text.replace("arcso", "arcsec");
@@ -129,7 +133,8 @@ void CMathMLToTeX::replaceTrigoOperators(QString &text)
   text.replace("arccsc", "arcce");
   text.replace("csch", "cooh");
 
-  text.replace("csc", "\\csc");
+  if (text.length() == 3)  // exactly 'csc' word
+    text.replace("csc", "\\csc");
 
   text.replace("cooh", "csch");
   text.replace("arcce", "arccsc");
@@ -141,7 +146,8 @@ void CMathMLToTeX::replaceTrigoOperators(QString &text)
   text.replace("arccot", "arcto");
   text.replace("coth", "tooh");
 
-  text.replace("cot", "\\cot");
+  if (text.length() == 3)  // exactly 'cot' word
+    text.replace("cot", "\\cot");
 
   text.replace("tooh", "coth");
   text.replace("coth", "\\coth");
