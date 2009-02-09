@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/02 16:13:16 $
+//   $Date: 2009/02/09 10:02:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,9 @@ stress_test::stress_test(): mNumFunctionDefinitions(0),
     mNumMassActionsKinetics(0),
     mNumConstantFluxKinetics(0),
     mNumMappedKineticExpressions(0),
-    mNumUnmappedKineticExpressions(0)
+    mNumUnmappedKineticExpressions(0),
+    mDifferentNormalform(0),
+    mNumSBO(0)
 {
   // Create the root container.
   CCopasiContainer::init();
@@ -191,6 +193,7 @@ void stress_test::run(const std::vector<std::string>& filenames)
   std::cout << "Number of function definitons that could be classified: " << numClassified << std::endl;
   std::cout << "Number of function definitons that were classified incorrectly: " << numDubious << std::endl;
   std::cout << "Number of function definitons that could not be classified: " << mNormalizedFunctionDefinitions.size() - numClassified - numDubious << std::endl;
+  std::cout << "Number of kinetic expressions: " << mNumKineticFunctions << std::endl;
   std::cout << "Number of kinetic expressions that could be mapped to a function definition: " << mNumMappedKineticExpressions << std::endl;
   std::cout << "Number of kinetic expressions that could not be mapped to a function definition: " << mNumUnmappedKineticExpressions << std::endl;
   std::cout << "List of the number of expressions mapped to a certain function definition: " << std::endl;
@@ -200,6 +203,16 @@ void stress_test::run(const std::vector<std::string>& filenames)
       std::cout << it6->first << " : " << it6->second << std::endl;
       ++it6;
     }
+  std::cout << "There are " << mSBOMap.size() << " different SBO Terms." << std::endl;
+  std::map<int, std::vector<CNormalFraction*> >::iterator sboIt = mSBOMap.begin(), sboEndit = mSBOMap.end();
+  while (sboIt != sboEndit)
+    {
+      std::cout << "There are " << sboIt->second.size() << " expressions for SBO term " << sboIt->first << "." << std::endl;
+      ++sboIt;
+    }
+  std::cout << "Number of kinetic expressions with sbo terms: " << mNumSBO << std::endl;
+  std::cout << "Number of kinetic expressions with sbo terms that could not be normalized to the same normalform: " << mDifferentNormalform << std::endl;
+  std::cout << "The expressions that could not be mapped are divided into " << mUnknownCategories.size() << " different expressions." << std::endl;
 }
 
 /**
@@ -322,18 +335,19 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
       pReaction = pModel->getReaction(i);
       assert(pReaction != NULL);
       const KineticLaw* pLaw = pReaction->getKineticLaw();
+      int sboTerm = pLaw->getSBOTerm();
       if (pLaw != NULL)
         {
           pMath = pLaw->getMath();
           if (pMath != NULL)
             {
-              // TODO somewhere here, we have to determine the kinetic law
               pNewMath = create_expression(pMath, pModel);
               assert(pNewMath != NULL);
               try
                 {
                   pFraction = create_simplified_normalform(pNewMath);
                   assert(pFraction != NULL);
+                  ++mNumKineticFunctions;
                   // find the COPASI Reaction that corresponds to this reaction
                   std::string id = pReaction->getId();
                   const CReaction* pCOPASIReaction = NULL;
@@ -353,7 +367,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                       if (pCOPASIReaction->getFunction()->getObjectName().find("Constant flux") != std::string::npos)
                         {
                           ++mNumMappedKineticExpressions;
-                          if (mExpressionMappings.find("Constant Action") == mExpressionMappings.end())
+                          if (mExpressionMappings.find("Constant Flux") == mExpressionMappings.end())
                             {
                               mExpressionMappings["Constant Flux"] = 1;
                             }
@@ -384,6 +398,7 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                                     }
                                   break;
                                 }
+                              ++it;
                             }
                           if (found)
                             {
@@ -392,6 +407,22 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                           else
                             {
                               ++mNumUnmappedKineticExpressions;
+                              // compare against the other unmapped functions
+                              std::map<CNormalFraction*, int>::iterator catIt = mUnknownCategories.begin(), catEndit = mUnknownCategories.end();
+                              found = false;
+                              while (catIt != catEndit)
+                                {
+                                  if (are_equal(pFraction, catIt->first))
+                                    {
+                                      found = true;
+                                      ++(catIt->second);
+                                    }
+                                  ++catIt;
+                                }
+                              if (!found)
+                                {
+                                  mUnknownCategories[pFraction] = 1;
+                                }
                             }
                         }
                     }
@@ -408,6 +439,26 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                         }
                     }
                   //                this->mNormalizedExpressions.push_back(pFraction);
+                  if (sboTerm != -1)
+                    {
+                      ++mNumSBO;
+                      if (mSBOMap.find(sboTerm) == mSBOMap.end())
+                        {
+                          std::vector<CNormalFraction*> v;
+                          v.push_back(pFraction);
+                          mSBOMap[sboTerm] = v;
+                        }
+                      else
+                        {
+                          if (!are_equal(pFraction, mSBOMap[sboTerm][0]))
+                            {
+                              std::cout << "Some expressions for SBO term " << sboTerm << " can not be normalized to the same normal form." << std::endl;
+                              ++mDifferentNormalform;
+                            }
+                          mSBOMap[sboTerm].push_back(pFraction);
+                        }
+                    }
+                  //delete pFraction;
                 }
               catch (recursion_limit_exception e)
                 {

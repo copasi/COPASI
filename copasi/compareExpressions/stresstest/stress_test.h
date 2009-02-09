@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/16 17:32:40 $
+//   $Date: 2009/02/09 10:02:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,10 @@ class stress_test
     std::multimap<std::string, CNormalFraction*> mNormalizedCOPASIFunctionDefinitions;
     std::vector<std::string> mUnreadableFiles;
     std::map<std::string, unsigned int> mExpressionMappings;
+    std::map<int, std::vector<CNormalFraction*> > mSBOMap;
+    std::map<CNormalFraction*, int> mUnknownCategories;
+    unsigned int mDifferentNormalform;
+    unsigned int mNumSBO;
   };
 
 #endif // STRESS_TEST_H__
