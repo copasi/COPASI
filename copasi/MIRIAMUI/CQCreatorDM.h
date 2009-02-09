@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/05 19:54:47 $
+//   $Date: 2009/02/09 21:05:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@ class CQCreatorDM : public QAbstractTableModel
                  int role = Qt::EditRole);
     bool insertRow();
     bool removeRow(int position);
+    bool clear();
 
   protected:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());

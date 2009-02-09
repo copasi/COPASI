@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.259 $
+//   $Revision: 1.260 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/05 21:52:01 $
+//   $Date: 2009/02/09 21:05:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1222,13 +1222,15 @@ void ListViews::updateMIRIAMResourceContents()
 
 void ListViews::updateBiologicalDescriptionContents()
 {
-  QList <QWidget *> widgets = findChildren<QWidget *>("CQMiriamWidget");
-  QListIterator<QWidget *> it(widgets); // iterate over the CopasiTableWidgets
-  QWidget * pWidget;
+  QList <CQMiriamWidget *> widgets = findChildren<CQMiriamWidget *>();
+  QListIterator<CQMiriamWidget *> it(widgets); // iterate over the CQMiriamWidgets
+  CQMiriamWidget * pWidget;
 
-  while ((pWidget = it.next()) != NULL)
+  while (it.hasNext())
     {
-      static_cast< CQMiriamWidget * >(pWidget)->updateResourcesList();
+      pWidget = it.next();
+      if (dynamic_cast<CQMiriamWidget* >(pWidget))
+        dynamic_cast<CQMiriamWidget* >(pWidget)->updateResourcesList();
     }
 }
 

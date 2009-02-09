@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CModifiedWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:10 $
+//   $Author: aekamal $
+//   $Date: 2009/02/09 21:05:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,6 @@
 
 #define COL_MARK               0
 #define COL_DUMMY              1
-#define COL_DATE_MODIFIED      2
 
 /*
  *  Constructs a CModifiedWidget as a child of 'parent', with the

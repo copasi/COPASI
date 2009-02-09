@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/05 19:56:16 $
+//   $Date: 2009/02/09 21:05:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,7 @@ class CMIRIAMInfo : public CCopasiContainer
     const CCopasiVector <CModification> & getModifications() const;
     CModification* createModification(const std::string& objectName);
     bool removeModification(const std::string& key);
+    bool removeModification(int position);
     void loadModifications();
 
     const CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions() const;

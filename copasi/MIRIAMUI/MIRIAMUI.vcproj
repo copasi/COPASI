@@ -65,23 +65,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\CBiologicalDescriptionsWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CCreatorsWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CModifiedWidget.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CQCreatorDM.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\CQDateTimeEditDelegate.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQMiriamWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQModifiedDM.cpp"
 				>
 			</File>
 			<File
@@ -100,10 +96,6 @@
 				RelativePath=".\CRDFListViewItem.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\CReferencesWidget.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -111,23 +103,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\CBiologicalDescriptionsWidget.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CCreatorsWidget.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CModifiedWidget.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CQCreatorDM.h"
 				>
 			</File>
 			<File
+				RelativePath=".\CQDateTimeEditDelegate.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CQMiriamWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQModifiedDM.h"
 				>
 			</File>
 			<File
@@ -151,7 +139,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CReferencesWidget.h"
+				RelativePath=".\ui_cqmiriamwidget.h"
 				>
 			</File>
 		</Filter>

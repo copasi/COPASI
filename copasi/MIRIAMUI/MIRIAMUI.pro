@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
-#   $Revision: 1.11 $
+#   $Revision: 1.12 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2009/02/05 19:54:47 $
+#   $Date: 2009/02/09 21:05:34 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@ HEADERS += \
 		CQMiriamWidget.h \
 		CQCreatorDM.h \
 		CQReferenceDM.h \
+		CQModifiedDM.h \
+		CQDateTimeEditDelegate.h \
 		CRDFListView.h \
 		CRDFListViewItem.h
 
@@ -30,6 +32,8 @@ SOURCES += \
 		CQMiriamWidget.cpp \
 		CQCreatorDM.cpp \
 		CQReferenceDM.cpp \
+		CQModifiedDM.cpp \
+		CQDateTimeEditDelegate.cpp \
 		CRDFListView.cpp \
 		CRDFListViewItem.cpp
 		

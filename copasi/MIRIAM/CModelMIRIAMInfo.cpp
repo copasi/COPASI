@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/05 19:56:16 $
+//   $Date: 2009/02/09 21:05:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -308,6 +308,22 @@ bool CMIRIAMInfo::removeModification(const std::string & key)
 {
   CModification * pModified =
     dynamic_cast< CModification * >(GlobalKeys.get(key));
+
+  if (!pModified)
+    return false;
+
+  const CRDFTriplet & Triplet = pModified->getTriplet();
+
+  mpRDFGraph->removeTriplet(Triplet.pSubject,
+                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.pObject);
+
+  return mModifications.remove(pModified);
+}
+
+bool CMIRIAMInfo::removeModification(int position)
+{
+  CModification * pModified = mModifications[position];
 
   if (!pModified)
     return false;

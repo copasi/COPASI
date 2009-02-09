@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/05 19:54:47 $
+//   $Date: 2009/02/09 21:05:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ QVariant CQReferenceDM::data(const QModelIndex &index, int role) const
     if (!index.isValid())
       return QVariant();
 
-    if ((unsigned int) index.row() >= mMIRIAMInfo->getReferences().size())
+    if (index.row() >= rowCount())
       return QVariant();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
@@ -144,4 +144,9 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex&)
 bool CQReferenceDM::removeRow(int position)
 {
   return removeRows(position, 1);
+}
+
+bool CQReferenceDM::clear()
+{
+  return removeRows(0, rowCount());
 }

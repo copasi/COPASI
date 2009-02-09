@@ -1,6 +1,6 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.h,v $
-//   $Revision: 1.2 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.h,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
 //   $Date: 2009/02/09 21:05:34 $
@@ -11,24 +11,22 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#ifndef CQReferenceDM_H
-#define CQReferenceDM_H
+#ifndef CQModifiedDM_H
+#define CQModifiedDM_H
 
 #include <QAbstractTableModel>
 
 #include  "MIRIAM/CModelMIRIAMInfo.h"
 
-#define COL_RESOURCE           0
-#define COL_ID                 1
-#define COL_DESCRIPTION        2
-#define TOTAL_COLS_REFERENCES  3
+#define COL_DATE_MODIFIED      0
+#define TOTAL_COLS_MODIFIEDS   1
 
-class CQReferenceDM : public QAbstractTableModel
+class CQModifiedDM : public QAbstractTableModel
   {
     Q_OBJECT
 
   public:
-    CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
+    CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
@@ -49,4 +47,4 @@ class CQReferenceDM : public QAbstractTableModel
     CMIRIAMInfo* mMIRIAMInfo;
   };
 
-#endif //CQReferenceDM_H
+#endif //CQModifiedDM_H
