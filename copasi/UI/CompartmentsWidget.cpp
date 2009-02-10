@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.118.8.1 $
+//   $Revision: 1.118.8.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/01/30 12:39:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,8 +77,8 @@ void CompartmentsWidget::init()
   // tableHeader->setLabel(COL_IVOLUME, "Initial Volume");
   // tableHeader->setLabel(COL_VOLUME, "Volume");
   // tableHeader->setLabel(COL_RATE, "Rate");
-  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
-  tableHeader->setLabel(COL_EXPRESSION, "Expression");
+  // tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
+  // tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Set readonly
   table->setColumnReadOnly (COL_VOLUME, true);
@@ -97,30 +97,43 @@ void CompartmentsWidget::init()
 
 void CompartmentsWidget::updateHeaderUnits()
 {
+  const CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
+    return;
+
   QHeader *tableHeader = table->horizontalHeader();
 
-  if (CCopasiDataModel::Global->getModel())
-    {
+  // Update the labels to reflect the model units
+  QString ValueUnits;
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getVolumeUnits());
+  if (!ValueUnits.isEmpty())
+    ValueUnits = "\n(" + ValueUnits + ")";
 
-      if (CCopasiDataModel::Global->getModel()->getVolumeUnitEnum() != CModel::dimensionlessVolume)
-        {
-          std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnitName();
-          tableHeader->setLabel(COL_IVOLUME, "Initial Volume\n(" + FROM_UTF8(str) + ")");
-          tableHeader->setLabel(COL_VOLUME, "Volume\n(" + FROM_UTF8(str) + ")");
-          tableHeader->setLabel(COL_RATE,
-                                "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
-        }
+  QString RateUnits;
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getVolumeRateUnits());
+  if (!RateUnits.isEmpty())
+    RateUnits = "\n(" + RateUnits + ")";
+
+  tableHeader->setLabel(COL_IVOLUME, "Initial Volume" + ValueUnits);
+  tableHeader->setLabel(COL_VOLUME, "Volume" + ValueUnits);
+  tableHeader->setLabel(COL_RATE, "Rate" + RateUnits);
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression" + ValueUnits);
+
+  QString ExpressionUnits;
+  if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())
+    {
+      if (ValueUnits == RateUnits)
+        ExpressionUnits = ValueUnits;
       else
-        {
-          tableHeader->setLabel(COL_IVOLUME, "Initial Volume");
-          tableHeader->setLabel(COL_VOLUME, "Volume");
-          if (CCopasiDataModel::Global->getModel()->getTimeUnitEnum() == CModel::dimensionlessTime)
-            tableHeader->setLabel(COL_RATE, "Rate");
-          else
-            tableHeader->setLabel(COL_RATE, "Rate\n(1/" +
-                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
-        }
+        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnits()) + " or " + FROM_UTF8(pModel->getVolumeRateUnits()) + ")";
     }
+  else if (!ValueUnits.isEmpty())
+    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnits()) + " or 1)";
+  else if (!RateUnits.isEmpty())
+    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getVolumeRateUnits()) + ")";
+  tableHeader->setLabel(COL_EXPRESSION, "Expression" + ExpressionUnits);
 }
 
 void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)

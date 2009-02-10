@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.47.26.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/04/02 16:33:33 $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -48,6 +53,7 @@ class ReactionsWidget1 : public CopasiWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    virtual void setFramework(int framework);
 
   protected slots:
     virtual void slotBtnCancelClicked();

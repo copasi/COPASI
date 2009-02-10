@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.150.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
 void MetabolitesWidget::init()
 {
   mOT = ListViews::METABOLITE;
-  numCols = 13; //+ 1; //+1 for sbml id
+  numCols = 13; //+ 1; //+1 for SBML id
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -76,14 +76,14 @@ void MetabolitesWidget::init()
   // tableHeader->setLabel(COL_CONCENTRATION, "Concentration");
   tableHeader->setLabel(COL_NUMBER, "Number");
   // tableHeader->setLabel(COL_CRATE, "Rate");
-  tableHeader->setLabel(COL_NRATE, "Number Rate");
-  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
-  tableHeader->setLabel(COL_EXPRESSION, "Expression");
+  // tableHeader->setLabel(COL_NRATE, "Number Rate");
+  // tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
+  // tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Hide columns
   table->hideColumn(COL_CURRENTCOMPARTMENT);
 
-  // Set readonly
+  // Set read only
   table->setColumnReadOnly (COL_CONCENTRATION, true);
   table->setColumnReadOnly (COL_NUMBER, true);
   table->setColumnReadOnly (COL_CRATE, true);
@@ -109,13 +109,48 @@ void MetabolitesWidget::updateHeaderUnits()
 {
   QHeader *tableHeader = table->horizontalHeader();
 
-  if (CCopasiDataModel::Global->getModel())
+  const CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL) return;
+
+  QString ValueUnits;
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getConcentrationUnits());
+  if (!ValueUnits.isEmpty())
+    ValueUnits = "\n(" + ValueUnits + ")";
+
+  QString RateUnits;
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+  if (!RateUnits.isEmpty())
+    RateUnits = "\n(" + RateUnits + ")";
+
+  QString FrequencyUnits;
+  if (pModel)
+    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnits());
+  if (!FrequencyUnits.isEmpty())
+    FrequencyUnits = "\n(" + FrequencyUnits + ")";
+
+  tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration" + ValueUnits);
+  tableHeader->setLabel(COL_CONCENTRATION, "Concentration" + ValueUnits);
+
+  tableHeader->setLabel(COL_CRATE, "Rate" + RateUnits);
+  tableHeader->setLabel(COL_NRATE, "Number Rate" + FrequencyUnits);
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression" + ValueUnits);
+
+  QString ExpressionUnits;
+  if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())
     {
-      tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      tableHeader->setLabel(COL_CRATE, "Rate\n("
-                            + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
+      if (ValueUnits == RateUnits)
+        ExpressionUnits = ValueUnits;
+      else
+        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnits()) + " or " + FROM_UTF8(pModel->getConcentrationRateUnits()) + ")";
     }
+  else if (!ValueUnits.isEmpty())
+    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnits()) + " or 1)";
+  else if (!RateUnits.isEmpty())
+    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getConcentrationRateUnits()) + ")";
+
+  tableHeader->setLabel(COL_EXPRESSION, "Expression" + ExpressionUnits);
 }
 
 void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)

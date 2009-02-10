@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.14.6.1.4.2 $
+//   $Revision: 1.14.6.1.4.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/01/30 12:40:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,11 +252,15 @@ void CQCompartment::slotBtnDelete()
  */
 void CQCompartment::slotTypeChanged(int type)
 {
+  QString Units;
+
+  const CModel * pModel = NULL;
+  if (mpCompartment != NULL)
+    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
+
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
-      CQCompartmentLayout->remove(mpLblExpression);
-
       mpLblExpression->hide();
       mpExpressionEMW->hide();
 
@@ -265,7 +269,11 @@ void CQCompartment::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ASSIGNMENT:
-      CQCompartmentLayout->addWidget(mpLblExpression, 2, 0);
+      if (pModel)
+        Units = FROM_UTF8(pModel->getVolumeUnits());
+      if (!Units.isEmpty())
+        Units = " (" + Units + ")";
+      mpLblExpression->setText("Expression" + Units);
 
       mpLblExpression->show();
       mpExpressionEMW->show();
@@ -277,7 +285,11 @@ void CQCompartment::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ODE:
-      CQCompartmentLayout->addWidget(mpLblExpression, 2, 0);
+      if (pModel)
+        Units = FROM_UTF8(pModel->getVolumeRateUnits());
+      if (!Units.isEmpty())
+        Units = " (" + Units + ")";
+      mpLblExpression->setText("Expression" + Units);
 
       mpLblExpression->show();
       mpExpressionEMW->show();
@@ -401,39 +413,27 @@ void CQCompartment::load()
 {
   if (mpCompartment == NULL) return;
 
+  const CModel * pModel = NULL;
+  if (mpCompartment != NULL)
+    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
+
   // Update the labels to reflect the model units
+  QString ValueUnits;
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getVolumeUnits());
+  if (!ValueUnits.isEmpty())
+    ValueUnits = " (" + ValueUnits + ")";
 
-  if (CCopasiDataModel::Global->getModel()->getVolumeUnitEnum() != CModel::dimensionlessVolume)
-    {
-      QString tmpUnit = FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName());
-      mpLblInitialValue->setText("Initial Volume ("
-                                 + tmpUnit + ")");
-      mpLblInitialExpression->setText("Initial Expression ("
-                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+  QString RateUnits;
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getVolumeRateUnits());
+  if (!RateUnits.isEmpty())
+    RateUnits = " (" + RateUnits + ")";
 
-      mpLblExpression->setText("Expression ("
-                               + tmpUnit + ")");
-
-      mpLblVolume->setText("Volume ("
-                           + tmpUnit + ")");
-
-      mpLblRate->setText("Rate ("
-                         + tmpUnit
-                         + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
-    }
-  else
-    {
-      QString tmpUnit = FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName());
-      mpLblInitialValue->setText("Initial Volume");
-      mpLblInitialExpression->setText("Initial Expression");
-
-      mpLblExpression->setText("Expression");
-
-      mpLblVolume->setText("Volume");
-
-      mpLblRate->setText("Rate (1/"
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
-    }
+  mpLblInitialValue->setText("Initial Volume" + ValueUnits);
+  mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+  mpLblVolume->setText("Volume" + ValueUnits);
+  mpLblRate->setText("Rate" + RateUnits);
 
   // Name
   mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));

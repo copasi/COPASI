@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.195.10.2 $
+//   $Revision: 1.195.10.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/23 17:54:41 $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,9 +220,6 @@ ReactionsWidget1::~ReactionsWidget1()
 bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
   if (!reaction) return false;
-
-  TextLabel8->setText(tr("Flux ("
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityRateUnitName()) + ")"));
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
@@ -711,11 +708,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
 
-  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
-  if (reac)
-    LineEdit3->setText(QString::number(reac->getFlux()));
-  else
-    LineEdit3->setText("");
+  setFramework(mFramework);
 
   // the reversibility checkbox
   CheckBox->setChecked(false);
@@ -864,4 +857,40 @@ bool ReactionsWidget1::enter(const std::string & key)
 
   mpListView->switchToOtherWidget(114, "");
   return false;
+}
+
+void ReactionsWidget1::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  const CReaction * pReaction = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+
+  const CModel * pModel = NULL;
+  if (pReaction != NULL)
+    pModel = dynamic_cast<const CModel *>(pReaction->getObjectAncestor("Model"));
+
+  QString Units;
+
+  switch (mFramework)
+    {
+    case 0:
+      if (pModel)
+        Units = FROM_UTF8(pModel->getQuantityRateUnits());
+      if (!Units.isEmpty())
+        Units = " (" + Units + ")";
+      TextLabel8->setText("Flux" + Units);
+      if (pReaction != NULL)
+        LineEdit3->setText(QString::number(pReaction->getFlux()));
+      break;
+
+    case 1:
+      if (pModel)
+        Units = FROM_UTF8(pModel->getFrequencyUnits());
+      if (!Units.isEmpty())
+        Units = " (" + Units + ")";
+      TextLabel8->setText("Particle Flux" + Units);
+      if (pReaction != NULL)
+        LineEdit3->setText(QString::number(pReaction->getParticleFlux()));
+      break;
+    }
 }

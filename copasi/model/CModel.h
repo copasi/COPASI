@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.163.4.4.4.2 $
+//   $Revision: 1.163.4.4.4.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/01/27 13:20:39 $
+//   $Author: shoops $
+//   $Date: 2009/02/10 14:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -739,11 +739,6 @@ class CModel : public CModelEntity
      */
     const C_FLOAT64 & getNumber2QuantityFactor() const;
 
-    //** convenience methods:
-    std::string getConcentrationUnitName() const;
-    std::string getConcentrationRateUnitName() const;
-    std::string getQuantityRateUnitName() const;
-
     //************  create/remove model entities *******************
 
     /**
@@ -961,6 +956,48 @@ class CModel : public CModelEntity
      */
     std::string printParameterOverview();
 
+    /**
+     * Retrieve the time units
+     * @return std::string timeUnits
+     */
+    std::string getTimeUnits() const;
+
+    /**
+     * Retrieve the frequency units
+     * @return std::string frequencyUnits
+     */
+    std::string getFrequencyUnits() const;
+
+    /**
+     * Retrieve the volume units
+     * @return std::string volumeUnits
+     */
+    std::string getVolumeUnits() const;
+
+    /**
+     * Retrieve the volume rate units
+     * @return std::string volumeRateUnits
+     */
+    std::string getVolumeRateUnits() const;
+
+    /**
+     * Retrieve the concentration units
+     * @return std::string concentrationUnits
+     */
+    std::string getConcentrationUnits() const;
+
+    /**
+     * Retrieve the concentration rate units
+     * @return std::string concentrationRateUnits
+     */
+    std::string getConcentrationRateUnits() const;
+
+    /**
+     * Retrieve the quantity rate units
+     * @return std::string quantityRateUnits
+     */
+    std::string getQuantityRateUnits() const;
+
   private:
 
     bool compile();
@@ -1034,6 +1071,7 @@ class CModel : public CModelEntity
   public:
     void check() const;
 #endif
+
     // Attributes
   private:
     CState mInitialState;

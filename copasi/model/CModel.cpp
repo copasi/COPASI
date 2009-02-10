@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.347.2.9.4.4 $
+//   $Revision: 1.347.2.9.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/30 20:01:27 $
+//   $Date: 2009/02/10 14:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2074,62 +2074,6 @@ const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
 
 //*****
 
-std::string CModel::getConcentrationUnitName() const
-  {
-    if (getQuantityUnitEnum() == dimensionlessQuantity)
-      {
-        if (getVolumeUnitEnum() == dimensionlessVolume)
-          return "";
-        else
-          return "1/" + getVolumeUnitName();
-      }
-    else
-      {
-        if (getVolumeUnitEnum() == dimensionlessVolume)
-          return getQuantityUnitName();
-        else
-          return getQuantityUnitName() + "/" + getVolumeUnitName();
-      }
-  }
-
-std::string CModel::getConcentrationRateUnitName() const
-  {
-    //std::string tmp = (getQuantityUnitEnum()==dimensionlessQuantity ? "1":getQuantityUnitName());
-
-    //denominator
-    std::string tmp;
-    if (getVolumeUnitEnum() == dimensionlessVolume)
-      {
-        if (getTimeUnitEnum() == dimensionlessTime)
-          tmp = "";
-        else
-          tmp = getTimeUnitName();
-      }
-    else
-      {
-        if (getTimeUnitEnum() == dimensionlessTime)
-          tmp = getVolumeUnitName();
-        else
-          tmp = "(" + getVolumeUnitName() + "*" + getTimeUnitName() + ")";
-      }
-
-    //nominator
-    if (tmp == "")
-      {
-        return (getQuantityUnitEnum() == dimensionlessQuantity ? "" : getQuantityUnitName());
-      }
-    else
-      {
-        return (getQuantityUnitEnum() == dimensionlessQuantity ? "1" : getQuantityUnitName()) + "/" + tmp;
-      }
-  }
-
-std::string CModel::getQuantityRateUnitName() const
-  {
-    return getQuantityUnitName()
-    + "/" + getTimeUnitName();
-  }
-
 //**********************************************************************
 
 void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > DeletedObjects,
@@ -3688,7 +3632,7 @@ std::string CModel::printParameterOverview()
       oss << "Initial volumes:\n\n";
       for (i = 0; i < imax; ++i)
         oss << comps[i]->getObjectName() << " \t" << comps[i]->getInitialValue()
-        << " " << model->getVolumeUnitName() << "\n";
+        << " " << model->getVolumeUnits() << "\n";
       oss << "\n";
     }
 
@@ -3701,7 +3645,7 @@ std::string CModel::printParameterOverview()
       for (i = 0; i < imax; ++i)
         oss << CMetabNameInterface::getDisplayName(model, *metabs[i]) << " \t"
         << metabs[i]->getInitialConcentration() << " "
-        << model->getConcentrationUnitName() << "\n";
+        << model->getConcentrationUnits() << "\n";
       oss << "\n";
     }
 
@@ -3768,3 +3712,123 @@ std::string CModel::printParameterOverview()
 
   return oss.str();
 }
+
+std::string CModel::getTimeUnits() const
+  {
+    if (mTimeUnit == dimensionlessTime)
+      return "";
+
+    return TimeUnitNames[mTimeUnit];
+  }
+
+std::string CModel::getFrequencyUnits() const
+  {
+    if (mTimeUnit == dimensionlessTime)
+      return "";
+
+    return std::string("1/") + TimeUnitNames[mTimeUnit];
+  }
+
+std::string CModel::getVolumeUnits() const
+  {
+    if (mVolumeUnit == dimensionlessVolume)
+      return "";
+
+    return VolumeUnitNames[mVolumeUnit];
+  }
+
+std::string CModel::getVolumeRateUnits() const
+  {
+    if (mVolumeUnit == dimensionlessVolume)
+      {
+        if (mTimeUnit == dimensionlessTime)
+          return "";
+
+        return std::string("1/") + TimeUnitNames[mTimeUnit];
+      }
+
+    if (mTimeUnit == dimensionlessTime)
+      return VolumeUnitNames[mVolumeUnit];
+
+    return std::string(VolumeUnitNames[mVolumeUnit]) + "/" + TimeUnitNames[mTimeUnit];
+  }
+
+std::string CModel::getConcentrationUnits() const
+  {
+    std::string Units;
+
+    if (mQuantityUnit == dimensionlessQuantity)
+      {
+        if (mVolumeUnit == dimensionlessVolume)
+          return "";
+
+        return std::string("1/") + VolumeUnitNames[mVolumeUnit];
+      }
+
+    Units = QuantityUnitNames[mQuantityUnit];
+
+    if (mVolumeUnit == dimensionlessVolume)
+      return Units;
+
+    return Units + "/" + VolumeUnitNames[mVolumeUnit];
+  }
+
+std::string CModel::getConcentrationRateUnits() const
+  {
+    std::string Units;
+
+    if (mQuantityUnit == dimensionlessQuantity)
+      {
+        Units = "1";
+
+        if (mVolumeUnit == dimensionlessVolume)
+          {
+            if (mTimeUnit == dimensionlessTime)
+              return "";
+
+            return Units + "/" + TimeUnitNames[mTimeUnit];
+          }
+        else
+          {
+            if (mTimeUnit == dimensionlessTime)
+              return Units + "/" + VolumeUnitNames[mVolumeUnit];
+
+            return Units + "/(" + VolumeUnitNames[mVolumeUnit] + "*" + TimeUnitNames[mTimeUnit] + ")";
+          }
+      }
+
+    Units = QuantityUnitNames[mQuantityUnit];
+
+    if (mVolumeUnit == dimensionlessVolume)
+      {
+        if (mTimeUnit == dimensionlessTime)
+          return Units;
+
+        return Units + "/" + TimeUnitNames[mTimeUnit];
+      }
+
+    if (mTimeUnit == dimensionlessTime)
+      return Units + "/" + VolumeUnitNames[mVolumeUnit];
+
+    return Units + "/(" + VolumeUnitNames[mVolumeUnit] + "*" + TimeUnitNames[mTimeUnit] + ")";
+  }
+
+std::string CModel::getQuantityRateUnits() const
+  {
+    std::string Units;
+
+    if (mQuantityUnit == dimensionlessQuantity)
+      {
+        if (mTimeUnit == dimensionlessTime)
+          return "";
+
+        return std::string("1/") + TimeUnitNames[mTimeUnit];
+      }
+
+    Units = QuantityUnitNames[mQuantityUnit];
+
+    if (mTimeUnit == dimensionlessTime)
+      return Units;
+
+    return Units + "/" + TimeUnitNames[mTimeUnit];
+  }

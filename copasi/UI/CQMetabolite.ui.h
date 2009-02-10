@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.22.4.1.4.1 $
+//   $Revision: 1.22.4.1.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ void CQMetabolite::init()
   mInitialNumberLastChanged = true;
 
   int Width = fontMetrics().width("Concentration (" +
-                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) +
+                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnits()) +
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
@@ -298,8 +298,6 @@ void CQMetabolite::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
     case CModelEntity::FIXED:
-      CQMetaboliteLayout->remove(mpLblExpression);
-
       mpLblExpression->hide();
       mpExpressionEMW->hide();
 
@@ -308,8 +306,6 @@ void CQMetabolite::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ASSIGNMENT:
-      CQMetaboliteLayout->addWidget(mpLblExpression, 3, 0);
-
       mpLblExpression->show();
       mpExpressionEMW->show();
 
@@ -320,8 +316,6 @@ void CQMetabolite::slotTypeChanged(int type)
       break;
 
     case CModelEntity::ODE:
-      CQMetaboliteLayout->addWidget(mpLblExpression, 3, 0);
-
       mpLblExpression->show();
       mpExpressionEMW->show();
 
@@ -332,8 +326,6 @@ void CQMetabolite::slotTypeChanged(int type)
       break;
 
     case CModelEntity::REACTIONS:
-      CQMetaboliteLayout->remove(mpLblExpression);
-
       mpLblExpression->hide();
       mpExpressionEMW->hide();
 
@@ -344,6 +336,9 @@ void CQMetabolite::slotTypeChanged(int type)
     default:
       break;
     }
+
+  // This will update the unit display.
+  setFramework(mFramework);
 }
 
 /*!
@@ -475,8 +470,19 @@ void CQMetabolite::load()
 {
   if (mpMetab == NULL) return;
 
+  const CModel * pModel = NULL;
+  if (mpMetab)
+    pModel = mpMetab->getModel();
+
+  QString TimeUnits;
+
+  if (pModel)
+    TimeUnits = FROM_UTF8(pModel->getTimeUnits());
+  if (!TimeUnits.isEmpty())
+    TimeUnits = " (" + TimeUnits + ")";
+
   // Update the labels to reflect the model units
-  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+  mpLblTransitionTime->setText("Transition Time" + TimeUnits);
 
   // Name
   mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
@@ -763,19 +769,45 @@ void CQMetabolite::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
 
+  const CModel * pModel = NULL;
+  if (mpMetab)
+    pModel = mpMetab->getModel();
+
+  QString ValueUnits;
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getConcentrationUnits());
+  if (!ValueUnits.isEmpty())
+    ValueUnits = " (" + ValueUnits + ")";
+
+  QString RateUnits;
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+  if (!RateUnits.isEmpty())
+    RateUnits = " (" + RateUnits + ")";
+
+  QString FrequencyUnits;
+  if (pModel)
+    FrequencyUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+  if (!FrequencyUnits.isEmpty())
+    FrequencyUnits = " (" + FrequencyUnits + ")";
+
   switch (mFramework)
     {
     case 0:
-      mpLblInitialValue->setText("Initial Concentration\n("
-                                 + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      mpLblInitialExpression->setText("Initial Expression\n("
-                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      mpLblExpression->setText("Expression\n("
-                               + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      mpLblValue->setText("Concentration ("
-                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      mpLblRate->setText("Rate ("
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
+      mpLblValue->setText("Concentration" + ValueUnits);
+
+      if (mpMetab != NULL &&
+          (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] == CModelEntity::ASSIGNMENT)
+        mpLblExpression->setText("Expression" + ValueUnits);
+      else
+        mpLblExpression->setText("Expression" + RateUnits);
+
+      mpLblRate->setText("Rate" + RateUnits);
+
+      ValueUnits.replace(0, 1, '\n'); // Line break instead of space
+      mpLblInitialValue->setText("Initial Concentration" + ValueUnits);
+      mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+
       mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
 
       if (mpMetab != NULL)
@@ -795,13 +827,19 @@ void CQMetabolite::setFramework(int framework)
 
     case 1:
       mpLblInitialValue->setText("Initial Particle Number");
-      mpLblInitialExpression->setText("Initial Expression\n("
-                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      mpLblExpression->setText("Expression\n("
-                               + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+
+      ValueUnits.replace(0, 1, '\n'); // Line break instead of space
+      mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+
+      if (mpMetab != NULL &&
+          mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
+        mpLblExpression->setText("Expression" + ValueUnits);
+      else
+        mpLblExpression->setText("Expression" + RateUnits);
+
       mpLblValue->setText("Particle Number");
-      mpLblRate->setText("Rate (1/"
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+      mpLblRate->setText("Rate" + FrequencyUnits);
+
       mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
       mpEditInitialValue->setReadOnly(false);
 

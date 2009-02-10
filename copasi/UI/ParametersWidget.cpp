@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.27.4.1.4.1 $
+//   $Revision: 1.27.4.1.4.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/01/27 15:59:29 $
+//   $Author: shoops $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,13 +292,13 @@ bool ParametersWidget::loadFromModel()
 
   //Time
   mTimeItem = new CParameterListItem(listView, "Initial Time");
-  unit = FROM_UTF8(model->getTimeUnitName());
+  unit = FROM_UTF8(model->getTimeUnits());
   new CParameterListItem(mTimeItem, "Model",
                          model, model->getInitialTime(), unit);
 
   //Compartments
   mCompItem = new CParameterListItem(listView, "Initial Volumes");
-  unit = FROM_UTF8(model->getVolumeUnitName());
+  unit = FROM_UTF8(model->getVolumeUnits());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
   for (i = 0; i < imax; ++i)
@@ -312,7 +312,7 @@ bool ParametersWidget::loadFromModel()
     {
     case 0:
       mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
-      unit = FROM_UTF8(model->getConcentrationUnitName());
+      unit = FROM_UTF8(model->getConcentrationUnits());
       for (i = 0; i < imax; ++i)
         new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
                                metabs[i], metabs[i]->getInitialConcentration(), unit, mFramework);
@@ -320,12 +320,13 @@ bool ParametersWidget::loadFromModel()
 
     case 1:
       mMetabItem = new CParameterListItem(listView, "Initial Particle Numbers");
-      unit = "1";
+      unit = "";
       for (i = 0; i < imax; ++i)
         new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
                                metabs[i], metabs[i]->getInitialValue(), unit, mFramework);
       break;
     }
+
   //Reactions
   mReacItem = new CParameterListItem(listView, "Kinetic Parameters");
   const CCopasiVector< CReaction > & reacs = model->getReactions();
@@ -371,12 +372,6 @@ bool ParametersWidget::loadFromModel()
                                        FROM_UTF8(units.getDimensions()[j].getDisplayString()));
               }
           }
-
-      /*jmax = reac->getParameters().size();
-      for (j = 0; j < jmax; ++j)
-        new CParameterListItem(tmp, FROM_UTF8(reac->getParameters().getParameter(j)->getObjectName()),
-                               reac->getParameters().getParameter(j),
-                               * reac->getParameters().getParameter(j)->getValue().pDOUBLE, "");*/
     }
 
   //global Parameters

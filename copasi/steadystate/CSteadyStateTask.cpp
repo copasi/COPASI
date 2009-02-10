@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.72.4.2 $
+//   $Revision: 1.72.4.2.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 14:11:19 $
+//   $Date: 2009/02/10 14:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ bool CSteadyStateTask::updateMatrices()
 
   const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
 
-  //init Jacobians
+  // init Jacobians
   unsigned C_INT32 sizeX = stateTemplate.getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + stateTemplate.getNumDependent();
@@ -206,16 +206,13 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
-  //init states
-  // if (!mpProblem->getModel()) return false;
-
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
 
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
 
 #ifdef xxxx
-  //init Jacobians
+  // init Jacobians
   unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();
@@ -391,11 +388,32 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   unsigned C_INT32 i, imax = Metabolites.size();
 
   os << "Species" << "\t";
-  os << "Concentration (" << pModel->getConcentrationUnitName() << ")" << "\t";
-  os << "Concentration Rate (" << pModel->getConcentrationRateUnitName() << ")" << "\t";
+  os << "Concentration";
+
+  std::string Units = pModel->getConcentrationUnits();
+  if (Units != "")
+    os << " (" << Units << ")";
+  os << "\t";
+
+  os << "Concentration Rate";
+  Units = pModel->getConcentrationRateUnits();
+  if (Units != "")
+    os << " (" << Units << ")";
+  os << "\t";
+
   os << "Particle Number" << "\t";
-  os << "Particle Number Rate (1/" << pModel->getTimeUnitName() << ")" << "\t";
-  os << "Transition Time (" << pModel->getTimeUnitName() << ")" << std::endl;
+
+  os << "Particle Number Rate";
+  Units = pModel->getFrequencyUnits();
+  if (Units != "")
+    os << " (" << Units << ")";
+  os << "\t";
+
+  os << "Transition Time";
+  Units = pModel->getTimeUnits();
+  if (Units != "")
+    os << " (" << Units << ")";
+  os << std::endl;
 
   for (i = 0; i < imax; ++i)
     {
@@ -416,8 +434,18 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   imax = Reactions.size();
 
   os << "Reaction" << "\t";
-  os << "Flux (" << pModel->getQuantityRateUnitName() << ")" << "\t";
-  os << "Particle Flux (1/" << pModel->getTimeUnitName() << ")" << std::endl;
+
+  os << "Flux";
+  Units = pModel->getQuantityRateUnits();
+  if (Units != "")
+    os << " (" << Units << ")";
+  os << "\t";
+
+  os << "Particle Flux";
+  Units = pModel->getFrequencyUnits();;
+  if (Units != "")
+    os << " (" << Units << ")";
+  os << std::endl;
 
   for (i = 0; i < imax; ++i)
     {
@@ -428,13 +456,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
     }
   os << std::endl;
 
-  // if Jacobian Requested
-  //    Jacobian
-  //    Jacobian Reduced System
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isJacobianRequested())
     {
-      //os << "Jacobian of the Complete System" << std::endl;
-      //os << A.mJacobian << std::endl;
       os << *A.mpJacobianAnn << std::endl;
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
@@ -445,8 +468,6 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
           os << std::endl;
         }
 
-      //os << "Jacobian of the Reduced System" << std::endl;
-      //os << A.mJacobianX << std::endl;
       os << *A.mpJacobianXAnn << std::endl;
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
@@ -457,8 +478,6 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
           os << std::endl;
         }
     }
-  // if Stability Analysis Requested
-  //    Stability Analysis Reduced System
 
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
     {

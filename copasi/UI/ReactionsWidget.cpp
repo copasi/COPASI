@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.100.10.1 $
+//   $Revision: 1.100.10.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/13 18:07:28 $
+//   $Date: 2009/02/10 14:25:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,13 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 
+#define COL_MARK               0
+#define COL_NAME               1
+#define COL_EQUATION           2
+#define COL_RATE_LAW           3
+#define COL_FLUX               4
+#define COL_PARTICLE_FLUX      5
+
 std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
   {
     CCopasiVectorN<CReaction>& tmp = CCopasiDataModel::Global->getModel()->getReactions();
@@ -51,26 +58,30 @@ std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
 void ReactionsWidget::init()
 {
   mOT = ListViews::REACTION;
-  numCols = 5; // + 1;
+  numCols = 6; // + 1;
   table->setNumCols(numCols);
   std::vector<const CCopasiObject*> objectstemp;
   //table->QTable::setNumRows(1);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Equation");
-  tableHeader->setLabel(3, "Rate Law");
-  tableHeader->setLabel(4, "Flux");
+  tableHeader->setLabel(COL_MARK, "Status");
+  tableHeader->setLabel(COL_NAME, "Name");
+  tableHeader->setLabel(COL_EQUATION, "Equation");
+  tableHeader->setLabel(COL_RATE_LAW, "Rate Law");
+  tableHeader->setLabel(COL_FLUX, "Flux");
+  tableHeader->setLabel(COL_PARTICLE_FLUX, "Particle Flux");
 
   //for sbml ids
   //tableHeader->setLabel(numCols - 1, "SBML ID");
   //table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function names
-  table->setColumnReadOnly (3, true);
-  table->setColumnReadOnly (4, true);
+  table->setColumnReadOnly (COL_RATE_LAW, true);
+  table->setColumnReadOnly (COL_FLUX, true);
+  table->setColumnReadOnly (COL_PARTICLE_FLUX, true);
+
+  setFramework(mFramework);
 }
 
 void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -79,19 +90,17 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   const CReaction* pRea = (const CReaction*)obj;
 
-  table->horizontalHeader()->setLabel(4, "Flux\n("
-                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityRateUnitName()) + ")");
+  table->setText(row, COL_NAME, FROM_UTF8(pRea->getObjectName()));
 
-  table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
-
-  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pRea, false)));
+  table->setText(row, COL_EQUATION, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pRea, false)));
 
   if (pRea->getFunction())
     {
-      table->setText(row, 3, FROM_UTF8(pRea->getFunction()->getObjectName()));
+      table->setText(row, COL_RATE_LAW, FROM_UTF8(pRea->getFunction()->getObjectName()));
     }
 
-  table->setText(row, 4, QString::number(pRea->getFlux()));
+  table->setText(row, COL_FLUX, QString::number(pRea->getFlux()));
+  table->setText(row, COL_PARTICLE_FLUX, QString::number(pRea->getParticleFlux()));
 }
 
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -107,7 +116,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   CReactionInterface ri(pModel);
   ri.initFromReaction(objKey);
 
-  QString equation(table->text(row, 2));
+  QString equation(table->text(row, COL_EQUATION));
   if ((const char *)equation.utf8() != ri.getChemEqString())
     {
       //first check if the string is a valid equation
@@ -485,4 +494,43 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
     default:                                           // No or Escape
       break;
     }
+}
+
+void ReactionsWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  switch (mFramework)
+    {
+    case 0:
+      table->showColumn(COL_FLUX);
+      table->hideColumn(COL_PARTICLE_FLUX);
+      break;
+
+    case 1:
+      table->hideColumn(COL_FLUX);
+      table->showColumn(COL_PARTICLE_FLUX);
+      break;
+    }
+}
+
+void ReactionsWidget::updateHeaderUnits()
+{
+  const CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL) return;
+
+  QString RateUnits;
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getQuantityRateUnits());
+  if (!RateUnits.isEmpty())
+    RateUnits = "\n(" + RateUnits + ")";
+
+  QString FrequencyUnits;
+  if (pModel)
+    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnits());
+  if (!FrequencyUnits.isEmpty())
+    FrequencyUnits = "\n(" + FrequencyUnits + ")";
+
+  table->horizontalHeader()->setLabel(COL_FLUX, "Flux" + RateUnits);
+  table->horizontalHeader()->setLabel(COL_PARTICLE_FLUX, "Flux" + FrequencyUnits);
 }

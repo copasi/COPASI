@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.h,v $
-   $Revision: 1.27 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.h,v $
+  $Revision: 1.27.28.1 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2009/02/10 14:25:16 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,12 +29,19 @@ class ReactionsWidget : public CopasiTableWidget
         : CopasiTableWidget(parent, false, name, f)
     {init();}
 
+    virtual void setFramework(int framework);
+
   protected:
 
     /**
      * This initializes the widget
      */
     virtual void init();
+
+    /**
+     * shows units for the quantities
+     */
+    virtual void updateHeaderUnits();
 
     /**
      * returns a list of objects that should be displayed
