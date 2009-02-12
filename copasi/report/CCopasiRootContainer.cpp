@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/12 16:09:24 $
+//   $Date: 2009/02/12 16:47:15 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -16,6 +16,10 @@
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/commandline/CConfigurationFile.h"
 #include "CCopasiTimer.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CEvaluationNodeOperator.h"
+#include "copasi/function/CEvaluationNodeVariable.h"
+#include "copasi/function/CEvaluationNodeConstant.h"
 
 /**
  * Initialize the root container with NULL
@@ -32,10 +36,35 @@ CCopasiRootContainer::CCopasiRootContainer(): CCopasiContainer(),
     mpFunctionList(new CFunctionDB),
     mpConfiguration(new CConfigurationFile),
     mpDataModelList(new CCopasiVector<CCopasiDataModel>("ModelList", this)),
-    mWithGUI(false)
+    mWithGUI(false),
+    mpUnsupportedDelay(NULL),
+    mpUndefined(NULL)
 {
   mpFunctionList->load();
   mpConfiguration->load();
+  this->mpUndefined = new CFunction("undefined");
+  this->mpUndefined->setInfix("nan");
+  this->mpUndefined->compile();
+
+  this->mKeyFactory.remove(mpUndefined->getKey());
+  this->mKeyFactory.addFix("UndefinedFunction_0", mpUndefined);
+
+  this->mpUnsupportedDelay = new CFunction("delay");
+  this->mpUnsupportedDelay->addVariable("variable");
+  this->mpUnsupportedDelay->addVariable("timeDelay");
+  CEvaluationNodeOperator* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+  pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "variable"));
+  pTmpNode->addChild(new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, "timeDelay"));
+  CEvaluationNodeOperator* pRoot = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+  pRoot->addChild(pTmpNode);
+  pRoot->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN"));
+  this->mpUnsupportedDelay->setRoot(pRoot);
+  this->mpUnsupportedDelay->compile();
+
+  if (this->mpFunctionList != NULL)
+    {
+      this->mpFunctionList->addAndAdaptName(mpUnsupportedDelay);
+    }
 }
 
 // Destructor
@@ -43,12 +72,17 @@ CCopasiRootContainer::~CCopasiRootContainer()
 {
   // save and delete the configuration
   if (mpConfiguration != NULL)
-    mpConfiguration->save();
-  pdelete(mpConfiguration);
+    {
+      this->mpConfiguration->save();
+    }
+  pdelete(this->mpConfiguration);
   // delete the function list
-  pdelete(mpFunctionList);
+  pdelete(this->mpFunctionList);
   // delete the model list
-  pdelete(mpDataModelList);
+  pdelete(this->mpDataModelList);
+  // delete the undefined and the unsupported delay function
+  pdelete(this->mpUndefined);
+  pdelete(this->mpUnsupportedDelay);
 }
 
 /**
@@ -173,3 +207,43 @@ CCopasiRootContainer& CCopasiRootContainer::operator=(const CCopasiRootContainer
     return *this;
 }
  */
+
+/**
+ * Retrieve the pointer for the function used for importing the
+ * unsupported SBML symbol delay
+ * @return CFunction * pUnsupportedDelay
+ */
+CFunction * CCopasiRootContainer::getUnsupportedDelay()
+{
+  return this->mpUnsupportedDelay;
+}
+
+/**
+ * Retrieve the const pointer for the function used for importing the
+ * unsupported SBML symbol delay
+ * @return CFunction * pUnsupportedDelay
+ */
+const CFunction * CCopasiRootContainer::getUnsupportedDelay() const
+  {
+    return this->mpUnsupportedDelay;
+  }
+
+/**
+ * Retrieve the pointer for the function used for importing
+ * kinetics without a kinetic law
+ * @return CFunction * pUndefined
+ */
+CFunction * CCopasiRootContainer::getUndefinedFunction()
+{
+  return this->mpUndefined;
+}
+
+/**
+ * Retrieve the const pointer for the function used for importing
+ * inetics without a kinetic law
+ * @return CFunction * pUndefined
+ */
+const CFunction * CCopasiRootContainer::getUndefinedFunction() const
+  {
+    return this->mpUndefined;
+  }

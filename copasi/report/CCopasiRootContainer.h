@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/12 15:54:45 $
+//   $Date: 2009/02/12 16:47:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,14 @@ class CCopasiRootContainer : public CCopasiContainer
     // flag to store if we are running a GUI or not
     bool mWithGUI;
 
+    /**
+     * Pointer to a function created for supporting the load SBML models
+     * using the delay symbol
+     */
+    CFunction * mpUnsupportedDelay;
+
+    CFunction * mpUndefined;
+
   public:
     /**
      * The pointer to the root container that holds all models.
@@ -125,8 +133,36 @@ class CCopasiRootContainer : public CCopasiContainer
      * The new instance is returned by the method.
      */
     CCopasiDataModel * addDatamodel();
+
+    /**
+     * Retrieve the pointer for the function used for importing the
+     * unsupported SBML symbol delay
+     * @return CFunction * pUnsupportedDelay
+     */
+    CFunction * getUnsupportedDelay();
+
+    /**
+     * Retrieve the const pointer for the function used for importing the
+     * unsupported SBML symbol delay
+     * @return CFunction * pUnsupportedDelay
+     */
+    const CFunction * getUnsupportedDelay() const;
+
+    /**
+     * Retrieve the pointer for the function used for importing
+     * kinetics without a kinetic law
+     * @return CFunction * pUnsupportedDelay
+     */
+    CFunction * getUndefinedFunction();
+
+    /**
+     * Retrieve the const pointer for the function used for importing
+     * inetics without a kinetic law
+     * @return CFunction * pUnsupportedDelay
+     */
+    const CFunction * getUndefinedFunction() const;
   };
 
-#define RootContainer (*CCopasiContainer::Root)
+#define RootContainer (*CCopasiRootContainer::Root)
 
 #endif /* COPASI_CCopasiRootContainer */
