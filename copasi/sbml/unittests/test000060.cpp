@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000060.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 10:50:51 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,26 +24,27 @@
 #include "sbml/Model.h"
 #include "sbml/Species.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
+CCopasiDataModel* test000060::pCOPASIDATAMODEL = NULL;
+
 void test000060::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000060::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000060::test_bug_1026()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000060::MODEL_STRING1));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();

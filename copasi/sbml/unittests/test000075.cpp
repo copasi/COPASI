@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 14:39:07 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,37 +43,38 @@
 #include "sbml/Trigger.h"
 #include "sbml/EventAssignment.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
 /**
  * Test if importing function definitions which are explicitely time dependent
  * works.
  * Problems related to this are also tracked in Bug 1093.
  * This test also covers the bugs described there.
  */
+CCopasiDataModel* test000075::pCOPASIDATAMODEL = NULL;
+
 void test000075::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000075::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000075::test_import_time_dependent_function_definition()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   // there have to be 2 function definitions, 1 compartment, 4 species, 4
   // parameters, 1 reaction, 1 initial assignment, 5 rules (2 rate + 2
   // assignment) and 1 event
-  const CModel* pCModel = CCopasiDataModel::Global->getModel();
+  const CModel* pCModel = pCOPASIDATAMODEL->getModel();
   CPPUNIT_ASSERT(pCModel != NULL);
   CPPUNIT_ASSERT(pCModel->getCompartments().size() == 1);
   const CCompartment* pCCompartment = pCModel->getCompartments()[0];
@@ -82,7 +83,7 @@ void test000075::test_import_time_dependent_function_definition()
   const CEvaluationNodeObject* pCObjectNode = NULL;
   const CRegisteredObjectName* pCObjectName = NULL;
   std::vector<CCopasiContainer*> listOfContainers;
-  listOfContainers.push_back(CCopasiDataModel::Global->getModel());
+  listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
   const CCopasiObject* pCObject = NULL;
 
   CPPUNIT_ASSERT(pCModel->getMetabolites().size() == 4);
@@ -321,7 +322,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(parameterMapping.size() == 1);
   std::string objectKey = parameterMapping[0];
   CPPUNIT_ASSERT(!objectKey.empty());
-  pCObject = GlobalKeys.get(objectKey);
+  pCObject = CCopasiRootContainer::Root->getKeyFactory()->get(objectKey);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject == pCModel);
 
@@ -394,7 +395,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   // check if the function definitions are imported correctly
-  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
   CPPUNIT_ASSERT(pFunctionDB != NULL);
   const CEvaluationTree* pCTree = pFunctionDB->findFunction("time_dependent");
   CPPUNIT_ASSERT(pCTree != NULL);
@@ -432,7 +433,7 @@ void test000075::test_import_time_dependent_function_definition()
   // make sure that the function definitions and all function calls in the
   // original SBML model are unmodified
   //
-  const SBMLDocument* pSBMLDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+  const SBMLDocument* pSBMLDocument = pCOPASIDATAMODEL->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pSBMLDocument != NULL);
   const Model* pModel = pSBMLDocument->getModel();
   CPPUNIT_ASSERT(pModel != NULL);

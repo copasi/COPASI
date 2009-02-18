@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000070.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 12:58:32 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,31 +17,32 @@
 #include <string>
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
 /**
  * These tests are supposed to make sure that assignments on a species with the
  * hasOnlySubstanceUnits flag set are exported correctly.
  * It tests rules and event assignments with and without the flag set.
  */
+CCopasiDataModel* test000070::pCOPASIDATAMODEL = NULL;
+
 void test000070::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000070::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000070::test_bug1084()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   // now try to export several times
   unsigned int i, iMax = 5;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000066.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/23 10:06:42 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,31 +27,32 @@
 #include "sbml/Model.h"
 #include "sbml/Reaction.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
 /**
  * These tests are supposed to make sure that assignments on a species with the
  * hasOnlySubstanceUnits flag set are exported correctly.
  * It tests rules and event assignments with and without the flag set.
  */
+CCopasiDataModel* test000066::pCOPASIDATAMODEL = NULL;
+
 void test000066::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000066::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000066::test_import_reaction_with_constant_flux()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -87,7 +88,7 @@ void test000066::test_import_reaction_with_constant_flux()
 
 void test000066::test_import_reaction_with_constant_flux_function()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -238,7 +239,7 @@ const char* test000066::MODEL_STRING2 =
 
 void test000066::test_import_reaction_with_constant_flux_global_parameter()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -269,7 +270,7 @@ void test000066::test_import_reaction_with_constant_flux_global_parameter()
 
 void test000066::test_import_reaction_with_constant_flux_function_global_parameter()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING4));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -415,7 +416,7 @@ const char* test000066::MODEL_STRING4 =
 
 void test000066::test_import_reaction_with_constant_flux_reversible()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -451,7 +452,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible()
 
 void test000066::test_import_reaction_with_constant_flux_reversible_function()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -610,7 +611,7 @@ const char* test000066::MODEL_STRING6 =
 
 void test000066::test_import_reaction_with_constant_flux_reversible_global_parameter()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING7));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -641,7 +642,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible_global_param
 
 void test000066::test_import_reaction_with_constant_flux_reversible_function_global_parameter()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING8));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);

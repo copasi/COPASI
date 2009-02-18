@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/13 11:36:15 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,31 +39,32 @@
 #include "sbml/Delay.h"
 #include "sbml/EventAssignment.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
 /**
  * These tests are supposed to make sure that assignments on a species with the
  * hasOnlySubstanceUnits flag set are exported correctly.
  * It tests rules and event assignments with and without the flag set.
  */
+CCopasiDataModel* test000064::pCOPASIDATAMODEL = NULL;
+
 void test000064::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000064::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -164,7 +165,7 @@ const char* test000064::MODEL_STRING1 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_2()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -249,7 +250,7 @@ const char* test000064::MODEL_STRING2 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -334,7 +335,7 @@ const char* test000064::MODEL_STRING3 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING4));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -435,7 +436,7 @@ const char* test000064::MODEL_STRING4 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_1()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -584,7 +585,7 @@ const char* test000064::MODEL_STRING5 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_2()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -717,7 +718,7 @@ const char* test000064::MODEL_STRING6 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_3()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING7));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -850,7 +851,7 @@ const char* test000064::MODEL_STRING7 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_4()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING8));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -999,7 +1000,7 @@ const char* test000064::MODEL_STRING8 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_5()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING9));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1088,7 +1089,7 @@ const char* test000064::MODEL_STRING9 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING10));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1193,7 +1194,7 @@ const char* test000064::MODEL_STRING10 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING11));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1298,7 +1299,7 @@ const char* test000064::MODEL_STRING11 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_8()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING12));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1387,7 +1388,7 @@ const char* test000064::MODEL_STRING12 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_5()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING13));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1524,7 +1525,7 @@ const char* test000064::MODEL_STRING13 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_6()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING14));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1677,7 +1678,7 @@ const char* test000064::MODEL_STRING14 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_7()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING15));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1830,7 +1831,7 @@ const char* test000064::MODEL_STRING15 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_8()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING16));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1970,7 +1971,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING101);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2087,7 +2088,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING102);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2246,7 +2247,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING103);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2363,7 +2364,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING104);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2521,7 +2522,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING105);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2644,7 +2645,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING106);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2797,7 +2798,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING107);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2920,7 +2921,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING108);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3073,7 +3074,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING109);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3236,7 +3237,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING110);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3431,7 +3432,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING111);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3593,7 +3594,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING112);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3788,7 +3789,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING113);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3958,7 +3959,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING114);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -4145,7 +4146,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING115);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -4315,7 +4316,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING116);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);

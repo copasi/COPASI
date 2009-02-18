@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000069.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/30 15:47:09 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,31 +27,32 @@
 #include "sbml/Model.h"
 #include "sbml/Reaction.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
 /**
  * These tests are supposed to make sure that assignments on a species with the
  * hasOnlySubstanceUnits flag set are exported correctly.
  * It tests rules and event assignments with and without the flag set.
  */
+CCopasiDataModel* test000069::pCOPASIDATAMODEL = NULL;
+
 void test000069::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000069::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000069::test_bug1069()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000069::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -250,7 +251,7 @@ void test000069::test_bug1069()
   // export to SBML
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 1, 2).empty() == false);
   // check the sbml model
-  pDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+  pDocument = pCOPASIDATAMODEL->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
   CPPUNIT_ASSERT(pDocument->getLevel() == 1);
   CPPUNIT_ASSERT(pDocument->getVersion() == 2);

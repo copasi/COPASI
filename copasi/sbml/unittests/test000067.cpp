@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000067.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/06 17:00:53 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,26 +29,27 @@
 
 #include "test000059.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
+CCopasiDataModel* test000067::pCOPASIDATAMODEL = NULL;
+
 void test000067::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000067::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000067::test_bug1060()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000067::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -66,7 +67,7 @@ void test000067::test_bug1060()
   CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 0);
   CPPUNIT_ASSERT(test000059::checkIfIdsUnique(pSBMLModel) == true);
   // check if each reaction call the correct kinetic law
-  CFunctionDB* pFunDB = pDataModel->getFunctionList();
+  CFunctionDB* pFunDB = CCopasiRootContainer::Root->getFunctionList();
   CEvaluationTree* pModifiedMM = pFunDB->findFunction("Modified MM");
   CPPUNIT_ASSERT(pModifiedMM != NULL);
   CEvaluationTree* pModifiedCF = pFunDB->findFunction("modified constant flux");

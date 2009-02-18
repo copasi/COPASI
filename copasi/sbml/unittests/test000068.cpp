@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000068.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 12:58:32 $
+//   $Date: 2009/02/18 20:39:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,26 +27,27 @@
 #include "sbml/Model.h"
 #include "sbml/Reaction.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
+CCopasiDataModel* test000068::pCOPASIDATAMODEL = NULL;
+
 void test000068::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000068::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test000068::test_bug1068()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -248,10 +249,10 @@ void test000068::test_bug1068()
   // and reimport the exported model
   // This will also lead to a Level 2 Version 1 model since we convert all Level 1 model to
   //  Level 2 Version 1 on import, but we can at least test if the export worked.
-  CCopasiDataModel::Global->newModel(NULL, NULL, NULL);
-  CPPUNIT_ASSERT(CCopasiDataModel::Global->importSBMLFromString(s));
+  pCOPASIDATAMODEL->newModel(NULL, NULL, NULL);
+  CPPUNIT_ASSERT(pCOPASIDATAMODEL->importSBMLFromString(s));
   // check the sbml model
-  const SBMLDocument* pDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+  const SBMLDocument* pDocument = pCOPASIDATAMODEL->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument != NULL);
   CPPUNIT_ASSERT(pDocument->getLevel() == 2);
   CPPUNIT_ASSERT(pDocument->getVersion() == 1);
