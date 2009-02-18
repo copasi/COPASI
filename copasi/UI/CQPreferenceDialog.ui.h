@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #include "qtUtilities.h"
 
 #include "commandline/CConfigurationFile.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #define COL_NAME 0
 #define COL_VALUE 1
@@ -48,9 +48,9 @@ void CQPreferenceDialog::slotBtnOk()
   unsigned C_INT32 newMaxFiles = 0;
   CCopasiParameter * par;
 
-  if (CCopasiDataModel::Global)
+  if (CCopasiRootContainer::Root)
     {
-      CConfigurationFile * configFile = CCopasiDataModel::Global->getConfiguration();
+      CConfigurationFile * configFile = CCopasiRootContainer::Root->getConfiguration();
 
       QString parName = "Max Last Visited Files";
       Q3ListViewItem *item = mpListView->findItem(parName, 0);
@@ -94,10 +94,10 @@ void CQPreferenceDialog::slotBtnOk()
 
 void CQPreferenceDialog::slotBtnCancel()
 {
-  if (CCopasiDataModel::Global)
+  if (CCopasiRootContainer::Root)
     {
       unsigned C_INT32 maxFiles = 0;
-      CConfigurationFile * configFile = CCopasiDataModel::Global->getConfiguration();
+      CConfigurationFile * configFile = CCopasiRootContainer::Root->getConfiguration();
 
       Q3ListViewItem *item = mpListView->findItem("Max Last Visited Files", 0);
       CRecentFiles & recentFiles = configFile->getRecentFiles();
@@ -124,9 +124,9 @@ void CQPreferenceDialog::init()
   mpListView->setColumnWidth (COL_VALUE, 100);
   unsigned C_INT32 maxFiles = 0;
 
-  if (CCopasiDataModel::Global)
+  if (CCopasiRootContainer::Root)
     {
-      CConfigurationFile * configFile = CCopasiDataModel::Global->getConfiguration();
+      CConfigurationFile * configFile = CCopasiRootContainer::Root->getConfiguration();
 
       CRecentFiles & recentFiles = configFile->getRecentFiles();
       CCopasiParameter * par = recentFiles.getParameter("MaxFiles");

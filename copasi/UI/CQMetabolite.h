@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,6 @@ class CExpression;
 #include <string>
 #include "CQExpressionMmlWidget.h"
 #include "copasiWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQMetabolite
   {
@@ -479,8 +477,6 @@ namespace Ui
   {
   class CQMetabolite: public Ui_CQMetabolite {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQMetabolite : public CopasiWidget, public Ui::CQMetabolite
   {

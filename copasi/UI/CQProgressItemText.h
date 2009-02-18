@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemText.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:51 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,8 +33,6 @@
 #include "CQProgressItem.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CVector.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQProgressItemText
   {
@@ -211,8 +209,6 @@ namespace Ui
   {
   class CQProgressItemText: public Ui_CQProgressItemText {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQProgressItemText : public CQProgressItem, public Ui::CQProgressItemText
   {

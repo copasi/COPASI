@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 //#include "sensitivities/CSensProblem.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 //#include "utilities/CCopasiVector.h"
 
 #include "model/CModel.h"
@@ -109,7 +110,8 @@ CQMathMatrixWidget::~CQMathMatrixWidget()
 void CQMathMatrixWidget::loadMatrices()
 {
 
-  const CModel* pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CModel* pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
 
   //mpResult = pProblem->getResultAnnotated();
   //mpScaledResult = pProblem->getScaledResultAnnotated();

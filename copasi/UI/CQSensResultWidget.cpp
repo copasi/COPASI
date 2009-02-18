@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:11 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "sensitivities/CSensProblem.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiVector.h"
 
 #include <qtabwidget.h>
@@ -106,8 +107,9 @@ CQSensResultWidget::~CQSensResultWidget()
 
 void CQSensResultWidget::newResult()
 {
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
+    dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Sensitivities"]);
   if (!pTask)
     {
       clearArrays();
@@ -168,8 +170,9 @@ bool CQSensResultWidget::leave()
 bool CQSensResultWidget::enter(const std::string & C_UNUSED(key))
 {
   //clear the widget if the pointer to the result has changed
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
+    dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Sensitivities"]);
   if (!pTask)
     {
       clearArrays();

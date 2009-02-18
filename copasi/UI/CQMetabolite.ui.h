@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,13 +30,13 @@
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
 #include "model/CChemEqInterface.h"
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
+#include "report/CCopasiRootContainer.h"
 
 void CQMetabolite::init()
 {
@@ -55,8 +55,9 @@ void CQMetabolite::init()
   mInitialNumber = 0.0;
   mInitialNumberLastChanged = true;
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   int Width = fontMetrics().width("Concentration (" +
-                                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) +
+                                  FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getConcentrationUnitName()) +
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
@@ -87,13 +88,17 @@ void CQMetabolite::slotBtnNew()
 {
   save();
 
-  if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
-    CCopasiDataModel::Global->getModel()->createCompartment("compartment");
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  if (pDataModel->getModel()->getCompartments().size() == 0)
+    pDataModel->getModel()->createCompartment("compartment");
 
   std::string name = "species";
   int i = 0;
 
-  while (!(mpMetab = CCopasiDataModel::Global->getModel()->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
+  while (!(mpMetab = pDataModel->getModel()->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
       name = "species_";
@@ -117,7 +122,10 @@ void CQMetabolite::slotBtnNew()
 
 void CQMetabolite::slotBtnDelete()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -248,15 +256,15 @@ void CQMetabolite::slotBtnDelete()
     case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index =
-          CCopasiDataModel::Global->getModel()->getMetabolites().getIndex(GlobalKeys.get(mKey));
+          pDataModel->getModel()->getMetabolites().getIndex(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
 
-        CCopasiDataModel::Global->getModel()->removeMetabolite(mKey);
+        pDataModel->getModel()->removeMetabolite(mKey);
 
         unsigned C_INT32 size =
-          CCopasiDataModel::Global->getModel()->getMetabolites().size();
+          pDataModel->getModel()->getMetabolites().size();
 
         if (size > 0)
-          enter(CCopasiDataModel::Global->getModel()->getMetabolites()[std::min(index, size - 1)]->getKey());
+          enter(pDataModel->getModel()->getMetabolites()[std::min(index, size - 1)]->getKey());
         else
           enter("");
 
@@ -275,8 +283,9 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
   if (!mpMetab || !mpCurrentCompartment) return;
 
   QString Compartment = mpComboBoxCompartment->text(compartment);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   const CCompartment * pNewCompartment =
-    CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)];
+    (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(Compartment)];
 
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
@@ -397,7 +406,7 @@ void CQMetabolite::slotInitialExpressionValid(bool valid)
 bool CQMetabolite::enter(const std::string & key)
 {
   mKey = key;
-  mpMetab = dynamic_cast< CMetab * >(GlobalKeys.get(key));
+  mpMetab = dynamic_cast< CMetab * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!mpMetab)
     {
@@ -476,13 +485,14 @@ void CQMetabolite::load()
   if (mpMetab == NULL) return;
 
   // Update the labels to reflect the model units
-  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
 
   // Compartment
-  CCopasiVectorNS< CCompartment > & Compartments = CCopasiDataModel::Global->getModel()->getCompartments();
+  CCopasiVectorNS< CCompartment > & Compartments = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
   CCompartment * pCompartment;
   mpComboBoxCompartment->clear();
 
@@ -549,6 +559,9 @@ void CQMetabolite::load()
 void CQMetabolite::save()
 {
   if (mpMetab == NULL) return;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   // Name
   if (mpMetab->getObjectName() != TO_UTF8(mpEditName->text()))
@@ -579,7 +592,7 @@ void CQMetabolite::save()
       QString Compartment = mpComboBoxCompartment->currentText();
       std::string CompartmentToRemove = mpMetab->getCompartment()->getObjectName();
 
-      if (!CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(mpMetab))
+      if (!pDataModel->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(mpMetab))
         {
           QString msg;
           msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
@@ -597,9 +610,9 @@ void CQMetabolite::save()
         }
       else
         {
-          CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(mpMetab->getObjectName());
-          CCopasiDataModel::Global->getModel()->setCompileFlag();
-          CCopasiDataModel::Global->getModel()->initializeMetabolites();
+          pDataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(mpMetab->getObjectName());
+          pDataModel->getModel()->setCompileFlag();
+          pDataModel->getModel()->initializeMetabolites();
           protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
           mChanged = true;
         }
@@ -653,7 +666,7 @@ void CQMetabolite::save()
 
   if (mChanged)
     {
-      CCopasiDataModel::Global->changed();
+      pDataModel->changed();
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, mKey);
     }
 
@@ -665,7 +678,8 @@ void CQMetabolite::destroy()
 
 void CQMetabolite::slotReactionTableCurrentChanged(Q3ListViewItem * pItem)
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -697,6 +711,7 @@ void CQMetabolite::slotInitialValueLostFocus()
   switch (mFramework)
     {
     case 0:
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
       if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
         return;
 
@@ -705,12 +720,13 @@ void CQMetabolite::slotInitialValueLostFocus()
       mInitialConcentration = mpEditInitialValue->text().toDouble();
       mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
                        *mpCurrentCompartment,
-                       *CCopasiDataModel::Global->getModel());
+                       *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
 
       mInitialNumberLastChanged = false;
       break;
 
     case 1:
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
       if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
         return;
 
@@ -719,7 +735,7 @@ void CQMetabolite::slotInitialValueLostFocus()
       mInitialNumber = mpEditInitialValue->text().toDouble();
       mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
                               *mpCurrentCompartment,
-                              *CCopasiDataModel::Global->getModel());
+                              *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
 
       mInitialNumberLastChanged = true;
       break;
@@ -728,7 +744,10 @@ void CQMetabolite::slotInitialValueLostFocus()
 
 void CQMetabolite::loadReactionTable()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -750,7 +769,7 @@ void CQMetabolite::loadReactionTable()
       pReaction = static_cast< const CReaction * >(*it);
       new Q3ListViewItem(mpReactionTable,
                          FROM_UTF8(pReaction->getObjectName()) + ": ",
-                         FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReaction, false)));
+                         FROM_UTF8(CChemEqInterface::getChemEqString(pDataModel->getModel(), *pReaction, false)));
     }
 
   if (i == 0)
@@ -762,20 +781,23 @@ void CQMetabolite::loadReactionTable()
 void CQMetabolite::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   switch (mFramework)
     {
     case 0:
       mpLblInitialValue->setText("Initial Concentration\n("
-                                 + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+                                 + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
       mpLblInitialExpression->setText("Initial Expression\n("
-                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+                                      + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
       mpLblExpression->setText("Expression\n("
-                               + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+                               + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
       mpLblValue->setText("Concentration ("
-                          + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+                          + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
       mpLblRate->setText("Rate ("
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
+                         + FROM_UTF8(pDataModel->getModel()->getConcentrationRateUnitName()) + ")");
       mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
 
       if (mpMetab != NULL)
@@ -796,12 +818,12 @@ void CQMetabolite::setFramework(int framework)
     case 1:
       mpLblInitialValue->setText("Initial Particle Number");
       mpLblInitialExpression->setText("Initial Expression\n("
-                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+                                      + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
       mpLblExpression->setText("Expression\n("
-                               + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+                               + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
       mpLblValue->setText("Particle Number");
       mpLblRate->setText("Rate (1/"
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+                         + FROM_UTF8(pDataModel->getModel()->getTimeUnitName()) + ")");
       mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
       mpEditInitialValue->setReadOnly(false);
 

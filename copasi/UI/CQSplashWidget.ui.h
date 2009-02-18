@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQSplashWidget.ui.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/01/12 16:44:25 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:31 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,14 +32,13 @@
 #include "qtUtilities.h"
 #include "AboutDialog.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
 
 extern const char * CopasiLicense;
 
 void CQSplashWidget::init()
 {
-  mpLblVersion->setText(mpLblVersion->text().arg(FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion())));
+  mpLblVersion->setText(mpLblVersion->text().arg(FROM_UTF8(CVersion::VERSION.getVersion())));
 
   return;
 }
@@ -45,7 +49,7 @@ void CQSplashWidget::slotViewLicense()
 #ifdef COPASI_LICENSE_COM
   FixedTitle += "(commercial) ";
 #endif // COPASI_LICENSE_COM
-  FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
+  FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
 
   AboutDialog* aboutDialog = new AboutDialog(this, CopasiLicense, 76, 30);
   aboutDialog->setCaption(FixedTitle);

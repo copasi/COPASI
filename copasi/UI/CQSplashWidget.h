@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:11 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,6 @@
 #include <Q3VBoxLayout>
 #include <QLabel>
 #include "copasiWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQSplashWidget
   {
@@ -8721,8 +8719,6 @@ namespace Ui
   {
   class CQSplashWidget: public Ui_CQSplashWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQSplashWidget : public CopasiWidget, public Ui::CQSplashWidget
   {

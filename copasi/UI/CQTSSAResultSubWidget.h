@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:54:48 $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:57:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,6 @@
 #include "CQArrayAnnotationsWidget.h"
 #include "CTimeSeriesTable.h"
 #include "copasi.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQTSSAResultSubWidget
   {
@@ -821,8 +819,6 @@ namespace Ui
   {
   class CQTSSAResultSubWidget: public Ui_CQTSSAResultSubWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQTSSAResultSubWidget : public QWidget, public Ui::CQTSSAResultSubWidget
   {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,10 +31,10 @@
 #include "UI/CopasiFileDialog.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CQTSSATimeScaleWidget.h"
 #include "tssanalysis/CTSSATask.h"
 #include "tssanalysis/CTSSAProblem.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "tssanalysis/CILDMMethod.h"
 #include "tssanalysis/CILDMModifiedMethod.h"
@@ -101,8 +101,9 @@ void CQTSSAResultSubWidget::saveDataToFile()
   std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
   if (file.fail()) return;
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   CCopasiTask* mpTask =
-    dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
   if (!mpTask) return;
 
   CCopasiProblem* mpProblem = mpTask->getProblem();
@@ -271,8 +272,9 @@ CTimeSeriesTable* CQTSSAResultSubWidget::table()
  **/
 void CQTSSAResultSubWidget::setStepNumber()
 {
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   CTSSATask* pTSSTask =
-    dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
   if (!pTSSTask) return;
   // pTSSMethod = dynamic_cast<CTSSAMethod*>(pTSSTask->getMethod());
   //if (!pTSSMethod) return;

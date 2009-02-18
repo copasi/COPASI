@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.h,v $
-//   $Revision: 1.4.4.2 $
-//   $Name: Qt3To4 $
-//   $Author: aekamal $
-//   $Date: 2008/11/03 15:56:56 $
+//   $Revision: 1.5 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:48:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,6 @@ class CMoietiesTask;
 #include <QtGui/QTabWidget>
 #include "CQArrayAnnotationsWidget.h"
 #include "copasiWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQMoietiesTaskResult
   {
@@ -122,8 +120,6 @@ namespace Ui
   {
   class CQMoietiesTaskResult: public Ui_CQMoietiesTaskResult {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQMoietiesTaskResult : public CopasiWidget, public Ui::CQMoietiesTaskResult
   {

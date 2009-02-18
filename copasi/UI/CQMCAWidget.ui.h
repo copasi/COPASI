@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMCAWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,6 @@
 #include "UI/CProgressBar.h"
 #include "UI/qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAProblem.h"
@@ -44,6 +43,7 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
+#include "report/CCopasiRootContainer.h"
 
 void CQMCAWidget::slotSteadyStateChecked()
 {
@@ -53,7 +53,7 @@ void CQMCAWidget::slotSteadyStateChecked()
 bool CQMCAWidget::runTask()
 {
   CMCATask * pTask =
-    dynamic_cast< CMCATask * >(GlobalKeys.get(mObjectKey));
+    dynamic_cast< CMCATask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
@@ -114,7 +114,8 @@ bool CQMCAWidget::saveTask()
 
   bool success = saveParameterTable();
 
-  if (mChanged) CCopasiDataModel::Global->changed();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  if (mChanged) (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
 
   mChanged = false;
   return success;
@@ -136,10 +137,11 @@ bool CQMCAWidget::loadParameterTable()
   bool init = (mpTblParameter->numRows() == 0);
 
   unsigned C_INT32 NumRows = mpMethod->size();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   if (mpCheckSteadyState->isChecked())
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Steady-State"]);
 
       if (!pSteadyStateTask) return false;
 
@@ -164,7 +166,7 @@ bool CQMCAWidget::loadParameterTable()
   if (mpCheckSteadyState->isChecked())
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Steady-State"]);
 
       if (!pSteadyStateTask) return false;
 
@@ -200,8 +202,9 @@ bool CQMCAWidget::saveParameterTable()
 
   if (mpCheckSteadyState->isChecked())
     {
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+        dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Steady-State"]);
 
       if (!pSteadyStateTask) return false;
 

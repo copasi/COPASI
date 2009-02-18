@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationResult.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,10 +34,10 @@
 #include "UI/CopasiFileDialog.h"
 #include "UI/CQMessageBox.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptItem.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "UI/qtUtilities.h"
 
@@ -77,8 +77,9 @@ bool CQOptimizationResult::leave()
 
 bool CQOptimizationResult::enter(const std::string & /* key */)
 {
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   mpTask =
-    dynamic_cast<COptTask *>((*CCopasiDataModel::Global->getTaskList())["Optimization"]);
+    dynamic_cast<COptTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Optimization"]);
   if (!mpTask) return false;
 
   mpProblem = dynamic_cast<const COptProblem *>(mpTask->getProblem());
@@ -106,10 +107,13 @@ bool CQOptimizationResult::enter(const std::string & /* key */)
     imax = 0;
 
   mpParameters->setNumRows(imax);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
+        pDataModel->getObject(Items[i]->getObjectCN());
       if (pObject)
         mpParameters->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
       else
@@ -178,10 +182,14 @@ void CQOptimizationResult::slotSave(void)
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
+        pDataModel->getObject(Items[i]->getObjectCN());
       if (pObject)
         file << pObject->getObjectDisplayName() << "\t";
       else

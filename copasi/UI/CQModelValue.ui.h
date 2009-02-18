@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,11 +30,11 @@
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
+#include "report/CCopasiRootContainer.h"
 
 /*!
     After clicking the Commit button, COPASI will internally, automatically save any inputs and load them.
@@ -62,7 +62,8 @@ void CQModelValue::slotBtnNew()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 0;
-  while (!(mpModelValue = CCopasiDataModel::Global->getModel()->createModelValue(name)))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  while (!(mpModelValue = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createModelValue(name)))
     {
       i++;
       name = "quantity_";
@@ -75,7 +76,10 @@ void CQModelValue::slotBtnNew()
 
 void CQModelValue::slotBtnDelete()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
     return;
   /*
@@ -209,16 +213,16 @@ void CQModelValue::slotBtnDelete()
     case QMessageBox::Ok:  // Yes or Enter
       {
         unsigned C_INT32 index =
-          static_cast<CCopasiVector< CModelValue > *>(&CCopasiDataModel::Global->getModel()->getModelValues())->getIndex(GlobalKeys.get(mKey));
+          static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
 
-        CCopasiDataModel::Global->getModel()->removeModelValue(mKey);
+        pDataModel->getModel()->removeModelValue(mKey);
         unsigned C_INT32 size =
-          CCopasiDataModel::Global->getModel()->getModelValues().size();
+          pDataModel->getModel()->getModelValues().size();
 
         mpModelValue = NULL;
 
         if (size > 0)
-          enter(CCopasiDataModel::Global->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
+          enter(pDataModel->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
         else
           enter("");
 
@@ -365,7 +369,7 @@ bool CQModelValue::leave()
 bool CQModelValue::enter(const std::string & key)
 {
   mKey = key;
-  mpModelValue = dynamic_cast< CModelValue * >(GlobalKeys.get(key));
+  mpModelValue = dynamic_cast< CModelValue * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!mpModelValue)
     {
@@ -500,7 +504,8 @@ void CQModelValue::save()
 
   if (mChanged)
     {
-      CCopasiDataModel::Global->changed();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
       protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
     }
 

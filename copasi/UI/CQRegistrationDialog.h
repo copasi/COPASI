@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:11 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,8 +38,6 @@ class CRegistration;
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
 #include <Qt3Support/Q3VBoxLayout>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQRegistrationDialog
   {
@@ -212,8 +210,6 @@ namespace Ui
   {
   class CQRegistrationDialog: public Ui_CQRegistrationDialog {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQRegistrationDialog : public QDialog, public Ui::CQRegistrationDialog
   {

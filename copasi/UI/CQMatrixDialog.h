@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,6 @@ class CArrayAnnotation;
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
 #include <Qt3Support/Q3VBoxLayout>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQMatrixDialog
   {
@@ -146,8 +144,6 @@ namespace Ui
   {
   class CQMatrixDialog: public Ui_CQMatrixDialog {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQMatrixDialog : public QDialog, public Ui::CQMatrixDialog
   {

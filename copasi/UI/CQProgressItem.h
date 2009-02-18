@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/CQProgressItem.h,v $
-//   $Revision: 1.2.28.2 $
-//   $Name: Qt3To4 $
-//   $Author: aekamal $
-//   $Date: 2008/11/03 15:56:56 $
+//   $Revision: 1.3 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,6 @@
 #include <Q3HBoxLayout>
 #include "utilities/CProcessReport.h"
 #include "utilities/CVector.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQProgressItem
   {
@@ -66,8 +64,6 @@ namespace Ui
   {
   class CQProgressItem: public Ui_CQProgressItem {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQProgressItem : public QWidget, public Ui::CQProgressItem
   {
