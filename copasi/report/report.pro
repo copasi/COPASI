@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/report.pro,v $ 
-#   $Revision: 1.19 $ 
+#   $Revision: 1.20 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2008/12/18 19:06:50 $ 
+#   $Author: gauges $ 
+#   $Date: 2009/02/18 20:55:33 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -12,7 +12,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.19 $ $Author: shoops $ $Date: 2008/12/18 19:06:50 $
+# $Revision: 1.20 $ $Author: gauges $ $Date: 2009/02/18 20:55:33 $
 ######################################################################
 
 LIB = report
@@ -27,6 +27,7 @@ HEADERS +=  CArrayElementReference.h \
            CCopasiObject.h \
            CCopasiObjectName.h \
            CCopasiObjectReference.h \
+           CCopasiRootContainer.h \
            CCopasiStaticString.h \
            CCopasiTimer.h \
            CKeyFactory.h \
@@ -41,6 +42,7 @@ SOURCES += CArrayElementReference.cpp \
            CCopasiContainer.cpp \
            CCopasiObject.cpp \
            CCopasiObjectName.cpp \
+           CCopasiRootContainer.cpp \
            CCopasiStaticString.cpp \
            CCopasiTimer.cpp \
            CKeyFactory.cpp \

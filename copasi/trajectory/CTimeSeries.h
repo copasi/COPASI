@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:32:03 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "utilities/COutputHandler.h"
 
 class CModel;
+class CCopasiDataModel;
 
 class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
   {
@@ -58,7 +59,7 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
      * @param std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, CCopasiDataModel* pDataModel);
 
     /**
      * Perform an output event for the current activity
@@ -153,7 +154,7 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
      * @param const unsigned C_INT32 & variable
      * @return const std::string SBMLId
      */
-    std::string getSBMLId(const unsigned C_INT32 & variable) const;
+    std::string getSBMLId(const unsigned C_INT32 & variable, const CCopasiDataModel* pDataModel) const;
 
   private:
 

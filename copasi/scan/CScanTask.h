@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 23:27:57 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ class CScanTask : public CCopasiTask
     /**
      * default constructor
      */
-    CScanTask(const CCopasiContainer * pParent = & RootContainer);
+    CScanTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor

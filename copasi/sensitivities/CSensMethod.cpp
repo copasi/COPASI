@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:34:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 
 //#include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "CSensMethod.h"
 #include "CSensProblem.h"
 
@@ -462,6 +463,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   //initialize the target calculation
   mpSubTask = NULL;
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
 
   switch (mpProblem->getSubTaskType())
     {
@@ -471,17 +474,17 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
     case CSensProblem::SteadyState:
       mpSubTask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+                  ((*pDataModel->getTaskList())["Steady-State"]);
       break;
 
     case CSensProblem::TimeSeries:
       mpSubTask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+                  ((*pDataModel->getTaskList())["Time-Course"]);
       break;
 
       /*    case CSensProblem::LyapunovExp:
             mpSubTask = dynamic_cast<CCopasiTask*>
-                        ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+                        ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
             break;*/
     }
 

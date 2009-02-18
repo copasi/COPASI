@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/05 19:57:47 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "CODEExporterC.h"
 
@@ -408,7 +409,7 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
       CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
 
       while (treeIt != NULL)
@@ -630,7 +631,7 @@ void CODEExporterC::findFunctionsCalls(const CEvaluationNode* pNode, std::set<st
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
       CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
 
       while (treeIt != NULL)
@@ -655,7 +656,7 @@ void CODEExporterC::findFunctionsCalls(const CEvaluationNode* pNode, std::set<st
 
 bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::string>& isExported)
 {
-  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
 
   CFunction* tmpfunc = NULL;
   tmpfunc = new CFunction(*func);
@@ -761,7 +762,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
         {
           CFunctionParameter::Role role = params[k]->getUsage();
 
-          CCopasiObject * obj = GlobalKeys.get(keyMap[k][0]);
+          CCopasiObject * obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[k][0]);
 
           if ((role == CFunctionParameter::SUBSTRATE)
               || (role == CFunctionParameter::PRODUCT)
@@ -817,7 +818,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
       equation << "(";
 
-      obj = GlobalKeys.get(keyMap[0][0]);
+      obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[0][0]);
 
       if (!(reac->isLocalParameter(0)))
         {
@@ -851,7 +852,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
         {
           equation << " - ";
 
-          obj = GlobalKeys.get(keyMap[2][0]);
+          obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[2][0]);
 
           if (!(reac->isLocalParameter(2)))
             {

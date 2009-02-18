@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-$Revision: 1.110 $
+$Revision: 1.111 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/01/07 19:35:16 $
+$Author: gauges $
+$Date: 2009/02/18 20:55:34 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,6 +62,7 @@ End CVS Header */
 #include "mathmodel/CMathNode.h"
 #include "xml/CCopasiXMLInterface.h"
 #include "xml/CCopasiXML.h"
+#include "report/CCopasiRootContainer.h"
 
 using namespace std;
 
@@ -184,7 +185,7 @@ int main(int argc, char *argv[])
     }
 
   pdelete(Copasi);
-  pdelete(CCopasiContainer::Root);
+  pdelete(CCopasiRootContainer::Root);
 
   cout << "Leaving main program." << endl;
   return 0;
@@ -373,7 +374,7 @@ C_INT32 TestCopasiObject(void)
   cout << cn << endl;
 
   CCompartment * pCompartment =
-    (CCompartment *) (CCopasiContainer *) CCopasiContainer::Root->getObject(cn);
+    (CCompartment *) (CCopasiContainer *) CCopasiRootContainer::Root->getObject(cn);
 
   cout << *pCompartment << endl;
   return 0;

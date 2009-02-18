@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:36:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 #include "CTimeSeries.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CMetabNameInterface.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
@@ -94,10 +95,10 @@ void CTimeSeries::clear()
 }
 
 // virtual
-bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer, CCopasiDataModel* pDataModel)
 {
   CModel * pModel =
-    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiDataModel::Global->getModel()->getCN()));
+    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
 
   if (pModel == NULL)
     return false;
@@ -243,49 +244,49 @@ const std::string & CTimeSeries::getKey(const unsigned C_INT32 & var) const
     return mDummyString;
   }
 
-std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var) const
+std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var, const CCopasiDataModel* pDataModel) const
   {
     std::string key = getKey(var);
     std::string result("");
 
     if (key != mDummyString)
       {
-        CCopasiObject* pObject = GlobalKeys.get(key);
+        const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(key);
         if (pObject != NULL)
           {
-            std::map<CCopasiObject*, SBase*>::iterator pos = CCopasiDataModel::Global->getCopasi2SBMLMap().find(pObject);
-            if (pos != CCopasiDataModel::Global->getCopasi2SBMLMap().end())
+            std::map<CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));
+            if (pos != const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().end())
               {
-                SBase* pSBMLObject = pos->second;
-                Compartment* pSBMLCompartment = NULL;
-                Species* pSBMLSpecies = NULL;
-                Parameter* pSBMLParameter = NULL;
-                Model* pSBMLModel = NULL;
+                const SBase* pSBMLObject = pos->second;
+                const Compartment* pSBMLCompartment = NULL;
+                const Species* pSBMLSpecies = NULL;
+                const Parameter* pSBMLParameter = NULL;
+                const Model* pSBMLModel = NULL;
                 switch (pSBMLObject->getTypeCode())
                   {
                   case SBML_COMPARTMENT:
-                    pSBMLCompartment = dynamic_cast<Compartment*>(pSBMLObject);
+                    pSBMLCompartment = dynamic_cast<const Compartment*>(pSBMLObject);
                     if (pSBMLCompartment && pSBMLCompartment->isSetId())
                       {
                         result = pSBMLCompartment->getId();
                       }
                     break;
                   case SBML_SPECIES:
-                    pSBMLSpecies = dynamic_cast<Species*>(pSBMLObject);
+                    pSBMLSpecies = dynamic_cast<const Species*>(pSBMLObject);
                     if (pSBMLSpecies && pSBMLSpecies->isSetId())
                       {
                         result = pSBMLSpecies->getId();
                       }
                     break;
                   case SBML_PARAMETER:
-                    pSBMLParameter = dynamic_cast<Parameter*>(pSBMLObject);
+                    pSBMLParameter = dynamic_cast<const Parameter*>(pSBMLObject);
                     if (pSBMLParameter && pSBMLParameter->isSetId())
                       {
                         result = pSBMLParameter->getId();
                       }
                     break;
                   case SBML_MODEL:
-                    pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
+                    pSBMLModel = dynamic_cast<const Model*>(pSBMLObject);
                     if (pSBMLModel && pSBMLModel->isSetId())
                       {
                         result = pSBMLModel->getId();

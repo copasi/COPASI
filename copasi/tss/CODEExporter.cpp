@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:36:48 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "CODEExporter.h"
 
@@ -64,7 +65,7 @@ CODEExporter::~CODEExporter()
 /**
  **
  */
-bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasciiFilename,
+bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::string mmasciiFilename,
                                    std::string /* Filter */, bool overwriteFile)
 {
   /* check if the file already exisits.
@@ -83,29 +84,29 @@ bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasc
 
   /* translate Copasi data names in exporter syntax */
 
-  if (!preprocess(copasiModel)) return false;
+  if (!preprocess(pDataModel->getModel())) return false;
 
   /* export Copasi data */
 
-  if (!exportTitleData(copasiModel, outFile)) return false;
+  if (!exportTitleData(pDataModel->getModel(), outFile)) return false;
 
-  if (!exportMetabolites(copasiModel)) return false;
+  if (!exportMetabolites(pDataModel->getModel())) return false;
 
-  if (!exportCompartments(copasiModel)) return false;
+  if (!exportCompartments(pDataModel->getModel())) return false;
 
-  if (!exportModelValues(copasiModel)) return false;
+  if (!exportModelValues(pDataModel->getModel())) return false;
 
-  if (!exportReacParamsAndFuncs(copasiModel)) return false;
+  if (!exportReacParamsAndFuncs(pDataModel->getModel())) return false;
 
-  if (!exportKineticFunctionGroup (copasiModel)) return false;
+  if (!exportKineticFunctionGroup (pDataModel->getModel())) return false;
 
-  if (!exportODEs(copasiModel)) return false;
+  if (!exportODEs(pDataModel->getModel())) return false;
 
-  //  if (!exportModelValuesExpressions(copasiModel)) return false;
+  //  if (!exportModelValuesExpressions(pDataModel->getModel())) return false;
 
-  exportObjectNodesFromModel(copasiModel);
+  exportObjectNodesFromModel(pDataModel);
 
-  if (!exportMetabolitesConcentrations(copasiModel)) return false;
+  if (!exportMetabolitesConcentrations(pDataModel->getModel())) return false;
 
   outFile << std::endl << exportTitleString(INITIAL) << std::endl << initial.str() << exportClosingString(INITIAL);
   outFile << std::endl << exportTitleString(FIXED) << std::endl << fixed.str() << exportClosingString(FIXED);
@@ -114,23 +115,23 @@ bool CODEExporter::exportMathModel(const CModel * copasiModel, std::string mmasc
   outFile << std::endl << exportTitleString(FUNCTIONS) << std::endl << functions.str() << exportClosingString(FUNCTIONS);
   outFile << std::endl << exportTitleString(ODEs) << std::endl << ode.str() << exportClosingString(ODEs);
 
-  if (!exportClosingData(copasiModel, outFile)) return false;
+  if (!exportClosingData(pDataModel->getModel(), outFile)) return false;
 
   return true;
 }
 
-void CODEExporter::exportObjectNodesFromModel(const CModel * model)
+void CODEExporter::exportObjectNodesFromModel(const CCopasiDataModel* pDataModel)
 {
 
   unsigned int i, imax;
 
-  imax = model->getListOfSimulatedRefreshes().size();
+  imax = pDataModel->getModel()->getListOfSimulatedRefreshes().size();
   for (i = 0; i < imax; ++i)
     {
-      CCopasiObject * tmp = CCopasiContainer::Root;
+      CCopasiObject * tmp = CCopasiRootContainer::Root;
 
-      CCopasiObject * obj = findObjectFromRefresh(tmp, model->getListOfSimulatedRefreshes()[i]);
-      if (obj) exportSimulatedObject(obj);
+      CCopasiObject * obj = findObjectFromRefresh(tmp, pDataModel->getModel()->getListOfSimulatedRefreshes()[i]);
+      if (obj) exportSimulatedObject(obj, pDataModel);
       // else
       // std::cout << "Object for Refresh method is not found!" << std::endl;
     }
@@ -180,7 +181,7 @@ CCopasiObject* CODEExporter::findObjectFromRefresh(CCopasiObject * tmp, const Re
   return NULL;
 }
 
-void CODEExporter::exportSimulatedObject(CCopasiObject * obj)
+void CODEExporter::exportSimulatedObject(CCopasiObject * obj, const CCopasiDataModel* pDataModel)
 {
 
   if (obj->isReference())
@@ -192,7 +193,7 @@ void CODEExporter::exportSimulatedObject(CCopasiObject * obj)
 
       if (typeString == "Metabolite" || typeString == "ModelValue" || typeString == "Compartment")
         if (name == "Concentration" || name == "Value" || name == "Volume" || name == "Rate")
-          if (!exportModelEntityExpression(obj)) return;
+          if (!exportModelEntityExpression(obj, pDataModel)) return;
           else return;
 
       //TODO warning for initial assignments
@@ -200,7 +201,7 @@ void CODEExporter::exportSimulatedObject(CCopasiObject * obj)
   return;
 }
 
-bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
+bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopasiDataModel* pDataModel)
 {
   if (obj->isReference())
     {
@@ -226,10 +227,10 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
           assert(pExpression);
 
           std::string result;
-          result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression);
+          result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
           if ((isEmptyString(result)))
             {
-              expression << exportExpression(pExpression);
+              expression << exportExpression(pExpression, pDataModel);
             }
           equations[tmp->getKey()] = expression.str();
         }
@@ -245,12 +246,12 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
             assert(pExpression);
 
             std::string result;
-            result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression);
+            result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
             if (!(isEmptyString(result)))
               comments << result;
             else
               {
-                expression << exportExpression(pExpression);
+                expression << exportExpression(pExpression, pDataModel);
               }
 
             str1 = expression.str();
@@ -277,7 +278,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
             assert(pExpression);
 
             std::string result;
-            result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression);
+            result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
             if (!(isEmptyString(result)))
               comments << result;
 
@@ -306,12 +307,13 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj)
   return true;
 }
 
-std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression)
+std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel)
 {
 
   std::ostringstream result;
   const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
   unsigned j, jMax = objectNodes.size();
+  assert(pDataModel != NULL);
   for (j = 0;j < jMax;++j)
     {
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
@@ -319,7 +321,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
           const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
           std::vector<CCopasiContainer*> containers;
-          containers.push_back(CCopasiDataModel::Global->getModel());
+          containers.push_back(const_cast<CCopasiDataModel*>(pDataModel)->getModel());
           const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
 
@@ -401,13 +403,14 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
   return result.str();
 }
 
-std::string CODEExporter::exportExpression(const CExpression* pExpression)
+std::string CODEExporter::exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel)
 {
 
   std::string result;
 
   CExpression* tmpExpression;
   tmpExpression = new CExpression(*pExpression);
+  assert(pDataModel != NULL);
 
   const std::vector<CEvaluationNode*>& objectNodes = tmpExpression->getNodeList();
   unsigned j, jMax = objectNodes.size();
@@ -433,11 +436,11 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression)
 
               if (objectName == "Initial Time")
                 {
-                  CTrajectoryTask * pTrajectory =
-                    dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+                  const CTrajectoryTask * pTrajectory =
+                    dynamic_cast<CTrajectoryTask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time-Course"]);
 
-                  CTrajectoryProblem * pTrajectoryProblem =
-                    dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
+                  const CTrajectoryProblem * pTrajectoryProblem =
+                    dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 
                   std::ostringstream value;
                   value << pTrajectoryProblem->getOutputStartTime();
@@ -1139,7 +1142,7 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
               index = tmpfunc->getVariableIndex(name);
               role = tmpfunc->getVariables()[index]->getUsage();
 
-              CCopasiObject * obj = GlobalKeys.get(keyMap[index][0]);
+              CCopasiObject * obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[index][0]);
 
               if ((role == CFunctionParameter::SUBSTRATE)
                   || (role == CFunctionParameter::PRODUCT)
@@ -1202,7 +1205,7 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
 
       const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
-      obj = GlobalKeys.get(keyMap[0][0]);
+      obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[0][0]);
 
       if (!(reac->isLocalParameter(0)))
         {
@@ -1233,7 +1236,7 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
         {
           expression << "-";
 
-          obj = GlobalKeys.get(keyMap[2][0]);
+          obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[2][0]);
 
           if (!(reac->isLocalParameter(2)))
             {
@@ -1283,7 +1286,7 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const CReaction 
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
       CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
 
       while (treeIt != NULL)
@@ -1405,7 +1408,7 @@ bool CODEExporter::isEmptyString(std::string & str)
  **/
 void CODEExporter::modifyTreeForMassAction(CFunction* tmpfunc)
 {
-  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
 
   CCopasiTree< CEvaluationNode>::iterator treeIt = tmpfunc->getRoot();
 

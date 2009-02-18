@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:34:58 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ class CSteadyStateTask : public CCopasiTask
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateTask(const CCopasiContainer * pParent = & RootContainer);
+    CSteadyStateTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor

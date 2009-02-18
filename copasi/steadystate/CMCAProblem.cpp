@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.13 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:55 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
+  $Revision: 1.14 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/18 20:55:34 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,6 +31,7 @@
 #include "CSteadyStateTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
@@ -121,8 +127,10 @@ const CState & CMCAProblem::getInitialState() const
 void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
   CSteadyStateTask * pSubTask = NULL;
-  if (CCopasiDataModel::Global && CCopasiDataModel::Global->getTaskList())
-    pSubTask = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
+  if (pDataModel && pDataModel->getTaskList())
+    pSubTask = dynamic_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
   if (steadyStateRequested && pSubTask)
     setValue("Steady-State", pSubTask->getKey());
@@ -140,7 +148,7 @@ bool CMCAProblem::isSteadyStateRequested() const
 CSteadyStateTask * CMCAProblem::getSubTask() const
   {
     if (isSteadyStateRequested())
-      return dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(* getValue("Steady-State").pKEY));
+      return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(* getValue("Steady-State").pKEY));
     else
       return NULL;
   }

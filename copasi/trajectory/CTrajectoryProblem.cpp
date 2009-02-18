@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:14:19 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 /**
  *  Default constructor.
@@ -200,7 +201,9 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      mpModel = CCopasiDataModel::Global->getModel();
+      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      assert(pDataModel != NULL);
+      mpModel = pDataModel->getModel();
       configBuffer.getVariable("EndTime", "C_FLOAT64",
                                mpDuration,
                                CReadConfig::LOOP);

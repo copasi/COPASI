@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:36:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include "CTrajectoryProblem.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 
@@ -107,8 +108,9 @@ void CLsodaMethod::initializeParameter()
       else
         {
           C_FLOAT64 OldValue = *getValue("Absolute Tolerance").pUDOUBLE;
-
-          CModel * pModel = CCopasiDataModel::Global->getModel();
+          CCopasiDataModel* pDataModel = this->getParentDatamodel();
+          assert(pDataModel != NULL);
+          CModel * pModel = pDataModel->getModel();
 
           if (pModel == NULL)
             // The default

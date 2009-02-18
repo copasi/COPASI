@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:36:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,6 @@
 #include "model/CChemEq.h"
 #include "model/CChemEqElement.h"
 #include "model/CCompartment.h"
-#include "utilities/CVersion.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CMatrix.h"
 #include "utilities/CDependencyGraph.h"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:34:30 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 #ifndef ODEExpoter_H__
 #define ODEExpoter_H__
 
+class CCopasiDataModel;
+
 class CODEExporter
   {
   protected:
@@ -42,7 +44,7 @@ class CODEExporter
      */
     virtual ~CODEExporter();
 
-    bool exportMathModel(const CModel* copasiModel, std::string mmasciiFilename, std::string Filter, bool overwriteFile);
+    bool exportMathModel(const CCopasiDataModel* pDataModel, std::string mmasciiFilename, std::string Filter, bool overwriteFile);
 
     virtual bool preprocess(const CModel* copasiModel);
 
@@ -57,17 +59,17 @@ class CODEExporter
     bool exportModelValues(const CModel* copasiModel);
 
 #if 1
-    void exportObjectNodesFromModel(const CModel * model);
+    void exportObjectNodesFromModel(const CCopasiDataModel* pDataModel);
 
     CCopasiObject* findObjectFromRefresh(CCopasiObject * tmp, const Refresh* ref);
 
-    void exportSimulatedObject(CCopasiObject * obj);
+    void exportSimulatedObject(CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 
-    bool exportModelEntityExpression(CCopasiObject * obj);
+    bool exportModelEntityExpression(CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 
-    std::string isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression);
+    std::string isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 
-    std::string exportExpression(const CExpression* pExpression);
+    std::string exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 
     virtual bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments);
 #endif

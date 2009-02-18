@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
+  $Revision: 1.20 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/18 20:55:33 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,6 +22,7 @@
 #include "copasi.h"
 #include "CReportDefinitionVector.h"
 #include "CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -25,7 +31,7 @@
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiVectorN< CReportDefinition >(name, pParent),
-    mKey(GlobalKeys.add("CReportDefinitionVector", this))
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("CReportDefinitionVector", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
@@ -35,7 +41,7 @@ CReportDefinitionVector::~CReportDefinitionVector()
 
 void CReportDefinitionVector::cleanup()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 }
 
 const std::string& CReportDefinitionVector::getKey()
@@ -61,7 +67,7 @@ CReportDefinition* CReportDefinitionVector::createReportDefinition(const std::st
 bool CReportDefinitionVector::removeReportDefinition(const std::string & key)
 {
   CReportDefinition* pRep =
-    dynamic_cast<CReportDefinition *>(GlobalKeys.get(key));
+    dynamic_cast<CReportDefinition *>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
   unsigned C_INT32 index = this->CCopasiVector<CReportDefinition>::getIndex(pRep);
   if (index == C_INVALID_INDEX)
     return false;

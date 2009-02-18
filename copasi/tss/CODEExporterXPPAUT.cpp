@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:36:48 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "CODEExporterXPPAUT.h"
 
@@ -54,14 +55,14 @@
 CODEExporterXPPAUT::CODEExporterXPPAUT()
 {}
 
-bool CODEExporterXPPAUT::exportTitleData(const CModel* /* copasiModel */, std::ofstream & outFile)
+bool CODEExporterXPPAUT::exportTitleData(const CCopasiDataModel* pDataModel, std::ofstream & outFile)
 {
 
   outFile << "@ t0=0,";  //TODO
-  CTrajectoryTask * pTrajectory =
-    dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-  CTrajectoryProblem * pTrajectoryProblem =
-    dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
+  const CTrajectoryTask * pTrajectory =
+    dynamic_cast<const CTrajectoryTask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time-Course"]);
+  const CTrajectoryProblem * pTrajectoryProblem =
+    dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 
   outFile << "total=" << pTrajectoryProblem->getDuration() << ",";
   outFile << "dt=" << pTrajectoryProblem->getStepSize()

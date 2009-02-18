@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/11 16:05:17 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "CScanMethod.h"
 #include "CScanTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 // this will have to be defined somewhere else with the
 // values of other distribution types
@@ -409,7 +410,7 @@ bool CScanMethod::scan()
   if (!mpProblem) return false;
 
   //a hack to ensure that the first subtask is run with initial conditions
-  //CCopasiDataModel::Global->getModel()->setState(&mpProblem->getInitialState());
+  //pDataModel->getModel()->setState(&mpProblem->getInitialState());
 
   bool success = true;
 

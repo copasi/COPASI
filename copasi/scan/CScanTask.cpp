@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:05:37 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:55:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include "utilities/COutputHandler.h"
 #include "utilities/CProcessReport.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::scan, pParent)
@@ -180,42 +181,43 @@ bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
 
   //get the parameters from the problem
   CCopasiTask::Type type = *(CCopasiTask::Type*) pProblem->getValue("Subtask").pUINT;
-
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
   switch (type)
     {
     case CCopasiTask::steadyState:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+                  ((*pDataModel->getTaskList())["Steady-State"]);
       break;
 
     case CCopasiTask::timeCourse:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+                  ((*pDataModel->getTaskList())["Time-Course"]);
       break;
 
     case CCopasiTask::mca:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
+                  ((*pDataModel->getTaskList())["Metabolic Control Analysis"]);
       break;
 
     case CCopasiTask::lyap:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+                  ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
       break;
 
     case CCopasiTask::optimization:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Optimization"]);
+                  ((*pDataModel->getTaskList())["Optimization"]);
       break;
 
     case CCopasiTask::parameterFitting:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]);
+                  ((*pDataModel->getTaskList())["Parameter Estimation"]);
       break;
 
     case CCopasiTask::sens:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
+                  ((*pDataModel->getTaskList())["Sensitivities"]);
       break;
 
     default:
@@ -230,7 +232,7 @@ bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
 
   if (!mpSubtask) return false;
 
-  mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel()); //TODO
+  mpSubtask->getProblem()->setModel(pDataModel->getModel()); //TODO
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)
