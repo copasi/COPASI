@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:53 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,6 @@
 #include <QPixmap>
 #include <Q3GridLayout>
 #include <Q3VBoxLayout>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CUpDownSubwidget
   {
@@ -257,8 +255,6 @@ namespace Ui
   {
   class CUpDownSubwidget: public Ui_CUpDownSubwidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CUpDownSubwidget : public QWidget, public Ui::CUpDownSubwidget
   {

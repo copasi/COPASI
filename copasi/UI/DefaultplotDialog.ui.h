@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
-  $Revision: 1.9 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 20:40:09 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
+ $Revision: 1.10 $
+ $Name:  $
+ $Author: gauges $
+ $Date: 2009/02/18 20:48:27 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -30,11 +30,15 @@
 #include "UI/qtUtilities.h"
 #include "utilities/CCopasiTask.h"
 #include "report/COutputAssistant.h"
+#include "report/CCopasiRootContainer.h"
 
 void DefaultPlotDialog::slotCreate()
 {
   if (!mpTask) return;
-  if (COutputAssistant::createDefaultOutput(mIndex, mpTask))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  if (COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel))
     this->accept();
   else
     this->reject();

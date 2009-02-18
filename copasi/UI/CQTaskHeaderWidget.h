@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:10 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,8 +32,6 @@ class CCopasiTask;
 #include <QtGui/QSpacerItem>
 #include <QtGui/QWidget>
 #include <string>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQTaskHeaderWidget
   {
@@ -104,8 +102,6 @@ namespace Ui
   {
   class CQTaskHeaderWidget: public Ui_CQTaskHeaderWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQTaskHeaderWidget : public QWidget, public Ui::CQTaskHeaderWidget
   {

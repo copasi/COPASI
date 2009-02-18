@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,12 +30,13 @@
 #include "qtUtilities.h"
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 
 std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
   {
-    CCopasiVectorN<CEvaluationTree>& tmp = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+    CCopasiVectorN<CEvaluationTree>& tmp = CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -140,7 +141,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
-  CCopasiVectorN<CEvaluationTree>& FunctionList = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+  CCopasiVectorN<CEvaluationTree>& FunctionList = CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
@@ -150,7 +151,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
       nname += TO_UTF8(QString::number(i));
     }
 
-  CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
+  CCopasiRootContainer::Root->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
 
   return pFunc;
 }
@@ -160,11 +161,12 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
   if (keys.size() == 0)
     return;
 
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
   if (pModel == NULL)
     return;
 
-  CFunctionDB * pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB * pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
   if (pFunctionDB == NULL)
     return;
 
@@ -186,7 +188,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
-      pFunction = dynamic_cast<CEvaluationTree *>(GlobalKeys.get(keys[i]));
+      pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
       if (pFunction == NULL)
         continue;
 
@@ -347,7 +349,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
         //now delete functions
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getFunctionList()->removeFunction(keys[i]);
+            CCopasiRootContainer::Root->getFunctionList()->removeFunction(keys[i]);
             protectedNotify(ListViews::FUNCTION, ListViews::DELETE, keys[i]);
           }
 

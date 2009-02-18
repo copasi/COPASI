@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiStaticString.h"
 #include "utilities/CCopasiVector.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "./icons/objectAll.xpm"
 #include "./icons/objectParts.xpm"
@@ -394,7 +395,7 @@ void ObjectBrowserWidget::quick_sort(int m, int n, ObjectBrowserItem** quick_sor
 
 void ObjectBrowserWidget::loadData()
 {
-  CCopasiContainer * root = CCopasiContainer::Root;
+  CCopasiContainer * root = CCopasiRootContainer::Root;
   ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
   itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -49,7 +50,8 @@
 
 std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
   {
-    CCopasiVector<CMetab>& tmp = CCopasiDataModel::Global->getModel()->getMetabolites();
+    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+    CCopasiVector<CMetab>& tmp = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getMetabolites();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -109,12 +111,13 @@ void MetabolitesWidget::updateHeaderUnits()
 {
   Q3Header *tableHeader = table->horizontalHeader();
 
-  if (CCopasiDataModel::Global->getModel())
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  if ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())
     {
-      tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
-      tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+      tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getConcentrationUnitName()) + ")");
+      tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getConcentrationUnitName()) + ")");
       tableHeader->setLabel(COL_CRATE, "Rate\n("
-                            + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
+                            + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getConcentrationRateUnitName()) + ")");
     }
 }
 
@@ -128,7 +131,8 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   // Compartment
   QStringList compartmentType;
-  const CCopasiVector < CCompartment > & compartments = CCopasiDataModel::Global->getModel()->getCompartments();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVector < CCompartment > & compartments = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
     compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
   Q3ComboTableItem * item = new Q3ComboTableItem(table, compartmentType, false);
@@ -206,7 +210,8 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       && (Compartment != ""))
     {
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
-      if (!CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(pMetab))
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      if (!(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(Compartment)]->addMetabolite(pMetab))
         {
           QString msg;
           msg = "Unable to move species '" + FROM_UTF8(pMetab->getObjectName()) + "'\n"
@@ -220,9 +225,9 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
         }
       else
         {
-          CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
-          CCopasiDataModel::Global->getModel()->setCompileFlag();
-          CCopasiDataModel::Global->getModel()->initializeMetabolites();
+          (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
+          (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->setCompileFlag();
+          (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->initializeMetabolites();
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, "");
           protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
         }
@@ -245,8 +250,9 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
   if (exc != COL_COMPARTMENT)
     {
       QStringList compartmentType;
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
       const CCopasiVector < CCompartment > & compartments =
-        CCopasiDataModel::Global->getModel()->getCompartments();
+        (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
       for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
         compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
 
@@ -321,13 +327,16 @@ QString MetabolitesWidget::defaultObjectName() const
 
 CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 {
-  if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
-    CCopasiDataModel::Global->getModel()->createCompartment("compartment");
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  if (pDataModel->getModel()->getCompartments().size() == 0)
+    pDataModel->getModel()->createCompartment("compartment");
 
   std::string nname = name;
   int i = 0;
   CMetab* pMetab;
-  while (!(pMetab = CCopasiDataModel::Global->getModel()->createMetabolite(nname, "", 1.0, CModelEntity::REACTIONS)))
+  while (!(pMetab = pDataModel->getModel()->createMetabolite(nname, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
       nname = name + "_";
@@ -338,7 +347,10 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 
 void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
     return;
 
@@ -360,7 +372,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
   for (i = 0; i < imax; i++) //all compartments
     {
       CMetab* pMetab =
-        dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
+        dynamic_cast< CMetab *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
 
       metaboliteList.append(FROM_UTF8(pMetab->getObjectName()));
       metaboliteList.append(", ");
@@ -479,7 +491,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
       {
         for (i = 0; i < imax; i++)
           {
-            CCopasiDataModel::Global->getModel()->removeMetabolite(keys[i]);
+            pDataModel->getModel()->removeMetabolite(keys[i]);
           }
 
         for (i = 0; i < imax; i++)
@@ -532,15 +544,16 @@ void MetabolitesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
 void MetabolitesWidget::initialConcentrationChanged(unsigned C_INT32 row)
 {
   const CMetab * pMetab
-  = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
+  = static_cast< CMetab * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKeys[row]));
 
   const CCompartment * pCompartment = NULL;
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   unsigned C_INT32 Index =
-    CCopasiDataModel::Global->getModel()->getCompartments().getIndex(TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT)));
+    (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments().getIndex(TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT)));
   if (Index != C_INVALID_INDEX)
     {
-      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[Index];
+      pCompartment = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[Index];
     }
 
   if (!pMetab || !pCompartment) return;
@@ -548,19 +561,20 @@ void MetabolitesWidget::initialConcentrationChanged(unsigned C_INT32 row)
   table->setText(row, COL_INUMBER,
                  QString::number(CMetab::convertToNumber(table->text(row, COL_ICONCENTRATION).toDouble(),
                                                          *pCompartment,
-                                                         *CCopasiDataModel::Global->getModel())));
+                                                         *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())));
   return;
 }
 
 void MetabolitesWidget::initialNumberChanged(unsigned C_INT32 row)
 {
   const CMetab * pMetab
-  = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
+  = static_cast< CMetab * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKeys[row]));
 
   const CCompartment * pCompartment = NULL;
   try
     {
-      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT))];
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      pCompartment = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT))];
     }
   catch (...) {}
 
@@ -569,21 +583,22 @@ void MetabolitesWidget::initialNumberChanged(unsigned C_INT32 row)
   table->setText(row, COL_ICONCENTRATION,
                  QString::number(CMetab::convertToConcentration(table->text(row, COL_INUMBER).toDouble(),
                                  *pCompartment,
-                                 *CCopasiDataModel::Global->getModel())));
+                                 *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())));
   return;
 }
 
 void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
 {
   const CMetab * pMetab
-  = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
+  = static_cast< CMetab * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKeys[row]));
 
   QString Compartment = table->text(row, COL_CURRENTCOMPARTMENT);
 
   const CCompartment * pCompartment = NULL;
   try
     {
-      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT))];
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      pCompartment = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(table->text(row, COL_CURRENTCOMPARTMENT))];
     }
   catch (...) {}
 
@@ -595,7 +610,7 @@ void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
   table->setText(row, COL_CURRENTCOMPARTMENT, Compartment);
 
   pCompartment
-  = CCopasiDataModel::Global->getModel()->getCompartments()[TO_UTF8(Compartment)];
+  = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(Compartment)];
   Factor *= pCompartment->getInitialValue();
 
   table->setText(row, COL_INUMBER,

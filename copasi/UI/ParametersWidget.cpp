@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include <Q3VBoxLayout>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "model/CMetabNameInterface.h"
@@ -274,7 +275,7 @@ void ParametersWidget::savePressed()
   std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
   if (file.fail()) return;
 
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
   if (!model) return;
 
   file << model->printParameterOverview() << std::endl;
@@ -282,7 +283,7 @@ void ParametersWidget::savePressed()
 
 bool ParametersWidget::loadFromModel()
 {
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
   if (!model) return false;
 
   listView->clear();
@@ -349,8 +350,11 @@ bool ParametersWidget::loadFromModel()
       for (j = 0; j < jmax; ++j)
         if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
           {
-            CCopasiObject * obj = GlobalKeys.get(reac->getParameterMappings()[j][0]);
+            CCopasiObject * obj = CCopasiRootContainer::Root->getKeyFactory()->get(reac->getParameterMappings()[j][0]);
             if (!obj) continue;
+            assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+            CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+            assert(pDataModel != NULL);
 
             if (reac->isLocalParameter(j))
               {
@@ -358,7 +362,7 @@ bool ParametersWidget::loadFromModel()
                 if (!par) continue; //or rather fatal error?
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
                                        * par->getValue().pDOUBLE,
-                                       FROM_UTF8(units.getDimensions()[j].getDisplayString()));
+                                       FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
               }
             else
               {
@@ -366,7 +370,7 @@ bool ParametersWidget::loadFromModel()
                 if (!par) continue; //or rather fatal error?
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
                                        FROM_UTF8("-> " + par->getObjectName()),
-                                       FROM_UTF8(units.getDimensions()[j].getDisplayString()));
+                                       FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
               }
           }
 
@@ -486,8 +490,9 @@ bool ParametersWidget::saveToModel()
 
   if (changed)
     {
-      protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
-      CCopasiDataModel::Global->changed();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getKey());
+      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
     }
 
   return true;
@@ -513,7 +518,7 @@ void ParametersWidget::editItem(Q3ListViewItem * item)
 bool ParametersWidget::enter(const std::string & key)
 {
   objKey = key;
-  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(key));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (model) return loadFromModel();
   else return false;

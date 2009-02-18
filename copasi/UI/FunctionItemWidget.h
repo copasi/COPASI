@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,8 +32,6 @@
 #include <Q3BoxLayout>
 #include <Q3GridLayout>
 #include <Q3Frame>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_FunctionItemWidget
   {
@@ -388,8 +386,6 @@ namespace Ui
   {
   class FunctionItemWidget: public Ui_FunctionItemWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class FunctionItemWidget : public QDialog, public Ui::FunctionItemWidget
   {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:11 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,6 @@
 //Added by qt3to4:
 #include <Q3VBoxLayout>
 #include <Q3HBoxLayout>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQTaskBtnWidget
   {
@@ -110,8 +108,6 @@ namespace Ui
   {
   class CQTaskBtnWidget: public Ui_CQTaskBtnWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQTaskBtnWidget : public QWidget, public Ui::CQTaskBtnWidget
   {

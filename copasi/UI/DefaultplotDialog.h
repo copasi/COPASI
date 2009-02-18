@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:53 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,6 @@ class CCopasiTask;
 #include <QtGui/QSpacerItem>
 #include <vector>
 #include "copasi.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_DefaultPlotDialog
   {
@@ -128,8 +126,6 @@ namespace Ui
   {
   class DefaultPlotDialog: public Ui_DefaultPlotDialog {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class DefaultPlotDialog : public QDialog, public Ui::DefaultPlotDialog
   {

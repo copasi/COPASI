@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "parametertable.h" //for color table item
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "model/CModel.h"
 
@@ -128,7 +129,8 @@ void CQUpdatesWidget::fillRefreshsMapRecursively(const CCopasiObject* obj)
 void CQUpdatesWidget::loadWidget()
 {
 
-  CModel* pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CModel* pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
   if (!pModel) return;
   pModel->compileIfNecessary(NULL);
   mRefreshsMap.clear();

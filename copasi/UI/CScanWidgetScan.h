@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,6 @@ class CCopasiObject;
 #include <QtGui/QToolButton>
 #include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CScanWidgetScan
   {
@@ -254,8 +252,6 @@ namespace Ui
   {
   class CScanWidgetScan: public Ui_CScanWidgetScan {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CScanWidgetScan : public QWidget, public Ui::CScanWidgetScan
   {

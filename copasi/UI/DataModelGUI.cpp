@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:48:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@
 #endif
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
 
@@ -54,7 +55,8 @@ DataModelGUI::DataModelGUI():
     mOutputHandlerPlot()
 {
   this->populateData();
-  CCopasiDataModel::Global->addInterface(&mOutputHandlerPlot);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::Root->getDatamodelList())[0]->addInterface(&mOutputHandlerPlot);
 
   //mpMathModel = NULL;
   //mMathModelUpdateScheduled = false;
@@ -64,41 +66,44 @@ DataModelGUI::DataModelGUI():
 
 void DataModelGUI::linkDataModelToGUI()
 {
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   //math model
   //pdelete(mpMathModel);
   //mpMathModel = new CMathModel();
-  //mpMathModel->setModel(CCopasiDataModel::Global->getModel());
+  //mpMathModel->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
 
   //connect the folder tree with the backend objects
-  mTree.findNodeFromId(1)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
-  mTree.findNodeFromId(21)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
-  mTree.findNodeFromId(221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Elementary Flux Modes"]->getKey());
-  mTree.findNodeFromId(222)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
-  mTree.findNodeFromId(2221)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Moieties"]->getKey());
-  mTree.findNodeFromId(23)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
-  mTree.findNodeFromId(24)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
+  mTree.findNodeFromId(1)->setObjectKey(pDataModel->getModel()->getKey());
+  mTree.findNodeFromId(21)->setObjectKey((*pDataModel->getTaskList())["Steady-State"]->getKey());
+  mTree.findNodeFromId(221)->setObjectKey((*pDataModel->getTaskList())["Elementary Flux Modes"]->getKey());
+  mTree.findNodeFromId(222)->setObjectKey((*pDataModel->getTaskList())["Moieties"]->getKey());
+  mTree.findNodeFromId(2221)->setObjectKey((*pDataModel->getTaskList())["Moieties"]->getKey());
+  mTree.findNodeFromId(23)->setObjectKey((*pDataModel->getTaskList())["Time-Course"]->getKey());
+  mTree.findNodeFromId(24)->setObjectKey((*pDataModel->getTaskList())["Metabolic Control Analysis"]->getKey());
 
 #ifdef COPASI_TSS
-  mTree.findNodeFromId(25)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation"]->getKey());
+  mTree.findNodeFromId(25)->setObjectKey((*pDataModel->getTaskList())["Time Scale Separation"]->getKey());
 #endif
 
 #ifdef COPASI_TSSA
-  mTree.findNodeFromId(27)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]->getKey());
+  mTree.findNodeFromId(27)->setObjectKey((*pDataModel->getTaskList())["Time Scale Separation Analysis"]->getKey());
 #endif // COPASI_TSSA
 
-  mTree.findNodeFromId(26)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]->getKey());
+  mTree.findNodeFromId(26)->setObjectKey((*pDataModel->getTaskList())["Lyapunov Exponents"]->getKey());
 
-  mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
-  mTree.findNodeFromId(32)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Optimization"]->getKey());
-  mTree.findNodeFromId(33)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->getKey());
+  mTree.findNodeFromId(31)->setObjectKey((*pDataModel->getTaskList())["Scan"]->getKey());
+  mTree.findNodeFromId(32)->setObjectKey((*pDataModel->getTaskList())["Optimization"]->getKey());
+  mTree.findNodeFromId(33)->setObjectKey((*pDataModel->getTaskList())["Parameter Estimation"]->getKey());
 
-  mTree.findNodeFromId(34)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]->getKey());
+  mTree.findNodeFromId(34)->setObjectKey((*pDataModel->getTaskList())["Sensitivities"]->getKey());
 
-  mTree.findNodeFromId(117)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey()); //parameters
+  mTree.findNodeFromId(117)->setObjectKey(pDataModel->getModel()->getKey()); //parameters
 
-  mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
+  mTree.findNodeFromId(43)->setObjectKey(pDataModel->getReportDefinitionList()->getKey());
   //mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
-  mTree.findNodeFromId(42)->setObjectKey(CCopasiDataModel::Global->getPlotDefinitionList()->getKey());
+  mTree.findNodeFromId(42)->setObjectKey(pDataModel->getPlotDefinitionList()->getKey());
 
   ListViews::setDataModel(this);
 }
@@ -142,8 +147,9 @@ void DataModelGUI::updateCompartments()
 
   parent->removeChildren();
 
-  if (CCopasiDataModel::Global->getModel() == NULL) return;
-  const CCopasiVectorN< CCompartment > & objects = CCopasiDataModel::Global->getModel()->getCompartments();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  if ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel() == NULL) return;
+  const CCopasiVectorN< CCompartment > & objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
   C_INT32 j, jmax = objects.size();
   CCompartment *obj;
   for (j = 0; j < jmax; j++)
@@ -161,14 +167,15 @@ void DataModelGUI::updateMetabolites()
 
   parent->removeChildren();
 
-  const CCopasiVector< CMetab > & objects = CCopasiDataModel::Global->getModel()->getMetabolites();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVector< CMetab > & objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getMetabolites();
   C_INT32 j, jmax = objects.size();
   CMetab *metab;
   for (j = 0; j < jmax; j++)
     {
       metab = objects[j];
       parent->addChild(-1,
-                        FROM_UTF8(CMetabNameInterface::getDisplayName(CCopasiDataModel::Global->getModel(), *metab)),
+                        FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel(), *metab)),
                         metab->getKey());
     }
 }
@@ -179,7 +186,8 @@ void DataModelGUI::updateReactions()
 
   parent->removeChildren();
 
-  const CCopasiVectorN< CReaction > & objects = CCopasiDataModel::Global->getModel()->getReactions();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVectorN< CReaction > & objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getReactions();
   C_INT32 j, jmax = objects.size();
   CReaction *obj;
   for (j = 0; j < jmax; j++)
@@ -198,7 +206,8 @@ void DataModelGUI::updateModelValues()
 
   parent->removeChildren();
 
-  const CCopasiVectorN< CModelValue > & objects = CCopasiDataModel::Global->getModel()->getModelValues();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVectorN< CModelValue > & objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getModelValues();
   C_INT32 j, jmax = objects.size();
   CModelValue *obj;
   for (j = 0; j < jmax; j++)
@@ -216,7 +225,8 @@ void DataModelGUI::updateFunctions()
 
   parent->removeChildren();
 
-  const CCopasiVectorN< CEvaluationTree > & objects = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVectorN< CEvaluationTree > & objects = CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
   C_INT32 j, jmax = objects.size();
   CFunction *obj;
   for (j = 0; j < jmax; j++)
@@ -234,7 +244,8 @@ void DataModelGUI::updateEvents()
 
   parent->removeChildren();
 
-  const CCopasiVectorN< CEvent > & objects = CCopasiDataModel::Global->getModel()->getEvents();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVectorN< CEvent > & objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getEvents();
   C_INT32 j, jmax = objects.size();
   CEvent *obj;
   for (j = 0; j < jmax; j++)
@@ -253,7 +264,8 @@ void DataModelGUI::updateReportDefinitions()
 
   parent->removeChildren();
 
-  const CCopasiVector< CReportDefinition >* objects = CCopasiDataModel::Global->getReportDefinitionList();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CCopasiVector< CReportDefinition >* objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 j, jmax = objects->size();
   CReportDefinition *obj;
   for (j = 0; j < jmax; j++)
@@ -270,13 +282,16 @@ void DataModelGUI::updatePlots()
   IndexedNode * parent = mTree.findNodeFromId(42);
 
   parent->removeChildren();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;
-  C_INT32 j, jmax = CCopasiDataModel::Global->getPlotDefinitionList()->size();
+  C_INT32 j, jmax = pDataModel->getPlotDefinitionList()->size();
   CPlotSpecification *obj;
   for (j = 0; j < jmax; j++)
     {
-      obj = (*CCopasiDataModel::Global->getPlotDefinitionList())[j];
+      obj = (*pDataModel->getPlotDefinitionList())[j];
       parent->addChild(-1,
                         FROM_UTF8(obj->getObjectName()),
                         obj->CCopasiParameter::getKey());
@@ -296,9 +311,10 @@ const IndexedNode * DataModelGUI::getNode(const int & id) const
 
 bool DataModelGUI::createModel()
 {
-  if (!CCopasiDataModel::Global->newModel(NULL, NULL)) return false;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  if (!(*CCopasiRootContainer::Root->getDatamodelList())[0]->newModel(NULL, NULL)) return false;
 
-  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+  mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::Root->getDatamodelList())[0]->getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -312,7 +328,8 @@ bool DataModelGUI::loadModel(const std::string & fileName)
 
   try
     {
-      success = CCopasiDataModel::Global->loadModel(fileName, pProgressBar);
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      success = (*CCopasiRootContainer::Root->getDatamodelList())[0]->loadModel(fileName, pProgressBar);
     }
 
   catch (...)
@@ -322,10 +339,10 @@ bool DataModelGUI::loadModel(const std::string & fileName)
 
   if (success)
     {
-      CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+      CCopasiRootContainer::Root->getConfiguration()->getRecentFiles().addFile(fileName);
 
       // getModel()->setCompileFlag();
-      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::Root->getDatamodelList())[0]->getPlotDefinitionList());
 
       linkDataModelToGUI();
     }
@@ -343,7 +360,8 @@ bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 
   try
     {
-      success = CCopasiDataModel::Global->saveModel(fileName, pProgressBar, overwriteFile);
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      success = (*CCopasiRootContainer::Root->getDatamodelList())[0]->saveModel(fileName, pProgressBar, overwriteFile);
     }
 
   catch (...)
@@ -352,7 +370,7 @@ bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
     }
 
   if (success)
-    CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+    CCopasiRootContainer::Root->getConfiguration()->getRecentFiles().addFile(fileName);
 
   pdelete(pProgressBar);
 
@@ -365,7 +383,8 @@ bool DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
   bool success = false;
   try
     {
-      success = CCopasiDataModel::Global->importSBMLFromString(sbmlDocumentText, tmpBar);
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      success = (*CCopasiRootContainer::Root->getDatamodelList())[0]->importSBMLFromString(sbmlDocumentText, tmpBar);
     }
   catch (CCopasiException except)
     {
@@ -373,7 +392,8 @@ bool DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
       throw except;
     }
 
-  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::Root->getDatamodelList())[0]->getPlotDefinitionList());
 
   pdelete(tmpBar);
 
@@ -387,7 +407,8 @@ bool DataModelGUI::importSBML(const std::string & fileName)
   bool success = false;
   try
     {
-      success = CCopasiDataModel::Global->importSBML(fileName, tmpBar);
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      success = (*CCopasiRootContainer::Root->getDatamodelList())[0]->importSBML(fileName, tmpBar);
     }
 
   catch (CCopasiException except)
@@ -402,9 +423,10 @@ bool DataModelGUI::importSBML(const std::string & fileName)
       fatalError();
     }
 
-  if (success) CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
+  if (success) CCopasiRootContainer::Root->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
 
-  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::Root->getDatamodelList())[0]->getPlotDefinitionList());
 
   pdelete(tmpBar);
 
@@ -418,7 +440,8 @@ std::string DataModelGUI::exportSBMLToString()
   std::string str;
   try
     {
-      str = CCopasiDataModel::Global->exportSBMLToString(tmpBar, 2, 3);
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      str = (*CCopasiRootContainer::Root->getDatamodelList())[0]->exportSBMLToString(tmpBar, 2, 3);
     }
   catch (CCopasiException except)
     {
@@ -437,7 +460,8 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, 
   bool success = false;
   try
     {
-      success = CCopasiDataModel::Global->exportSBML(fileName, overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete, exportCOPASIMIRIAM, tmpBar);
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      success = (*CCopasiRootContainer::Root->getDatamodelList())[0]->exportSBML(fileName, overwriteFile, sbmlLevel, sbmlVersion, exportIncomplete, exportCOPASIMIRIAM, tmpBar);
     }
   catch (CCopasiException except)
     {
@@ -445,7 +469,7 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, 
       throw except;
     }
 
-  if (success) CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
+  if (success) CCopasiRootContainer::Root->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
 
   pdelete(tmpBar);
 
@@ -455,7 +479,8 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, 
 bool DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
   CProgressBar* pProgressBar = new CProgressBar();
-  bool success = CCopasiDataModel::Global->exportMathModel(fileName, pProgressBar, filter, overwriteFile);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  bool success = (*CCopasiRootContainer::Root->getDatamodelList())[0]->exportMathModel(fileName, pProgressBar, filter, overwriteFile);
 
   pdelete(pProgressBar);
   return success;
