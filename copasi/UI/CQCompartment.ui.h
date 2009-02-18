@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 #include "model/CChemEqInterface.h"
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
+#include "report/CCopasiRootContainer.h"
 
 void CQCompartment::init()
 {
@@ -81,7 +82,8 @@ void CQCompartment::slotBtnNew()
   std::string name = "compartment";
   int i = 0;
 
-  while (!(mpCompartment = CCopasiDataModel::Global->getModel()->createCompartment(name)))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  while (!(mpCompartment = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createCompartment(name)))
     {
       i++;
       name = "compartment_";
@@ -94,7 +96,10 @@ void CQCompartment::slotBtnNew()
 
 void CQCompartment::slotBtnDelete()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
 
   if (mpCompartment == NULL) return;
@@ -225,14 +230,14 @@ void CQCompartment::slotBtnDelete()
     case QMessageBox::Ok:                                 // Yes or Enter
       {
         unsigned C_INT32 Index =
-          CCopasiDataModel::Global->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
-        CCopasiDataModel::Global->getModel()->removeCompartment(mKey);
+          pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
+        pDataModel->getModel()->removeCompartment(mKey);
 
         unsigned C_INT32 Size =
-          CCopasiDataModel::Global->getModel()->getCompartments().size();
+          pDataModel->getModel()->getCompartments().size();
 
         if (Size > 0)
-          enter(CCopasiDataModel::Global->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
+          enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
         else
           enter("");
 
@@ -342,7 +347,7 @@ void CQCompartment::slotInitialExpressionValid(bool valid)
 bool CQCompartment::enter(const std::string & key)
 {
   mKey = key;
-  mpCompartment = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
+  mpCompartment = dynamic_cast< CCompartment * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!mpCompartment)
     {
@@ -400,22 +405,24 @@ bool CQCompartment::update(ListViews::ObjectType objectType,
 void CQCompartment::load()
 {
   if (mpCompartment == NULL) return;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
 
   // Update the labels to reflect the model units
   mpLblInitialValue->setText("Initial Volume ("
-                             + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+                             + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
   mpLblInitialExpression->setText("Initial Expression ("
-                                  + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+                                  + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
 
   mpLblExpression->setText("Expression ("
-                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+                           + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
 
   mpLblVolume->setText("Volume ("
-                       + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+                       + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
 
   mpLblRate->setText("Rate ("
-                     + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName())
-                     + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
+                     + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName())
+                     + "/" + FROM_UTF8(pDataModel->getModel()->getTimeUnitName()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
@@ -530,7 +537,8 @@ void CQCompartment::save()
 
   if (mChanged)
     {
-      CCopasiDataModel::Global->changed();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingResultTab1.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,8 +33,6 @@ class CFitProblem;
 #include <QtGui/QSpacerItem>
 #include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQFittingResultTab1
   {
@@ -212,8 +210,6 @@ namespace Ui
   {
   class CQFittingResultTab1: public Ui_CQFittingResultTab1 {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQFittingResultTab1 : public QWidget, public Ui::CQFittingResultTab1
   {

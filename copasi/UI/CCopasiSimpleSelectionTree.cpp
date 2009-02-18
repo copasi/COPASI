@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CCopasiTask.h"
 #include "steadystate/CMCAMethod.h"
@@ -123,14 +124,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time"));
+  pObject = CCopasiRootContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time"));
   if (filter(flag, pObject))
     {
       pItem = new Q3ListViewItem(mpTimeSubtree, "cpu time");
       treeItems[pItem] = pObject;
     }
 
-  pObject = CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  pObject = CCopasiRootContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
   if (filter(flag, pObject))
     {
       pItem = new Q3ListViewItem(mpTimeSubtree, "real time");
@@ -389,9 +390,11 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   // find all result matrices
   // Metabolic Control Analysis
   CCopasiTask *task;
-
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   // MCA
-  task = dynamic_cast<CCopasiTask*>((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
+  task = dynamic_cast<CCopasiTask*>((*pDataModel->getTaskList())["Metabolic Control Analysis"]);
   try
     {
       if (task && task->updateMatrices())
@@ -427,7 +430,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   {}
 
   // Steady State
-  task = dynamic_cast<CCopasiTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+  task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Steady-State"]);
   try
     {
       if (task && task->updateMatrices())
@@ -456,7 +459,7 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   {}
 
   // Sensitivities
-  task = dynamic_cast<CCopasiTask *>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
+  task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Sensitivities"]);
   try
     {
       if (task && task->updateMatrices())

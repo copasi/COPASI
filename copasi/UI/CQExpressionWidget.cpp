@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 17:53:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,10 +31,12 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
+#include "function/CFunctionDB.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : Q3SyntaxHighlighter(ew)
@@ -346,7 +348,14 @@ void CQExpressionWidget::setExpression(const std::string & expression)
             }
 
           CCopasiObjectName temp_CN(objectName);
-          CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
+          CFunctionDB* pFunDB = CCopasiRootContainer::Root->getFunctionList();
+          assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+          CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+          assert(pDataModel != NULL);
+          std::vector<CCopasiContainer*> containers;
+          containers.push_back(pDataModel);
+          containers.push_back(pFunDB);
+          CCopasiObject* temp_object = CCopasiContainer::ObjectFromName(containers, temp_CN);
           if (temp_object != NULL)
             {
               std::string DisplayName = temp_object->getObjectDisplayName();

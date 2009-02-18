@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.4 $
+$Revision: 1.5 $
 $Name:  $
-$Author: shoops $
-$Date: 2008/12/18 19:56:20 $
+$Author: gauges $
+$Date: 2009/02/18 20:46:37 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@ End CVS Header */
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "lyap/CLyapTask.h"
@@ -114,7 +115,8 @@ bool CQLyapResultWidget::loadFromBackend()
   //bool success = true;
   //std::ostringstream os;
 
-  CLyapTask * pTask = dynamic_cast<CLyapTask*>((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CLyapTask * pTask = dynamic_cast<CLyapTask*>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Lyapunov Exponents"]);
   if (!pTask) return false;
 
   CLyapProblem * pProblem = dynamic_cast< CLyapProblem * >(pTask->getProblem());

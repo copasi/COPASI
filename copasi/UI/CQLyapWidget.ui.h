@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQLyapWidget.ui.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,17 +33,17 @@
 #include "CQTaskHeaderWidget.h"
 #include "CProgressBar.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "lyap/CLyapTask.h"
 #include "lyap/CLyapProblem.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
+#include "report/CCopasiRootContainer.h"
 
 bool CQLyapWidget::runTask()
 {
   CLyapTask * pTask =
-    dynamic_cast< CLyapTask * >(GlobalKeys.get(mObjectKey));
+    dynamic_cast< CLyapTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
@@ -75,8 +75,9 @@ bool CQLyapWidget::loadTask()
 
   mpEditExponent->setText(QString::number(std::max<unsigned C_INT32>(1, pProblem->getExponentNumber())));
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   bool enabled =
-    (CCopasiDataModel::Global->getModel()->getInitialTime() != pProblem->getTransientTime());
+    ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
 
   mpCheckDelay->setChecked(enabled);
   mpEditDelay->setEnabled(enabled);
@@ -107,8 +108,9 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   bool enabled =
-    (CCopasiDataModel::Global->getModel()->getInitialTime() != pProblem->getTransientTime());
+    ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
 
   if (mpCheckDelay->isChecked() != enabled ||
       (mpCheckDelay->isChecked() &&
@@ -117,7 +119,7 @@ bool CQLyapWidget::saveTask()
       if (mpCheckDelay->isChecked())
         pProblem->setTransientTime(mpEditDelay->text().toDouble());
       else
-        pProblem->setTransientTime(CCopasiDataModel::Global->getModel()->getInitialTime());
+        pProblem->setTransientTime((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime());
 
       mChanged = true;
     }
@@ -128,7 +130,7 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  if (mChanged) CCopasiDataModel::Global->changed();
+  if (mChanged) (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
 
   mChanged = false;
   return true;

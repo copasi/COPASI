@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,6 @@
 #include <Q3VBoxLayout>
 #include <Q3Frame>
 #include "TaskWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQMCAWidget
   {
@@ -91,8 +89,6 @@ namespace Ui
   {
   class CQMCAWidget: public Ui_CQMCAWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQMCAWidget : public TaskWidget, public Ui::CQMCAWidget
   {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,8 +53,6 @@ class CCrossValidationSet;
 #include <Qt3Support/Q3VBoxLayout>
 #include <map>
 #include <string>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQExperimentData
   {
@@ -639,8 +637,6 @@ namespace Ui
   {
   class CQExperimentData: public Ui_CQExperimentData {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQExperimentData : public QDialog, public Ui::CQExperimentData
   {

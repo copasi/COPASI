@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@
 #include "parameterFitting/CFitItem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "UI/qtUtilities.h"
 
@@ -170,8 +171,11 @@ bool CQFittingResult::leave()
 
 bool CQFittingResult::enter(const std::string & /* key */)
 {
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   mpTask =
-    dynamic_cast<CFitTask *>((*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]);
+    dynamic_cast<CFitTask *>((*pDataModel->getTaskList())["Parameter Estimation"]);
   if (!mpTask) return false;
 
   mpProblem = dynamic_cast<const CFitProblem *>(mpTask->getProblem());
@@ -195,7 +199,7 @@ bool CQFittingResult::enter(const std::string & /* key */)
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
+        pDataModel->getObject(Items[i]->getObjectCN());
       if (pObject)
         {
           std::string Experiments =
@@ -392,10 +396,13 @@ void CQFittingResult::slotSave(void)
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
-        RootContainer.getObject(Items[i]->getObjectCN());
+        pDataModel->getObject(Items[i]->getObjectCN());
       if (pObject)
         {
           std::string Experiments =

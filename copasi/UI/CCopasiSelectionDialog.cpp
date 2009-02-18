@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "qtUtilities.h"
 #include "utilities/CAnnotatedMatrix.h"
@@ -151,7 +152,8 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
     Selection.push_back(pCurrentObject);
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
-  pDialog->setModel(CCopasiDataModel::Global->getModel(), flag);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  pDialog->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel(), flag);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
@@ -199,7 +201,8 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     Selection = *pCurrentSelection;
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
-  pDialog->setModel(CCopasiDataModel::Global->getModel(), flag);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  pDialog->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel(), flag);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 

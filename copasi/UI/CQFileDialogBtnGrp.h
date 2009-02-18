@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFileDialogBtnGrp.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,6 @@
 //Added by qt3to4:
 #include <QPixmap>
 #include <Q3VBoxLayout>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQFileDialogBtnGrp
   {
@@ -358,8 +356,6 @@ namespace Ui
   {
   class CQFileDialogBtnGrp: public Ui_CQFileDialogBtnGrp {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQFileDialogBtnGrp : public QWidget, public Ui::CQFileDialogBtnGrp
   {

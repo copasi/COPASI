@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,8 +51,6 @@ class CCrossValidationSet;
 #include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
 #include "TaskWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQFittingItemWidget
   {
@@ -866,8 +864,6 @@ namespace Ui
   {
   class CQFittingItemWidget: public Ui_CQFittingItemWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQFittingItemWidget : public QWidget, public Ui::CQFittingItemWidget
   {

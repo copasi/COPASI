@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/CMCAResultSubwidget.h,v $
-//   $Revision: 1.12.4.2 $
-//   $Name: Qt3To4 $
-//   $Author: aekamal $
-//   $Date: 2008/11/03 15:56:55 $
+//   $Revision: 1.13 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:54:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,8 +37,6 @@ class CMCAMethod;
 #include <Qt3Support/Q3VBoxLayout>
 #include <QtGui/QWidget>
 #include "CQArrayAnnotationsWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CMCAResultSubwidget
   {
@@ -278,8 +276,6 @@ namespace Ui
   {
   class CMCAResultSubwidget: public Ui_CMCAResultSubwidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CMCAResultSubwidget : public QWidget, public Ui::CMCAResultSubwidget
   {

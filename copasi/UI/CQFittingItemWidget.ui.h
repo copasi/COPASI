@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@
 #include "parameterFitting/CExperiment.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "utilities/utility.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 #ifndef COPASI_CROSSVALIDATION
 # define pCrossValidationMap
@@ -124,10 +125,13 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setLowerBound(Number);
+      (*mpItemsCopy)[*it]->setLowerBound(Number, pDataModel);
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
 }
@@ -158,10 +162,13 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setUpperBound(Number);
+      (*mpItemsCopy)[*it]->setUpperBound(Number, pDataModel);
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
 }
@@ -184,10 +191,13 @@ void CQFittingItemWidget::slotLowerEdit()
 
       mpLowerObject = pObject;
       CCopasiObjectName CN = mpLowerObject->getCN();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setLowerBound(CN);
+          (*mpItemsCopy)[*it]->setLowerBound(CN, pDataModel);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -217,10 +227,13 @@ void CQFittingItemWidget::slotUpperEdit()
 
       mpUpperObject = pObject;
       CCopasiObjectName CN = mpUpperObject->getCN();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setUpperBound(CN);
+          (*mpItemsCopy)[*it]->setUpperBound(CN, pDataModel);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -300,10 +313,13 @@ void CQFittingItemWidget::slotParamEdit()
       // Update the selected items
       std::set< unsigned int >::const_iterator it = mSelection.begin();
       std::set< unsigned int >::const_iterator end = mSelection.end();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN());
+          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN(), pDataModel);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -335,7 +351,7 @@ void CQFittingItemWidget::slotParamEdit()
               break;
             }
 
-          pItem->setObjectCN(Selection[i]->getCN());
+          pItem->setObjectCN(Selection[i]->getCN(), pDataModel);
 
           // Add the new item to the list.
           mpItemsCopy->insert(mpItemsCopy->begin() + current + i, pItem);
@@ -502,26 +518,29 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
   unsigned C_INT32 i;
   unsigned C_INT32 imax = std::max<unsigned C_INT32>(mpItemsCopy->size(), mpItems->size());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   for (i = 0; it != end && target != targetEnd; ++it, ++target, ++i)
     {
       if ((*target)->getObjectCN() != (*it)->getObjectCN())
         {
           changed = true;
-          if (!(*target)->setObjectCN((*it)->getObjectCN()))
+          if (!(*target)->setObjectCN((*it)->getObjectCN(), pDataModel))
             (*target)->setValue("ObjectCN", (*it)->getObjectCN());
         }
 
       if ((*target)->getLowerBound() != (*it)->getLowerBound())
         {
           changed = true;
-          (*target)->setLowerBound((*it)->getLowerBound());
+          (*target)->setLowerBound((*it)->getLowerBound(), pDataModel);
         }
 
       if ((*target)->getUpperBound() != (*it)->getUpperBound())
         {
           changed = true;
-          (*target)->setUpperBound((*it)->getUpperBound());
+          (*target)->setUpperBound((*it)->getUpperBound(), pDataModel);
         }
 
       if ((*target)->getStartValue() != (*it)->getStartValue())
@@ -739,7 +758,7 @@ void CQFittingItemWidget::slotExperimentChanged()
   for (Row = 0; it != end; ++it, ++Row)
     {
       for (i = 0, imax = static_cast<CFitItem *>(*it)->getExperimentCount(); i < imax; ++i)
-        if (!GlobalKeys.get(static_cast<CFitItem *>(*it)->getExperiment(i)))
+        if (!CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(*it)->getExperiment(i)))
           static_cast<CFitItem *>(*it)->removeExperiment(i);
 
       setTableText(Row, *it);
@@ -1059,11 +1078,13 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
 {
   QString Item = "   ";
   const CCopasiObject *pObject;
-
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   if (pItem->getLowerBound() == "-inf" ||
       isNumber(pItem->getLowerBound()))
     Item += FROM_UTF8(pItem->getLowerBound());
-  else if ((pObject = RootContainer.getObject(pItem->getLowerBound())))
+  else if ((pObject = pDataModel->getObject(pItem->getLowerBound())))
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1071,7 +1092,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   // Insert less than character
   Item += FROM_UTF8(std::string(" \xe2\x89\xa4 "));
 
-  pObject = RootContainer.getObject(pItem->getObjectCN());
+  pObject = pDataModel->getObject(pItem->getObjectCN());
   if (pObject)
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
@@ -1091,7 +1112,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   if (pItem->getUpperBound() == "inf" ||
       isNumber(pItem->getUpperBound()))
     Item += FROM_UTF8(pItem->getUpperBound());
-  else if ((pObject = RootContainer.getObject(pItem->getUpperBound())))
+  else if ((pObject = pDataModel->getObject(pItem->getUpperBound())))
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1170,7 +1191,10 @@ void CQFittingItemWidget::loadSelection()
 
       COptItem * pItem = (*mpItemsCopy)[*it];
 
-      const CCopasiObject *pObject = RootContainer.getObject(pItem->getObjectCN());
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
+      const CCopasiObject *pObject = pDataModel->getObject(pItem->getObjectCN());
       if (pObject)
         {
           Value = FROM_UTF8(pObject->getObjectDisplayName());
@@ -1194,7 +1218,7 @@ void CQFittingItemWidget::loadSelection()
       if (pItem->getLowerBound() == "-inf" ||
           isNumber(pItem->getLowerBound()))
         Value = FROM_UTF8(pItem->getLowerBound());
-      else if ((mpLowerObject = RootContainer.getObject(pItem->getLowerBound())))
+      else if ((mpLowerObject = pDataModel->getObject(pItem->getLowerBound())))
         Value = FROM_UTF8(mpLowerObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1206,7 +1230,7 @@ void CQFittingItemWidget::loadSelection()
       if (pItem->getUpperBound() == "inf" ||
           isNumber(pItem->getUpperBound()))
         Value = FROM_UTF8(pItem->getUpperBound());
-      else if ((mpUpperObject = RootContainer.getObject(pItem->getUpperBound())))
+      else if ((mpUpperObject = pDataModel->getObject(pItem->getUpperBound())))
         Value = FROM_UTF8(mpUpperObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1228,7 +1252,7 @@ void CQFittingItemWidget::loadSelection()
           for (i = 0; i < imax; i++)
             {
               const CCopasiObject * pObject =
-                GlobalKeys.get(static_cast<CFitItem *>(pItem)->getExperiment(i));
+                CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getExperiment(i));
 
               if (pObject)
                 mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
@@ -1246,7 +1270,7 @@ void CQFittingItemWidget::loadSelection()
           for (i = 0; i < imax; i++)
             {
               const CCopasiObject * pObject =
-                GlobalKeys.get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
+                CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
 
               if (pObject)
                 mpBoxCrossValidations->insertItem(FROM_UTF8(pObject->getObjectName()));
@@ -1261,7 +1285,7 @@ void CQFittingItemWidget::loadSelection()
         {
           pItem = (*mpItemsCopy)[*it];
 
-          const CCopasiObject *pObject = RootContainer.getObject(pItem->getObjectCN());
+          const CCopasiObject *pObject = pDataModel->getObject(pItem->getObjectCN());
           if (pObject)
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
@@ -1281,7 +1305,7 @@ void CQFittingItemWidget::loadSelection()
           if (pItem->getLowerBound() == "-inf" ||
               isNumber(pItem->getLowerBound()))
             Value = FROM_UTF8(pItem->getLowerBound());
-          else if ((pObject = RootContainer.getObject(pItem->getLowerBound())))
+          else if ((pObject = pDataModel->getObject(pItem->getLowerBound())))
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
             Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
@@ -1295,7 +1319,7 @@ void CQFittingItemWidget::loadSelection()
           if (pItem->getUpperBound() == "inf" ||
               isNumber(pItem->getUpperBound()))
             Value = FROM_UTF8(pItem->getUpperBound());
-          else if ((pObject = RootContainer.getObject(pItem->getUpperBound())))
+          else if ((pObject = pDataModel->getObject(pItem->getUpperBound())))
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
             Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
@@ -1344,19 +1368,22 @@ void CQFittingItemWidget::saveSelection()
   std::set< unsigned int >::const_iterator end = mSelection.end();
 
   COptItem * pItem;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   for (; it != end; ++it)
     {
       pItem = (*mpItemsCopy)[*it];
 
       if (mpCheckLowerInf->isChecked())
-        pItem->setLowerBound(CCopasiObjectName("-inf"));
+        pItem->setLowerBound(CCopasiObjectName("-inf"), pDataModel);
       else if (isNumber(TO_UTF8(mpEditLower->text())))
-        pItem->setLowerBound(CCopasiObjectName(TO_UTF8(mpEditLower->text())));
+        pItem->setLowerBound(CCopasiObjectName(TO_UTF8(mpEditLower->text())), pDataModel);
 
       if (mpCheckUpperInf->isChecked())
-        pItem->setUpperBound(CCopasiObjectName("inf"));
+        pItem->setUpperBound(CCopasiObjectName("inf"), pDataModel);
       else if (isNumber(TO_UTF8(mpEditUpper->text())))
-        pItem->setUpperBound(CCopasiObjectName(TO_UTF8(mpEditUpper->text())));
+        pItem->setUpperBound(CCopasiObjectName(TO_UTF8(mpEditUpper->text())), pDataModel);
 
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
@@ -1428,10 +1455,13 @@ void CQFittingItemWidget::slotLowerLostFocus()
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setLowerBound(Number);
+      (*mpItemsCopy)[*it]->setLowerBound(Number, pDataModel);
       if (first)
         {
           NewValue = (*mpItemsCopy)[*it]->getLowerBound();
@@ -1462,10 +1492,13 @@ void CQFittingItemWidget::slotUpperLostFocus()
 
   bool first = true;
   std::string NewValue = "";
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setUpperBound(Number);
+      (*mpItemsCopy)[*it]->setUpperBound(Number, pDataModel);
       if (first)
         {
           NewValue = (*mpItemsCopy)[*it]->getUpperBound();
@@ -1602,7 +1635,7 @@ void CQFittingItemWidget::slotCrossValidationChanged()
   for (Row = 0; it != end; ++it, ++Row)
     {
       for (i = 0, imax = static_cast<CFitItem *>(*it)->getCrossValidationCount(); i < imax; ++i)
-        if (!GlobalKeys.get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
+        if (!CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
           static_cast<CFitItem *>(*it)->removeCrossValidation(i);
 
       setTableText(Row, *it);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,8 +35,6 @@ class CExperimentSet;
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
 #include <Qt3Support/Q3VBoxLayout>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQExperimentSelection
   {
@@ -145,8 +143,6 @@ namespace Ui
   {
   class CQExperimentSelection: public Ui_CQExperimentSelection {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQExperimentSelection : public QDialog, public Ui::CQExperimentSelection
   {

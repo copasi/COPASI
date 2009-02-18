@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,8 +35,6 @@
 #include <QLabel>
 #include <Q3Frame>
 #include "TaskWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQLyapWidget
   {
@@ -128,8 +126,6 @@ namespace Ui
   {
   class CQLyapWidget: public Ui_CQLyapWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQLyapWidget : public TaskWidget, public Ui::CQLyapWidget
   {

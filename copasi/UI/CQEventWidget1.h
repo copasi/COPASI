@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,8 +47,6 @@ class CEvent;
 #include "CQExpressionMmlWidget.h"
 #include "MyLineEdit.h"
 #include "copasiWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQEventWidget1
   {
@@ -580,8 +578,6 @@ namespace Ui
   {
   class CQEventWidget1: public Ui_CQEventWidget1 {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQEventWidget1 : public CopasiWidget, public Ui::CQEventWidget1
   {

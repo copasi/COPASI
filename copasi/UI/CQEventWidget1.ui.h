@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "model/CEvent.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiMessage.h"
+#include "report/CCopasiRootContainer.h"
 
 /*! Slot to save all current values of the active event widget whenever the Commit button is clicked */
 void CQEventWidget1::slotBtnCommitClicked()
@@ -55,11 +56,14 @@ void CQEventWidget1::slotBtnCommitClicked()
 /*! Slot to delete the active event widget */
 void CQEventWidget1::slotBtnDeleteClicked()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
     return;
   /*
-    CEvent * pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(mEventKey));
+    CEvent * pEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::Root->getKeyFactory()->get(mEventKey));
     if (pEvent == NULL) return;
   */
   QString eventList = "Are you sure you want to delete listed EVENT(S) ?\n";
@@ -188,17 +192,17 @@ void CQEventWidget1::slotBtnDeleteClicked()
     case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index
-        = static_cast<CCopasiVector< CEvent > *>(&CCopasiDataModel::Global->getModel()->getEvents())->getIndex(GlobalKeys.get(mEventKey));
-        //        = CCopasiDataModel::Global->getModel()->getEvents().getIndex(mpRi->getReactionName());
+        = static_cast<CCopasiVector< CEvent > *>(&pDataModel->getModel()->getEvents())->getIndex(CCopasiRootContainer::Root->getKeyFactory()->get(mEventKey));
+        //        = pDataModel->getModel()->getEvents().getIndex(mpRi->getReactionName());
 
-        CCopasiDataModel::Global->getModel()->removeEvent(mEventKey);
+        pDataModel->getModel()->removeEvent(mEventKey);
         unsigned C_INT32 size
-        = CCopasiDataModel::Global->getModel()->getEvents().size();
+        = pDataModel->getModel()->getEvents().size();
 
         mpEvent = NULL;
 
         if (size > 0)
-          enter(CCopasiDataModel::Global->getModel()->getEvents()[std::min(index, size - 1)]->getKey());
+          enter(pDataModel->getModel()->getEvents()[std::min(index, size - 1)]->getKey());
         else
           enter("");
 
@@ -224,7 +228,8 @@ void CQEventWidget1::slotBtnNewClicked()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 0;
-  while (!CCopasiDataModel::Global->getModel()->createEvent(name))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  while (!(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createEvent(name))
     {
       i++;
       name = "event_";
@@ -232,7 +237,7 @@ void CQEventWidget1::slotBtnNewClicked()
       // std::cout << "NAME = " << name << std::endl;
     }
   protectedNotify(ListViews::EVENT, ListViews::ADD);
-  enter(CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey());
+  enter((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getEvents()[name]->getKey());
 }
 
 /*! Slot to go back to the previous values of the active event widget whenever the Revert button is clicked */
@@ -598,17 +603,17 @@ bool CQEventWidget1::loadFromEvent()
 
       if (sObjectName == "Compartment")
         {
-          sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName() + ".Volume");
+          sName = FROM_UTF8(CCopasiRootContainer::Root->getKeyFactory()->get(it->first)->getObjectDisplayName() + ".Volume");
           // std::cout << "Compartments: " << UTF8_TO_CHAR(sName) << std::endl;
         }
       if (sObjectName == "Metabolite")
         {
-          sName = FROM_UTF8("[" + GlobalKeys.get(it->first)->getObjectDisplayName() + "]");
+          sName = FROM_UTF8("[" + CCopasiRootContainer::Root->getKeyFactory()->get(it->first)->getObjectDisplayName() + "]");
           // std::cout << "Metabolites: " << UTF8_TO_CHAR(sName) << std::endl;
         }
       if (sObjectName.contains("ModelValue"))
         {
-          sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName());
+          sName = FROM_UTF8(CCopasiRootContainer::Root->getKeyFactory()->get(it->first)->getObjectDisplayName());
           // std::cout << "Global Quantities: " << UTF8_TO_CHAR(sName) << std::endl;
         }
 
@@ -834,11 +839,12 @@ void CQEventWidget1::saveToEvent()
   mChanged = true;
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  //  CCopasiDataModel::Global->changed(); --> what does it do ??
+  //  (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed(); --> what does it do ??
 
   if (mChanged)
     {
-      CCopasiDataModel::Global->changed();
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
       protectedNotify(ListViews::EVENT, ListViews::CHANGE, mEventKey);
     }
 
@@ -860,7 +866,7 @@ bool CQEventWidget1::enter(const std::string & key)
 {
   // std::cout << "CQEW1::enter - key = " << key << std::endl;
   mEventKey = key;
-  mpEvent = dynamic_cast< CEvent * >(GlobalKeys.get(key));
+  mpEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (mpEvent)
     {

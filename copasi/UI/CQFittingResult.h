@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/CQFittingResult.h,v $
-//   $Revision: 1.8.12.2 $
-//   $Name: Qt3To4 $
-//   $Author: aekamal $
-//   $Date: 2008/11/03 15:56:56 $
+//   $Revision: 1.9 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:56:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,6 @@ class CFitProblem;
 #include "CQArrayAnnotationsWidget.h"
 #include "CQFittingResultTab1.h"
 #include "copasiWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQFittingResult
   {
@@ -145,8 +143,6 @@ namespace Ui
   {
   class CQFittingResult: public Ui_CQFittingResult {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQFittingResult : public CopasiWidget, public Ui::CQFittingResult
   {

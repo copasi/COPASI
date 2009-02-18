@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,8 +35,6 @@
 #include <Q3VBoxLayout>
 #include "CQExpressionWidget.h"
 #include "CQMmlScrollView.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQExpressionMmlWidget
   {
@@ -573,8 +571,6 @@ namespace Ui
   {
   class CQExpressionMmlWidget: public Ui_CQExpressionMmlWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQExpressionMmlWidget : public QWidget, public Ui::CQExpressionMmlWidget
   {

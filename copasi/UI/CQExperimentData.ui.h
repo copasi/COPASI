@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@
 #include "report/CKeyFactory.h"
 #include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 #define COL_NAME 0
 #define COL_TYPE 1
@@ -592,7 +593,7 @@ void CQExperimentData::slotOK()
   for (; i < C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(GlobalKeys.get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CCopasiRootContainer::Root->getKeyFactory()->get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
       if (pExperiment)
         {
           *mpExperimentSet->getExperiment(i) = *pExperiment;

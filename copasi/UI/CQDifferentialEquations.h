@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:46:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,8 +38,6 @@ class QtMmlWidget;
 #include <sstream>
 #include "copasiWidget.h"
 #include "Qt3Support/Q3ScrollView"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQDifferentialEquations
   {
@@ -252,8 +250,6 @@ namespace Ui
   {
   class CQDifferentialEquations: public Ui_CQDifferentialEquations {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class CQDifferentialEquations : public CopasiWidget, public Ui::CQDifferentialEquations
   {
