@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ class CLCurve;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 class CRegisteredObjectName;
+class CCopasiDataModel;
 
 class CCopasiXML : public CCopasiXMLInterface
   {
@@ -146,6 +147,13 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool setTaskList(CCopasiVectorN< CCopasiTask > *pTaskList);
+
+    /**
+     * Set the datamodel.
+     * @param CCopasiDataModel* pDataModel
+     * @return bool success
+     */
+    bool setDatamodel(CCopasiDataModel* pDataModel);
 
     /**
      * Retreive the task list.
@@ -390,6 +398,11 @@ class CCopasiXML : public CCopasiXMLInterface
      * SBML Reference
      */
     std::map< std::string, std::string > mSBMLReference;
+
+    /**
+     * Pointer to the datamodel
+     */
+    CCopasiDataModel* mpDataModel;
   };
 
 #endif // COPASI_CCopasiXML

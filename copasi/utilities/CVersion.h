@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:50 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.h,v $
+  $Revision: 1.8 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/18 20:56:57 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,6 +64,11 @@ class CVersion
     std::string mVersion;
 
     // Operations
+
+    /**
+     * Constructor with four arguments.
+     */
+    CVersion(C_INT32 major, C_INT32 minor, C_INT32 devel, const std::string& comment);
 
   public:
     /**
@@ -117,6 +127,9 @@ class CVersion
      *  Creates the version string.
      */
     void setString();
+
+  public:
+    static const CVersion VERSION;
   };
 
 #endif // COPASI_CVersion

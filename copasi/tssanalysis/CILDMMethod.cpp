@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:37:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include "model/CReaction.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 //#include "model/CState.h"
@@ -1216,11 +1217,13 @@ void CILDMMethod::printResult(std::ostream * ostream) const
     C_INT32 stepNumber;
 
     this->print(&os);
+    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    assert(pDataModel != NULL);
 
-    CTSSATask* pTask =
-      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+    const CTSSATask* pTask =
+      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
 
-    CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
+    const CTSSAProblem* pProblem = dynamic_cast<const CTSSAProblem*>(pTask->getProblem());
 
     stepNumber = pProblem->getStepNumber();
 

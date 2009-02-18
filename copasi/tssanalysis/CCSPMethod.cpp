@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:37:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include "CTSSAProblem.h"
 #include "CTSSATask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CState.h"
@@ -1707,10 +1708,13 @@ void CCSPMethod::printResult(std::ostream * ostream) const
     C_INT32 stepNumber;
     double timeScale;
 
-    CTSSATask* pTask =
-      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    assert(pDataModel != NULL);
 
-    CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
+    const CTSSATask* pTask =
+      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
+
+    const CTSSAProblem* pProblem = dynamic_cast<const CTSSAProblem*>(pTask->getProblem());
 
     stepNumber = pProblem->getStepNumber();
 

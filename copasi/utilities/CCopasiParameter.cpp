@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:22 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,6 +31,7 @@
 #include "CCopasiMessage.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 const std::string CCopasiParameter::TypeName[] =
   {
@@ -59,7 +65,7 @@ const char* CCopasiParameter::XMLType[] =
 
 CCopasiParameter::CCopasiParameter():
     CCopasiContainer("NoName", NULL, "Parameter"),
-    mKey(GlobalKeys.add("Parameter", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Parameter", this)),
     mType(INVALID),
     mSize(0),
     mValue()
@@ -68,7 +74,7 @@ CCopasiParameter::CCopasiParameter():
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
                                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add(src.getObjectType(), this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add(src.getObjectType(), this)),
     mType(src.mType),
     mSize(0),
     mValue(createValue(src.mValue))
@@ -85,7 +91,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
                        ((type == STRING || type == CN || type == KEY || type == FILE) ? CCopasiObject::ValueString :
                         (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
-    mKey(GlobalKeys.add(objectType, this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add(objectType, this)),
     mType(type),
     mSize(0),
     mValue()
@@ -97,7 +103,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
 
 CCopasiParameter::~CCopasiParameter()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
   deleteValue();
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:34:30 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,8 @@
 
 #include "CODEExporter.h"
 
+class CCopasiDataModel;
+
 class CODEExporterXPPAUT: public CODEExporter
   {
   protected:
@@ -31,7 +33,7 @@ class CODEExporterXPPAUT: public CODEExporter
      */
     CODEExporterXPPAUT();
 
-    virtual bool exportTitleData(const CModel* copasiModel, std::ofstream & outFile);
+    virtual bool exportTitleData(const CCopasiDataModel* pDataModel, std::ofstream & outFile);
 
     virtual void setReservedNames();
 

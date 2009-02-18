@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:38:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,9 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CCopasiObjectReference.h"
+#include "report/CCopasiTimer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 const std::string CCopasiTask::TypeName[] =
   {
@@ -108,7 +110,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
                          const std::string & type):
     CCopasiContainer(name, pParent, type),
     mType(CCopasiTask::unset),
-    mKey(GlobalKeys.add("Task", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Task", this)),
     mDescription(this),
     mResult(this),
     mScheduled(false),
@@ -128,7 +130,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
                          const std::string & type):
     CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
     mType(taskType),
-    mKey(GlobalKeys.add("Task", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Task", this)),
     mDescription(this),
     mResult(this),
     mScheduled(false),
@@ -148,7 +150,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
                          const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
-    mKey(GlobalKeys.add("Task", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Task", this)),
     mDescription(src.mDescription, this),
     mResult(src.mResult, this),
     mScheduled(src.mScheduled),
@@ -166,7 +168,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
 
 CCopasiTask::~CCopasiTask()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 
   pdelete(mpInitialState);
   pdelete(mpProblem);
@@ -257,7 +259,9 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(this);
 
-  if (!mpOutputHandler->compile(ListOfContainer))
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
+  if (!mpOutputHandler->compile(ListOfContainer, pDataModel))
     {
       // Warning
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 7);
@@ -354,6 +358,8 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
 void CCopasiTask::initObjects()
 {
   addObjectReference("Output counter", mOutputCounter, CCopasiObject::ValueInt);
+  new CCopasiTimer(CCopasiTimer::WALL, this);
+  new CCopasiTimer(CCopasiTimer::CPU, this);
 }
 
 CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):

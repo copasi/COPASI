@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 18:14:08 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@ class CCopasiObject;
 class CCopasiContainer;
 class CCopasiTask;
 class Refresh;
+class CCopasiDataModel;
 
 /**
  *  This is just the interface that is used to all output provided by COPASI.
@@ -68,7 +69,7 @@ class COutputInterface
      * @param std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > /* listOfContainer */)
+    virtual bool compile(std::vector< CCopasiContainer * > /* listOfContainer */, const CCopasiDataModel* /*pDataModel*/)
     {return false;};
 
     /**
@@ -132,7 +133,7 @@ class COutputHandler: public COutputInterface
      * @param std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
 
     /**
      * Perform an output event for the current activity
@@ -186,7 +187,7 @@ class COutputHandler: public COutputInterface
      * @param const std::vector< CCopasiContainer * > & listOfContainer
      * @return bool success
      */
-    bool compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer);
+    bool compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel);
 
     // Attributes
   protected:

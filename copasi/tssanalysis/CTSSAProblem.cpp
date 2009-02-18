@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:37:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 /**
  *  Default constructor.
@@ -280,12 +281,14 @@ void CTSSAProblem::printResult(std::ostream * ostream) const
   {
     std::ostream & os = *ostream;
 
-    CCopasiTask* mpTask =
-      dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    assert(pDataModel != NULL);
+    const CCopasiTask* mpTask =
+      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
 
     if (!mpTask) return;
 
-    CCopasiMethod* mpMethod = mpTask->getMethod();
+    const CCopasiMethod* mpMethod = mpTask->getMethod();
 
     this->print(&os);
 

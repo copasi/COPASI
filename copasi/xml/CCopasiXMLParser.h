@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,7 @@ class CLGraphicalObject;
 class CLCurve;
 class CLLineSegment;
 class CLMetabReferenceGlyph;
+class CCopasiDataModel;
 
 struct SCopasiXMLParserCommon
   {
@@ -238,6 +239,11 @@ struct SCopasiXMLParserCommon
     std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > > reportReferenceMap;
 
     SCopasiXMLGUI * pGUI;
+
+    /**
+     * A pointer to the datamodel.
+     */
+    CCopasiDataModel* pDataModel;
   };
 
 class CCopasiXMLParser : public CExpat
@@ -3763,6 +3769,12 @@ class CCopasiXMLParser : public CExpat
      * Pop the element handler form the stack.
      */
     void popElementHandler();
+
+    /**
+     * Set the datamodel.
+     * @param CCopasiDataModel* pDataModel
+     */
+    void setDatamodel(CCopasiDataModel* pDataModel);
 
     /**
      * Set the list of loaded functions

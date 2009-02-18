@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.189 $
+//   $Revision: 1.190 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:40:34 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CReportDefinition.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiParameter.h"
@@ -190,6 +191,8 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pCurve = NULL;
   mCommon.pLineSegment = NULL;
   mCommon.pMetaboliteReferenceGlyph = NULL;
+
+  mCommon.pDataModel = NULL;
 
   enableElementHandler(true);
 }
@@ -1336,7 +1339,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
-      if (!mCommon.pModel) mCommon.pModel = new CModel();
+      if (!mCommon.pModel) mCommon.pModel = new CModel(mCommon.pDataModel);
       mCommon.KeyMap.addFix(mKey, mCommon.pModel);
       mCommon.pModel->setTitle(Name);
       mCommon.pModel->setTimeUnit(TimeUnit);
@@ -2304,7 +2307,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                                   // Old file format support
+    case MathML:                                                    // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -3908,7 +3911,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
                          mCommon.pReaction->getObjectName().c_str(),
                          mParser.getCurrentLineNumber());
-          mCommon.pFunction = CCopasiDataModel::Global->mpUndefined;
+          mCommon.pFunction = CCopasiRootContainer::Root->getUndefinedFunction();
         }
 
       // This must be deferred till the end since we need to check for consistency
@@ -3921,7 +3924,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
 
-      if (mCommon.pFunction == CCopasiDataModel::Global->mpUndefined)
+      if (mCommon.pFunction == CCopasiRootContainer::Root->getUndefinedFunction())
         mParser.onStartElement(pszName, papszAttrs);
 
       /* If we do not have a etc element handler we create one. */
@@ -3982,7 +3985,7 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      if (mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
+      if (mCommon.pReaction->getFunction() == CCopasiRootContainer::Root->getUndefinedFunction())
         mCurrentElement = KineticLaw;
       else
         mCurrentElement = mLastKnownElement;
@@ -4716,7 +4719,7 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
                        pszName, "ListOfPlots", mParser.getCurrentLineNumber());
       if (!mCommon.pPlotList)
         {
-          mCommon.pPlotList = new COutputDefinitionVector;
+          mCommon.pPlotList = new COutputDefinitionVector("OutputDefinitions", this->mCommon.pDataModel);
         }
       break;
 
@@ -7099,7 +7102,7 @@ void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
       //workload
       if (!mCommon.pLayoutList)
         {
-          mCommon.pLayoutList = new CListOfLayouts;
+          mCommon.pLayoutList = new CListOfLayouts("ListOfLayouts", this->mCommon.pDataModel);
         }
       break;
 
@@ -8326,7 +8329,7 @@ void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "ListOfReports", mParser.getCurrentLineNumber());
       if (!mCommon.pReportList)
-        mCommon.pReportList = new CReportDefinitionVector;
+        mCommon.pReportList = new CReportDefinitionVector("ReportDefinitions", this->mCommon.pDataModel);
       break;
 
     case Report:
@@ -9589,8 +9592,8 @@ void CCopasiXMLParser::SBMLReferenceElement::start(const XML_Char *pszName,
                        pszName, "SBMLReference", mParser.getCurrentLineNumber());
 
       File = mParser.getAttributeValue("file", papszAttrs);
-      if (CCopasiDataModel::Global)
-        CCopasiDataModel::Global->setSBMLFileName(File);
+      if (mCommon.pDataModel)
+        mCommon.pDataModel->setSBMLFileName(File);
 
       break;
 
@@ -9741,4 +9744,9 @@ void CCopasiXMLParser::SBMLMapElement::end(const XML_Char *pszName)
     }
 
   return;
+}
+
+void CCopasiXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
+{
+  this->mCommon.pDataModel = pDataModel;
 }

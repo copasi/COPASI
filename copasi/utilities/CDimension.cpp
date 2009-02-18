@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-  $Revision: 1.6 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 19:59:30 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
+ $Revision: 1.7 $
+ $Name:  $
+ $Author: gauges $
+ $Date: 2009/02/18 20:56:57 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,6 +18,7 @@
 #include <sstream>
 #include "CDimension.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CChemEq.h"
 
@@ -67,16 +68,17 @@ std::string CDimension::constructDisplayElement(const std::string & base, C_FLOA
   return ss.str();
 }
 
-std::string CDimension::getDisplayString() const
+std::string CDimension::getDisplayString(const CCopasiDataModel* pDataModel) const
   {
     if (isUnknown())
       return "?";
     if (isContradiction())
       return "EEE";
 
-    std::string vol = /*FROM_UTF8*/(CCopasiDataModel::Global->getModel()->getVolumeUnitName());
-    std::string time = /*FROM_UTF8*/(CCopasiDataModel::Global->getModel()->getTimeUnitName());
-    std::string quan = /*FROM_UTF8*/(CCopasiDataModel::Global->getModel()->getQuantityUnitName());
+    assert(pDataModel != NULL);
+    std::string vol = /*FROM_UTF8*/(pDataModel->getModel()->getVolumeUnitName());
+    std::string time = /*FROM_UTF8*/(pDataModel->getModel()->getTimeUnitName());
+    std::string quan = /*FROM_UTF8*/(pDataModel->getModel()->getQuantityUnitName());
 
     std::string tmp;
 
@@ -185,6 +187,9 @@ CDimension CDimension::compare(const CDimension & rhs) const
     return result;
   }
 
+/**
+ * Disabled becuase the in order to generate output, the dimensions instance
+ * needs the datamodel.
 std::ostream & operator<<(std::ostream &os, const CDimension & d)
 {
   if (d.mUnknown) os << "Dim: unknown";
@@ -193,6 +198,17 @@ std::ostream & operator<<(std::ostream &os, const CDimension & d)
 
   return os;
 }
+ */
+
+std::string CDimension::print(const CCopasiDataModel* pDataModel) const
+  {
+    std::ostringstream os;
+    if (this->mUnknown) os << "Dim: unknown";
+    else if (this->mContradiction) os << "Dim: conctradiction";
+    else os << "Dim: (" << this->mD1 << ", " << this->mD2 << ", " << this->mD3 << ")  " << this->getDisplayString(pDataModel);
+
+    return os.str();;
+  }
 
 //*************************************************************************
 
@@ -265,7 +281,7 @@ void CFindDimensions::findDimensions(bool isMulticompartment)
   findDimensions();
 }
 
-std::vector<std::string> CFindDimensions::findDimensionsBoth()
+std::vector<std::string> CFindDimensions::findDimensionsBoth(const CCopasiDataModel* pDataModel)
 {
   //first for single compartment
   findDimensions(false);
@@ -281,9 +297,9 @@ std::vector<std::string> CFindDimensions::findDimensionsBoth()
   for (it1 = store.begin(), it2 = mDimensions.begin(); it1 != it1end; ++it1, ++it2)
     {
       if (*it1 == *it2)
-        ret.push_back(it1->getDisplayString());
+        ret.push_back(it1->getDisplayString(pDataModel));
       else
-        ret.push_back(it1->getDisplayString() + " or " + it2->getDisplayString());
+        ret.push_back(it1->getDisplayString(pDataModel) + " or " + it2->getDisplayString(pDataModel));
     }
 
   return ret;
@@ -537,11 +553,11 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
 }
 
 #ifdef COPASI_DEBUG
-void CFindDimensions::printDebugOutput() const
+void CFindDimensions::printDebugOutput(const CCopasiDataModel* pDataModel) const
   {
     std::cout << "mDimensions " << mDimensions.size() << std::endl;
     unsigned C_INT32 i, imax = mDimensions.size();
     for (i = 0; i < imax; ++i)
-      std::cout << i << ": " << mDimensions[i] << std::endl;
+      std::cout << i << ": " << mDimensions[i].print(pDataModel) << std::endl;
   }
 #endif // COPASI_DEBUG

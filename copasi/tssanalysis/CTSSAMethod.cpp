@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:37:23 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 
 #include "clapackwrap.h"        // CLAPACK
@@ -217,7 +218,9 @@ void CTSSAMethod::initializeIntegrationsParameter()
         {
           C_FLOAT64 OldValue = *getValue("Absolute Tolerance").pUDOUBLE;
 
-          CModel * pModel = CCopasiDataModel::Global->getModel();
+          CCopasiDataModel* pDataModel = this->getParentDatamodel();
+          assert(pDataModel != NULL);
+          CModel * pModel = pDataModel->getModel();
 
           if (pModel == NULL)
             // The default

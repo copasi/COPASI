@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:33:30 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "report/CCopasiTimer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "trajectory/CTimeSeries.h"
 
@@ -41,7 +42,7 @@ COutputHandler::COutputHandler(const COutputHandler & src):
 
 COutputHandler::~COutputHandler() {};
 
-bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel)
 {
   bool success = true;
   mObjects.clear();
@@ -54,7 +55,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
 
   for (; it != end; ++it)
     {
-      success &= (*it)->compile(listOfContainer);
+      success &= (*it)->compile(listOfContainer, pDataModel);
 
       // Assure that this is the only one master.
       COutputHandler * pHandler = dynamic_cast< COutputHandler * >(*it);
@@ -67,7 +68,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
     }
 
   if (mpMaster == NULL)
-    success &= compileRefresh(listOfContainer);
+    success &= compileRefresh(listOfContainer, pDataModel);
 
   return success;
 }
@@ -157,10 +158,10 @@ void COutputHandler::refresh()
   for (;it != end; ++it) (**it)();
 }
 
-bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer)
+bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel)
 {
   CModel * pModel =
-    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiDataModel::Global->getModel()->getCN()));
+    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
 
   mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects, pModel->getUptoDateObjects());
 

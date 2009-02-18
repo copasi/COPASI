@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:33:30 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,19 @@
 #include "copasi.h"
 #include "CVersion.h"
 #include "utility.h"
+#include "copasiversion.h"
+
+// initialize the gobal version instance
+const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR, COPASI_VERSION_MINOR, COPASI_VERSION_BUILD, COPASI_VERSION_COMMENT);
+
+CVersion::CVersion(C_INT32 major, C_INT32 minor, C_INT32 devel, const std::string& comment):
+    mMajor(major),
+    mMinor(minor),
+    mDevel(devel),
+    mComment(comment)
+{
+  setString();
+}
 
 CVersion::CVersion():
     mMajor(0),

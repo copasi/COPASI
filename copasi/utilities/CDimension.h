@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
-  $Revision: 1.6 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/10 19:59:30 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
+ $Revision: 1.7 $
+ $Name:  $
+ $Author: gauges $
+ $Date: 2009/02/18 20:56:57 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 #include "copasi.h"
+
+class CCopasiDataModel;
 
 /**
  * CDimension class.
@@ -45,7 +47,7 @@ class CDimension
 
     void setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const C_FLOAT64 & d3);
 
-    std::string getDisplayString() const;
+    std::string getDisplayString(const CCopasiDataModel* pDataModel) const;
     std::string getDebugString() const;
 
     bool operator==(const CDimension & rhs) const;
@@ -58,7 +60,8 @@ class CDimension
     /**
      * insert operator
      */
-    friend std::ostream & operator<<(std::ostream &os, const CDimension & d);
+    //friend std::ostream & operator<<(std::ostream &os, const CDimension & d);
+    std::string print(const CCopasiDataModel* pDataModel) const;
 
   private:
 
@@ -119,13 +122,13 @@ class CFindDimensions
     /**
      * find the dimensions for both a one-compartment and a multi-compartment reaction
      */
-    std::vector<std::string> findDimensionsBoth();
+    std::vector<std::string> findDimensionsBoth(const CCopasiDataModel* pDataModel);
 
     const std::vector<CDimension> & getDimensions() const;
 
     //print the content of mDimensions to cout
 #ifdef COPASI_DEBUG
-    void printDebugOutput() const;
+    void printDebugOutput(const CCopasiDataModel* pDataModel) const;
 #endif // COPASI_DEBUG
 
     void setUseHeuristics(bool flag);

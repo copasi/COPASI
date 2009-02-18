@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/04 20:28:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,6 +22,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 
 const char * CSlider::TypeName[] =
@@ -28,7 +34,7 @@ const char * CSlider::ScaleName[] =
 CSlider::CSlider(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Slider"),
-    mKey(GlobalKeys.add("Slider", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Slider", this)),
     mAssociatedEntityKey(),
     mpSliderObject(NULL),
     mSliderType(Float),
@@ -46,7 +52,7 @@ CSlider::CSlider(const std::string & name,
 CSlider::CSlider(const CSlider & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Slider", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Slider", this)),
     mAssociatedEntityKey(src.mAssociatedEntityKey),
     mpSliderObject(src.mpSliderObject),
     mSliderType(src.mSliderType),
@@ -62,7 +68,7 @@ CSlider::CSlider(const CSlider & src,
 {}
 
 CSlider::~CSlider()
-{GlobalKeys.remove(mKey);}
+{CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);}
 
 bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
@@ -89,7 +95,7 @@ bool CSlider::setAssociatedEntityKey(const std::string & associatedEntityKey)
 {
   mAssociatedEntityKey = associatedEntityKey;
 
-  return (GlobalKeys.get(associatedEntityKey) != NULL);
+  return (CCopasiRootContainer::Root->getKeyFactory()->get(associatedEntityKey) != NULL);
 }
 
 const std::string & CSlider::getAssociatedEntityKey() const
@@ -109,8 +115,9 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
   std::set< const CCopasiObject * > ChangedObjects;
   ChangedObjects.insert(pObject);
 
-  mInitialRefreshes =
-    CCopasiDataModel::Global->getModel()->buildInitialRefreshSequence(ChangedObjects);
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
+  mInitialRefreshes = pDataModel->getModel()->buildInitialRefreshSequence(ChangedObjects);
 
   if (mpSliderObject->isValueInt())
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.110 $
+//   $Revision: 1.111 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:40:34 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:56:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include "CFixLocalReactionParameters.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
@@ -92,7 +93,7 @@ bool CCopasiXML::save(std::ostream & os,
   << std::endl;
 
   *mpOstream << "<!-- generated with COPASI "
-  << CCopasiDataModel::Global->getVersion()->getVersion()
+  << CVersion::VERSION.getVersion()
   << " (http://www.copasi.org) at "
   << UTCTimeStamp()
   << " UTC -->"
@@ -152,6 +153,7 @@ bool CCopasiXML::load(std::istream & is,
   Parser.setPlotList(mpPlotList);
   Parser.setGUI(mpGUI);
   Parser.setLayoutList(mpLayoutList);
+  Parser.setDatamodel(this->mpDataModel);
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -236,6 +238,17 @@ bool CCopasiXML::freeFunctionList()
 bool CCopasiXML::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
 {
   mpTaskList = pTaskList;
+  return true;
+}
+
+/**
+ * Set the datamodel.
+ * @param CCopasiDataModel* pDataModel
+ * @return bool success
+ */
+bool CCopasiXML::setDatamodel(CCopasiDataModel* pDataModel)
+{
+  this->mpDataModel = pDataModel;
   return true;
 }
 
@@ -643,7 +656,7 @@ bool CCopasiXML::saveModel()
             }
 
           if (pReaction->getFunction() !=
-              dynamic_cast<CFunction *>(GlobalKeys.get("UndefinedFunction_0")))
+              dynamic_cast<CFunction *>(CCopasiRootContainer::Root->getKeyFactory()->get("UndefinedFunction_0")))
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction()->getKey());
@@ -1438,15 +1451,16 @@ bool CCopasiXML::saveGUI()
 
 bool CCopasiXML::saveSBMLReference()
 {
-  if (!CCopasiDataModel::Global) return false;
+  assert(this->mpDataModel != NULL);
+  if (!this->mpDataModel) return false;
 
-  if (CCopasiDataModel::Global->getSBMLFileName() == "" ||
+  if (this->mpDataModel->getSBMLFileName() == "" ||
       mSBMLReference.size() == 0)
     return true;
 
   CXMLAttributeList Attributes;
 
-  std::string SBMLFile = CCopasiDataModel::Global->getSBMLFileName();
+  std::string SBMLFile = this->mpDataModel->getSBMLFileName();
   if (!CDirEntry::isRelativePath(SBMLFile) &&
       !CDirEntry::makePathRelative(SBMLFile, mFilename))
     SBMLFile = CDirEntry::fileName(SBMLFile);
@@ -1481,7 +1495,7 @@ bool CCopasiXML::buildFunctionList()
   CCopasiVectorN< CEvaluationTree > * pFunctionList
   = new CCopasiVectorN< CEvaluationTree >;
 
-  *pFunctionList = CCopasiDataModel::Global->getFunctionList()->getUsedFunctions();
+  *pFunctionList = CCopasiRootContainer::Root->getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 
   if (!setFunctionList(pFunctionList)) success = false;
 
