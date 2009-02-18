@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000058.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/05/05 07:33:03 $
+//   $Date: 2009/02/18 20:38:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,21 +27,22 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
+#include "copasi/report/CCopasiRootContainer.h"
+
+CCopasiDataModel* test000058::pCOPASIDATAMODEL = NULL;
+
 void test000058::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test000058::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 bool test000058::checkIfIdsUnique(const Model* pSBMLModel)
@@ -470,7 +471,7 @@ bool test000058::checkIfIdsUnique(const Model* pSBMLModel)
 
 void test000058::test_bug1025_1()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000058::MODEL_STRING));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -514,7 +515,7 @@ void test000058::test_bug1025_1()
 
 void test000058::test_bug1025_2()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000058::MODEL_STRING));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -557,7 +558,7 @@ void test000058::test_bug1025_2()
 
 void test000058::test_bug1025_3()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000058::MODEL_STRING));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -600,7 +601,7 @@ void test000058::test_bug1025_3()
 
 void test000058::test_bug1025_4()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000058::MODEL_STRING));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -643,7 +644,7 @@ void test000058::test_bug1025_4()
 
 void test000058::test_bug1025_5()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000058::MODEL_STRING));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -664,7 +665,7 @@ void test000058::test_bug1025_5()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CCopasiRootContainer::Root->getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
@@ -696,7 +697,7 @@ void test000058::test_bug1025_5()
 
 void test000058::test_bug1025_6()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000058::MODEL_STRING2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -734,7 +735,7 @@ void test000058::test_bug1025_6()
 
 void test000058::test_bug1025_7()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000058::MODEL_STRING2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -771,7 +772,7 @@ void test000058::test_bug1025_7()
 
 void test000058::test_bug1025_8()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000058::MODEL_STRING2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -808,7 +809,7 @@ void test000058::test_bug1025_8()
 
 void test000058::test_bug1025_9()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000058::MODEL_STRING2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -845,7 +846,7 @@ void test000058::test_bug1025_9()
 
 void test000058::test_bug1025_10()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000058::MODEL_STRING2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -860,7 +861,7 @@ void test000058::test_bug1025_10()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  pDataModel->getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CCopasiRootContainer::Root->getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
