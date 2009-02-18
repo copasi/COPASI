@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,12 +34,14 @@
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "DataModelGUI.h"
 
 std::vector<const CCopasiObject*> PlotWidget::getObjects() const
   {
+    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
     CCopasiVector<CPlotSpecification> & tmp =
-      * CCopasiDataModel::Global->getPlotDefinitionList();
+      * (*CCopasiRootContainer::Root->getDatamodelList())[0]->getPlotDefinitionList();
 
     std::vector<const CCopasiObject*> ret;
 
@@ -121,7 +123,10 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CPlotSpecification* pPl;
-  while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(nname, CPlotItem::plot2d)))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  while (!(pPl = pDataModel->getPlotDefinitionList()->createPlotSpec(nname, CPlotItem::plot2d)))
     {
       i++;
       nname = name;
@@ -133,7 +138,10 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
 
 void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!CCopasiDataModel::Global->getModel())
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  if (!pDataModel->getModel())
     return;
 
   if (keys.size() == 0)
@@ -142,7 +150,7 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
-      CCopasiDataModel::Global->getPlotDefinitionList()->removePlotSpec(keys[i]);
+      pDataModel->getPlotDefinitionList()->removePlotSpec(keys[i]);
       protectedNotify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
 

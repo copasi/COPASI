@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "StateWidget.h"
 #include "StateSubwidget.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "model/CModel.h"
@@ -84,8 +85,9 @@ StateWidget::~StateWidget()
 bool StateWidget::loadFromBackend()
 {
   mUpToDate = true;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   CSteadyStateTask * pSteadyStateTask
-  = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+  = dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Steady-State"]);
 
   if (!pSteadyStateTask) return false;
 

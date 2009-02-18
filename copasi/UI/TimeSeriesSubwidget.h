@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/TimeSeriesSubwidget.h,v $
-//   $Revision: 1.13.4.2 $
-//   $Name: Qt3To4 $
-//   $Author: aekamal $
-//   $Date: 2008/11/03 15:56:58 $
+//   $Revision: 1.14 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:58:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,8 +33,6 @@
 #include <Q3VBoxLayout>
 #include "CTimeSeriesTable.h"
 #include "copasi.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_TimeSeriesSubWidget
   {
@@ -229,8 +227,6 @@ namespace Ui
   {
   class TimeSeriesSubWidget: public Ui_TimeSeriesSubWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class TimeSeriesSubWidget : public QWidget, public Ui::TimeSeriesSubWidget
   {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/objectdebug.h,v $
-//   $Revision: 1.9.14.2 $
-//   $Name: Qt3To4 $
-//   $Author: aekamal $
-//   $Date: 2008/11/03 15:56:58 $
+//   $Revision: 1.10 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2008/12/18 19:58:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,6 @@
 #include <QPixmap>
 #include <Q3GridLayout>
 #include <iostream>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_ObjectDebug
   {
@@ -108,8 +106,6 @@ namespace Ui
   {
   class ObjectDebug: public Ui_ObjectDebug {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class ObjectDebug : public QDialog, public Ui::ObjectDebug
   {

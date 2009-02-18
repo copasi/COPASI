@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,6 @@ class CSteadyStateTask;
 #include "copasiWidget.h"
 
 #include "UI/listviews.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_StateSubwidget
   {
@@ -495,8 +493,6 @@ namespace Ui
   {
   class StateSubwidget: public Ui_StateSubwidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class StateSubwidget : public CopasiWidget, public Ui::StateSubwidget
   {

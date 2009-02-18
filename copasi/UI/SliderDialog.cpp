@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@
 #include "qtUtilities.h"
 #include "xml/CCopasiXMLInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiProblem.h"
 #include "report/CCopasiObjectName.h"
@@ -200,7 +201,8 @@ CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
 void SliderDialog::createNewSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  pSettingsDialog->setModel(CCopasiDataModel::Global->getModel());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  pSettingsDialog->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
   // set the list of sliders that is already known
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
   pSettingsDialog->setDefinedSliders(*pVector);
@@ -234,7 +236,8 @@ void SliderDialog::removeSlider()
 {
   if (currSlider)
     {
-      CCopasiVector<CSlider>* pSliderList = CCopasiDataModel::Global->getGUI()->pSliderList;
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getGUI()->pSliderList;
       unsigned int i, maxCount = pSliderList->size();
       for (i = 0; i < maxCount;++i)
         {
@@ -275,7 +278,8 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
 void SliderDialog::editSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  pSettingsDialog->setModel(CCopasiDataModel::Global->getModel());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  pSettingsDialog->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
   // set the list of sliders that is already known
   CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(currentFolderId);
   if (!object) return;
@@ -325,7 +329,8 @@ void SliderDialog::init()
 void SliderDialog::addSlider(CSlider* pSlider)
 {
   // check if there already is a slider for this  object
-  SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getGUI();
   assert(pGUI);
   if (!equivalentSliderExists(pSlider))
     {
@@ -356,7 +361,8 @@ void SliderDialog::addSlider(CSlider* pSlider)
 CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
 {
   CSlider* pResult = NULL;
-  SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getGUI();
   assert(pGUI);
   unsigned i, maxCount = pGUI->pSliderList->size();
   for (i = 0; i < maxCount;++i)
@@ -556,7 +562,8 @@ void SliderDialog::runTimeCourse()
 {
   if (pParentWindow)
     {
-      pParentWindow->getTrajectoryWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      pParentWindow->getTrajectoryWidget()->enter((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time-Course"]->getKey());
       pParentWindow->getTrajectoryWidget()->runTask();
     }
 }
@@ -573,7 +580,8 @@ void SliderDialog::runScanTask()
 {
   if (pParentWindow)
     {
-      pParentWindow->getScanWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      pParentWindow->getScanWidget()->enter((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Scan"]->getKey());
       pParentWindow->getScanWidget()->runTask();
     }
 }
@@ -582,7 +590,8 @@ void SliderDialog::runMCATask()
 {
   if (pParentWindow)
     {
-      pParentWindow->getMCAWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      pParentWindow->getMCAWidget()->enter((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]->getKey());
       pParentWindow->getMCAWidget()->runTask();
     }
 }
@@ -600,19 +609,20 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
 {
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   switch (folderId)
     {
     case 21:
-      task = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+      task = dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Steady-State"]);
       break;
     case 23:
-      task = dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      task = dynamic_cast<CTrajectoryTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time-Course"]);
       break;
     case 24:
-      task = dynamic_cast<CMCATask *>((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
+      task = dynamic_cast<CMCATask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]);
       break;
     case 31:
-      task = dynamic_cast<CScanTask *>((*CCopasiDataModel::Global->getTaskList())["Scan"]);
+      task = dynamic_cast<CScanTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Scan"]);
       break;
     default:
       task = NULL;
@@ -652,7 +662,10 @@ void SliderDialog::editSlider(CopasiSlider* slider)
 
 std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const
   {
-    SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
+    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+    CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+    assert(pDataModel != NULL);
+    SCopasiXMLGUI* pGUI = pDataModel->getGUI();
     assert(pGUI);
     bool sliderDeleted = false;
     CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
@@ -676,7 +689,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
           }
         else
           {
-            if (pSlider->getAssociatedEntityKey() == CCopasiDataModel::Global->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
+            if (pSlider->getAssociatedEntityKey() == pDataModel->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
               {
                 if (!pSlider->compile())
                   {
@@ -734,7 +747,8 @@ void SliderDialog::setDefault()
 
 bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
   {
-    CModel* pModel = CCopasiDataModel::Global->getModel();
+    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+    CModel* pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
     std::vector<CCopasiContainer*> listOfContainers;
     listOfContainers.push_back(pModel);
     return !pSlider->compile(listOfContainers);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "model/CModel.h"
@@ -151,7 +152,7 @@ bool SteadyStateWidget::loadTask()
   loadMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
+    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
   if (mSteadyStateTask == NULL)
     return false;
 
@@ -183,7 +184,7 @@ bool SteadyStateWidget::saveTask()
   saveMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
+    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
   if (mSteadyStateTask == NULL)
     return false;
 
@@ -206,7 +207,8 @@ bool SteadyStateWidget::saveTask()
   //loadSteadyStateTask();
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  CCopasiDataModel::Global->changed();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
   return true;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiVector.h"
 #include "trajectory/CTrajectoryTask.h"
 
@@ -59,7 +60,8 @@ TimeSeriesWidget::~TimeSeriesWidget()
 bool TimeSeriesWidget::loadFromBackend()
 {
   mCentralWidget->displayOptimizationTab(false);
-  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time-Course"])->getTimeSeries());
   return true;
 }
 

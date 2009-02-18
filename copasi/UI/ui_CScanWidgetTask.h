@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ui_CScanWidgetTask.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/01/28 13:08:06 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,6 @@
 #include <QtGui/QSpacerItem>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CScanWidgetTask
   {
@@ -189,7 +187,5 @@ namespace Ui
   {
   class CScanWidgetTask: public Ui_CScanWidgetTask {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 #endif // UI_CSCANWIDGETTASK_H

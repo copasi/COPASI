@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.198 $
+//   $Revision: 1.199 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,11 +51,11 @@
 #include "CQMessageBox.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 
 /*
@@ -223,13 +223,14 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
   if (!reaction) return false;
 
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
   TextLabel8->setText(tr("Flux ("
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityRateUnitName()) + ")"));
+                         + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")"));
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
   pdelete(mpRi);
-  mpRi = new CReactionInterface(CCopasiDataModel::Global->getModel());
+  mpRi = new CReactionInterface((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
 
   mpRi->initFromReaction(reaction->getKey());
 
@@ -241,7 +242,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
-  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
   if (reac == NULL) return true;
 
   if (!LineEdit2->isValid()) return false;
@@ -258,7 +259,7 @@ bool ReactionsWidget1::saveToReaction()
   //this writes all changes to the reaction
   if (!mpRi->writeBackToReaction(NULL))
     {
-      CCopasiObject * pReaction = GlobalKeys.get(objKey);
+      CCopasiObject * pReaction = CCopasiRootContainer::Root->getKeyFactory()->get(objKey);
       if (mpRi->getReactionName() != pReaction->getObjectName())
         {
           QString msg;
@@ -275,7 +276,8 @@ bool ReactionsWidget1::saveToReaction()
         }
     }
 
-  //CCopasiDataModel::Global->getModel()->compile();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  //(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->compile();
 
   //this tells the gui what it needs to know.
   if (createdObjects)
@@ -289,7 +291,7 @@ bool ReactionsWidget1::saveToReaction()
   //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  CCopasiDataModel::Global->changed();
+  (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
 
   return true;
 }
@@ -303,7 +305,7 @@ void ReactionsWidget1::slotBtnOKClicked()
   commitChanges->setFocus();
 
   saveToReaction();
-  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
 
   if (reac == NULL) return;
   loadFromReaction(reac);
@@ -365,26 +367,32 @@ void ReactionsWidget1::slotBtnNewClicked()
 
   std::string name = "reaction";
   int i = 0;
-  while (!CCopasiDataModel::Global->getModel()->createReaction(name))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  while (!pDataModel->getModel()->createReaction(name))
     {
       i++;
       name = "reaction_";
       name += TO_UTF8(QString::number(i));
     }
   protectedNotify(ListViews::REACTION, ListViews::ADD);
-  enter(CCopasiDataModel::Global->getModel()->getReactions()[name]->getKey());
+  enter(pDataModel->getModel()->getReactions()[name]->getKey());
   //pListView->switchToOtherWidget(mKeys[row]);
 }
 
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDeleteClicked()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
     return;
 
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+    dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
   if (pReaction == NULL) return;
 
   QString reactionList = "Are you sure you want to delete listed REACTION(S) ?\n";
@@ -513,16 +521,16 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index
-        = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mpRi->getReactionName());
+        = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
 
-        CCopasiDataModel::Global->getModel()->removeReaction(objKey);
+        pDataModel->getModel()->removeReaction(objKey);
         unsigned C_INT32 size
-        = CCopasiDataModel::Global->getModel()->getReactions().size();
+        = pDataModel->getModel()->getReactions().size();
 
         mpRi->setFunctionWithEmptyMapping("");
 
         if (size > 0)
-          enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
+          enter(pDataModel->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
         else
           enter("");
 
@@ -540,7 +548,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
 
-  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
   if (reac)
     LineEdit3->setText(QString::number(reac->getFlux()));
   else
@@ -571,7 +579,8 @@ void ReactionsWidget1::FillWidgetFromRI()
       ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
       QToolTip::add(ComboBox1, FROM_UTF8(mpRi->getFunctionDescription()));
 
-      table->updateTable(*mpRi, *CCopasiDataModel::Global->getModel());
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      table->updateTable(*mpRi, *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
     }
   else
     {
@@ -640,7 +649,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   int i = 0;
   CCopasiVectorN<CEvaluationTree>& FunctionList
-  = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+  = CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
@@ -650,7 +659,7 @@ void ReactionsWidget1::slotNewFunction()
       nname += TO_UTF8(QString::number(i));
     }
 
-  CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
+  CCopasiRootContainer::Root->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
 
   mpListView->switchToOtherWidget(0, pFunc->getKey());
@@ -667,7 +676,7 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      return loadFromReaction(dynamic_cast< CReaction * >(GlobalKeys.get(objKey)));
+      return loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey)));
       break;
 
     default:
@@ -686,7 +695,7 @@ bool ReactionsWidget1::leave()
 bool ReactionsWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(key));
+  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (reac)
     return loadFromReaction(reac);

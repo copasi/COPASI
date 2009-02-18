@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "model/CMetabNameInterface.h"
 #include "qtUtilities.h"
 #include "utilities/CDimension.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
@@ -282,8 +283,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       setItem(rowCounter, 2, item);
 
       // add units column
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
       item = new ColorTableItem(this, Q3TableItem::Never, color,
-                                FROM_UTF8(" " + units.getDimensions()[i].getDisplayString()));
+                                FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pDataModel)));
       setItem(rowCounter, 4, item);
 
       // add a line for a metabolite Parameter

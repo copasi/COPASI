@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
@@ -392,14 +393,15 @@ bool TaskWidget::commonAfterRunTask()
 
   CCopasiMessage::clearDeque();
 
-  CCopasiDataModel::Global->finish();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::Root->getDatamodelList())[0]->finish();
 
   // Update all values shown in the GUI
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
   pModel->updateSimulatedValues(true);
   pModel->updateNonSimulatedValues();
 
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
@@ -413,7 +415,8 @@ bool TaskWidget::commonRunTask()
   // Initialize the task
   try
     {
-      if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL))
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, (*CCopasiRootContainer::Root->getDatamodelList())[0], NULL))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
@@ -541,7 +544,7 @@ bool TaskWidget::enter(const std::string & key)
 {
   if (key != "") mObjectKey = key;
 
-  mpTask = dynamic_cast< CCopasiTask * >(GlobalKeys.get(mObjectKey));
+  mpTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
 
   // :TODO: We need a message here.
   if (!mpTask) return false;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,9 +46,9 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CEigen.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
+#include "report/CCopasiRootContainer.h"
 
 void StateSubwidget::init()
 {
@@ -308,7 +308,8 @@ void StateSubwidget::showUnits()
 bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
 {
   mpTask = pTask;
-  mpModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  mpModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
 
   if (mpTask == NULL || mpModel == NULL)
     {
@@ -421,7 +422,8 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
       switch (action)
         {
         case ListViews::ADD:
-          mpModel = CCopasiDataModel::Global->getModel();
+          assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+          mpModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
           clear();
           showUnits();
           mpTask = NULL;

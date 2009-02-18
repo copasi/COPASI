@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.260 $
+//   $Revision: 1.261 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,6 +96,7 @@
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plotUI/plotwidget1.h"
@@ -851,6 +852,9 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     Action action, const std::string & C_UNUSED(key)) //static
 {
   bool success = true;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   //maintain the "changed" flag
   switch (objectType)
@@ -869,7 +873,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the metabolite table the current widget
           if (dataModel)
             {
-              unsigned int numMetabolites = CCopasiDataModel::Global->getModel()->getMetabolites().size();
+              unsigned int numMetabolites = pDataModel->getModel()->getMetabolites().size();
               if (numMetabolites == 0)
                 {
                   ListViews::switchAllListViewsToWidget(112, "");
@@ -894,7 +898,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the compartment table the current widget
           if (dataModel)
             {
-              unsigned int numCompartments = CCopasiDataModel::Global->getModel()->getCompartments().size();
+              unsigned int numCompartments = pDataModel->getModel()->getCompartments().size();
               if (numCompartments == 0)
                 {
                   ListViews::switchAllListViewsToWidget(111, "");
@@ -919,7 +923,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the reaction table the current widget
           if (dataModel)
             {
-              unsigned int numReactions = CCopasiDataModel::Global->getModel()->getReactions().size();
+              unsigned int numReactions = pDataModel->getModel()->getReactions().size();
               if (numReactions == 0)
                 {
                   ListViews::switchAllListViewsToWidget(114, "");
@@ -945,7 +949,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           // make the model value table the current widget
           if (dataModel)
             {
-              unsigned int numValues = CCopasiDataModel::Global->getModel()->getNumModelValues();
+              unsigned int numValues = pDataModel->getModel()->getNumModelValues();
               if (numValues == 0)
                 {
                   ListViews::switchAllListViewsToWidget(115, "");
@@ -965,7 +969,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         case DELETE:
           if (dataModel)
             {
-              unsigned int numPlots = (CCopasiDataModel::Global->getPlotDefinitionList())->size();
+              unsigned int numPlots = (pDataModel->getPlotDefinitionList())->size();
               if (numPlots == 0)
                 {
                   ListViews::switchAllListViewsToWidget(42, "");
@@ -978,7 +982,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           break;
         }
 
-      if (dataModel) CCopasiDataModel::Global->changed();
+      if (dataModel) pDataModel->changed();
 
       break;
 
@@ -990,14 +994,14 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           if (dataModel)
 
             {
-              unsigned int numReports = ((CCopasiDataModel::Global)->getReportDefinitionList())->size();
+              unsigned int numReports = ((pDataModel)->getReportDefinitionList())->size();
               if (numReports == 0)
                 {
                   ListViews::switchAllListViewsToWidget(43, "");
                 }
             }
 
-          CCopasiDataModel::Global->changed();
+          pDataModel->changed();
 
           break;
         default :
@@ -1010,7 +1014,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
         {
         case CHANGE:
         case RENAME:
-          if (dataModel) CCopasiDataModel::Global->changed();
+          if (dataModel) pDataModel->changed();
           break;
         case ADD:
         case DELETE:
@@ -1095,7 +1099,10 @@ bool ListViews::detach()
 bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
 {
   if (objectType != MODEL && action != ADD)
-    CCopasiDataModel::Global->changed();
+    {
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+    }
 
   bool success = true;
   // delete the layout windows when the current model is added
@@ -1249,7 +1256,8 @@ void ListViews::setFramework(int framework)
 // static
 void ListViews::buildChangedObjects()
 {
-  CModel * pModel = CCopasiDataModel::Global->getModel();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
   pModel->compileIfNecessary(NULL);
 
   mChangedObjects.clear();

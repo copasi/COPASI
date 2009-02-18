@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,6 @@ class CSlider;
 #include <QtGui/QSpacerItem>
 #include <Qt3Support/Q3VBoxLayout>
 #include <vector>
-
-QT_BEGIN_NAMESPACE
 
 class Ui_SliderSettingsDialog
   {
@@ -477,8 +475,6 @@ namespace Ui
   {
   class SliderSettingsDialog: public Ui_SliderSettingsDialog {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 class SliderSettingsDialog : public QDialog, public Ui::SliderSettingsDialog
   {

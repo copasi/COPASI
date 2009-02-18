@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@
 #include "CCopasiSelectionDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "sensitivities/CSensTask.h"
 #include "sensitivities/CSensProblem.h"
 #include "sensitivities/CSensMethod.h"
@@ -339,7 +340,7 @@ bool SensitivitiesWidget::saveTask()
   saveMethod();
 
   CSensTask* sensTask =
-    dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
+    dynamic_cast<CSensTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
   if (sensTask == NULL)
     return false;
 
@@ -407,7 +408,11 @@ bool SensitivitiesWidget::saveTask()
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (mChanged) CCopasiDataModel::Global->changed();
+  if (mChanged)
+    {
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+    }
 
   return true;
 }
@@ -440,7 +445,7 @@ bool SensitivitiesWidget::loadTask()
   loadMethod();
 
   CSensTask* sensTask =
-    dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
+    dynamic_cast<CSensTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
   assert(sensTask);
 
   CSensProblem* problem =

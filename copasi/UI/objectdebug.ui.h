@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
+#include "report/CCopasiRootContainer.h"
 
 class MyListViewItemWithPtr : public Q3ListViewItem
   {
@@ -143,7 +144,7 @@ void ObjectDebug::update()
   element = new MyListViewItemWithPtr(ListOfObjects, NULL, "*");
   element->setOpen(true);
 
-  obj = (CCopasiObject*)CCopasiContainer::Root;
+  obj = (CCopasiObject*)CCopasiRootContainer::Root;
   if (!obj) return;
 
   addObjectRecursive((QWidget*)element, (void*)obj);
@@ -169,7 +170,10 @@ void ObjectDebug::writeDot()
 {
 
   CDotOutput dot;
-  dot.simpleCall();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  dot.simpleCall(pDataModel->getModel());
 }
 
 #include "model/CModelAnalyzer.h"
@@ -179,7 +183,8 @@ void ObjectDebug::writeDot()
 
 void ObjectDebug::checkModel()
 {
-  CModelAnalyzer MA(CCopasiDataModel::Global->getModel());
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CModelAnalyzer MA((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
 
   std::ostringstream ss;
   MA.writeReport(ss, true, true);
