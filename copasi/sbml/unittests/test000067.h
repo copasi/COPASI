@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000067.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/06 17:00:53 $
+//   $Date: 2009/02/18 20:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class Model;
+class CCopasiDataModel;
 
 /**
  * This test is for Bug 1060.
@@ -33,6 +34,7 @@ class test000067 : public CppUnit::TestFixture
 
   protected:
     static const char* MODEL_STRING1;
+    static CCopasiDataModel* pCOPASIDATAMODEL;
 
   public:
     void setUp();

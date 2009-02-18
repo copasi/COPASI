@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000073.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/30 12:54:52 $
+//   $Date: 2009/02/18 20:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,8 @@
 
 // Bug 1087 (import of parameterRules from Level 1 models)
 
+class CCopasiDataModel;
+
 class test000073 : public CppUnit::TestFixture
   {
     CPPUNIT_TEST_SUITE(test000073);
@@ -29,6 +31,7 @@ class test000073 : public CppUnit::TestFixture
 
   protected:
     static const char* MODEL_STRING1;
+    static CCopasiDataModel* pCOPASIDATAMODEL;
 
   public:
     void setUp();

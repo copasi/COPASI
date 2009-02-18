@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/09 12:46:18 $
+//   $Date: 2009/02/18 20:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 // Test for import of explicitely time dependent function defintitions
 // Problems related to this are also tracked in Bug 1093.
 // This test also covers the bugs described there.
+class CCopasiDataModel;
 
 class test000075 : public CppUnit::TestFixture
   {
@@ -31,6 +32,7 @@ class test000075 : public CppUnit::TestFixture
 
   protected:
     static const char* MODEL_STRING1;
+    static CCopasiDataModel* pCOPASIDATAMODEL;
 
   public:
     void setUp();

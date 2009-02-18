@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000066.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/23 10:06:42 $
+//   $Date: 2009/02/18 20:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,8 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/extensions/HelperMacros.h>
+
+class CCopasiDataModel;
 
 // test recognition of constant flux
 
@@ -43,6 +45,7 @@ class test000066 : public CppUnit::TestFixture
     static const char* MODEL_STRING6;
     static const char* MODEL_STRING7;
     static const char* MODEL_STRING8;
+    static CCopasiDataModel* pCOPASIDATAMODEL;
 
   public:
     void setUp();
