@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CReferencesWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/02/05 19:54:47 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "MIRIAM/CReference.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 #include "report/CCopasiObject.h"
 #include "report/CKeyFactory.h"
@@ -85,7 +86,7 @@ void CReferencesWidget::updateResourcesList()
 {
   mResources.clear();
   // Build the list of known resources
-  const CMIRIAMResources * pResource = &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources();
+  const CMIRIAMResources * pResource = &CCopasiRootContainer::Root->getConfiguration()->getRecentMIRIAMResources();
   mResources.push_back("-- select --");
 
   unsigned C_INT32 i, imax = pResource->getResourceList().size();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:17 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,11 +26,11 @@
 #include "UI/CQMessageBox.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
-#include "utilities/CVersion.h"
 
 #ifdef COPASI_SBW_INTEGRATION
 // SBW includes
@@ -45,7 +45,8 @@ int main(int argc, char **argv)
   // Parse the commandline options
   try
     {
-      COptions::init(argc, argv);
+      // Create the root container.
+      CCopasiRootContainer::init(true, argc, argv);
     }
   catch (copasi::option_error & msg)
     {
@@ -56,11 +57,9 @@ int main(int argc, char **argv)
       return 1;
     }
 
-  // Create the root container.
-  CCopasiContainer::init();
-
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel(true);
+  CCopasiDataModel* pDataModel = CCopasiRootContainer::Root->addDatamodel();
+  assert(pDataModel != NULL);
 
   // Create the main application window.
   CopasiUI3Window *pWindow = CopasiUI3Window::create();
@@ -80,9 +79,8 @@ int main(int argc, char **argv)
 finish:
   try // To suppress any access violations during destruction
     {
-      pdelete(CCopasiDataModel::Global);
       COptions::cleanup();
-      pdelete(CCopasiContainer::Root);
+      pdelete(CCopasiRootContainer::Root);
     }
   catch (...)
   {}

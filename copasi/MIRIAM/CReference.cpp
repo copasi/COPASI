@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,13 +20,14 @@
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CReference::CReference(const std::string & objectName,
                        const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "Reference"),
     mTriplet(),
     mNodePath(),
-    mKey(GlobalKeys.add("Reference", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Reference", this)),
     mIdTriplet(),
     mResource(NULL)
 {}
@@ -37,7 +38,7 @@ CReference::CReference(const CRDFTriplet & triplet,
     CCopasiContainer(objectName, pParent, "Reference"),
     mTriplet(triplet),
     mNodePath(),
-    mKey(GlobalKeys.add("Creator", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Creator", this)),
     mIdTriplet(),
     mResource(NULL)
 {
@@ -77,14 +78,14 @@ CReference::CReference(const CReference & src,
     CCopasiContainer(src, pParent),
     mTriplet(src.mTriplet),
     mNodePath(src.mNodePath),
-    mKey(GlobalKeys.add("Creator", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Creator", this)),
     mIdTriplet(src.mIdTriplet),
     mResource(src.mResource)
 {}
 
 CReference::~CReference()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 }
 
 const CRDFTriplet & CReference::getTriplet() const

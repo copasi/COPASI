@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.18 $ 
+//   $Revision: 1.19 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/06/02 11:15:11 $ 
+//   $Date: 2009/02/18 20:53:05 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -56,7 +56,6 @@
 %ignore CCopasiDataModel::isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1) const;
 %ignore CCopasiDataModel::removeSBMLIdFromFunctions();
 %ignore CCopasiDataModel::pOldMetabolites;
-%ignore CCopasiDataModel::mpUndefined;
 %ignore CCopasiDataModel::mCopasi2SBMLMap;
 %ignore CCopasiDataModel::mSBMLFileName;
 %ignore CCopasiDataModel::mpCurrentSBMLDocument;
@@ -73,8 +72,6 @@
 %ignore CCopasiDataModel::mpTaskList;
 %ignore CCopasiDataModel::mpReportDefinitionList;
 %ignore CCopasiDataModel::mpPlotDefinitionList;
-
-%immutable CCopasiDataModel::Global;
 
 %catches(CCopasiException) CCopasiDataModel::newModel();
 %catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL);

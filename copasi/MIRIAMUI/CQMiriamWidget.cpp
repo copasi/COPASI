@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/02/10 21:40:10 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #include "copasi.h"
 #include "UI/qtUtilities.h"
 #include "MIRIAM/CModelMIRIAMInfo.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 /*
@@ -330,7 +330,8 @@ void CQMiriamWidget::updateResourcesList()
 {
   mResources.clear();
   // Build the list of known resources
-  const CMIRIAMResources * pResource = &CCopasiDataModel::Global->getConfiguration()->getRecentMIRIAMResources();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  const CMIRIAMResources * pResource = &CCopasiRootContainer::Root->getConfiguration()->getRecentMIRIAMResources();
   mResources.push_back("-- select --");
 
   unsigned C_INT32 i, imax = pResource->getResourceList().size();

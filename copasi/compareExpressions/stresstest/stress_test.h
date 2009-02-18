@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/09 10:02:57 $
+//   $Date: 2009/02/18 20:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 
 class CNormalFraction;
 class Model;
+class CCopasiDataModel;
 
 // This test reads all models from the biomodels database and normalizes all
 // mathematical expressions it finds in there.
@@ -104,6 +105,7 @@ class stress_test
     std::map<CNormalFraction*, int> mUnknownCategories;
     unsigned int mDifferentNormalform;
     unsigned int mNumSBO;
+    CCopasiDataModel* mpDataModel;
   };
 
 #endif // STRESS_TEST_H__

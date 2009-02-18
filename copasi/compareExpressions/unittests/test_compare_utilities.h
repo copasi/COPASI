@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_compare_utilities.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/16 16:29:00 $
+//   $Date: 2009/02/18 20:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 #include <cppunit/TestResult.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+class CCopasiDataModel;
+
 class test_compare_utilities : public CppUnit::TestFixture
   {
     CPPUNIT_TEST_SUITE(test_compare_utilities);
@@ -27,6 +29,7 @@ class test_compare_utilities : public CppUnit::TestFixture
 
   protected:
     static const char* MODEL_STRING1;
+    static CCopasiDataModel* pCOPASIDATAMODEL;
 
   public:
     void setUp();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_compare_utilities.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/16 16:29:00 $
+//   $Date: 2009/02/18 20:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,35 +17,35 @@
 
 #include "copasi/sbml/unittests/utilities.hpp"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/compareExpressions/compare_utilities.h"
 #include "copasi/function/CFunctionDB.h"
 
+CCopasiDataModel* test_compare_utilities::pCOPASIDATAMODEL = NULL;
+
 void test_compare_utilities::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
+  CCopasiRootContainer::init(false, 0, NULL);
 
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
 }
 
 void test_compare_utilities::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 void test_compare_utilities::test_copasi_function_expansion()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;;
   std::istringstream iss(test_compare_utilities::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
-  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
   // function_5
   CEvaluationTree* pTree = pFunctionDB->findFunction("function_4");
   CPPUNIT_ASSERT(pTree != NULL);

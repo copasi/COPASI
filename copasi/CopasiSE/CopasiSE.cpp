@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:53:48 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiTask.h"
@@ -80,8 +81,8 @@ int main(int argc, char *argv[])
 
   try
     {
-      // Parse the commandline options
-      COptions::init(argc, argv);
+      // Create the root container.
+      CCopasiRootContainer::init(false, argc, argv);
     }
 
   catch (copasi::autoexcept &e)
@@ -123,15 +124,13 @@ int main(int argc, char *argv[])
 
   try
     {
-      // Create the root container.
-      CCopasiContainer::init();
-
       // Create the global data model.
-      CCopasiDataModel::Global = new CCopasiDataModel;
+      CCopasiDataModel* pDataModel = CCopasiRootContainer::Root->addDatamodel();
+      assert(pDataModel != NULL);
 
 #ifdef COPASI_LICENSE_COM
       CRegistration * pRegistration =
-        elevate< CRegistration, CCopasiParameterGroup >(CCopasiDataModel::Global->getConfiguration()->assertGroup("Registration"));
+        elevate< CRegistration, CCopasiParameterGroup >(pModel->getConfiguration()->assertGroup("Registration"));
 
       bool RegistrationChanged = false;
       std::string RegistrationValue;
@@ -198,12 +197,12 @@ int main(int argc, char *argv[])
         }
 
       CCopasiTimer * pCPU =
-        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiContainer::Root->getObject((std::string)"CN=Root,Timer=CPU Time")));
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::Root->getObject((std::string)"CN=Root,Timer=CPU Time")));
       CCopasiTimer * pWall =
-        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiContainer::Root->getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::Root->getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
 
       CCopasiVectorN< CEvaluationTree > & Functions =
-        CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+        CCopasiRootContainer::Root->getFnctionList()->loadedFunctions();
       CFunction * pFunction;
 
       for (i = 0, imax = Functions.size(); i < imax; i++)
@@ -240,13 +239,12 @@ int main(int argc, char *argv[])
       COptions::getValue("Validate", Validate);
 
       const COptions::nonOptionType & Files = COptions::getNonOptions();
-
       if (!COptions::compareValue("ImportSBML", std::string("")))
         {
           // Import the SBML File
           std::string ImportSBML;
           COptions::getValue("ImportSBML", ImportSBML);
-          if (!CCopasiDataModel::Global->importSBML(ImportSBML))
+          if (!pDataModel->importSBML(ImportSBML))
             {
               std::cerr << "SBML Import File: " << ImportSBML << std::endl;
               std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -275,7 +273,7 @@ int main(int argc, char *argv[])
               // Export the C code File
               std::string ExportC;
               COptions::getValue("ExportC", ExportC);
-              if (!CCopasiDataModel::Global->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
+              if (!pDataModel->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
                 {
                   std::cerr << "C File: " << ExportC << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -290,7 +288,7 @@ int main(int argc, char *argv[])
               // Export the Berkeley Madonna File
               std::string ExportBerkeleyMadonna;
               COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
-              if (!CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
+              if (!pDataModel->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
                 {
                   std::cerr << "Berkeley Madonna File: " << ExportBerkeleyMadonna << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -305,7 +303,7 @@ int main(int argc, char *argv[])
               // Export the Berkeley Madonna File
               std::string ExportXPPAUT;
               COptions::getValue("ExportXPPAUT", ExportXPPAUT);
-              if (!CCopasiDataModel::Global->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
+              if (!pDataModel->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
                 {
                   std::cerr << "XPPAUT File: " << ExportXPPAUT << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -321,9 +319,10 @@ int main(int argc, char *argv[])
               std::string Save;
               COptions::getValue("Save", Save);
 
-              if (!CCopasiDataModel::Global->saveModel(Save, NULL, true))
+              if (!pDataModel->saveModel(Save, NULL, true))
                 {
-                  std::cerr << "Save File: " << CCopasiDataModel::Global->getFileName() << std::endl;
+                  assert(CCopasiRootContainer::Root->getDatamodelList()->size() != 0);
+                  std::cerr << "Save File: " << pDataModel->getFileName() << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
                   retcode = 1;
@@ -362,10 +361,9 @@ int main(int argc, char *argv[])
               retcode = 1;
               goto finish;
             }
-
           for (; it != end; ++it)
             {
-              if (!CCopasiDataModel::Global->loadModel(*it, NULL))
+              if (!pDataModel->loadModel(*it, NULL))
                 {
                   std::cerr << "File: " << *it << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -397,7 +395,7 @@ int main(int argc, char *argv[])
                   // Export the C code File
                   std::string ExportC;
                   COptions::getValue("ExportC", ExportC);
-                  if (!CCopasiDataModel::Global->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
+                  if (!pDataModel->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
                     {
                       std::cerr << "C File: " << ExportC << std::endl;
                       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -416,7 +414,7 @@ int main(int argc, char *argv[])
                   // Export the Berkeley Madonna File
                   std::string ExportBerkeleyMadonna;
                   COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
-                  if (!CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
+                  if (!pDataModel->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
                     {
                       std::cerr << "Berkeley Madonna File: " << ExportBerkeleyMadonna << std::endl;
                       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -435,7 +433,7 @@ int main(int argc, char *argv[])
                   // Export the Berkeley Madonna File
                   std::string ExportXPPAUT;
                   COptions::getValue("ExportXPPAUT", ExportXPPAUT);
-                  if (!CCopasiDataModel::Global->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
+                  if (!pDataModel->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
                     {
                       std::cerr << "XPPAUT File: " << ExportXPPAUT << std::endl;
                       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -448,19 +446,19 @@ int main(int argc, char *argv[])
                   break;
                 }
 
-              CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+              CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
               unsigned C_INT32 i, imax = TaskList.size();
 
               for (i = 0; i < imax; i++)
                 if (TaskList[i]->isScheduled())
                   {
-                    TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+                    TaskList[i]->getProblem()->setModel(pDataModel->getModel());
 
                     bool success = true;
 
                     try
                       {
-                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
+                        success = TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
 
                         // We need to check whether the result is saved in any form.
                         // If not we need to stop right here to avoid wasting time.
@@ -484,14 +482,14 @@ int main(int argc, char *argv[])
 
                     if (!success)
                       {
-                        std::cerr << "File: " << CCopasiDataModel::Global->getFileName() << std::endl;
+                        std::cerr << "File: " << pDataModel->getFileName() << std::endl;
                         std::cerr << "Task: " << TaskList[i]->getObjectName() << std::endl;
                         std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
                         retcode = 1;
                       }
 
-                    CCopasiDataModel::Global->finish();
+                    pDataModel->finish();
                   }
 
               // Check whether a file for saving the resulting model is given
@@ -499,7 +497,7 @@ int main(int argc, char *argv[])
                 {
                   std::string Save;
                   COptions::getValue("Save", Save);
-                  if (!CCopasiDataModel::Global->saveModel(Save, NULL, true))
+                  if (!pDataModel->saveModel(Save, NULL, true))
                     {
                       std::cerr << "Save File: " << Save << std::endl;
                       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -522,9 +520,8 @@ int main(int argc, char *argv[])
     }
 
 finish:
-  pdelete(CCopasiDataModel::Global);
   COptions::cleanup();
-  pdelete(CCopasiContainer::Root);
+  pdelete(CCopasiRootContainer::Root);
 
   //std::cout << "Leaving main program." << std::endl;
   return retcode;
@@ -537,16 +534,11 @@ void writeLogo()
 
   if (NoLogo) return;
 
-  CVersion Version;
-  Version.setVersion(COPASI_VERSION_MAJOR,
-                     COPASI_VERSION_MINOR,
-                     COPASI_VERSION_BUILD,
-                     COPASI_VERSION_COMMENT);
   std::cout << "COPASI "
 #ifdef COPASI_LICENSE_COM
   << "(commercial) "
 #endif // COPASI_LICENSE_COM
-  << Version.getVersion() << std::endl
+  << CVersion::VERSION.getVersion() << std::endl
   << "The use of this software indicates the acceptance of the attached license." << std::endl
   << "To view the license please use the option: --license" << std::endl
   << std::endl;
@@ -558,20 +550,21 @@ int validate()
 
   // We are allready sure that the COPASI model compiled. That means
   // we only need to test the active tasks
-
-  CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() != 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
   unsigned C_INT32 i, imax = TaskList.size();
 
   for (i = 0; i < imax; i++)
     if (TaskList[i]->isScheduled())
       {
         bool success = true;
-        TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+        TaskList[i]->getProblem()->setModel(pDataModel->getModel());
 
         try
           {
             success =
-              TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
+              TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.
@@ -590,14 +583,14 @@ int validate()
 
         if (!success)
           {
-            std::cerr << "File: " << CCopasiDataModel::Global->getFileName() << std::endl;
+            std::cerr << "File: " << pDataModel->getFileName() << std::endl;
             std::cerr << "Task: " << TaskList[i]->getObjectName() << std::endl;
             std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
             retcode = 1;
           }
 
-        CCopasiDataModel::Global->finish();
+        pDataModel->finish();
       }
 
   return retcode;
@@ -645,7 +638,8 @@ int exportSBML()
       break;
     }
 
-  if (!CCopasiDataModel::Global->exportSBML(ExportSBML, true, Level, Version))
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() != 0);
+  if (!(*CCopasiRootContainer::Root->getDatamodelList())[0]->exportSBML(ExportSBML, true, Level, Version))
     {
       std::cerr << "SBML Export File: " << ExportSBML << std::endl;
       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;

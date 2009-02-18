@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CBiologicalDescription.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,12 +21,13 @@
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CBiologicalDescription::CBiologicalDescription(const std::string & objectName,
     const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "BiologicalDescription"),
     mTriplet(),
-    mKey(GlobalKeys.add("BiologicalDescription", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("BiologicalDescription", this)),
     mResource(NULL)
 {}
 
@@ -35,7 +36,7 @@ CBiologicalDescription::CBiologicalDescription(const CRDFTriplet & triplet,
     const CCopasiContainer * pParent):
     CCopasiContainer(objectName, pParent, "BiologicalDescription"),
     mTriplet(triplet),
-    mKey(GlobalKeys.add("BiologicalDescription", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("BiologicalDescription", this)),
     mResource(mTriplet.pObject)
 {}
 
@@ -43,13 +44,13 @@ CBiologicalDescription::CBiologicalDescription(const CBiologicalDescription & sr
     const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mTriplet(src.mTriplet),
-    mKey(GlobalKeys.add("Creator", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Creator", this)),
     mResource(src.mResource)
 {}
 
 CBiologicalDescription::~CBiologicalDescription()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 }
 
 const CRDFTriplet & CBiologicalDescription::getTriplet() const

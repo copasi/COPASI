@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "sbml/math/ASTNode.h"
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 const std::string CEvaluationTree::TypeName[] =
   {"userdefined", "predefined", "predefined", "userdefined", "userdefined", "userdefined", ""};
@@ -119,7 +120,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     CCopasiContainer(name, pParent, "Function"),
     mSBMLId(""),
     mType(type),
-    mKey(GlobalKeys.add("Function", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
@@ -138,7 +139,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     CCopasiContainer(src, pParent),
     mSBMLId(src.mSBMLId),
     mType(src.mType),
-    mKey(GlobalKeys.add("Function", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
@@ -156,7 +157,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
 CEvaluationTree::~CEvaluationTree()
 {
   CEvaluationLexer::freeNodeList(mpNodeList);
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 }
 
 const CEvaluationTree::Type & CEvaluationTree::getType() const
@@ -501,7 +502,7 @@ bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * 
   std::vector< CEvaluationNode * >::const_iterator end;
 
   CCopasiVectorN< CEvaluationTree > & Functions =
-    CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+    CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
 
   for (i = (added) ? imax - added : 0; i < imax; i++)
     {

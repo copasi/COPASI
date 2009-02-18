@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.11 $
+$Revision: 1.12 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/01/07 18:53:09 $
+$Author: gauges $
+$Date: 2009/02/18 20:53:06 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,7 +271,7 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
   << std::endl;
 
   *mpOstream << "<!-- generated with COPASI "
-  << CCopasiDataModel::Global->getVersion()->getVersion()
+  << CVersion::VERSION.getVersion()
   << " (http://www.copasi.org) at "
   << UTCTimeStamp()
   << " UTC -->"

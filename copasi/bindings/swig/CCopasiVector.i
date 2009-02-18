@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.22 $ 
+//   $Revision: 1.23 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/02/18 20:53:05 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -160,6 +160,8 @@
 %template(CChemEqElementStdVector) std::vector<CChemEqElement*>;
 %template(CChemEqElementVector) CCopasiVector<CChemEqElement>;
 
+%template(DataModelVector) CCopasiVector<CCopasiDataModel>;
+
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
@@ -194,6 +196,8 @@ typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 typedef std::vector<CFunction> CFunctionStdVector;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
+
+typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
 

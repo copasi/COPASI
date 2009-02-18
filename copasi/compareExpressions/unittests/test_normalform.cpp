@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/15 12:08:12 $
+//   $Date: 2009/02/18 20:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -8392,7 +8392,6 @@ void test_normalform::test_product_of_sums_2()
   pPowerItems = &pProduct->getItemPowers();
   CPPUNIT_ASSERT(pPowerItems != NULL);
   CPPUNIT_ASSERT(pPowerItems->size() == 3);
-  powerItemIt;
   // first item A
   powerItemIt = pPowerItems->begin();
   pItemPower = (*powerItemIt);

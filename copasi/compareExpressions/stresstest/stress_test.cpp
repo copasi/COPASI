@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/09 10:02:57 $
+//   $Date: 2009/02/18 20:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@
 #include "sbml/math/ASTNode.h"
 #include "sbml/math/MathML.h"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/compareExpressions/CNormalFraction.h"
 #include "copasi/compareExpressions/CNormalTranslation.h"
@@ -64,12 +64,13 @@ stress_test::stress_test(): mNumFunctionDefinitions(0),
     mNumMappedKineticExpressions(0),
     mNumUnmappedKineticExpressions(0),
     mDifferentNormalform(0),
-    mNumSBO(0)
+    mNumSBO(0),
+    mpDataModel(NULL)
 {
   // Create the root container.
-  CCopasiContainer::init();
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  this->mpDataModel = CCopasiRootContainer::Root->addDatamodel();
 }
 
 /**
@@ -98,11 +99,8 @@ stress_test::~stress_test()
       delete it5->second;
       ++it5;
     }
-  // delete the COPASI data structures
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  delete CCopasiRootContainer::Root;
+  CCopasiRootContainer::Root = NULL;
 }
 
 /**
@@ -222,11 +220,11 @@ void stress_test::run(const std::vector<std::string>& filenames)
 void stress_test::normalizeMath(const std::string& filename)
 {
   bool result = false;
-  if (CCopasiDataModel::Global != NULL)
+  if (this->mpDataModel != NULL)
     {
       try
         {
-          result = CCopasiDataModel::Global->importSBML(filename);
+          result = this->mpDataModel->importSBML(filename);
           ++mNumFiles;
         }
       catch (...)
@@ -235,7 +233,7 @@ void stress_test::normalizeMath(const std::string& filename)
         }
       if (result == true)
         {
-          const SBMLDocument* pDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+          const SBMLDocument* pDocument = this->mpDataModel->getCurrentSBMLDocument();
           if (pDocument != NULL)
             {
               const Model* pModel = pDocument->getModel();
@@ -351,12 +349,12 @@ void stress_test::normalizeAndSimplifyExpressions(const Model* pModel)
                   // find the COPASI Reaction that corresponds to this reaction
                   std::string id = pReaction->getId();
                   const CReaction* pCOPASIReaction = NULL;
-                  unsigned int z = 0, zMax = CCopasiDataModel::Global->getModel()->getReactions().size();
+                  unsigned int z = 0, zMax = this->mpDataModel->getModel()->getReactions().size();
                   while (z < zMax)
                     {
-                      if (CCopasiDataModel::Global->getModel()->getReactions()[z]->getSBMLId() == id)
+                      if (this->mpDataModel->getModel()->getReactions()[z]->getSBMLId() == id)
                         {
-                          pCOPASIReaction = CCopasiDataModel::Global->getModel()->getReactions()[z];
+                          pCOPASIReaction = this->mpDataModel->getModel()->getReactions()[z];
                           break;
                         }
                       ++z;
@@ -903,7 +901,7 @@ void stress_test::normalizeFunctionDefinitions(const Model* pModel)
  */
 void stress_test::normalizeFunctionDB()
 {
-  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
   assert(pFunctionDB != NULL);
   CCopasiVectorN< CEvaluationTree > & loadedFunctions = pFunctionDB->loadedFunctions();
   unsigned int i = 0, iMax = loadedFunctions.size();

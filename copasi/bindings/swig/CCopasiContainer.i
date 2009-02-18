@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiContainer.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/02/18 20:53:05 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -27,9 +27,6 @@
                                            const CCopasiContainer * pParent = NULL,
                                            const std::string & type = "CN",
                                            const unsigned C_INT32 & flag);
-%immutable CCopasiContainer::Root;
-
-%rename (RootContainer) CCopasiContainer::Root;
 
 %ignore CCopasiContainer::add(CCopasiObject*,const bool&); // needs to be hidden since it conflicts with methods in derived classes 
 %ignore CCopasiContainer::remove(CCopasiObject*); // needs to be hidden since it conflicts with methods in derived classes 

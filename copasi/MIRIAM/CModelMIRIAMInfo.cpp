@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:33 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "model/CReaction.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CMIRIAMInfo::CMIRIAMInfo() :
     CCopasiContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
@@ -87,7 +88,7 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
 bool CMIRIAMInfo::removeCreator(const std::string & key)
 {
   CCreator * pCreator =
-    dynamic_cast< CCreator * >(GlobalKeys.get(key));
+    dynamic_cast< CCreator * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pCreator)
     return false;
@@ -181,7 +182,7 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
 bool CMIRIAMInfo::removeReference(const std::string & key)
 {
   CReference * pReference =
-    dynamic_cast< CReference * >(GlobalKeys.get(key));
+    dynamic_cast< CReference * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pReference)
     return false;
@@ -307,7 +308,7 @@ CModification * CMIRIAMInfo::createModification(const std::string & /* objectNam
 bool CMIRIAMInfo::removeModification(const std::string & key)
 {
   CModification * pModified =
-    dynamic_cast< CModification * >(GlobalKeys.get(key));
+    dynamic_cast< CModification * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pModified)
     return false;
@@ -382,7 +383,7 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
 bool CMIRIAMInfo::removeBiologicalDescription(const std::string & key)
 {
   CBiologicalDescription * pBiologicalDescription =
-    dynamic_cast< CBiologicalDescription * >(GlobalKeys.get(key));
+    dynamic_cast< CBiologicalDescription * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pBiologicalDescription)
     return false;
@@ -446,7 +447,7 @@ void CMIRIAMInfo::load(const std::string& key)
   pdelete(mpRDFGraph);
 
   mKey = key;
-  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
+  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
 
   if (pCopasiObject != NULL)
     {
@@ -490,7 +491,7 @@ void CMIRIAMInfo::load(const std::string& key)
 
 bool CMIRIAMInfo::save()
 {
-  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(GlobalKeys.get(mKey));
+  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
 
   if (pCopasiObject && mpRDFGraph)
     {

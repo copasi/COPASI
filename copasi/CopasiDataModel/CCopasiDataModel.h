@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:52 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:53:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,6 @@
 #include "utilities/COutputHandler.h"
 #include "utilities/CCopasiTask.h"
 
-class CVersion;
 class CModel;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
@@ -63,11 +62,18 @@ class CDataModelRenameHandler : public CRenameHandler
 
 //******************************************************************************
 
-class CCopasiDataModel: public COutputHandler
+class CCopasiDataModel: public COutputHandler, public CCopasiContainer
   {
     // Operations
   public:
     CCopasiDataModel(const bool withGUI = false);
+
+    CCopasiDataModel(const std::string & name,
+                     const CCopasiContainer * pParent = NULL,
+                     const std::string & type = "CN",
+                     const unsigned C_INT32 & flag = CCopasiObject::Container,
+                     bool withGUI = false);
+
     ~CCopasiDataModel();
 
     bool loadModel(const std::string & fileName, CProcessReport* pProcessReport);
@@ -101,10 +107,7 @@ class CCopasiDataModel: public COutputHandler
     CListOfLayouts * getListOfLayouts();
     bool removeLayout(const std::string& key);
 
-    CFunctionDB * getFunctionList();
     SCopasiXMLGUI * getGUI();
-    CConfigurationFile * getConfiguration();
-    CVersion * getVersion();
     const std::string & getFileName() const;
 
     bool isChanged() const;
@@ -116,17 +119,8 @@ class CCopasiDataModel: public COutputHandler
 
     std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
-    /**
-     * Retrieve the pointer for the function used for importing the
-     * unsupported SBML symbol delay
-     * @return CFunction * pUnsupportedDelay
-     */
-    CFunction * getUnsupportedDelay();
-
     // Attributes
   protected:
-    CVersion * mpVersion;
-    CFunctionDB * mpFunctionList;
     CModel * mpModel;
     CCopasiVectorN< CCopasiTask > * mpTaskList;
     CReportDefinitionVector * mpReportDefinitionList;
@@ -137,7 +131,6 @@ class CCopasiDataModel: public COutputHandler
 
     bool mWithGUI;
     SCopasiXMLGUI * mpGUI;
-    CConfigurationFile * mpConfiguration;
 
     std::string mSaveFileName;
     bool mChanged;
@@ -162,16 +155,7 @@ class CCopasiDataModel: public COutputHandler
      */
     std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
 
-    /**
-     * Pointer to a function created for supporting the load SBML models
-     * using the delay symbol
-     */
-    CFunction * mpUnsupportedDelay;
-
   public:
-    static CCopasiDataModel * Global;
-    CFunction * mpUndefined;
-
     /**
      *  This is a hack at the moment to be able to read Gepasi model files
      */
