@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/22 22:15:11 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@ class CCopasiObjectName;
 class CCopasiContainer;
 class CCopasiObject;
 class CModel;
+class CCopasiDataModel;
 
 template <class CType> class CCopasiObjectReference;
 template <class CType> class CCopasiVectorReference;
@@ -250,6 +251,20 @@ class CCopasiObject
     virtual bool setObjectParent(const CCopasiContainer * pParent);
 
     CCopasiContainer * getObjectParent() const;
+
+    /**
+     * Returns a pointer to the CCopasiDataModel the element belongs to.
+     * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
+     * is returned.
+     */
+    CCopasiDataModel* getParentDatamodel();
+
+    /**
+     * Returns a const pointer to the CCopasiDataModel the element belongs to.
+     * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
+     * is returned.
+     */
+    const CCopasiDataModel* getParentDatamodel() const;
 
     CCopasiContainer * getObjectAncestor(const std::string & type) const;
 

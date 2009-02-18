@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:59:18 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 #define COPASI_CFitItem
 
 #include "optimization/COptItem.h"
+
+class CCopasiDataModel;
 
 class CFitItem : public COptItem
   {
@@ -72,14 +74,14 @@ class CFitItem : public COptItem
      * Check the validity of the optimization item.
      * @return bool isValid
      */
-    virtual bool isValid() const;
+    virtual bool isValid(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Check whether the group describes a valid optimization item.
      * @param CCopasiParameterGroup & group
      * @return bool isValid
      */
-    static bool isValid(CCopasiParameterGroup & group);
+    static bool isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel);
 
     /**
      * Compile the optimization item. This function must be called

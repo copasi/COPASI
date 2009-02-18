@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/oscillation/COscillationTask.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/11/11 16:47:54 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:45 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -38,10 +38,12 @@ class COscillationTask : public CCopasiTask
     /**
      * default constructor
      * @param const CCopasiTask::Type & type (default: optimization)
-     * @param const CCopasiContainer * pParent (default: RootContainer)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COscillationTask(const CCopasiTask::Type & type = CCopasiTask::oscillation,
-                     const CCopasiContainer * pParent = & RootContainer);
+    //COscillationTask(const CCopasiTask::Type & type = CCopasiTask::oscillation,
+    //                 const CCopasiContainer * pParent = NULL);
+    COscillationTask(const CCopasiTask::Type & type ,
+                     const CCopasiContainer * pParent);
 
     /**
      * Copy constructor

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-$Revision: 1.31 $
+$Revision: 1.32 $
 $Name:  $
-$Author: shoops $
-$Date: 2008/09/01 17:01:30 $
+$Author: gauges $
+$Date: 2009/02/18 20:54:48 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,6 @@ class CCopasiContainer: public CCopasiObject
   {
     //Attributes
   public:
-    static CCopasiContainer * Root;
 
     static const std::vector< CCopasiContainer * > EmptyList;
 
@@ -51,7 +50,6 @@ class CCopasiContainer: public CCopasiObject
     objectMap mObjects;
 
     // Operations
-  private:
     CCopasiContainer();
 
   public:
@@ -76,8 +74,6 @@ class CCopasiContainer: public CCopasiObject
                      const CCopasiContainer * pParent = NULL);
 
     virtual ~CCopasiContainer();
-
-    static void init();
 
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
@@ -120,6 +116,4 @@ class CCopasiContainer: public CCopasiObject
     {return createMatrixReference(name, this, reference, flag);}
   };
 
-#define RootContainer (*CCopasiContainer::Root)
-
-#endif // COPASI_CCopasiConateiner
+#endif // COPASI_CCopasiContainer

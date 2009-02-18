@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:02:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "CExperiment.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CCopasiObjectReference.h"
@@ -178,8 +179,9 @@ bool CFitProblem::elevateChildren()
   if (!COptProblem::elevateChildren()) return false;
 
   CCopasiVectorN< CCopasiTask > * pTasks = NULL;
-  if (CCopasiDataModel::Global)
-    pTasks = CCopasiDataModel::Global->getTaskList();
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  if (pDataModel)
+    pTasks = pDataModel->getTaskList();
   if (pTasks == NULL)
     pTasks = dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
@@ -332,12 +334,13 @@ bool CFitProblem::initialize()
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(getObjectAncestor("Vector"));
-
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
   mpSteadyState =
     dynamic_cast< CSteadyStateTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmSteadyStateCN));
   if (mpSteadyState == NULL)
     mpSteadyState =
-      static_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+      static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
   mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
@@ -345,7 +348,7 @@ bool CFitProblem::initialize()
     dynamic_cast< CTrajectoryTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmTimeCourseCN));
   if (mpTrajectory == NULL)
     mpTrajectory =
-      static_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
   mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
   ContainerList.clear();
@@ -564,7 +567,7 @@ bool CFitProblem::initialize()
   if (!mpSteadyState)
     {
       mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+        dynamic_cast< CSteadyStateTask * >((*pDataModel->getTaskList())["Steady-State"]);
 
       if (mpSteadyState == NULL) fatalError();
 
@@ -576,7 +579,7 @@ bool CFitProblem::initialize()
   if (!mpTrajectory)
     {
       mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+        dynamic_cast< CTrajectoryTask * >((*pDataModel->getTaskList())["Time-Course"]);
 
       if (mpTrajectory == NULL) fatalError();
 
@@ -839,7 +842,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
                 if (j) os << ", ";
 
                 pExperiment =
-                  dynamic_cast< CExperiment * >(GlobalKeys.get(pFitItem->getExperiment(j)));
+                  dynamic_cast< CExperiment * >(CCopasiRootContainer::Root->getKeyFactory()->get(pFitItem->getExperiment(j)));
 
                 if (pExperiment)
                   os << pExperiment->getObjectName();

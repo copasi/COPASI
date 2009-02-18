@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:02:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "CFitTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -188,8 +189,8 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
 
 void CExperiment::initializeParameter()
 {
-  GlobalKeys.remove(mKey);
-  mKey = GlobalKeys.add("Experiment", this);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Experiment", this);
 
   assertParameter("Key", CCopasiParameter::KEY, mKey)->setValue(mKey);
 
@@ -420,7 +421,9 @@ bool CExperiment::calculateStatistics()
 
   if (*mpTaskType == CCopasiTask::timeCourse)
     {
-      pTime = const_cast<C_FLOAT64 *>(&CCopasiDataModel::Global->getModel()->getTime());
+      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      assert(pDataModel != NULL);
+      pTime = const_cast<C_FLOAT64 *>(&pDataModel->getModel()->getTime());
       SavedTime = *pTime;
     }
 
@@ -656,8 +659,10 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnCount.resize(numCols);
   mColumnCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
 
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
   CModel * pModel =
-    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(CCopasiDataModel::Global->getModel()->getObjectName()))));
+    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(pDataModel->getModel()->getObjectName()))));
 
   mIndependentRefreshMethods = pModel->buildInitialRefreshSequence(IdependentObjects);
   mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
@@ -1040,9 +1045,11 @@ const std::string & CExperiment::getFileName() const
   {
     std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
 
+    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    assert(pDataModel != NULL);
     if (CDirEntry::isRelativePath(*pFileName) &&
         !CDirEntry::makePathAbsolute(*pFileName,
-                                     CCopasiDataModel::Global->getFileName()))
+                                     pDataModel->getFileName()))
       *pFileName = CDirEntry::fileName(*pFileName);
 
     return *mpFileName;

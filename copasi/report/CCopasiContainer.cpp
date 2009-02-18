@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:04:15 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,22 +35,14 @@
 #include "CCopasiObjectReference.h"
 #include "CCopasiStaticString.h"
 #include "CCopasiTimer.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "utilities/CCopasiVector.h"
 
-CCopasiContainer * CCopasiContainer::Root = NULL;
-
 const std::vector< CCopasiContainer * > CCopasiContainer::EmptyList;
 
-void CCopasiContainer::init()
-{
-  CCopasiContainer::Root = new CCopasiContainer();
-  new CCopasiTimer(CCopasiTimer::WALL, CCopasiContainer::Root);
-  new CCopasiTimer(CCopasiTimer::CPU, CCopasiContainer::Root);
-}
-
 CCopasiObject * CCopasiContainer::ObjectFromName(const CCopasiObjectName & objName)
-{return const_cast<CCopasiObject *>(CCopasiContainer::Root->getObject(objName));}
+{return const_cast<CCopasiObject *>(CCopasiRootContainer::Root->getObject(objName));}
 
 CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
     const CCopasiObjectName & objName)
@@ -83,7 +75,7 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
 
   // if not found search the root
   if (!pObject)
-    pObject = CCopasiContainer::Root->getObject(objName);
+    pObject = CCopasiRootContainer::Root->getObject(objName);
 
   return const_cast<CCopasiObject *>(pObject);
 }
@@ -124,7 +116,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
   {
     if (cn == "")
       {
-        if (this != Root)
+        if (this != CCopasiRootContainer::Root)
           return this;
         else
           return NULL;

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:28:47 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:45 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -22,6 +27,7 @@
 class CCopasiObjectName;
 class COptProblem;
 class CRandom;
+class CCopasiDataModel;
 
 class COptItem: public CCopasiParameterGroup
   {
@@ -61,7 +67,7 @@ class COptItem: public CCopasiParameterGroup
      * @param const CCopasiObjectName & objectCN
      * @return bool success
      */
-    bool setObjectCN(const CCopasiObjectName & objectCN);
+    bool setObjectCN(const CCopasiObjectName & objectCN, const CCopasiDataModel* pDataModel);
 
     /**
      * Retrieve the object of the optimization item.
@@ -86,7 +92,7 @@ class COptItem: public CCopasiParameterGroup
      * @param const CCopasiObjectName & lowerBound
      * @return bool success
      */
-    bool setLowerBound(const CCopasiObjectName & lowerBound);
+    bool setLowerBound(const CCopasiObjectName & lowerBound, const CCopasiDataModel* pDataModel);
 
     /**
      * Retrieve the lower bound.
@@ -99,7 +105,7 @@ class COptItem: public CCopasiParameterGroup
      * @param const CCopasiObjectName & upperBound
      * @return bool success
      */
-    bool setUpperBound(const CCopasiObjectName & upperBound);
+    bool setUpperBound(const CCopasiObjectName & upperBound, const CCopasiDataModel* pDataModel);
 
     /**
      * Retrieve the upper bound.
@@ -117,14 +123,14 @@ class COptItem: public CCopasiParameterGroup
      * Check the validity of the optimization item.
      * @return bool isValid
      */
-    virtual bool isValid() const;
+    virtual bool isValid(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Check whether the group describes a valid optimization item.
      * @param CCopasiParameterGroup & group
      * @return bool isValid
      */
-    static bool isValid(CCopasiParameterGroup & group);
+    static bool isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel);
 
     /**
      * Compile the optimization item. This function must be called

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:01:52 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 
 #include "randomGenerator/CRandom.h"
 #include "report/CCopasiContainer.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiMessage.h"
@@ -107,9 +108,9 @@ void COptItem::initializeParameter()
     assertParameter("StartValue", CCopasiParameter::DOUBLE, NaN)->getValue().pDOUBLE;
 }
 
-bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
+bool COptItem::setObjectCN(const CCopasiObjectName & objectCN, const CCopasiDataModel* pDataModel)
 {
-  const CCopasiObject * pObject = RootContainer.getObject(objectCN);
+  const CCopasiObject * pObject = pDataModel->getObject(objectCN);
 
   if (pObject == NULL || !pObject->isValueDbl())
     {
@@ -135,7 +136,7 @@ std::string COptItem::getObjectDisplayName() const
     return mpObject->getObjectDisplayName();
   }
 
-bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
+bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound, const CCopasiDataModel* pDataModel)
 {
   const CCopasiObject * pObject;
 
@@ -154,7 +155,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 
   if (lowerBound != "-inf" &&
       !isNumber(lowerBound) &&
-      ((pObject = RootContainer.getObject(lowerBound)) == NULL ||
+      ((pObject = pDataModel->getObject(lowerBound)) == NULL ||
        !pObject->isValueDbl()))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, lowerBound.c_str());
@@ -168,7 +169,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 const std::string COptItem::getLowerBound() const
   {return *mpParmLowerBound;}
 
-bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
+bool COptItem::setUpperBound(const CCopasiObjectName & upperBound, const CCopasiDataModel* pDataModel)
 {
   const CCopasiObject * pObject;
 
@@ -187,7 +188,7 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 
   if (upperBound != "inf" &&
       !isNumber(upperBound) &&
-      ((pObject = RootContainer.getObject(upperBound)) == NULL ||
+      ((pObject = pDataModel->getObject(upperBound)) == NULL ||
        !pObject->isValueDbl()))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, upperBound.c_str());
@@ -310,21 +311,21 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 UpdateMethod * COptItem::getUpdateMethod() const
   {return mpMethod;}
 
-bool COptItem::isValid() const
+bool COptItem::isValid(const CCopasiDataModel* pDataModel) const
   {
     COptItem *pTmp = const_cast<COptItem *>(this);
 
-    if (!pTmp->setObjectCN(getObjectCN())) return false;
-    if (!pTmp->setLowerBound(getLowerBound())) return false;
-    if (!pTmp->setUpperBound(getUpperBound())) return false;
+    if (!pTmp->setObjectCN(getObjectCN(), pDataModel)) return false;
+    if (!pTmp->setLowerBound(getLowerBound(), pDataModel)) return false;
+    if (!pTmp->setUpperBound(getUpperBound(), pDataModel)) return false;
 
     return true;
   }
 
-bool COptItem::isValid(CCopasiParameterGroup & group)
+bool COptItem::isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel)
 {
   COptItem tmp(group);
-  return tmp.isValid();
+  return tmp.isValid(pDataModel);
 }
 
 bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)

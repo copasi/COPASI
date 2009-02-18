@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:04:15 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "model/CObjectLists.h"
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "plot/COutputDefinitionVector.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CExperimentSet.h"
@@ -358,7 +359,7 @@ bool COutputAssistant::initialize()
 }
 
 //static
-CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task, bool activate)
+CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task, CCopasiDataModel* pDataModel, bool activate)
 {
   if (task == NULL)
     {
@@ -509,7 +510,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     case 10: // :TODO: Implement me!
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
@@ -563,7 +564,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           }
 
         pPlotSpecification =
-          createPlot(getItemName(id), data2, data1, getItem(id).mTaskType);
+          createPlot(getItemName(id), data2, data1, getItem(id).mTaskType, pDataModel);
 
         if (pPlotSpecification != NULL)
           {
@@ -589,7 +590,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     case 11:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
@@ -619,7 +620,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
               }
 
             pPlotSpecification =
-              createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType);
+              createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType, pDataModel);
 
             if (pPlotSpecification != NULL)
               {
@@ -662,7 +663,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     case 12:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
@@ -706,7 +707,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     std::ostringstream sname;
                     sname << pObject->getObjectDisplayName();
                     while (!(pPlotSpecification =
-                               CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(sname.str(),
+                               pDataModel->getPlotDefinitionList()->createPlotSpec(sname.str(),
                                    CPlotItem::plot2d)))
                       {
                         i++;
@@ -748,7 +749,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     case 13:
       {
         CPlotSpecification * pPlotSpecification = NULL;
-        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
         if (pTask == NULL) return NULL;
 
         CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
@@ -761,7 +762,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         data1.push_back(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value")));
 
         pPlotSpecification =
-          createPlot("Progress of Fit" , data2, data1, getItem(id).mTaskType);
+          createPlot("Progress of Fit" , data2, data1, getItem(id).mTaskType, pDataModel);
 
         if (pPlotSpecification != NULL)
           {
@@ -786,7 +787,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   if (isReport)
     {
       data1.insert(data1.begin(), pTime);
-      CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType);
+      CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType, pDataModel);
       if (activate && pReportDef)
         {
           task->getReport().setReportDefinition(pReportDef);
@@ -797,7 +798,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   else //plot
     {
       data2 = pTime;
-      return createPlot(getItemName(id), data2, data1, getItem(id).mTaskType);
+      return createPlot(getItemName(id), data2, data1, getItem(id).mTaskType, pDataModel);
     }
 
   return NULL;
@@ -809,7 +810,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     const CCopasiObject* x,
     const std::vector<const CCopasiObject*> & y,
-    const CCopasiTask::Type & /* taskType */)
+    const CCopasiTask::Type & /* taskType */,
+    CCopasiDataModel* pDataModel)
 {
   if (!x) return NULL;
 
@@ -830,7 +832,8 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   CPlotSpecification* pPl;
   std::ostringstream sname;
   sname << name;
-  while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(sname.str(),
+  assert(pDataModel != NULL);
+  while (!(pPl = pDataModel->getPlotDefinitionList()->createPlotSpec(sname.str(),
                  CPlotItem::plot2d)))
     {
       i++;
@@ -867,7 +870,8 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 CReportDefinition* COutputAssistant::createTable(const std::string & name,
     const std::vector<const CCopasiObject*> & d,
     const std::string & comment,
-    const CCopasiTask::Type & taskType)
+    const CCopasiTask::Type & taskType,
+    CCopasiDataModel* pDataModel)
 {
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = d.end();
 
@@ -883,7 +887,8 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
   CReportDefinition * pReport = NULL;
   std::ostringstream sname;
   sname << name;
-  while (!(pReport = CCopasiDataModel::Global->getReportDefinitionList()->createReportDefinition(sname.str(), comment)))
+  assert(pDataModel != NULL);
+  while (!(pReport = pDataModel->getReportDefinitionList()->createReportDefinition(sname.str(), comment)))
     {
       i++;
       sname.str("");

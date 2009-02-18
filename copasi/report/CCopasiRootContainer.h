@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/12 16:47:15 $
+//   $Date: 2009/02/18 20:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ class CCopasiRootContainer : public CCopasiContainer
      * Maybe this restriction is not necessary. We have to discuss this
      * later.
      */
-    CCopasiRootContainer();
+    CCopasiRootContainer(bool withGUI = false);
 
     /**
      * The copy constructor is private as well to make sure that there is only
@@ -66,7 +66,17 @@ class CCopasiRootContainer : public CCopasiContainer
      * Currently it is only used in the init call and it is made private so
      * that we can be sure that there is only one root container.
      */
-    static CCopasiRootContainer* createNewRoot();
+    static CCopasiRootContainer* createNewRoot(bool withGUI = false);
+
+    /**
+     * This method needs to be called after a new root container is
+     * constructed.
+     * Since many of the children of the root container need to access the key
+     * factory through the global Root instance, the global root instance need to be created before the children can be initialized.
+     * Calling this Method initializes the children. This method must be
+     * protected since it can only be called once by the global init method.
+     */
+    void initializeChildren();
 
   protected:
     CKeyFactory mKeyFactory;
@@ -96,7 +106,7 @@ class CCopasiRootContainer : public CCopasiContainer
     /**
      * This method creates the only root container.
      */
-    static void init();
+    static void init(bool withGUI, int argc, char** argv);
 
     /**
      * Returns the a pointer to the configuration.
@@ -161,8 +171,16 @@ class CCopasiRootContainer : public CCopasiContainer
      * @return CFunction * pUnsupportedDelay
      */
     const CFunction * getUndefinedFunction() const;
-  };
 
-#define RootContainer (*CCopasiRootContainer::Root)
+    /**
+     * Returns a pointer to the KeyFactory.
+     */
+    CKeyFactory* getKeyFactory();
+
+    /**
+     * Returns a const pointer to the KeyFactory.
+     */
+    const CKeyFactory* getKeyFactory() const;
+  };
 
 #endif /* COPASI_CCopasiRootContainer */

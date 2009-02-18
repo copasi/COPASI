@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:59:18 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,8 @@
 
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiParameterGroup.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CFitItem::CFitItem(const std::string & name,
                    const CCopasiContainer * pParent):
@@ -97,14 +99,14 @@ bool CFitItem::elevateChildren()
   return true;
 }
 
-bool CFitItem::isValid() const
-{return COptItem::isValid();}
+bool CFitItem::isValid(const CCopasiDataModel* pDataModel) const
+{return COptItem::isValid(pDataModel);}
 
-bool CFitItem::isValid(CCopasiParameterGroup & group)
+bool CFitItem::isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel)
 {
   CFitItem tmp(group);
 
-  return tmp.isValid();
+  return tmp.isValid(pDataModel);
 }
 
 bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
@@ -221,7 +223,7 @@ std::string CFitItem::getExperiments() const
 
     for (i = 0; i < imax; i++)
       {
-        pObject = GlobalKeys.get(*mpGrpAffectedExperiments->getValue(i).pKEY);
+        pObject = CCopasiRootContainer::Root->getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
 
         if (i && pObject)
           Experiments += ", ";
@@ -267,7 +269,7 @@ std::string CFitItem::getCrossValidations() const
 
     for (i = 0; i < imax; i++)
       {
-        pObject = GlobalKeys.get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
+        pObject = CCopasiRootContainer::Root->getKeyFactory()->get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
 
         if (i && pObject)
           CrossValidations += ", ";

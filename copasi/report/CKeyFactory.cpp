@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-$Revision: 1.18 $
+$Revision: 1.19 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/01/07 19:04:15 $
+$Author: gauges $
+$Date: 2009/02/18 20:54:48 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,6 @@ End CVS Header */
 #include "copasi.h"
 
 #include "CKeyFactory.h"
-
-CKeyFactory GlobalKeys;
 
 bool CKeyFactory::isValidKey(const std::string & key,
                              const std::string & prefix)

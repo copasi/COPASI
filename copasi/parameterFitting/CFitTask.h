@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:02:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,10 +36,10 @@ class CFitTask : public COptTask
     /**
      * default constructor
      * @param const CCopasiTask::Type & type (default: parameterFitting)
-     * @param const CCopasiContainer * pParent (default: RootContainer)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
     CFitTask(const CCopasiTask::Type & type = CCopasiTask::parameterFitting,
-             const CCopasiContainer * pParent = & RootContainer);
+             const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/12 16:47:15 $
+//   $Date: 2009/02/18 20:54:48 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,7 +15,7 @@
 #include "CCopasiRootContainer.h"
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/commandline/CConfigurationFile.h"
-#include "CCopasiTimer.h"
+#include "copasi/commandline/COptions.h"
 #include "copasi/function/CFunction.h"
 #include "copasi/function/CEvaluationNodeOperator.h"
 #include "copasi/function/CEvaluationNodeVariable.h"
@@ -24,7 +24,7 @@
 /**
  * Initialize the root container with NULL
  */
-CCopasiRootContainer::CCopasiRootContainer * Root = NULL;
+CCopasiRootContainer* CCopasiRootContainer::Root = NULL;
 
 /**
  * The default contructor should be private so that nobody can create
@@ -32,14 +32,50 @@ CCopasiRootContainer::CCopasiRootContainer * Root = NULL;
  * The only way to create a root container is through the static init
  * method.
  */
-CCopasiRootContainer::CCopasiRootContainer(): CCopasiContainer(),
-    mpFunctionList(new CFunctionDB),
-    mpConfiguration(new CConfigurationFile),
-    mpDataModelList(new CCopasiVector<CCopasiDataModel>("ModelList", this)),
-    mWithGUI(false),
+CCopasiRootContainer::CCopasiRootContainer(bool withGUI): CCopasiContainer(),
+    mpFunctionList(NULL),
+    mpConfiguration(NULL),
+    mpDataModelList(NULL),
+    mWithGUI(withGUI),
     mpUnsupportedDelay(NULL),
     mpUndefined(NULL)
+{}
+
+// Destructor
+CCopasiRootContainer::~CCopasiRootContainer()
 {
+  // save and delete the configuration
+  if (mpConfiguration != NULL)
+    {
+      this->mpConfiguration->save();
+    }
+  pdelete(this->mpConfiguration);
+  // delete the function list
+  pdelete(this->mpFunctionList);
+  // delete the model list
+  pdelete(this->mpDataModelList);
+  // delete the undefined and the unsupported delay function
+  pdelete(this->mpUndefined);
+  // unsupported delay is owned by the function database
+  // and will be destroyed by it
+  //pdelete(this->mpUnsupportedDelay);
+}
+
+/**
+ * This method creates the only root container.
+ */
+void CCopasiRootContainer::init(bool withGUI, int argc, char** argv)
+{
+  COptions::init(argc, argv);
+  CCopasiRootContainer::Root = CCopasiRootContainer::createNewRoot(withGUI);
+  CCopasiRootContainer::Root->initializeChildren();
+}
+
+void CCopasiRootContainer::initializeChildren()
+{
+  mpFunctionList = new CFunctionDB("FunctionDB", this);
+  mpConfiguration = new CConfigurationFile;
+  mpDataModelList = new CCopasiVectorN<CCopasiDataModel>("ModelList", this);
   mpFunctionList->load();
   mpConfiguration->load();
   this->mpUndefined = new CFunction("undefined");
@@ -67,37 +103,9 @@ CCopasiRootContainer::CCopasiRootContainer(): CCopasiContainer(),
     }
 }
 
-// Destructor
-CCopasiRootContainer::~CCopasiRootContainer()
+CCopasiRootContainer* CCopasiRootContainer::createNewRoot(bool withGUI)
 {
-  // save and delete the configuration
-  if (mpConfiguration != NULL)
-    {
-      this->mpConfiguration->save();
-    }
-  pdelete(this->mpConfiguration);
-  // delete the function list
-  pdelete(this->mpFunctionList);
-  // delete the model list
-  pdelete(this->mpDataModelList);
-  // delete the undefined and the unsupported delay function
-  pdelete(this->mpUndefined);
-  pdelete(this->mpUnsupportedDelay);
-}
-
-/**
- * This method creates the only root container.
- */
-void CCopasiRootContainer::init()
-{
-  CCopasiRootContainer::Root = CCopasiRootContainer::createNewRoot();
-}
-
-CCopasiRootContainer* CCopasiRootContainer::createNewRoot()
-{
-  CCopasiRootContainer* pContainer = new CCopasiRootContainer();
-  new CCopasiTimer(CCopasiTimer::WALL, pContainer);
-  new CCopasiTimer(CCopasiTimer::CPU, pContainer);
+  CCopasiRootContainer* pContainer = new CCopasiRootContainer(withGUI);
   return pContainer;
 }
 
@@ -246,4 +254,20 @@ CFunction * CCopasiRootContainer::getUndefinedFunction()
 const CFunction * CCopasiRootContainer::getUndefinedFunction() const
   {
     return this->mpUndefined;
+  }
+
+/**
+ * Returns a pointer to the KeyFactory.
+ */
+CKeyFactory* CCopasiRootContainer::getKeyFactory()
+{
+  return &mKeyFactory;
+}
+
+/**
+ * Returns a const pointer to the KeyFactory.
+ */
+const CKeyFactory* CCopasiRootContainer::getKeyFactory() const
+  {
+    return &mKeyFactory;
   }

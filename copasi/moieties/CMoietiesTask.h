@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/moieties/CMoietiesTask.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 02:12:24 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,10 +31,10 @@ class CMoietiesTask : public CCopasiTask
     /**
      * default constructor
      * @param const CCopasiTask::Type & type (default: moieties)
-     * @param const CCopasiContainer * pParent (default: RootContainer)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
     CMoietiesTask(const CCopasiTask::Type & type = CCopasiTask::moieties,
-                  const CCopasiContainer * pParent = & RootContainer);
+                  const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor

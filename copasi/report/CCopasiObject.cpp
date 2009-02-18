@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/22 22:15:11 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "utilities/CCopasiVector.h"
 #include "model/CModelValue.h"
 #include "model/CModel.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
 
 //static
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
@@ -94,8 +95,9 @@ void CCopasiObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
 CCopasiObjectName CCopasiObject::getCN() const
   {
     CCopasiObjectName CN;
-
-    if (mpObjectParent)
+    // if the object has a parent and if the object is not a datamodel,
+    // we add the name of the parent to the common name
+    if (mpObjectParent && !dynamic_cast<const CCopasiDataModel*>(this))
       {
         std::stringstream tmp;
         tmp << mpObjectParent->getCN();
@@ -509,3 +511,37 @@ std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 
   return os;
 }
+
+/**
+ * Returns a pointer to the CCopasiDataModel the element belongs to.
+ * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
+ * is returned.
+ */
+CCopasiDataModel* CCopasiObject::getParentDatamodel()
+{
+  CCopasiContainer* pParent = this->getObjectParent();
+  CCopasiDataModel* pDataModel = dynamic_cast<CCopasiDataModel*>(pParent);
+  while (pParent && !pDataModel)
+    {
+      pParent = pParent->getObjectParent();
+      pDataModel = dynamic_cast<CCopasiDataModel*>(pParent);
+    }
+  return pDataModel;
+}
+
+/**
+ * Returns a const pointer to the CCopasiDataModel the element belongs to.
+ * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
+ * is returned.
+ */
+const CCopasiDataModel* CCopasiObject::getParentDatamodel() const
+  {
+    const CCopasiContainer* pParent = this->getObjectParent();
+    const CCopasiDataModel* pDataModel = dynamic_cast<const CCopasiDataModel*>(pParent);
+    while (pParent && !pDataModel)
+      {
+        pParent = pParent->getObjectParent();
+        pDataModel = dynamic_cast<const CCopasiDataModel*>(pParent);
+      }
+    return pDataModel;
+  }

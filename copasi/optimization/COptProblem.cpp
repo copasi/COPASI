@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:01:52 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "function/CFunctionDB.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -133,10 +134,10 @@ COptProblem::COptProblem(const COptProblem& src,
 // Destructor
 COptProblem::~COptProblem()
 {
-  if (mpFunction && CCopasiDataModel::Global &&
-      CCopasiDataModel::Global->getFunctionList() &&
-      CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
-    CCopasiDataModel::Global->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
+  if (mpFunction && CCopasiRootContainer::Root &&
+      CCopasiRootContainer::Root->getFunctionList() &&
+      CCopasiRootContainer::Root->getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
+    CCopasiRootContainer::Root->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
 
   pdelete(mpFunction);
 }
@@ -620,7 +621,9 @@ const unsigned C_INT32 COptProblem::getOptItemSize() const
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
   COptItem * pItem = new COptItem();
-  pItem->setObjectCN(objectCN);
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
+  pItem->setObjectCN(objectCN, pDataModel);
 
   mpGrpItems->addParameter(pItem);
 
@@ -663,10 +666,10 @@ bool COptProblem::createObjectiveFunction()
   if (!pParm) return false;
 
   mpFunction =
-    dynamic_cast<CExpression *>(GlobalKeys.get(* pParm->getValue().pKEY));
+    dynamic_cast<CExpression *>(CCopasiRootContainer::Root->getKeyFactory()->get(* pParm->getValue().pKEY));
 
   CCopasiVectorN<CEvaluationTree> & FunctionList =
-    CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+    CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
 
   if (!mpFunction)
     {
@@ -706,8 +709,9 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
   CCopasiVectorN< CCopasiTask > * pTasks =
     dynamic_cast< CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
-  if (pTasks == NULL && CCopasiDataModel::Global)
-    pTasks = CCopasiDataModel::Global->getTaskList();
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  if (pTasks == NULL && pDataModel)
+    pTasks = pDataModel->getTaskList();
 
   if (pTasks)
     {

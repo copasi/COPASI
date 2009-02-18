@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:48:56 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.h,v $
+  $Revision: 1.4 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/18 20:54:46 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,7 +28,7 @@ class COutputDefinitionVector : public CCopasiVectorN<CPlotSpecification>
 
   public:
     COutputDefinitionVector(const std::string & name = "OutputDefinitions",
-                            const CCopasiContainer* pParent = &RootContainer);
+                            const CCopasiContainer* pParent = NULL);
 
     ~COutputDefinitionVector();
 
