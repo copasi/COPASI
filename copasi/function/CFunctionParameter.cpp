@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include "copasi.h"
 #include "CFunctionParameter.h"
 #include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 //static
 const std::string CFunctionParameter::DataTypeName[] =
@@ -53,7 +54,7 @@ CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xm
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
-    mKey(GlobalKeys.add("FunctionParameter", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("FunctionParameter", this)),
     mType((CFunctionParameter::DataType) - 1),
     mUsage(VARIABLE),
     mIsUsed(true)
@@ -62,7 +63,7 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("FunctionParameter", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("FunctionParameter", this)),
     mType(src.mType),
     mUsage(src.mUsage),
     mIsUsed(src.mIsUsed)
@@ -73,7 +74,7 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
                                        Role usage,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
-    mKey(GlobalKeys.add("FunctionParameter", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("FunctionParameter", this)),
     mType(type),
     mUsage(usage),
     mIsUsed(true)
@@ -81,7 +82,7 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
 
 CFunctionParameter::~CFunctionParameter()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:57:59 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 
 #include "report/CCopasiContainer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 
 CDotOutput::CDotOutput()
@@ -26,13 +27,13 @@ CDotOutput::CDotOutput()
     mOnlyAlgebraicDependencies(false)
 {}
 
-void CDotOutput::writeDependencies(std::ostream & os, const CCopasiObject * rootNode)
+void CDotOutput::writeDependencies(std::ostream & os, const CModel* pModel, const CCopasiObject * rootNode)
 {
   const CCopasiObject * obj;
   if (rootNode)
     obj = rootNode;
   else
-    obj = CCopasiContainer::Root;
+    obj = CCopasiRootContainer::Root;
 
   mObjects.clear();
 
@@ -42,7 +43,7 @@ void CDotOutput::writeDependencies(std::ostream & os, const CCopasiObject * root
   writeDotRecursively(obj, os);
 
   //this is done after the edges since it requires all relevant object to be in the mObjects map
-  updateObjectNodesFromModel(CCopasiDataModel::Global->getModel());
+  updateObjectNodesFromModel(pModel);
 
   //nodes
   std::map<const CCopasiObject*, ObjectData>::const_iterator it, itEnd = mObjects.end();
@@ -230,14 +231,14 @@ CDotOutput::ObjectData * CDotOutput::getObjectDataFromRefresh(const Refresh* ref
   return NULL;
 }
 
-void CDotOutput::simpleCall()
+void CDotOutput::simpleCall(const CModel* pModel)
 {
   std::ofstream os;
   os.open("CopasiDependencies.dot", std::ios::out);
 
   setSkipDependenciesOnCompartments(true);
   setOnlyAlgebraicDependencies(true);
-  writeDependencies(os);
+  writeDependencies(os, pModel);
 
   os.close();
 }

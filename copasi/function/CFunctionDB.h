@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/05/31 15:22:00 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:02 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,10 +28,12 @@
 #include "function/CEvaluationTree.h"
 
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 
 class CFunction;
+class CModel;
 
 /** @dia:pos 106.082,17.0878 */
 class CFunctionDB : public CCopasiContainer
@@ -49,10 +56,12 @@ class CFunctionDB : public CCopasiContainer
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: RootContainer)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunctionDB(const std::string & name = "FunctionDB",
-                const CCopasiContainer * pParent = CCopasiContainer::Root);
+    //CFunctionDB(const std::string & name = "FunctionDB",
+    //            const CCopasiContainer * pParent = NULL);
+    CFunctionDB(const std::string & name,
+                const CCopasiContainer * pParent);
 
     /**
      * Destructor
@@ -186,7 +195,7 @@ class CFunctionDB : public CCopasiContainer
      * Retrieves a list of all functions used in the model
      * @return std::vector< CEvaluationTree * > usedFunctions
      */
-    std::vector< CEvaluationTree * > getUsedFunctions() const;
+    std::vector< CEvaluationTree * > getUsedFunctions(const CModel* pModel) const;
   };
 
 #endif // COPASI_CFunctionDB

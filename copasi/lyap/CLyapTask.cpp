@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:34 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "report/CCopasiTimer.h"
 
 #define XXXX_Reporting
@@ -242,7 +243,11 @@ bool CLyapTask::setMethodType(const int & type)
 void CLyapTask::output(const COutputInterface::Activity & activity)
 {
   if (mDoOutput != NO_OUTPUT)
-    CCopasiDataModel::Global->output(activity);
+    {
+      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      assert(pDataModel != NULL);
+      pDataModel->output(activity);
+    }
 
   /*if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
     switch (activity)

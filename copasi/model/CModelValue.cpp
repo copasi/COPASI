@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 //static
 const std::string CModelEntity::StatusName[] =
@@ -592,7 +593,7 @@ CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "ModelValue")
 {
-  mKey = GlobalKeys.add("ModelValue", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("ModelValue", this);
   initObjects();
 
   CONSTRUCTOR_TRACE;
@@ -602,14 +603,14 @@ CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
     CModelEntity(src, pParent)
 {
-  mKey = GlobalKeys.add("ModelValue", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("ModelValue", this);
   initObjects();
   CONSTRUCTOR_TRACE;
 }
 
 CModelValue::~CModelValue()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 
   DESTRUCTOR_TRACE;
 }

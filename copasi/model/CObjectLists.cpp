@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include "report/CCopasiObject.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 //static
 const std::string CObjectLists::ListTypeName[] =
@@ -368,7 +369,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
                   {
                     CCopasiParameter * par =
                       dynamic_cast<CCopasiParameter*>
-                      (GlobalKeys.get((*itReaction)->getParameterMappings()[j][0]));
+                      (CCopasiRootContainer::Root->getKeyFactory()->get((*itReaction)->getParameterMappings()[j][0]));
                     if (par)
                       ret.push_back(par->getObject(CCopasiObjectName("Reference=Value")));
                   }

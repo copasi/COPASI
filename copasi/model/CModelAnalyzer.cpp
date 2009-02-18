@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include "CModel.h"
 #include "report/CKeyFactory.h"
 #include "function/CFunctionAnalyzer.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 //this define specifies whether debug output is written to std::cout
 //#define C_DBG_FA
@@ -163,7 +164,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           || role == CFunctionParameter::PRODUCT
           || role == CFunctionParameter::MODIFIER)
         {
-          if (!dynamic_cast<CMetab*>(GlobalKeys.get(reaction->getParameterMappings()[i][0])))
+          if (!dynamic_cast<CMetab*>(CCopasiRootContainer::Root->getKeyFactory()->get(reaction->getParameterMappings()[i][0])))
             {
               //copasi bug!
               //std::cout << "Copasi bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter." << std::endl;

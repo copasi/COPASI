@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.349 $
+//   $Revision: 1.350 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
@@ -84,8 +85,8 @@ const char * CModel::QuantityUnitNames[] =
 const char * CModel::ModelTypeNames[] =
   {"deterministic", "stochastic", NULL};
 
-CModel::CModel():
-    CModelEntity("New Model", &RootContainer, "Model"),
+CModel::CModel(CCopasiContainer* pParent):
+    CModelEntity("New Model", pParent, "Model"),
     mInitialState(),
     mCurrentState(),
     mStateTemplate(*this, this->mInitialState, this->mCurrentState),
@@ -212,7 +213,7 @@ CModel::~CModel()
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
 
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
 
   DESTRUCTOR_TRACE;
 }
@@ -254,7 +255,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
     return Fail;
 
   // :TODO: Remove OldMetabolites as part of the data model.
-  CCopasiDataModel::Global->pOldMetabolites->load(configBuffer, Size);
+  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  assert(pDataModel != NULL);
+  pDataModel->pOldMetabolites->load(configBuffer, Size);
 
   if ((Fail = configBuffer.getVariable("Title", "string", &tmp,
                                        CReadConfig::LOOP)))
@@ -331,18 +334,18 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // Create the correct compartment / metabolite relationships
   CMetab *pMetabolite;
 
-  for (i = 0; i < CCopasiDataModel::Global->pOldMetabolites->size(); i++)
+  for (i = 0; i < pDataModel->pOldMetabolites->size(); i++)
     {
       pMetabolite = new CMetab;
-      mCompartments[(*CCopasiDataModel::Global->pOldMetabolites)[i]->getIndex()]->
+      mCompartments[(*pDataModel->pOldMetabolites)[i]->getIndex()]->
       addMetabolite(pMetabolite);
 
-      (*pMetabolite) = *(*CCopasiDataModel::Global->pOldMetabolites)[i];
+      (*pMetabolite) = *(*pDataModel->pOldMetabolites)[i];
     }
 
   initializeMetabolites();
 
-  if ((Fail = CCopasiDataModel::Global->getFunctionList()->load(configBuffer))) // slow
+  if ((Fail = CCopasiRootContainer::Root->getFunctionList()->load(configBuffer))) // slow
     return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
@@ -354,7 +357,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(/*mCompartments*/);
 
-  CCopasiDataModel::Global->pOldMetabolites->cleanup();
+  pDataModel->pOldMetabolites->cleanup();
 
   setCompileFlag();
   return Fail;
@@ -2377,7 +2380,7 @@ bool CModel::removeMetabolite(const std::string & key,
                               const bool & recursive)
 {
   CMetab* pMetabolite =
-    dynamic_cast<CMetab *>(GlobalKeys.get(key));
+    dynamic_cast<CMetab *>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pMetabolite)
     return false;
@@ -2446,7 +2449,7 @@ bool CModel::removeCompartment(const std::string & key,
                                const bool & recursive)
 {
   CCompartment *pCompartment =
-    dynamic_cast< CCompartment * >(GlobalKeys.get(key));
+    dynamic_cast< CCompartment * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pCompartment)
     return false;
@@ -2511,7 +2514,7 @@ bool CModel::removeReaction(const std::string & key,
                             const bool & recursive)
 {
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(GlobalKeys.get(key));
+    dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pReaction)
     return false;
@@ -2583,7 +2586,7 @@ bool CModel::removeModelValue(const std::string & key,
                               const bool & recursive)
 {
   CModelValue *pModelValue =
-    dynamic_cast< CModelValue * >(GlobalKeys.get(key));
+    dynamic_cast< CModelValue * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pModelValue)
     return false;
@@ -2647,7 +2650,7 @@ CEvent* CModel::createEvent(const std::string & name)
 bool CModel::removeEvent(const std::string & key,
                          const bool & /* recursive */)
 {
-  CEvent * pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(key));
+  CEvent * pEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
 
   if (!pEvent)
     return false;
@@ -2688,7 +2691,7 @@ bool CModel::convert2NonReversible()
   CReactionInterface ri1(this), ri2(this);
   std::string fn, rn1, rn2;
 
-  //CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
+  //CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
   //if (!model) return false;
 
   CCopasiVectorN< CReaction > & steps = this->getReactions();
@@ -2713,7 +2716,7 @@ bool CModel::convert2NonReversible()
           {
             //set functions to mass action (irrev)
             tmp.first = dynamic_cast<CFunction*>
-                        (CCopasiDataModel::Global->getFunctionList()-> findFunction("Mass action (irreversible)"));
+                        (CCopasiRootContainer::Root->getFunctionList()-> findFunction("Mass action (irreversible)"));
             assert(tmp.first);
             tmp.second = tmp.first;
           }
@@ -2738,8 +2741,8 @@ bool CModel::convert2NonReversible()
             //if (tmp.first) std::cout << *tmp.first << "\n\n";
             //if (tmp.second) std::cout << *tmp.second;
 
-            if (tmp.first) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.first);
-            if (tmp.second) CCopasiDataModel::Global->getFunctionList()->addAndAdaptName(tmp.second);
+            if (tmp.first) CCopasiRootContainer::Root->getFunctionList()->addAndAdaptName(tmp.first);
+            if (tmp.second) CCopasiRootContainer::Root->getFunctionList()->addAndAdaptName(tmp.second);
           }
 
         C_INT32 i, imax;
@@ -2860,7 +2863,7 @@ bool CModel::convert2NonReversible()
 
 void CModel::initObjects()
 {
-  mKey = GlobalKeys.add("Model", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since
   // CModel is created before mStateTemplate :(
@@ -3614,16 +3617,17 @@ std::string CModel::printParameterOverview()
           for (j = 0; j < jmax; ++j)
             if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
               {
-                CCopasiObject * obj = GlobalKeys.get(reac->getParameterMappings()[j][0]);
+                CCopasiObject * obj = CCopasiRootContainer::Root->getKeyFactory()->get(reac->getParameterMappings()[j][0]);
                 if (!obj) continue;
-
+                CCopasiDataModel* pDataModel = this->getParentDatamodel();
+                assert(pDataModel != NULL);
                 if (reac->isLocalParameter(j))
                   {
                     CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
                     if (!par) continue; //or rather fatal error?
                     oss << "    " << params[j]->getObjectName() << " \t"
                     << *par->getValue().pDOUBLE << " "
-                    << units.getDimensions()[j].getDisplayString() << "\n";
+                    << units.getDimensions()[j].getDisplayString(pDataModel) << "\n";
                   }
                 else
                   {
@@ -3631,7 +3635,7 @@ std::string CModel::printParameterOverview()
                     if (!par) continue; //or rather fatal error?
                     oss << "    " << params[j]->getObjectName() << " \t"
                     << "-> " + par->getObjectName()
-                    << " (" << units.getDimensions()[j].getDisplayString() << ")\n";
+                    << " (" << units.getDimensions()[j].getDisplayString(pDataModel) << ")\n";
                   }
               }
           oss << "\n";

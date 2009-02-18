@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:56:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,6 +54,7 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 
 #include "CQGLNetworkPainter.h"
 #include "CQLayoutMainWindow.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
@@ -1864,17 +1865,21 @@ bool CQGLNetworkPainter::createDataSets()
 {
   int counter = 0;
   bool loadDataSuccessful = false;
-  if (CCopasiDataModel::Global != NULL)
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  if ((*CCopasiRootContainer::Root->getDatamodelList())[0] != NULL)
     {
-      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time-Course"]);
       const CTimeSeries* pTimeSer = &ptask->getTimeSeries();
       CTimeSeries dummyTimeSeries;
       if (pTimeSer->getRecordedSteps() == 0)
         {
           // create a dummy time series from the current state
           dummyTimeSeries.allocate(1);
+          assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+          CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+          assert(pDataModel != NULL);
           std::vector<CCopasiContainer*> tmpV;
-          dummyTimeSeries.compile(tmpV);
+          dummyTimeSeries.compile(tmpV, pDataModel);
           dummyTimeSeries.output(COutputInterface::DURING);
           assert(dummyTimeSeries.getRecordedSteps() == 1);
           pTimeSer = &dummyTimeSeries; // point to the dummy time series

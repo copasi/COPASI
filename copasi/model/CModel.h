@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,9 +170,9 @@ class CModel : public CModelEntity
 
   public:
     /**
-     *  Default constructor
+     *  constructor
      */
-    CModel();
+    CModel(CCopasiContainer* pParent);
 
     /**
      * Destructor

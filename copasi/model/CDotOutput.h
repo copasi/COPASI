@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/07/24 09:45:44 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,11 +33,11 @@ class CDotOutput
 
     CDotOutput();
 
-    void writeDependencies(std::ostream & os, const CCopasiObject * rootNode = NULL);
+    void writeDependencies(std::ostream & os, const CModel* pModel, const CCopasiObject * rootNode = NULL);
 
     void setSkipDependenciesOnCompartments(bool b) {mSkipCompartments = b;};
     void setOnlyAlgebraicDependencies(bool b) {mOnlyAlgebraicDependencies = b;};
-    void simpleCall();
+    void simpleCall(const CModel* pModel);
 
   protected:
 

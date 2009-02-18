@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:34 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,7 @@ class CLyapTask : public CCopasiTask
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CLyapTask(const CCopasiContainer * pParent = & RootContainer);
+    CLyapTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.137 $
+//   $Revision: 1.138 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "CMetab.h"
 #include "CMetabNameInterface.h"
 #include "function/CExpression.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 //static
 C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
@@ -55,7 +56,7 @@ CMetab::CMetab(const std::string & name,
     mpCompartment(NULL),
     mpMoiety(NULL)
 {
-  mKey = GlobalKeys.add("Metabolite", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Metabolite", this);
   initObjects();
 
   setStatus(REACTIONS);
@@ -81,7 +82,7 @@ CMetab::CMetab(const CMetab & src,
     mpCompartment(NULL),
     mpMoiety(src.mpMoiety)
 {
-  mKey = GlobalKeys.add("Metabolite", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Metabolite", this);
 
   initObjects();
 
@@ -109,7 +110,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
 
 CMetab::~CMetab()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

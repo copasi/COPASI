@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,6 @@
 #include "report/CKeyFactory.h"
 #include "xml/CCopasiXML.h"
 #include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -259,7 +258,7 @@ void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
 
 bool CFunctionDB::removeFunction(const std::string &key)
 {
-  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(GlobalKeys.get(key));
+  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
   if (!func) return false;
 
   unsigned C_INT32 index =
@@ -365,12 +364,9 @@ CFunctionDB::listDependentTrees(const std::string & name) const
     return List;
   }
 
-std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions() const
+std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
   {
     std::vector< CEvaluationTree * > UsedFunctions;
-
-    CModel * pModel = CCopasiDataModel::Global->getModel();
-
     CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
     CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
 

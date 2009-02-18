@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,15 +32,16 @@
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Event"),
-    mKey(GlobalKeys.add("Event", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-                    mpExpressionEA(NULL),
-                                                mpModel(NULL)*/
+                        mpExpressionEA(NULL),
+                                                    mpModel(NULL)*/
 {
   // std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -50,10 +51,10 @@ CEvent::CEvent(const std::string & name,
 CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Event", this)),
+    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-                    mpExpressionEA(NULL)*/
+                        mpExpressionEA(NULL)*/
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -87,7 +88,7 @@ CEvent::CEvent(const CEvent & src,
 
 CEvent::~CEvent()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }

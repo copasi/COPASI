@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "report/CRenameHandler.h"
 #include "CCompartment.h"
 #include "CModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
@@ -43,7 +44,7 @@ CCompartment::CCompartment(const std::string & name,
 {
   initObjects();
 
-  mKey = GlobalKeys.add("Compartment", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Compartment", this);
 
   setStatus(FIXED);
 
@@ -57,14 +58,14 @@ CCompartment::CCompartment(const CCompartment & src,
     CModelEntity(src, pParent),
     mMetabolites(src.mMetabolites, this)
 {
-  mKey = GlobalKeys.add("Compartment", this);
+  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Compartment", this);
   CONSTRUCTOR_TRACE;
   initObjects();
 }
 
 CCompartment::~CCompartment()
 {
-  GlobalKeys.remove(mKey);
+  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

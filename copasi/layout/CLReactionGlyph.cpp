@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:56:03 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 
 #include "CLReactionGlyph.h"
 #include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 const std::string CLMetabReferenceGlyph::RoleName[] =
   {
@@ -109,7 +110,7 @@ CLMetabReferenceGlyph & CLMetabReferenceGlyph::operator= (const CLMetabReference
 
 CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
   {
-    CCopasiObject* tmp = GlobalKeys.get(mMetabGlyphKey);
+    CCopasiObject* tmp = CCopasiRootContainer::Root->getKeyFactory()->get(mMetabGlyphKey);
     return dynamic_cast<CLMetabGlyph*>(tmp);
   }
 

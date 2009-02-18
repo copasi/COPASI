@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:56:03 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ class CListOfLayouts : public CCopasiVector<CLayout>
 
   public:
     CListOfLayouts(const std::string & name = "ListOfLayouts",
-                   const CCopasiContainer* pParent = &RootContainer);
+                   const CCopasiContainer* pParent = NULL);
 
     ~CListOfLayouts();
 

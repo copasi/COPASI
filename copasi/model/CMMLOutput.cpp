@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/10/02 18:18:05 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:54:04 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,6 +22,7 @@
 #include "model/CModel.h"
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CMMLOutput::CMMLOutput()
 {}
@@ -145,7 +151,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
         case CFunctionParameter::MODIFIER:
           if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
             {
-              name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectDisplayName();
+              name = CCopasiRootContainer::Root->getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectDisplayName();
               //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
               params[i][0] = "<mi>[" + name + "]</mi>";
             }
@@ -155,7 +161,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
               params[i].resize(jmax);
               for (j = 0; j < jmax; ++j)
                 {
-                  name = GlobalKeys.get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
+                  name = CCopasiRootContainer::Root->getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
                   //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
                   params[i][j] = "<mi>[" + name + "]</mi>";
                 }
@@ -174,7 +180,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
                 }
               else
                 {
-                  name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+                  name = CCopasiRootContainer::Root->getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
                   //params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
                   params[i][0] = "<msub><mi>" + CMathMl::fixName(name) + "</mi><mi>("
                                  + CMathMl::fixName(pReac->getObjectName()) + ")</mi></msub>";
@@ -182,14 +188,14 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
             }
           else
             {
-              name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+              name = CCopasiRootContainer::Root->getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
               params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
               //params[i][0] = "<mi>ggg</mi>";
             }
           break;
 
         case CFunctionParameter::VOLUME:
-          name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+          name = CCopasiRootContainer::Root->getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
           params[i][0] = "<msub><mi>V</mi><mi>" + CMathMl::fixName(name)
                          + "</mi></msub>";
           break;
@@ -349,7 +355,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
               //third column (rhs)
               mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
               writeRHS(mml, model->getMetabolites()[i],
-                       dynamic_cast<CReaction*>(GlobalKeys.get(*it)) ,
+                       dynamic_cast<CReaction*>(CCopasiRootContainer::Root->getKeyFactory()->get(*it)) ,
                        localParameterNumbers, expand, expandFull, l + 3);
               mml << SPC(l + 2) << "</mtd>" << std::endl;
 
