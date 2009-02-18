@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/utilities.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/30 19:49:53 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:42:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/xml/CCopasiXML.h"
 #include "copasi/function/CFunctionDB.h"
@@ -33,10 +34,17 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
 
       CCopasiXML XML;
 
-      XML.setFunctionList(&dataModel.getFunctionList()->loadedFunctions());
+      XML.setFunctionList(&CCopasiRootContainer::Root->getFunctionList()->loadedFunctions());
+      XML.setDatamodel(&dataModel);
 
       if (!XML.load(is, std::string("")))
         {
+          XML.freeModel();
+          XML.freeTaskList();
+          XML.freeReportList();
+          XML.freePlotList();
+          XML.freeGUI();
+          XML.freeLayoutList();
           return false;
         }
 
@@ -47,7 +55,7 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
           CCopasiVectorN<CCopasiTask>* pTaskList = dataModel.getTaskList();
           *pTaskList = *XML.getTaskList();
           dataModel.getTaskList()->setObjectName("TaskList");
-          CCopasiContainer::Root->add(dataModel.getTaskList(), true);
+          dataModel.add(dataModel.getTaskList(), true);
           dataModel.addDefaultTasks();
         }
 
@@ -55,6 +63,7 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
         {
           CReportDefinitionVector* pReportDefinitions = dataModel.getReportDefinitionList();
           *pReportDefinitions = *XML.getReportList();
+          dataModel.add(dataModel.getTaskList(), true);
           dataModel.addDefaultReports();
         }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.219 $
+//   $Revision: 1.220 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/29 14:36:44 $
+//   $Date: 2009/02/18 20:42:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
 
 #include "SBMLImporter.h"
@@ -100,12 +101,12 @@ bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, con
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
-CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiDataModel* pDataModel)
 {
   Model* sbmlModel = sbmlDocument->getModel();
 
   /* Create an empty model and set the title. */
-  this->mpCopasiModel = new CModel();
+  this->mpCopasiModel = new CModel(pDataModel);
   copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
   this->mpCopasiModel->setVolumeUnit(CModel::l);
   this->mpCopasiModel->setTimeUnit(CModel::s);
@@ -1501,7 +1502,8 @@ CModel* SBMLImporter::readSBML(std::string filename,
                                CFunctionDB* funDB,
                                SBMLDocument*& pSBMLDocument,
                                std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-                               CListOfLayouts *& prLol)
+                               CListOfLayouts *& prLol,
+                               CCopasiDataModel* pDataModel)
 {
   // convert filename to the locale encoding
   std::ifstream file(utf8ToLocale(filename).c_str());
@@ -1518,7 +1520,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
   file.clear();
   file.close();
   return this->parseSBML(stringStream.str(), funDB,
-                         pSBMLDocument, copasi2sbmlmap, prLol);
+                         pSBMLDocument, copasi2sbmlmap, prLol, pDataModel);
 }
 
 /**
@@ -1531,7 +1533,8 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                         CFunctionDB* funDB,
                         SBMLDocument *& pSBMLDocument,
                         std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-                        CListOfLayouts *& prLol)
+                        CListOfLayouts *& prLol,
+                        CCopasiDataModel* pDataModel)
 {
   this->mpCopasiModel = NULL;
   if (funDB != NULL)
@@ -1650,9 +1653,9 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           mLevel = pSBMLDocument->getLevel();
         }
 
-      this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
+      this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap, pDataModel);
 
-      prLol = new CListOfLayouts();
+      prLol = new CListOfLayouts("ListOfLayouts", pDataModel);
       Model* sbmlmodel = pSBMLDocument->getModel();
       if (sbmlmodel && prLol)
         SBMLDocumentLoader::readListOfLayouts(*prLol,
@@ -3432,7 +3435,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
           ++step;
         }
 
-      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
       if (mpImportHandler)
         {
           mpImportHandler->finish(hStep);
@@ -3474,7 +3477,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
       CCopasiTree<const CEvaluationNode>::iterator treeIt = pNode;
       while (treeIt != NULL)
         {
@@ -4188,7 +4191,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           std::vector<std::string>::const_iterator keyEndit = (*parameterMappingsIt).end();
           while (keyIt != keyEndit)
             {
-              pLocalParameter = dynamic_cast<CCopasiParameter*>(GlobalKeys.get(*keyIt));
+              pLocalParameter = dynamic_cast<CCopasiParameter*>(CCopasiRootContainer::Root->getKeyFactory()->get(*keyIt));
               if (pLocalParameter != NULL)
                 {
                   // it is a local parameter and it is being used
@@ -5542,7 +5545,7 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
     {
       SBMLImporter::findDirectDependencies(pSBMLModel->getFunctionDefinition(i), directFunctionDependencies);
     }
-  CFunctionDB* pTmpFunctionDB = new CFunctionDB();
+  CFunctionDB* pTmpFunctionDB = new CFunctionDB("FunctionDB", NULL);
   std::map<const FunctionDefinition*, std::set<std::string> >::iterator it = directFunctionDependencies.begin(), endit = directFunctionDependencies.end();
   while (it != endit)
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/27 17:22:00 $
+//   $Date: 2009/02/18 20:42:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,6 @@
 #include "ConverterASTNode.h"
 #include "utilities/CCopasiTree.h"
 #include "model/CChemEqElement.h"
-#include "utilities/CVersion.h"
 #include "sbml/Trigger.h"
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
@@ -61,6 +60,8 @@
 #include "MIRIAM/CCreator.h"
 #include "MIRIAM/CModified.h"
 #include "layout/CListOfLayouts.h"
+#include "copasi/report/CCopasiRootContainer.h"
+#include "utilities/CVersion.h"
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
 {}
@@ -749,7 +750,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
     }
   /* create the kinetic law */
   /* if there is one on COPASI */
-  if ((reaction.getFunction()) != dataModel.mpUndefined)
+  if ((reaction.getFunction()) != CCopasiRootContainer::Root->getUndefinedFunction())
     {
       KineticLaw* pKineticLaw = this->createKineticLaw(reaction, dataModel);
       if (pKineticLaw != NULL)
@@ -812,7 +813,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
     {
       std::set<std::string> directlyUsedFunctionNames;
       CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getInitialExpressionPtr()->getRoot(), directlyUsedFunctionNames);
-      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, CCopasiRootContainer::Root->getFunctionList());
 
 #if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
       {
@@ -985,7 +986,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
     {
       std::set<std::string> directlyUsedFunctionNames;
       CSBMLExporter::findDirectlyUsedFunctions(modelEntity.getExpressionPtr()->getRoot(), directlyUsedFunctionNames);
-      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, CCopasiRootContainer::Root->getFunctionList());
 
 # if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
       {
@@ -1630,7 +1631,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
   // make sure the mCOPASI2SBMLMap is up to date
 
   // find all indirectly called functions
-  std::vector<CFunction*> usedFunctions = findUsedFunctions(this->mUsedFunctions, dataModel.getFunctionList());
+  std::vector<CFunction*> usedFunctions = findUsedFunctions(this->mUsedFunctions, CCopasiRootContainer::Root->getFunctionList());
   this->mUsedFunctions.clear();
   this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
 
@@ -1681,7 +1682,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
       ++i;
     }
   // find all indirectly called functions for the unused functions
-  std::vector<CFunction*> functionsVect = findUsedFunctions(unusedFunctions, dataModel.getFunctionList());
+  std::vector<CFunction*> functionsVect = findUsedFunctions(unusedFunctions, CCopasiRootContainer::Root->getFunctionList());
   usedFunctions.insert(usedFunctions.end(), functionsVect.begin(), functionsVect.end());
   // reset the used functions set
   this->mUsedFunctions.clear();
@@ -1835,7 +1836,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   SBMLWriter* writer = new SBMLWriter();
 
   writer->setProgramName("COPASI");
-  writer->setProgramVersion(dataModel.getVersion()->getVersion().c_str());
+  writer->setProgramVersion(CVersion::VERSION.getVersion().c_str());
 
   char* d = writer->writeToString(this->mpSBMLDocument);
   std::string returnValue = d;
@@ -2279,7 +2280,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
     {
       std::set<std::string> directlyUsedFunctionNames;
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), directlyUsedFunctionNames);
-      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+      std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, CCopasiRootContainer::Root->getFunctionList());
 
 # if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
       {
@@ -2341,7 +2342,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
         {
           std::set<std::string> directlyUsedFunctionNames;
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), directlyUsedFunctionNames);
-          std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+          std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, CCopasiRootContainer::Root->getFunctionList());
 
 # if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
           {
@@ -2435,7 +2436,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
       std::string key = event.getAssignmentObjectKey(i);
       //        now we have to get the object for the key, check if the object is a
       //        compartment, species or global parameter,
-      const CCopasiObject* pObject = GlobalKeys.get(key);
+      const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(key);
       std::string objectType = pObject->getObjectType();
       if (objectType == "Reference")
         {
@@ -2529,7 +2530,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
             {
               std::set<std::string> directlyUsedFunctionNames;
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), directlyUsedFunctionNames);
-              std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, dataModel.getFunctionList());
+              std::set<CFunction*> usedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(directlyUsedFunctionNames, CCopasiRootContainer::Root->getFunctionList());
 
 # if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
               {
@@ -2829,7 +2830,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
       for (i = 0;i < iMax;++i)
         {
           if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
-          const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
+          const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(arguments[i][0]);
           if (!pObject) fatalError();
           if (dynamic_cast<const CModel*>(pObject) != NULL)
             {
@@ -3557,8 +3558,8 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CCopasiDataModel& dataModel
         }
     }
   // check indirectly called functions
-  std::set<CFunction*> directlyUsedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, const_cast<CCopasiDataModel&>(dataModel).getFunctionList());
-  std::vector<CFunction*> functions = CSBMLExporter::findUsedFunctions(directlyUsedFunctions, const_cast<CCopasiDataModel&>(dataModel).getFunctionList());
+  std::set<CFunction*> directlyUsedFunctions = CSBMLExporter::createFunctionSetFromFunctionNames(usedFunctionNames, CCopasiRootContainer::Root->getFunctionList());
+  std::vector<CFunction*> functions = CSBMLExporter::findUsedFunctions(directlyUsedFunctions, CCopasiRootContainer::Root->getFunctionList());
   std::vector<CFunction*>::const_iterator it = functions.begin(), endit = functions.end();
   while (it != endit)
     {
@@ -3724,7 +3725,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
   // with item arguments[0][0]
   std::set<std::string> finishedElements;
   std::vector<CEvaluationNode*> multiplicants;
-  const CCopasiObject* pObject = GlobalKeys.get(arguments[0][0]);
+  const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(arguments[0][0]);
   assert(pObject != NULL);
   multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Value>"));
   std::vector<std::string>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
@@ -3742,7 +3743,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 #endif  // __SUNPRO_CC
           assert(num != 0);
           finishedElements.insert(*it);
-          pObject = GlobalKeys.get(*it);
+          pObject = CCopasiRootContainer::Root->getKeyFactory()->get(*it);
           assert(pObject != NULL);
           if (num == 1)
             {
@@ -5685,7 +5686,7 @@ void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiData
   if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL && (CEvaluationNodeCall::SubType)CEvaluationNode::subType(pNode->getType()) != CEvaluationNodeCall::DELAY)
     {
       std::string funName = dynamic_cast<const CEvaluationNodeCall*>(pNode)->getData();
-      CEvaluationTree* pFun = dataModel.getFunctionList()->findFunction(funName);
+      CEvaluationTree* pFun = CCopasiRootContainer::Root->getFunctionList()->findFunction(funName);
       assert(pFun != NULL);
       if (pFun == NULL) fatalError();
       std::string id = pFun->getSBMLId();
@@ -5824,7 +5825,7 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
           if (nonUniqueObjectKeys.find(key) == nonUniqueObjectKeys.end())
             {
               nonUniqueObjectKeys.insert(key);
-              const CCopasiObject* pObject = GlobalKeys.get(key);
+              const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(key);
               assert(pObject != NULL);
               CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event called \"" + pEvent->getObjectName() + "\" has several assignments to the same object called \"" + pObject->getObjectName() + "\".").c_str());
             }
@@ -5836,7 +5837,7 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
 void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExpression* pExpression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, const std::string& eventName, std::vector<SBMLIncompatibility>& result)
 {
   // check if the key points to a compartment, species or global value
-  const CCopasiObject* pObject = GlobalKeys.get(key);
+  const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(key);
   assert(pObject != NULL);
   const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pObject);
   if (pME == NULL)

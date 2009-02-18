@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/01/29 14:36:44 $
+//   $Date: 2009/02/18 20:42:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,7 @@ class SBMLImporter
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
      */
-    CModel* createCModelFromSBMLDocument(SBMLDocument* doc, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CModel* createCModelFromSBMLDocument(SBMLDocument* doc, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiDataModel* pDataModel);
 
     /**
      * Creates and returns a Copasi CFunction from the SBML FunctionDefinition
@@ -468,7 +468,8 @@ class SBMLImporter
                      CFunctionDB* funDB,
                      SBMLDocument*& pSBMLDocument,
                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-                     CListOfLayouts *& prLol);
+                     CListOfLayouts *& prLol,
+                     CCopasiDataModel* pDataModel);
 
     //CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
@@ -476,7 +477,8 @@ class SBMLImporter
                       CFunctionDB* funDB,
                       SBMLDocument *& pSBMLDocument,
                       std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-                      CListOfLayouts *& prLol);
+                      CListOfLayouts *& prLol,
+                      CCopasiDataModel* pDataModel);
 
     //CModel* parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 #ifdef COPASI_DEBUG
