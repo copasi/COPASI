@@ -1,17 +1,24 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
+  $Revision: 1.13 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/19 15:37:57 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef COPASI_CEvaluationNodeNumber
 #define COPASI_CEvaluationNodeNumber
+
+class CCopasiDataModel;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -69,7 +76,7 @@ class CEvaluationNodeNumber : public CEvaluationNode
      * Create a new ASTNode corresponding to this NumberNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    ASTNode* toAST() const;
+    ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * generate display MathML recursively

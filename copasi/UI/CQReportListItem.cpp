@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportListItem.cpp,v $
- $Revision: 1.4 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/12/18 19:57:10 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportListItem.cpp,v $
+$Revision: 1.5 $
+$Name:  $
+$Author: gauges $
+$Date: 2009/02/19 15:37:56 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,6 +22,7 @@
 #include "CQReportListItem.h"
 #include "qtUtilities.h"
 #include "report/CCopasiStaticString.h"
+#include "report/CCopasiRootContainer.h"
 
 CQReportListItem::CQReportListItem(Q3ListBox * pListBox,
                                    const std::string & cn):
@@ -57,7 +58,10 @@ const CCopasiObjectName & CQReportListItem::getCN() const {return mCN;};
 
 void CQReportListItem::refreshText()
 {
-  CCopasiObject * pObject = CCopasiContainer::ObjectFromName(mCN);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CCopasiObject * pObject = pDataModel->ObjectFromName(mCN);
 
   if (pObject)
     setText(FROM_UTF8(pObject->getObjectDisplayName()));

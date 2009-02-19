@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/09/25 19:20:29 $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -756,7 +756,7 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       convertedNode->addChild(convertedChildNode);
       return convertedNode;
   }
-  else*/ if      (subType !=      INVALID)
+  else*/ if       (subType !=       INVALID)
     {
       CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
@@ -772,7 +772,7 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
   return NULL;
 }
 
-ASTNode* CEvaluationNodeFunction::toAST() const
+ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) const
   {
     SubType subType = (SubType)CEvaluationNode::subType(this->getType());
     ASTNode* node = new ASTNode();
@@ -883,7 +883,7 @@ ASTNode* CEvaluationNodeFunction::toAST() const
         // if this is the unary plus as I suspect,
         // the node will be replaced by its only child
         delete node;
-        node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST();
+        node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel);
         break;
       case NOT:
         node->setType(AST_LOGICAL_NOT);
@@ -906,7 +906,7 @@ ASTNode* CEvaluationNodeFunction::toAST() const
            child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
            node->addChild(child->toAST());
        }
-       else*/ if      (subType !=      INVALID)
+       else*/ if       (subType !=       INVALID)
       {
         // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
         // where libsbml does not handle the case correctly that a root
@@ -921,7 +921,7 @@ ASTNode* CEvaluationNodeFunction::toAST() const
             node->addChild(pDegreeNode);
           }
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        node->addChild(child->toAST());
+        node->addChild(child->toAST(pDataModel));
       }
     return node;
   }

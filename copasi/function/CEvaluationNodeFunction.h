@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 00:57:08 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #endif
 
 class CRandom;
+class CCopasiDataModel;
 
 /**
  * This is the class for nodes presenting build-in functions used in an evaluation trees.
@@ -86,7 +87,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
       NOT = 0x00000022,
       RUNIFORM = 0x00000023,
       RNORMAL = 0x00000024 /*,
-                                      DELAY = 0x00000025*/
+                                                      DELAY = 0x00000025*/
     };
 
     // Operations
@@ -178,7 +179,7 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * Create a new ASTNode corresponding to this FunctionNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),

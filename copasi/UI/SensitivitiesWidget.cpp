@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Date: 2009/02/19 15:37:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,10 +463,13 @@ bool SensitivitiesWidget::loadTask()
   CSensItem tmp = problem->getTargetFunctions();
 
   //target function
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   if (tmp.isSingleObject())
     {
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-      mpSingleFunction = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+      mpSingleFunction = pDataModel->ObjectFromName(tmp.getSingleObjectCN());
       if (mpSingleFunction)
         FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
     }
@@ -483,7 +486,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+          mpSingleVariable = pDataModel->ObjectFromName(tmp.getSingleObjectCN());
           if (mpSingleVariable)
             VariableLineEdit->setText(FROM_UTF8(mpSingleVariable->getObjectDisplayName()));
         }
@@ -503,7 +506,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable2 = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+          mpSingleVariable2 = pDataModel->ObjectFromName(tmp.getSingleObjectCN());
           if (mpSingleVariable2)
             Variable2LineEdit->setText(FROM_UTF8(mpSingleVariable2->getObjectDisplayName()));
         }

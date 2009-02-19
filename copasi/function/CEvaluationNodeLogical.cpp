@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:50 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -368,7 +368,7 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
   return convertedNode;
 }
 
-ASTNode* CEvaluationNodeLogical::toAST() const
+ASTNode* CEvaluationNodeLogical::toAST(const CCopasiDataModel* pDataModel) const
   {
     SubType subType = (SubType)CEvaluationNode::subType(this->getType());
     ASTNode* node = new ASTNode();
@@ -411,8 +411,8 @@ ASTNode* CEvaluationNodeLogical::toAST() const
       {
         const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-        node->addChild(child1->toAST());
-        node->addChild(child2->toAST());
+        node->addChild(child1->toAST(pDataModel));
+        node->addChild(child2->toAST(pDataModel));
       }
 
     return node;

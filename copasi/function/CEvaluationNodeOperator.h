@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2007/08/13 20:59:12 $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,6 +23,7 @@
 #include "utilities/CCopasiMessage.h"
 
 class ASTNode;
+class CCopasiDataModel;
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -156,7 +162,7 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * Create a new ASTNode corresponding to this OperatorNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),
@@ -172,7 +178,7 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * @param const ASTNode* pASTNode the root node for the SBML math expression
      * @return bool which is true on sucessfull conversion.
      */
-    bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode) const;
+    bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CCopasiDataModel* pDataModel) const;
 
     /**
      * generate display MathML recursively

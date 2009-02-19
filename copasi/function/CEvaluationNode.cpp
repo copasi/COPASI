@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,7 +218,7 @@ CEvaluationNode* CEvaluationNode::simplifyNode(const std::vector<CEvaluationNode
     return newnode;
   }
 
-ASTNode* CEvaluationNode::toAST() const
+ASTNode* CEvaluationNode::toAST(const CCopasiDataModel* /*pDataModel*/) const
   {
     return new ASTNode();
   }
@@ -266,7 +266,7 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 
 void CEvaluationNode::printRecursively() const
   {
-    // this->printRecursively(std::cout, 0);
+    this->printRecursively(std::cout, 0);
   }
 
 /**

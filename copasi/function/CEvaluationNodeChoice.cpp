@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,7 +196,7 @@ CEvaluationNode* CEvaluationNodeChoice::createNodeFromASTTree(const ASTNode& nod
   return convertedNode;
 }
 
-ASTNode* CEvaluationNodeChoice::toAST() const
+ASTNode* CEvaluationNodeChoice::toAST(const CCopasiDataModel* pDataModel) const
   {
     ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
     const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
@@ -207,9 +207,9 @@ ASTNode* CEvaluationNodeChoice::toAST() const
     assert(child3 != NULL);
     // the condition is the second child to the AST node but the first child in
     // the CEvaluationNode
-    node->addChild(child2->toAST());
-    node->addChild(child1->toAST());
-    node->addChild(child3->toAST());
+    node->addChild(child2->toAST(pDataModel));
+    node->addChild(child1->toAST(pDataModel));
+    node->addChild(child3->toAST(pDataModel));
     return node;
   }
 

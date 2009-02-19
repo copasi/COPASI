@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:53:07 $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,6 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
           if (!mpFunction) return false;
 
           mType = (CEvaluationNode::Type) (CEvaluationNode::CALL | FUNCTION);
-
           success = compile(pTree);
         }
       else
@@ -287,7 +286,7 @@ CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
   return pConvertedNode;
 }
 
-ASTNode* CEvaluationNodeCall::toAST() const
+ASTNode* CEvaluationNodeCall::toAST(const CCopasiDataModel* pDataModel) const
   {
     ASTNode* pNode = NULL;
     if (((CEvaluationNodeCall::SubType)CEvaluationNode::subType(mType)) == CEvaluationNodeCall::DELAY)
@@ -306,7 +305,7 @@ ASTNode* CEvaluationNodeCall::toAST() const
     const CEvaluationNode* child = static_cast<const CEvaluationNode*>(this->getChild());
     while (child)
       {
-        pNode->addChild(child->toAST());
+        pNode->addChild(child->toAST(pDataModel));
         child = static_cast<const CEvaluationNode*>(child->getSibling());
       }
     return pNode;

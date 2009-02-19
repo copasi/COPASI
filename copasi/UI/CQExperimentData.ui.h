@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Date: 2009/02/19 15:37:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1081,9 +1081,12 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       mpTable->setCellWidget(i, COL_BTN, pBtn);
 
       // COL_OBJECT and COL_OBJECT_HIDDEN
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
       if (ObjectMap.getObjectCN(i) != "")
         {
-          pObject = CCopasiContainer::ObjectFromName(ObjectMap.getObjectCN(i));
+          pObject = pDataModel->ObjectFromName(ObjectMap.getObjectCN(i));
           if (pObject)
             mpTable->setText(i, COL_OBJECT, FROM_UTF8(pObject->getObjectDisplayName()));
           else
@@ -1135,6 +1138,9 @@ void CQExperimentData::slotTypeChanged(int row)
   C_INT32 i, imax = mpTable->numRows();
 
   CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->text(row, COL_OBJECT_HIDDEN)));
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   switch (NewType)
     {
@@ -1144,14 +1150,14 @@ void CQExperimentData::slotTypeChanged(int row)
 
     case CExperiment::independent:
       if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::INITIAL_VALUE,
-                                              CCopasiContainer::ObjectFromName(CN)))
+                                              pDataModel->ObjectFromName(CN)))
         slotModelObject(row);
       BtnEnabled = true;
       break;
 
     case CExperiment::dependent:
       if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::TRANSIENT_VALUE,
-                                              CCopasiContainer::ObjectFromName(CN)))
+                                              pDataModel->ObjectFromName(CN)))
         slotModelObject(row);
       BtnEnabled = true;
       break;

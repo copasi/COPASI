@@ -1,19 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/03/06 11:26:57 $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
@@ -353,7 +353,7 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& n
   return convertedNode;
 }
 
-ASTNode* CEvaluationNodeOperator::toAST() const
+ASTNode* CEvaluationNodeOperator::toAST(const CCopasiDataModel* pDataModel) const
   {
     SubType subType = (SubType)CEvaluationNode::subType(this->getType());
     ASTNode* node = new ASTNode();
@@ -370,7 +370,7 @@ ASTNode* CEvaluationNodeOperator::toAST() const
         break;
       case MODULUS:
         // replace this with a more complex subtree
-        CEvaluationNodeOperator::createModuloTree(this, node);
+        CEvaluationNodeOperator::createModuloTree(this, node, pDataModel);
         break;
       case PLUS:
         node->setType(AST_PLUS);
@@ -386,8 +386,8 @@ ASTNode* CEvaluationNodeOperator::toAST() const
       {
         const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-        node->addChild(child1->toAST());
-        node->addChild(child2->toAST());
+        node->addChild(child1->toAST(pDataModel));
+        node->addChild(child2->toAST(pDataModel));
       }
     return node;
   }
@@ -780,103 +780,102 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               delete child2;
               return newnode;
             }
-          if(CEvaluationNode::type(child1->getType())==CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child1->getType()))==CEvaluationNodeOperator::POWER)
-          {
-              // A^n*A^l -> A^(n+l) this way exponents can be simplified 
+          if (CEvaluationNode::type(child1->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child1->getType())) == CEvaluationNodeOperator::POWER)
+            {
+              // A^n*A^l -> A^(n+l) this way exponents can be simplified
               // check if the second child is also a power item
-              if(CEvaluationNode::type(child2->getType())==CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType()))==CEvaluationNodeOperator::POWER)
-              {
-                if(dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix()==dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
+              if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType())) == CEvaluationNodeOperator::POWER)
                 {
-                    CEvaluationNode* newNode=CEvaluationNode::create((Type)( OPERATOR | POWER),"^");
-                    CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
-                    newNode->addChild(newchild1);
-                    CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | PLUS), "+");
-                    CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
-                    CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
-                    // simplify newchild2
-                    std::vector<CEvaluationNode*> children;
-                    children.push_back(grandchild1);
-                    children.push_back(grandchild2);
-                    newNode->addChild(newchild2->simplifyNode(children));
-                    // simplify the result again since a power node with an
-                    // exponent of 1 or 0 could have been created.
-                    delete child1;
-                    children.clear();
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
-                    child1=newNode->simplifyNode(children);
-                    delete newNode;
-                    newNode=child1;
-                    delete newchild2;
-                    delete child2;
-                    return newNode;
+                  if (dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix() == dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
+                    {
+                      CEvaluationNode* newNode = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
+                      CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
+                      newNode->addChild(newchild1);
+                      CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | PLUS), "+");
+                      CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                      CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
+                      // simplify newchild2
+                      std::vector<CEvaluationNode*> children;
+                      children.push_back(grandchild1);
+                      children.push_back(grandchild2);
+                      newNode->addChild(newchild2->simplifyNode(children));
+                      // simplify the result again since a power node with an
+                      // exponent of 1 or 0 could have been created.
+                      delete child1;
+                      children.clear();
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
+                      child1 = newNode->simplifyNode(children);
+                      delete newNode;
+                      newNode = child1;
+                      delete newchild2;
+                      delete child2;
+                      return newNode;
+                    }
                 }
-
-              }
               else
-              {
-                // A^n * A -> A^(n+1)  
-                // check if the second child is the same as the first child to
-                // the power operator
-                if(child2->getInfix()==dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
                 {
-                    CEvaluationNode* newNode=CEvaluationNode::create((Type)( OPERATOR | POWER),"^");
-                    CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
-                    newNode->addChild(newchild1);
-                    CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | PLUS), "+");
-                    CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
-                    CEvaluationNode* grandchild2 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"1.0");
-                    // simplify newchild2
-                    std::vector<CEvaluationNode*> children;
-                    children.push_back(grandchild1);
-                    children.push_back(grandchild2);
-                    newNode->addChild(newchild2->simplifyNode(children));
-                    // simplify the result again since a power node with an
-                    // exponent of 1 or 0 could have been created.
-                    delete child1;
-                    children.clear();
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
-                    child1=newNode->simplifyNode(children);
-                    delete newNode;
-                    newNode=child1;
-                    delete newchild2;
-                    delete child2;
-                    return newNode;
+                  // A^n * A -> A^(n+1)
+                  // check if the second child is the same as the first child to
+                  // the power operator
+                  if (child2->getInfix() == dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
+                    {
+                      CEvaluationNode* newNode = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
+                      CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
+                      newNode->addChild(newchild1);
+                      CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | PLUS), "+");
+                      CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                      CEvaluationNode* grandchild2 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+                      // simplify newchild2
+                      std::vector<CEvaluationNode*> children;
+                      children.push_back(grandchild1);
+                      children.push_back(grandchild2);
+                      newNode->addChild(newchild2->simplifyNode(children));
+                      // simplify the result again since a power node with an
+                      // exponent of 1 or 0 could have been created.
+                      delete child1;
+                      children.clear();
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
+                      child1 = newNode->simplifyNode(children);
+                      delete newNode;
+                      newNode = child1;
+                      delete newchild2;
+                      delete child2;
+                      return newNode;
+                    }
                 }
-              }
-          }
-          else if(CEvaluationNode::type(child2->getType())==CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType()))==CEvaluationNodeOperator::POWER)
-          {
-             // A*A^n -> A^(n+1)
-             // check if child 1 is the same as the first child to the power
-             // operator 
-             if(child1->getInfix()==dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix())
-             {
-                CEvaluationNode* newNode=CEvaluationNode::create((Type)( OPERATOR | POWER),"^");
-                newNode->addChild(child1);
-                CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | PLUS), "+");
-                CEvaluationNode* grandchild1 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"1.0");
-                CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
-                // simplify newchild2
-                std::vector<CEvaluationNode*> children;
-                children.push_back(grandchild1);
-                children.push_back(grandchild2);
-                newNode->addChild(newchild2->simplifyNode(children));
-                // simplify the result again since a power node with an
-                // exponent of 1 or 0 could have been created.
-                children.clear();
-                children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
-                children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
-                child1=newNode->simplifyNode(children);
-                delete newNode;
-                newNode=child1;
-                delete newchild2;
-                delete child2;
-                return newNode;
-             }
-          }
+            }
+          else if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType())) == CEvaluationNodeOperator::POWER)
+            {
+              // A*A^n -> A^(n+1)
+              // check if child 1 is the same as the first child to the power
+              // operator
+              if (child1->getInfix() == dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix())
+                {
+                  CEvaluationNode* newNode = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
+                  newNode->addChild(child1);
+                  CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | PLUS), "+");
+                  CEvaluationNode* grandchild1 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+                  CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
+                  // simplify newchild2
+                  std::vector<CEvaluationNode*> children;
+                  children.push_back(grandchild1);
+                  children.push_back(grandchild2);
+                  newNode->addChild(newchild2->simplifyNode(children));
+                  // simplify the result again since a power node with an
+                  // exponent of 1 or 0 could have been created.
+                  children.clear();
+                  children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
+                  children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
+                  child1 = newNode->simplifyNode(children);
+                  delete newNode;
+                  newNode = child1;
+                  delete newchild2;
+                  delete child2;
+                  return newNode;
+                }
+            }
 
           // default: copy
           CEvaluationNode *newnode = copyNode(child1, child2);
@@ -971,103 +970,102 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               delete child2;
               return newnode;
             }
-          if(CEvaluationNode::type(child1->getType())==CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child1->getType()))==CEvaluationNodeOperator::POWER)
-          {
+          if (CEvaluationNode::type(child1->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child1->getType())) == CEvaluationNodeOperator::POWER)
+            {
               // A^n / A^l -> A^(n-l)
               // check if the second child is also a power item
-              if(CEvaluationNode::type(child2->getType())==CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType()))==CEvaluationNodeOperator::POWER)
-              {
-                if(dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix()==dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
+              if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType())) == CEvaluationNodeOperator::POWER)
                 {
-                    CEvaluationNode* newNode=CEvaluationNode::create((Type)( OPERATOR | POWER),"^");
-                    CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
-                    newNode->addChild(newchild1);
-                    CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | MINUS), "-");
-                    CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
-                    CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
-                    // simplify newchild2
-                    std::vector<CEvaluationNode*> children;
-                    children.push_back(grandchild1);
-                    children.push_back(grandchild2);
-                    newNode->addChild(newchild2->simplifyNode(children));
-                    // simplify the result again since a power node with an
-                    // exponent of 1 or 0 could have been created.
-                    delete child1;
-                    children.clear();
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
-                    child1=newNode->simplifyNode(children);
-                    delete newNode;
-                    newNode=child1;
-                    delete newchild2;
-                    delete child2;
-                    return newNode;
+                  if (dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix() == dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
+                    {
+                      CEvaluationNode* newNode = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
+                      CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
+                      newNode->addChild(newchild1);
+                      CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | MINUS), "-");
+                      CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                      CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
+                      // simplify newchild2
+                      std::vector<CEvaluationNode*> children;
+                      children.push_back(grandchild1);
+                      children.push_back(grandchild2);
+                      newNode->addChild(newchild2->simplifyNode(children));
+                      // simplify the result again since a power node with an
+                      // exponent of 1 or 0 could have been created.
+                      delete child1;
+                      children.clear();
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
+                      child1 = newNode->simplifyNode(children);
+                      delete newNode;
+                      newNode = child1;
+                      delete newchild2;
+                      delete child2;
+                      return newNode;
+                    }
                 }
-
-              }
               else
-              {
-                // A^n/A -> A^(n-1)  
-                // check if the second child is the same as the first child to
-                // the power operator
-                if(child2->getInfix()==dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
                 {
-                    CEvaluationNode* newNode=CEvaluationNode::create((Type)( OPERATOR | POWER),"^");
-                    CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
-                    newNode->addChild(newchild1);
-                    CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | MINUS), "-");
-                    CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
-                    CEvaluationNode* grandchild2 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"1.0");
-                    // simplify newchild2
-                    std::vector<CEvaluationNode*> children;
-                    children.push_back(grandchild1);
-                    children.push_back(grandchild2);
-                    newNode->addChild(newchild2->simplifyNode(children));
-                    // simplify the result again since a power node with an
-                    // exponent of 1 or 0 could have been created.
-                    delete child1;
-                    children.clear();
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
-                    children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
-                    child1=newNode->simplifyNode(children);
-                    delete newNode;
-                    newNode=child1;
-                    delete newchild2;
-                    delete child2;
-                    return newNode;
+                  // A^n/A -> A^(n-1)
+                  // check if the second child is the same as the first child to
+                  // the power operator
+                  if (child2->getInfix() == dynamic_cast<const CEvaluationNode*>(child1->getChild())->getInfix())
+                    {
+                      CEvaluationNode* newNode = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
+                      CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child2->getChild())->copyBranch();
+                      newNode->addChild(newchild1);
+                      CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | MINUS), "-");
+                      CEvaluationNode* grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                      CEvaluationNode* grandchild2 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+                      // simplify newchild2
+                      std::vector<CEvaluationNode*> children;
+                      children.push_back(grandchild1);
+                      children.push_back(grandchild2);
+                      newNode->addChild(newchild2->simplifyNode(children));
+                      // simplify the result again since a power node with an
+                      // exponent of 1 or 0 could have been created.
+                      delete child1;
+                      children.clear();
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
+                      children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
+                      child1 = newNode->simplifyNode(children);
+                      delete newNode;
+                      newNode = child1;
+                      delete newchild2;
+                      delete child2;
+                      return newNode;
+                    }
                 }
-              }
-          }
-          else if(CEvaluationNode::type(child2->getType())==CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType()))==CEvaluationNodeOperator::POWER)
-          {
-             // A / A^n -> A^(1-n)
-             // check if child 1 is the same as the first child to the power
-             // operator 
-             if(child1->getInfix()==dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix())
-             {
-                CEvaluationNode* newNode=CEvaluationNode::create((Type)( OPERATOR | POWER),"^");
-                newNode->addChild(child1);
-                CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | MINUS), "-");
-                CEvaluationNode* grandchild1 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE,"1.0");
-                CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
-                // simplify newchild2
-                std::vector<CEvaluationNode*> children;
-                children.push_back(grandchild1);
-                children.push_back(grandchild2);
-                newNode->addChild(newchild2->simplifyNode(children));
-                // simplify the result again since a power node with an
-                // exponent of 1 or 0 could have been created.
-                children.clear();
-                children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
-                children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
-                child1=newNode->simplifyNode(children);
-                delete newNode;
-                newNode=child1;
-                delete newchild2;
-                delete child2;
-                return newNode;
-             }
-          }
+            }
+          else if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::OPERATOR && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(child2->getType())) == CEvaluationNodeOperator::POWER)
+            {
+              // A / A^n -> A^(1-n)
+              // check if child 1 is the same as the first child to the power
+              // operator
+              if (child1->getInfix() == dynamic_cast<const CEvaluationNode*>(child2->getChild())->getInfix())
+                {
+                  CEvaluationNode* newNode = CEvaluationNode::create((Type)(OPERATOR | POWER), "^");
+                  newNode->addChild(child1);
+                  CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(OPERATOR | MINUS), "-");
+                  CEvaluationNode* grandchild1 = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
+                  CEvaluationNode* grandchild2 = dynamic_cast<CEvaluationNode*>(child2->getChild()->getSibling())->copyBranch();
+                  // simplify newchild2
+                  std::vector<CEvaluationNode*> children;
+                  children.push_back(grandchild1);
+                  children.push_back(grandchild2);
+                  newNode->addChild(newchild2->simplifyNode(children));
+                  // simplify the result again since a power node with an
+                  // exponent of 1 or 0 could have been created.
+                  children.clear();
+                  children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild())->copyBranch());
+                  children.push_back(dynamic_cast<CEvaluationNode*>(newNode->getChild()->getSibling())->copyBranch());
+                  child1 = newNode->simplifyNode(children);
+                  delete newNode;
+                  newNode = child1;
+                  delete newchild2;
+                  delete child2;
+                  return newNode;
+                }
+            }
           // default: copy
           CEvaluationNode *newnode = copyNode(child1, child2);
           return newnode;
@@ -1164,7 +1162,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
       }
   }
 
-bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode) const
+bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CCopasiDataModel* pDataModel) const
   {
     // x%y -> x-floor(x/y)*x
     bool result = false;
@@ -1179,14 +1177,14 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               {
                 pASTNode->setType(AST_MINUS);
                 ASTNode* tmpASTNode = new ASTNode(AST_DIVIDE);
-                tmpASTNode->addChild(x->toAST());
-                tmpASTNode->addChild(y->toAST());
+                tmpASTNode->addChild(x->toAST(pDataModel));
+                tmpASTNode->addChild(y->toAST(pDataModel));
                 ASTNode* tmpASTNode2 = new ASTNode(AST_FUNCTION_FLOOR);
                 tmpASTNode2->addChild(tmpASTNode);
                 tmpASTNode = new ASTNode(AST_TIMES);
-                tmpASTNode->addChild(x->toAST());
+                tmpASTNode->addChild(x->toAST(pDataModel));
                 tmpASTNode->addChild(tmpASTNode2);
-                pASTNode->addChild(x->toAST());
+                pASTNode->addChild(x->toAST(pDataModel));
                 pASTNode->addChild(tmpASTNode);
                 result = true;
               }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 class CEvaluationTree;
 class ASTNode;
 class ConverterASTNode;
+class CCopasiDataModel;
 
 /**
  * This is the base class for nodes used in an evaluation trees
@@ -210,7 +211,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * Create a new invalid ASTNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Copy a node and assign new children child1 and child2

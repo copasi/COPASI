@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeStructure.cpp,v $
- $Revision: 1.8 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/12/18 17:33:22 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeStructure.cpp,v $
+$Revision: 1.9 $
+$Name:  $
+$Author: gauges $
+$Date: 2009/02/19 15:37:57 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -58,7 +58,7 @@ CEvaluationNodeStructure::CEvaluationNodeStructure(const CEvaluationNodeStructur
 
 CEvaluationNodeStructure::~CEvaluationNodeStructure() {}
 
-ASTNode* CEvaluationNodeStructure::toAST() const
+ASTNode* CEvaluationNodeStructure::toAST(const CCopasiDataModel* /*pDataModel*/) const
   {
     fatalError();
     return NULL;

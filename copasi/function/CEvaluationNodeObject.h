@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
+  $Revision: 1.15 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/19 15:37:57 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,6 +21,7 @@
 #include "report/CCopasiObjectName.h"
 
 class CRegisteredObjectName;
+class CCopasiDataModel;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -131,7 +137,7 @@ class CEvaluationNodeObject : public CEvaluationNode
      * Converts this node to an ASTNode.
      * @return ASTNode the resulting ASTNode.
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Retreive the CN of the referred object.
@@ -144,6 +150,7 @@ class CEvaluationNodeObject : public CEvaluationNode
      */
     virtual void writeMathML(std::ostream & out,
                              const std::vector<std::vector<std::string> > & env,
+                             const CCopasiDataModel* pDataModel,
                              bool expand = true,
                              unsigned C_INT32 l = 0) const;
 

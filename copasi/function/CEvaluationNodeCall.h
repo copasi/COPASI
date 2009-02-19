@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:12 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 class CFunction;
 class CExpression;
 class CFunctionParameters;
+class CCopasiDataModel;
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -136,7 +137,7 @@ class CEvaluationNodeCall : public CEvaluationNode
      * Create a new ASTNode corresponding to this choice node.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Add a child to a node.

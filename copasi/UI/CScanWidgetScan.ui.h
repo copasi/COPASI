@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:37:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 
 #include "utilities/CCopasiParameterGroup.h"
 #include "scan/CScanProblem.h"
+#include "report/CCopasiRootContainer.h"
 
 void CScanWidgetScan::init()
 {
@@ -100,7 +101,12 @@ bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel*
   if (tmpString == "")
     mpObject = NULL;
   else
-    mpObject = CCopasiContainer::ObjectFromName(tmpString);
+    {
+      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(pDataModel != NULL);
+      mpObject = pDataModel->ObjectFromName(tmpString);
+    }
 
   if (mpObject)
     lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));

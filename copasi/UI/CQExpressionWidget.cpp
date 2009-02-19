@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Date: 2009/02/19 15:37:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -355,7 +355,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
           std::vector<CCopasiContainer*> containers;
           containers.push_back(pDataModel);
           containers.push_back(pFunDB);
-          CCopasiObject* temp_object = CCopasiContainer::ObjectFromName(containers, temp_CN);
+          CCopasiObject* temp_object = pDataModel->getModel()->ObjectFromName(containers, temp_CN);
           if (temp_object != NULL)
             {
               std::string DisplayName = temp_object->getObjectDisplayName();

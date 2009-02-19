@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Date: 2009/02/19 15:37:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,10 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   Q3ListViewItem * element;
 
   std::string cn = obj->getCN();
-  CCopasiObject* testObj = CCopasiContainer::ObjectFromName(cn);
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CCopasiObject* testObj = pDataModel->ObjectFromName(cn);
 
   QString flags;
   if (obj->isContainer()) flags += "C"; else flags += " ";
