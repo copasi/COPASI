@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,8 +77,8 @@ CQTSSAResultWidget::~CQTSSAResultWidget()
 bool CQTSSAResultWidget::loadFromBackend()
 {
   mCentralWidget->displayOptimizationTab(false);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"])->getTimeSeries());
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"])->getTimeSeries());
   return true;
 }
 
@@ -116,9 +116,9 @@ bool CQTSSAResultWidget::leave()
 
 bool CQTSSAResultWidget::enter(const std::string & C_UNUSED(key))
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pTask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
   pTSSILDM = dynamic_cast<CTSSAMethod*>(pTask->getMethod());
 
   if (!pTSSILDM->mCurrentStep)
@@ -131,7 +131,7 @@ bool CQTSSAResultWidget::enter(const std::string & C_UNUSED(key))
 
   return loadFromBackend();
   /*objKey = key;
-  CCompartment* comp = dynamic_cast< CCompartment * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CCompartment* comp = dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (comp) return loadFromCompartment(comp);
   else return false;*/

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:12 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:52:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,7 +251,7 @@ std::string CTimeSeries::getSBMLId(const unsigned C_INT32 & var, const CCopasiDa
 
     if (key != mDummyString)
       {
-        const CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(key);
+        const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
         if (pObject != NULL)
           {
             std::map<CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));

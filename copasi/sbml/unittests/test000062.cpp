@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000062.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:39:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:52:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ void test000062::setUp()
   // Create the root container.
   CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000062::tearDown()
@@ -57,7 +57,7 @@ void test000062::test_kineticlaw_without_math()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
   // check if the reactions function is set correctly
   CReaction* pReaction = pModel->getReactions()[0];
-  CPPUNIT_ASSERT(pReaction->getFunction() == CCopasiRootContainer::Root->getUndefinedFunction());
+  CPPUNIT_ASSERT(pReaction->getFunction() == CCopasiRootContainer::getUndefinedFunction());
   // check if the correct error message has been created
   CPPUNIT_ASSERT(CCopasiMessage::size() == 1);
   const CCopasiMessage& message = CCopasiMessage::getLastMessage();

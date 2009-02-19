@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:51 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,8 +189,8 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
 
 void CExperiment::initializeParameter()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
-  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Experiment", this);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Experiment", this);
 
   assertParameter("Key", CCopasiParameter::KEY, mKey)->setValue(mKey);
 

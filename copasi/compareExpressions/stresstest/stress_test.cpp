@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:06 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ stress_test::stress_test(): mNumFunctionDefinitions(0),
   // Create the root container.
   CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  this->mpDataModel = CCopasiRootContainer::Root->addDatamodel();
+  this->mpDataModel = CCopasiRootContainer::addDatamodel();
 }
 
 /**
@@ -901,7 +901,7 @@ void stress_test::normalizeFunctionDefinitions(const Model* pModel)
  */
 void stress_test::normalizeFunctionDB()
 {
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
   assert(pFunctionDB != NULL);
   CCopasiVectorN< CEvaluationTree > & loadedFunctions = pFunctionDB->loadedFunctions();
   unsigned int i = 0, iMax = loadedFunctions.size();

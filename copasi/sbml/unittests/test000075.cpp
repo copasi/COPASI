@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:11 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:52:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ void test000075::setUp()
   // Create the root container.
   CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000075::tearDown()
@@ -322,7 +322,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(parameterMapping.size() == 1);
   std::string objectKey = parameterMapping[0];
   CPPUNIT_ASSERT(!objectKey.empty());
-  pCObject = CCopasiRootContainer::Root->getKeyFactory()->get(objectKey);
+  pCObject = CCopasiRootContainer::getKeyFactory()->get(objectKey);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject == pCModel);
 
@@ -395,7 +395,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   // check if the function definitions are imported correctly
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
   CPPUNIT_ASSERT(pFunctionDB != NULL);
   const CEvaluationTree* pCTree = pFunctionDB->findFunction("time_dependent");
   CPPUNIT_ASSERT(pCTree != NULL);

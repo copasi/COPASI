@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,12 +28,12 @@
 CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
     CCopasiVector<CLayout>(name, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this))
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
 {}
 
 CListOfLayouts::~CListOfLayouts()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string& CListOfLayouts::getKey()

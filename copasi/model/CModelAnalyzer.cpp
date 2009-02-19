@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelAnalyzer.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           || role == CFunctionParameter::PRODUCT
           || role == CFunctionParameter::MODIFIER)
         {
-          if (!dynamic_cast<CMetab*>(CCopasiRootContainer::Root->getKeyFactory()->get(reaction->getParameterMappings()[i][0])))
+          if (!dynamic_cast<CMetab*>(CCopasiRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0])))
             {
               //copasi bug!
               //std::cout << "Copasi bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter." << std::endl;

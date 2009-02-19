@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:13 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,16 +128,14 @@ void CODEExporter::exportObjectNodesFromModel(const CCopasiDataModel* pDataModel
   imax = pDataModel->getModel()->getListOfSimulatedRefreshes().size();
   for (i = 0; i < imax; ++i)
     {
-      CCopasiObject * tmp = CCopasiRootContainer::Root;
-
-      CCopasiObject * obj = findObjectFromRefresh(tmp, pDataModel->getModel()->getListOfSimulatedRefreshes()[i]);
+      CCopasiObject * obj = findObjectFromRefresh(pDataModel, pDataModel->getModel()->getListOfSimulatedRefreshes()[i]);
       if (obj) exportSimulatedObject(obj, pDataModel);
       // else
       // std::cout << "Object for Refresh method is not found!" << std::endl;
     }
 }
 
-CCopasiObject* CODEExporter::findObjectFromRefresh(CCopasiObject * tmp, const Refresh* ref)
+CCopasiObject* CODEExporter::findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref)
 {
 
   CCopasiObject* obj = NULL;
@@ -1151,7 +1149,7 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
               index = tmpfunc->getVariableIndex(name);
               role = tmpfunc->getVariables()[index]->getUsage();
 
-              CCopasiObject * obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[index][0]);
+              CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[index][0]);
 
               if ((role == CFunctionParameter::SUBSTRATE)
                   || (role == CFunctionParameter::PRODUCT)
@@ -1215,7 +1213,7 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
 
       const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
-      obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[0][0]);
+      obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[0][0]);
 
       if (!(reac->isLocalParameter(0)))
         {
@@ -1246,7 +1244,7 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
         {
           expression << "-";
 
-          obj = CCopasiRootContainer::Root->getKeyFactory()->get(keyMap[2][0]);
+          obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[2][0]);
 
           if (!(reac->isLocalParameter(2)))
             {
@@ -1296,7 +1294,7 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const CReaction 
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
       CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
 
       while (treeIt != NULL)
@@ -1418,7 +1416,7 @@ bool CODEExporter::isEmptyString(std::string & str)
  **/
 void CODEExporter::modifyTreeForMassAction(CFunction* tmpfunc)
 {
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
 
   CCopasiTree< CEvaluationNode>::iterator treeIt = tmpfunc->getRoot();
 

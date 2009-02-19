@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:51 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,9 +135,9 @@ COptProblem::COptProblem(const COptProblem& src,
 COptProblem::~COptProblem()
 {
   if (mpFunction && CCopasiRootContainer::Root &&
-      CCopasiRootContainer::Root->getFunctionList() &&
-      CCopasiRootContainer::Root->getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
-    CCopasiRootContainer::Root->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
+      CCopasiRootContainer::getFunctionList() &&
+      CCopasiRootContainer::getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
+    CCopasiRootContainer::getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
 
   pdelete(mpFunction);
 }
@@ -666,10 +666,10 @@ bool COptProblem::createObjectiveFunction()
   if (!pParm) return false;
 
   mpFunction =
-    dynamic_cast<CExpression *>(CCopasiRootContainer::Root->getKeyFactory()->get(* pParm->getValue().pKEY));
+    dynamic_cast<CExpression *>(CCopasiRootContainer::getKeyFactory()->get(* pParm->getValue().pKEY));
 
   CCopasiVectorN<CEvaluationTree> & FunctionList =
-    CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
+    CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   if (!mpFunction)
     {

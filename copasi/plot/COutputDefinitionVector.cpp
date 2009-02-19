@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.cpp,v $
-  $Revision: 1.3 $
-  $Name:  $
-  $Author: gauges $
-  $Date: 2009/02/18 20:54:46 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/COutputDefinitionVector.cpp,v $
+ $Revision: 1.4 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2009/02/19 19:51:20 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,7 +22,7 @@
 COutputDefinitionVector::COutputDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiVectorN< CPlotSpecification >(name, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("COutputDefinitionVector", this))
+    mKey(CCopasiRootContainer::getKeyFactory()->add("COutputDefinitionVector", this))
 {}
 
 COutputDefinitionVector::~COutputDefinitionVector()
@@ -32,7 +32,7 @@ COutputDefinitionVector::~COutputDefinitionVector()
 
 void COutputDefinitionVector::cleanup()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string& COutputDefinitionVector::getKey()
@@ -58,7 +58,7 @@ CPlotSpecification* COutputDefinitionVector::createPlotSpec(const std::string & 
 bool COutputDefinitionVector::removePlotSpec(const std::string & key)
 {
   CPlotSpecification* pPl =
-    dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(key));
   unsigned C_INT32 index = this->CCopasiVector<CPlotSpecification>::getIndex(pPl);
   if (index == C_INVALID_INDEX)
     return false;

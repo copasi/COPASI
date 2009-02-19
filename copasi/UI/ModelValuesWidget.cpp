@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,8 @@
 
 std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-    CCopasiVectorN<CModelValue>& tmp = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getModelValues();
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+    CCopasiVectorN<CModelValue>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -189,8 +189,8 @@ CCopasiObject* ModelValuesWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CModelValue* pMV;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   while (!(pMV = pDataModel->getModel()->createModelValue(nname)))
     {
@@ -203,8 +203,8 @@ CCopasiObject* ModelValuesWidget::createNewObject(const std::string & name)
 
 void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
@@ -228,7 +228,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
   for (i = 0; i < imax; i++) //all compartments
     {
       CModelValue * pValue =
-        dynamic_cast< CModelValue *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
+        dynamic_cast< CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
 
       valueList.append(FROM_UTF8(pValue->getObjectName()));
       valueList.append(", ");

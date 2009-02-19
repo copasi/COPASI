@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-$Revision: 1.111 $
+$Revision: 1.112 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/02/18 20:55:34 $
+$Author: shoops $
+$Date: 2009/02/19 19:52:26 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -374,7 +374,7 @@ C_INT32 TestCopasiObject(void)
   cout << cn << endl;
 
   CCompartment * pCompartment =
-    (CCompartment *) (CCopasiContainer *) CCopasiRootContainer::Root->getObject(cn);
+    (CCompartment *) (CCopasiContainer *) CCopasiRootContainer::getObject(cn);
 
   cout << *pCompartment << endl;
   return 0;

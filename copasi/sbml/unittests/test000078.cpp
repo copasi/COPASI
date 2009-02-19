@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000078.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:39:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:52:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@ void test000078::setUp()
   // Create the root container.
   CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000078::tearDown()
@@ -68,7 +68,7 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
   CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
   // check if the function definitions were imported correctly
-  CFunctionDB* pFunDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
   const CEvaluationTree* pFun = pFunDB->findFunction("function_1");
   CPPUNIT_ASSERT(pFun != NULL);
   const CKinFunction* pKinFun = dynamic_cast<const CKinFunction*>(pFun);

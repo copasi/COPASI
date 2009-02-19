@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_compare_utilities.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:06 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ void test_compare_utilities::setUp()
   CCopasiRootContainer::init(false, 0, NULL);
 
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test_compare_utilities::tearDown()
@@ -45,7 +45,7 @@ void test_compare_utilities::test_copasi_function_expansion()
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;;
   std::istringstream iss(test_compare_utilities::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
   // function_5
   CEvaluationTree* pTree = pFunctionDB->findFunction("function_4");
   CPPUNIT_ASSERT(pTree != NULL);

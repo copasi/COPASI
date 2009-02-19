@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
-  $Revision: 1.20 $
-  $Name:  $
-  $Author: gauges $
-  $Date: 2009/02/18 20:55:33 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
+ $Revision: 1.21 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2009/02/19 19:51:19 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,7 +31,7 @@
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiVectorN< CReportDefinition >(name, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("CReportDefinitionVector", this))
+    mKey(CCopasiRootContainer::getKeyFactory()->add("CReportDefinitionVector", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
@@ -41,7 +41,7 @@ CReportDefinitionVector::~CReportDefinitionVector()
 
 void CReportDefinitionVector::cleanup()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string& CReportDefinitionVector::getKey()
@@ -67,7 +67,7 @@ CReportDefinition* CReportDefinitionVector::createReportDefinition(const std::st
 bool CReportDefinitionVector::removeReportDefinition(const std::string & key)
 {
   CReportDefinition* pRep =
-    dynamic_cast<CReportDefinition *>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast<CReportDefinition *>(CCopasiRootContainer::getKeyFactory()->get(key));
   unsigned C_INT32 index = this->CCopasiVector<CReportDefinition>::getIndex(pRep);
   if (index == C_INVALID_INDEX)
     return false;

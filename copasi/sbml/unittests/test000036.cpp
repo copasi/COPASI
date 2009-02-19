@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000036.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:11 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:52:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ void test000036::setUp()
   // Create the root container.
   CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000036::tearDown()

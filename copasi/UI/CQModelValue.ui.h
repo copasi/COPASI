@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,8 +62,8 @@ void CQModelValue::slotBtnNew()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 0;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  while (!(mpModelValue = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createModelValue(name)))
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  while (!(mpModelValue = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(name)))
     {
       i++;
       name = "quantity_";
@@ -76,8 +76,8 @@ void CQModelValue::slotBtnNew()
 
 void CQModelValue::slotBtnDelete()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
@@ -213,7 +213,7 @@ void CQModelValue::slotBtnDelete()
     case QMessageBox::Ok:  // Yes or Enter
       {
         unsigned C_INT32 index =
-          static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
+          static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pDataModel->getModel()->removeModelValue(mKey);
         unsigned C_INT32 size =
@@ -369,7 +369,7 @@ bool CQModelValue::leave()
 bool CQModelValue::enter(const std::string & key)
 {
   mKey = key;
-  mpModelValue = dynamic_cast< CModelValue * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  mpModelValue = dynamic_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!mpModelValue)
     {
@@ -504,8 +504,8 @@ void CQModelValue::save()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
       protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
     }
 

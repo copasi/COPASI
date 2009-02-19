@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.139 $
+//   $Revision: 1.140 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:51 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ CMetab::CMetab(const std::string & name,
     mpCompartment(NULL),
     mpMoiety(NULL)
 {
-  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Metabolite", this);
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
 
   setStatus(REACTIONS);
@@ -82,7 +82,7 @@ CMetab::CMetab(const CMetab & src,
     mpCompartment(NULL),
     mpMoiety(src.mpMoiety)
 {
-  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Metabolite", this);
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
 
   initObjects();
 
@@ -110,7 +110,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
 
 CMetab::~CMetab()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

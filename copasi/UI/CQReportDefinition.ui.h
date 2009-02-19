@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:31 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,8 +112,8 @@ void CQReportDefinition::btnAdvancedClicked()
 
 void CQReportDefinition::btnItemClicked()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel* pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   if (!pModel) return;
 
   std::vector< const CCopasiObject * > SelectedVector =
@@ -281,8 +281,8 @@ void CQReportDefinition::btnDeleteReportClicked()
 {
   unsigned C_INT32 Index, Size;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   std::set< std::string > TaskKeys =
     pDataModel->listTaskDependentOnReport(mKey);
@@ -295,7 +295,7 @@ void CQReportDefinition::btnDeleteReportClicked()
       QString msg = "The following tasks are effected:\n";
 
       for (; it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(*it))))
+        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
           msg += FROM_UTF8(pTask->getObjectName()) + ", ";
 
       msg = msg.remove(msg.length() - 2, 2);
@@ -308,7 +308,7 @@ void CQReportDefinition::btnDeleteReportClicked()
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(*it))))
+        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
           pTask->getReport().setReportDefinition(NULL);
     }
 
@@ -333,8 +333,8 @@ void CQReportDefinition::btnNewReportClicked()
 
   int i = 0;
   CReportDefinition* pRep;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  while (!(pRep = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(Name, "")))
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  while (!(pRep = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(Name, "")))
     {
       i++;
       Name = "report_";
@@ -390,7 +390,7 @@ bool CQReportDefinition::leave()
 bool CQReportDefinition::enter(const std::string & key)
 {
   mKey = key;
-  mpReportDefinition = dynamic_cast<CReportDefinition *>(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
+  mpReportDefinition = dynamic_cast<CReportDefinition *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!mpReportDefinition)
     {
@@ -549,8 +549,8 @@ bool CQReportDefinition::save()
         pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
     }
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mChanged = false;
   return false;

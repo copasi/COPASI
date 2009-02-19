@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2009/02/18 20:53:04 $
+//   $Date: 2009/02/19 19:50:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ void CQRDFListViewWidget::load()
   Ui::CQRDFListViewWidget::mpListView->clear();
   pdelete(mpGraph);
 
-  CCopasiObject *pObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
+  CCopasiObject *pObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (pObject != NULL)
     {

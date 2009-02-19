@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,7 @@ void CopasiTableWidget::fillTable()
 
   std::vector<const CCopasiObject*> objects = getObjects();
 
-  //  const CCopasiVectorN < CCompartment > & objects = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
+  //  const CCopasiVectorN < CCompartment > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
   C_INT32 i, j, jmax = objects.size();
 
   resizeTable(jmax + 1);
@@ -227,8 +227,8 @@ void CopasiTableWidget::saveTable()
 {
   if (mRO) return;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  if (!(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
     return;
 
   mChanged = false;
@@ -277,16 +277,16 @@ void CopasiTableWidget::saveTable()
         {
           if (mFlagChanged[j])
             {
-              tableLineToObject(j, CCopasiRootContainer::Root->getKeyFactory()->get(mKeys[j]));
+              tableLineToObject(j, CCopasiRootContainer::getKeyFactory()->get(mKeys[j]));
               protectedNotify(mOT, ListViews::CHANGE, mKeys[j]);
               mChanged = true;
             }
           if (mFlagRenamed[j])
             {
-              if (!CCopasiRootContainer::Root->getKeyFactory()->get(mKeys[j])->setObjectName(TO_UTF8(table->text(j, 1))))
+              if (!CCopasiRootContainer::getKeyFactory()->get(mKeys[j])->setObjectName(TO_UTF8(table->text(j, 1))))
                 {
                   QString msg;
-                  msg = "Unable to rename object '" + FROM_UTF8(CCopasiRootContainer::Root->getKeyFactory()->get(mKeys[j])->getObjectName()) + "'\n"
+                  msg = "Unable to rename object '" + FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(mKeys[j])->getObjectName()) + "'\n"
                         + "to '" + table->text(j, 1)
                         + "' since an object with that name already exists.";
 
@@ -307,7 +307,7 @@ void CopasiTableWidget::saveTable()
 
   if (flagDelete) deleteObjects(delKeys);
 
-  if (mChanged) (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+  if (mChanged) (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return;
 }
@@ -354,7 +354,7 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
   fillTable();
 
-  if (CCopasiRootContainer::Root->getKeyFactory()->get(key))
+  if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(0, key);
 }
 
@@ -477,8 +477,8 @@ void CopasiTableWidget::slotBtnOKClicked()
 
 void CopasiTableWidget::slotBtnCancelClicked()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  if ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
     fillTable();
 }
 

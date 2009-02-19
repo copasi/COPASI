@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,7 @@ bool CQFittingWidget::saveTask()
   for (i = pExperimentSet->getExperimentCount() - 1; i != C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(CCopasiRootContainer::Root->getKeyFactory()->get(mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
 
       if (pExperiment && pExperiment == mpExperimentSet->getExperiment(pExperiment->getObjectName()))
         {
@@ -126,7 +126,7 @@ bool CQFittingWidget::saveTask()
   for (i = pCrossValidationSet->getExperimentCount() - 1; i != C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(CCopasiRootContainer::Root->getKeyFactory()->get(mCrossValidationKeyMap[pCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mCrossValidationKeyMap[pCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey()]));
 
       if (pExperiment && pExperiment == mpCrossValidationSet->getExperiment(pExperiment->getObjectName()))
         {
@@ -167,8 +167,8 @@ bool CQFittingWidget::saveTask()
   mChanged |= mpParameters->save(&ExperimentMap, &CrossValidationMap);
   mChanged |= mpConstraints->save(&ExperimentMap, &CrossValidationMap);
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  if (mChanged) (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  if (mChanged) (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mChanged = false;
   return true;
@@ -236,7 +236,7 @@ CCopasiMethod * CQFittingWidget::createMethod(const CCopasiMethod::SubType & typ
 bool CQFittingWidget::runTask()
 {
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CFitTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;

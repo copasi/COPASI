@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQLyapWidget.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@
 bool CQLyapWidget::runTask()
 {
   CLyapTask * pTask =
-    dynamic_cast< CLyapTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CLyapTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
@@ -75,9 +75,9 @@ bool CQLyapWidget::loadTask()
 
   mpEditExponent->setText(QString::number(std::max<unsigned C_INT32>(1, pProblem->getExponentNumber())));
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
-    ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
+    ((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
 
   mpCheckDelay->setChecked(enabled);
   mpEditDelay->setEnabled(enabled);
@@ -108,9 +108,9 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
-    ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
+    ((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime() != pProblem->getTransientTime());
 
   if (mpCheckDelay->isChecked() != enabled ||
       (mpCheckDelay->isChecked() &&
@@ -119,7 +119,7 @@ bool CQLyapWidget::saveTask()
       if (mpCheckDelay->isChecked())
         pProblem->setTransientTime(mpEditDelay->text().toDouble());
       else
-        pProblem->setTransientTime((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime());
+        pProblem->setTransientTime((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime());
 
       mChanged = true;
     }
@@ -130,7 +130,7 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  if (mChanged) (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+  if (mChanged) (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mChanged = false;
   return true;

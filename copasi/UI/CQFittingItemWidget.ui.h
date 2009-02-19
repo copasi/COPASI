@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,8 +125,8 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (; it != end; ++it)
@@ -162,8 +162,8 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (; it != end; ++it)
@@ -191,8 +191,8 @@ void CQFittingItemWidget::slotLowerEdit()
 
       mpLowerObject = pObject;
       CCopasiObjectName CN = mpLowerObject->getCN();
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
 
       for (; it != end; ++it)
@@ -227,8 +227,8 @@ void CQFittingItemWidget::slotUpperEdit()
 
       mpUpperObject = pObject;
       CCopasiObjectName CN = mpUpperObject->getCN();
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
 
       for (; it != end; ++it)
@@ -313,8 +313,8 @@ void CQFittingItemWidget::slotParamEdit()
       // Update the selected items
       std::set< unsigned int >::const_iterator it = mSelection.begin();
       std::set< unsigned int >::const_iterator end = mSelection.end();
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
 
       for (; it != end; ++it)
@@ -518,8 +518,8 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
   unsigned C_INT32 i;
   unsigned C_INT32 imax = std::max<unsigned C_INT32>(mpItemsCopy->size(), mpItems->size());
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (i = 0; it != end && target != targetEnd; ++it, ++target, ++i)
@@ -758,7 +758,7 @@ void CQFittingItemWidget::slotExperimentChanged()
   for (Row = 0; it != end; ++it, ++Row)
     {
       for (i = 0, imax = static_cast<CFitItem *>(*it)->getExperimentCount(); i < imax; ++i)
-        if (!CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(*it)->getExperiment(i)))
+        if (!CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getExperiment(i)))
           static_cast<CFitItem *>(*it)->removeExperiment(i);
 
       setTableText(Row, *it);
@@ -1078,8 +1078,8 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
 {
   QString Item = "   ";
   const CCopasiObject *pObject;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   if (pItem->getLowerBound() == "-inf" ||
       isNumber(pItem->getLowerBound()))
@@ -1191,8 +1191,8 @@ void CQFittingItemWidget::loadSelection()
 
       COptItem * pItem = (*mpItemsCopy)[*it];
 
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
       const CCopasiObject *pObject = pDataModel->getObject(pItem->getObjectCN());
       if (pObject)
@@ -1252,7 +1252,7 @@ void CQFittingItemWidget::loadSelection()
           for (i = 0; i < imax; i++)
             {
               const CCopasiObject * pObject =
-                CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getExperiment(i));
+                CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getExperiment(i));
 
               if (pObject)
                 mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
@@ -1270,7 +1270,7 @@ void CQFittingItemWidget::loadSelection()
           for (i = 0; i < imax; i++)
             {
               const CCopasiObject * pObject =
-                CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
+                CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
 
               if (pObject)
                 mpBoxCrossValidations->insertItem(FROM_UTF8(pObject->getObjectName()));
@@ -1368,8 +1368,8 @@ void CQFittingItemWidget::saveSelection()
   std::set< unsigned int >::const_iterator end = mSelection.end();
 
   COptItem * pItem;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   for (; it != end; ++it)
     {
@@ -1455,8 +1455,8 @@ void CQFittingItemWidget::slotLowerLostFocus()
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (; it != end; ++it)
@@ -1492,8 +1492,8 @@ void CQFittingItemWidget::slotUpperLostFocus()
 
   bool first = true;
   std::string NewValue = "";
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (; it != end; ++it)
@@ -1635,7 +1635,7 @@ void CQFittingItemWidget::slotCrossValidationChanged()
   for (Row = 0; it != end; ++it, ++Row)
     {
       for (i = 0, imax = static_cast<CFitItem *>(*it)->getCrossValidationCount(); i < imax; ++i)
-        if (!CCopasiRootContainer::Root->getKeyFactory()->get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
+        if (!CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
           static_cast<CFitItem *>(*it)->removeCrossValidation(i);
 
       setTableText(Row, *it);

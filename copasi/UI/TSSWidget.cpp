@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-$Revision: 1.14 $
+$Revision: 1.15 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/02/18 20:49:08 $
+$Author: shoops $
+$Date: 2009/02/19 19:54:03 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,7 @@ bool TSSWidget::saveTask()
   saveMethod();
 
   CTSSTask* tssTask =
-    dynamic_cast<CTSSTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CTSSTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   assert(tssTask);
 
   CTSSProblem* problem =
@@ -106,8 +106,8 @@ bool TSSWidget::saveTask()
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   if (mChanged)
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
     }
   return true;
 }
@@ -121,7 +121,7 @@ bool TSSWidget::runTask()
 
   /*
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   assert(mSteadyStateTask);
 
   mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
@@ -143,8 +143,8 @@ bool TSSWidget::runTask()
           const CState *currentState = mSteadyStateTask->getState();
           if (currentState)
           {
-            assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-            ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())->setInitialState(currentState);
+            assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+            ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())->setInitialState(currentState);
           }
         }
     }
@@ -176,7 +176,7 @@ bool TSSWidget::loadTask()
   loadMethod();
 
   CTSSTask* tssTask =
-    dynamic_cast<CTSSTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CTSSTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   assert(tssTask);
 
   CTSSProblem* problem =

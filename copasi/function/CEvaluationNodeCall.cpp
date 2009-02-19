@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
     {
     case FUNCTION:
       mpFunction =
-        dynamic_cast<CFunction *>(CCopasiRootContainer::Root->getFunctionList()->findFunction(mData));
+        dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
       if (!mpFunction) return false;
 
       // We need to check whether the provided arguments match the on needed by the
@@ -117,7 +117,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
       break;
     case DELAY:
-      mpFunction = CCopasiRootContainer::Root->getUnsupportedDelay();
+      mpFunction = CCopasiRootContainer::getUnsupportedDelay();
       if (!mpFunction) return false;
 
       // Since it is not guarantied that the function name is "delay",
@@ -131,13 +131,13 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
       break;
     case EXPRESSION:
       mpExpression =
-        dynamic_cast<CExpression *>(CCopasiRootContainer::Root->getFunctionList()->findFunction(mData));
+        dynamic_cast<CExpression *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
       if (!mpExpression)
         {
           // We may have a function with no arguments the parser is not able to destinguish
           // between that and an expression.
           mpFunction =
-            dynamic_cast<CFunction *>(CCopasiRootContainer::Root->getFunctionList()->findFunction(mData));
+            dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
           if (!mpFunction) return false;
 
           mType = (CEvaluationNode::Type) (CEvaluationNode::CALL | FUNCTION);
@@ -161,7 +161,7 @@ bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
     if (list.count(mData)) return true;
 
     CEvaluationTree * pTree =
-      CCopasiRootContainer::Root->getFunctionList()->findFunction(mData);
+      CCopasiRootContainer::getFunctionList()->findFunction(mData);
 
     if (pTree) return pTree->calls(list);
 
@@ -297,7 +297,7 @@ ASTNode* CEvaluationNodeCall::toAST(const CCopasiDataModel* pDataModel) const
       {
         pNode = new ASTNode(AST_FUNCTION);
         const std::string funName = this->getData();
-        CEvaluationTree* pFun = CCopasiRootContainer::Root->getFunctionList()->findFunction(funName);
+        CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
         assert(pFun != NULL);
         if (pFun == NULL || pFun->getSBMLId().empty()) fatalError();
         pNode->setName(pFun->getSBMLId().c_str());

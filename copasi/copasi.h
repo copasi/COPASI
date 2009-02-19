@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/28 19:19:40 $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,6 +131,10 @@ enum TriLogic
 /* This is necessary to link with Intel MKL 721 under Visual C++ 8 */
 #if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200
 extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
+#endif
+
+#ifdef COPASI_MAIN
+void * pRootContainer = NULL;
 #endif
 
 /* Define Constructor/Destructor Trace */

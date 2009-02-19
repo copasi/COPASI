@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 16:45:22 $
+//   $Date: 2009/02/19 19:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -601,11 +601,11 @@ const CCopasiObject * CCopasiObject::ObjectFromName(const std::vector< CCopasiCo
 
     // if still not found search the function database in the root container
     if (!pObject)
-      pObject = CCopasiRootContainer::Root->getFunctionList()->getObject(objName);
+      pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
 
     // right now, it does not make sense to search the root container
     //if (!pObject)
-    //  pObject = CCopasiRootContainer::Root->getObject(objName);
+    //  pObject = CCopasiRootContainer::getObject(objName);
 
     return const_cast<const CCopasiObject *>(pObject);
   }
@@ -649,11 +649,11 @@ CCopasiObject * CCopasiObject::ObjectFromName(const std::vector< CCopasiContaine
 
   // if still not found search the function database in the root container
   if (!pObject)
-    pObject = CCopasiRootContainer::Root->getFunctionList()->getObject(objName);
+    pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
 
   // right now, it does not make sense to search the root container
   //if (!pObject)
-  //  pObject = CCopasiRootContainer::Root->getObject(objName);
+  //  pObject = CCopasiRootContainer::getObject(objName);
 
   return const_cast<CCopasiObject *>(pObject);
 }

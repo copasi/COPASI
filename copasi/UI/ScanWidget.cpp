@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.206 $
+//   $Revision: 1.207 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,7 +131,7 @@ bool ScanWidget::loadTask()
   loadCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CScanTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   if (!scanTask) return false;
 
   CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
@@ -148,8 +148,8 @@ bool ScanWidget::loadTask()
   //CScanWidgetBreak* tmp4;
 
   // the scan items
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   unsigned C_INT32 i, imax = scanProblem->getNumberOfScanItems();
   for (i = 0; i < imax; ++i)
@@ -232,8 +232,8 @@ bool ScanWidget::slotAddItem()
   //create item to get the default values
   CScanProblem* tmpProblem = new CScanProblem();
   CCopasiParameterGroup* tmpItem = tmpProblem->createScanItem(type, 10);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   switch (type)
@@ -286,7 +286,7 @@ bool ScanWidget::saveTask()
   saveCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CScanTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   if (!scanTask) return false;
 
   CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
@@ -325,8 +325,8 @@ bool ScanWidget::saveTask()
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return true;
 }

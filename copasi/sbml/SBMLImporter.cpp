@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.221 $
+//   $Revision: 1.222 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:10 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3435,7 +3435,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
           ++step;
         }
 
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
       if (mpImportHandler)
         {
           mpImportHandler->finish(hStep);
@@ -3477,7 +3477,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
       CCopasiTree<const CEvaluationNode>::iterator treeIt = pNode;
       while (treeIt != NULL)
         {
@@ -4191,7 +4191,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<CCopasiObject
           std::vector<std::string>::const_iterator keyEndit = (*parameterMappingsIt).end();
           while (keyIt != keyEndit)
             {
-              pLocalParameter = dynamic_cast<CCopasiParameter*>(CCopasiRootContainer::Root->getKeyFactory()->get(*keyIt));
+              pLocalParameter = dynamic_cast<CCopasiParameter*>(CCopasiRootContainer::getKeyFactory()->get(*keyIt));
               if (pLocalParameter != NULL)
                 {
                   // it is a local parameter and it is being used

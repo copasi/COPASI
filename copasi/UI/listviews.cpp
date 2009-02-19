@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.261 $
+//   $Revision: 1.262 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -852,8 +852,8 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     Action action, const std::string & C_UNUSED(key)) //static
 {
   bool success = true;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   //maintain the "changed" flag
@@ -1100,8 +1100,8 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
 {
   if (objectType != MODEL && action != ADD)
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
     }
 
   bool success = true;
@@ -1256,8 +1256,8 @@ void ListViews::setFramework(int framework)
 // static
 void ListViews::buildChangedObjects()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   pModel->compileIfNecessary(NULL);
 
   mChangedObjects.clear();

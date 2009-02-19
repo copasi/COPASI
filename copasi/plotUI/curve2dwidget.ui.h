@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,8 +44,8 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //TODO: check if objects exist....
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = NULL;
   if (curve->getChannels().size() >= 1)

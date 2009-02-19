@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,9 +41,9 @@
 
 std::vector<const CCopasiObject*> TableDefinition::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
     CCopasiVector< CReportDefinition >* tmp =
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList();
+      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
 
     std::vector<const CCopasiObject*> ret;
 
@@ -98,8 +98,8 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CReportDefinition* pRep;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   while (!(pRep = pDataModel->getReportDefinitionList()->createReportDefinition(nname, "")))
     {
@@ -113,8 +113,8 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
 
 void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   if (!pDataModel->getModel())
     return;
@@ -147,7 +147,7 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
       QString msg = "The following tasks are effected:\n";
 
       for (it = TaskKeys.begin(), end = TaskKeys.end(); it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(*it))))
+        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
           msg += FROM_UTF8(pTask->getObjectName()) + ", ";
 
       msg = msg.remove(msg.length() - 2, 2);
@@ -160,7 +160,7 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
         return;
 
       for (it = TaskKeys.begin(); it != end; ++it)
-        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(*it))))
+        if ((pTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(*it))))
           pTask->getReport().setReportDefinition(NULL);
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /home/cvs/copasi_dev/copasi/UI/objectdebug.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:49:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ class ObjectDebug : public QDialog, public Ui::ObjectDebug
     virtual void languageChange();
 
   private:
-    void addObjectRecursive(QWidget * parent, void * ptr);
+    void addObjectRecursive(QWidget * parent, const void * ptr);
     void init();
   };
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:56 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,8 +104,8 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
     mpObject = NULL;
   else
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
       mpObject = pDataModel->ObjectFromName(*pString);
     }

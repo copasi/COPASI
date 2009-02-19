@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Moiety", this)), //By G
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
     mNumber(0),
     mINumber(0),
     mEquation()
@@ -48,7 +48,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Moiety", this)), //By G
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation)
@@ -59,7 +59,7 @@ CMoiety::CMoiety(const CMoiety & src,
 
 CMoiety::~CMoiety()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

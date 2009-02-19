@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,7 @@ CCompartment::CCompartment(const std::string & name,
 {
   initObjects();
 
-  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Compartment", this);
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
 
   setStatus(FIXED);
 
@@ -58,14 +58,14 @@ CCompartment::CCompartment(const CCompartment & src,
     CModelEntity(src, pParent),
     mMetabolites(src.mMetabolites, this)
 {
-  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Compartment", this);
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
   CONSTRUCTOR_TRACE;
   initObjects();
 }
 
 CCompartment::~CCompartment()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -358,7 +358,7 @@ void ObjectBrowserWidget::swap(int first_pos, int second_pos, ObjectBrowserItem*
 
 int ObjectBrowserWidget::partition(int split_pos, int start_pos, int end_pos, ObjectBrowserItem** quick_sort_array)
 {
-  void* tmp = quick_sort_array[split_pos]->getObject()->pCopasiObject;
+  const void * tmp = quick_sort_array[split_pos]->getObject()->pCopasiObject;
   if (split_pos != start_pos)
     swap(split_pos, start_pos, quick_sort_array);
   split_pos = start_pos;
@@ -395,7 +395,7 @@ void ObjectBrowserWidget::quick_sort(int m, int n, ObjectBrowserItem** quick_sor
 
 void ObjectBrowserWidget::loadData()
 {
-  CCopasiContainer * root = CCopasiRootContainer::Root;
+  const CCopasiContainer * root = CCopasiRootContainer::getRoot();
   ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
   itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);
@@ -444,7 +444,8 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList* objectItemList)
 }
 
 void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
-                                    CCopasiContainer* copaParent, bool nField)
+                                    const CCopasiContainer* copaParent,
+                                    bool nField)
 {
   unsigned int i;
   ObjectBrowserItem* last = NULL;

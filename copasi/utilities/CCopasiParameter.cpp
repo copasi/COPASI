@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ const char* CCopasiParameter::XMLType[] =
 
 CCopasiParameter::CCopasiParameter():
     CCopasiContainer("NoName", NULL, "Parameter"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Parameter", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Parameter", this)),
     mType(INVALID),
     mSize(0),
     mValue()
@@ -74,7 +74,7 @@ CCopasiParameter::CCopasiParameter():
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
                                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add(src.getObjectType(), this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
     mType(src.mType),
     mSize(0),
     mValue(createValue(src.mValue))
@@ -91,7 +91,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
                        ((type == STRING || type == CN || type == KEY || type == FILE) ? CCopasiObject::ValueString :
                         (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add(objectType, this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add(objectType, this)),
     mType(type),
     mSize(0),
     mValue()
@@ -103,7 +103,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
 
 CCopasiParameter::~CCopasiParameter()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   deleteValue();
 }
 

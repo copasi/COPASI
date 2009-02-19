@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -388,8 +388,8 @@ bool FunctionWidget1::loadParameterTable()
   //find parameter units
   CFindDimensions ddd(mpFunction);
   ddd.setUseHeuristics(true);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   std::vector<std::string> units = ddd.findDimensionsBoth(pDataModel);
 
@@ -726,7 +726,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
 
 bool FunctionWidget1::functionParametersChanged()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(objKey));
   if (!func) return false;
 
   return (!(func->getVariables() == mpFunction->getVariables()));
@@ -734,7 +734,7 @@ bool FunctionWidget1::functionParametersChanged()
 
 bool FunctionWidget1::saveToFunction()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(objKey));
   if (!func) return false;
 
   //name
@@ -743,11 +743,11 @@ bool FunctionWidget1::saveToFunction()
     {
       // We need to check whether other trees call the current one.
       std::set<std::string> dependentTrees;
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      if ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
         {
           dependentTrees =
-            CCopasiRootContainer::Root->getFunctionList()->listDependentTrees(func->getObjectName());
+            CCopasiRootContainer::getFunctionList()->listDependentTrees(func->getObjectName());
         }
 
       if (dependentTrees.size() > 0)
@@ -821,8 +821,8 @@ bool FunctionWidget1::saveToFunction()
   // :TODO: Bug 404 Create a message that the function is not valid by itself.
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   flagChanged = false;
   return true;
@@ -920,17 +920,17 @@ void FunctionWidget1::slotCancelButtonClicked()
 //! Slot for being activated wehenver Commit button is clicked
 void FunctionWidget1::slotCommitButtonClicked()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   if (pModel == NULL)
     return;
 
   // :TODO: We should check what changes have been done to the function //
-  CFunctionDB * pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
   if (pFunctionDB == NULL)
     return;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(objKey));
   if (pFunction == NULL) return;
 
   if (functionParametersChanged())
@@ -1121,7 +1121,7 @@ void FunctionWidget1::slotNewButtonClicked()
   int i = 0;
   CFunction* pFunc;
   CCopasiVectorN<CEvaluationTree>& FunctionList
-  = CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
+  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   while (FunctionList.getIndex(name) != C_INVALID_INDEX)
     {
@@ -1130,7 +1130,7 @@ void FunctionWidget1::slotNewButtonClicked()
       name += TO_UTF8(QString::number(i));
     }
 
-  CCopasiRootContainer::Root->getFunctionList()->add(pFunc = new CKinFunction(name), true);
+  CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
   protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
@@ -1145,16 +1145,16 @@ void FunctionWidget1::slotNewButtonClicked()
 //! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   if (pModel == NULL)
     return;
 
-  CFunctionDB * pFunctionDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
   if (pFunctionDB == NULL)
     return;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(objKey));
   if (pFunction == NULL)
     return;
 
@@ -1326,15 +1326,15 @@ void FunctionWidget1::slotDeleteButtonClicked()
     case QMessageBox::Ok:                                                    // Yes or Enter
       {
         unsigned C_INT32 index =
-          CCopasiRootContainer::Root->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
+          CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
-        CCopasiRootContainer::Root->getFunctionList()->removeFunction(objKey);
+        CCopasiRootContainer::getFunctionList()->removeFunction(objKey);
 
         unsigned C_INT32 size =
-          CCopasiRootContainer::Root->getFunctionList()->loadedFunctions().size();
+          CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
 
         if (size > 0)
-          enter(CCopasiRootContainer::Root->getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
+          enter(CCopasiRootContainer::getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
         else
           enter("");
 
@@ -1413,7 +1413,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
     {
     case ListViews::MODEL:
     case ListViews::FUNCTION:
-      return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey)));
+      return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
       break;
 
     default:
@@ -1433,7 +1433,7 @@ bool FunctionWidget1::leave()
 bool FunctionWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (func)
     return loadFromFunction(func);

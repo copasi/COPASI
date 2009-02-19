@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:46 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -223,7 +223,7 @@ std::string CFitItem::getExperiments() const
 
     for (i = 0; i < imax; i++)
       {
-        pObject = CCopasiRootContainer::Root->getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
+        pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
 
         if (i && pObject)
           Experiments += ", ";
@@ -269,7 +269,7 @@ std::string CFitItem::getCrossValidations() const
 
     for (i = 0; i < imax; i++)
       {
-        pObject = CCopasiRootContainer::Root->getKeyFactory()->get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
+        pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
 
         if (i && pObject)
           CrossValidations += ", ";

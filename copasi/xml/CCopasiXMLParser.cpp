@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.190 $
+//   $Revision: 1.191 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:58 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2307,7 +2307,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
         mpCurrentHandler = &mParser.mCharacterDataElement;
       break;
 
-    case MathML:                                                    // Old file format support
+    case MathML:                                                     // Old file format support
       if (!strcmp(pszName, "MathML"))
         {
           /* If we do not have a MathML element handler we create one. */
@@ -3911,7 +3911,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
                          mCommon.pReaction->getObjectName().c_str(),
                          mParser.getCurrentLineNumber());
-          mCommon.pFunction = CCopasiRootContainer::Root->getUndefinedFunction();
+          mCommon.pFunction = CCopasiRootContainer::getUndefinedFunction();
         }
 
       // This must be deferred till the end since we need to check for consistency
@@ -3924,7 +3924,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                        pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
 
-      if (mCommon.pFunction == CCopasiRootContainer::Root->getUndefinedFunction())
+      if (mCommon.pFunction == CCopasiRootContainer::getUndefinedFunction())
         mParser.onStartElement(pszName, papszAttrs);
 
       /* If we do not have a etc element handler we create one. */
@@ -3985,7 +3985,7 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      if (mCommon.pReaction->getFunction() == CCopasiRootContainer::Root->getUndefinedFunction())
+      if (mCommon.pReaction->getFunction() == CCopasiRootContainer::getUndefinedFunction())
         mCurrentElement = KineticLaw;
       else
         mCurrentElement = mLastKnownElement;

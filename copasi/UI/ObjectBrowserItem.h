@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
- $Revision: 1.46 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/12/18 19:57:53 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
+$Revision: 1.47 $
+$Name:  $
+$Author: shoops $
+$Date: 2009/02/19 19:53:30 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -68,7 +68,7 @@ class ObjectList;
 class CBrowserObject
   {
   public:
-    CCopasiObject* pCopasiObject;
+    const CCopasiObject* pCopasiObject;
     bool mChecked;
     ObjectList* referenceList; //keep pointer to all its referenced items for later update
     CBrowserObject();
@@ -107,8 +107,8 @@ class ObjectBrowserItem : public Q3ListViewItem
         return mKey;
       }
 
-    ObjectBrowserItem (Q3ListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
-    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
+    ObjectBrowserItem (Q3ListView * parent = NULL, ObjectBrowserItem * after = NULL, const CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
+    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, const CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     virtual ~ObjectBrowserItem()
     {
       //      if (getType() != FIELDATTR) //To avoid cross reference/multi deletion

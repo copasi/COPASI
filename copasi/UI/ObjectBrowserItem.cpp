@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
- $Revision: 1.50 $
- $Name:  $
- $Author: shoops $
- $Date: 2008/12/18 19:57:54 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
+$Revision: 1.51 $
+$Name:  $
+$Author: shoops $
+$Date: 2009/02/19 19:53:31 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -58,7 +58,7 @@ CBrowserObject::~CBrowserObject()
 /**
  *   Constructs a new ObjectBrowserItem
  */
-ObjectBrowserItem::ObjectBrowserItem (Q3ListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList)
+ObjectBrowserItem::ObjectBrowserItem (Q3ListView * parent, ObjectBrowserItem * after, const CCopasiObject* mObject, ObjectList* pList)
     : Q3ListViewItem(parent, after)
 {
   if (mObject != NULL)
@@ -100,7 +100,7 @@ ObjectBrowserItem::ObjectBrowserItem (Q3ListView * parent, ObjectBrowserItem * a
   mKey = " ";
 }
 
-ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, ObjectList* pList)
+ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , const CCopasiObject* mObject, ObjectList* pList)
     : Q3ListViewItem(parent, after)
 {
   if (mObject != NULL)

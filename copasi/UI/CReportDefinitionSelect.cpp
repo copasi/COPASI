@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,8 +152,8 @@ void CReportDefinitionSelect::languageChange()
 
 void CReportDefinitionSelect::loadReportDefinitionVector()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
     reportDefinitionNameList->
@@ -163,10 +163,10 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   if (reportDefinitionNameList->count() == 0)
     {
       std::string name = "ReportDefinition_0";
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(name, "");
+      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(name, "");
       reportDefinitionNameList->insertItem(FROM_UTF8(name));
       reportDefinitionNameList->setCurrentItem(1);
-      mpReport->setReportDefinition((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
+      mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(TO_UTF8(targetEdit->text()));
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
@@ -211,8 +211,8 @@ void CReportDefinitionSelect::confirmClicked()
   if (!mpReport)
     //exception made here
     return;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
   mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
@@ -230,8 +230,8 @@ void CReportDefinitionSelect::cleanup()
 
 void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getReportDefinitionList();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
   pListView->switchToOtherWidget(0, (*pReportDefinitionVector)[row]->getKey());

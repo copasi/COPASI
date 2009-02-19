@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,9 +39,9 @@
 
 std::vector<const CCopasiObject*> PlotWidget::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
     CCopasiVector<CPlotSpecification> & tmp =
-      * (*CCopasiRootContainer::Root->getDatamodelList())[0]->getPlotDefinitionList();
+      * (*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList();
 
     std::vector<const CCopasiObject*> ret;
 
@@ -123,8 +123,8 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CPlotSpecification* pPl;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   while (!(pPl = pDataModel->getPlotDefinitionList()->createPlotSpec(nname, CPlotItem::plot2d)))
     {
@@ -138,8 +138,8 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
 
 void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   if (!pDataModel->getModel())
     return;

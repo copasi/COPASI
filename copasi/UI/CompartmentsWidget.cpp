@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,8 +54,8 @@
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-    CCopasiVectorN<CCompartment>& tmp = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+    CCopasiVectorN<CCompartment>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -101,14 +101,14 @@ void CompartmentsWidget::updateHeaderUnits()
 {
   Q3Header *tableHeader = table->horizontalHeader();
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  if ((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel())
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
     {
-      std::string str = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getVolumeUnitName();
+      std::string str = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getVolumeUnitName();
       tableHeader->setLabel(COL_IVOLUME, "Initial Volume\n(" + FROM_UTF8(str) + ")");
       tableHeader->setLabel(COL_VOLUME, "Volume\n(" + FROM_UTF8(str) + ")");
       tableHeader->setLabel(COL_RATE,
-                            "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
+                            "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
     }
 }
 
@@ -212,8 +212,8 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CCompartment* pCom;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  while (!(pCom = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createCompartment(nname)))
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  while (!(pCom = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(nname)))
     {
       i++;
       nname = name + "_";
@@ -225,8 +225,8 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
 
 void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
@@ -250,7 +250,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
   for (i = 0; i < imax; i++) //all compartments
     {
       CCompartment* comp =
-        dynamic_cast< CCompartment *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
+        dynamic_cast< CCompartment *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
 
       compartmentList.append(FROM_UTF8(comp->getObjectName()));
       compartmentList.append(", ");

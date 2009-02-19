@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,7 +264,7 @@ bool ModelWidget::loadModel(CModel *model)
 
 bool ModelWidget::saveToModel()
 {
-  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
 
   if (!model) return false;
 
@@ -360,8 +360,8 @@ bool ModelWidget::saveToModel()
   if (changed)
     {
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed(true);
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed(true);
     }
 
   return success;
@@ -377,7 +377,7 @@ void ModelWidget::slotBtnOKClicked()
 {
   //let the user confirm?
   saveToModel();
-  loadModel(dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey)));
+  loadModel(dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
 }
 
 bool ModelWidget::update(ListViews::ObjectType objectType,
@@ -406,7 +406,7 @@ bool ModelWidget::leave()
 bool ModelWidget::enter(const std::string & key)
 {
   objKey = key;
-  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (model) return loadModel(model);
   else return false;

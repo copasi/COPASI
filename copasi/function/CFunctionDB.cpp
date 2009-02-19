@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -258,7 +258,7 @@ void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
 
 bool CFunctionDB::removeFunction(const std::string &key)
 {
-  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(CCopasiRootContainer::getKeyFactory()->get(key));
   if (!func) return false;
 
   unsigned C_INT32 index =

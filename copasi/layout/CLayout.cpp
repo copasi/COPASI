@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)
     : CLBase(),
     CCopasiContainer(name, pParent, "Layout"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -45,7 +45,7 @@ CLayout::CLayout(const CLayout & src,
                  const CCopasiContainer * pParent)
     : CLBase(src),
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(src.mDimensions),
     mvCompartments(src.mvCompartments, this),
     mvMetabs(src.mvMetabs, this),
@@ -62,7 +62,7 @@ CLayout::CLayout(const Layout & sbml,
                  const CCopasiContainer * pParent)
     : CLBase(sbml),
     CCopasiContainer(sbml.getId(), pParent, "Layout"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(*sbml.getDimensions()),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -76,7 +76,7 @@ CLayout::CLayout(const Layout & sbml,
 
 CLayout::~CLayout()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 void CLayout::addCompartmentGlyph(CLCompartmentGlyph * glyph)

@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.ui.h,v $
- $Revision: 1.3 $
- $Name:  $
- $Author: gauges $
- $Date: 2009/02/18 20:47:31 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.ui.h,v $
+$Revision: 1.4 $
+$Name:  $
+$Author: shoops $
+$Date: 2009/02/19 19:53:30 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -41,7 +41,7 @@ void CQRegistrationDialog::init()
   mpRegistration = NULL;
 
   CCopasiParameterGroup * pRegistration =
-    CCopasiRootContainer::Root->getConfiguration()->getGroup("Registration");
+    CCopasiRootContainer::getConfiguration()->getGroup("Registration");
 
   if (pRegistration == NULL)
     mpRegistration = new CRegistration;
@@ -79,7 +79,7 @@ void CQRegistrationDialog::slotBtnOk()
   slotBtnValidate();
 
   CRegistration * pRegistration =
-    elevate< CRegistration, CCopasiParameterGroup >(CCopasiRootContainer::Root->getConfiguration()->assertGroup("Registration"));
+    elevate< CRegistration, CCopasiParameterGroup >(CCopasiRootContainer::getConfiguration()->assertGroup("Registration"));
 
   pRegistration->setRegisteredUser(mpRegistration->getRegisteredUser());
   pRegistration->setRegisteredEmail(mpRegistration->getRegisteredEmail());

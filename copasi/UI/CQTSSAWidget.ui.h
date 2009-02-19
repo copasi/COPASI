@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,9 +246,9 @@ CCopasiMethod * CQTSSAWidget::createMethod(const CCopasiMethod::SubType & type)
 
 bool CQTSSAWidget::runTask()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pCTSSATask =
-    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::Root->getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
   if (!pCTSSATask) return false;
 
   pTSSMethod = dynamic_cast<CTSSAMethod*>(pCTSSATask->getMethod());
@@ -309,8 +309,8 @@ bool CQTSSAWidget::runTask()
 
 void CQTSSAWidget::checkTimeSeries()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  if (mpEditIntervals->text().toLong() * (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  if (mpEditIntervals->text().toLong() * (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
     {
       mpCheckSave->setChecked(false);
       mpCheckSave->setEnabled(false);

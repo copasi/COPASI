@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@
 const std::vector< CCopasiContainer * > CCopasiContainer::EmptyList;
 
 CCopasiContainer::CCopasiContainer() :
-    CCopasiObject("Root", NULL, "CN", CCopasiObject::Container),
+    CCopasiObject(),
     mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
@@ -77,10 +77,10 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
   {
     if (cn == "")
       {
-        if (this != CCopasiRootContainer::Root)
-          return this;
-        else
+        if (isRoot())
           return NULL;
+        else
+          return this;
       }
 
     std::string Name = cn.getObjectName();

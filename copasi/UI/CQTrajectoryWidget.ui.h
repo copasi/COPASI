@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:48:27 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,9 +207,9 @@ bool CQTrajectoryWidget::saveTask()
     }
   else
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       C_FLOAT64 InitialTime =
-        (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime();
+        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime();
       if (trajectoryproblem->getStepSize() > 0.0)
         {
           if (StartTime > InitialTime)
@@ -262,8 +262,8 @@ bool CQTrajectoryWidget::loadTask()
   mpEditIntervals->setText(QString::number(trajectoryproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(trajectoryproblem->getDuration()));
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  C_FLOAT64 InitialTime = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  C_FLOAT64 InitialTime = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime();
 
   bool Delayed;
   if (trajectoryproblem->getStepSize() > 0.0)
@@ -320,8 +320,8 @@ bool CQTrajectoryWidget::runTask()
 
 void CQTrajectoryWidget::checkTimeSeries()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  if (mpEditIntervals->text().toLong() * (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSMAX)
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  if (mpEditIntervals->text().toLong() * (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSMAX)
     {
       mpCheckSave->setChecked(false);
       mpCheckSave->setEnabled(false);
@@ -334,8 +334,8 @@ void CQTrajectoryWidget::checkTimeSeries()
 
 void CQTrajectoryWidget::updateIntervals()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  C_FLOAT64 InitialTime = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getInitialTime();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  C_FLOAT64 InitialTime = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getInitialTime();
   C_FLOAT64 Duration = mpEditDuration->text().toDouble();
   C_FLOAT64 OutputStartTime = InitialTime;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.28 $
+$Revision: 1.29 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/02/18 20:54:46 $
+$Author: shoops $
+$Date: 2009/02/19 19:51:19 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -326,7 +326,7 @@ const CMatrix< C_FLOAT64 > & CExperimentSet::getDependentData(const unsigned C_I
 
 unsigned C_INT32 CExperimentSet::keyToIndex(const std::string & key) const
   {
-    const CExperiment * pExp = dynamic_cast<const CExperiment *>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    const CExperiment * pExp = dynamic_cast<const CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(key));
 
     if (!pExp) return C_INVALID_INDEX;
 

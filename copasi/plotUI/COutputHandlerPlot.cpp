@@ -1,10 +1,10 @@
 /* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
- $Revision: 1.17 $
- $Name:  $
- $Author: gauges $
- $Date: 2009/02/18 20:54:47 $
- End CVS Header */
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
+$Revision: 1.18 $
+$Name:  $
+$Author: shoops $
+$Date: 2009/02/19 19:51:18 $
+End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -69,8 +69,8 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
           mInterfaces.insert(mPlotMap[key]);
         }
     }
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   return COutputHandler::compile(listOfContainer, pDataModel);
 }

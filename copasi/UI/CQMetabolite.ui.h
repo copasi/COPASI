@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,9 +55,9 @@ void CQMetabolite::init()
   mInitialNumber = 0.0;
   mInitialNumberLastChanged = true;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   int Width = fontMetrics().width("Concentration (" +
-                                  FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getConcentrationUnitName()) +
+                                  FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getConcentrationUnitName()) +
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
@@ -88,8 +88,8 @@ void CQMetabolite::slotBtnNew()
 {
   save();
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   if (pDataModel->getModel()->getCompartments().size() == 0)
@@ -122,8 +122,8 @@ void CQMetabolite::slotBtnNew()
 
 void CQMetabolite::slotBtnDelete()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
@@ -256,7 +256,7 @@ void CQMetabolite::slotBtnDelete()
     case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index =
-          pDataModel->getModel()->getMetabolites().getIndex(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
+          pDataModel->getModel()->getMetabolites().getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
         pDataModel->getModel()->removeMetabolite(mKey);
 
@@ -283,9 +283,9 @@ void CQMetabolite::slotCompartmentChanged(int compartment)
   if (!mpMetab || !mpCurrentCompartment) return;
 
   QString Compartment = mpComboBoxCompartment->text(compartment);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   const CCompartment * pNewCompartment =
-    (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(Compartment)];
+    (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[TO_UTF8(Compartment)];
 
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
@@ -406,7 +406,7 @@ void CQMetabolite::slotInitialExpressionValid(bool valid)
 bool CQMetabolite::enter(const std::string & key)
 {
   mKey = key;
-  mpMetab = dynamic_cast< CMetab * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  mpMetab = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!mpMetab)
     {
@@ -485,14 +485,14 @@ void CQMetabolite::load()
   if (mpMetab == NULL) return;
 
   // Update the labels to reflect the model units
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
 
   // Compartment
-  CCopasiVectorNS< CCompartment > & Compartments = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments();
+  CCopasiVectorNS< CCompartment > & Compartments = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
   CCompartment * pCompartment;
   mpComboBoxCompartment->clear();
 
@@ -559,8 +559,8 @@ void CQMetabolite::load()
 void CQMetabolite::save()
 {
   if (mpMetab == NULL) return;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   // Name
@@ -678,8 +678,8 @@ void CQMetabolite::destroy()
 
 void CQMetabolite::slotReactionTableCurrentChanged(Q3ListViewItem * pItem)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -711,7 +711,7 @@ void CQMetabolite::slotInitialValueLostFocus()
   switch (mFramework)
     {
     case 0:
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
         return;
 
@@ -720,13 +720,13 @@ void CQMetabolite::slotInitialValueLostFocus()
       mInitialConcentration = mpEditInitialValue->text().toDouble();
       mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
                        *mpCurrentCompartment,
-                       *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+                       *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
       mInitialNumberLastChanged = false;
       break;
 
     case 1:
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
         return;
 
@@ -735,7 +735,7 @@ void CQMetabolite::slotInitialValueLostFocus()
       mInitialNumber = mpEditInitialValue->text().toDouble();
       mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
                               *mpCurrentCompartment,
-                              *(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+                              *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
       mInitialNumberLastChanged = true;
       break;
@@ -744,8 +744,8 @@ void CQMetabolite::slotInitialValueLostFocus()
 
 void CQMetabolite::loadReactionTable()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
@@ -781,8 +781,8 @@ void CQMetabolite::loadReactionTable()
 void CQMetabolite::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   switch (mFramework)

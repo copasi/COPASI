@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(false, argc, argv);
+      CCopasiRootContainer::init(argc, argv);
     }
 
   catch (copasi::autoexcept &e)
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      CCopasiDataModel* pDataModel = CCopasiRootContainer::Root->addDatamodel();
+      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
       assert(pDataModel != NULL);
 
 #ifdef COPASI_LICENSE_COM
@@ -197,12 +197,12 @@ int main(int argc, char *argv[])
         }
 
       CCopasiTimer * pCPU =
-        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::Root->getObject((std::string)"CN=Root,Timer=CPU Time")));
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::getObject((std::string)"CN=Root,Timer=CPU Time")));
       CCopasiTimer * pWall =
-        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::Root->getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
 
       CCopasiVectorN< CEvaluationTree > & Functions =
-        CCopasiRootContainer::Root->getFnctionList()->loadedFunctions();
+        CCopasiRootContainer::getFnctionList()->loadedFunctions();
       CFunction * pFunction;
 
       for (i = 0, imax = Functions.size(); i < imax; i++)
@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
 
               if (!pDataModel->saveModel(Save, NULL, true))
                 {
-                  assert(CCopasiRootContainer::Root->getDatamodelList()->size() != 0);
+                  assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
                   std::cerr << "Save File: " << pDataModel->getFileName() << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
@@ -520,8 +520,7 @@ int main(int argc, char *argv[])
     }
 
 finish:
-  COptions::cleanup();
-  pdelete(CCopasiRootContainer::Root);
+  CCopasiRootContainer::destroy();
 
   //std::cout << "Leaving main program." << std::endl;
   return retcode;
@@ -550,8 +549,8 @@ int validate()
 
   // We are allready sure that the COPASI model compiled. That means
   // we only need to test the active tasks
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() != 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
   unsigned C_INT32 i, imax = TaskList.size();
 
@@ -638,8 +637,8 @@ int exportSBML()
       break;
     }
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() != 0);
-  if (!(*CCopasiRootContainer::Root->getDatamodelList())[0]->exportSBML(ExportSBML, true, Level, Version))
+  assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
+  if (!(*CCopasiRootContainer::getDatamodelList())[0]->exportSBML(ExportSBML, true, Level, Version))
     {
       std::cerr << "SBML Export File: " << ExportSBML << std::endl;
       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;

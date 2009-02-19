@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-$Revision: 1.33 $
+$Revision: 1.34 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/02/19 15:38:52 $
+$Author: shoops $
+$Date: 2009/02/19 19:51:19 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ class CCopasiContainer: public CCopasiObject
   protected:
     objectMap mObjects;
 
+  private:
     // Operations
     CCopasiContainer();
 

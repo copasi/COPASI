@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:35 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ class CODEExporter
 #if 1
     void exportObjectNodesFromModel(const CCopasiDataModel* pDataModel);
 
-    CCopasiObject* findObjectFromRefresh(CCopasiObject * tmp, const Refresh* ref);
+    CCopasiObject* findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref);
 
     void exportSimulatedObject(CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 

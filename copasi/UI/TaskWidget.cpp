@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,15 +393,15 @@ bool TaskWidget::commonAfterRunTask()
 
   CCopasiMessage::clearDeque();
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  (*CCopasiRootContainer::Root->getDatamodelList())[0]->finish();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  (*CCopasiRootContainer::getDatamodelList())[0]->finish();
 
   // Update all values shown in the GUI
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   pModel->updateSimulatedValues(true);
   pModel->updateNonSimulatedValues();
 
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
@@ -415,8 +415,8 @@ bool TaskWidget::commonRunTask()
   // Initialize the task
   try
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, (*CCopasiRootContainer::Root->getDatamodelList())[0], NULL))
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, (*CCopasiRootContainer::getDatamodelList())[0], NULL))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
@@ -544,7 +544,7 @@ bool TaskWidget::enter(const std::string & key)
 {
   if (key != "") mObjectKey = key;
 
-  mpTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+  mpTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
 
   // :TODO: We need a message here.
   if (!mpTask) return false;

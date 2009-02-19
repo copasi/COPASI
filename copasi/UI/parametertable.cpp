@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -283,8 +283,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       setItem(rowCounter, 2, item);
 
       // add units column
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
       item = new ColorTableItem(this, Q3TableItem::Never, color,
                                 FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pDataModel)));

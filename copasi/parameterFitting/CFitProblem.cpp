@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:46 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -842,7 +842,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
                 if (j) os << ", ";
 
                 pExperiment =
-                  dynamic_cast< CExperiment * >(CCopasiRootContainer::Root->getKeyFactory()->get(pFitItem->getExperiment(j)));
+                  dynamic_cast< CExperiment * >(CCopasiRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
 
                 if (pExperiment)
                   os << pExperiment->getObjectName();

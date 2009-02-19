@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xm
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("FunctionParameter", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
     mType((CFunctionParameter::DataType) - 1),
     mUsage(VARIABLE),
     mIsUsed(true)
@@ -63,7 +63,7 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("FunctionParameter", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
     mType(src.mType),
     mUsage(src.mUsage),
     mIsUsed(src.mIsUsed)
@@ -74,7 +74,7 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
                                        Role usage,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("FunctionParameter", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
     mType(type),
     mUsage(usage),
     mIsUsed(true)
@@ -82,7 +82,7 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
 
 CFunctionParameter::~CFunctionParameter()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

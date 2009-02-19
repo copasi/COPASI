@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,14 +124,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = CCopasiRootContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time"));
+  pObject = pModel->getParentDatamodel()->getObject(CCopasiObjectName("Timer=CPU Time"));
   if (filter(flag, pObject))
     {
-      pItem = new Q3ListViewItem(mpTimeSubtree, "cpu time");
+      pItem = new Q3ListViewItem(mpTimeSubtree, "CPU time");
       treeItems[pItem] = pObject;
     }
 
-  pObject = CCopasiRootContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  pObject = pModel->getParentDatamodel()->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
   if (filter(flag, pObject))
     {
       pItem = new Q3ListViewItem(mpTimeSubtree, "real time");
@@ -390,8 +390,8 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
   // find all result matrices
   // Metabolic Control Analysis
   CCopasiTask *task;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   // MCA
   task = dynamic_cast<CCopasiTask*>((*pDataModel->getTaskList())["Metabolic Control Analysis"]);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,8 +82,8 @@ bool CQOptimizationWidget::saveTask()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
     }
 
   mChanged = false;
@@ -130,7 +130,7 @@ bool CQOptimizationWidget::runTask()
   // ----
 
   COptTask * pTask =
-    dynamic_cast< COptTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(mObjectKey));
+    dynamic_cast< COptTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;

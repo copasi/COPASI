@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPreferenceDialog.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,73 +48,61 @@ void CQPreferenceDialog::slotBtnOk()
   unsigned C_INT32 newMaxFiles = 0;
   CCopasiParameter * par;
 
-  if (CCopasiRootContainer::Root)
+  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+
+  QString parName = "Max Last Visited Files";
+  Q3ListViewItem *item = mpListView->findItem(parName, 0);
+  newMaxFiles = item->text(COL_VALUE).toUInt();
+  par = configFile->getRecentFiles().getParameter("MaxFiles");
+  unsigned C_INT32 maxFiles = *par->getValue().pUINT;
+  if (newMaxFiles > 0 && newMaxFiles <= 20)
+    par->setValue(newMaxFiles);
+  else
     {
-      CConfigurationFile * configFile = CCopasiRootContainer::Root->getConfiguration();
-
-      QString parName = "Max Last Visited Files";
-      Q3ListViewItem *item = mpListView->findItem(parName, 0);
-      newMaxFiles = item->text(COL_VALUE).toUInt();
-      CRecentFiles & recentFiles = configFile->getRecentFiles();
-      par = recentFiles.getParameter("MaxFiles");
-      unsigned C_INT32 maxFiles = *par->getValue().pUINT;
-      if (newMaxFiles > 0 && newMaxFiles <= 20)
-      {par->setValue(newMaxFiles);}
-      else
-        {
-          CQMessageBox::critical(this, "Incorrect Setting",
-                                 "Max Last Visited Files should be a number between 1 and 20.",
-                                 QMessageBox::Ok, QMessageBox::Ok);
-          if (item)
-          {item->setText(COL_VALUE, QString::number(maxFiles));}
-          return;
-        }
-
-      /*
-      parName = "Max Last Visited SBML Files";
-      item = mpListView->findItem(parName, 0);
-      newMaxFiles = item->text(COL_VALUE).toUInt();
-      CRecentFiles & recentFilesSBML = configFile->getRecentSBMLFiles();
-      par = recentFilesSBML.getParameter("MaxFiles");
-      maxFiles = *par->getValue().pUINT;
-      if (newMaxFiles > 0 && newMaxFiles <= 20)
-           {par->setValue(newMaxFiles);}
-         else
-           {
-             CQMessageBox::critical(this, "Incorrect Setting", "Max Last Visited SBML Files should be a number between 1 and 20.",
-             QMessageBox::Ok, QMessageBox::Ok);
-             if (item)
-             {item->setText(COL_VALUE, QString::number(maxFiles));}
-             return;
-           }
-      */
+      CQMessageBox::critical(this, "Incorrect Setting",
+                             "Max Last Visited Files should be a number between 1 and 20.",
+                             QMessageBox::Ok, QMessageBox::Ok);
+      if (item)
+        item->setText(COL_VALUE, QString::number(maxFiles));
+      return;
     }
+
+  parName = "Max Last Visited SBML Files";
+  item = mpListView->findItem(parName, 0);
+  newMaxFiles = item->text(COL_VALUE).toUInt();
+  par = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
+  maxFiles = *par->getValue().pUINT;
+  if (newMaxFiles > 0 && newMaxFiles <= 20)
+    par->setValue(newMaxFiles);
+  else
+    {
+      CQMessageBox::critical(this, "Incorrect Setting", "Max Last Visited SBML Files should be a number between 1 and 20.",
+                             QMessageBox::Ok, QMessageBox::Ok);
+      if (item)
+        item->setText(COL_VALUE, QString::number(maxFiles));
+      return;
+    }
+
   done(1);
 }
 
 void CQPreferenceDialog::slotBtnCancel()
 {
-  if (CCopasiRootContainer::Root)
-    {
-      unsigned C_INT32 maxFiles = 0;
-      CConfigurationFile * configFile = CCopasiRootContainer::Root->getConfiguration();
+  unsigned C_INT32 maxFiles = 0;
+  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
 
-      Q3ListViewItem *item = mpListView->findItem("Max Last Visited Files", 0);
-      CRecentFiles & recentFiles = configFile->getRecentFiles();
-      CCopasiParameter * par = recentFiles.getParameter("MaxFiles");
-      maxFiles = *par->getValue().pUINT;
-      if (item && maxFiles > 0)
-      {item->setText(COL_VALUE, QString::number(maxFiles));}
+  Q3ListViewItem *item = mpListView->findItem("Max Last Visited Files", 0);
+  CCopasiParameter * par = configFile->getRecentFiles().getParameter("MaxFiles");
+  maxFiles = *par->getValue().pUINT;
+  if (item && maxFiles > 0)
+    item->setText(COL_VALUE, QString::number(maxFiles));
 
-      /*
-      item = mpListView->findItem("Max Last Visited SBML Files", 0);
-      recentFiles = configFile->getRecentSBMLFiles();
-         par = recentFiles.getParameter("MaxFiles");
-         maxFiles = *par->getValue().pUINT;
-      if (item && maxFiles > 0)
-      {item->setText(COL_VALUE, QString::number(maxFiles));}
-      */
-    }
+  item = mpListView->findItem("Max Last Visited SBML Files", 0);
+  par = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
+  maxFiles = *par->getValue().pUINT;
+  if (item && maxFiles > 0)
+    item->setText(COL_VALUE, QString::number(maxFiles));
+
   done(0);
 }
 
@@ -124,27 +112,17 @@ void CQPreferenceDialog::init()
   mpListView->setColumnWidth (COL_VALUE, 100);
   unsigned C_INT32 maxFiles = 0;
 
-  if (CCopasiRootContainer::Root)
-    {
-      CConfigurationFile * configFile = CCopasiRootContainer::Root->getConfiguration();
+  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
 
-      CRecentFiles & recentFiles = configFile->getRecentFiles();
-      CCopasiParameter * par = recentFiles.getParameter("MaxFiles");
-      maxFiles = *par->getValue().pUINT;
-      if (maxFiles > 0)
-      {new CPreferenceListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));}
+  CCopasiParameter * par = configFile->getRecentFiles().getParameter("MaxFiles");
+  maxFiles = *par->getValue().pUINT;
+  if (maxFiles > 0)
+    new CPreferenceListViewItem(mpListView, "Max Last Visited Files", QString::number(maxFiles));
 
-      /*
-      recentFiles = configFile->getRecentSBMLFiles();
-         par = recentFiles.getParameter("MaxFiles");
-      maxFiles = *par->getValue().pUINT;
-      if (maxFiles > 0)
-      {new CPreferenceListViewItem(mpListView, "Max Last Visited SBML Files", QString::number(maxFiles));}
-      */
-
-      //CQMessageBox::information(this, "maxFiles", QString::number(maxFiles),
-      //                          QMessageBox::Ok, QMessageBox::Ok);
-    }
+  par = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
+  maxFiles = *par->getValue().pUINT;
+  if (maxFiles > 0)
+    new CPreferenceListViewItem(mpListView, "Max Last Visited SBML Files", QString::number(maxFiles));
 }
 
 //slot

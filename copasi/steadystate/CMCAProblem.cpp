@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-  $Revision: 1.14 $
-  $Name:  $
-  $Author: gauges $
-  $Date: 2009/02/18 20:55:34 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
+ $Revision: 1.15 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2009/02/19 19:52:26 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -148,7 +148,7 @@ bool CMCAProblem::isSteadyStateRequested() const
 CSteadyStateTask * CMCAProblem::getSubTask() const
   {
     if (isSteadyStateRequested())
-      return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::Root->getKeyFactory()->get(* getValue("Steady-State").pKEY));
+      return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(* getValue("Steady-State").pKEY));
     else
       return NULL;
   }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.130 $
+//   $Revision: 1.131 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 16:45:21 $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,7 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 //********************************************************************
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
-    COutputHandler(), CCopasiContainer(),
+    COutputHandler(), CCopasiContainer("NoName", NULL, "CN", CCopasiObject::DataModel),
     mpModel(NULL),
     mpTaskList(NULL),
     mpReportDefinitionList(NULL),
@@ -122,7 +122,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 {
 
   newModel(NULL, NULL);
-  CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
+  CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the constructor should this be called?
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::CPU, this);
 }
@@ -226,7 +226,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       File.seekg(0, std::ios_base::beg);
 
       CCopasiXML XML;
-      XML.setFunctionList(&CCopasiRootContainer::Root->getFunctionList()->loadedFunctions());
+      XML.setFunctionList(&CCopasiRootContainer::getFunctionList()->loadedFunctions());
       XML.setDatamodel(this);
 
       SCopasiXMLGUI *pGUI = NULL;
@@ -528,7 +528,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   try
     {
-      pModel = importer.parseSBML(sbmlDocumentText, CCopasiRootContainer::Root->getFunctionList(),
+      pModel = importer.parseSBML(sbmlDocumentText, CCopasiRootContainer::getFunctionList(),
                                   pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
   catch (CCopasiException except)
@@ -580,7 +580,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
   try
     {
-      pModel = importer.readSBML(FileName, CCopasiRootContainer::Root->getFunctionList(),
+      pModel = importer.readSBML(FileName, CCopasiRootContainer::getFunctionList(),
                                  pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
   catch (CCopasiException except)
@@ -896,7 +896,7 @@ std::set<std::string> CCopasiDataModel::listTaskDependentOnReport(const std::str
   std::set<std::string> TaskKeys;
 
   CReportDefinition * pReportDefinition
-  = dynamic_cast< CReportDefinition * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  = dynamic_cast< CReportDefinition * >(CCopasiRootContainer::getKeyFactory()->get(key));
   if (!pReportDefinition) return TaskKeys;
 
   unsigned C_INT32 i, imax = mpTaskList->size();
@@ -1161,7 +1161,7 @@ std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 
 void CCopasiDataModel::removeSBMLIdFromFunctions()
 {
-  CFunctionDB* pFunDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
   unsigned int i, iMax = pFunDB->loadedFunctions().size();
   for (i = 0;i < iMax;++i)
     {
@@ -1172,7 +1172,7 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
 bool CCopasiDataModel::removeLayout(const std::string & key)
 {
   CLayout *pLayout =
-    dynamic_cast< CLayout * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CLayout * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pLayout)
     return false;

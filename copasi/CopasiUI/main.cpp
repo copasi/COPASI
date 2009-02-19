@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:03 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(true, argc, argv);
+      CCopasiRootContainer::init(argc, argv, true);
     }
   catch (copasi::option_error & msg)
     {
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     }
 
   // Create the global data model.
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::Root->addDatamodel();
+  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
   assert(pDataModel != NULL);
 
   // Create the main application window.
@@ -77,10 +77,9 @@ int main(int argc, char **argv)
     }
 
 finish:
-  try // To suppress any access violations during destruction
+  try // To suppress any access violations during destruction works only under Windows
     {
-      COptions::cleanup();
-      pdelete(CCopasiRootContainer::Root);
+      CCopasiRootContainer::destroy();
     }
   catch (...)
   {}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:50 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     CCopasiContainer(name, pParent, "Function"),
     mSBMLId(""),
     mType(type),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Function", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
@@ -139,7 +139,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     CCopasiContainer(src, pParent),
     mSBMLId(src.mSBMLId),
     mType(src.mType),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Function", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mInfix(),
     mUsable(false),
     mErrorPosition(std::string::npos),
@@ -157,7 +157,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
 CEvaluationTree::~CEvaluationTree()
 {
   CEvaluationLexer::freeNodeList(mpNodeList);
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const CEvaluationTree::Type & CEvaluationTree::getType() const
@@ -504,7 +504,7 @@ bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * 
   std::vector< CEvaluationNode * >::const_iterator end;
 
   CCopasiVectorN< CEvaluationTree > & Functions =
-    CCopasiRootContainer::Root->getFunctionList()->loadedFunctions();
+    CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   for (i = (added) ? imax - added : 0; i < imax; i++)
     {

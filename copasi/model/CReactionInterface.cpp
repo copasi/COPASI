@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:45 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
       reversible = TriTrue;
 
     std::vector<CFunction*> functionVector =
-      CCopasiRootContainer::Root->getFunctionList()->suitableFunctions(
+      CCopasiRootContainer::getFunctionList()->suitableFunctions(
         mChemEqI.getMolecularity(CFunctionParameter::SUBSTRATE),
         mChemEqI.getMolecularity(CFunctionParameter::PRODUCT),
         reversible);
@@ -75,7 +75,7 @@ void CReactionInterface::initFromReaction(const std::string & key)
   mReactionReferenceKey = key;
 
   const CReaction *rea;
-  rea = dynamic_cast< CReaction *>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(key));
   assert(rea);
 
   //name
@@ -84,7 +84,7 @@ void CReactionInterface::initFromReaction(const std::string & key)
   //chemical equation
   mChemEqI.loadFromChemEq(rea->getChemEq());
 
-  if (rea->getFunction() && (rea->getFunction() != CCopasiRootContainer::Root->getUndefinedFunction()))
+  if (rea->getFunction() && (rea->getFunction() != CCopasiRootContainer::getUndefinedFunction()))
     {
       //function
       mpFunction = rea->getFunction();
@@ -156,13 +156,13 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
               break;
 
             case CFunctionParameter::VOLUME:
-              pObj = dynamic_cast<const CCompartment*>(CCopasiRootContainer::Root->getKeyFactory()->get(*(it->begin())));
+              pObj = dynamic_cast<const CCompartment*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
               assert(pObj);
               SubList[0] = pObj->getObjectName();
               break;
 
             case CFunctionParameter::TIME:
-              pObj = dynamic_cast<const CModel*>(CCopasiRootContainer::Root->getKeyFactory()->get(*(it->begin())));
+              pObj = dynamic_cast<const CModel*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
               assert(pObj);
               SubList[0] = pObj->getObjectName();
               break;
@@ -170,7 +170,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
             case CFunctionParameter::PARAMETER:
               mIsLocal[i] = rea.isLocalParameter(i);
               mValues[i] = rea.getParameterValue(getParameterName(i));
-              pObj = dynamic_cast<const CModelValue*>(CCopasiRootContainer::Root->getKeyFactory()->get(*(it->begin())));
+              pObj = dynamic_cast<const CModelValue*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
               //assert(pObj);
               if (pObj) SubList[0] = pObj->getObjectName();
               break;
@@ -193,7 +193,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
 
   //CReaction *rea;
   if (rea == NULL)
-    rea = dynamic_cast< CReaction *>(CCopasiRootContainer::Root->getKeyFactory()->get(mReactionReferenceKey));
+    rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
 
   if (!rea->setObjectName(mReactionName))
     success = false;
@@ -619,7 +619,7 @@ void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
   {clearFunction(); return;}
   //get the function
   mpFunction = dynamic_cast<CFunction *>
-               (CCopasiRootContainer::Root->getFunctionList()->findLoadFunction(fn));
+               (CCopasiRootContainer::getFunctionList()->findLoadFunction(fn));
   if (!mpFunction) fatalError();
 
   pdelete(mpParameters);
@@ -633,7 +633,7 @@ void CReactionInterface::setFunctionAndDoMapping(const std::string & fn)
 
   //get the function
   mpFunction = dynamic_cast<CFunction *>
-               (CCopasiRootContainer::Root->getFunctionList()->findLoadFunction(fn));
+               (CCopasiRootContainer::getFunctionList()->findLoadFunction(fn));
   if (!mpFunction) fatalError();
 
   copyMapping();

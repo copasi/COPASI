@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 07:37:09 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      CCopasiDataModel* pDataModel = CCopasiRootContainer::Root->addDatamodel();
+      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
 
       // Import the SBML File
       pDataModel->importSBML(pSBMLFilename);

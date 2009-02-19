@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:07 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -953,7 +953,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
         case CFunctionParameter::VOLUME:
         case CFunctionParameter::PARAMETER:
           callParameters[i] = CValue::unknown;
-          pME = dynamic_cast<const CModelEntity*>(CCopasiRootContainer::Root->getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
+          pME = dynamic_cast<const CModelEntity*>(CCopasiRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
           if (pME)
             {
               if (pME->getStatus() == CModelEntity::FIXED)
@@ -962,7 +962,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
                 callParameters[i] = CValue::positive;
             }
 
-          pCP = dynamic_cast<const CCopasiParameter*>(CCopasiRootContainer::Root->getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
+          pCP = dynamic_cast<const CCopasiParameter*>(CCopasiRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
           if (pCP)
             {
               callParameters[i] = CValue(*pCP->getValue().pDOUBLE);

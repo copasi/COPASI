@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CCreator.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:03 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ CCreator::CCreator(const std::string & objectName,
     CCopasiContainer(objectName, pParent, "Creator"),
     mTriplet(),
     mNodePath(),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Creator", this))
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this))
 {}
 
 CCreator::CCreator(const CRDFTriplet & triplet,
@@ -41,7 +41,7 @@ CCreator::CCreator(const CRDFTriplet & triplet,
     CCopasiContainer(objectName, pParent, "Creator"),
     mTriplet(triplet),
     mNodePath(),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Creator", this))
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this))
 {
   if (!mTriplet)
     return;
@@ -54,12 +54,12 @@ CCreator::CCreator(const CCreator & src,
     CCopasiContainer(src, pParent),
     mTriplet(src.mTriplet),
     mNodePath(src.mNodePath),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Creator", this))
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this))
 {}
 
 CCreator::~CCreator()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const CRDFTriplet & CCreator::getTriplet() const

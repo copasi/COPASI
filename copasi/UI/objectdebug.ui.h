@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:56 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class MyListViewItemWithPtr : public Q3ListViewItem
   {
   public:
 
-    MyListViewItemWithPtr(Q3ListViewItem * parent, CCopasiObject * ptr,
+    MyListViewItemWithPtr(Q3ListViewItem * parent, const CCopasiObject * ptr,
                           QString label1, QString label2 = QString::null,
                           QString label3 = QString::null, QString label4 = QString::null,
                           QString label5 = QString::null, QString label6 = QString::null,
@@ -42,7 +42,7 @@ class MyListViewItemWithPtr : public Q3ListViewItem
         mpObject(ptr)
     {}
 
-    MyListViewItemWithPtr(Q3ListView * parent, CCopasiObject * ptr,
+    MyListViewItemWithPtr(Q3ListView * parent, const CCopasiObject * ptr,
                           QString label1, QString label2 = QString::null,
                           QString label3 = QString::null, QString label4 = QString::null,
                           QString label5 = QString::null, QString label6 = QString::null,
@@ -51,17 +51,17 @@ class MyListViewItemWithPtr : public Q3ListViewItem
         mpObject(ptr)
     {}
 
-    CCopasiObject* mpObject;
+    const CCopasiObject * mpObject;
   };
 
-void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
+void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
 {
-  CCopasiObject* obj = (CCopasiObject*)ptr;
+  const CCopasiObject * obj = static_cast<const CCopasiObject *>(ptr);
   Q3ListViewItem * element;
 
   std::string cn = obj->getCN();
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CCopasiObject* testObj = pDataModel->ObjectFromName(cn);
 
@@ -141,16 +141,16 @@ void ObjectDebug::update()
 {
   ListOfObjects->clear();
 
-  CCopasiObject * obj;
+  const CCopasiObject * obj;
 
   Q3ListViewItem * element;
   element = new MyListViewItemWithPtr(ListOfObjects, NULL, "*");
   element->setOpen(true);
 
-  obj = (CCopasiObject*)CCopasiRootContainer::Root;
+  obj = CCopasiRootContainer::getRoot();
   if (!obj) return;
 
-  addObjectRecursive((QWidget*)element, (void*)obj);
+  addObjectRecursive((QWidget*)element, (const void *) obj);
 
   ListOfObjects->show();
 }
@@ -173,8 +173,8 @@ void ObjectDebug::writeDot()
 {
 
   CDotOutput dot;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   dot.simpleCall(pDataModel->getModel());
 }
@@ -186,8 +186,8 @@ void ObjectDebug::writeDot()
 
 void ObjectDebug::checkModel()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModelAnalyzer MA((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModelAnalyzer MA((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
   std::ostringstream ss;
   MA.writeReport(ss, true, true);

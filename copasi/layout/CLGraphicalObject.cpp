@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@ CLGraphicalObject::CLGraphicalObject(const std::string & name,
                                      const CCopasiContainer * pParent)
     : CLBase(),
     CCopasiContainer(name, pParent, "LayoutElement"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
     mBBox()
 {};
@@ -38,7 +38,7 @@ CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
                                      const CCopasiContainer * pParent)
     : CLBase(src),
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(src.mModelObjectKey),
     mBBox(src.mBBox)
 {};
@@ -48,7 +48,7 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
                                      const CCopasiContainer * pParent)
     : CLBase(sbml),
     CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Layout", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
     mBBox(*sbml.getBoundingBox())
 {
@@ -58,7 +58,7 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
 
 CLGraphicalObject::~CLGraphicalObject()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
@@ -81,7 +81,7 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
 
 CCopasiObject * CLGraphicalObject::getModelObject() const
   {
-    return CCopasiRootContainer::Root->getKeyFactory()->get(mModelObjectKey);
+    return CCopasiRootContainer::getKeyFactory()->get(mModelObjectKey);
   }
 
 std::string CLGraphicalObject::getModelObjectName() const

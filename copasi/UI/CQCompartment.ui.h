@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,8 +82,8 @@ void CQCompartment::slotBtnNew()
   std::string name = "compartment";
   int i = 0;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  while (!(mpCompartment = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createCompartment(name)))
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
     {
       i++;
       name = "compartment_";
@@ -96,8 +96,8 @@ void CQCompartment::slotBtnNew()
 
 void CQCompartment::slotBtnDelete()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
@@ -347,7 +347,7 @@ void CQCompartment::slotInitialExpressionValid(bool valid)
 bool CQCompartment::enter(const std::string & key)
 {
   mKey = key;
-  mpCompartment = dynamic_cast< CCompartment * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  mpCompartment = dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!mpCompartment)
     {
@@ -405,8 +405,8 @@ bool CQCompartment::update(ListViews::ObjectType objectType,
 void CQCompartment::load()
 {
   if (mpCompartment == NULL) return;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 
   // Update the labels to reflect the model units
   mpLblInitialValue->setText("Initial Volume ("
@@ -537,8 +537,8 @@ void CQCompartment::save()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->changed();
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
     }
 

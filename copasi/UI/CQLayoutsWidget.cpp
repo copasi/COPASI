@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,8 @@
 
 std::vector<const CCopasiObject*> CQLayoutsWidget::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-    CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getListOfLayouts();
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+    CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = pListOfLayouts->size();
@@ -112,8 +112,8 @@ CCopasiObject* CQLayoutsWidget::createNewObject(const std::string & /*name*/)
   std::string nname = name;
   int i = 0;
   CLayout* playout;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  while (!(pLayout = (*CCopasiRootContainer::Root->getDatamodelList())[0]->createLayout(nname)))
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  while (!(pLayout = (*CCopasiRootContainer::getDatamodelList())[0]->createLayout(nname)))
     {
       i++;
       nname = name + "_";
@@ -136,7 +136,7 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
   for (i = 0; i < imax; i++) //all compartments
     {
       CLayout* pLayout =
-        dynamic_cast< CLayout *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
+        dynamic_cast< CLayout *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
 
       layoutList.append(FROM_UTF8(pLayout->getObjectName()));
       layoutList.append(", ");
@@ -152,10 +152,10 @@ void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
     {
     case 0:                    // Yes or Enter
       {
-        assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
         for (i = 0; i < imax; i++)
           {
-            (*CCopasiRootContainer::Root->getDatamodelList())[0]->removeLayout(keys[i]);
+            (*CCopasiRootContainer::getDatamodelList())[0]->removeLayout(keys[i]);
             std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(keys[i]);
             if (pos != this->mLayoutWindowMap.end() && pos->second != NULL)
               {
@@ -240,7 +240,7 @@ void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 void CQLayoutsWidget::slot_show(int row)
 {
   std::string key = mKeys[row];
-  CLayout* pLayout = dynamic_cast<CLayout*>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CLayout* pLayout = dynamic_cast<CLayout*>(CCopasiRootContainer::getKeyFactory()->get(key));
   if (pLayout != NULL)
     {
       // check if we already have a widget for the layout

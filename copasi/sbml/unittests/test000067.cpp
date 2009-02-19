@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000067.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:39:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:52:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ void test000067::setUp()
   // Create the root container.
   CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::Root->addDatamodel();
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000067::tearDown()
@@ -67,7 +67,7 @@ void test000067::test_bug1060()
   CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 0);
   CPPUNIT_ASSERT(test000059::checkIfIdsUnique(pSBMLModel) == true);
   // check if each reaction call the correct kinetic law
-  CFunctionDB* pFunDB = CCopasiRootContainer::Root->getFunctionList();
+  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
   CEvaluationTree* pModifiedMM = pFunDB->findFunction("Modified MM");
   CPPUNIT_ASSERT(pModifiedMM != NULL);
   CEvaluationTree* pModifiedCF = pFunDB->findFunction("modified constant flux");

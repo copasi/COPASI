@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,7 @@ const char * CSlider::ScaleName[] =
 CSlider::CSlider(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Slider"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Slider", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
     mAssociatedEntityKey(),
     mpSliderObject(NULL),
     mSliderType(Float),
@@ -52,7 +52,7 @@ CSlider::CSlider(const std::string & name,
 CSlider::CSlider(const CSlider & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Slider", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
     mAssociatedEntityKey(src.mAssociatedEntityKey),
     mpSliderObject(src.mpSliderObject),
     mSliderType(src.mSliderType),
@@ -68,7 +68,7 @@ CSlider::CSlider(const CSlider & src,
 {}
 
 CSlider::~CSlider()
-{CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);}
+{CCopasiRootContainer::getKeyFactory()->remove(mKey);}
 
 bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
@@ -95,7 +95,7 @@ bool CSlider::setAssociatedEntityKey(const std::string & associatedEntityKey)
 {
   mAssociatedEntityKey = associatedEntityKey;
 
-  return (CCopasiRootContainer::Root->getKeyFactory()->get(associatedEntityKey) != NULL);
+  return (CCopasiRootContainer::getKeyFactory()->get(associatedEntityKey) != NULL);
 }
 
 const std::string & CSlider::getAssociatedEntityKey() const

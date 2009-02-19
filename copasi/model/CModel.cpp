@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.350 $
+//   $Revision: 1.351 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,7 +213,7 @@ CModel::~CModel()
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
 
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
   DESTRUCTOR_TRACE;
 }
@@ -345,7 +345,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   initializeMetabolites();
 
-  if ((Fail = CCopasiRootContainer::Root->getFunctionList()->load(configBuffer))) // slow
+  if ((Fail = CCopasiRootContainer::getFunctionList()->load(configBuffer))) // slow
     return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
@@ -2380,7 +2380,7 @@ bool CModel::removeMetabolite(const std::string & key,
                               const bool & recursive)
 {
   CMetab* pMetabolite =
-    dynamic_cast<CMetab *>(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast<CMetab *>(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pMetabolite)
     return false;
@@ -2449,7 +2449,7 @@ bool CModel::removeCompartment(const std::string & key,
                                const bool & recursive)
 {
   CCompartment *pCompartment =
-    dynamic_cast< CCompartment * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pCompartment)
     return false;
@@ -2514,7 +2514,7 @@ bool CModel::removeReaction(const std::string & key,
                             const bool & recursive)
 {
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pReaction)
     return false;
@@ -2586,7 +2586,7 @@ bool CModel::removeModelValue(const std::string & key,
                               const bool & recursive)
 {
   CModelValue *pModelValue =
-    dynamic_cast< CModelValue * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pModelValue)
     return false;
@@ -2650,7 +2650,7 @@ CEvent* CModel::createEvent(const std::string & name)
 bool CModel::removeEvent(const std::string & key,
                          const bool & /* recursive */)
 {
-  CEvent * pEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CEvent * pEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pEvent)
     return false;
@@ -2691,7 +2691,7 @@ bool CModel::convert2NonReversible()
   CReactionInterface ri1(this), ri2(this);
   std::string fn, rn1, rn2;
 
-  //CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  //CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
   //if (!model) return false;
 
   CCopasiVectorN< CReaction > & steps = this->getReactions();
@@ -2716,7 +2716,7 @@ bool CModel::convert2NonReversible()
           {
             //set functions to mass action (irrev)
             tmp.first = dynamic_cast<CFunction*>
-                        (CCopasiRootContainer::Root->getFunctionList()-> findFunction("Mass action (irreversible)"));
+                        (CCopasiRootContainer::getFunctionList()-> findFunction("Mass action (irreversible)"));
             assert(tmp.first);
             tmp.second = tmp.first;
           }
@@ -2741,8 +2741,8 @@ bool CModel::convert2NonReversible()
             //if (tmp.first) std::cout << *tmp.first << "\n\n";
             //if (tmp.second) std::cout << *tmp.second;
 
-            if (tmp.first) CCopasiRootContainer::Root->getFunctionList()->addAndAdaptName(tmp.first);
-            if (tmp.second) CCopasiRootContainer::Root->getFunctionList()->addAndAdaptName(tmp.second);
+            if (tmp.first) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
+            if (tmp.second) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
           }
 
         C_INT32 i, imax;
@@ -2863,7 +2863,7 @@ bool CModel::convert2NonReversible()
 
 void CModel::initObjects()
 {
-  mKey = CCopasiRootContainer::Root->getKeyFactory()->add("Model", this);
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since
   // CModel is created before mStateTemplate :(
@@ -3617,7 +3617,7 @@ std::string CModel::printParameterOverview()
           for (j = 0; j < jmax; ++j)
             if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
               {
-                CCopasiObject * obj = CCopasiRootContainer::Root->getKeyFactory()->get(reac->getParameterMappings()[j][0]);
+                CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(reac->getParameterMappings()[j][0]);
                 if (!obj) continue;
                 CCopasiDataModel* pDataModel = this->getParentDatamodel();
                 assert(pDataModel != NULL);

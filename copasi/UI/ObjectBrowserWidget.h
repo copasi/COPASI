@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Date: 2009/02/19 19:53:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ class ObjectBrowserWidget : public QWidget
     void setCheckMark(ObjectBrowserItem* pCurrent);
 
     void loadData();
-    void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent, bool nField);
+    void loadChild(ObjectBrowserItem* parent, const CCopasiContainer * copaParent, bool nField);
     void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
 
     CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);

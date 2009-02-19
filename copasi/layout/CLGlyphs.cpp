@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:02 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ void CLTextGlyph::clearText()
 
 CLGraphicalObject* CLTextGlyph::getGraphicalObject() const
   {
-    return dynamic_cast<CLGraphicalObject*>(CCopasiRootContainer::Root->getKeyFactory()->get(mGraphicalObjectKey));
+    return dynamic_cast<CLGraphicalObject*>(CCopasiRootContainer::getKeyFactory()->get(mGraphicalObjectKey));
   }
 
 void CLTextGlyph::exportToSBML(TextGlyph * g,

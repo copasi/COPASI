@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.58 2009/02/19 15:38:52 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.59 2009/02/19 19:51:18 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -246,8 +246,8 @@ void PlotWidget1::addCurveTab(const std::string & title,
   item->addChannel(y);
 
   Curve2DWidget * curveWidget = new Curve2DWidget(tabs);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  curveWidget->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  curveWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   curveWidget->LoadFromCurveSpec(item);
   tabs->addTab(curveWidget, item->getTitle().c_str());
 
@@ -260,8 +260,8 @@ void PlotWidget1::addCurve2D()
   std::vector< const CCopasiObject * > vector1;
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   pBrowser->setModel(pDataModel->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
 
@@ -402,8 +402,8 @@ void PlotWidget1::addHisto1DTab(const std::string & title,
   item->setValue("increment", incr);
 
   HistoWidget * curveWidget = new HistoWidget(tabs);
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  curveWidget->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  curveWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   curveWidget->LoadFromCurveSpec(item);
   tabs->addTab(curveWidget, item->getTitle().c_str());
 
@@ -447,7 +447,7 @@ void PlotWidget1::commitPlot()
 {
   saveToPlotSpec();
 
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::Root->getKeyFactory()->get(objKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(objKey)));
 }
 
 //-----------------------------------------------------------------------------
@@ -456,13 +456,13 @@ void PlotWidget1::deletePlot()
 {
   unsigned C_INT32 Index, Size;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   if (!pDataModel->getModel())
     return;
 
-  CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
   if (!pspec) return;
 
   Index =
@@ -490,8 +490,8 @@ void PlotWidget1::addPlot()
   int i = 0;
   CPlotSpecification* pPl = NULL;
   name += TO_UTF8(QString::number(i));
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   while (!(pPl = pDataModel->getPlotDefinitionList()->createPlotSpec(name, CPlotItem::plot2d)))
@@ -510,7 +510,7 @@ void PlotWidget1::addPlot()
 
 void PlotWidget1::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::Root->getKeyFactory()->get(objKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(objKey)));
 }
 
 void PlotWidget1::typeChanged()
@@ -576,8 +576,8 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
       if (curves[i]->getType() == CPlotItem::curve2d)
         {
           Curve2DWidget* curve = new Curve2DWidget(tabs);
-          assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-          curve->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+          curve->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
           curve->LoadFromCurveSpec(curves[i]);
           tabs->addTab(curve, curves[i]->getTitle().c_str());
         }
@@ -585,8 +585,8 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
       if (curves[i]->getType() == CPlotItem::histoItem1d)
         {
           HistoWidget* histo = new HistoWidget(tabs);
-          assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-          histo->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+          histo->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
           histo->LoadFromCurveSpec(curves[i]);
           tabs->addTab(histo, curves[i]->getTitle().c_str());
         }
@@ -599,7 +599,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 
 bool PlotWidget1::saveToPlotSpec()
 {
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey));
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
   if (!pspec) return true;
 
   pspec->cleanup();
@@ -651,7 +651,7 @@ bool PlotWidget1::saveToPlotSpec()
 bool PlotWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pspec)
     {
@@ -676,7 +676,7 @@ bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_U
     case ListViews::METABOLITE:
     case ListViews::REPORT:
     case ListViews::PLOT:
-      return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::Root->getKeyFactory()->get(objKey)));
+      return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
       break;
 
     default:

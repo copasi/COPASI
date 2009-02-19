@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
                          const std::string & type):
     CCopasiContainer(name, pParent, type),
     mType(CCopasiTask::unset),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Task", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
     mDescription(this),
     mResult(this),
     mScheduled(false),
@@ -130,7 +130,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
                          const std::string & type):
     CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
     mType(taskType),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Task", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
     mDescription(this),
     mResult(this),
     mScheduled(false),
@@ -150,7 +150,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
                          const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Task", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
     mDescription(src.mDescription, this),
     mResult(src.mResult, this),
     mScheduled(src.mScheduled),
@@ -168,7 +168,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
 
 CCopasiTask::~CCopasiTask()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
   pdelete(mpInitialState);
   pdelete(mpProblem);

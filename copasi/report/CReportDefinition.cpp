@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:51:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@
 CReportDefinition::CReportDefinition(const std::string & name,
                                      const CCopasiContainer * pParent):
     CCopasiObject(name, pParent, "ReportDefinition"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Report", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
     mComment(""),
     mTaskType(CCopasiTask::timeCourse),
     mSeparator("\t"),
@@ -51,7 +51,7 @@ CReportDefinition::CReportDefinition(const std::string & name,
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
                                      const CCopasiContainer * pParent):
     CCopasiObject(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Report", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
     mComment(src.mComment),
     mTaskType(src.mTaskType),
     mSeparator(src.mSeparator),
@@ -65,7 +65,7 @@ CReportDefinition::~CReportDefinition()
 
 void CReportDefinition::cleanup()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   mHeaderVector.clear();
   mBodyVector.clear();
   mFooterVector.clear();

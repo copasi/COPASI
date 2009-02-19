@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:53:03 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
 bool CMIRIAMInfo::removeCreator(const std::string & key)
 {
   CCreator * pCreator =
-    dynamic_cast< CCreator * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CCreator * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pCreator)
     return false;
@@ -182,7 +182,7 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
 bool CMIRIAMInfo::removeReference(const std::string & key)
 {
   CReference * pReference =
-    dynamic_cast< CReference * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CReference * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pReference)
     return false;
@@ -308,7 +308,7 @@ CModification * CMIRIAMInfo::createModification(const std::string & /* objectNam
 bool CMIRIAMInfo::removeModification(const std::string & key)
 {
   CModification * pModified =
-    dynamic_cast< CModification * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CModification * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pModified)
     return false;
@@ -383,7 +383,7 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
 bool CMIRIAMInfo::removeBiologicalDescription(const std::string & key)
 {
   CBiologicalDescription * pBiologicalDescription =
-    dynamic_cast< CBiologicalDescription * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+    dynamic_cast< CBiologicalDescription * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (!pBiologicalDescription)
     return false;
@@ -447,7 +447,7 @@ void CMIRIAMInfo::load(const std::string& key)
   pdelete(mpRDFGraph);
 
   mKey = key;
-  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
+  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (pCopasiObject != NULL)
     {
@@ -491,7 +491,7 @@ void CMIRIAMInfo::load(const std::string& key)
 
 bool CMIRIAMInfo::save()
 {
-  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::Root->getKeyFactory()->get(mKey));
+  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (pCopasiObject && mpRDFGraph)
     {

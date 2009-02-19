@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,8 @@
 
 std::vector<const CCopasiObject*> CQEventsWidget::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-    CCopasiVectorN<CEvent>& tmp = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getEvents();
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+    CCopasiVectorN<CEvent>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -78,7 +78,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   assert(pEv);
 
   //table->horizontalHeader()->setLabel(4, "Flux\n("
-  //                                    + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
+  //                                    + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
   table->setText(row, 1, FROM_UTF8(pEv->getObjectName()));
 
   table->setText(row, 2, FROM_UTF8(pEv->getExpressionTrigger()));
@@ -99,14 +99,14 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
       // std::cout << "pEv->getAssignmentObjectKey(" << i << ") = " << pEv->getAssignmentObjectKey(i) << std::endl;
 
       if (sObjectName == "Compartment")
-        //        assignmentTarget += FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
-        assignmentTarget += FROM_UTF8(CCopasiRootContainer::Root->getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + ".Volume");
+        //        assignmentTarget += FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
+        assignmentTarget += FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + ".Volume");
       else if (sObjectName == "Metabolite")
-        //        assignmentTarget += FROM_UTF8("[" + (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
-        assignmentTarget += FROM_UTF8("[" + CCopasiRootContainer::Root->getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + "]");
+        //        assignmentTarget += FROM_UTF8("[" + (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
+        assignmentTarget += FROM_UTF8("[" + CCopasiRootContainer::getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + "]");
       else if (sObjectName == "ModelValue")
-        //        assignmentTarget += FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
-        assignmentTarget += FROM_UTF8(CCopasiRootContainer::Root->getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName());
+        //        assignmentTarget += FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
+        assignmentTarget += FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName());
       else
         {
           // std::cout << "sObjectName = " << UTF8_TO_CHAR(sObjectName) << std::endl;
@@ -159,8 +159,8 @@ CCopasiObject* CQEventsWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CEvent* pEv;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  while (!(pEv = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->createEvent(nname)))
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  while (!(pEv = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(nname)))
     {
       i++;
       nname = name + "_";
@@ -172,8 +172,8 @@ CCopasiObject* CQEventsWidget::createNewObject(const std::string & name)
 
 void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   if (pModel == NULL)
     return;
 
@@ -183,7 +183,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
-      (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->removeEvent(keys[i]);
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(keys[i]);
     }
 
   for (i = 0; i < imax; i++)
@@ -205,7 +205,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
     for (i = 0; i < imax; i++) //all compartments
       {
         CEvent * pEvent =
-          dynamic_cast< CEvent *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
+          dynamic_cast< CEvent *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
         if (!pEvent) continue;
 
         eventList.append(FROM_UTF8(pEvent->getObjectName()));
@@ -321,11 +321,11 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 
     switch (choice)
       {
-      case 0:                                // Yes or Enter
+      case 0:                               // Yes or Enter
         {
           for (i = 0; i < imax; i++)
             {
-              (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->removeEvent(keys[i]);
+              (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(keys[i]);
             }
 
           for (i = 0; i < imax; i++)
@@ -334,7 +334,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
           mChanged = true;
           break;
         }
-      default:                                // No or Escape
+      default:                               // No or Escape
         break;
       }
   */

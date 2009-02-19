@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,8 @@
 
 std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
   {
-    assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-    CCopasiVectorN<CReaction>& tmp = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getReactions();
+    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+    CCopasiVectorN<CReaction>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
     std::vector<const CCopasiObject*> ret;
 
     C_INT32 i, imax = tmp.size();
@@ -81,13 +81,13 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   const CReaction* pRea = (const CReaction*)obj;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   table->horizontalHeader()->setLabel(4, "Flux\n("
-                                      + FROM_UTF8((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
+                                      + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
 
   table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
 
-  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel(), *pRea, false)));
+  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false)));
 
   if (pRea->getFunction())
     {
@@ -103,8 +103,8 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CReactionInterface ri((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel());
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri.initFromReaction(obj->getKey());
 
   QString equation(table->text(row, 2));
@@ -127,7 +127,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   bool createdObjects = ri.createOtherObjects();
   //this writes all changes to the reaction
   ri.writeBackToReaction(NULL);
-  //(*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel()->compile();
+  //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdObjects)
     protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
@@ -160,8 +160,8 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
   std::string nname = name;
   int i = 0;
   CReaction* pRea;
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   while (!(pRea = pDataModel->getModel()->createReaction(nname)))
     {
@@ -174,8 +174,8 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 
 void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL)
@@ -199,7 +199,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
   for (i = 0; i < imax; i++) //all compartments
     {
       CReaction * pReaction =
-        dynamic_cast< CReaction *>(CCopasiRootContainer::Root->getKeyFactory()->get(keys[i]));
+        dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
 
       reactionList.append(FROM_UTF8(pReaction->getObjectName()));
       reactionList.append(", ");

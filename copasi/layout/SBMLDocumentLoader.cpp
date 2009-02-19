@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:03 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
     {
       std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getId());
       if (it != layoutmap.end())
-        pTg = dynamic_cast<CLTextGlyph *>(CCopasiRootContainer::Root->getKeyFactory()->get(it->second));
+        pTg = dynamic_cast<CLTextGlyph *>(CCopasiRootContainer::getKeyFactory()->get(it->second));
       if (!pTg)
         {
           //error?

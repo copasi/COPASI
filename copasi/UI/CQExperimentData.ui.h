@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:56 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -593,7 +593,7 @@ void CQExperimentData::slotOK()
   for (; i < C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(CCopasiRootContainer::Root->getKeyFactory()->get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
       if (pExperiment)
         {
           *mpExperimentSet->getExperiment(i) = *pExperiment;
@@ -1081,8 +1081,8 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       mpTable->setCellWidget(i, COL_BTN, pBtn);
 
       // COL_OBJECT and COL_OBJECT_HIDDEN
-      assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
       if (ObjectMap.getObjectCN(i) != "")
         {
@@ -1138,8 +1138,8 @@ void CQExperimentData::slotTypeChanged(int row)
   C_INT32 i, imax = mpTable->numRows();
 
   CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->text(row, COL_OBJECT_HIDDEN)));
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   switch (NewType)

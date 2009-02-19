@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:46:37 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,8 +108,8 @@ void CQDifferentialEquations::slotUpdateWidget()
   if (comboBoxParameters->currentItem() == 0)
     parameterAsNumbers = true;
 
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CMMLOutput::writeDifferentialEquations(mml, (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel(), parameterAsNumbers, expand, expandAll);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CMMLOutput::writeDifferentialEquations(mml, (*CCopasiRootContainer::getDatamodelList())[0]->getModel(), parameterAsNumbers, expand, expandAll);
 
   QWidget* tmp = dynamic_cast<QWidget*>(parent());
   if (tmp) tmp->setCursor(Qt::WaitCursor);

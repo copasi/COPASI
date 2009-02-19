@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:58 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:54:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -656,7 +656,7 @@ bool CCopasiXML::saveModel()
             }
 
           if (pReaction->getFunction() !=
-              dynamic_cast<CFunction *>(CCopasiRootContainer::Root->getKeyFactory()->get("UndefinedFunction_0")))
+              dynamic_cast<CFunction *>(CCopasiRootContainer::getKeyFactory()->get("UndefinedFunction_0")))
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction()->getKey());
@@ -1495,7 +1495,7 @@ bool CCopasiXML::buildFunctionList()
   CCopasiVectorN< CEvaluationTree > * pFunctionList
   = new CCopasiVectorN< CEvaluationTree >;
 
-  *pFunctionList = CCopasiRootContainer::Root->getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
+  *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 
   if (!setFunctionList(pFunctionList)) success = false;
 

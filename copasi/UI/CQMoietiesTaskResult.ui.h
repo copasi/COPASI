@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:47:30 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:53:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,7 +116,7 @@ bool CQMoietiesTaskResult::leave()
 
 bool CQMoietiesTaskResult::enter(const std::string & key)
 {
-  mpMoietiesTask = dynamic_cast< CMoietiesTask * >(CCopasiRootContainer::Root->getKeyFactory()->get(key));
+  mpMoietiesTask = dynamic_cast< CMoietiesTask * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   load();
 
@@ -125,8 +125,8 @@ bool CQMoietiesTaskResult::enter(const std::string & key)
 
 void CQMoietiesTaskResult::load()
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   if (pModel == NULL) return;
@@ -233,8 +233,8 @@ void CQMoietiesTaskResult::slotSave(void)
 
 void CQMoietiesTaskResult::slotCreateGlobalQuantity(int row)
 {
-  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel();
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   if (pModel == NULL) return;
 
   CCopasiVector< CMoiety > Moieties = pModel->getMoieties();

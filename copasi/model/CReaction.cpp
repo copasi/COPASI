@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.179 $
+//   $Revision: 1.180 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 19:50:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Reaction"),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Reaction", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
     mFlux(0),
@@ -68,13 +68,13 @@ CReaction::CReaction(const std::string & name,
 {
   CONSTRUCTOR_TRACE;
   initObjects();
-  setFunction(CCopasiRootContainer::Root->getUndefinedFunction());
+  setFunction(CCopasiRootContainer::getUndefinedFunction());
 }
 
 CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::Root->getKeyFactory()->add("Reaction", this)),
+    mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
     mFlux(src.mFlux),
@@ -99,7 +99,7 @@ CReaction::CReaction(const CReaction & src,
 
 CReaction::~CReaction()
 {
-  CCopasiRootContainer::Root->getKeyFactory()->remove(mKey);
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -231,7 +231,7 @@ const CFunction * CReaction::getFunction() const
 bool CReaction::setFunction(const std::string & functionName)
 {
   CFunction * pFunction =
-    dynamic_cast<CFunction *>(CCopasiRootContainer::Root->getFunctionList()->findLoadFunction(functionName));
+    dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findLoadFunction(functionName));
   if (!pFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
@@ -243,7 +243,7 @@ bool CReaction::setFunction(CFunction * pFunction)
   mDependencies.erase(mpFunction);
 
   if (!pFunction)
-    mpFunction = CCopasiRootContainer::Root->getUndefinedFunction();
+    mpFunction = CCopasiRootContainer::getUndefinedFunction();
   else
     mpFunction = pFunction;
 
@@ -502,13 +502,13 @@ void CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
-                if ((pObject = CCopasiRootContainer::Root->getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
+                if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                   {
                     mMap.addCallParameter(paramName, pObject);
                     Dependencies.insert(pObject->getValueObject());
                   }
             }
-          else if ((pObject = CCopasiRootContainer::Root->getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
+          else if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
             {
               mMap.setCallParameter(paramName, pObject);
               Dependencies.insert(pObject->getValueObject());
@@ -1435,7 +1435,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
   const std::string& key = this->getParameterMappings()[index][0];
-  CCopasiObject* pObject = CCopasiRootContainer::Root->getKeyFactory()->get(key);
+  CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
   if (!pObject)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
