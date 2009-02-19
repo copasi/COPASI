@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:48 $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,50 +35,11 @@
 #include "CCopasiObjectReference.h"
 #include "CCopasiStaticString.h"
 #include "CCopasiTimer.h"
-#include "report/CCopasiRootContainer.h"
 
 #include "utilities/CCopasiVector.h"
+#include "report/CCopasiRootContainer.h"
 
 const std::vector< CCopasiContainer * > CCopasiContainer::EmptyList;
-
-CCopasiObject * CCopasiContainer::ObjectFromName(const CCopasiObjectName & objName)
-{return const_cast<CCopasiObject *>(CCopasiRootContainer::Root->getObject(objName));}
-
-CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-    const CCopasiObjectName & objName)
-{
-  const CCopasiObject * pObject = NULL;
-  CCopasiContainer* pContainer;
-  CCopasiObjectName ContainerName;
-  unsigned C_INT32 containerIndex;
-  std::string::size_type pos;
-
-  //favor to search the list of container first
-  for (containerIndex = 0;
-       containerIndex < listOfContainer.size() && !pObject;
-       containerIndex++)
-    {
-      pContainer = listOfContainer[containerIndex];
-      ContainerName = pContainer->getCN();
-
-      while (ContainerName.getRemainder() != "")
-        ContainerName = ContainerName.getRemainder();
-
-      if ((pos = objName.find(ContainerName)) == std::string::npos)
-        continue;
-
-      if (pos + ContainerName.length() == objName.length())
-        pObject = pContainer;
-      else
-        pObject = pContainer->getObject(objName.substr(pos + ContainerName.length() + 1));
-    }
-
-  // if not found search the root
-  if (!pObject)
-    pObject = CCopasiRootContainer::Root->getObject(objName);
-
-  return const_cast<CCopasiObject *>(pObject);
-}
 
 CCopasiContainer::CCopasiContainer() :
     CCopasiObject("Root", NULL, "CN", CCopasiObject::Container),

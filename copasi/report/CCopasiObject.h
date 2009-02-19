@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:48 $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -438,6 +438,22 @@ class CCopasiObject
 
     static void setRenameHandler(CRenameHandler* rh)
     {smpRenameHandler = rh;}
+
+    /**
+     * @param const std::vector< CCopasiContainer * > &listOfContainer
+     * @param const CCopasiObjectName& objName
+     * @return CCopasiObject * pObject
+     */
+    CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                   const CCopasiObjectName & objName);
+
+    /**
+     * @param const std::vector< CCopasiContainer * > &listOfContainer
+     * @param const CCopasiObjectName& objName
+     * @return CCopasiObject * pObject
+     */
+    const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                         const CCopasiObjectName & objName) const;
   };
 
 template <class CType> CCopasiObjectReference< CType > *

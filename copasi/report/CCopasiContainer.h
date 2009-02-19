@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-$Revision: 1.32 $
+$Revision: 1.33 $
 $Name:  $
 $Author: gauges $
-$Date: 2009/02/18 20:54:48 $
+$Date: 2009/02/19 15:38:52 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,18 +53,6 @@ class CCopasiContainer: public CCopasiObject
     CCopasiContainer();
 
   public:
-    /**
-     * @param const std::vector< CCopasiContainer * > &listOfContainer
-     * @param const CCopasiObjectName& objName
-     * @return CCopasiObject * pObject
-     */
-    static
-    CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                   const CCopasiObjectName & objName);
-
-    static
-    CCopasiObject * ObjectFromName(const CCopasiObjectName & objName);
-
     CCopasiContainer(const std::string & name,
                      const CCopasiContainer * pParent = NULL,
                      const std::string & type = "CN",

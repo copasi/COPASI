@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:46 $
+//   $Date: 2009/02/19 15:38:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1288,10 +1288,10 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
   }
 
-C_FLOAT64 CExperiment::getDefaultWeight(CCopasiObject * const& pObject) const
+C_FLOAT64 CExperiment::getDefaultWeight(const CCopasiObject * const& pObject) const
   {
     std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
-    = mDependentObjects.find(pObject);
+    = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
 
     if (it == mDependentObjects.end())
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:45 $
+//   $Date: 2009/02/19 15:38:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,7 +216,9 @@ const C_FLOAT64 & COptItem::getStartValue() const
 
     if (mpObjectValue == NULL)
       {
-        CCopasiObject * pObject = CCopasiContainer::ObjectFromName(getObjectCN());
+        const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+        assert(pDataModel != NULL);
+        const CCopasiObject * pObject = pDataModel->ObjectFromName(getObjectCN());
         if (pObject != NULL)
           return * (C_FLOAT64 *) pObject->getValuePointer();
 

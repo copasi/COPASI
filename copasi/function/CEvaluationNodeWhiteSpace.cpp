@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeWhiteSpace.cpp,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeWhiteSpace.cpp,v $
+  $Revision: 1.5 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/19 15:38:50 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,7 +35,7 @@ CEvaluationNodeWhiteSpace::CEvaluationNodeWhiteSpace(const CEvaluationNodeWhiteS
 
 CEvaluationNodeWhiteSpace::~CEvaluationNodeWhiteSpace() {}
 
-ASTNode* CEvaluationNodeWhiteSpace::toAST() const
+ASTNode* CEvaluationNodeWhiteSpace::toAST(const CCopasiDataModel* /*pDataModel*/) const
   {
     fatalError();
     return NULL;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,7 +80,6 @@ bool CExpression::setInfix(const std::string & infix)
 bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   mpListOfContainer = & listOfContainer;
-
   bool success = compileNodes();
 
   if (mpRoot)
@@ -121,13 +120,17 @@ void CExpression::refresh()
 const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) const
   {
     if (mpListOfContainer != NULL)
-      return CCopasiContainer::ObjectFromName(*mpListOfContainer, CN);
+      return this->ObjectFromName(*mpListOfContainer, CN);
     else
-      return CCopasiContainer::ObjectFromName(CN);
+      {
+        const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+        assert(pDataModel != NULL);
+        return pDataModel->ObjectFromName(CN);
+      }
   }
 
 const std::vector< CCopasiContainer * > & CExpression::getListOfContainer() const
-{return *mpListOfContainer;}
+  {return *mpListOfContainer;}
 
 bool CExpression::updateInfix()
 {
@@ -194,7 +197,7 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_IN
   }
 
 // static
-CExpression * CExpression::createInitialExpression(const CExpression & expression)
+CExpression * CExpression::createInitialExpression(const CExpression & expression, const CCopasiDataModel* pDataModel)
 {
   unsigned C_INT32 Size = CCopasiMessage::size();
   CExpression * pInitialExpression = new CExpression(expression, expression.getObjectParent());
@@ -205,24 +208,27 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
   std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
 
   CEvaluationNodeObject * pNode;
-  CCopasiObject * pObject;
-  CCopasiObject * pObjectParent;
-  CModelEntity * pEntity;
-  CMetab * pMetab;
-
+  const CCopasiObject * pObject;
+  const CCopasiObject * pObjectParent;
+  const CModelEntity * pEntity;
+  const CMetab * pMetab;
   for (; it != end; ++it)
-    if ((pNode = dynamic_cast< CEvaluationNodeObject * >(*it)) != NULL &&
-        (pObject = CCopasiContainer::ObjectFromName(pNode->getObjectCN())) != NULL &&
-        (pObjectParent = pObject->getObjectParent()) != NULL &&
-        (pEntity = dynamic_cast< CModelEntity * >(pObjectParent)) != NULL)
-      {
-        if (pEntity->getValueReference() == pObject)
-          pNode->setData("<" + pEntity->getInitialValueReference()->getCN() + ">");
-        else if ((pMetab = dynamic_cast< CMetab * >(pEntity)) != NULL &&
-                 pMetab->getConcentrationReference() == pObject)
-          pNode->setData("<" + pMetab->getInitialConcentrationReference()->getCN() + ">");
-      }
-
+    {
+      if ((pNode = dynamic_cast< CEvaluationNodeObject * >(*it)) != NULL)
+        {
+          assert(pDataModel != NULL);
+          if ((pObject = pDataModel->ObjectFromName(pNode->getObjectCN())) != NULL &&
+              (pObjectParent = pObject->getObjectParent()) != NULL &&
+              (pEntity = dynamic_cast<const CModelEntity * >(pObjectParent)) != NULL)
+            {
+              if (pEntity->getValueReference() == pObject)
+                pNode->setData("<" + pEntity->getInitialValueReference()->getCN() + ">");
+              else if ((pMetab = dynamic_cast<const CMetab * >(pEntity)) != NULL &&
+                       pMetab->getConcentrationReference() == pObject)
+                pNode->setData("<" + pMetab->getInitialConcentrationReference()->getCN() + ">");
+            }
+        }
+    }
   pInitialExpression->updateTree();
 
   while (CCopasiMessage::size() > Size)

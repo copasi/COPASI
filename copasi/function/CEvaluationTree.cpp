@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:53:07 $
+//   $Date: 2009/02/19 15:38:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -293,9 +293,11 @@ bool CEvaluationTree::compileNodes()
         switch ((*it)->getType() & 0xFF000000)
           {
           case CEvaluationNode::OBJECT:
-            if (mType == Expression &&
-                (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
-              mDependencies.insert(pObject);
+            {
+              if (mType == Expression &&
+                  (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
+                mDependencies.insert(pObject);
+            }
             break;
 
           case CEvaluationNode::CALL:
@@ -474,9 +476,9 @@ void CEvaluationTree::initObjects()
   pObject->setDirectDependencies(Self);
 }
 
-ASTNode* CEvaluationTree::toAST() const
+ASTNode* CEvaluationTree::toAST(const CCopasiDataModel* pDataModel) const
   {
-    return this->mpRoot->toAST();
+    return this->mpRoot->toAST(pDataModel);
   }
 
 void CEvaluationTree::setSBMLId(const std::string& id)

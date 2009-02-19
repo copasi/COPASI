@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:55:33 $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,12 +87,12 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
 
   for (; it != end; ++it)
     {
-      pObject = CCopasiContainer::ObjectFromName(listOfContainer, *it);
+      pObject = this->ObjectFromName(listOfContainer, *it);
 
       if (!pObject)
         CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, it->c_str());
       else
-        addTableElement(CCopasiContainer::ObjectFromName(listOfContainer, *it));
+        addTableElement(this->ObjectFromName(listOfContainer, *it));
     }
 
   return success;

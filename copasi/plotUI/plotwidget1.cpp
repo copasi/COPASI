@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:47 $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.57 2009/02/18 20:54:47 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.58 2009/02/19 15:38:52 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -261,7 +261,9 @@ void PlotWidget1::addCurve2D()
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
-  pBrowser->setModel((*CCopasiRootContainer::Root->getDatamodelList())[0]->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  pBrowser->setModel(pDataModel->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
 
   if (pBrowser->exec () == QDialog::Rejected)
     {
@@ -356,9 +358,9 @@ void PlotWidget1::addCurve2D()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->ObjectFromName(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + CCopasiContainer::ObjectFromName(objects1[0])->getObjectDisplayName(),
+                      + pDataModel->ObjectFromName(objects1[0])->getObjectDisplayName(),
                       objects1[0], objects2[i]);
         }
     }
@@ -366,9 +368,9 @@ void PlotWidget1::addCurve2D()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[0])->getObjectDisplayName()
+          addCurveTab(pDataModel->ObjectFromName(objects2[0])->getObjectDisplayName()
                       + "|"
-                      + CCopasiContainer::ObjectFromName(objects1[i])->getObjectDisplayName(),
+                      + pDataModel->ObjectFromName(objects1[i])->getObjectDisplayName(),
                       objects1[i], objects2[0]);
         }
     }
@@ -382,9 +384,9 @@ void PlotWidget1::addCurve2D()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->ObjectFromName(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + CCopasiContainer::ObjectFromName(objects1[i])->getObjectDisplayName() ,
+                      + pDataModel->ObjectFromName(objects1[i])->getObjectDisplayName() ,
                       objects1[i], objects2[i]);
         }
     }

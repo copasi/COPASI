@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:42:28 $
+//   $Date: 2009/02/19 15:38:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1316,7 +1316,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
           if (pObjectNode == NULL) continue;
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
             {
@@ -3156,7 +3156,7 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
       assert(pObjectNode != NULL);
       if (pObjectNode != NULL)
         {
-          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = dataModel.ObjectFromName(pObjectNode->getObjectCN());
           if (!pObject)
             {
               fatalError();
@@ -3868,7 +3868,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
     {
       std::vector<CCopasiContainer*> containers;
       containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-      const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN());
+      const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN());
       assert(pObject);
       if (pObject->isReference())
         {
@@ -3992,7 +3992,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
         {
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+          const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
             {
@@ -4017,7 +4017,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                     }
                   else if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
                     {
-                      const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                      const CCopasiObject* pObject2 = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
                       assert(pObject2);
                       if (pObject2->isReference())
                         {
@@ -4040,7 +4040,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                   if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
                     {
                       // check if pRight is a reference to a species
-                      const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                      const CCopasiObject* pObject2 = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
                       assert(pObject2);
                       if (pObject2->isReference())
                         {
@@ -4053,7 +4053,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                               // to Avogadros number
                               if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
                                 {
-                                  const CCopasiObject* pObject2 = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+                                  const CCopasiObject* pObject2 = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
                                   assert(pObject2);
                                   if (pObject2->isReference())
                                     {
@@ -4079,7 +4079,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
         {
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+          const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
             {
@@ -5677,7 +5677,7 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDa
   // functions that have an SBML id
   // if they don't, we have to set one
   this->setFunctionSBMLIds(pOrig, dataModel);
-  ASTNode* pResult = pOrig->toAST();
+  ASTNode* pResult = pOrig->toAST(&dataModel);
   return pResult;
 }
 

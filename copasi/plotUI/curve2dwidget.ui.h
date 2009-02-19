@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:10 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include "report/CCopasiContainer.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
+#include "report/CCopasiRootContainer.h"
 
 // mpBoxType lines|points|symbols
 
@@ -43,12 +44,14 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //TODO: check if objects exist....
-
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
   mpObjectX = mpObjectY = NULL;
   if (curve->getChannels().size() >= 1)
-    mpObjectX = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
+    mpObjectX = pDataModel->ObjectFromName(curve->getChannels()[0]);
   if (curve->getChannels().size() >= 2)
-    mpObjectY = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
+    mpObjectY = pDataModel->ObjectFromName(curve->getChannels()[1]);
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));

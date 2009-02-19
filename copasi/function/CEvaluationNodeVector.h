@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:46:10 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.h,v $
+  $Revision: 1.8 $
+  $Name:  $
+  $Author: gauges $
+  $Date: 2009/02/19 15:38:50 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -17,6 +22,8 @@
 
 #include "mathematics.h"
 #include "utilities/CCopasiMessage.h"
+
+class CCopasiDataModel;
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -108,7 +115,7 @@ class CEvaluationNodeVector : public CEvaluationNode
      * Create a new ASTNode corresponding to this choice node.
      * @return ASTNode* return a pointer to the newly created node;
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Add a child to a node.

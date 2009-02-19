@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:03:24 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,8 @@
 #include "CopasiPlot.h"
 #include "plot/CPlotSpecification.h"
 #include "UI/qtUtilities.h"
+#include "report/CCopasiRootContainer.h"
+#include "model/CModel.h"
 
 #define ActivitySize 8
 
@@ -361,6 +363,9 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
   mDataIndex.resize(imax);
 
   std::vector< std::vector < const CCopasiObject * > >::iterator itX;
+  assert(CCopasiRootContainer::Root->getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::Root->getDatamodelList())[0];
+  assert(pDataModel != NULL);
 
   for (i = 0; i < imax; ++i)
     {
@@ -375,7 +380,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
       for (j = 0; j < jmax; ++j)
         {
           CCopasiObject* pObj =
-            CCopasiContainer::ObjectFromName(listOfContainer, pItem->getChannels()[j]);
+            pDataModel->getModel()->ObjectFromName(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
             mObjects.insert(pObj);

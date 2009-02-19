@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:48 $
+//   $Date: 2009/02/19 15:38:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -538,7 +538,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 std::string Name = (*it)->getObjectName();
-                CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
+                CCopasiObject * pObject = pDataModel->ObjectFromName(Name);
                 if (pObject != NULL)
                   Name = pObject->getObjectDisplayName();
                 Name = pExperiment->getObjectName() + "," + Name;
@@ -638,7 +638,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 while (itItem != endItem)
                   {
                     std::string Name = (*it++)->getObjectName();
-                    CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
+                    CCopasiObject * pObject = pDataModel->ObjectFromName(Name);
                     if (pObject != NULL)
                       Name = pObject->getObjectDisplayName();
 
@@ -696,7 +696,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 const CCopasiObject * pObject =
-                  CCopasiContainer::ObjectFromName((*it)->getObjectName());
+                  pDataModel->ObjectFromName((*it)->getObjectName());
                 if (pObject == NULL) continue;
 
                 if ((Found = PlotSpecMap.find(pObject)) != PlotSpecMap.end())

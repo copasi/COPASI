@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/12 14:32:08 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 
 #include "function/CEvaluationTree.h"
 #include "report/CCopasiContainer.h"
+
+class CCopasiDataModel;
 
 class CExpression: public CEvaluationTree
   {
@@ -57,7 +59,7 @@ class CExpression: public CEvaluationTree
      * @param const CExpression & expression
      * @return CExpression * pInitialExpression
      */
-    static CExpression * createInitialExpression(const CExpression & expression);
+    static CExpression * createInitialExpression(const CExpression & expression, const CCopasiDataModel* pDataModel);
 
   private:
     /**

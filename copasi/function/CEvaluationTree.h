@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/06/12 14:32:08 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,7 +147,7 @@ class CEvaluationTree:
      * Converts a CEvaluationTree to an ASTNode based tree.
      * @return ASTNode* root node of the tree.
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * Set the infix description of the tree and compile it.

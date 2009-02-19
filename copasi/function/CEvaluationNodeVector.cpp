@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/07/24 18:40:21 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:50 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -114,7 +119,7 @@ CEvaluationNode* CEvaluationNodeVector::createNodeFromASTTree(const ASTNode & /*
   return convertedNode;
 }
 
-ASTNode* CEvaluationNodeVector::toAST() const
+ASTNode* CEvaluationNodeVector::toAST(const CCopasiDataModel* /*pDataModel*/) const
   {
     // :TODO:
     ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2007/08/13 15:05:48 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:38:50 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +19,7 @@
 #define COPASI_CEvaluationNodeVariable
 
 class ASTNode;
+class CCopasiDataModel;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -75,7 +81,7 @@ class CEvaluationNodeVariable : public CEvaluationNode
      * Converts this node to an AST Node of type AST_NAME
      * @return ASTNode* the resulting ASTNode.
      */
-    virtual ASTNode* toAST() const;
+    virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
 
     /**
      * generate display MathML recursively

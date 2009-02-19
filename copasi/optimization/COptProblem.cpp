@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:45 $
+//   $Date: 2009/02/19 15:38:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -734,7 +734,7 @@ CCopasiTask::Type COptProblem::getSubtaskType() const
     std::vector< CCopasiContainer * > ListOfContainer;
     ListOfContainer.push_back(getObjectAncestor("Vector"));
     mpSubtask =
-      dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+      dynamic_cast< CCopasiTask * >(const_cast<COptProblem*>(this)->ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
 
     if (mpSubtask == NULL)
       return CCopasiTask::unset;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.138 $
+//   $Revision: 1.139 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Date: 2009/02/19 15:38:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -332,7 +332,7 @@ bool CMetab::compile()
   // Transition Time
   mpTTReference->setDirectDependencies(Dependencies);
   mpTTReference->clearRefresh();
-
+  CCopasiDataModel* pDataModel = NULL;
   const CCopasiObject * pVolumeReference = NULL;
   if (mpCompartment)
     pVolumeReference = mpCompartment->getValueReference();
@@ -362,7 +362,8 @@ bool CMetab::compile()
 
       // Implicit initial expression
       pdelete(mpInitialExpression);
-      mpInitialExpression = CExpression::createInitialExpression(*mpExpression);
+      pDataModel = this->getParentDatamodel();
+      mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
       mpInitialExpression->setObjectName("InitialExpression");
 
       // Fixed values

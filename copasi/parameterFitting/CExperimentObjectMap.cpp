@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-$Revision: 1.15 $
+$Revision: 1.16 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/01/07 19:02:21 $
+$Author: gauges $
+$Date: 2009/02/19 15:38:51 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@ End CVS Header */
 #include "CExperimentObjectMap.h"
 
 #include "utilities/utility.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     const CCopasiContainer * pParent):
@@ -405,12 +406,13 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
     if (pGroup == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    CExperiment *pExperiment =
-      dynamic_cast< CExperiment * >(pGroup->getObjectParent());
+    const CExperiment *pExperiment =
+      dynamic_cast<const CExperiment * >(pGroup->getObjectParent());
     if (pExperiment == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-    CCopasiObject * pObject = CCopasiContainer::ObjectFromName(*mpObjectCN);
+    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    assert(pDataModel != NULL);
+    const CCopasiObject * pObject = pDataModel->ObjectFromName(*mpObjectCN);
     if (pObject == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
