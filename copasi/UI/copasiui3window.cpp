@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.247 $
+//   $Revision: 1.248 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:49:08 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 15:17:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2035,7 +2035,7 @@ void CopasiUI3Window::refreshSBWMenu()
       QStringList oSortedNameList;
       QStringList oSortedModuleList;
       QStringList oSortedServiceList;
-      unsigned int i;
+      int i;
 
       for (i = 0; i < oModules.size(); i++)
         {

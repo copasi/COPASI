@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dScale.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:52:46 $
+//   $Date: 2009/02/19 15:17:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,8 @@ int ValueScale::autoscale(double& a, double& b, double start, double stop, int i
 //! Creates the major and minor vector for the scale
 void ValueScale::calculate()
 {
-  unsigned int i;
-  unsigned int j;
+  int i;
+  int j;
   majors_p.clear();
   minors_p.clear();
 
@@ -130,7 +130,7 @@ QString RowScale::ticLabel(unsigned int idx) const
     if (!mpRowsDes) return QString("");
     if ((mpRowsDes->size() - 1) < idx) return QString("");
 
-    if (showRow == -1)
+    if (showRow == (unsigned int) - 1)
       {
         std::string a;
         a = (*mpRowsDes)[idx];
@@ -162,7 +162,7 @@ QString ColumnScale::ticLabel(unsigned int idx) const
     if (!mpColumnsDes) return QString("");
     if ((mpColumnsDes->size() - 1) < idx) return QString("");
 
-    if (showColumn == -1)
+    if (showColumn == (unsigned int) - 1)
       {
         std::string a;
         a = (*mpColumnsDes)[idx];

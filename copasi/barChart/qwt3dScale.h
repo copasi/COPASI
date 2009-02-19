@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dScale.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:20:46 $
+//   $Date: 2009/02/19 15:17:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ class ColumnScale : public ValueScale
     ColumnScale(const std::vector<std::string> * vos, int showColumn = -1);
     virtual QString ticLabel(unsigned int idx) const;
     const std::vector<std::string> *mpColumnsDes;
-    int showColumn;
+    unsigned int showColumn;
   };
 
 class RowScale : public ValueScale
@@ -69,6 +69,6 @@ class RowScale : public ValueScale
     RowScale(const std::vector<std::string> * vos, int showRow = -1);
     QString ticLabel(unsigned int idx) const;
     const std::vector<std::string> *mpRowsDes;
-    int showRow;
+    unsigned int showRow;
   };
 #endif // SCALE_H

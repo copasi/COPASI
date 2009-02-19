@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:58 $
+//   $Date: 2009/02/19 15:17:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3150,8 +3150,8 @@ bool MmlDocument::setContent(QString text, QString *errorMsg,
   QString prefix = "<?xml version=\"2.0\"?>\n";
   prefix.append(entityDeclarations());
 
-  uint prefix_lines = 0;
-  for (uint i = 0; i < prefix.length(); ++i)
+  int prefix_lines = 0;
+  for (int i = 0; i < prefix.length(); ++i)
     {
       if (prefix.at(i) == '\n')
         ++prefix_lines;
@@ -3370,7 +3370,7 @@ MmlNode *MmlDocument::domToMml(const QDomNode &dom_node, bool *ok, QString *erro
 
   QDomNamedNodeMap dom_attr = dom_node.attributes();
   MmlAttributeMap mml_attr;
-  for (unsigned i = 0; i < dom_attr.count(); ++i)
+  for (int i = 0; i < dom_attr.count(); ++i)
     {
       QDomNode attr_node = dom_attr.item(i);
       Q_ASSERT(!attr_node.nodeName().isNull());
@@ -4109,7 +4109,7 @@ static bool zeroLineThickness(const QString &s)
   if (s.length() == 0 || !s[0].isDigit())
     return false;
 
-  for (uint i = 0; i < s.length(); ++i)
+  for (int i = 0; i < s.length(); ++i)
     {
       QChar c = s.at(i);
       if (c.isDigit() && c != '0')
@@ -4528,7 +4528,7 @@ int MmlMtableNode::columnspacing() const
 uint MmlMtableNode::CellSizeData::colWidthSum() const
   {
     uint w = 0;
-    for (uint i = 0; i < col_widths.count(); ++i)
+    for (int i = 0; i < col_widths.count(); ++i)
       w += col_widths[i];
     return w;
   }
@@ -4536,7 +4536,7 @@ uint MmlMtableNode::CellSizeData::colWidthSum() const
 uint MmlMtableNode::CellSizeData::rowHeightSum() const
   {
     uint h = 0;
-    for (uint i = 0; i < row_heights.count(); ++i)
+    for (int i = 0; i < row_heights.count(); ++i)
       h += row_heights[i];
     return h;
   }
@@ -4551,7 +4551,7 @@ void MmlMtableNode::CellSizeData::init(const MmlNode *first_row)
     {
       Q_ASSERT(mtr->nodeType() == MtrNode);
 
-      uint col_cnt = 0;
+      int col_cnt = 0;
       const MmlNode *mtd = mtr->firstChild();
       for (; mtd != 0; mtd = mtd->nextSybling(), ++col_cnt)
         {
@@ -4604,7 +4604,7 @@ void MmlMtableNode::layoutSymbol()
   int relative_width_sum = 0;       // sum of natural widths of relatively sized columns
   double relative_fraction_sum = 0; // total fraction of width taken by relatively
   // sized columns
-  uint i;
+  unsigned int i;
   for (i = 0; i < m_cell_size_data.numCols(); ++i)
     {
       QString value = interpretListAttr(columnwidth_attr, i, "auto");
@@ -5142,7 +5142,7 @@ int MmlMpaddedNode::interpretSpacing(QString value, int base_value, bool *ok) co
     bool percent = false;
 
     // extract the sign
-    uint idx = 0;
+    int idx = 0;
     if (idx < value.length() && (value.at(idx) == '+' || value.at(idx) == '-'))
       sign = value.at(idx++);
 
@@ -6201,7 +6201,7 @@ static QString interpretListAttr(const QString &value_list, uint idx, const QStr
   if (l.count() == 0)
     return def;
 
-  if (l.count() <= idx)
+  if (l.count() <= (int) idx)
     return l[l.count() - 1];
   else
     return l[idx];
@@ -6362,7 +6362,7 @@ static QRect boundingRect(const QFontMetrics &fm, const QString &s)
 {
   QRect result(0, 0, 0, 0);
   int w = 0;
-  for (uint i = 0; i < s.length(); ++i)
+  for (int i = 0; i < s.length(); ++i)
     {
       QChar c = s.at(i);
       QRect char_rect = fm.boundingRect(c);
