@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:55:35 $
+//   $Date: 2009/02/19 15:40:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,10 +192,19 @@ void CODEExporter::exportSimulatedObject(CCopasiObject * obj, const CCopasiDataM
       std::string name = obj->getObjectName();
 
       if (typeString == "Metabolite" || typeString == "ModelValue" || typeString == "Compartment")
-        if (name == "Concentration" || name == "Value" || name == "Volume" || name == "Rate")
-          if (!exportModelEntityExpression(obj, pDataModel)) return;
-          else return;
-
+        {
+          if (name == "Concentration" || name == "Value" || name == "Volume" || name == "Rate")
+            {
+              if (!exportModelEntityExpression(obj, pDataModel))
+                {
+                  return;
+                }
+              else
+                {
+                  return;
+                }
+            }
+        }
       //TODO warning for initial assignments
     }
   return;
@@ -322,7 +331,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
           assert(pObjectNode);
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CCopasiDataModel*>(pDataModel)->getModel());
-          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = pDataModel->getModel()->ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
 
           if (pObject->isReference())
@@ -422,7 +431,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
           assert(pObjectNode);
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          CCopasiObject* pObject = CCopasiContainer::ObjectFromName(cn);
+          const CCopasiObject* pObject = pDataModel->ObjectFromName(cn);
           assert(pObject);
           std::string objectName = pObject->getObjectName();
 
@@ -453,16 +462,16 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                 if (objectName == "Value") objectNodes[j]->setData(NameMap[pObject->getKey()]);
                 if (objectName == "InitialValue")
                   {
-                    CModelValue* modval;
-                    modval = dynamic_cast< CModelValue * >(pObject);
+                    const CModelValue* modval;
+                    modval = dynamic_cast<const CModelValue * >(pObject);
                     std::ostringstream value;
                     value << modval->getInitialValue();
                     objectNodes[j]->setData(value.str());
                   }
                 if (objectName == "Rate")
                   {
-                    CModelValue* modval;
-                    modval = dynamic_cast< CModelValue * >(pObject);
+                    const CModelValue* modval;
+                    modval = dynamic_cast<const CModelValue * >(pObject);
 
                     if (modval->getStatus() == CModelEntity::ODE)
                       {
@@ -489,16 +498,16 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                     objectNodes[j]->setData(NameMap[pObject->getKey()]);
                   if (objectName == "InitialConcentration")
                     {
-                      CMetab* metab;
-                      metab = dynamic_cast< CMetab * >(pObject);
+                      const CMetab* metab;
+                      metab = dynamic_cast<const CMetab * >(pObject);
                       std::ostringstream value;
                       value << metab->getInitialConcentration();
                       objectNodes[j]->setData(value.str());
                     }
                   if (objectName == "Rate")
                     {
-                      CMetab* metab;
-                      metab = dynamic_cast< CMetab * >(pObject);
+                      const CMetab* metab;
+                      metab = dynamic_cast<const CMetab * >(pObject);
 
                       if ((metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::ODE)
                         {
@@ -525,8 +534,8 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
 
                     if (objectName == "InitialVolume")
                       {
-                        CCompartment* comp;
-                        comp = dynamic_cast< CCompartment * >(pObject);
+                        const CCompartment* comp;
+                        comp = dynamic_cast<const CCompartment * >(pObject);
                         std::ostringstream value;
                         value << comp-> getInitialValue();
                         objectNodes[j]->setData(value.str());
@@ -534,8 +543,8 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                     if (objectName == "Rate")
                       {
 
-                        CCompartment* comp;
-                        comp = dynamic_cast< CCompartment * >(pObject);
+                        const CCompartment* comp;
+                        comp = dynamic_cast<const CCompartment * >(pObject);
 
                         if (comp->getStatus() == CModelEntity::ODE)
                           {
@@ -598,7 +607,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 
         NameMap[metab->getKey()] = setConcentrationName(name); //concentration
 
-        if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent() || metab->getStatus() == CModelEntity::ODE)
+        if ((metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::ODE)
           {
             std::ostringstream odeKey;
             odeKey << "ode_" << metab->getKey();
@@ -1154,19 +1163,20 @@ bool CODEExporter::exportKineticFunction (CReaction* reac)
                 }
 
               if (role == CFunctionParameter::PARAMETER)
-                if (!(reac->isLocalParameter(index)))
-                  {
-                    CModelValue* modval;
-                    modval = dynamic_cast< CModelValue * >(obj);
-                    tmpname = NameMap[modval ->getKey()];
-                  }
-                else
-                  {
-                    CCopasiParameter* param;
-                    param = dynamic_cast< CCopasiParameter * >(obj);
-                    tmpname = NameMap[param->getKey()];
-                  }
-
+                {
+                  if (!(reac->isLocalParameter(index)))
+                    {
+                      CModelValue* modval;
+                      modval = dynamic_cast< CModelValue * >(obj);
+                      tmpname = NameMap[modval ->getKey()];
+                    }
+                  else
+                    {
+                      CCopasiParameter* param;
+                      param = dynamic_cast< CCopasiParameter * >(obj);
+                      tmpname = NameMap[param->getKey()];
+                    }
+                }
               if (role == CFunctionParameter::VOLUME)
                 {
                   CCompartment* comp;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:34:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:40:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,18 +39,20 @@ class CSensItem
 
     void setSingleObjectCN(const CCopasiObjectName & cn);
     const CCopasiObjectName & getSingleObjectCN() const;
-    std::string getSingleObjectDisplayName() const;
+    std::string getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const;
 
     void setListType(CObjectLists::ListType lt);
     const CObjectLists::ListType & getListType() const;
     std::string getListTypeDisplayName() const;
 
-    std::vector<CCopasiObject*> getVariablesPointerList(CModel* pModel);
+    std::vector<CCopasiObject*> getVariablesPointerList(CCopasiDataModel* pDataModel);
 
     //unsigned C_INT32 dimensionality() const;
 
     bool operator==(const CSensItem & rhs) const;
     bool operator!=(const CSensItem & rhs) const;
+
+    std::string print(const CCopasiDataModel* pDataModel) const;
 
   private:
     CCopasiObjectName mSingleObjectCN;

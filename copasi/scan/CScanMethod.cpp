@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:55:33 $
+//   $Date: 2009/02/19 15:40:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@
 //**************** CScanItem classes ***************************
 
 //static
-CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGroup* si,
+CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si,
     CRandom* rg,
     CScanTask* /*st*/)
 {
@@ -72,7 +72,7 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGro
   return tmp;
 }
 
-CScanItem::CScanItem(const CCopasiParameterGroup* si)
+CScanItem::CScanItem(CCopasiParameterGroup* si)
     : mNumSteps(0),
     mpValue(NULL),
     mStoreValue(0.0),
@@ -85,7 +85,9 @@ CScanItem::CScanItem(const CCopasiParameterGroup* si)
   mNumSteps = * si->getValue("Number of steps").pUINT;
 
   std::string tmpString = * si->getValue("Object").pCN;
-  CCopasiObject* tmpObject = CCopasiContainer::ObjectFromName(tmpString);
+  CCopasiDataModel* pDataModel = si->getParentDatamodel();
+  assert(pDataModel != NULL);
+  CCopasiObject* tmpObject = pDataModel->ObjectFromName(tmpString);
   if (!tmpObject) {mpValue = NULL; return;}
   if (!tmpObject->isValueDbl()) {mpValue = NULL; return;}
   mpValue = tmpObject;
@@ -128,7 +130,7 @@ const CCopasiObject * CScanItem::getObject() const
   }
 //*******
 
-CScanItemRepeat::CScanItemRepeat(const CCopasiParameterGroup* si)
+CScanItemRepeat::CScanItemRepeat(CCopasiParameterGroup* si)
     : CScanItem(si)
 {
   if (mNumSteps >= 1)
@@ -149,7 +151,7 @@ void CScanItemRepeat::step()
 
 //*******
 
-CScanItemLinear::CScanItemLinear(const CCopasiParameterGroup* si)
+CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si)
     : CScanItem(si),
     mLog(false)
 {
@@ -208,7 +210,7 @@ bool CScanItemLinear::isValidScanItem()
 
 //*******
 
-CScanItemRandom::CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg)
+CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg)
     : CScanItem(si),
     mRg(rg),
     mRandomType(0),
@@ -472,7 +474,7 @@ bool CScanMethod::calculate()
   return mpTask->processCallback();
 }
 
-void CScanMethod::setProblem(const CScanProblem * problem)
+void CScanMethod::setProblem(CScanProblem * problem)
 {mpProblem = problem;}
 
 //virtual

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:55:34 $
+//   $Date: 2009/02/19 15:40:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -501,7 +501,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
   mLocalData.resize(imax);
   for (i = 0; i < imax; ++i)
     {
-      mLocalData[i].variables = mpProblem->getVariables(i).getVariablesPointerList(mpProblem->getModel());
+      mLocalData[i].variables = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
 
       ObjectSet.insert(mLocalData[i].variables.begin(), mLocalData[i].variables.end());
     }
@@ -512,7 +512,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
   mInitialRefreshes = mpProblem->getModel()->buildInitialRefreshSequence(ObjectSet);
 
   //initialize the target function pointers
-  mTargetfunctionPointers = mpProblem->getTargetFunctions().getVariablesPointerList(mpProblem->getModel());
+  mTargetfunctionPointers = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
 
   //****** initialize result annotations ****************
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.220 $
+//   $Revision: 1.221 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:42:28 $
+//   $Date: 2009/02/19 15:40:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2793,7 +2793,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                 {
                   // it can be a global or a local parameter or an metabolite
                   std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
-                  const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+                  const CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
                   if (!pObject)
                     {
                       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 39, objectCN.c_str());
@@ -2842,7 +2842,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                   if (pChildNode->getType() == CEvaluationNode::OBJECT)
                     {
                       std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
-                      const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+                      const CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
                       assert(pObject);
                       if (pObject->isReference())
                         {
@@ -3032,7 +3032,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
         {
           fatalError();
         }
-      const CCopasiObject* object = CCopasiContainer::ObjectFromName(listOfContainers, pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
+      const CCopasiObject* object = this->mpCopasiModel->ObjectFromName(listOfContainers, pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
       if (!object)
         {
           fatalError();
@@ -3117,7 +3117,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
       std::string objectCN = pChild->getData();
       objectCN = objectCN.substr(1, objectCN.length() - 2);
-      CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+      CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
       assert(pObject);
       if (pObject->isReference())
         {
@@ -3138,7 +3138,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
-          CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+          CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
           assert(pObject);
           if (pObject->isReference())
             {
@@ -3166,7 +3166,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
             }
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
-          CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+          CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
           assert(pObject);
           if (pObject->isReference())
             {
@@ -3296,7 +3296,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(pCallNode->getChild());
   assert(pObjectNode);
   CCopasiObjectName objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-  CCopasiObject* pObject = CCopasiContainer::ObjectFromName(v, objectName);
+  CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(v, objectName);
   assert(pObject);
   if (dynamic_cast<CCopasiParameter*>(pObject))
     {
@@ -3307,7 +3307,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   if (pObjectNode)
     {
       objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-      pObject = CCopasiContainer::ObjectFromName(v, objectName);
+      pObject = this->mpCopasiModel->ObjectFromName(v, objectName);
       assert(pObject);
       if (dynamic_cast<CCopasiParameter*>(pObject))
         {
@@ -5112,7 +5112,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
   listOfContainers.push_back(this->mpCopasiModel);
   while (it != end)
     {
-      CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, it->second.first);
+      CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, it->second.first);
       assert(pObject != NULL);
       CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
       assert(pChemEqElement != NULL);
@@ -5498,7 +5498,7 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
       // check if the object is a local or global parameter
       std::vector<CCopasiContainer*> listOfContainers;
       listOfContainers.push_back(pModel);
-      pObject = CCopasiContainer::ObjectFromName(listOfContainers, name);
+      pObject = pModel->ObjectFromName(listOfContainers, name);
       assert(pObject != NULL);
       if (pObject->isReference())
         {

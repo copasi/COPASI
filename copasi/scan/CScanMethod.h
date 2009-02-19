@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/09/05 13:40:36 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:40:11 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -47,7 +52,7 @@ class CScanItem
 
   public:
     static
-    CScanItem* createScanItemFromParameterGroup(const CCopasiParameterGroup* si,
+    CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
         CRandom* rg,
         CScanTask* st);
 
@@ -81,7 +86,7 @@ class CScanItem
 
   protected:
 
-    CScanItem(const CCopasiParameterGroup* si);
+    CScanItem(CCopasiParameterGroup* si);
 
     //initObject();
 
@@ -94,7 +99,7 @@ class CScanItem
 class CScanItemRepeat: public CScanItem
   {
   public:
-    CScanItemRepeat(const CCopasiParameterGroup* si);
+    CScanItemRepeat(CCopasiParameterGroup* si);
     void step();
 
     virtual ~CScanItemRepeat(){};
@@ -108,7 +113,7 @@ class CScanItemLinear: public CScanItem
     C_FLOAT64 mMin, mMax, mFaktor;
     bool mLog;
   public:
-    CScanItemLinear(const CCopasiParameterGroup* si);
+    CScanItemLinear(CCopasiParameterGroup* si);
     void step();
 
     virtual ~CScanItemLinear(){};
@@ -126,7 +131,7 @@ class CScanItemRandom: public CScanItem
     unsigned C_INT32 mRandomType;
     bool mLog;
   public:
-    CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg);
+    CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
     virtual ~CScanItemRandom(){};
 
     void step();
@@ -156,7 +161,7 @@ class CScanMethod : public CCopasiMethod
     /**
      *  A pointer to the trajectory problem.
      */
-    const CScanProblem * mpProblem;
+    CScanProblem * mpProblem;
 
     /**
      *  A pointer to the scan Task.
@@ -231,7 +236,7 @@ class CScanMethod : public CCopasiMethod
      *  This method is used by CTrajectory
      *  @param "CTrajectoryProblem *" problem
      */
-    void setProblem(const CScanProblem * problem);
+    void setProblem(CScanProblem * problem);
 
     bool init();
 

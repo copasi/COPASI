@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:34:35 $
+//   $Author: gauges $
+//   $Date: 2009/02/19 15:40:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,7 @@
 // All rights reserved.
 
 #include <string>
+#include <sstream>
 
 #include "copasi.h"
 #include "CSensProblem.h"
@@ -43,9 +44,9 @@ const CCopasiObjectName & CSensItem::getSingleObjectCN() const
     return mSingleObjectCN;
   }
 
-std::string CSensItem::getSingleObjectDisplayName() const
+std::string CSensItem::getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const
   {
-    CCopasiObject* tmpObject = CCopasiContainer::ObjectFromName(mSingleObjectCN);
+    const CCopasiObject* tmpObject = pDataModel->ObjectFromName(mSingleObjectCN);
     if (tmpObject)
       return tmpObject->getObjectDisplayName();
     else
@@ -89,20 +90,20 @@ bool CSensItem::operator!=(const CSensItem & rhs) const
     return !(*this == rhs);
   }
 
-std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CModel* pModel)
+std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel* pDataModel)
 {
   std::vector<CCopasiObject*> ret;
 
   if (isSingleObject())
     {
-      CCopasiObject* tmpObject = CCopasiContainer::ObjectFromName(getSingleObjectCN());
+      CCopasiObject* tmpObject = pDataModel->ObjectFromName(getSingleObjectCN());
       if (!tmpObject) {return ret;}  //return empty list
       if (!tmpObject->isValueDbl()) {return ret;}  //return empty list
       ret.push_back(tmpObject);
     }
   else
     {
-      ret = CObjectLists::getListOfObjects(getListType(), pModel);
+      ret = CObjectLists::getListOfObjects(getListType(), pDataModel->getModel());
     }
 
   return ret;
@@ -546,6 +547,9 @@ void CSensProblem::printResult(std::ostream * ostream) const
       os << *mpScaledResultAnnotation << std::endl;
   }
 
+/**
+ * Had to disable the output operator because the datamodel is needed to print
+ * a sensitivity item.
 std::ostream &operator<<(std::ostream &os, const CSensItem & si)
 {
   if (si.isSingleObject())
@@ -555,11 +559,25 @@ std::ostream &operator<<(std::ostream &os, const CSensItem & si)
 
   return os;
 }
+ */
+
+std::string CSensItem::print(const CCopasiDataModel* pDataModel) const
+  {
+    std::ostringstream os;
+    if (this->isSingleObject())
+      os << this->getSingleObjectDisplayName(pDataModel);
+    else
+      os << this->getListTypeDisplayName();
+
+    return os.str();
+  }
 
 std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
 {
   os << "Function(s) to be derived:" << std::endl;
-  os << o.getTargetFunctions() << std::endl << std::endl;
+  const CCopasiDataModel* pDataModel = o.getParentDatamodel();
+  assert(pDataModel != NULL);
+  os << o.getTargetFunctions().print(pDataModel) << std::endl << std::endl;
 
   os << "Calculation to perform: "
   << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
@@ -568,7 +586,7 @@ std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
   for (i = 0; i < imax; ++i)
     {
       os << "Variable(s) for " << i + 1 << ". derivation:" << std::endl;
-      os << o.getVariables(i) << std::endl << std::endl;
+      os << o.getVariables(i).print(pDataModel) << std::endl << std::endl;
     }
 
   return os;
