@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:54:48 $
+//   $Date: 2009/02/19 09:15:50 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -164,7 +164,7 @@ const CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList
 CCopasiDataModel * CCopasiRootContainer::addDatamodel()
 {
   CCopasiDataModel* pDataModel = new CCopasiDataModel(this->mWithGUI);
-  assert(this->mpDataModelList->add(pDataModel));
+  assert(this->mpDataModelList->add(pDataModel, true));
   return pDataModel;
 }
 
