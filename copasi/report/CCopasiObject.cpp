@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 16:45:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,9 @@ CCopasiObjectName CCopasiObject::getCN() const
     CCopasiObjectName CN;
     // if the object has a parent and if the object is not a datamodel,
     // we add the name of the parent to the common name
-    if (mpObjectParent && !dynamic_cast<const CCopasiDataModel*>(this))
+    if (isDataModel())
+      CN = (std::string) "CN=Root";
+    else if (mpObjectParent)
       {
         std::stringstream tmp;
         tmp << mpObjectParent->getCN();
@@ -284,8 +286,8 @@ bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & 
     // Dual purpose insert
     Inserted = candidates.insert(this);
 
-    // Check whether the insert was successfull, if not
-    // the object "this" was among the candidates. Thus we have a dedected
+    // Check whether the insert was successful, if not
+    // the object "this" was among the candidates. Thus we have a detected
     // a circular dependency
     if (Inserted.second)
       {
@@ -461,6 +463,12 @@ bool CCopasiObject::isSeparator() const
 bool CCopasiObject::isArray() const
   {return (0 < (mObjectFlag & Array));}
 
+bool CCopasiObject::isDataModel() const
+  {return (0 < (mObjectFlag & DataModel));}
+
+bool CCopasiObject::isRoot() const
+  {return (0 < (mObjectFlag & Root));}
+
 const std::string & CCopasiObject::getKey() const
   {
     static std::string DefaultKey("");
@@ -521,18 +529,17 @@ std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
  */
 CCopasiDataModel* CCopasiObject::getParentDatamodel()
 {
-  CCopasiDataModel* pDataModel = dynamic_cast<CCopasiDataModel*>(this);
-  if (!pDataModel)
+  CCopasiObject * pObject = this;
+
+  while (pObject != NULL)
     {
-      CCopasiContainer* pParent = this->getObjectParent();
-      pDataModel = dynamic_cast<CCopasiDataModel*>(pParent);
-      while (pParent && !pDataModel)
-        {
-          pParent = pParent->getObjectParent();
-          pDataModel = dynamic_cast<CCopasiDataModel*>(pParent);
-        }
+      if (pObject->isDataModel())
+        return static_cast<CCopasiDataModel *>(this);
+
+      pObject = pObject->getObjectParent();
     }
-  return pDataModel;
+
+  return NULL;
 }
 
 /**
@@ -542,18 +549,17 @@ CCopasiDataModel* CCopasiObject::getParentDatamodel()
  */
 const CCopasiDataModel* CCopasiObject::getParentDatamodel() const
   {
-    const CCopasiDataModel* pDataModel = dynamic_cast<const CCopasiDataModel*>(this);
-    if (!pDataModel)
+    const CCopasiObject * pObject = this;
+
+    while (pObject != NULL)
       {
-        const CCopasiContainer* pParent = this->getObjectParent();
-        pDataModel = dynamic_cast<const CCopasiDataModel*>(pParent);
-        while (pParent && !pDataModel)
-          {
-            pParent = pParent->getObjectParent();
-            pDataModel = dynamic_cast<const CCopasiDataModel*>(pParent);
-          }
+        if (pObject->isDataModel())
+          return static_cast<const CCopasiDataModel *>(this);
+
+        pObject = pObject->getObjectParent();
       }
-    return pDataModel;
+
+    return NULL;
   }
 
 const CCopasiObject * CCopasiObject::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,

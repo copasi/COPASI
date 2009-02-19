@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:56 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 16:45:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,7 +71,6 @@ class CCopasiDataModel: public COutputHandler, public CCopasiContainer
     CCopasiDataModel(const std::string & name,
                      const CCopasiContainer * pParent = NULL,
                      const std::string & type = "CN",
-                     const unsigned C_INT32 & flag = CCopasiObject::Container,
                      bool withGUI = false);
 
     ~CCopasiDataModel();

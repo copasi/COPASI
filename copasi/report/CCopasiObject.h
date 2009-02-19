@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/02/19 16:45:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 /**
  * Class CCopasiObject
  *
- * This class is the base class for all global accessible objects in copasi.
+ * This class is the base class for all global accessible objects in COPASI.
  *
  * Copyright Stefan Hoops 2002
  */
@@ -178,7 +178,9 @@ class CCopasiObject
       ValueString = 0x400,
       Separator = 0x800,
       ModelEntity = 0x1000,
-      Array = 0x2000  //the object represents an n-dimensional array
+      Array = 0x2000,
+      DataModel = 0x4000,
+      Root = 0x8000
     };
 
   private:
@@ -227,7 +229,7 @@ class CCopasiObject
     /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
+     * to print the object.To override this default behavior one needs to
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
@@ -364,6 +366,8 @@ class CCopasiObject
     bool isValueString() const;
     bool isSeparator() const;
     bool isArray() const;
+    bool isDataModel() const;
+    bool isRoot() const;
 
     virtual void * getValuePointer() const;
 
