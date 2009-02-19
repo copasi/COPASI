@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:56:59 $
+//   $Date: 2009/02/19 07:37:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
   // the rest of the arguments are species names for the result
   try
     {
-      // Parse the commandline options
-      COptions::init(argc, argv);
+      // Create the root container.
+      CCopasiRootContainer::init(false, 0, NULL);
     }
 
   catch (copasi::autoexcept &e)
@@ -105,9 +105,6 @@ int main(int argc, char *argv[])
 
   try
     {
-      // Create the root container.
-      CCopasiRootContainer::init();
-
       // Create the global data model.
       CCopasiDataModel* pDataModel = CCopasiRootContainer::Root->addDatamodel();
 
