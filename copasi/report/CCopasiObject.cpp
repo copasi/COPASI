@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Date: 2009/02/20 16:46:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -534,7 +534,7 @@ CCopasiDataModel* CCopasiObject::getParentDatamodel()
   while (pObject != NULL)
     {
       if (pObject->isDataModel())
-        return static_cast<CCopasiDataModel *>(this);
+        return static_cast<CCopasiDataModel *>(pObject);
 
       pObject = pObject->getObjectParent();
     }
@@ -554,7 +554,7 @@ const CCopasiDataModel* CCopasiObject::getParentDatamodel() const
     while (pObject != NULL)
       {
         if (pObject->isDataModel())
-          return static_cast<const CCopasiDataModel *>(this);
+          return static_cast<const CCopasiDataModel *>(pObject);
 
         pObject = pObject->getObjectParent();
       }
