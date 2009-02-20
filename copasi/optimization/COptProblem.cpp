@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:20 $
+//   $Date: 2009/02/20 01:05:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,7 @@ COptProblem::COptProblem(const COptProblem& src,
 // Destructor
 COptProblem::~COptProblem()
 {
-  if (mpFunction && CCopasiRootContainer::Root &&
+  if (mpFunction &&
       CCopasiRootContainer::getFunctionList() &&
       CCopasiRootContainer::getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
     CCopasiRootContainer::getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
