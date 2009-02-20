@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000066.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:52:25 $
+//   $Author: gauges $
+//   $Date: 2009/02/20 10:41:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,8 +46,7 @@ void test000066::setUp()
 
 void test000066::tearDown()
 {
-  delete CCopasiRootContainer::Root;
-  CCopasiRootContainer::Root = NULL;
+  CCopasiRootContainer::destroy();
 }
 
 void test000066::test_import_reaction_with_constant_flux()
