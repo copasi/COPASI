@@ -69,6 +69,14 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CArrayElementReference.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CCopasiArray.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CCopasiContainer.cpp"
 				>
 			</File>
@@ -78,6 +86,10 @@
 			</File>
 			<File
 				RelativePath="CCopasiObjectName.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CCopasiRootContainer.cpp"
 				>
 			</File>
 			<File
@@ -118,6 +130,14 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\CArrayElementReference.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CCopasiArray.h"
+				>
+			</File>
+			<File
 				RelativePath="CCopasiContainer.h"
 				>
 			</File>
@@ -134,6 +154,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CCopasiRootContainer.h"
+				>
+			</File>
+			<File
 				RelativePath="CCopasiStaticString.h"
 				>
 			</File>
@@ -147,6 +171,10 @@
 			</File>
 			<File
 				RelativePath="COutputAssistant.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CRenameHandler.h"
 				>
 			</File>
 			<File
