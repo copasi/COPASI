@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:15 $
+//   $Date: 2009/02/20 11:41:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,8 @@ extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
 #endif
 
 #ifdef COPASI_MAIN
-void * pRootContainer = NULL;
+class CCopasiRootContainer;
+CCopasiRootContainer * pRootContainer = NULL;
 #endif
 
 /* Define Constructor/Destructor Trace */
