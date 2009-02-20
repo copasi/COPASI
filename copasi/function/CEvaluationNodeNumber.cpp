@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/20 17:56:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,7 +183,7 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
 # pragma warning (default: 4056 4756)
 #endif
 
-ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) const
   {
     SubType subType = (SubType)CEvaluationNode::subType(this->getType());
     ASTNode* node = new ASTNode();
