@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000057.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:52:25 $
+//   $Author: gauges $
+//   $Date: 2009/02/20 10:39:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,7 @@ void test000057::setUp()
 
 void test000057::tearDown()
 {
-  delete CCopasiRootContainer::Root;
-  CCopasiRootContainer::Root = NULL;
+  CCopasiRootContainer::destroy();
 }
 
 void test000057::test_bug1006()

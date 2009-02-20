@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000032.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:52:03 $
+//   $Author: gauges $
+//   $Date: 2009/02/20 10:39:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,8 +38,7 @@ void test000032::setUp()
 
 void test000032::tearDown()
 {
-  delete CCopasiRootContainer::Root;
-  CCopasiRootContainer::Root = NULL;
+  CCopasiRootContainer::destroy();
 }
 
 void test000032::test_hasOnlySubstanceUnits()
