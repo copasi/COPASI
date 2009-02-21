@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.131 $
+//   $Revision: 1.132 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:15 $
+//   $Author: gauges $
+//   $Date: 2009/02/21 12:27:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,7 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 //********************************************************************
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
-    COutputHandler(), CCopasiContainer("NoName", NULL, "CN", CCopasiObject::DataModel),
+    COutputHandler(), CCopasiContainer("Root", NULL, "CN", CCopasiObject::DataModel),
     mpModel(NULL),
     mpTaskList(NULL),
     mpReportDefinitionList(NULL),
