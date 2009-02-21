@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Author: gauges $
+//   $Date: 2009/02/21 12:06:22 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -77,7 +77,10 @@ void CCopasiRootContainer::init(int argc, char** argv, const bool & withGUI)
 void CCopasiRootContainer::destroy()
 {
   if (pRootContainer != NULL)
-    delete pRootContainer;
+    {
+      delete pRootContainer;
+      pRootContainer = NULL;
+    }
 
   COptions::cleanup();
 }
