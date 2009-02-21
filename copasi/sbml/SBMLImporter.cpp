@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.222 $
+//   $Revision: 1.223 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:51:18 $
+//   $Author: gauges $
+//   $Date: 2009/02/21 12:56:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5557,9 +5557,9 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
           this->mFunctionNameMapping[it->first->getId()] = pFun->getObjectName();
           // next we delete the imported function definitions from the dependencies of
           // the other function definitions
+          std::string id = it->first->getId();
           directFunctionDependencies.erase(it);
           // here we change the iterators !!!!
-          std::string id = it->first->getId();
           it = directFunctionDependencies.begin(), endit = directFunctionDependencies.end();
           while (it != endit)
             {
