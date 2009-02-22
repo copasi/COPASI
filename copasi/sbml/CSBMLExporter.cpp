@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.50.2.6.4.4 $
+//   $Revision: 1.50.2.6.4.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/01/27 16:51:04 $
+//   $Author: shoops $
+//   $Date: 2009/02/22 16:46:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5987,6 +5987,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
         }
     }
 }
+#endif // COPASI_DEBUG
 
 /**
  * Goes through the expression tree and tries to find occurences of local
@@ -6105,4 +6106,3 @@ void CSBMLExporter::restore_local_parameters(ASTNode* pOrigNode, const CCopasiDa
         }
     }
 }
-#endif // COPASI_DEBUG
