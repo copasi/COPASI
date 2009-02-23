@@ -4,6 +4,21 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 SCP=${COPASI_SCP:-scp}
 
+if [ x"$COPASI_UPLOAD" != x ]; then
+  function UPLOAD () {
+    SRC=""
+    while [ x"$2" != x ]; do
+      SRC="$SRC $1"
+      shift
+    done
+    ${SCP} ${SRC} ${COPASI_UPLOAD}/$1
+  }
+else
+  function UPLOAD () {
+    echo "Skipping upload (environment variable COPASI_UPLOAD not set)."
+  }
+fi
+
 pushd ../..
 
 AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
@@ -60,14 +75,14 @@ if [ x"$#" = x1 ]; then
     cp ~/environment/distribution/* copasi/bin
 
     if [ x"$license" = xUS ]; then
-      ${SCP} copasi/bin/CopasiSE.exe \
-        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build.exe
-      ${SCP} ~/environment/distribution/libexpat.dll \
+      UPLOAD copasi/bin/CopasiSE.exe \
+        $license/Copasi-AllSE/$1/CopasiSE-$build.exe
+      UPLOAD ~/environment/distribution/libexpat.dll \
           ~/environment/distribution/libsbml.dll \
           ~/environment/distribution/msvcp80.dll \
           ~/environment/distribution/msvcr80.dll \
           ~/environment/distribution/raptor.dll \
-        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/
+        $license/Copasi-AllSE/$1/
     fi
     
     cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
@@ -154,8 +169,8 @@ if [ x"$#" = x1 ]; then
       strip ${TMPDIR}/copasi/CopasiSE
       
       if [ x"$license" = xUS ]; then
-        ${SCP} ${TMPDIR}/copasi/CopasiSE \
-          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
+        UPLOAD ${TMPDIR}/copasi/CopasiSE \
+          $license/Copasi-AllSE/$1/CopasiSE-$build
        fi
     fi  
     
@@ -257,11 +272,11 @@ echo "Set the icon in the Info.plist file."
 
     if [ x"$license" = xUS ]; then
       if [ x"$DYNAMIC" == "xTRUE" ]; then
-        ${SCP} copasi/bin/CopasiSE \
-          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
+        UPLOAD copasi/bin/CopasiSE \
+          $license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
       else
-        ${SCP} copasi/bin/CopasiSE \
-          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
+        UPLOAD copasi/bin/CopasiSE \
+          $license/Copasi-AllSE/$1/CopasiSE-$build
       fi
     fi
     
@@ -292,8 +307,8 @@ echo "Set the icon in the Info.plist file."
     ;;
   esac
 
-  ${SCP} Copasi-$build-$1*.* \
-    copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
+  UPLOAD Copasi-$build-$1*.* \
+    $license
 
 else
   echo usage: mkbuild.sh BUILD_OS
