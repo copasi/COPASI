@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1255,7 +1255,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
     C_INT32 stepNumber;
 
-    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    const CCopasiDataModel* pDataModel = getObjectDataModel();
     assert(pDataModel != NULL);
     const CTSSATask* pTask =
       dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);

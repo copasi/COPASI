@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:12 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,7 +463,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   //initialize the target calculation
   mpSubTask = NULL;
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   switch (mpProblem->getSubTaskType())

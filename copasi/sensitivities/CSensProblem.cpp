@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:12 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -575,7 +575,7 @@ std::string CSensItem::print(const CCopasiDataModel* pDataModel) const
 std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
 {
   os << "Function(s) to be derived:" << std::endl;
-  const CCopasiDataModel* pDataModel = o.getParentDatamodel();
+  const CCopasiDataModel* pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
   os << o.getTargetFunctions().print(pDataModel) << std::endl << std::endl;
 

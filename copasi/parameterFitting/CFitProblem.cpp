@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Date: 2009/02/23 16:20:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,7 +179,7 @@ bool CFitProblem::elevateChildren()
   if (!COptProblem::elevateChildren()) return false;
 
   CCopasiVectorN< CCopasiTask > * pTasks = NULL;
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   if (pDataModel)
     pTasks = pDataModel->getTaskList();
   if (pTasks == NULL)
@@ -334,7 +334,7 @@ bool CFitProblem::initialize()
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(getObjectAncestor("Vector"));
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   mpSteadyState =
     dynamic_cast< CSteadyStateTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmSteadyStateCN));

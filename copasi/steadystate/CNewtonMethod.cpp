@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:34 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -787,7 +787,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      CCopasiDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       CTrajectoryTask * pSrc =
         dynamic_cast< CTrajectoryTask * >((*pDataModel->getTaskList())["Time-Course"]);

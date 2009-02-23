@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 16:45:22 $
+//   $Date: 2009/02/23 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,14 +259,14 @@ class CCopasiObject
      * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
      * is returned.
      */
-    CCopasiDataModel* getParentDatamodel();
+    CCopasiDataModel* getObjectDataModel();
 
     /**
      * Returns a const pointer to the CCopasiDataModel the element belongs to.
      * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
      * is returned.
      */
-    const CCopasiDataModel* getParentDatamodel() const;
+    const CCopasiDataModel* getObjectDataModel() const;
 
     CCopasiContainer * getObjectAncestor(const std::string & type) const;
 

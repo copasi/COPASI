@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.140 $
+//   $Revision: 1.141 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/02/23 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -362,7 +362,7 @@ bool CMetab::compile()
 
       // Implicit initial expression
       pdelete(mpInitialExpression);
-      pDataModel = this->getParentDatamodel();
+      pDataModel = getObjectDataModel();
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
       mpInitialExpression->setObjectName("InitialExpression");
 

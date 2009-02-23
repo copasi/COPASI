@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/02/23 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ void CDotOutput::writeDependencies(std::ostream & os, const CModel* pModel, cons
   if (rootNode)
     obj = rootNode;
   else
-    obj = pModel->getParentDatamodel();
+    obj = pModel->getObjectDataModel();
 
   mObjects.clear();
 

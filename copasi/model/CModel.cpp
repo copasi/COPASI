@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.351 $
+//   $Revision: 1.352 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/02/23 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
     return Fail;
 
   // :TODO: Remove OldMetabolites as part of the data model.
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   pDataModel->pOldMetabolites->load(configBuffer, Size);
 
@@ -3619,7 +3619,7 @@ std::string CModel::printParameterOverview()
               {
                 CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(reac->getParameterMappings()[j][0]);
                 if (!obj) continue;
-                CCopasiDataModel* pDataModel = this->getParentDatamodel();
+                CCopasiDataModel* pDataModel = getObjectDataModel();
                 assert(pDataModel != NULL);
                 if (reac->isLocalParameter(j))
                   {

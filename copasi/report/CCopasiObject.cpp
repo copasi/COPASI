@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/20 16:46:26 $
+//   $Date: 2009/02/23 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -527,7 +527,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
  * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
  * is returned.
  */
-CCopasiDataModel* CCopasiObject::getParentDatamodel()
+CCopasiDataModel* CCopasiObject::getObjectDataModel()
 {
   CCopasiObject * pObject = this;
 
@@ -547,7 +547,7 @@ CCopasiDataModel* CCopasiObject::getParentDatamodel()
  * If there is no instance of CCopasiDataModel in the ancestor tree, NULL
  * is returned.
  */
-const CCopasiDataModel* CCopasiObject::getParentDatamodel() const
+const CCopasiDataModel* CCopasiObject::getObjectDataModel() const
   {
     const CCopasiObject * pObject = this;
 
@@ -594,7 +594,7 @@ const CCopasiObject * CCopasiObject::ObjectFromName(const std::vector< CCopasiCo
     // if not found try to search the parent datamodel
     if (!pObject)
       {
-        const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+        const CCopasiDataModel* pDataModel = getObjectDataModel();
         if (pDataModel)
           pObject = pDataModel->getObject(objName);
       }
@@ -642,7 +642,7 @@ CCopasiObject * CCopasiObject::ObjectFromName(const std::vector< CCopasiContaine
   // if not found try to search the parent datamodel
   if (!pObject)
     {
-      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      CCopasiDataModel* pDataModel = getObjectDataModel();
       if (pDataModel)
         pObject = pDataModel->getObject(objName);
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.180 $
+//   $Revision: 1.181 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/02/23 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -552,7 +552,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
   C_INT32 index;
   std::string name, parName, metabName;
   const CFunctionParameter* pParameter;
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (mMap.getFunctionParameters().isVector(role))

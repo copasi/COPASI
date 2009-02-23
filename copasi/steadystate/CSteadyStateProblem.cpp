@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-  $Revision: 1.26 $
-  $Name:  $
-  $Author: gauges $
-  $Date: 2009/02/18 20:55:34 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
+ $Revision: 1.27 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2009/02/23 16:20:17 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -109,7 +109,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      CCopasiDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       mpModel = pDataModel->getModel();
       //mInitialState = mpModel->getInitialState();

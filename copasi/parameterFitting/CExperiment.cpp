@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Date: 2009/02/23 16:20:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -421,7 +421,7 @@ bool CExperiment::calculateStatistics()
 
   if (*mpTaskType == CCopasiTask::timeCourse)
     {
-      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      CCopasiDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       pTime = const_cast<C_FLOAT64 *>(&pDataModel->getModel()->getTime());
       SavedTime = *pTime;
@@ -659,7 +659,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnCount.resize(numCols);
   mColumnCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
 
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   CModel * pModel =
     dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(pDataModel->getModel()->getObjectName()))));
@@ -1045,7 +1045,7 @@ const std::string & CExperiment::getFileName() const
   {
     std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
 
-    const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+    const CCopasiDataModel* pDataModel = getObjectDataModel();
     assert(pDataModel != NULL);
     if (CDirEntry::isRelativePath(*pFileName) &&
         !CDirEntry::makePathAbsolute(*pFileName,

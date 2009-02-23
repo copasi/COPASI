@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:03 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,7 @@ void CLyapTask::output(const COutputInterface::Activity & activity)
 {
   if (mDoOutput != NO_OUTPUT)
     {
-      CCopasiDataModel* pDataModel = this->getParentDatamodel();
+      CCopasiDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       pDataModel->output(activity);
     }

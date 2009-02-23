@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:40:11 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si)
   mNumSteps = * si->getValue("Number of steps").pUINT;
 
   std::string tmpString = * si->getValue("Object").pCN;
-  CCopasiDataModel* pDataModel = si->getParentDatamodel();
+  CCopasiDataModel* pDataModel = si->getObjectDataModel();
   assert(pDataModel != NULL);
   CCopasiObject* tmpObject = pDataModel->ObjectFromName(tmpString);
   if (!tmpObject) {mpValue = NULL; return;}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/02/23 16:20:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,7 +156,7 @@ bool CModelEntity::compile()
       mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
       pdelete(mpInitialExpression);
-      pDataModel = this->getParentDatamodel();
+      pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
       mpInitialExpression->setObjectName("InitialExpression");
@@ -400,7 +400,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mpExpression = new CExpression;
 
           pdelete(mpInitialExpression);
-          pDataModel = this->getParentDatamodel();
+          pDataModel = getObjectDataModel();
           mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
           mpInitialExpression->setObjectName("InitialExpression");
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/20 01:05:11 $
+//   $Date: 2009/02/23 16:20:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -621,7 +621,7 @@ const unsigned C_INT32 COptProblem::getOptItemSize() const
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
   COptItem * pItem = new COptItem();
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   pItem->setObjectCN(objectCN, pDataModel);
 
@@ -709,7 +709,7 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
   CCopasiVectorN< CCopasiTask > * pTasks =
     dynamic_cast< CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   if (pTasks == NULL && pDataModel)
     pTasks = pDataModel->getTaskList();
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:50 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,7 +123,7 @@ const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) c
       return this->ObjectFromName(*mpListOfContainer, CN);
     else
       {
-        const CCopasiDataModel* pDataModel = this->getParentDatamodel();
+        const CCopasiDataModel* pDataModel = getObjectDataModel();
         assert(pDataModel != NULL);
         return pDataModel->ObjectFromName(CN);
       }

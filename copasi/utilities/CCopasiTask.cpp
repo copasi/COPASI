@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:02 $
+//   $Date: 2009/02/23 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,7 +259,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(this);
 
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   if (!mpOutputHandler->compile(ListOfContainer, pDataModel))
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:35 $
+//   $Author: shoops $
+//   $Date: 2009/02/23 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,7 +109,7 @@ void CLsodarMethod::initializeParameter()
         {
           C_FLOAT64 OldValue = *getValue("Absolute Tolerance").pUDOUBLE;
 
-          CCopasiDataModel* pDataModel = this->getParentDatamodel();
+          CCopasiDataModel* pDataModel = getObjectDataModel();
           assert(pDataModel != NULL);
           CModel * pModel = pDataModel->getModel();
 

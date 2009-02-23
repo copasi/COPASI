@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:02 $
+//   $Date: 2009/02/23 16:20:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,7 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
   std::set< const CCopasiObject * > ChangedObjects;
   ChangedObjects.insert(pObject);
 
-  CCopasiDataModel* pDataModel = this->getParentDatamodel();
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   mInitialRefreshes = pDataModel->getModel()->buildInitialRefreshSequence(ChangedObjects);
 

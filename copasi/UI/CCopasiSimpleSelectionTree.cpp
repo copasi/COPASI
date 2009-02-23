@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:07 $
+//   $Date: 2009/02/23 16:20:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,14 +124,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = pModel->getParentDatamodel()->getObject(CCopasiObjectName("Timer=CPU Time"));
+  pObject = pModel->getObjectDataModel()->getObject(CCopasiObjectName("Timer=CPU Time"));
   if (filter(flag, pObject))
     {
       pItem = new Q3ListViewItem(mpTimeSubtree, "CPU time");
       treeItems[pItem] = pObject;
     }
 
-  pObject = pModel->getParentDatamodel()->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  pObject = pModel->getObjectDataModel()->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
   if (filter(flag, pObject))
     {
       pItem = new Q3ListViewItem(mpTimeSubtree, "real time");
