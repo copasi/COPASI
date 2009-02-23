@@ -1,5 +1,22 @@
 #!/bin/bash
 
+SCP=${COPASI_SCP:-scp}
+
+if [ x"$COPASI_UPLOAD" != x ]; then
+  function UPLOAD () {
+    SRC=""
+    while [ x"$2" != x ]; do
+      SRC="$SRC $1"
+      shift
+    done
+    ${SCP} ${SRC} ${COPASI_UPLOAD}/$1
+  }
+else
+  function UPLOAD () {
+    echo "Skipping upload (environment variable COPASI_UPLOAD not set)."
+  }
+fi
+
 major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
 minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
 build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
@@ -451,6 +468,5 @@ cd ..
 
 tar -czf Copasi-${build}-SRC.tar.gz copasi-${build}-src 
  
-scp Copasi-${build}-SRC*.* \
-  copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
+UPLOAD Copasi-${build}-SRC*.* $license
 
