@@ -11,6 +11,7 @@ if [ x"$COPASI_UPLOAD" != x ]; then
       SRC="$SRC $1"
       shift
     done
+    echo ${SCP} ${SRC} ${COPASI_UPLOAD}/$1
     ${SCP} ${SRC} ${COPASI_UPLOAD}/$1
   }
 else
@@ -77,6 +78,8 @@ if [ x"$#" = x1 ]; then
     if [ x"$license" = xUS ]; then
       UPLOAD copasi/bin/CopasiSE.exe \
         $license/Copasi-AllSE/$1/CopasiSE-$build.exe
+      # This is a hack to circumvent a time out in ssh
+      sleep 10
       UPLOAD ~/environment/distribution/libexpat.dll \
           ~/environment/distribution/libsbml.dll \
           ~/environment/distribution/msvcp80.dll \
