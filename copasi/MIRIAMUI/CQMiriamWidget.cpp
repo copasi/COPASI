@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:47 $
+//   $Author: aekamal $
+//   $Date: 2009/02/23 05:12:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,23 +35,31 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   //Create Data Models for the 4 tables
   mpCreatorDM = new CQCreatorDM(mpMIRIAMInfo, this);
   mpReferenceDM = new CQReferenceDM(mpMIRIAMInfo, this);
+  mpBiologicalDescriptionDM = new CQBiologicalDescriptionDM(mpMIRIAMInfo, this);
   mpModifiedDM = new CQModifiedDM(mpMIRIAMInfo, this);
 
   //Create Required Delegates
   mpDTEDelegate = new CQDateTimeEditDelegate(this);
   mpTblModified->setItemDelegateForColumn(COL_DATE_MODIFIED, mpDTEDelegate);
 
+  mpResourceDelegate1 = new CQComboDelegate(&mResources, this);
+  mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
+
+  mpResourceDelegate2 = new CQComboDelegate(&mResources, this);
+  mpTblDescription->setItemDelegateForColumn(COL_RESOURCE_BD, mpResourceDelegate2);
+
+  mpPredicateDelegate = new CQComboDelegate(&mPredicates, this);
+  mpTblDescription->setItemDelegateForColumn(COL_RELATIONSHIP, mpPredicateDelegate);
+
+  mWidgets.push_back(mpTblAuthors); mDMs.push_back(mpCreatorDM);
+  mWidgets.push_back(mpTblReferences); mDMs.push_back(mpReferenceDM);
+  mWidgets.push_back(mpTblDescription); mDMs.push_back(mpBiologicalDescriptionDM);
+  mWidgets.push_back(mpTblModified); mDMs.push_back(mpModifiedDM);
+
   // Connect the table widgets
-  //mWidgets.push_back(mpTblAuthors);
   connect(mpTblAuthors, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
-
-  //mWidgets.push_back(mpTblReferences);
   connect(mpTblReferences, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
-
-  //mWidgets.push_back(mpTblDescription);
   connect(mpTblDescription, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
-
-  //mWidgets.push_back(mpTblModified);
   connect(mpTblModified, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
 
   // Build the list of supported predicates
@@ -76,8 +84,12 @@ CQMiriamWidget::~CQMiriamWidget()
 {
   pdelete(mpCreatorDM);
   pdelete(mpReferenceDM);
+  pdelete(mpBiologicalDescriptionDM);
   pdelete(mpModifiedDM);
   pdelete(mpDTEDelegate);
+  pdelete(mpResourceDelegate1);
+  pdelete(mpResourceDelegate2);
+  pdelete(mpPredicateDelegate);
   pdelete(mpMIRIAMInfo);
   // no need to delete child widgets, Qt does it all for us
 }
@@ -91,19 +103,6 @@ void CQMiriamWidget::languageChange()
   retranslateUi(this);
 }
 
-void CQMiriamWidget::slotBtnOKClicked()
-{
-  // This forces that changes to the current table cell are committed.
-
-  leave();
-  enter(mpMIRIAMInfo->getKey());
-}
-
-void CQMiriamWidget::slotBtnCancelClicked()
-{
-  enter(mpMIRIAMInfo->getKey());
-}
-
 void CQMiriamWidget::slotBtnDeleteClicked()
 {
   if (mpTblAuthors->hasFocus())
@@ -112,12 +111,8 @@ void CQMiriamWidget::slotBtnDeleteClicked()
   {deleteSelectedReference();}
   else if (mpTblModified->hasFocus())
   {deleteSelectedModified();}
-  /*std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
-  for (; it != end; it++)
-    if ((*it)->hasFocus())
-      (*it)->slotBtnDeleteClicked();
-   */
+  else if (mpTblDescription->hasFocus())
+  {deleteSelectedBiologicalDescription();}
 }
 
 void CQMiriamWidget::deleteSelectedAuthor()
@@ -151,8 +146,8 @@ void CQMiriamWidget::deleteSelectedReference()
   if (!mpTblReferences->selectionModel()->selectedIndexes().empty())
     {
       int delRow = mpTblReferences->selectionModel()->selectedIndexes().value(0).row();
-      QString resource = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_RESOURCE)).toString();
-      QString Id = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_ID)).toString();
+      QString resource = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_RESOURCE_REFERENCE)).toString();
+      QString Id = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_ID_REFERENCE)).toString();
       QString msg = "Do you want to delete Reference '";
       if (!resource.isNull())
         {
@@ -169,6 +164,32 @@ void CQMiriamWidget::deleteSelectedReference()
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
       if (ret == QMessageBox::Yes)
       {mpReferenceDM->removeRow(delRow);}
+    }
+}
+
+void CQMiriamWidget::deleteSelectedBiologicalDescription()
+{
+  if (!mpTblDescription->selectionModel()->selectedIndexes().empty())
+    {
+      int delRow = mpTblDescription->selectionModel()->selectedIndexes().value(0).row();
+      QString resource = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_RESOURCE_BD)).toString();
+      QString Id = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_ID_BD)).toString();
+      QString msg = "Do you want to delete Description '";
+      if (!resource.isNull())
+        {
+          msg.append(resource);
+        }
+      if (!Id.isNull())
+        {
+          msg.append(":");
+          msg.append(Id);
+        }
+      msg.append("'?");
+
+      int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+      if (ret == QMessageBox::Yes)
+      {mpBiologicalDescriptionDM->removeRow(delRow);}
     }
 }
 
@@ -194,19 +215,15 @@ void CQMiriamWidget::deleteSelectedModified()
 
 void CQMiriamWidget::slotBtnNewClicked()
 {
-  if (mpTblAuthors->hasFocus())
-    mpCreatorDM->insertRow();
-  else if (mpTblReferences->hasFocus())
-    mpReferenceDM->insertRow();
-  else if (mpTblModified->hasFocus())
-    mpModifiedDM->insertRow();
-
-  /*std::vector<QTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
   std::vector<QTableView*>::const_iterator end = mWidgets.end();
-  for (; it != end; it++)
+
+  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
+
+  for (; it != end && itDM != endDM; it++, itDM++)
     if ((*it)->hasFocus())
-      (*it)->slotBtnNewClicked();
-   */
+      (*itDM)->insertRow();
 }
 
 void CQMiriamWidget::slotBtnClearClicked()
@@ -216,6 +233,7 @@ void CQMiriamWidget::slotBtnClearClicked()
       mpDTCreated->setDateTime(QDateTime::currentDateTime());
       return;
     }
+
   if (mpTblAuthors->hasFocus())
     {
       int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Creators?",
@@ -230,6 +248,13 @@ void CQMiriamWidget::slotBtnClearClicked()
       if (ret == QMessageBox::Yes)
       {mpReferenceDM->clear();}
     }
+  else if (mpTblDescription->hasFocus())
+    {
+      int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Descriptions?",
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+      if (ret == QMessageBox::Yes)
+      {mpBiologicalDescriptionDM->clear();}
+    }
   else if (mpTblModified->hasFocus())
     {
       int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Date/Time Modifieds?",
@@ -237,13 +262,6 @@ void CQMiriamWidget::slotBtnClearClicked()
       if (ret == QMessageBox::Yes)
       {mpModifiedDM->clear();}
     }
-
-  /*std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
-  for (; it != end; it++)
-    if ((*it)->hasFocus())
-      (*it)->slotBtnClearClicked();
-   */
 }
 
 bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & key)
@@ -295,20 +313,19 @@ bool CQMiriamWidget::enter(const std::string & key)
   mpMIRIAMInfo->load(key);
 
   //Set Models for the 4 TableViews
-  mpTblAuthors->setModel(NULL);
-  mpTblAuthors->setModel(mpCreatorDM);
-  mpTblAuthors->resizeRowsToContents();
-  mpTblAuthors->resizeColumnsToContents();
+  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<QTableView*>::const_iterator end = mWidgets.end();
 
-  mpTblReferences->setModel(NULL);
-  mpTblReferences->setModel(mpReferenceDM);
-  mpTblReferences->resizeRowsToContents();
-  mpTblReferences->resizeColumnsToContents();
+  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
 
-  mpTblModified->setModel(NULL);
-  mpTblModified->setModel(mpModifiedDM);
-  mpTblModified->resizeRowsToContents();
-  mpTblModified->resizeColumnsToContents();
+  for (; it != end && itDM != endDM; it++, itDM++)
+    {
+      (*it)->setModel(NULL);
+      (*it)->setModel(*itDM);
+      (*it)->resizeRowsToContents();
+      (*it)->resizeColumnsToContents();
+    }
 
   QDateTime DTCreated;
   if (mpMIRIAMInfo->getCreatedDT() != "")
@@ -338,17 +355,4 @@ void CQMiriamWidget::updateResourcesList()
   for (i = 0; i < imax; i++)
     if (pResource->getMIRIAMResource(i).getMIRIAMCitation())
       mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
-
-  /*// We need to update each currently shown ComboBox
-  Q3ComboTableItem * pComboBox = NULL;
-  imax = table->numCols();
-  for (i = 0; i < imax; i++)
-    if ((pComboBox = dynamic_cast<Q3ComboTableItem *>(table->item(i, COL_RESOURCE))) != NULL)
-      delete pComboBox;
-   */
 }
-
-const CQCreatorDM* CQMiriamWidget::getCreatorDM() const
-  {
-    return mpCreatorDM;
-  }

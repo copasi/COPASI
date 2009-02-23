@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:34 $
+//   $Date: 2009/02/23 05:12:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,14 +14,12 @@
 #ifndef CQModifiedDM_H
 #define CQModifiedDM_H
 
-#include <QAbstractTableModel>
-
-#include  "MIRIAM/CModelMIRIAMInfo.h"
+#include "CQBaseDataModel.h"
 
 #define COL_DATE_MODIFIED      0
 #define TOTAL_COLS_MODIFIEDS   1
 
-class CQModifiedDM : public QAbstractTableModel
+class CQModifiedDM : public CQBaseDataModel
   {
     Q_OBJECT
 
@@ -35,16 +33,9 @@ class CQModifiedDM : public QAbstractTableModel
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole);
-    bool insertRow();
-    bool removeRow(int position);
-    bool clear();
-
   protected:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
-
-  private:
-    CMIRIAMInfo* mMIRIAMInfo;
   };
 
 #endif //CQModifiedDM_H

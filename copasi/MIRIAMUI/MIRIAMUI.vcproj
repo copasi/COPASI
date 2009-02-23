@@ -65,6 +65,18 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\CQBaseDataModel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQBiologicalDescriptionDM.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQComboDelegate.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQCreatorDM.cpp"
 				>
 			</File>
@@ -102,6 +114,18 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\CQBaseDataModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQBiologicalDescriptionDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQComboDelegate.h"
+				>
+			</File>
 			<File
 				RelativePath=".\CQCreatorDM.h"
 				>

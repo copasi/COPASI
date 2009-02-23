@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:33 $
+//   $Date: 2009/02/23 05:12:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,13 +59,11 @@ class CMIRIAMInfo : public CCopasiContainer
 
     const CCopasiVector <CCreator> & getCreators() const;
     CCreator* createCreator(const std::string& objectName);
-    bool removeCreator(const std::string& key);
     bool removeCreator(int position);
     void loadCreators();
 
     const CCopasiVector <CReference> & getReferences() const;
     CReference* createReference(const std::string& objectName);
-    bool removeReference(const std::string& key);
     bool removeReference(int position);
     void loadReferences();
 
@@ -74,13 +72,12 @@ class CMIRIAMInfo : public CCopasiContainer
 
     const CCopasiVector <CModification> & getModifications() const;
     CModification* createModification(const std::string& objectName);
-    bool removeModification(const std::string& key);
     bool removeModification(int position);
     void loadModifications();
 
     const CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions() const;
     CBiologicalDescription* createBiologicalDescription();
-    bool removeBiologicalDescription(const std::string& key);
+    bool removeBiologicalDescription(int position);
     void loadBiologicalDescriptions();
 
     virtual const std::string & getKey() const;

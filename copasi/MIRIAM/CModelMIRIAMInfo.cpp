@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Author: aekamal $
+//   $Date: 2009/02/23 05:12:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,23 +85,6 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
   return pCreator;
 }
 
-bool CMIRIAMInfo::removeCreator(const std::string & key)
-{
-  CCreator * pCreator =
-    dynamic_cast< CCreator * >(CCopasiRootContainer::getKeyFactory()->get(key));
-
-  if (!pCreator)
-    return false;
-
-  const CRDFTriplet & Triplet = pCreator->getTriplet();
-
-  mpRDFGraph->removeTriplet(Triplet.pSubject,
-                            CRDFPredicate::getURI(Triplet.Predicate),
-                            Triplet.pObject);
-
-  return mCreators.remove(pCreator);
-}
-
 bool CMIRIAMInfo::removeCreator(int position)
 {
   CCreator * pCreator = mCreators[position];
@@ -177,23 +160,6 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
     }
 
   return pReference;
-}
-
-bool CMIRIAMInfo::removeReference(const std::string & key)
-{
-  CReference * pReference =
-    dynamic_cast< CReference * >(CCopasiRootContainer::getKeyFactory()->get(key));
-
-  if (!pReference)
-    return false;
-
-  const CRDFTriplet & Triplet = pReference->getTriplet();
-
-  mpRDFGraph->removeTriplet(Triplet.pSubject,
-                            CRDFPredicate::getURI(Triplet.Predicate),
-                            Triplet.pObject);
-
-  return mReferences.remove(pReference);
 }
 
 bool CMIRIAMInfo::removeReference(int position)
@@ -305,23 +271,6 @@ CModification * CMIRIAMInfo::createModification(const std::string & /* objectNam
   return pModification;
 }
 
-bool CMIRIAMInfo::removeModification(const std::string & key)
-{
-  CModification * pModified =
-    dynamic_cast< CModification * >(CCopasiRootContainer::getKeyFactory()->get(key));
-
-  if (!pModified)
-    return false;
-
-  const CRDFTriplet & Triplet = pModified->getTriplet();
-
-  mpRDFGraph->removeTriplet(Triplet.pSubject,
-                            CRDFPredicate::getURI(Triplet.Predicate),
-                            Triplet.pObject);
-
-  return mModifications.remove(pModified);
-}
-
 bool CMIRIAMInfo::removeModification(int position)
 {
   CModification * pModified = mModifications[position];
@@ -380,10 +329,10 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
   return pBiologicalDescription;
 }
 
-bool CMIRIAMInfo::removeBiologicalDescription(const std::string & key)
+bool CMIRIAMInfo::removeBiologicalDescription(int position)
 {
   CBiologicalDescription * pBiologicalDescription =
-    dynamic_cast< CBiologicalDescription * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    mBiologicalDescriptions[position];
 
   if (!pBiologicalDescription)
     return false;

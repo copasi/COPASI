@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/10 21:40:10 $
+//   $Date: 2009/02/23 05:12:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,8 +20,10 @@
 #include "ui_CQMiriamWidget.h"
 #include "CQCreatorDM.h"
 #include "CQReferenceDM.h"
+#include "CQBiologicalDescriptionDM.h"
 #include "CQModifiedDM.h"
 #include "CQDateTimeEditDelegate.h"
+#include "CQComboDelegate.h"
 
 class CMIRIAMInfo;
 
@@ -37,8 +39,6 @@ class CQMiriamWidget : public CopasiWidget, public Ui::CQMiriamWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     const CMIRIAMInfo & getMIRIAMInfo() const;
-    const CQCreatorDM* getCreatorDM() const;
-
     void updateResourcesList();
 
   protected slots:
@@ -48,18 +48,22 @@ class CQMiriamWidget : public CopasiWidget, public Ui::CQMiriamWidget
     CMIRIAMInfo* mpMIRIAMInfo;
     CQCreatorDM* mpCreatorDM;
     CQReferenceDM* mpReferenceDM;
+    CQBiologicalDescriptionDM* mpBiologicalDescriptionDM;
     CQModifiedDM* mpModifiedDM;
     CQDateTimeEditDelegate* mpDTEDelegate;
+    CQComboDelegate* mpResourceDelegate1;
+    CQComboDelegate* mpResourceDelegate2;
+    CQComboDelegate* mpPredicateDelegate;
     QStringList mPredicates;
     QStringList mResources;
-    //std::vector< QTableView * > mWidgets;
+    std::vector< QTableView * > mWidgets;
+    std::vector< CQBaseDataModel * > mDMs;
     void deleteSelectedAuthor();
     void deleteSelectedReference();
+    void deleteSelectedBiologicalDescription();
     void deleteSelectedModified();
 
   private slots:
-    void slotBtnOKClicked();
-    void slotBtnCancelClicked();
     void slotBtnDeleteClicked();
     void slotBtnNewClicked();
     void slotBtnClearClicked();

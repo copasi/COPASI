@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:34 $
+//   $Date: 2009/02/23 05:12:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,16 +12,13 @@
 // All rights reserved.
 
 #include <QDateTime>
-
-#include "CQModifiedDM.h"
 #include "UI/qtUtilities.h"
+#include "CQModifiedDM.h"
 
 CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : QAbstractTableModel(parent)
+    : CQBaseDataModel(MIRIAMInfo, parent)
 
-{
-  mMIRIAMInfo = MIRIAMInfo;
-}
+{}
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
   {
@@ -115,11 +112,6 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQModifiedDM::insertRow()
-{
-  return insertRows(rowCount(), 1);
-}
-
 bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex&)
 {
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
@@ -131,14 +123,4 @@ bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex&)
 
   endRemoveRows();
   return true;
-}
-
-bool CQModifiedDM::removeRow(int position)
-{
-  return removeRows(position, 1);
-}
-
-bool CQModifiedDM::clear()
-{
-  return removeRows(0, rowCount());
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:34 $
+//   $Date: 2009/02/23 05:12:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,15 +11,13 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "CQCreatorDM.h"
 #include "UI/qtUtilities.h"
+#include "CQCreatorDM.h"
 
 CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : QAbstractTableModel(parent)
+    : CQBaseDataModel(MIRIAMInfo, parent)
 
-{
-  mMIRIAMInfo = MIRIAMInfo;
-}
+{}
 
 int CQCreatorDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
   {
@@ -50,12 +48,9 @@ QVariant CQCreatorDM::data(const QModelIndex &index, int role) const
             return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getCreators()[index.row()]->getEmail())));
           case COL_ORG:
             return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getCreators()[index.row()]->getORG())));
-          default:
-            return QVariant();
           }
       }
-    else
-      return QVariant();
+    return QVariant();
   }
 
 QVariant CQCreatorDM::headerData(int section, Qt::Orientation orientation,
@@ -130,11 +125,6 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQCreatorDM::insertRow()
-{
-  return insertRows(rowCount(), 1);
-}
-
 bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex&)
 {
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
@@ -146,14 +136,4 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex&)
 
   endRemoveRows();
   return true;
-}
-
-bool CQCreatorDM::removeRow(int position)
-{
-  return removeRows(position, 1);
-}
-
-bool CQCreatorDM::clear()
-{
-  return removeRows(0, rowCount());
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/09 21:05:34 $
+//   $Date: 2009/02/23 05:12:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,16 +14,14 @@
 #ifndef CQReferenceDM_H
 #define CQReferenceDM_H
 
-#include <QAbstractTableModel>
+#include "CQBaseDataModel.h"
 
-#include  "MIRIAM/CModelMIRIAMInfo.h"
-
-#define COL_RESOURCE           0
-#define COL_ID                 1
+#define COL_RESOURCE_REFERENCE 0
+#define COL_ID_REFERENCE       1
 #define COL_DESCRIPTION        2
 #define TOTAL_COLS_REFERENCES  3
 
-class CQReferenceDM : public QAbstractTableModel
+class CQReferenceDM : public CQBaseDataModel
   {
     Q_OBJECT
 
@@ -37,16 +35,10 @@ class CQReferenceDM : public QAbstractTableModel
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole);
-    bool insertRow();
-    bool removeRow(int position);
-    bool clear();
 
   protected:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
-
-  private:
-    CMIRIAMInfo* mMIRIAMInfo;
   };
 
 #endif //CQReferenceDM_H
