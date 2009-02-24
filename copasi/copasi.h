@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.64.10.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/09 09:31:59 $
+//   $Author: shoops $
+//   $Date: 2009/02/24 19:16:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,7 +128,7 @@ enum TriLogic
 };
 
 /* This is necessary to link with Intel MKL 721 under Visual C++ 8 */
-#if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200
+#if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
 extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
 #endif
 
