@@ -78,14 +78,9 @@ if [ x"$#" = x1 ]; then
     if [ x"$license" = xUS ]; then
       UPLOAD copasi/bin/CopasiSE.exe \
         $license/Copasi-AllSE/$1/CopasiSE-$build.exe
+
       # This is a hack to circumvent a time out in ssh
       sleep 10
-      UPLOAD ~/environment/distribution/libexpat.dll \
-          ~/environment/distribution/libsbml.dll \
-          ~/environment/distribution/msvcp80.dll \
-          ~/environment/distribution/msvcr80.dll \
-          ~/environment/distribution/raptor.dll \
-        $license/Copasi-AllSE/$1/
     fi
     
     cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
@@ -126,7 +121,7 @@ if [ x"$#" = x1 ]; then
 
 #   run Advanced Installer to create msi package
     "$AdvancedInstallerPath/AdvancedInstaller" /build tmp.aip
-#    rm tmp.aip
+    rm tmp.aip
 
 #   restore defaults
     mv -- \
