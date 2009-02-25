@@ -43,9 +43,17 @@ del UI\CQSplashWidget.obj
 del CopasiUI\main.obj 
 del CopasiSE\CopasiSE.obj
 
+if '%QTDIR%' == '' goto QTDIR_NotSet
+set QMAKE=%QTDIR%\bin\qmake
+goto CONFIGURE
+
+:QTDIR_NotSet
+set QMAKE=qmake
+
+:CONFIGURE
 echo executing in copasi:
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+echo   %QMAKE% "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+%QMAKE% "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
 
 nmake qmake_all
 
@@ -62,8 +70,8 @@ cd semantic-test-suite
 echo executing in semantic-test-suite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+echo   %QMAKE% "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+%QMAKE% "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
 
 cd ..
 
@@ -72,7 +80,7 @@ cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
-%QTDIR%\bin\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+echo   %QMAKE% "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
+%QMAKE% "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %arguments%
 
 cd ..
