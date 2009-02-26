@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi.xml,v $ -->
-<!--   $Revision: 1.13 $ -->
+<!--   $Revision: 1.14 $ -->
 <!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2008/03/12 00:35:04 $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2009/02/26 11:51:32 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -26,6 +26,9 @@
  <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >  
  <!ENTITY bibliography SYSTEM "copasi_bibliography.xml" >  
  <!ENTITY errors SYSTEM "copasi_errorMessages.xml" >  
+ <!ENTITY cpp_bindings SYSTEM "copasi_bindings_cpp.xml" >  
+ <!ENTITY java_bindings SYSTEM "copasi_bindings_java.xml" >  
+ <!ENTITY python_bindings SYSTEM "copasi_bindings_python.xml" >  
  
  <!ENTITY copasi.version "Version 4.3 (Build 25)" >
 ]> 
@@ -54,6 +57,10 @@
 &errors;
 
 &bibliography;
+
+&cpp_bindings;
+&java_bindings;
+<!-- &python_bindings; -->
 
 </book>
 
