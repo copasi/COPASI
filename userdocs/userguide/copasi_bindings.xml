@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.1.2.2 $ -->
+<!--   $Revision: 1.1.2.3 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/02/26 10:11:28 $ -->
+<!--   $Date: 2009/02/26 10:45:20 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -15,71 +15,7 @@
 <title condition="JAVA">Java</title>
 <title condition="CPP">C++</title>
 <title condition="PYTHON">Python</title>
-<!--
-<sect1 id="CCopasiRootContainer" xreflabel="CCopasiRootContainer">
-<title>CCopasiRootContainer</title>
 
-<para>
-In the COPASI backend, currently everything is located in an instance of CCopasiRootContainer ("copasi/report/CCopasiRootContainer.h"). There is only one root container which has to be initialized by calling
-the static method init(int argc,char** argv) in CCopasiRootContainer. This call is the first call you have to make when you want to work with the backend library and you usually only call it once per programm. The method takes two arguments which correspond to the two arguments that the main function got. If the main function did not get any arguments, you can pass 0 and NULL as the arguments to init.
-</para>
-
-<para>
-In order to delete all the backend objects and clean up once you are finished using the library, you have to call the static method destroy in CCopasiRootContainer. This method takes no arguments.
-It is also possible to create a new root container instance by calling init again after destroy has been called.
-</para>
-
-<para>
-Besides the two functions for the initialisation and deinitialisation of the library, CCopasiRootContainer has a number of other useful methods that allow the user to aquire handles to the function database or
-the list of datamodels.
-</para>
-
-<para>
-The COPASI backend only contains a single function database which contains all predefined and user defined function definitions. This function database is shared by all datamodels.
-In order to get a pointer to this function database, you can use the static method getFunctionList in CCopasiContainer. The method takes no arguments and returns a pointer to the function database which is an instance of the class CFunctionDB ("copasi/function/CFunctionDB.h").
-</para>
-
-<para>
-The other important data structure that is located in the root container is the list of datamodels. Earlier versions of the COPASI backend could only handle on datamodel at a time, but newer versions now allow the user to work with several datamodels at the same time.
-</para>
-
-<para>
-After the root container has been initialized by calling init, it does not contain any datamodel yet. In order to create a new datamodel and add it to the root container, you have to call the static method addDatamodel in CCopasiRootContainer. The method takes no arguments and returns a pointer to the newly created instance of CCopasiDataModel. Since the datamodel is owned by the root container, it will be deleted when the root container is deleted by calling destroy. The user does not have to handle the memory deallocation.  
-</para>
-
-<para>
-In order to get the list of all datamodels, there is a static method in CCopasiContainer called getDatamodelList. The method takes no arguments and returns a pointer to the list of datamodels which is an instance of CCopasiVector&lt;CCopasiDataModel&gt;.
-</para>
-</sect1>
-
-<sect1 id="CCopasiDataModel" xreflabel="CCopasiDataModel">
-<title>CCopasiDataModel</title>
-
-<para>
-CCopasiDataModel ("copasi/CopasiDataModel/CCopasiDataModel.h") is the class the contains the actual model, all tasks and all output definitions (report and plots).
-</para>
-
-<para>
-In order to create a new model, you can call the static method addDatamodel in CCopasiRootContainer which will return y pointer to the newly created datamodel. Or if the datamodel already has been created, you can get it via its index in the list of datamodels which you can get from the root container by calling getDatamodelList.
-</para>
-
-<para>
-getDataModelList returns a pointer to an instance of CCopasiVector&lt;CCopasiDataModel&gt; which has a method size to query the number of datamodels it contains. In order to get a certain datamodel, you have to dereference the pointer in order to use the index operator (e.g. (*CCopasiRootContainer::getDatamodelList())[INDEX] ).
-</para>
-
-<para>
-If you want to delete a datamodel before the end of your program, CCopasiVector has a method remove which you can call with an index. This call will remove the object at the given index from the vector and free the memory that was allocated for it.  
-</para>
-
-<para>
-<caution>Currently, it is not a good idea to change the name of a datamodel instance (e.g. by calling setObjectName). The backend relies on the datamodel to have a certain name and if that name changes, the backend will stop working for that datamodel. We hope to fix this problem in upcoming releases of COPASI.</caution>
-</para>
-
-<para>
-<emphasis>CCopasiDataModel</emphasis> contains the actual model which can be obtained with the method <emphasis>getModel()</emphasis>, the defined tasks which can be obtained with the method <emphasis>getTaskList()</emphasis>, the reports which are obtained via the method <emphasis>getReportDefinitionList()</emphasis> and the function database which can be obtained with the <emphasis>getFunctionList()</emphasis>.
-In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some methods for loading COPASI files or importing SBML files, for saving COPASI files or exporting SBML files, for creating new models and for adding tasks to the task list.
-</para>
--->
 <sect1 id="Introduction">
 <title>Introduction</title>
 <para>
@@ -107,6 +43,15 @@ CCopasiDataModel::Global = new CCopasiDataModel;
 </para>
 <para>
 It is best to do the initialization in a try...catch block.
+</para>
+<para>
+Once the backend is no longer needed, it can be deinitialized by deleting the global datamodel and the root container.
+</para>
+<para>
+<programlisting>
+delete CCopasiDataModel::Global;
+delete CCopasiContainer::Root;
+</programlisting>
 </para>
 </sect1>
 
