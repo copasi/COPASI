@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.1.2.1 $ -->
+<!--   $Revision: 1.1.2.2 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/02/24 19:15:59 $ -->
+<!--   $Date: 2009/02/26 10:11:28 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -82,10 +82,31 @@ In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some
 -->
 <sect1 id="Introduction">
 <title>Introduction</title>
-
 <para>
 This document tries to give a superficial overview of the COPASI backend API. This documentation is in no way meant to give a complete reference to the API. It is only intended to give the programmer that wants to use the library or the language bindings an overview of the classes and some examples on how certain things can be done.
 The language bindings expose parts of the underlying C++ API and so far no attempt has been made to simplify the API to better fit the target language or to make it easier for the programmer. All there is so far is a way to use COPASIs classes and methods from several languages.
+</para>
+</sect1>
+<sect1 condition="CPP" id="initialization">
+<title>Initialization of the library</title>
+<para>
+Before the COPASI backend library can be used in C++, it has to be initialized.
+Initialization should be done as follows:
+</para>
+<para>
+<programlisting>
+// initialize some system variables
+// argc and argv are the parameters that the main rountine gets
+// alternatively, 0 and NULL may be passed as argc and argv.
+COptions::init(argc, argv);
+// Create the root container.
+CCopasiContainer::init();
+// Create the global data model.
+CCopasiDataModel::Global = new CCopasiDataModel;
+</programlisting>
+</para>
+<para>
+It is best to do the initialization in a try...catch block.
 </para>
 </sect1>
 
