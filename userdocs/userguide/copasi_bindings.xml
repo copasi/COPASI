@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.1.2.3 $ -->
+<!--   $Revision: 1.1.2.4 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/02/26 10:45:20 $ -->
+<!--   $Date: 2009/02/26 11:03:47 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -52,6 +52,12 @@ Once the backend is no longer needed, it can be deinitialized by deleting the gl
 delete CCopasiDataModel::Global;
 delete CCopasiContainer::Root;
 </programlisting>
+</para>
+<para>
+In order to be more portable, the C++ backend of COPASI makes extensive use of typedefs for several datatypes. All those typedefs can be found in the copasi.h header file which has to be included by all programs that want to use the COPASI backend library in a C++ program.
+</para>
+<para>
+And last, but not least, the statement "#define COPASI_MAIN" should occur at the very beginning (before copasi.h is included) of your source file that contains the main routine, otherwise, you will not be able to link against the COPASI library.
 </para>
 </sect1>
 
