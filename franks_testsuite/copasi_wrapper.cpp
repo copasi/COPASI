@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:04 $
+//   $Author: gauges $
+//   $Date: 2009/02/27 13:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
 
   if (Text != "") std::cerr << Text << std::endl;
 
-  pdelete(CCopasiRootContainer::Root);
+  CCopasiRootContainer::destroy();
 
   return 0;
 }

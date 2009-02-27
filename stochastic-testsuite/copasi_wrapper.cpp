@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: gauges $
+//   $Date: 2009/02/27 13:15:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
 
-  pdelete(CCopasiRootContainer::Root);
+  CCopasiRootContainer::destroy();
 
   return 0;
 }
