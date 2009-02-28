@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
-#   $Revision: 1.13 $
+#   $Revision: 1.14 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2009/02/23 05:12:36 $
+#   $Date: 2009/02/28 18:25:17 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@ CONFIG += qt
 
 HEADERS += \
 		CQMiriamWidget.h \
-		CQBaseDataModel.h \
 		CQCreatorDM.h \
 		CQReferenceDM.h \
 		CQBiologicalDescriptionDM.h \		
@@ -33,7 +32,6 @@ HEADERS += \
 
 SOURCES += \
 		CQMiriamWidget.cpp \
-		CQBaseDataModel.cpp \
 		CQCreatorDM.cpp \
 		CQReferenceDM.cpp \
 		CQBiologicalDescriptionDM.cpp \

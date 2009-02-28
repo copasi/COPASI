@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,13 +16,15 @@
 #include "CQModifiedDM.h"
 
 CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(MIRIAMInfo, parent)
+    : CQBaseDataModel(parent)
 
-{}
+{
+  mpMIRIAMInfo = MIRIAMInfo;
+}
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
   {
-    return mMIRIAMInfo->getModifications().size();
+    return mpMIRIAMInfo->getModifications().size();
   }
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
   {
@@ -42,7 +44,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
         switch (index.column())
           {
           case COL_DATE_MODIFIED:
-            QDateTime dt(QDateTime::fromString(FROM_UTF8(mMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
+            QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
             if (dt.isValid())
               {
                 if (role == Qt::DisplayRole)
@@ -90,7 +92,7 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
       switch (index.column())
         {
         case COL_DATE_MODIFIED:
-          mMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toString()));
           break;
         }
       emit dataChanged(index, index);
@@ -105,7 +107,7 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      mMIRIAMInfo->createModification("");
+      mpMIRIAMInfo->createModification("");
     }
 
   endInsertRows();
@@ -118,7 +120,7 @@ bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      mMIRIAMInfo->removeModification(position);
+      mpMIRIAMInfo->removeModification(position);
     }
 
   endRemoveRows();

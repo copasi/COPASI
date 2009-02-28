@@ -154,6 +154,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQBaseDataModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQCompartment.cpp"
 				>
 			</File>
@@ -688,6 +692,10 @@
 			</File>
 			<File
 				RelativePath="CQArrayAnnotationsWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQBaseDataModel.h"
 				>
 			</File>
 			<File

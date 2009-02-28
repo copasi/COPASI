@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,8 @@
 #ifndef CQCreatorDM_H
 #define CQCreatorDM_H
 
-#include "CQBaseDataModel.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "UI/CQBaseDataModel.h"
 
 #define COL_FAMILY_NAME        0
 #define COL_GIVEN_NAME         1
@@ -40,6 +41,7 @@ class CQCreatorDM : public CQBaseDataModel
   protected:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+    CMIRIAMInfo* mpMIRIAMInfo;
   };
 
 #endif //CQCreatorDM_H

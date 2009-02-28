@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQBiologicalDescriptionDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,13 +15,15 @@
 #include "CQBiologicalDescriptionDM.h"
 
 CQBiologicalDescriptionDM::CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(MIRIAMInfo, parent)
+    : CQBaseDataModel(parent)
 
-{}
+{
+  mpMIRIAMInfo = MIRIAMInfo;
+}
 
 int CQBiologicalDescriptionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
   {
-    return mMIRIAMInfo->getBiologicalDescriptions().size();
+    return mpMIRIAMInfo->getBiologicalDescriptions().size();
   }
 int CQBiologicalDescriptionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
   {
@@ -41,11 +43,11 @@ QVariant CQBiologicalDescriptionDM::data(const QModelIndex &index, int role) con
         switch (index.column())
           {
           case COL_RELATIONSHIP:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getPredicate())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getPredicate())));
           case COL_RESOURCE_BD:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getResource())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getResource())));
           case COL_ID_BD:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getId())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->getId())));
           }
       }
     return QVariant();
@@ -83,13 +85,13 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
       switch (index.column())
         {
         case COL_RELATIONSHIP:
-          mMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setPredicate(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setPredicate(TO_UTF8(value.toString()));
           break;
         case COL_RESOURCE_BD:
-          mMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setResource(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setResource(TO_UTF8(value.toString()));
           break;
         case COL_ID_BD:
-          mMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setId(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getBiologicalDescriptions()[index.row()]->setId(TO_UTF8(value.toString()));
           break;
         }
       emit dataChanged(index, index);
@@ -104,7 +106,7 @@ bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelI
 
   for (int row = 0; row < rows; ++row)
     {
-      mMIRIAMInfo->createBiologicalDescription();
+      mpMIRIAMInfo->createBiologicalDescription();
     }
 
   endInsertRows();
@@ -117,7 +119,7 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
 
   for (int row = 0; row < rows; ++row)
     {
-      mMIRIAMInfo->removeBiologicalDescription(position);
+      mpMIRIAMInfo->removeBiologicalDescription(position);
     }
 
   endRemoveRows();

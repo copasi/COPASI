@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,8 @@
 #ifndef CQModifiedDM_H
 #define CQModifiedDM_H
 
-#include "CQBaseDataModel.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "UI/CQBaseDataModel.h"
 
 #define COL_DATE_MODIFIED      0
 #define TOTAL_COLS_MODIFIEDS   1
@@ -36,6 +37,7 @@ class CQModifiedDM : public CQBaseDataModel
   protected:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+    CMIRIAMInfo* mpMIRIAMInfo;
   };
 
 #endif //CQModifiedDM_H

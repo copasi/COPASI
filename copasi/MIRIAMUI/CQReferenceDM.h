@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,8 @@
 #ifndef CQReferenceDM_H
 #define CQReferenceDM_H
 
-#include "CQBaseDataModel.h"
+#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "UI/CQBaseDataModel.h"
 
 #define COL_RESOURCE_REFERENCE 0
 #define COL_ID_REFERENCE       1
@@ -39,6 +40,7 @@ class CQReferenceDM : public CQBaseDataModel
   protected:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+    CMIRIAMInfo* mpMIRIAMInfo;
   };
 
 #endif //CQReferenceDM_H

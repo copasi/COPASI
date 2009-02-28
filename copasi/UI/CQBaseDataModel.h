@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQBaseDataModel.h,v $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
 //   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:46 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,14 +15,12 @@
 
 #include <QAbstractTableModel>
 
-#include  "MIRIAM/CModelMIRIAMInfo.h"
-
 class CQBaseDataModel : public QAbstractTableModel
   {
     Q_OBJECT
 
   public:
-    CQBaseDataModel(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
+    CQBaseDataModel(QObject *parent = 0);
     virtual QVariant data(const QModelIndex &index, int role) const = 0;
     virtual QVariant headerData(int section, Qt::Orientation orientation,
                                 int role = Qt::DisplayRole) const = 0;
@@ -36,7 +34,6 @@ class CQBaseDataModel : public QAbstractTableModel
   protected:
     virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;
     virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;
-    CMIRIAMInfo* mMIRIAMInfo;
   };
 
 #endif //CQBaseDataModel_H

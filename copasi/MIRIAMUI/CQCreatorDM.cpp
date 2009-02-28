@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/02/28 18:25:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,13 +15,15 @@
 #include "CQCreatorDM.h"
 
 CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-    : CQBaseDataModel(MIRIAMInfo, parent)
+    : CQBaseDataModel(parent)
 
-{}
+{
+  mpMIRIAMInfo = MIRIAMInfo;
+}
 
 int CQCreatorDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
   {
-    return mMIRIAMInfo->getCreators().size();
+    return mpMIRIAMInfo->getCreators().size();
   }
 int CQCreatorDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
   {
@@ -41,13 +43,13 @@ QVariant CQCreatorDM::data(const QModelIndex &index, int role) const
         switch (index.column())
           {
           case COL_FAMILY_NAME:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getCreators()[index.row()]->getFamilyName())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getFamilyName())));
           case COL_GIVEN_NAME:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getCreators()[index.row()]->getGivenName())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getGivenName())));
           case COL_EMAIL:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getCreators()[index.row()]->getEmail())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getEmail())));
           case COL_ORG:
-            return QVariant(QString(FROM_UTF8(mMIRIAMInfo->getCreators()[index.row()]->getORG())));
+            return QVariant(QString(FROM_UTF8(mpMIRIAMInfo->getCreators()[index.row()]->getORG())));
           }
       }
     return QVariant();
@@ -94,16 +96,16 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
       switch (index.column())
         {
         case COL_FAMILY_NAME:
-          mMIRIAMInfo->getCreators()[index.row()]->setFamilyName(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getCreators()[index.row()]->setFamilyName(TO_UTF8(value.toString()));
           break;
         case COL_GIVEN_NAME:
-          mMIRIAMInfo->getCreators()[index.row()]->setGivenName(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getCreators()[index.row()]->setGivenName(TO_UTF8(value.toString()));
           break;
         case COL_EMAIL:
-          mMIRIAMInfo->getCreators()[index.row()]->setEmail(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getCreators()[index.row()]->setEmail(TO_UTF8(value.toString()));
           break;
         case COL_ORG:
-          mMIRIAMInfo->getCreators()[index.row()]->setORG(TO_UTF8(value.toString()));
+          mpMIRIAMInfo->getCreators()[index.row()]->setORG(TO_UTF8(value.toString()));
           break;
         }
       emit dataChanged(index, index);
@@ -118,7 +120,7 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      mMIRIAMInfo->createCreator("");
+      mpMIRIAMInfo->createCreator("");
     }
 
   endInsertRows();
@@ -131,7 +133,7 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      mMIRIAMInfo->removeCreator(position);
+      mpMIRIAMInfo->removeCreator(position);
     }
 
   endRemoveRows();

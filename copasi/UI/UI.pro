@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.184 $
+#   $Revision: 1.185 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/01/28 13:06:11 $
+#   $Author: aekamal $
+#   $Date: 2009/02/28 18:25:46 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.184 $ $Author: pwilly $ $Date: 2009/01/28 13:06:11 $
+# $Revision: 1.185 $ $Author: aekamal $ $Date: 2009/02/28 18:25:46 $
 ######################################################################
 
 LIB = UI
@@ -52,6 +52,7 @@ HEADERS	+= \
 	CTabWidget.h \
 	CQArrayAnnotationsWidget.h \
 	CQBarChart.h \
+	CQBaseDataModel.h \
 	CQDateTimeEditTableItem.h \
 	CQEventsWidget.h \
 #	CQEventWidget1.h \
@@ -122,6 +123,7 @@ SOURCES	+= \
 	CTabWidget.cpp \
 	CQArrayAnnotationsWidget.cpp \
 	CQBarChart.cpp \
+	CQBaseDataModel.cpp \
 	CQDateTimeEditTableItem.cpp \
 	CQEventsWidget.cpp \
 #	CQEventWidget1.cpp \
