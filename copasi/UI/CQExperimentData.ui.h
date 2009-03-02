@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/03/02 21:02:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -648,6 +648,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
       mpEditWeight->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
       mpEditThreshold->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
 #endif // COPASI_CROSSVALIDATION
+
     }
   else
     {
@@ -1037,7 +1038,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
   QComboBox * pComboBox;
   QToolButton* pBtn;
-  CCopasiObject * pObject;
+  const CCopasiObject * pObject;
   CExperiment::Type Type;
 
   for (i = 0; i < imax; i++)
@@ -1086,7 +1087,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       assert(pDataModel != NULL);
       if (ObjectMap.getObjectCN(i) != "")
         {
-          pObject = pDataModel->ObjectFromName(ObjectMap.getObjectCN(i));
+          pObject = pDataModel->getObject(ObjectMap.getObjectCN(i));
           if (pObject)
             mpTable->setText(i, COL_OBJECT, FROM_UTF8(pObject->getObjectDisplayName()));
           else
@@ -1150,14 +1151,14 @@ void CQExperimentData::slotTypeChanged(int row)
 
     case CExperiment::independent:
       if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::INITIAL_VALUE,
-                                              pDataModel->ObjectFromName(CN)))
+                                              pDataModel->getObject(CN)))
         slotModelObject(row);
       BtnEnabled = true;
       break;
 
     case CExperiment::dependent:
       if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::TRANSIENT_VALUE,
-                                              pDataModel->ObjectFromName(CN)))
+                                              pDataModel->getObject(CN)))
         slotModelObject(row);
       BtnEnabled = true;
       break;

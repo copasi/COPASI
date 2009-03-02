@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:18 $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1316,7 +1316,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
           if (pObjectNode == NULL) continue;
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = dataModel.ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
             {
@@ -2234,6 +2234,7 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
           ++it2;
         }
 #endif // COPASI_DEBUG
+
     }
 }
 
@@ -2293,6 +2294,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 #else
       this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
 #endif
+
     }
   else
     {
@@ -2355,6 +2357,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 #else
           this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
 #endif
+
         }
       else
         {
@@ -2543,6 +2546,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 #else
               this->mUsedFunctions.insert(usedFunctions.begin(), usedFunctions.end());
 #endif
+
             }
           else
             {
@@ -3156,7 +3160,7 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
       assert(pObjectNode != NULL);
       if (pObjectNode != NULL)
         {
-          const CCopasiObject* pObject = dataModel.ObjectFromName(pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = dataModel.getObject(pObjectNode->getObjectCN());
           if (!pObject)
             {
               fatalError();
@@ -3455,7 +3459,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         {
           // replace by -1/0
           pResult = new ASTNode(AST_RATIONAL);
-          pResult->setValue(-1L, 0L);
+          pResult->setValue( -1L, 0L);
         }
       else
         {
@@ -3868,7 +3872,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
     {
       std::vector<CCopasiContainer*> containers;
       containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-      const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN());
+      const CCopasiObject* pObject = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN());
       assert(pObject);
       if (pObject->isReference())
         {
@@ -3992,7 +3996,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
         {
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+          const CCopasiObject* pObject = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
             {
@@ -4017,7 +4021,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                     }
                   else if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
                     {
-                      const CCopasiObject* pObject2 = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                      const CCopasiObject* pObject2 = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
                       assert(pObject2);
                       if (pObject2->isReference())
                         {
@@ -4040,7 +4044,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                   if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
                     {
                       // check if pRight is a reference to a species
-                      const CCopasiObject* pObject2 = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+                      const CCopasiObject* pObject2 = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
                       assert(pObject2);
                       if (pObject2->isReference())
                         {
@@ -4053,7 +4057,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                               // to Avogadros number
                               if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
                                 {
-                                  const CCopasiObject* pObject2 = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
+                                  const CCopasiObject* pObject2 = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
                                   assert(pObject2);
                                   if (pObject2->isReference())
                                     {
@@ -4079,7 +4083,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
         {
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = dataModel.getModel()->ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
+          const CCopasiObject* pObject = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
           assert(pObject);
           if (pObject->isReference())
             {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:07 $
+//   $Date: 2009/03/02 21:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -329,7 +329,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
           assert(pObjectNode);
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CCopasiDataModel*>(pDataModel)->getModel());
-          const CCopasiObject* pObject = pDataModel->getModel()->ObjectFromName(containers, pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = pDataModel->ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
 
           if (pObject->isReference())
@@ -429,7 +429,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
           assert(pObjectNode);
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* pObject = pDataModel->ObjectFromName(cn);
+          const CCopasiObject* pObject = pDataModel->getObject(cn);
           assert(pObject);
           std::string objectName = pObject->getObjectName();
 

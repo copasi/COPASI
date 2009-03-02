@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.132 $
+//   $Revision: 1.133 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/21 12:27:57 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1188,8 +1188,56 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
   return true;
 }
 
-CCopasiObject * CCopasiDataModel::ObjectFromName(const CCopasiObjectName & objName)
-{return const_cast<CCopasiObject *>(this->getObject(objName));}
+const CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+    const CCopasiObjectName & objName) const
+  {
+    const CCopasiObject * pObject = NULL;
+    const CCopasiContainer* pContainer;
+    CCopasiObjectName ContainerName;
+    unsigned C_INT32 containerIndex;
+    std::string::size_type pos;
 
-const CCopasiObject * CCopasiDataModel::ObjectFromName(const CCopasiObjectName & objName) const
-  {return this->getObject(objName);}
+    //favor to search the list of container first
+    for (containerIndex = 0;
+         containerIndex < listOfContainer.size() && !pObject;
+         containerIndex++)
+      {
+        pContainer = listOfContainer[containerIndex];
+        ContainerName = pContainer->getCN();
+
+        while (ContainerName.getRemainder() != "")
+          ContainerName = ContainerName.getRemainder();
+
+        if ((pos = objName.find(ContainerName)) == std::string::npos)
+          continue;
+
+        if (pos + ContainerName.length() == objName.length())
+          pObject = pContainer;
+        else
+          pObject = pContainer->getObject(objName.substr(pos + ContainerName.length() + 1));
+      }
+
+    // if not found try to search the parent datamodel
+    if (!pObject)
+      {
+        const CCopasiDataModel* pDataModel = getObjectDataModel();
+        if (pDataModel)
+          pObject = pDataModel->getObject(objName);
+      }
+
+    // if still not found search the function database in the root container
+    if (!pObject)
+      pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
+
+    // right now, it does not make sense to search the root container
+    //if (!pObject)
+    //  pObject = CCopasiRootContainer::getObject(objName);
+
+    return pObject;
+  }
+
+CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+    const CCopasiObjectName & objName)
+{
+  return const_cast<CCopasiObject *>(ObjectFromName(listOfContainer, objName));
+}

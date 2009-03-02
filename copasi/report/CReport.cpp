@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,9 +33,9 @@
 //class CReport
 //
 //////////////////////////////////////////////////
-CReport::CReport(const CCopasiContainer * pParent):
-    CCopasiContainer("Report", pParent, "Report"),
+CReport::CReport():
     COutputInterface(),
+    mpDataModel(NULL),
     mpOstream(NULL),
     mStreamOwner(false),
     mpReportDef(NULL),
@@ -50,10 +50,9 @@ CReport::CReport(const CCopasiContainer * pParent):
     mState(Invalid)
 {}
 
-CReport::CReport(const CReport & src,
-                 const CCopasiContainer * pParent):
-    CCopasiContainer("Report", pParent, "Report"),
+CReport::CReport(const CReport & src):
     COutputInterface(src),
+    mpDataModel(src.mpDataModel),
     mpOstream(src.mpOstream),
     mStreamOwner(false),
     mpReportDef(src.mpReportDef),
@@ -283,15 +282,16 @@ void CReport::printFooter()
 // Compile the List of Report Objects;
 // Support Parellel
 
-bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer,
+                      const CCopasiDataModel* pDataModel)
 {
+  assert(mpDataModel == pDataModel);
+
   bool success = true;
   COutputInterface::mObjects.clear();
 
   // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
-
-  listOfContainer.push_back(this);
 
   if (mpReportDef->isTable())
     if (!mpReportDef->preCompileTable(listOfContainer)) success = false;
@@ -316,8 +316,12 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
   return success;
 }
 
-std::ostream * CReport::open(std::ostream * pOstream)
+std::ostream * CReport::open(const CCopasiDataModel * pDataModel,
+                             std::ostream * pOstream)
 {
+  mpDataModel = pDataModel;
+  assert(mpDataModel != NULL);
+
   if (mStreamOwner) pdelete(mpOstream);
 
   mpOstream = pOstream;
@@ -328,10 +332,8 @@ std::ostream * CReport::open(std::ostream * pOstream)
     }
   else if (mTarget != "" && mpReportDef != NULL)
     {
-      CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
       if (CDirEntry::isRelativePath(mTarget) &&
-          !CDirEntry::makePathAbsolute(mTarget, pDataModel->getFileName()))
+          !CDirEntry::makePathAbsolute(mTarget, mpDataModel->getFileName()))
         mTarget = CDirEntry::fileName(mTarget);
 
       mpOstream = new std::ofstream;
@@ -368,8 +370,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
   for (i = 0; i < nameVector->size(); i++)
     {
-      pSelected = CCopasiContainer::ObjectFromName(*pListOfContainer,
-                  (*nameVector)[i]);
+      pSelected = const_cast<CCopasiObject *>(mpDataModel->ObjectFromName(*pListOfContainer, (*nameVector)[i]));
 
       if (!pSelected)
         {
@@ -392,8 +393,8 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
 bool CReport::compileChildReport(CReport * pReport, std::vector< CCopasiContainer * > listOfContainer)
 {
-  pReport->open(mpOstream);
-  bool success = pReport->compile(listOfContainer);
+  pReport->open(mpDataModel, mpOstream);
+  bool success = pReport->compile(listOfContainer, mpDataModel);
 
   const std::set< const CCopasiObject * > & Objects = pReport->COutputInterface::getObjects();
   std::set< const CCopasiObject * >::const_iterator it = Objects.begin();

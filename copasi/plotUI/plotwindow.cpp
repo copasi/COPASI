@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/08 16:07:10 $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 /*void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
   //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
-
+ 
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);
 }*/
@@ -256,13 +256,14 @@ void PlotWindow::slotZoomOut()
 PlotWindow::~PlotWindow()
 {if (mpHandler) mpHandler->removeInterface(this);}
 
-bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer,
+                         const CCopasiDataModel* pDataModel)
 {
   mObjects.clear();
   bool success = true;
 
   if (mpPlot)
-    success = mpPlot->compile(listOfContainer);
+    success = mpPlot->compile(listOfContainer, pDataModel);
 
   return success;
 };

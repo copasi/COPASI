@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Date: 2009/03/02 21:02:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
-      mpObject = pDataModel->ObjectFromName(*pString);
+      mpObject = pDataModel->getObject(*pString);
     }
   if (mpObject)
     lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));

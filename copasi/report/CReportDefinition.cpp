@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,12 +87,12 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
 
   for (; it != end; ++it)
     {
-      pObject = this->ObjectFromName(listOfContainer, *it);
+      pObject = getObjectDataModel()->ObjectFromName(listOfContainer, *it);
 
       if (!pObject)
         CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, it->c_str());
       else
-        addTableElement(this->ObjectFromName(listOfContainer, *it));
+        addTableElement(getObjectDataModel()->ObjectFromName(listOfContainer, *it));
     }
 
   return success;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.18 $
+$Revision: 1.19 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/19 19:51:18 $
+$Date: 2009/03/02 21:02:16 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,8 @@ COutputHandlerPlot::COutputHandlerPlot(const COutputHandlerPlot & src):
 COutputHandlerPlot::~COutputHandlerPlot()
 {}
 
-bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
+                                 const CCopasiDataModel* pDataModel)
 {
   if (!mpDefinitionVector) return false;
 
@@ -70,8 +71,6 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
         }
     }
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
   return COutputHandler::compile(listOfContainer, pDataModel);
 }
 

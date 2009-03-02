@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/03/02 21:02:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ const CCopasiObjectName & CSensItem::getSingleObjectCN() const
 
 std::string CSensItem::getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const
   {
-    const CCopasiObject* tmpObject = pDataModel->ObjectFromName(mSingleObjectCN);
+    const CCopasiObject* tmpObject = pDataModel->getObject(mSingleObjectCN);
     if (tmpObject)
       return tmpObject->getObjectDisplayName();
     else
@@ -96,7 +96,7 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel*
 
   if (isSingleObject())
     {
-      CCopasiObject* tmpObject = pDataModel->ObjectFromName(getSingleObjectCN());
+      CCopasiObject * tmpObject = const_cast<CCopasiObject *>(pDataModel->getObject(getSingleObjectCN()));
       if (!tmpObject) {return ret;}  //return empty list
       if (!tmpObject->isValueDbl()) {return ret;}  //return empty list
       ret.push_back(tmpObject);
@@ -556,7 +556,7 @@ std::ostream &operator<<(std::ostream &os, const CSensItem & si)
     os << si.getSingleObjectDisplayName();
   else
     os << si.getListTypeDisplayName();
-
+ 
   return os;
 }
  */

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/03/02 21:02:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <qcombobox.h> 
 //Added by qt3to4:
 #include <QKeyEvent>
 
@@ -355,7 +355,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
           std::vector<CCopasiContainer*> containers;
           containers.push_back(pDataModel);
           containers.push_back(pFunDB);
-          CCopasiObject* temp_object = pDataModel->getModel()->ObjectFromName(containers, temp_CN);
+          CCopasiObject* temp_object = pDataModel->ObjectFromName(containers, temp_CN);
           if (temp_object != NULL)
             {
               std::string DisplayName = temp_object->getObjectDisplayName();

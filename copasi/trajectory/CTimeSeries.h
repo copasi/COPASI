@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:35 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
   {
   private:
     //since the assignment operator are not properly implemented
-    //they should be inaccesible
+    //they should be inaccessible
 
     CTimeSeries & operator= (const CTimeSeries &);
 
@@ -57,9 +57,10 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
     /**
      * compile the object list from name vector
      * @param std::vector< CCopasiContainer * > listOfContainer
+     * @param  const CCopasiDataModel* pDataModel
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, CCopasiDataModel* pDataModel);
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
 
     /**
      * Perform an output event for the current activity
@@ -68,13 +69,13 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
     virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & activity);
 
     /**
-     * Finsh the output
+     * Finish the output
      */
     virtual void finish();
 
@@ -104,7 +105,7 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
              const std::string& separator = "\t") const;
 
     /**
-     * Retreive the number of time steps (rows)
+     * Retrieve the number of time steps (rows)
      * @return const unsigned C_INT32 & recordedSteps
      */
     const unsigned C_INT32 & getRecordedSteps() const;
@@ -148,7 +149,7 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
     const std::string & getKey(const unsigned C_INT32 & variable) const;
 
     /**
-     * get the id of the sbml object correspoding to column indexed by variable.
+     * get the id of the SBML object corresponding to column indexed by variable.
      * If there is no corresponding SBML object (e.g. if the model comes from a
      * COPASI file) the empty string is returned.
      * @param const unsigned C_INT32 & variable
@@ -189,7 +190,7 @@ class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
     std::vector< std::string > mTitles;
 
     /**
-     * Vector of indexes pointing to the colum storing the volume of the containing
+     * Vector of indexes pointing to the column storing the volume of the containing
      * compartment for a species (C_INVALID_INDEX otherwise)
      */
     CVector< unsigned C_INT32 > mCompartment;

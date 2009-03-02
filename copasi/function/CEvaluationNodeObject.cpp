@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:57 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,7 +152,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
     node->setType(AST_NAME);
     // since I can not get the model in which this node is located, I just
     // assume that it will always be the current global model.
-    const CCopasiObject* object = pDataModel->ObjectFromName(mRegisteredObjectCN);
+    const CCopasiObject* object = pDataModel->getObject(mRegisteredObjectCN);
     assert(object);
     // if it is a reference, we get the parent of the reference
     if (object->isReference())
@@ -203,7 +203,7 @@ void CEvaluationNodeObject::writeMathML(std::ostream & out,
                                         bool /* expand */,
                                         unsigned C_INT32 l) const
   {
-    const CCopasiObject* obj = pDataModel->ObjectFromName(mRegisteredObjectCN);
+    const CCopasiObject* obj = pDataModel->getObject(mRegisteredObjectCN);
     out << SPC(l) << CMathMl::getMMLName(obj) << std::endl;
     //or use mValue instead?
   }

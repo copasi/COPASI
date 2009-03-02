@@ -1,12 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
-   End CVS Header */
+  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.h,v $
+  $Revision: 1.13 $
+  $Name:  $
+  $Author: shoops $
+  $Date: 2009/03/02 21:02:16 $
+  End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,26 +50,27 @@ class COutputHandlerPlot : public COutputHandler
 
     /**
      * compile the object list from name vector
-     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * @param  const CCopasiDataModel* pDataModel
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
 
     /**
      * Perform an output event for the current activity
      * @param const Activity & activity
-     */
+     */ 
     // virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
-     */
+     */ 
     // virtual void separate(const Activity & activity);
 
     /**
-     * Finsh the output
-     */
+     * Finish the output
+     */ 
     // virtual void finish();
 
     /**
@@ -77,7 +83,7 @@ class COutputHandlerPlot : public COutputHandler
 
   private:
     /**
-     * The plot definitiona
+     * The plot definition
      */
     COutputDefinitionVector * mpDefinitionVector;
 

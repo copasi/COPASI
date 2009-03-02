@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:18 $
+//   $Date: 2009/03/02 21:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,7 +252,7 @@ void COptProblem::initObjects()
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
 
-#ifdef WIN32
+#ifdef WIN32 
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
@@ -265,7 +265,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
       std::vector< CCopasiContainer * > ListOfContainer;
       ListOfContainer.push_back(getObjectAncestor("Vector"));
       mpSubtask =
-        dynamic_cast< CCopasiTask * >(CCopasiContainer::ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+        dynamic_cast< CCopasiTask * >(getObjectDataModel()->ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
 
       try
         {
@@ -734,7 +734,7 @@ CCopasiTask::Type COptProblem::getSubtaskType() const
     std::vector< CCopasiContainer * > ListOfContainer;
     ListOfContainer.push_back(getObjectAncestor("Vector"));
     mpSubtask =
-      dynamic_cast< CCopasiTask * >(const_cast<COptProblem*>(this)->ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+      dynamic_cast< CCopasiTask * >(const_cast< CCopasiObject *>(getObjectDataModel()->ObjectFromName(ListOfContainer, *mpParmSubtaskCN)));
 
     if (mpSubtask == NULL)
       return CCopasiTask::unset;

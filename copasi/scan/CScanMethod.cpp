@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:18 $
+//   $Date: 2009/03/02 21:02:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CReadConfig.h"
-#include "randomGenerator/CRandom.h"
+#include "randomGenerator/CRandom.h" 
 //#include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
@@ -87,10 +87,10 @@ CScanItem::CScanItem(CCopasiParameterGroup* si)
   std::string tmpString = * si->getValue("Object").pCN;
   CCopasiDataModel* pDataModel = si->getObjectDataModel();
   assert(pDataModel != NULL);
-  CCopasiObject* tmpObject = pDataModel->ObjectFromName(tmpString);
+  const CCopasiObject * tmpObject = pDataModel->getObject(tmpString);
   if (!tmpObject) {mpValue = NULL; return;}
   if (!tmpObject->isValueDbl()) {mpValue = NULL; return;}
-  mpValue = tmpObject;
+  mpValue = const_cast<CCopasiObject *>(tmpObject);
 }
 
 unsigned C_INT32 CScanItem::getNumSteps() const {return mNumSteps;};
@@ -242,20 +242,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:            //uniform
+        case 0:             //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:            //normal
+        case 1:             //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:            //poisson
+        case 2:             //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -303,7 +303,7 @@ bool CScanItemRandom::isValidScanItem()
   mST = st;
   mNumSteps = 0;
 }
-
+ 
 void CScanItemBreak::step()
 {
   //the index
@@ -314,7 +314,7 @@ void CScanItemBreak::step()
       //TODO: tell the task what exactly to do...
       mST->outputSeparatorCallback();
     }
-
+ 
   ++mIndex;
 }*/
 

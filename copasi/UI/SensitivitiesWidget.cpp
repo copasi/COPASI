@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Date: 2009/03/02 21:02:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 #include <q3filedialog.h>
 
 #include <qvariant.h>
-#include <qcheckbox.h>
+#include <qcheckbox.h> 
 //#include <qcombobox.h>
 #include <q3frame.h>
 #include <qlabel.h>
@@ -31,7 +31,7 @@
 #include <q3whatsthis.h>
 #include <qmessagebox.h>
 #include <qtoolbutton.h>
-#include <qimage.h>
+#include <qimage.h> 
 //Added by qt3to4:
 #include <Q3GridLayout>
 
@@ -469,7 +469,7 @@ bool SensitivitiesWidget::loadTask()
   if (tmp.isSingleObject())
     {
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-      mpSingleFunction = pDataModel->ObjectFromName(tmp.getSingleObjectCN());
+      mpSingleFunction = pDataModel->getObject(tmp.getSingleObjectCN());
       if (mpSingleFunction)
         FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
     }
@@ -486,7 +486,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable = pDataModel->ObjectFromName(tmp.getSingleObjectCN());
+          mpSingleVariable = pDataModel->getObject(tmp.getSingleObjectCN());
           if (mpSingleVariable)
             VariableLineEdit->setText(FROM_UTF8(mpSingleVariable->getObjectDisplayName()));
         }
@@ -506,7 +506,7 @@ bool SensitivitiesWidget::loadTask()
       if (tmp.isSingleObject())
         {
           Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
-          mpSingleVariable2 = pDataModel->ObjectFromName(tmp.getSingleObjectCN());
+          mpSingleVariable2 = pDataModel->getObject(tmp.getSingleObjectCN());
           if (mpSingleVariable2)
             Variable2LineEdit->setText(FROM_UTF8(mpSingleVariable2->getObjectDisplayName()));
         }

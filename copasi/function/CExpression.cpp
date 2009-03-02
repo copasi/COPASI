@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:19 $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,13 +119,14 @@ void CExpression::refresh()
 
 const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) const
   {
+    const CCopasiDataModel* pDataModel = getObjectDataModel();
+    assert(pDataModel != NULL);
+
     if (mpListOfContainer != NULL)
-      return this->ObjectFromName(*mpListOfContainer, CN);
+      return pDataModel->ObjectFromName(*mpListOfContainer, CN);
     else
       {
-        const CCopasiDataModel* pDataModel = getObjectDataModel();
-        assert(pDataModel != NULL);
-        return pDataModel->ObjectFromName(CN);
+        return pDataModel->getObject(CN);
       }
   }
 
@@ -217,7 +218,7 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
       if ((pNode = dynamic_cast< CEvaluationNodeObject * >(*it)) != NULL)
         {
           assert(pDataModel != NULL);
-          if ((pObject = pDataModel->ObjectFromName(pNode->getObjectCN())) != NULL &&
+          if ((pObject = pDataModel->getObject(pNode->getObjectCN())) != NULL &&
               (pObjectParent = pObject->getObjectParent()) != NULL &&
               (pEntity = dynamic_cast<const CModelEntity * >(pObjectParent)) != NULL)
             {

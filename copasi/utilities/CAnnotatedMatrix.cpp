@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,7 @@ const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(unsigned
         assert(pDataModel != NULL);
         for (i = 0; i < imax; ++i)
           {
-            const CCopasiObject * obj = pDataModel->ObjectFromName(mAnnotationsCN[d][i]);
+            const CCopasiObject * obj = pDataModel->getObject(mAnnotationsCN[d][i]);
             if (obj)
               mAnnotationsString[d][i] =
                 display ? obj->getObjectDisplayName() : obj->getObjectName();

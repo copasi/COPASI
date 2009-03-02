@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.223 $
+//   $Revision: 1.224 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/21 12:56:45 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
-# pragma warning (disable: 4243)
+# pragma warning (disable: 4243) 
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
 #endif  // WIN32
@@ -82,7 +82,7 @@
 C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
 {
   return
-  fabs(x) < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
+  fabs(x) < 0.0 ? -floor( -x + 0.5) : floor(x + 0.5);
 }
 
 // static
@@ -101,12 +101,13 @@ bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, con
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
-CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiDataModel* pDataModel)
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument,
+    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   Model* sbmlModel = sbmlDocument->getModel();
 
   /* Create an empty model and set the title. */
-  this->mpCopasiModel = new CModel(pDataModel);
+  this->mpCopasiModel = new CModel(mpDataModel);
   copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
   this->mpCopasiModel->setVolumeUnit(CModel::l);
   this->mpCopasiModel->setTimeUnit(CModel::s);
@@ -668,7 +669,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   unsigned int counter = 2;
   std::ostringstream numberStream;
   while (copasiModel->getCompartments().getIndex(name + appendix) != static_cast < unsigned C_INT32
-         > (-1))
+         > ( -1))
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -719,7 +720,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   std::string appendix = "";
   unsigned int counter = 2;
   std::ostringstream numberStream;
-  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
+  while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>( -1))
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -1425,7 +1426,10 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
 /**
  * Constructor that initializes speciesMap and the FunctionDB object
  */
-SBMLImporter::SBMLImporter(): mImportCOPASIMIRIAM(false)
+SBMLImporter::SBMLImporter():
+    mpDataModel(NULL),
+    mpCopasiModel(NULL),
+    mImportCOPASIMIRIAM(false)
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -1524,7 +1528,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
 }
 
 /**
- * Function parses an SBML document with libsbml and converts it to a Copasi CModel
+ * Function parses an SBML document with libsbml and converts it to a COPASI CModel
  * object which is returned. Deletion of the returned pointer is up to the
  * caller.
  */
@@ -1536,6 +1540,9 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                         CListOfLayouts *& prLol,
                         CCopasiDataModel* pDataModel)
 {
+  mpDataModel = pDataModel;
+  assert(mpDataModel != NULL);
+
   this->mpCopasiModel = NULL;
   if (funDB != NULL)
     {
@@ -1637,8 +1644,8 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       this->mLevel = pSBMLDocument->getLevel();
       // remember the original level of the document because we convert Level 1 documents to Level 2
       // For the import of rules, we need to remember that is was actually a level 1 document
-      // because otherwise we throw error mesages on rules on parameters since the parameters
-      //  have been set to constant by the converstion to Level 2
+      // because otherwise we throw error messages on rules on parameters since the parameters
+      //  have been set to constant by the conversation to Level 2
       this->mOriginalLevel = this->mLevel;
       this->mVersion = pSBMLDocument->getVersion();
       if (mLevel == 1)
@@ -1653,9 +1660,9 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           mLevel = pSBMLDocument->getLevel();
         }
 
-      this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap, pDataModel);
+      this->mpCopasiModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
 
-      prLol = new CListOfLayouts("ListOfLayouts", pDataModel);
+      prLol = new CListOfLayouts("ListOfLayouts", mpDataModel);
       Model* sbmlmodel = pSBMLDocument->getModel();
       if (sbmlmodel && prLol)
         SBMLDocumentLoader::readListOfLayouts(*prLol,
@@ -2137,7 +2144,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   unsigned int counter = 2;
   std::ostringstream numberStream;
   while (copasiModel->getModelValues().getIndex(name + appendix) != static_cast < unsigned C_INT32
-         > (-1))
+         > ( -1))
     {
       numberStream.str("");
       numberStream << "_" << counter;
@@ -2793,7 +2800,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                 {
                   // it can be a global or a local parameter or an metabolite
                   std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
-                  const CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
+                  const CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
                   if (!pObject)
                     {
                       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 39, objectCN.c_str());
@@ -2842,7 +2849,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                   if (pChildNode->getType() == CEvaluationNode::OBJECT)
                     {
                       std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
-                      const CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
+                      const CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
                       assert(pObject);
                       if (pObject->isReference())
                         {
@@ -3032,7 +3039,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
         {
           fatalError();
         }
-      const CCopasiObject* object = this->mpCopasiModel->ObjectFromName(listOfContainers, pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
+      const CCopasiObject* object = mpDataModel->ObjectFromName(listOfContainers, pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
       if (!object)
         {
           fatalError();
@@ -3117,7 +3124,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
       std::string objectCN = pChild->getData();
       objectCN = objectCN.substr(1, objectCN.length() - 2);
-      CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
+      CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
       assert(pObject);
       if (pObject->isReference())
         {
@@ -3138,7 +3145,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
-          CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
+          CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
           assert(pObject);
           if (pObject->isReference())
             {
@@ -3166,7 +3173,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
             }
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
-          CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, objectCN);
+          CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
           assert(pObject);
           if (pObject->isReference())
             {
@@ -3296,7 +3303,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(pCallNode->getChild());
   assert(pObjectNode);
   CCopasiObjectName objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-  CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(v, objectName);
+  CCopasiObject* pObject = mpDataModel->ObjectFromName(v, objectName);
   assert(pObject);
   if (dynamic_cast<CCopasiParameter*>(pObject))
     {
@@ -3307,7 +3314,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   if (pObjectNode)
     {
       objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-      pObject = this->mpCopasiModel->ObjectFromName(v, objectName);
+      pObject = mpDataModel->ObjectFromName(v, objectName);
       assert(pObject);
       if (dynamic_cast<CCopasiParameter*>(pObject))
         {
@@ -5112,7 +5119,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
   listOfContainers.push_back(this->mpCopasiModel);
   while (it != end)
     {
-      CCopasiObject* pObject = this->mpCopasiModel->ObjectFromName(listOfContainers, it->second.first);
+      CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, it->second.first);
       assert(pObject != NULL);
       CChemEqElement* pChemEqElement = dynamic_cast<CChemEqElement*>(pObject);
       assert(pChemEqElement != NULL);
@@ -5498,7 +5505,7 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
       // check if the object is a local or global parameter
       std::vector<CCopasiContainer*> listOfContainers;
       listOfContainers.push_back(pModel);
-      pObject = pModel->ObjectFromName(listOfContainers, name);
+      pObject = pModel->getObjectDataModel()->ObjectFromName(listOfContainers, name);
       assert(pObject != NULL);
       if (pObject->isReference())
         {
@@ -5770,7 +5777,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           // divide the expression by the volume
           // check if the top level node is a multiplication and one
           // of the children is the volume of the compartment the species
-          // is in. If this is the case, just drop the mutliplication
+          // is in. If this is the case, just drop the multiplication
           // instead of dividing
           bool multiplication = false;
           const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);

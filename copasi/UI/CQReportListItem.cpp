@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportListItem.cpp,v $
-$Revision: 1.6 $
+$Revision: 1.7 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/19 19:53:30 $
+$Date: 2009/03/02 21:02:14 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ void CQReportListItem::refreshText()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  CCopasiObject * pObject = pDataModel->ObjectFromName(mCN);
+  const CCopasiObject * pObject = pDataModel->getObject(mCN);
 
   if (pObject)
     setText(FROM_UTF8(pObject->getObjectDisplayName()));

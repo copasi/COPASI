@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:31 $
+//   $Date: 2009/03/02 21:02:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,7 @@ bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel*
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
-      mpObject = pDataModel->ObjectFromName(tmpString);
+      mpObject = pDataModel->getObject(tmpString);
     }
 
   if (mpObject)

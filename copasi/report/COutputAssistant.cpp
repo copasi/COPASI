@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:52 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -507,7 +507,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
-    case 10: // :TODO: Implement me!
+    case 10:  // :TODO: Implement me!
       {
         CPlotSpecification * pPlotSpecification = NULL;
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
@@ -538,7 +538,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 std::string Name = (*it)->getObjectName();
-                CCopasiObject * pObject = pDataModel->ObjectFromName(Name);
+                const CCopasiObject * pObject = pDataModel->getObject(Name);
                 if (pObject != NULL)
                   Name = pObject->getObjectDisplayName();
                 Name = pExperiment->getObjectName() + "," + Name;
@@ -638,7 +638,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 while (itItem != endItem)
                   {
                     std::string Name = (*it++)->getObjectName();
-                    CCopasiObject * pObject = pDataModel->ObjectFromName(Name);
+                    const CCopasiObject * pObject = pDataModel->getObject(Name);
                     if (pObject != NULL)
                       Name = pObject->getObjectDisplayName();
 
@@ -696,7 +696,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 const CCopasiObject * pObject =
-                  pDataModel->ObjectFromName((*it)->getObjectName());
+                  pDataModel->getObject((*it)->getObjectName());
                 if (pObject == NULL) continue;
 
                 if ((Found = PlotSpecMap.find(pObject)) != PlotSpecMap.end())

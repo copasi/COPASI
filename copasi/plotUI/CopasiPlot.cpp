@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:18 $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include <qwt_legend_item.h>
-#include <qwt_scale_engine.h>
+#include <qwt_scale_engine.h> 
 //Added by qt3to4:
 #include <Q3MemArray>
 
@@ -293,13 +293,13 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         case CPlotItem::curve2d:
           switch (*pItem->getValue("Line type").pUINT)
             {
-            case 0:          //curve
+            case 0:           //curve
               pCurve->setStyle(QwtPlotCurve::Lines);
               break;
-            case 1:          //points
+            case 1:           //points
               pCurve->setStyle(QwtPlotCurve::Dots);
               break;
-            case 2:          //symbols
+            case 2:           //symbols
               pCurve->setStyle(QwtPlotCurve::NoCurve);
               const QColor &c = curveColours[k % 6];
               pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
@@ -345,16 +345,17 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   return true; //TODO really check!
 }
 
-bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
+                         const CCopasiDataModel* pDataModel)
 {
   clearBuffers();
 
   unsigned C_INT32 i, imax;
   unsigned C_INT32 j, jmax;
 
-  std::pair< std::set< CCopasiObject * >::iterator, bool > Inserted;
+  std::pair< std::set< const CCopasiObject * >::iterator, bool > Inserted;
   std::pair< Activity, unsigned C_INT32 > DataIndex;
-  std::vector< std::set < CCopasiObject * > > ActivityObjects;
+  std::vector< std::set < const CCopasiObject * > > ActivityObjects;
 
   ActivityObjects.resize(ActivitySize);
 
@@ -363,8 +364,6 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
   mDataIndex.resize(imax);
 
   std::vector< std::vector < const CCopasiObject * > >::iterator itX;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (i = 0; i < imax; ++i)
@@ -379,8 +378,8 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
       for (j = 0; j < jmax; ++j)
         {
-          CCopasiObject* pObj =
-            pDataModel->getModel()->ObjectFromName(listOfContainer, pItem->getChannels()[j]);
+          const CCopasiObject* pObj =
+            pDataModel->ObjectFromName(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
             mObjects.insert(pObj);
@@ -390,7 +389,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
           // Remember the actual order for saving the data.
           // Note, we are currently only dealing with 2D curves and histograms.
-          // In addition the data is not normallized. The same data column may appear
+          // In addition the data is not normalized. The same data column may appear
           // multiple times, e.g. as X value and as Y value for another curve.
           if (j == 0)
             {

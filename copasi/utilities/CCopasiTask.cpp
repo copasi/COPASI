@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,9 +18,9 @@
 /**
  *  CCopasiTask class.
  *  This class is used to describe a task in COPASI. This class is
- *  intended to be used as the parent class for all tasks whithin COPASI.
+ *  intended to be used as the parent class for all tasks within COPASI.
  *
- *  Created for Copasi by Stefan Hoops 2003
+ *  Created for COPASI by Stefan Hoops 2003
  */
 
 #include "copasi.h"
@@ -250,7 +250,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   if (mDoOutput & REPORT)
     {
-      if (mReport.open(pOstream))
+      if (mReport.open(getObjectDataModel(), pOstream))
         mpOutputHandler->addInterface(&mReport);
       else
         CCopasiMessage(CCopasiMessage::COMMANDLINE, MCCopasiTask + 5);

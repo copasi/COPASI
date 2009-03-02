@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:52:26 $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,10 +95,11 @@ void CTimeSeries::clear()
 }
 
 // virtual
-bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer, CCopasiDataModel* pDataModel)
+bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
+                          const CCopasiDataModel* pDataModel)
 {
-  CModel * pModel =
-    dynamic_cast< CModel * >(pDataModel->getModel()->ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
+  const CModel * pModel =
+    dynamic_cast< const CModel * >(pDataModel->ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
 
   if (pModel == NULL)
     return false;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,8 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
 
       // override operator "()"
       virtual void operator()(const VType & value)
-      {(*mpType.*mMethod)(value);}      ;              // execute member function
+      {(*mpType.*mMethod)(value);}
+      ;              // execute member function
     };
 
 class Refresh
@@ -443,21 +444,6 @@ class CCopasiObject
     static void setRenameHandler(CRenameHandler* rh)
     {smpRenameHandler = rh;}
 
-    /**
-     * @param const std::vector< CCopasiContainer * > &listOfContainer
-     * @param const CCopasiObjectName& objName
-     * @return CCopasiObject * pObject
-     */
-    CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                   const CCopasiObjectName & objName);
-
-    /**
-     * @param const std::vector< CCopasiContainer * > &listOfContainer
-     * @param const CCopasiObjectName& objName
-     * @return CCopasiObject * pObject
-     */
-    const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                         const CCopasiObjectName & objName) const;
   };
 
 template <class CType> CCopasiObjectReference< CType > *

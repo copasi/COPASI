@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-$Revision: 1.17 $
+$Revision: 1.18 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/23 16:20:15 $
+$Date: 2009/03/02 21:02:17 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -240,7 +240,7 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
       if ((CN = getObjectCN(i)) == "") continue;
 
       if ((pObject =
-             CCopasiContainer::ObjectFromName(listOfContainer, CN)) != NULL &&
+             getObjectDataModel()->ObjectFromName(listOfContainer, CN)) != NULL &&
           pObject->isValueDbl())
         {
           Column = strtoul(getName(i).c_str(), NULL, 0);
@@ -412,7 +412,7 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
     const CCopasiDataModel* pDataModel = getObjectDataModel();
     assert(pDataModel != NULL);
-    const CCopasiObject * pObject = pDataModel->ObjectFromName(*mpObjectCN);
+    const CCopasiObject * pObject = pDataModel->getObject(*mpObjectCN);
     if (pObject == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 

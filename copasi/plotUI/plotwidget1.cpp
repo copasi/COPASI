@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:18 $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.59 2009/02/19 19:51:18 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.60 2009/03/02 21:02:16 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,7 +36,7 @@
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <qtoolbutton.h>
-#include <qlayout.h>
+#include <qlayout.h> 
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <Q3GridLayout>
@@ -358,9 +358,9 @@ void PlotWidget1::addCurve2D()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(pDataModel->ObjectFromName(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->ObjectFromName(objects1[0])->getObjectDisplayName(),
+                      + pDataModel->getObject(objects1[0])->getObjectDisplayName(),
                       objects1[0], objects2[i]);
         }
     }
@@ -368,9 +368,9 @@ void PlotWidget1::addCurve2D()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(pDataModel->ObjectFromName(objects2[0])->getObjectDisplayName()
+          addCurveTab(pDataModel->getObject(objects2[0])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->ObjectFromName(objects1[i])->getObjectDisplayName(),
+                      + pDataModel->getObject(objects1[i])->getObjectDisplayName(),
                       objects1[i], objects2[0]);
         }
     }
@@ -384,9 +384,9 @@ void PlotWidget1::addCurve2D()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(pDataModel->ObjectFromName(objects2[i])->getObjectDisplayName()
+          addCurveTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->ObjectFromName(objects1[i])->getObjectDisplayName() ,
+                      + pDataModel->getObject(objects1[i])->getObjectDisplayName() ,
                       objects1[i], objects2[i]);
         }
     }
@@ -669,7 +669,7 @@ bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_U
   if (mIgnoreUpdates) return true;
 
   switch (objectType)
-    {//TODO: check list:
+    { //TODO: check list:
     case ListViews::MODEL:
     case ListViews::STATE:
     case ListViews::COMPARTMENT:

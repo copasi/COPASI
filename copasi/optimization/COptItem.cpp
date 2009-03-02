@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:18 $
+//   $Date: 2009/03/02 21:02:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,7 +218,7 @@ const C_FLOAT64 & COptItem::getStartValue() const
       {
         const CCopasiDataModel* pDataModel = getObjectDataModel();
         assert(pDataModel != NULL);
-        const CCopasiObject * pObject = pDataModel->ObjectFromName(getObjectCN());
+        const CCopasiObject * pObject = pDataModel->getObject(getObjectCN());
         if (pObject != NULL)
           return * (C_FLOAT64 *) pObject->getValuePointer();
 
@@ -270,7 +270,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
         }
       else if (mx > 0) // 0 is in the interval (mn, mx)
         {
-          la = log10(mx) + log10(-mn);
+          la = log10(mx) + log10( -mn);
 
           if (la < 3.6) // linear
             RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
@@ -340,8 +340,8 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   mpObjectValue = &NaN;
 
   if ((mpObject =
-         CCopasiContainer::ObjectFromName(listOfContainer,
-                                          getObjectCN())) != NULL &&
+         getObjectDataModel()->ObjectFromName(listOfContainer,
+                                              getObjectCN())) != NULL &&
       mpObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
   if (mpObjectValue == &NaN)
@@ -367,8 +367,8 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       mpLowerBound = &mLowerBound;
     }
   else if ((mpLowerObject =
-              CCopasiContainer::ObjectFromName(listOfContainer,
-                                               Bound)) != NULL &&
+              getObjectDataModel()->ObjectFromName(listOfContainer,
+                                                   Bound)) != NULL &&
            mpLowerObject->isValueDbl())
     {
       mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
@@ -395,8 +395,8 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       mpUpperBound = &mUpperBound;
     }
   else if ((mpUpperObject =
-              CCopasiContainer::ObjectFromName(listOfContainer,
-                                               Bound)) != NULL &&
+              getObjectDataModel()->ObjectFromName(listOfContainer,
+                                                   Bound)) != NULL &&
            mpUpperObject->isValueDbl())
     {
       mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();

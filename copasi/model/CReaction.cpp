@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.181 $
+//   $Revision: 1.182 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:17 $
+//   $Date: 2009/03/02 21:02:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -868,7 +868,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
   = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
   containers.push_back(pModel);
-  CCopasiObject* object = CCopasiContainer::ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
+  CCopasiObject* object = getObjectDataModel()->ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
   std::string id;
   // if the object if of type reference
   if (object)

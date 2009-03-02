@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:30:50 $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,7 +38,7 @@
 class CReportDefinition;
 class CReportTable;
 
-class CReport : public CCopasiContainer, public COutputInterface
+class CReport : public COutputInterface
   {
     /**
      * Enumeration of the report states.
@@ -54,6 +59,7 @@ class CReport : public CCopasiContainer, public COutputInterface
     };
 
   private:
+    const CCopasiDataModel * mpDataModel;
     std::ostream * mpOstream;
     bool mStreamOwner;
 
@@ -74,17 +80,14 @@ class CReport : public CCopasiContainer, public COutputInterface
   public:
     /**
      * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CReport(const CCopasiContainer * pParent = NULL);
+    CReport();
 
     /**
      * Copy constructor.
      * @param const CReport & src
-     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CReport(const CReport & src,
-            const CCopasiContainer * pParent);
+    CReport(const CReport & src);
     /**
      * cleanup
      */
@@ -98,9 +101,10 @@ class CReport : public CCopasiContainer, public COutputInterface
     /**
      * compile the object list from name vector
      * @param std::vector< CCopasiContainer * > listOfContainer
+     * @param  const CCopasiDataModel* pDataModel
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
 
     /**
      * Perform an output event for the current activity
@@ -109,13 +113,13 @@ class CReport : public CCopasiContainer, public COutputInterface
     virtual void output(const Activity & activity);
 
     /**
-     * Introduce an additional seperator into the ouput
+     * Introduce an additional separator into the output
      * @param const Activity & activity
      */
     virtual void separate(const Activity & /* activity */);
 
     /**
-     * Finsh the output
+     * Finish the output
      */
     virtual void finish();
 
@@ -126,10 +130,12 @@ class CReport : public CCopasiContainer, public COutputInterface
 
     /**
      * Open the defined target stream or use the given argument
+     * @param const CCopasiDataModel * pDataModel,
      * @param std::ostream * pOstream (default: NULL)
      * @return std::ostream * mpOstream
      */
-    std::ostream * open(std::ostream * pOstream = NULL);
+    std::ostream * open(const CCopasiDataModel * pDataModel,
+                        std::ostream * pOstream = NULL);
 
     /**
      * Retrieve a pointer to the ostream

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:18 $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   assert(pDataModel != NULL);
 
   if (curve->getChannels().size() >= 1)
-    mpObjectX = pDataModel->ObjectFromName(curve->getChannels()[0]);
+    mpObjectX = pDataModel->getObject(curve->getChannels()[0]);
 
   if (mpObjectX)
     lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -662,7 +662,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   CModel * pModel =
-    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(pDataModel->getModel()->getObjectName()))));
+    dynamic_cast< CModel * >(pDataModel->ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(pDataModel->getModel()->getObjectName()))));
 
   mIndependentRefreshMethods = pModel->buildInitialRefreshSequence(IdependentObjects);
   mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
@@ -1433,7 +1433,7 @@ std::istream & skipLine(std::istream & in)
     }
 
   // Eat additional line break characters appearing on DOS and Mac text format;
-  if ((c == 0x0d && in.peek() == 0x0a) || // DOS
+  if ((c == 0x0d && in.peek() == 0x0a) ||  // DOS
       (c == 0x0a && in.peek() == 0x0d))   // Mac
     in.ignore(1);
 

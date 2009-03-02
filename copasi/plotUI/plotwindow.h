@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:03:24 $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,9 +61,10 @@ class PlotWindow : public Q3MainWindow, public COutputInterface
     /**
      * compile the object list from name vector
      * @param std::vector< CCopasiContainer * > listOfContainer
+     * @param  const CCopasiDataModel* pDataModel
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);
 
     /**
      * Perform an output event for the current activity

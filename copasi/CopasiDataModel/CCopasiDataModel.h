@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 16:45:21 $
+//   $Date: 2009/03/02 21:02:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,10 +75,6 @@ class CCopasiDataModel: public COutputHandler, public CCopasiContainer
 
     ~CCopasiDataModel();
 
-    CCopasiObject * ObjectFromName(const CCopasiObjectName & objName);
-
-    const CCopasiObject * ObjectFromName(const CCopasiObjectName & objName) const;
-
     bool loadModel(const std::string & fileName, CProcessReport* pProcessReport);
     bool saveModel(const std::string & fileName, CProcessReport* pProcessReport,
                    bool overwriteFile = false,
@@ -121,6 +117,22 @@ class CCopasiDataModel: public COutputHandler, public CCopasiContainer
     const std::string & getSBMLFileName() const;
 
     std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
+
+    /**
+     * @param const std::vector< CCopasiContainer * > &listOfContainer
+     * @param const CCopasiObjectName& objName
+     * @return CCopasiObject * pObject
+     */
+    CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                   const CCopasiObjectName & objName);
+
+    /**
+     * @param const std::vector< CCopasiContainer * > &listOfContainer
+     * @param const CCopasiObjectName& objName
+     * @return CCopasiObject * pObject
+     */
+    const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                         const CCopasiObjectName & objName) const;
 
     // Attributes
   protected:

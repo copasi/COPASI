@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -283,6 +283,7 @@ bool CFitProblem::elevateChildren()
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
 #endif // COPASI_CROSSVALIDATION
+
     }
 
   it = mpConstraintItems->begin();
@@ -306,6 +307,7 @@ bool CFitProblem::elevateChildren()
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
 #endif // COPASI_CROSSVALIDATION
+
     }
 
   return true;
@@ -337,7 +339,7 @@ bool CFitProblem::initialize()
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   mpSteadyState =
-    dynamic_cast< CSteadyStateTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmSteadyStateCN));
+    dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmSteadyStateCN));
   if (mpSteadyState == NULL)
     mpSteadyState =
       static_cast<CSteadyStateTask *>((*pDataModel->getTaskList())["Steady-State"]);
@@ -345,7 +347,7 @@ bool CFitProblem::initialize()
   mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
   mpTrajectory =
-    dynamic_cast< CTrajectoryTask * >(CCopasiContainer::ObjectFromName(ContainerList, *mpParmTimeCourseCN));
+    dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmTimeCourseCN));
   if (mpTrajectory == NULL)
     mpTrajectory =
       static_cast<CTrajectoryTask *>((*pDataModel->getTaskList())["Time-Course"]);
@@ -1554,7 +1556,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         }
       else if (mCorrelation(i, i) < 0.0)
         {
-          tmp = 1.0 / sqrt(- mCorrelation(i, i));
+          tmp = 1.0 / sqrt( - mCorrelation(i, i));
           mParameterSD[i] = mSD / tmp;
         }
       else

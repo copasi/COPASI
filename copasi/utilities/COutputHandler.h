@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,6 +131,7 @@ class COutputHandler: public COutputInterface
     /**
      * compile the object list from name vector
      * @param std::vector< CCopasiContainer * > listOfContainer
+     * @param  const CCopasiDataModel* pDataModel
      * @return bool success
      */
     virtual bool compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel);

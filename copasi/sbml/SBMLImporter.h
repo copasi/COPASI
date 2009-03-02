@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:42:28 $
+//   $Author: shoops $
+//   $Date: 2009/03/02 21:02:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,7 @@ class SBMLImporter
     unsigned int mVersion;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
     std::set<std::string> mUsedFunctions;
+    CCopasiDataModel * mpDataModel;
     CModel* mpCopasiModel;
     std::map<std::string, std::string> mFunctionNameMapping;
     std::set<std::string> mDivisionByCompartmentReactions;
@@ -87,28 +88,41 @@ class SBMLImporter
     bool mImportCOPASIMIRIAM;
 
     /**
-     * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
+     * Creates and returns a COPASI CModel from the SBMLDocument given as argument.
      */
-    CModel* createCModelFromSBMLDocument(SBMLDocument* doc, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiDataModel* pDataModel);
+    CModel* createCModelFromSBMLDocument(SBMLDocument * doc,
+                                         std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
-     * Creates and returns a Copasi CFunction from the SBML FunctionDefinition
+     * Creates and returns a COPASI CFunction from the SBML FunctionDefinition
      * given as argument.
      */
-    CFunction* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CFunction* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction,
+        CFunctionDB* pTmpFunctionDB,
+        Model* pSBMLModel,
+        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
-    CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction,
+        Model* pSBMLModel,
+        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
-     * Creates and returns a Copasi CCompartment from the SBML Compartment
+     * Creates and returns a COPASI CCompartment from the SBML Compartment
      * given as argument.
      */
-    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* pSBMLModel);
+    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp,
+        CModel* copasiModel,
+        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+        const Model* pSBMLModel);
 
     /**
-     * Creates and returns a Copasi CMetab from the given SBML Species object.
+     * Creates and returns a COPASI CMetab from the given SBML Species object.
      */
-    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* pSBMLModel);
+    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies,
+                                    CModel* copasiModel,
+                                    CCompartment* copasiCompartment,
+                                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                    const Model* pSBMLModel);
 
     /**
      * Checks if no id is used in more than one Assignment and RateRule.
@@ -116,37 +130,52 @@ class SBMLImporter
     void areRulesUnique(const Model* copasiMode);
 
     /**
-     * Imports the given Rule if Copasi supports this kind of Rule, otherwise a warning is created.
+     * Imports the given Rule if COPASI supports this kind of Rule, otherwise a warning is created.
      */
-    void importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
+    void importSBMLRule(const Rule* sbmlRule,
+                        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                        Model* pSBMLModel);
 
     /**
      * Imports the given AssignmentRule which is for a global parameter.
      */
-    void importRuleForModelEntity(const Rule* rule, CModelEntity* pMV, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
+    void importRuleForModelEntity(const Rule* rule,
+                                  CModelEntity* pMV,
+                                  CModelEntity::Status ruleType,
+                                  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                  Model* pSBMLModel);
 
 #ifdef COPASI_DEBUG
     /**
      * Imports all events
      */
-    void importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importEvents(Model* pSBMLModel,
+                      CModel* pCopasiModel,
+                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Imports the given event.
      */
-    void importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importEvent(const Event* pEvent,
+                     Model* pSBMLModel,
+                     CModel* pCopasiModel,
+                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 #endif // COPASI_DEBUG
 
     /**
-     * Imports the given RateRule if Copasi supports this kind of RateRule, otherwise a warning is created.
+     * Imports the given RateRule if COPASI supports this kind of RateRule, otherwise a warning is created.
      */
-    void importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
+    void importRule(const Rule* rule,
+                    CModelEntity::Status ruleType,
+                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                    Model* pSBMLModel);
 
     /**
      * Recurses an ASTNode tree and gets all SBML Ids in the tree.
      * The ids are stored in the given set.
      */
-    void getIdsFromNode(const ASTNode* pNode, std::set<std::string>& idSet);
+    void getIdsFromNode(const ASTNode* pNode,
+                        std::set<std::string>& idSet);
 
     /**
      * Checks the expression for a give rate or assignment rule for
@@ -154,37 +183,46 @@ class SBMLImporter
      * expression is the target for one of the following rate or assignment
      * rules.
      */
-    void checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void checkRuleMathConsistency(const Rule* pRule,
+                                  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
-     * Creates and returns a Copasi CModelValue from the given SBML Parameter object.
+     * Creates and returns a COPASI CModelValue from the given SBML Parameter object.
      */
-    CModelValue* createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CModelValue* createCModelValueFromParameter(const Parameter* sbmlParameter,
+        CModel* copasiModel,
+        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
-     * Creates and returns a Copasi CReaction object from the given SBML
+     * Creates and returns a COPASI CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction,
+                                           Model* sbmlModel,
+                                           CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                           CFunctionDB* pTmpFunctionDB);
 
     /**
      * Creates a map of each parameter of the function definition and its
      * corresponding parameter in the function call.
      */
-    std::map<std::string , ASTNode*> createBVarMap(const ASTNode* uDefFunction, const ASTNode* function);
+    std::map<std::string , ASTNode*> createBVarMap(const ASTNode* uDefFunction,
+        const ASTNode* function);
 
     /**
      * Returns the user defined SBML function definition that belongs to the given
      * name, or NULL if none can be found.
      */
-    const FunctionDefinition* getFunctionDefinitionForName(const std::string name, const Model* model);
+    const FunctionDefinition* getFunctionDefinitionForName(const std::string name,
+        const Model* model);
 
     /**
      * Replaces the variables in a function definition with the actual function
      * parameters that were used when the function was called. The function returns
      * a pointer to the ConverterAST node with the replaced variables.
      */
-    ConverterASTNode* replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> bvarMap);
+    ConverterASTNode* replaceBvars(const ASTNode* node,
+                                   std::map<std::string, ASTNode*> bvarMap);
 
     /**
      * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
@@ -199,31 +237,31 @@ class SBMLImporter
      */
 
     /**
-     * Returns the copasi VolumeUnit corresponding to the given SBML Volume
+     * Returns the COPASI VolumeUnit corresponding to the given SBML Volume
      *  UnitDefinition.
      */
     std::pair<CModel::VolumeUnit, bool> handleVolumeUnit(const UnitDefinition* uDef);
 
     /**
-     * Returns the copasi QuantityUnit corresponding to the given SBML
+     * Returns the COPASI QuantityUnit corresponding to the given SBML
      *  Substance UnitDefinition.
      */
     std::pair<CModel::QuantityUnit, bool> handleSubstanceUnit(const UnitDefinition* uDef);
 
     /**
-     * Returns the copasi TimeUnit corresponding to the given SBML Time
+     * Returns the COPASI TimeUnit corresponding to the given SBML Time
      *  UnitDefinition.
      */
     std::pair<CModel::TimeUnit, bool> handleTimeUnit(const UnitDefinition* uDef);
 
     /**
-     * Replaces all occurences of the log function with two arguments by
+     * Replaces all occurrences of the log function with two arguments by
      * a division of two separate calls to log.
      */
     void replaceLog(ConverterASTNode* sourceNode);
 
     /**
-     * Replaces all occurences of the root function with two arguments by
+     * Replaces all occurrences of the root function with two arguments by
      * a call to the power function with the inverse of the first argument.
      */
     void replaceRoot(ConverterASTNode* sourceNode);
@@ -232,7 +270,9 @@ class SBMLImporter
      * Replaces the ids of named nodes in an ASTNode tree with
      * the correspondingCopasi Common Names.
      */
-    bool sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup);
+    bool sbmlId2CopasiCN(ASTNode* pNode,
+                         std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                         CCopasiParameterGroup& pParamGroup);
 
     /**
      * Upon import a function object might change its name due to naming conflicts in the function
@@ -257,12 +297,15 @@ class SBMLImporter
     void isDelayFunctionUsed(ConverterASTNode* pNode);
 
     /**
-     * In a proeprocessing step each expression tree that is imported,
+     * In a preprocessing step each expression tree that is imported,
      * e.g. for function definitions, rules, event or kinetic laws
      * is preprocessed to replace some of the nodes data.
      * See also replaceCallNodeNames and replaceTimeNodeNames.
      */
-    void preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool isKineticLaw = false);
+    void preprocessNode(ConverterASTNode* pNode,
+                        Model* pSBMLModel,
+                        std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                        bool isKineticLaw = false);
 
     CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
@@ -273,24 +316,32 @@ class SBMLImporter
      */
     bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
-    std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
+    std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree,
+        const CChemEq& chemicalEquation,
+        const CEvaluationNodeCall* pCallNode = NULL);
 
     /**
      * Checks if the given node is an object node that represents a parameter
      * or a model value or a function which has a single parameter and a single node which also represents a parameter.
      */
-    static CCopasiObject* isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB);
+    static CCopasiObject* isConstantFlux(const CEvaluationNode* pRoot,
+                                         CModel* pModel,
+                                         CFunctionDB* pFunctionDB);
 
-    std::vector<CEvaluationNodeObject*>* isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
+    std::vector<CEvaluationNodeObject*>* isMassActionExpression(const CEvaluationNode* pRootNode,
+        const CChemEq& chemicalEquation);
 
-    std::vector<CEvaluationNodeObject*>* isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs);
+    std::vector<CEvaluationNodeObject*>* isMassActionFunction(const CFunction* pFun,
+        const CChemEq& chemicalEquation,
+        const std::vector<std::vector< std::string > >& functionArgumentCNs);
 
     /**
-     * This function takes a node and tries to find out wether the tree under this node consists
+     * This function takes a node and tries to find out whether the tree under this node consists
      * only of multiply operators and object nodes.
      * The arguments to the multiply operators are returned.
      */
-    void separateProductArguments(const CEvaluationNode* pRootNode, std::vector<const CEvaluationNode*>& arguments);
+    void separateProductArguments(const CEvaluationNode* pRootNode,
+                                  std::vector<const CEvaluationNode*>& arguments);
 
     void doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
 
@@ -304,9 +355,11 @@ class SBMLImporter
      */
     ConverterASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
 
-    CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap);
+    CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode,
+                                       const std::map<std::string, std::string>& replacementMap);
 
-    CEvaluationTree* createExpressionFromFunction(const CFunction* pFun, const std::vector<std::vector<std::string > >& functionArgumentCNs);
+    CEvaluationTree* createExpressionFromFunction(const CFunction* pFun,
+        const std::vector<std::vector<std::string > >& functionArgumentCNs);
 
     void renameMassActionParameters(CEvaluationNodeCall* pCallNode);
 
@@ -318,7 +371,8 @@ class SBMLImporter
     /**
      * Finds all functions that are used and removes those that are not.
      */
-    bool removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    bool removeUnusedFunctions(CFunctionDB* pTmpFunctionDB,
+                               std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Finds all functions calls directly or indirectly used in a function
@@ -327,19 +381,21 @@ class SBMLImporter
     void findFunctionCalls(const CEvaluationNode* pNode, std::set<std::string>& functionNameSet);
 
     /**
-     * Heuristically checks wether a model was meant to be simulated stochastically.
+     * Heuristically checks whether a model was meant to be simulated stochastically.
      * If the substance units are set to items and all reaction are irreversible this function
      * will return true;
      */
     bool isStochasticModel(const Model* pSBMLModel);
 
-    void replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression = false);
+    void replaceObjectNames(ASTNode* pNode,
+                            const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                            bool initialExpression = false);
 
     /**
      * For function definitions that use the time symbol we have to make this a
      * variable that is passed to the function instead.
      * The function recursively goes through the AST tree rooted in root and
-     * changs all time nodes to varaible nodes with name newNodeName.
+     * changes all time nodes to variable nodes with name newNodeName.
      * If a time node has been found, the function return true, otherwise false
      * is returned.
      */
@@ -358,22 +414,26 @@ class SBMLImporter
 
     /**
      * Sets the initial values on compartments, metabolites and model values if
-     * those initial values have been set in the sbml model.
+     * those initial values have been set in the SBML model.
      * Otherwise the routine checks if a rule or an initial assignment has been set for the entity.
      * If the entity has not been set in any way, an error message is created.
      */
-    bool setInitialValues(CModel* pModel, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    bool setInitialValues(CModel* pModel,
+                          const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
-    void checkElementUnits(const Model* pSBMLModel, CModel* pCopasiModel, int level, int version);
+    void checkElementUnits(const Model* pSBMLModel,
+                           CModel* pCopasiModel,
+                           int level,
+                           int version);
 
     /**
-     * If the given UnitDefinition can be converted to a form of litres, the
-     * funktion return the UnitDefinition in litres, otherwise NULL is returned.
+     * If the given UnitDefinition can be converted to a form of litre, the
+     * function return the UnitDefinition in litre, otherwise NULL is returned.
      */
     static Unit* convertSBMLCubicmetresToLitres(const Unit* pU);
 
     /**
-     * This funktion normalizes the multiplier to be within the range 1.0 <=
+     * This function normalizes the multiplier to be within the range 1.0 <=
      * multiplier < 10.0.
      */
     static void normalizeSBMLUnit(Unit* pU);
@@ -382,7 +442,8 @@ class SBMLImporter
      * This method takes the id of a unit as it can appear in an SBML file, and
      * returns a new UnitDefinition object for that id.
      */
-    static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId, const Model* pSBMLModel);
+    static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
+        const Model* pSBMLModel);
 
     /**
      * Imports all initial assignments if there are any.
@@ -393,7 +454,8 @@ class SBMLImporter
      * This method evaluates all stoichiometric expressions and sets them as
      * constants on the CChemEqElement.
      */
-    void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel);
+    void applyStoichiometricExpressions(std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                        Model* pSBMLModel);
 
     /**
      * Creates a function definition for the delay function.
@@ -404,7 +466,8 @@ class SBMLImporter
      * This method goes through the list of global parameters and tries to find
      * a parameter that could correspond to avogadros number.
      */
-    void findAvogadroConstant(Model* pSBMLModel, double factor);
+    void findAvogadroConstant(Model* pSBMLModel,
+                              double factor);
 
     /**
      * This method replaces references to the id of species which have the
@@ -413,7 +476,10 @@ class SBMLImporter
      * The method tries to determine if there already is a multiplication with
      * avogadros number and removes this multiplication rather than adding a new division.
      */
-    void replaceAmountReferences(ConverterASTNode* pNode, Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void replaceAmountReferences(ConverterASTNode* pNode,
+                                 Model* pSBMLModel,
+                                 double factor,
+                                 std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * This method creates a global parameter the represents the factor that is
@@ -422,14 +488,16 @@ class SBMLImporter
      * The parameter is only created if it is needed and after exporting the
      * model, the parameter is deleted from the COPASI model again.
      */
-    void createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void createHasOnlySubstanceUnitFactor(Model* pSBMLModel,
+                                          double factor,
+                                          std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Multiplies all species nodes that belong to species with the
      * hasSubstanceOnlyUnits flag set with the volume of the compartment that
      * the species belongs to.
      * This is only done for kineticLaw, all other mathematical expressions
-     * import those references as particle number nodes divied by the
+     * import those references as particle number nodes divided by the
      * quantity2unit factor.
      */
     void multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode);
@@ -446,19 +514,22 @@ class SBMLImporter
      * definition that is defined somewhere further down in the file.
      * So we have to import the function definitions in the correct order.
      */
-    CFunctionDB* importFunctionDefinitions(Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CFunctionDB* importFunctionDefinitions(Model* pSBMLModel,
+                                           std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * static method that finds all direct function dependencies of a given
      * function definition.
      */
-    static void findDirectDependencies(const FunctionDefinition* pFunDef, std::map<const FunctionDefinition*, std::set<std::string> >& dependencies);
+    static void findDirectDependencies(const FunctionDefinition* pFunDef,
+                                       std::map<const FunctionDefinition*, std::set<std::string> >& dependencies);
 
     /**
      * static method that recursively finds all direct function dependencies of the
      * expression rooted at the given node.
      */
-    static void findDirectDependencies(const ASTNode* pNode, std::set<std::string>& dependencies);
+    static void findDirectDependencies(const ASTNode* pNode,
+                                       std::set<std::string>& dependencies);
 
   public:
     SBMLImporter();
@@ -490,7 +561,7 @@ class SBMLImporter
     void setImportHandler(CProcessReport* pHandler);
 
     /**
-     * Enhanced method to identify identical sbml unit definitions.
+     * Enhanced method to identify identical SBML unit definitions.
      * This method uses the areIdentical method from libSBML, but if the method
      * return false, it does some extra checks.
      * Right now it check for example if two volumes, one given in litre and one
