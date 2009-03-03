@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000021.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:39:19 $
+//   $Date: 2009/03/03 09:50:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ void test000021::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Concentration"));
@@ -247,4 +247,4 @@ const char* test000021::MODEL_STRING =
   "    </listOfReactions>"
   "  </model>"
   "</sbml>"
-;
+  ;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2009/03/03 09:50:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,7 +100,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -112,7 +112,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -160,7 +160,7 @@ const char* test000064::MODEL_STRING1 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_2()
 {
@@ -197,7 +197,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -245,7 +245,7 @@ const char* test000064::MODEL_STRING2 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
 {
@@ -282,7 +282,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -330,7 +330,7 @@ const char* test000064::MODEL_STRING3 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
 {
@@ -371,7 +371,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -383,7 +383,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -431,7 +431,7 @@ const char* test000064::MODEL_STRING4 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_1()
 {
@@ -476,7 +476,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -507,7 +507,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -519,7 +519,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -580,7 +580,7 @@ const char* test000064::MODEL_STRING5 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_2()
 {
@@ -625,7 +625,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -652,7 +652,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -713,7 +713,7 @@ const char* test000064::MODEL_STRING6 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_3()
 {
@@ -758,7 +758,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -785,7 +785,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -846,7 +846,7 @@ const char* test000064::MODEL_STRING7 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_4()
 {
@@ -891,7 +891,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -922,7 +922,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -934,7 +934,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -995,7 +995,7 @@ const char* test000064::MODEL_STRING8 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_5()
 {
@@ -1032,7 +1032,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_5()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1084,7 +1084,7 @@ const char* test000064::MODEL_STRING9 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
 {
@@ -1125,7 +1125,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1137,7 +1137,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -1189,7 +1189,7 @@ const char* test000064::MODEL_STRING10 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
 {
@@ -1230,7 +1230,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1242,7 +1242,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -1294,7 +1294,7 @@ const char* test000064::MODEL_STRING11 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_8()
 {
@@ -1331,7 +1331,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_8()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1383,7 +1383,7 @@ const char* test000064::MODEL_STRING12 =
   "    </listOfRules>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_5()
 {
@@ -1428,7 +1428,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -1455,7 +1455,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1520,7 +1520,7 @@ const char* test000064::MODEL_STRING13 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_6()
 {
@@ -1565,7 +1565,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -1596,7 +1596,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1608,7 +1608,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -1673,7 +1673,7 @@ const char* test000064::MODEL_STRING14 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_7()
 {
@@ -1718,7 +1718,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -1749,7 +1749,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1761,7 +1761,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -1826,7 +1826,7 @@ const char* test000064::MODEL_STRING15 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_8()
 {
@@ -1871,7 +1871,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -1898,7 +1898,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1963,7 +1963,7 @@ const char* test000064::MODEL_STRING16 =
   "    </listOfEvents>"
   "  </model>"
   "</sbml>"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
 {
@@ -2080,7 +2080,7 @@ const char* test000064::MODEL_STRING101 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
 {
@@ -2239,7 +2239,7 @@ const char* test000064::MODEL_STRING102 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
 {
@@ -2356,7 +2356,7 @@ const char* test000064::MODEL_STRING103 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
 {
@@ -2515,7 +2515,7 @@ const char* test000064::MODEL_STRING104 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
 {
   // load the CPS file
@@ -2637,7 +2637,7 @@ const char* test000064::MODEL_STRING105 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
 {
@@ -2790,7 +2790,7 @@ const char* test000064::MODEL_STRING106 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
 {
@@ -2913,7 +2913,7 @@ const char* test000064::MODEL_STRING107 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
 {
@@ -3066,7 +3066,7 @@ const char* test000064::MODEL_STRING108 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_1()
 {
@@ -3229,7 +3229,7 @@ const char* test000064::MODEL_STRING109 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_2()
 {
@@ -3424,7 +3424,7 @@ const char* test000064::MODEL_STRING110 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_3()
 {
@@ -3586,7 +3586,7 @@ const char* test000064::MODEL_STRING111 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_4()
 {
@@ -3781,7 +3781,7 @@ const char* test000064::MODEL_STRING112 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_5()
 {
@@ -3951,7 +3951,7 @@ const char* test000064::MODEL_STRING113 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_6()
 {
@@ -4138,7 +4138,7 @@ const char* test000064::MODEL_STRING114 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_7()
 {
@@ -4308,7 +4308,7 @@ const char* test000064::MODEL_STRING115 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;
 
 void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUnits_8()
 {
@@ -4495,4 +4495,4 @@ const char* test000064::MODEL_STRING116 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;

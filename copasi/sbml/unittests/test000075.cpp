@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2009/03/03 09:50:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -149,7 +149,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -203,7 +203,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -230,7 +230,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -257,7 +257,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -285,7 +285,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -355,7 +355,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -387,7 +387,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
-  pCObject = pCModel->ObjectFromName(listOfContainers, *pCObjectName);
+  pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
@@ -729,4 +729,4 @@ const char* test000075::MODEL_STRING1 =
   "    </listOfEvents>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;

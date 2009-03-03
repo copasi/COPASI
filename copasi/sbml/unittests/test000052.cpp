@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000052.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:39:43 $
+//   $Date: 2009/03/03 09:50:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ void test000052::test_bug988()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -143,4 +143,4 @@ const char* test000052::MODEL_STRING =
   "    </listOfRules>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
