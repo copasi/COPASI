@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/03 15:48:10 $
+//   $Date: 2009/03/03 17:21:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,8 @@ CModelEntity::CModelEntity(const CModelEntity & src,
 {
   initObjects();
 
+  if (mpExpression != NULL) this->mpExpression->setObjectParent(this);
+  if (mpInitialExpression != NULL) this->mpInitialExpression->setObjectParent(this);
   setStatus(src.mStatus);
 
   *mpValueData = *src.mpValueData;
@@ -162,6 +164,7 @@ bool CModelEntity::compile()
       assert(pDataModel != NULL);
       mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
       mpInitialExpression->setObjectName("InitialExpression");
+      mpInitialExpression->setObjectParent(this);
       break;
 
     case ODE:
@@ -223,7 +226,7 @@ bool CModelEntity::setExpression(const std::string & expression)
   if (isFixed()) return false;
 
   if (mpExpression == NULL)
-    mpExpression = new CExpression("", this);
+    mpExpression = new CExpression("Expression", this);
 
   if (mpModel)
     mpModel->setCompileFlag(true);
@@ -401,12 +404,13 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
         {
         case ASSIGNMENT:
           if (mpExpression == NULL)
-            mpExpression = new CExpression;
+            mpExpression = new CExpression("Expression", this);
 
           pdelete(mpInitialExpression);
           pDataModel = getObjectDataModel();
           mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
           mpInitialExpression->setObjectName("InitialExpression");
+          mpInitialExpression->setObjectParent(this);
 
           mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
           mpValueReference->setRefresh(this, &CModelEntity::calculate);
@@ -419,7 +423,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
         case ODE:
           if (mpExpression == NULL)
-            mpExpression = new CExpression;
+            mpExpression = new CExpression("Expression", this);
 
           mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
           mpRateReference->setRefresh(this, &CModelEntity::calculate);
