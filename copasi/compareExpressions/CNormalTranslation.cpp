@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/12/01 13:36:09 $
+//   $Date: 2009/03/03 15:59:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
-# pragma warning (disable: 4243)
+# pragma warning (disable: 4243) 
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
 #endif  // WIN32
@@ -129,7 +129,7 @@ CNormalFraction* CNormalTranslation::normAndSimplify(const CEvaluationNode* root
       std::cout << (*it)->debug();
     ++it;
   }
-  */
+  */ 
   //std::cout << "<p>Created Normal Repr.: " << base->toString() << "</p>" << std::endl;
   base->simplify();
   /*
@@ -202,6 +202,7 @@ CNormalFraction* CNormalTranslation::normAndSimplifyReptdly(const CEvaluationNod
   //CEvaluationTree * tree1 = new CEvaluationTree("second tree", NULL, CEvaluationTree::Function);
   //std::cout << "<p>Normal Repr.: " << base0->toString() <<"</p>" << std::endl;
   CEvaluationNode* pTmpNode = convertToCEvaluationNode(*base0);
+  assert(pTmpNode != NULL);
   //std::cout << "<p>Infix: " << pTmpNode->getInfix() << "</p>" << std::endl;
   //std::cout << "<p><math xmlns=\"&mathml;\">" << std::endl;
   //pTmpNode->writeMathML(std::cout,std::vector<std::vector<std::string> >());
@@ -420,7 +421,7 @@ CEvaluationNode* CNormalTranslation::eliminate(const CEvaluationNode* pOrig)
       // we are done if the infix has not changed over one loop run
       //base = createNormalRepresentation(pResult);
       //assert(base != NULL);
-      if (/*base->toString()*/pTmp->getInfix() == infix)
+      if ( /*base->toString()*/pTmp->getInfix() == infix)
         {
           changed = false;
         }
@@ -487,7 +488,7 @@ CEvaluationNode* CNormalTranslation::simplify(const CEvaluationNode* pOrig)
       //base = createNormalRepresentation(pResult);
       //assert(base != NULL);
       pResult = pTmp;
-      if (/*base->toString()*/pResult->getInfix() == infix)
+      if ( /*base->toString()*/pResult->getInfix() == infix)
         {
           finished = true;
         }
@@ -826,7 +827,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationModulus(CEvaluationNod
       (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
        ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
-      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
+      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
     }
   // X%X -> 0
   CNormalFraction* base1 = createNormalRepresentation(pChild1);
@@ -886,7 +887,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMultiply(CEvaluationNo
       (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
        ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
-      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
+      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
     }
   // if one child is 0, the result is 0
   else if ((CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER &&
@@ -931,7 +932,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationDivide(CEvaluationNode
       (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
        ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
-      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
+      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
     }
   // the second child is 0, the result is NaN
   else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
@@ -982,7 +983,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationPlus(CEvaluationNode* 
       (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
        ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
-      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
+      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
     }
   // the second child is 0, the result is the first child
   else if ((CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER &&
@@ -1021,7 +1022,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(CEvaluationNode*
       (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::CONSTANT &&
        ((CEvaluationNodeConstant::SubType)(CEvaluationNode::subType(pChild2->getType()))) == CEvaluationNodeConstant::_NaN))
     {
-      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "Nan");
+      pResult = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
     }
   // if both nodes are equal, the result is 0.0
   else if (base1->toString() == base2->toString())
