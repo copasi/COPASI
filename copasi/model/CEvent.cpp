@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/03 13:29:11 $
+//   $Date: 2009/03/03 17:30:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,8 @@ CEvent::CEvent(const std::string & name,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-                                mpExpressionEA(NULL),
-                                                            mpModel(NULL)*/
+                                    mpExpressionEA(NULL),
+                                                                mpModel(NULL)*/
 {
   // std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -54,24 +54,24 @@ CEvent::CEvent(const CEvent & src,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-                                mpExpressionEA(NULL)*/
+                                    mpExpressionEA(NULL)*/
 {
   CONSTRUCTOR_TRACE;
   initObjects();
   if (src.mpTriggerExpression != NULL)
     {
-      this->mpTriggerExpression = new CExpression(*src.mpTriggerExpression);
+      this->mpTriggerExpression = new CExpression(*src.mpTriggerExpression, this);
       this->mpTriggerExpression->compile();
     }
   if (src.mpDelayExpression != NULL)
     {
-      this->mpDelayExpression = new CExpression(*src.mpDelayExpression);
+      this->mpDelayExpression = new CExpression(*src.mpDelayExpression, this);
       this->mpDelayExpression->compile();
     }
   /*
     if (src.mpExpressionEA != NULL)
     {
-      this->mpExpressionEA = new CExpression(*src.mpExpressionEA);
+      this->mpExpressionEA = new CExpression(*src.mpExpressionEA,this);
       this->mpExpressionEA->compile();
     }
   */
@@ -79,7 +79,7 @@ CEvent::CEvent(const CEvent & src,
   CExpression* pTmpExpression = NULL;
   while (it != endit)
     {
-      pTmpExpression = new CExpression(*it->second);
+      pTmpExpression = new CExpression(*it->second, this);
       pTmpExpression->compile();
       this->mAssignsExpression.push_back(std::make_pair(it->first, pTmpExpression));
       ++it;
@@ -192,7 +192,7 @@ bool CEvent::setExpressionDelay(const std::string &expression)
   // std::cout << "CE::setExpressionDelay - expression: " << expression << std::endl;
 
   if (mpDelayExpression == NULL)
-    mpDelayExpression = new CExpression;
+    mpDelayExpression = new CExpression("ExpressionDelay", this);
 
   if (!mpDelayExpression->setInfix(expression)) return false;
 
@@ -236,7 +236,7 @@ bool CEvent::addAssignment(const std::string & key, const std::string & expressi
 
   Sum = mAssignsExpression.size();
 
-  CExpression* pExpr = new CExpression;
+  CExpression* pExpr = new CExpression("Assignment", this);
 
   if (!pExpr->setInfix(expression)) return false;
 
@@ -299,7 +299,9 @@ bool CEvent::setAssignmentExpression(const std::string & key, const std::string 
   for (it = mAssignsExpression.begin(); it != mAssignsExpression.end(); ++it)
     {
       if (it->first == key)
-        it->second = new CExpression(expr);
+        {
+          it->second = new CExpression(expr, this);
+        }
       it->second->compile();
     }
 
