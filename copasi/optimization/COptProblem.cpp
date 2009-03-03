@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.101.2.5.2.1 $
+//   $Revision: 1.101.2.5.2.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/17 20:30:12 $
+//   $Date: 2009/03/03 00:19:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,7 +251,7 @@ void COptProblem::initObjects()
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
 
-#ifdef WIN32
+#ifdef WIN32 
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
@@ -523,11 +523,11 @@ bool COptProblem::calculate()
     }
 
   if (!success || isnan(mCalculateValue))
-    mCalculateValue = mInfinity;
+    mCalculateValue = *mpParmMaximize ? -mInfinity : mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
-  return true;
+  return success;
 }
 
 bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
