@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLcm.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/02 09:46:48 $
+//   $Date: 2009/03/03 15:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
-# pragma warning (disable: 4243)
+# pragma warning (disable: 4243) 
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
 #endif  // WIN32
@@ -124,7 +124,7 @@ bool CNormalLcm::add(const CNormalSum& sum)
 {
   switch (sum.getProducts().size())
     {
-    case 0:    //Sum must contain at least one product!
+    case 0:     //Sum must contain at least one product!
       {
         return false;
       }
@@ -289,3 +289,10 @@ std::ostream & operator<< (std::ostream &os, const CNormalLcm & d)
     }
   return os;
 }
+
+#ifdef COPASI_DEBUG
+void CNormalLcm::refresh()
+{
+  this->mInfix = this->toString();
+}
+#endif /* COPASI_DEBUG */

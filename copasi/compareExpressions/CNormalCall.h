@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalCall.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/06/04 13:19:41 $
+//   $Date: 2009/03/03 15:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 #define COPASI_CNormalCall
 
 #include <string>
-#include <set>
+#include <vector>
 
 #include "copasi/compareExpressions/CNormalBase.h"
 #include "copasi/copasi.h"
@@ -49,8 +49,10 @@ class CNormalCall : public CNormalBase
 
     /**
      * Enumeration of members
+     * The members of a call have to be kept in the correct order since the 
+     * order of arguments to a call matters.
      */
-    std::set<CNormalFraction*> mFractions;
+    std::vector<CNormalFraction*> mFractions;
 
   public:
 
@@ -97,7 +99,7 @@ class CNormalCall : public CNormalBase
      * Retrieve the set of fractions of this sum.
      * @return mFractions.
      */
-    const std::set<CNormalFraction*>& getFractions() const;
+    const std::vector<CNormalFraction*>& getFractions() const;
 
     /**
      * Examine equality of two sums.
@@ -108,7 +110,7 @@ class CNormalCall : public CNormalBase
     /**
      * Sets the fractions of this product.
      */
-    void setFractions(const std::set<CNormalFraction*>& set);
+    void setFractions(const std::vector<CNormalFraction*>& set);
 
     virtual std::string toString() const;
 

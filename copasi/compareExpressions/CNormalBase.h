@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalBase.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/24 12:40:46 $
+//   $Date: 2009/03/03 15:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,9 +31,12 @@ class CNormalBase
 
     virtual bool areEqual(const CNormalBase& rhs) const;
 
+#ifdef COPASI_DEBUG
     virtual void refresh() const;
   protected:
     mutable std::string mInfix;
+#endif /* COPASI_DEBUG */
+
   };
 
 #endif /* CNormalBase_H__ */

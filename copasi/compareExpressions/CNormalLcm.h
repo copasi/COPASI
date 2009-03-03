@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLcm.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/02 08:18:25 $
+//   $Date: 2009/03/03 15:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@ class CNormalSum;
 class CNormalLcm;
 
 #include <vector>
+#include <string>
 
 #include "copasi/compareExpressions/CNormalProduct.h"
 
@@ -37,6 +38,9 @@ class CNormalLcm
      */
     std::set <CNormalItemPower*, compareItemPowers > mItemPowers;
     std::vector<CNormalSum*> mSums; //mSums do not contain fractions!!
+#ifdef COPASI_DEBUG
+    std::string mInfix;
+#endif /* COPASI_DEBUG */
 
   public:
     /**
@@ -99,6 +103,9 @@ class CNormalLcm
 
     std::string toString() const;
 
+#ifdef COPASI_DEBUG
+    void refresh();
+#endif /* COPASI_DEBUG */
     friend std::ostream & operator<< (std::ostream &os, const CNormalLcm & d);
   };
 
