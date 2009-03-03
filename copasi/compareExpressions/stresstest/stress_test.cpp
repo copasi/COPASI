@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/21 09:21:21 $
+//   $Date: 2009/03/03 15:58:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,7 @@ stress_test::stress_test(): mNumFunctionDefinitions(0),
     mNumCOPASIFunctions(0),
     mNumExceededCOPASIFunctions(0),
     mNumFailedCOPASIFunctions(0),
+    mNumFiles(0),
     mNumKineticFunctions(0),
     mNumMassActionsKinetics(0),
     mNumConstantFluxKinetics(0),
