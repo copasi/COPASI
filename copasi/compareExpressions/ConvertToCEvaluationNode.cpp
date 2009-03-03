@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/15 07:11:16 $
+//   $Date: 2009/03/03 16:00:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
-# pragma warning (disable: 4243)
+# pragma warning (disable: 4243) 
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
 #endif  // WIN32
@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <sstream>
 #include <exception>
+#include <vector>
 
 #include "ConvertToCEvaluationNode.h"
 
@@ -103,7 +104,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalItem& item)
         {
           type = (CEvaluationNode::Type)(CEvaluationNodeConstant::_INFINITY);
         }
-      else if (item.getName() == "NAN" || item.getName() == "nan")
+      else if (item.getName() == "NAN" || item.getName() == "nan" || item.getName() == "Nan")
         {
           type = (CEvaluationNode::Type)(CEvaluationNodeConstant::_NaN);
         }
@@ -276,7 +277,7 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
 {
   CNormalFraction* pFraction = new CNormalFraction();
   if (node->getData() == "/")
-    {// always executed except on root node possibly not
+    { // always executed except on root node possibly not
       // find a product chain and create new temporary nodes for the
       // numerator and denominator which are then converted to sums
       std::vector<const CEvaluationNode*> multiplications, divisions;
@@ -313,7 +314,7 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
       delete pDenom;
     }
   else
-    {// only possible for root node
+    { // only possible for root node
       CNormalSum* pNum = createSum(node);
       CNormalSum* pDenom = new CNormalSum();
       CNormalProduct* pProduct = new CNormalProduct();
@@ -416,7 +417,7 @@ CNormalItem* createItem(const CEvaluationNode* node)
       }
       break;
       */
-    default:  //cases CALL, CHOICE, LOGICAL, OBJECT, VECTOR.  NUMBER should not occur!
+    default:   //cases CALL, CHOICE, LOGICAL, OBJECT, VECTOR.  NUMBER should not occur!
       throw std::exception();
       break;
     }
@@ -668,7 +669,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
 /** THIS CODE should be obsolete, RG (06/04/6.2008)
  * Create a product from an evaluation node that is not necessarily a multiply operator.
  * @return CNormalProduct*, pointer to newly created product.
- */
+ */ 
 //CNormalProduct * createProduct(const CEvaluationNode* node)
 //{
 //  CNormalProduct * product = new CNormalProduct();
@@ -801,7 +802,7 @@ CNormalSum* createSum(const CEvaluationNode* node)
           assert(pProduct != NULL);
           // since these are subtractions, we need to set the factor the -1.0
           // times the old factor
-          pProduct->setFactor(-1.0 * pProduct->getFactor());
+          pProduct->setFactor( -1.0 * pProduct->getFactor());
           pSum->add(*pProduct);
           delete pProduct;
           ++it;
@@ -1100,8 +1101,8 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalCall& call)
           break;
         }
       pCall = new CEvaluationNodeCall(type, call.getName());
-      const std::set<CNormalFraction*>& children = call.getFractions();
-      std::set<CNormalFraction*>::const_iterator it = children.begin(), endit = children.end();
+      const std::vector<CNormalFraction*>& children = call.getFractions();
+      std::vector<CNormalFraction*>::const_iterator it = children.begin(), endit = children.end();
       while (it != endit)
         {
           CEvaluationNode* pChild = convertToCEvaluationNode(**it);
@@ -1512,7 +1513,7 @@ bool isLogical(const CEvaluationNode* pNode)
   if ((CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL) ||
       ((CEvaluationNode::type(pNode->getType()) == CEvaluationNode::FUNCTION && ((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeFunction::NOT)) ||
       (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CONSTANT && ((((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeConstant::TRUE) || (((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeConstant::FALSE)))
-)
+     )
 
     {
       result = true;
