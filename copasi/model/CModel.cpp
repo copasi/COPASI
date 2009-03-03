@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.352 $
+//   $Revision: 1.353 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/23 16:20:17 $
+//   $Author: gauges $
+//   $Date: 2009/03/03 13:29:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,7 @@ CModel::CModel(CCopasiContainer* pParent):
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
     mSteps("Reactions", this),
+    mEvents("Events", this),
     mParticleFluxes(),
     mValues("Values", this),
     mMoieties("Moieties", this),
@@ -136,7 +137,7 @@ CModel::CModel(CCopasiContainer* pParent):
   unsigned C_INT32 i, imax = mSteps.size();
 
   for (i = 0; i < imax; i++)
-    mSteps[i]->compile(/*mCompartments*/);
+    mSteps[i]->compile( /*mCompartments*/);
 
   initializeMetabolites();
 
@@ -165,6 +166,7 @@ CModel::CModel(CCopasiContainer* pParent):
 //     mMetabolites(src.mMetabolites, this),
 //     mMetabolitesX(src.mMetabolitesX, this),
 //     mSteps(src.mSteps, this),
+//     mEvents(src.mEvents,this),
 //     mParticleFluxes(src.mParticleFluxes),
 //     mValues(src.mValues, this),
 //     mMoieties(src.mMoieties, this),
@@ -355,7 +357,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   mSteps.load(configBuffer, Size); // slow
 
   for (i = 0; i < mSteps.size(); i++)
-    mSteps[i]->compile(/*mCompartments*/);
+    mSteps[i]->compile( /*mCompartments*/);
 
   pDataModel->pOldMetabolites->cleanup();
 
@@ -781,7 +783,7 @@ void CModel::buildMoieties()
 
       for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
         if (fabs(*pFactor) > DBL_EPSILON)
-          pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
+          pMoiety->add( - *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
 
       mMoieties.add(pMoiety, true);
     }
@@ -1914,7 +1916,7 @@ bool CModel::setVolumeUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), VolumeUnitNames);
 
-  if (-1 == unit)
+  if ( -1 == unit)
     return setVolumeUnit(ml);
   else
     return setVolumeUnit((CModel::VolumeUnit) unit);
@@ -1942,7 +1944,7 @@ bool CModel::setTimeUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), TimeUnitNames);
 
-  if (-1 == unit)
+  if ( -1 == unit)
     return setTimeUnit(s);
   else
     return setTimeUnit((CModel::TimeUnit) unit);
@@ -1969,10 +1971,10 @@ CModel::TimeUnit CModel::getTimeUnitEnum() const
 bool CModel::setQuantityUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), QuantityUnitNames);
-  if (-1 == unit)
+  if ( -1 == unit)
     unit = toEnum(name.c_str(), QuantityUnitOldXMLNames);
 
-  if (-1 == unit)
+  if ( -1 == unit)
     return setQuantityUnit(mMol);
   else
     return setQuantityUnit((CModel::QuantityUnit) unit);
@@ -2635,7 +2637,7 @@ CEvent* CModel::createEvent(const std::string & name)
   if (mEvents.getIndex(name) != C_INVALID_INDEX)
     return NULL;
 
-  CEvent * pEvent = new CEvent(name);
+  CEvent * pEvent = new CEvent(name, this);
 
   if (!mEvents.add(pEvent, true))
     {

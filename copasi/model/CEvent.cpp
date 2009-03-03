@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Author: gauges $
+//   $Date: 2009/03/03 13:29:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,8 @@ CEvent::CEvent(const std::string & name,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-                            mpExpressionEA(NULL),
-                                                        mpModel(NULL)*/
+                                mpExpressionEA(NULL),
+                                                            mpModel(NULL)*/
 {
   // std::cout << "CE::CE" << std::endl;
   CONSTRUCTOR_TRACE;
@@ -54,7 +54,7 @@ CEvent::CEvent(const CEvent & src,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL) /*,
-                            mpExpressionEA(NULL)*/
+                                mpExpressionEA(NULL)*/
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -443,11 +443,13 @@ void CEvent::setTriggerExpressionPtr(CExpression* pExpression)
   if ((pExpression->getType()) != CEvaluationTree::Boolean) return;
   if (this->mpTriggerExpression != NULL) delete this->mpTriggerExpression;
   this->mpTriggerExpression = pExpression;
+  this->mpTriggerExpression->setObjectParent(this);
   this->mpTriggerExpression->compile();
 }
 
 void CEvent::setAssignmentExpressionPtr(const std::string & key, CExpression* pExpression)
 {
+  pExpression->setObjectParent(this);
   pExpression->compile();
   this->mAssignsExpression.push_back(std::make_pair(key, pExpression));
 }
@@ -483,5 +485,6 @@ void CEvent::setDelayExpressionPtr(CExpression* pExpression)
 {
   if (this->mpDelayExpression != NULL) delete this->mpDelayExpression;
   this->mpDelayExpression = pExpression;
+  this->mpDelayExpression->setObjectParent(this);
   this->mpDelayExpression->compile();
 }
