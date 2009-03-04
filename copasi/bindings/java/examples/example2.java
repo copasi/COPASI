@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example2.java,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 19:20:11 $ 
+//   $Date: 2009/03/04 20:01:07 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -27,9 +27,9 @@ public class example2
         CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
         assert CCopasiRootContainer.getDatamodelList().size() == 1;
         // the only argument to the main routine should be the name of a CPS file
-        if (args.length == 2)
+        if (args.length == 1)
         {
-            String filename = args[1];
+            String filename = args[0];
             try
             {
                 // load the model without progress report
