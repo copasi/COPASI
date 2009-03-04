@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:15 $
+//   $Author: gauges $
+//   $Date: 2009/03/04 20:04:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ class CDataModelRenameHandler : public CRenameHandler
 
 //******************************************************************************
 
-class CCopasiDataModel: public COutputHandler, public CCopasiContainer
+class CCopasiDataModel: public CCopasiContainer, public COutputHandler
   {
     // Operations
   public:
@@ -72,6 +72,7 @@ class CCopasiDataModel: public COutputHandler, public CCopasiContainer
                      const CCopasiContainer * pParent = NULL,
                      const std::string & type = "CN",
                      bool withGUI = false);
+
 
     ~CCopasiDataModel();
 
