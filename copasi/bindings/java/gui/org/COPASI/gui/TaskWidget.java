@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
-//   $Revision: 1.11 $ 
+//   $Revision: 1.12 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:34 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/03/04 19:22:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -52,6 +52,7 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import org.COPASI.CCopasiRootContainer;
 import org.COPASI.CCopasiDataModel;
 import org.COPASI.CCopasiObject;
 import org.COPASI.CCopasiTask;
@@ -486,6 +487,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	protected MethodParameterWidget  mMethodWidget;
 	protected ButtonWidget  mButtonWidget;
 	protected CCopasiTask mTask;
+	protected CCopasiDataModel mDataModel;
 	protected boolean mDefaultReportCreated;
         protected boolean mOverwrite;
         protected Vector<TaskRunEventListener> mListeners;
@@ -493,6 +495,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	public TaskWidget(String title,boolean enableReportButton)
 	{
 		super();
+                this.mDataModel=CCopasiRootContainer.addDatamodel();
 		this.mTask=null;
                 this.mOverwrite=false;
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -725,12 +728,12 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
            CCopasiMessage.clearDeque();
            try
            {
-             CCopasiDataModel.getGlobal().importSBML(fileName);
+             mDataModel.importSBML(fileName);
            }
            catch(java.lang.Exception e)
            {
              // show an error dialog
-             if(CCopasiDataModel.getGlobal().getModel()==null)
+             if(mDataModel.getModel()==null)
              {
                  this.resetTask();
                  this.mButtonWidget.mReportButton.setEnabled(false);
@@ -807,7 +810,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		{
                   //System.out.println("Creating default report.");;
 		  int index=COutputAssistant.getDefaultReportIndex(this.mTask.getProblem());
-		  CCopasiObject def=COutputAssistant.createDefaultOutput(index, this.mTask, true);
+		  CCopasiObject def=COutputAssistant.createDefaultOutput(index, this.mTask,mDataModel, true);
 		  if (def instanceof CReportDefinition) 
 		  {
 			 this.mTask.getReport().setReportDefinition((CReportDefinition)def);

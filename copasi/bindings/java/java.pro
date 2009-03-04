@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.34 $ 
+#   $Revision: 1.35 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/02/18 21:02:34 $ 
+#   $Date: 2009/03/04 19:22:39 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -63,7 +63,7 @@ contains(BUILD_OS, Darwin) {
     
     # make a hard link from the generated dylib file to a file with the ending
     # jnilib
-    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d" " -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d" " -f3  >> unexported_symbols.list
+    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
     QMAKE_POST_LINK = ln -f libCopasiJava.1.0.0.dylib libCopasiJava.jnilib 
 
   !isEmpty(JAVA_HOME){

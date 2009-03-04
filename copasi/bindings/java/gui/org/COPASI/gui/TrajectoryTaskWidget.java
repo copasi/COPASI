@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.11 $ 
+//   $Revision: 1.12 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/06/02 11:15:12 $ 
+//   $Date: 2009/03/04 19:22:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -159,17 +159,16 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 
 	protected void resetTask()
 	{
-		CCopasiDataModel m=CCopasiDataModel.getGlobal();
 		CCopasiTask t=null;
-		if(m!=null)
+		if(mDataModel!=null)
     {
-      long size=m.getTaskList().size();
+      long size=mDataModel.getTaskList().size();
 		  long i=0;
 		  while(t==null && i < size)
 		  {
-		  	if(m.getTask(i).getType()==CCopasiTask.timeCourse)
+		  	if(mDataModel.getTask(i).getType()==CCopasiTask.timeCourse)
 		  	{
-		  		t=m.getTask(i);
+		  		t=mDataModel.getTask(i);
 		  	}
 		  	i++;
 		  }
@@ -361,9 +360,10 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
                                long jMax=timeSeries.getNumVariables();
                                Vector<String> columnNames=new Vector<String>();
                                Vector<Vector<Double>> data=new Vector<Vector<Double>>();
+                               CCopasiDataModel datamodel=task.getObjectDataModel();
                                for(j=0;j<jMax;j++)
                                {
-                                 columnNames.addElement(timeSeries.getSBMLId(j));
+                                 columnNames.addElement(timeSeries.getSBMLId(j,datamodel));
                                }
                                for(i=0;i<iMax;i++)
                                {

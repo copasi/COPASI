@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.23 $ 
+//   $Revision: 1.24 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/02/18 20:53:05 $ 
+//   $Date: 2009/03/04 19:22:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,16 @@
 
 %ignore operator<< ;
 %ignore operator<< <>;
+
+// for now we ignore the resize method since it uses the copy constructor of
+// the item, which is not implemented for most items
+// actually it is best to disable all methods that use resize as well
+%ignore CCopasiVector::resize;
+%ignore CCopasiVector::deepCopy;
+%ignore CCopasiVector::deepCopy;
+%ignore CCopasiVectorS::load;
+%ignore CCopasiVectorNS::load;
+%ignore CCopasiVector::CCopasiVector;
 
 #ifdef SWIGJAVA
 // disable some operator for Java to get rid of the warnings

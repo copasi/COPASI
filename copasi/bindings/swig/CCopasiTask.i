@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.23 $ 
+//   $Revision: 1.24 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/02/18 20:53:05 $ 
+//   $Date: 2009/03/04 19:22:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -80,13 +80,13 @@
     virtual  bool process(bool useInitialValues) 
       {
         CCopasiMessage::clearDeque();
-        CCopasiDataModel* pDataModel=self->getParentDatamodel();
+        CCopasiDataModel* pDataModel=self->getObjectDataModel();
         assert(pDataModel!=NULL);
         bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,pDataModel, NULL);
         if(result)
         {
           result=self->process(useInitialValues);
-          pDataModel>finish();
+          pDataModel->finish();
         }
         if(result)
         {
