@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.26 $ 
+#   $Revision: 1.27 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/02/18 21:02:34 $ 
+#   $Date: 2009/03/05 08:13:36 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,18 +68,19 @@ contains(BUILD_OS,Linux){
 }
 
 contains(BUILD_OS, Darwin) {
-    LIBS += -framework Python
+    LIBS += `python-config --libs` 
     LIBS += -framework QuickTime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
 
     QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
-    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d" " -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d" " -f3  >> unexported_symbols.list
+    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
 
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
   }
+  QMAKE_CXXFLAGS += `python-config --includes` 
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }

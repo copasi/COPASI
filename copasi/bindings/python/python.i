@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.21 $ 
+//   $Revision: 1.22 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/02/18 20:53:05 $ 
+//   $Date: 2009/03/05 08:13:36 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -163,9 +163,6 @@ import types
 // Create the root container
 CCopasiRootContainer::init(false,0,NULL);
 
-// Create the global data model
-CCopasiRootContainer::Root->addDatamodel();
-
 %}
 
 %pythoncode %{
@@ -174,14 +171,17 @@ TriUnspecified=-1
 TriFalse=0
 TriTrue=1
 
-CCopasiDataModel.GLOBAL=_COPASI.CCopasiDataModel_Global_get()
+// The global datamodel no longer exists
+// the backend can now handle several datamodels
+//CCopasiDataModel.GLOBAL=_COPASI.CCopasiDataModel_Global_get()
 
 CCopasiObjectName.escape=_COPASI.CCopasiObjectName_escape
 CCopasiObjectName.unescape=_COPASI.CCopasiObjectName_unescape
 
 CCopasiMethod.TypeNameToEnum=_COPASI.CCopasiMethod_TypeNameToEnum
 
-CCopasiContainer.ObjectFromName=_COPASI.CCopasiContainer_ObjectFromName
+// The object from name no longer exists in this form
+//CCopasiContainer.ObjectFromName=_COPASI.CCopasiContainer_ObjectFromName
 
 CEvaluationTree.create=_COPASI.CEvaluationTree_create
 CEvaluationTree.copy=_COPASI.CEvaluationTree_copy

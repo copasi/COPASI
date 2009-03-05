@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:51:31 $
+//   $Author: gauges $
+//   $Date: 2009/03/05 08:13:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,6 +81,7 @@ typedef std::vector<CRegisteredObjectName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
+typedef CCopasiVectorN<CCopasiDataModel> CCopasiDataModelVectorN;
 
 typedef std::vector<CFunction> CFunctionStdVector;
 
@@ -103,7 +104,7 @@ struct swig_type_info*
       GetDowncastSwigTypeForCExperimentSet (CExperimentSet* experimentSet)
   {
     if (array == NULL) return SWIGTYPE_p_CExperimentSet;
-
+ 
     struct swig_type_info* pInfo = SWIGTYPE_p_CExperimentSet;
     if (dynamic_cast<CCrossValidationSet*>(experimentSet))
       {
@@ -403,7 +404,15 @@ struct swig_type_info*
     if (container == NULL) return SWIGTYPE_p_CCopasiContainer;
 
     struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiContainer;
-    if (dynamic_cast<CModelEntity*>(container))
+    if (dynamic_cast<CCopasiRootContainer*>(container))
+      {
+        pInfo = SWIGTYPE_p_CCopasiRootContainer;
+      }
+    else if (dynamic_cast<CCopasiDataModel*>(container))
+      {
+        pInfo = SWIGTYPE_p_CCopasiDataModel;
+      }
+    else if (dynamic_cast<CModelEntity*>(container))
       {
         pInfo = GetDowncastSwigTypeForCModelEntity(static_cast<CModelEntity*>(container));
       }
@@ -413,7 +422,11 @@ struct swig_type_info*
       }
     else if (container->isNameVector())
       {
-        if (dynamic_cast<TaskVectorN*>(container))
+        if (dynamic_cast<CCopasiDataModelVectorN*>(container))
+          {
+            pInfo = SWIGTYPE_p_CCopasiVectorTCCopasiDataModel_t;
+          }
+        else if (dynamic_cast<TaskVectorN*>(container))
           {
             pInfo = SWIGTYPE_p_CCopasiVectorNTCCopasiTask_t;
           }
@@ -500,10 +513,6 @@ struct swig_type_info*
     else if (dynamic_cast<CReaction*>(container))
       {
         pInfo = SWIGTYPE_p_CReaction;
-      }
-    else if (dynamic_cast<CReport*>(container))
-      {
-        pInfo = SWIGTYPE_p_CReport;
       }
     else if (dynamic_cast<CArrayAnnotation*>(container))
       {
