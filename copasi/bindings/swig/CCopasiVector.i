@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.24 $ 
+//   $Revision: 1.25 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 19:22:40 $ 
+//   $Date: 2009/03/05 21:36:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,50 +50,42 @@
 
 %rename(addCopy) CCopasiVector::add(const CType&);
 
-/*
- * The following code should make sure that an object that is added to a vector
- * which takes ownership for the object is not deleted by python.
- * Unfortunatelly the SWIG documentation for this is a bit scarse and the fact
- * that the code has to be indented correctly, makes this difficult.
- * For now this is disabled and it will be added to the documentation that the
- * user has to call .__disown__() on the object that is added to a vector.
-#ifdef SWIGPYTHON
-%pythonprepend CCopasiVector::add(CType*) %{
-        # disown the given object
-        if(length(args)==2):
-          args[1].__disown__()
-        else if(length(args)==3 and args[2]==true):
-          args[1].__disown__()
-%}
-
-%pythonprepend CCopasiVectorN::add(CType*) %{
-        # disown the given object
-        if(length(args)==2):
-          args[1].__disown__()
-        else if(length(args)==3 and args[2]==true):
-          args[1].__disown__()
-%}
-#endif // SWIGPYTHON
-*/
 
 %include "utilities/CCopasiVector.h"
 
+// this extension makes the assumption hat only instances of classes
+// that are derived from CCopasiObject are stored in a CCopasiVector
+// This is not necessarily true, but right now this is the easiest way to maybe
+// get a pointer to the correct type
 %extend CCopasiVector
 {
-  virtual value_type& get(unsigned C_INT32 index)
+  virtual CCopasiObject* get(unsigned C_INT32 index)
   {
-      return (*self)[index];
+      return (CCopasiObject*)((*self)[index]);
+  }
+
+  // this method is needed because I haven't found out how to disown 
+  // objects from java
+  // Calling the parameter DISOWN should activate the DISOWN typemap
+  // and pass ownership to the C++ side
+  virtual bool addAndOwn(CType *DISOWN)
+  {
+      return self->add(DISOWN,true);
   }
 
 }
 
 
 
+// this extension makes the assumption hat only instances of classes
+// that are derived from CCopasiObject are stored in a CCopasiVectorN
+// This is not necessarily true, but right now this is the easiest way to maybe
+// get a pointer to the correct type
 %extend CCopasiVectorN
 {
-  virtual value_type& getByName(const std::string& name)
+  virtual CCopasiObject* getByName(const std::string& name)
   {
-      return (*self)[name];
+      return (CCopasiObject*)((*self)[name]);
   }
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example3.java,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/05 15:28:46 $ 
+//   $Date: 2009/03/05 21:36:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -70,7 +70,7 @@ public class example3
           int i, iMax =(int) model.getMetabolites().size();
           for (i = 0;i < iMax;++i)
           {
-              CMetab metab = model.getMetabolites().get(i);
+              CMetab metab = model.getMetabolite(i);
               assert metab != null;
               // we don't want output for FIXED metabolites right now
               if (metab.getStatus() != CModelEntity.FIXED)
@@ -91,26 +91,20 @@ public class example3
               }
           }
 
-          // get the task list
-          TaskVectorN taskList = dataModel.getTaskList();
 
           // get the trajectory task object
-          CTrajectoryTask trajectoryTask = (CTrajectoryTask)taskList.getObject(new CCopasiObjectName("Time-Course"));
+          CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
+          assert trajectoryTask != null;
           // if there isn't one
           if (trajectoryTask == null)
           {
               // create a new one
               trajectoryTask = new CTrajectoryTask();
-              // remove any existing trajectory task just to be sure since in
-              // theory only the cast might have failed above
-              CCopasiObject object=taskList.getObject(new CCopasiObjectName("Time-Course"));
-              assert object != null;
-              long index=taskList.getIndex(object);
-
-              taskList.remove(index);
 
               // add the new time course task to the task list
-              taskList.add(trajectoryTask, true);
+              // this method makes sure that the object is now owned 
+              // by the list and that it does not get deleted by SWIG
+              dataModel.getTaskList().addAndOwn(trajectoryTask);
           }
 
           // run a deterministic time course

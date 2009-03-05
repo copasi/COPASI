@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/05 20:13:30 $ 
+#   $Date: 2009/03/05 21:36:23 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -79,16 +79,15 @@ def main(args):
 
 
       # get the trajectory task object
-      trajectoryTask = dataModel.getTask("Time-Course")
+      trajectoryTask = None #dataModel.getTask("Time-Course")
       # if there isn't one
       if (trajectoryTask == None):
           # create a one
           trajectoryTask = CTrajectoryTask()
           # add the time course task to the task list
-          dataModel.getTaskList().add(trajectoryTask, True)
-          # since we are adding the task to the tasklist, the tasklist
-          # should take care of deleting it, so we have to disown it
-          trajectoryTask.__disown__()
+          # this method makes sure the object is now owned by the list
+          # and that SWIG does not delete it
+          dataModel.getTaskList().addAndOwn(trajectoryTask)
 
 
       # run a deterministic time course

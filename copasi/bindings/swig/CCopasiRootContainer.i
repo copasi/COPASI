@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiRootContainer.i,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/02/18 20:59:34 $ 
+//   $Date: 2009/03/05 21:36:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -34,3 +34,12 @@
 
 %include "report/CCopasiRootContainer.h"
 
+
+%extend CCopasiRootContainer
+{
+    CCopasiDataModel* getDatamodel(unsigned C_INT32 index)
+    {
+      return (*$self->getDatamodelList())[index];
+    };
+
+}; 

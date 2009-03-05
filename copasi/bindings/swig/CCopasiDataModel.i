@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.20 $ 
+//   $Revision: 1.21 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 19:22:40 $ 
+//   $Date: 2009/03/05 21:36:22 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -118,6 +118,11 @@
     CCopasiTask* getTask(unsigned C_INT32 index)
     {
       return (*$self->getTaskList())[index];
+    };
+
+    CCopasiTask* getTask(const std::string& name)
+    {
+      return (*$self->getTaskList())[name];
     };
 };
 

@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example4.java,v $ 
-//   $Revision: 1.3 $ 
+//   $Revision: 1.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/05 14:33:26 $ 
+//   $Date: 2009/03/05 21:36:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -66,7 +66,7 @@ class example4
         int i, iMax = (int)model.getMetabolites().size();
         for (i = 0;i < iMax;++i)
         {
-            CMetab metab = model.getMetabolites().get(i);
+            CMetab metab = model.getMetabolite(i);
             assert metab != null;
             // we don't want output for FIXED metabolites right now
             if (metab.getStatus() != CModelEntity.FIXED)
@@ -88,22 +88,20 @@ class example4
                 }
             }
         }
-        // get the task list
-        TaskVectorN taskList = dataModel.getTaskList();
 
         // get the trajectory task object
-        CTrajectoryTask trajectoryTask = (CTrajectoryTask)taskList.getObject(new CCopasiObjectName("Time-Course"));
+        CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
+        assert trajectoryTask != null;
         // if there isn't one
         if (trajectoryTask == null)
         {
             // create a new one
             trajectoryTask = new CTrajectoryTask();
-            // remove any existing trajectory task just to be sure since in
-            // theory only the cast might have failed above
-            taskList.removeByName("Time-Course");
-
+            
             // add the new time course task to the task list
-            taskList.add(trajectoryTask, true);
+            // this method makes sure that the object is now owned 
+            // by the list and that it does not get deleted by SWIG
+            dataModel.getTaskList().addAndOwn(trajectoryTask);
         }
 
         // run a stochastic time course
@@ -129,15 +127,16 @@ class example4
         problem.setTimeSeriesRequested(true);
 
         // now we set up the scan
-        CScanTask scanTask = (CScanTask)taskList.getObject(new CCopasiObjectName("Scan"));
+        CScanTask scanTask = (CScanTask)dataModel.getTask("Scan");
+        assert scanTask != null;
         if (scanTask == null)
         {
             // create a new scan task
             scanTask = new CScanTask();
-            // just to be on the save side, delete any existing scan task
-            taskList.removeByName("Scan");
             // add the new scan task
-            taskList.add(scanTask, true);
+            // this method makes sure that the object is now owned 
+            // by the list and that it does not get deleted by SWIG
+            dataModel.getTaskList().addAndOwn(scanTask);
         }
 
         // get the problem

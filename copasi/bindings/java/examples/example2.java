@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example2.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 20:01:07 $ 
+//   $Date: 2009/03/05 21:36:23 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,7 +50,7 @@ public class example2
             System.out.println("Compartments: ");
             for (i = 0;i < iMax;++i)
             {
-                CCompartment compartment = model.getCompartments().get(i);
+                CCompartment compartment = model.getCompartment(i);
                 assert compartment != null;
                 System.out.println("\t" + compartment.getObjectName());
             }
@@ -61,7 +61,7 @@ public class example2
             System.out.println("Metabolites: ");
             for (i = 0;i < iMax;++i)
             {
-                CMetab metab = model.getMetabolites().get(i);
+                CMetab metab = model.getMetabolite(i);
                 assert metab != null;
                 System.out.println("\t" + metab.getObjectName());
             }
@@ -72,7 +72,7 @@ public class example2
             System.out.println("Reactions: ");
             for (i = 0;i < iMax;++i)
             {
-                CReaction reaction = model.getReactions().get(i);
+                CReaction reaction = model.getReactions(i);
                 assert reaction != null;
                 System.out.println("\t" + reaction.getObjectName());
             }
