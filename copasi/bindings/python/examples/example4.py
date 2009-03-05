@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example4.py,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/05 19:51:25 $ 
+#   $Date: 2009/03/05 20:13:30 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -162,6 +162,10 @@ def main(args):
        trajectoryTask = CTrajectoryTask()
        # add the time course task to the task list
        dataModel.getTaskList().add(trajectoryTask, True)
+       # since we are adding the task to the tasklist, the tasklist
+       # should take care of deleting it, so we have to disown it
+       trajectoryTask.__disown__()
+
 
    # run a stochastic time course
    trajectoryTask.setMethodType(CCopasiMethod.stochastic)
@@ -193,6 +197,10 @@ def main(args):
        scanTask = CScanTask()
        # add the scan task
        dataModel.getTaskList().add(scanTask, True)
+       # since we are adding the task to the tasklist, the tasklist
+       # should take care of deleting it, so we have to disown it
+       scanTask.__disown__()
+
 
    # get the problem
    scanProblem = scanTask.getProblem()

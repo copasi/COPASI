@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/05 19:51:25 $ 
+#   $Date: 2009/03/05 20:13:30 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -19,7 +19,6 @@
 
 from COPASI import *
 import sys
-import pdb
 
 def main(args):
   assert CCopasiRootContainer.getRoot() != None
@@ -87,6 +86,10 @@ def main(args):
           trajectoryTask = CTrajectoryTask()
           # add the time course task to the task list
           dataModel.getTaskList().add(trajectoryTask, True)
+          # since we are adding the task to the tasklist, the tasklist
+          # should take care of deleting it, so we have to disown it
+          trajectoryTask.__disown__()
+
 
       # run a deterministic time course
       trajectoryTask.setMethodType(CCopasiMethod.deterministic)
@@ -122,7 +125,6 @@ def main(args):
 
       parameter = method.getParameter("Absolute Tolerance")
       assert parameter != None
-      pdb.set_trace()
       assert parameter.getType() == CCopasiParameter.UDOUBLE
       parameter.setValue(1.0e-12)
 
