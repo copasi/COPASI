@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example3.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 20:01:07 $ 
+//   $Date: 2009/03/05 15:28:46 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -62,7 +62,7 @@ public class example3
           ReportItemVector header = report.getHeaderAddr();
           ReportItemVector body = report.getBodyAddr();
           
-          body.add(new CRegisteredObjectName(new CCopasiObjectName(dataModel.getModel().getCN() + ",Reference=Time").toString()));
+          body.add(new CRegisteredObjectName(new CCopasiObjectName(dataModel.getModel().getCN() + ",Reference=Time").getString()));
           body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
           header.add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
           header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));

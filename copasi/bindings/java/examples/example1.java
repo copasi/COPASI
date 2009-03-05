@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example1.java,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 19:20:11 $ 
+//   $Date: 2009/03/05 15:28:46 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -236,8 +236,5 @@ public class example1
      {
         System.err.println("Error. Exporting the model to SBML failed.");
      }
-
-     // destroy the root container once we are done
-     CCopasiRootContainer.destroy();
  }
 }
