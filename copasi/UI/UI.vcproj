@@ -306,6 +306,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQReactionDM.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReactionsWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQRegistrationDialog.cpp"
 				>
 			</File>
@@ -871,6 +879,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQReactionDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReactionsWidget.h"
+				>
+			</File>
+			<File
 				RelativePath="CQRegistrationDialog.h"
 				>
 			</File>
@@ -1302,6 +1318,10 @@
 		</File>
 		<File
 			RelativePath="CQProgressItemText.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQReactionsWidget.ui"
 			>
 		</File>
 		<File

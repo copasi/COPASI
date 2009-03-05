@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/28 18:25:17 $
+//   $Date: 2009/03/05 17:23:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,13 +79,6 @@ QVariant CQCreatorDM::headerData(int section, Qt::Orientation orientation,
       }
     else
       return QString("%1").arg(section + 1);
-  }
-Qt::ItemFlags CQCreatorDM::flags(const QModelIndex &index) const
-  {
-    if (!index.isValid())
-      return Qt::ItemIsEnabled;
-
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
   }
 
 bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,

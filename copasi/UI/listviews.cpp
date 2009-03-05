@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.262 $
+//   $Revision: 1.263 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Author: aekamal $
+//   $Date: 2009/03/05 17:23:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@
 #include "CQMoietiesTaskResult.h"
 #include "CQMoietiesTaskWidget.h"
 #include "ParametersWidget.h"
-#include "ReactionsWidget.h"
+#include "CQReactionsWidget.h"
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
 #include "StateWidget.h"
@@ -436,7 +436,7 @@ void ListViews::ConstructNodeWidgets()
   if (!plotWidget1) plotWidget1 = new PlotWidget1(this);
   plotWidget1->hide();
 
-  if (!reactionsWidget) reactionsWidget = new ReactionsWidget(this);
+  if (!reactionsWidget) reactionsWidget = new CQReactionsWidget(this);
   reactionsWidget->hide();
 
   if (!reactionsWidget1)
@@ -664,7 +664,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 341:
         return sensResultWidget;
         break;
-      case 43:                                        //Report
+      case 43:                                         //Report
         return tableDefinition;
         break;
       case 42:
@@ -1005,7 +1005,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
           break;
         default :
-;
+          ;
         }
       break;
 

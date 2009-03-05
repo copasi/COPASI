@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.353 $
+//   $Revision: 1.354 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/03 13:29:11 $
+//   $Author: aekamal $
+//   $Date: 2009/03/05 17:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2517,7 +2517,19 @@ bool CModel::removeReaction(const std::string & key,
 {
   CReaction * pReaction =
     dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  return removeReaction(pReaction, recursive);
+}
 
+bool CModel::removeReaction(const unsigned C_INT32 index,
+                            const bool & recursive)
+{
+  const CReaction * pReaction = getReactions()[index];
+  return removeReaction(pReaction, recursive);
+}
+
+bool CModel::removeReaction(const CReaction * pReaction,
+                            const bool & recursive)
+{
   if (!pReaction)
     return false;
 

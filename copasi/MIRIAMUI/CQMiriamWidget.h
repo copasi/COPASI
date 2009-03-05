@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/03/05 17:23:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,9 +41,6 @@ class CQMiriamWidget : public CopasiWidget, public Ui::CQMiriamWidget
     const CMIRIAMInfo & getMIRIAMInfo() const;
     void updateResourcesList();
 
-  protected slots:
-    virtual void languageChange();
-
   private:
     CMIRIAMInfo* mpMIRIAMInfo;
     CQCreatorDM* mpCreatorDM;
@@ -62,12 +59,14 @@ class CQMiriamWidget : public CopasiWidget, public Ui::CQMiriamWidget
     void deleteSelectedReference();
     void deleteSelectedBiologicalDescription();
     void deleteSelectedModified();
+    void keyPressEvent(QKeyEvent* ev) ;
 
-  private slots:
-    void slotBtnDeleteClicked();
-    void slotBtnNewClicked();
-    void slotBtnClearClicked();
-    void slotCreatedDTChanged(QDateTime newDT);
+  protected slots:
+    virtual void languageChange();
+    virtual void slotBtnDeleteClicked();
+    virtual void slotBtnNewClicked();
+    virtual void slotBtnClearClicked();
+    virtual void slotCreatedDTChanged(QDateTime newDT);
   };
 
 #endif // CQMIRIAMWIDGET_H

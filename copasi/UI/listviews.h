@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.150 $
+//   $Revision: 1.151 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: aekamal $
+//   $Date: 2009/03/05 17:23:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ class CQMoietiesTaskResult;
 class CQMoietiesTaskWidget;
 class ParametersWidget;
 class ReactionsWidget1;
-class ReactionsWidget;
+class CQReactionsWidget;
 class SteadyStateWidget;
 class ScanWidget;
 class SensitivitiesWidget;
@@ -243,7 +243,7 @@ class ListViews : public QSplitter
     ParametersWidget *parametersWidget;
     PlotWidget *plotWidget;
     PlotWidget1 *plotWidget1;
-    ReactionsWidget *reactionsWidget;
+    CQReactionsWidget *reactionsWidget;
     CTabWidget *reactionsWidget1;
     ScanWidget *scanWidget;
     SensitivitiesWidget *sensWidget;

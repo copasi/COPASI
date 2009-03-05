@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Author: aekamal $
+//   $Date: 2009/03/05 17:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,21 @@ void CReactionInterface::initFromReaction(const std::string & key)
   const CReaction *rea;
   rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(key));
   assert(rea);
+  initFromReaction(rea);
+}
 
+void CReactionInterface::initFromReaction(const C_INT32 index)
+{
+  const CReaction *rea =
+    (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[index];
+
+  mReactionReferenceKey = rea->getKey();
+  assert(rea);
+  initFromReaction(rea);
+}
+
+void CReactionInterface::initFromReaction(const CReaction *rea)
+{
   //name
   mReactionName = rea->getObjectName();
 

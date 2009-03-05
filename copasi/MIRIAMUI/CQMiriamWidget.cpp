@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/03/05 17:23:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,12 +55,6 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mWidgets.push_back(mpTblReferences); mDMs.push_back(mpReferenceDM);
   mWidgets.push_back(mpTblDescription); mDMs.push_back(mpBiologicalDescriptionDM);
   mWidgets.push_back(mpTblModified); mDMs.push_back(mpModifiedDM);
-
-  // Connect the table widgets
-  connect(mpTblAuthors, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
-  connect(mpTblReferences, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
-  connect(mpTblDescription, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
-  connect(mpTblModified, SIGNAL(delKeyPressed()), this, SLOT(slotBtnDeleteClicked()));
 
   // Build the list of supported predicates
   mPredicates.push_back("-- select --");
@@ -355,4 +349,10 @@ void CQMiriamWidget::updateResourcesList()
   for (i = 0; i < imax; i++)
     if (pResource->getMIRIAMResource(i).getMIRIAMCitation())
       mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+}
+
+void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
+{
+  if (ev->key() == Qt::Key_Delete)
+    slotBtnDeleteClicked();
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:35 $
+//   $Date: 2009/03/05 17:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,7 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
 const CCopasiVector <CModification> & CMIRIAMInfo::getModifications() const
   {return mModifications;}
 
-CModification * CMIRIAMInfo::createModification(const std::string & /* objectName */)
+CModification * CMIRIAMInfo::createModification(const std::string& dateTime)
 {
   const CRDFSubject & Subject = mpRDFGraph->getAboutNode()->getSubject();
   CRDFObject Object;
@@ -261,6 +261,8 @@ CModification * CMIRIAMInfo::createModification(const std::string & /* objectNam
     return NULL;
 
   CModification * pModification = new CModification(Triplet);
+  if (dateTime.size())
+    pModification->setDate(dateTime);
 
   if (!mModifications.add(pModification, true))
     {

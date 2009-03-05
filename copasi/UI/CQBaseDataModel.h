@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/28 18:25:46 $
+//   $Date: 2009/03/05 17:23:46 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -24,7 +24,7 @@ class CQBaseDataModel : public QAbstractTableModel
     virtual QVariant data(const QModelIndex &index, int role) const = 0;
     virtual QVariant headerData(int section, Qt::Orientation orientation,
                                 int role = Qt::DisplayRole) const = 0;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     virtual bool setData(const QModelIndex &index, const QVariant &value,
                          int role = Qt::EditRole) = 0;
     bool insertRow();

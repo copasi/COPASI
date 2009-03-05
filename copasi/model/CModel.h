@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:04 $
+//   $Author: aekamal $
+//   $Date: 2009/03/05 17:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,7 +249,7 @@ class CModel : public CModelEntity
     /**
      *  Build the core of the link matrix L
      *  @param const CMatrix< C_FLOAT64 > & LU
-     */
+     */ 
     //void buildL(const CMatrix< C_FLOAT64 > & LU);
 
 #ifdef XXXX
@@ -402,7 +402,7 @@ class CModel : public CModelEntity
 
     /**
      * Return a pointer to the current time
-     */
+     */ 
     //virtual void * getValuePointer() const;
 
     /**
@@ -497,7 +497,7 @@ class CModel : public CModelEntity
     /**
      * Get the LU decomposition matrix of this model
      * @return const TNT::Matrix < C_FLOAT64 > & LU
-     */
+     */ 
     //    const CMatrix < C_FLOAT64 > & getmLU() const;
 
     /**
@@ -835,8 +835,16 @@ class CModel : public CModelEntity
      */
     CReaction* createReaction(const std::string &name);
 
-    /** Remove a reaction from the model*/
+    /** Remove a reaction from the model using its pointer*/
+    bool removeReaction(const CReaction * pReaction,
+                        const bool & recursive = true);
+
+    /** Remove a reaction from the model using its key*/
     bool removeReaction(const std::string & key,
+                        const bool & recursive = true);
+
+    /** Remove a reaction from the model using its index*/
+    bool removeReaction(const unsigned C_INT32 index,
                         const bool & recursive = true);
 
     /**

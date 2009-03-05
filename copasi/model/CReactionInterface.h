@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/07/10 19:57:59 $
+//   $Author: aekamal $
+//   $Date: 2009/03/05 17:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 #include <vector>
 #include <string>
-#include "copasi.h"
+#include "copasi.h" 
 //#include "model/CChemEq.h"
 #include "model/CReaction.h"
 #include "model/CChemEqInterface.h"
@@ -221,7 +221,7 @@ class CReactionInterface
      *  associate the function parameter referenced by "index" with the global
      *  parameter named pn. Only valid if the role for this function parameter is "PARAMETER".
      *  returns success
-     */
+     */ 
     //bool setGlobalParameter(unsigned C_INT32 index, std::string pn);
 
     //const std::string & getGlobalParameter(unsigned C_INT32 index) const;
@@ -231,6 +231,8 @@ class CReactionInterface
     //const std::string & getCompartment(unsigned C_INT32 index) const;
 
     void initFromReaction(const std::string & key);
+    void initFromReaction(const C_INT32 index);
+    void initFromReaction(const CReaction* rea);
 
     /**
      * writes the information back to a CReaction.

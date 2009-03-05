@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/28 18:25:17 $
+//   $Date: 2009/03/05 17:23:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,13 +76,6 @@ QVariant CQModifiedDM::headerData(int section, Qt::Orientation orientation,
     else
       return QString("%1").arg(section + 1);
   }
-Qt::ItemFlags CQModifiedDM::flags(const QModelIndex &index) const
-  {
-    if (!index.isValid())
-      return Qt::ItemIsEnabled;
-
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
-  }
 
 bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
@@ -107,7 +100,7 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      mpMIRIAMInfo->createModification("");
+      mpMIRIAMInfo->createModification(TO_UTF8(QDateTime::currentDateTime().toString(Qt::ISODate)));
     }
 
   endInsertRows();

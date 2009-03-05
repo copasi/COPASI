@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.185 $
+#   $Revision: 1.186 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2009/02/28 18:25:46 $
+#   $Date: 2009/03/05 17:23:47 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.185 $ $Author: aekamal $ $Date: 2009/02/28 18:25:46 $
+# $Revision: 1.186 $ $Author: aekamal $ $Date: 2009/03/05 17:23:47 $
 ######################################################################
 
 LIB = UI
@@ -64,6 +64,8 @@ HEADERS	+= \
 	CQMatrixDialog.ui.h \
     CQMessageBox.h \
 #	CQQwt3dSurfacePlot.h \
+	CQReactionDM.h \
+	CQReactionsWidget.h \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
 	CQSensResultWidget.h \
@@ -88,7 +90,6 @@ HEADERS	+= \
 	parametertable.h \
 	PlotWidget.h \
 	qtUtilities.h \
-	ReactionsWidget.h \
 	ReactionsWidget1.h \
 	ScanWidget.h \
 	SensitivitiesWidget.h \
@@ -135,6 +136,8 @@ SOURCES	+= \
     CQMessageBox.cpp \
 #	CQQwt3dSurfacePlot.cpp \
 	CQPreferenceDialog.cpp \
+	CQReactionDM.cpp \
+	CQReactionsWidget.cpp \
 	CQReportListItem.cpp \
 	CQSBMLFileDialog.cpp \
 	CQSensResultWidget.cpp \
@@ -158,7 +161,6 @@ SOURCES	+= \
 	parametertable.cpp \
 	PlotWidget.cpp \
 	qtUtilities.cpp \
-	ReactionsWidget.cpp \
 	ReactionsWidget1.cpp \
 	ScanWidget.cpp \
 	SensitivitiesWidget.cpp \
@@ -177,6 +179,8 @@ SOURCES	+= \
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
+
+FORMS += CQReactionsWidget.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQCompartment.ui
