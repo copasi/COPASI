@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example4.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/05 15:27:52 $ 
+#   $Date: 2009/03/05 19:51:25 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -19,7 +19,6 @@
 
 from COPASI import *
 import sys
-import pdb
 
 MODEL_STRING="""<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by COPASI version 4.4.29 (Debug) on 2009-03-05 14:41 with libSBML version 3.3.0. -->
@@ -105,7 +104,6 @@ def main(args):
    # the only argument to the main routine should be the name of an SBML file
    try:
        # load the model
-       pdb.set_trace()
        dataModel.importSBMLFromString(MODEL_STRING)
    except:
        print >> sys.stderr,  "Error while importing the model from given string."
@@ -154,21 +152,16 @@ def main(args):
 
              # and a seperator
              header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
-   # get the task list
-   taskList = dataModel.getTaskList()
 
    # get the trajectory task object
-   trajectoryTask = taskList.getObject(CCopasiObjectName("Time-Course"))
+   trajectoryTask = dataModel.getTask("Time-Course")
+   assert trajectoryTask != None
    # if there isn't one
    if trajectoryTask == None:
        # create a one
        trajectoryTask = CTrajectoryTask()
-       # remove any existing trajectory task just to be sure since in
-       # theory only the cast might have failed above
-       taskList.removeByName("Time-Course")
-
        # add the time course task to the task list
-       taskList.add(trajectoryTask, True)
+       dataModel.getTaskList().add(trajectoryTask, True)
 
    # run a stochastic time course
    trajectoryTask.setMethodType(CCopasiMethod.stochastic)
@@ -193,14 +186,13 @@ def main(args):
    problem.setTimeSeriesRequested(True)
 
    # now we set up the scan
-   scanTask = taskList.getObject(CCopasiObjectName("Scan"))
+   scanTask = dataModel.getTask("Scan")
+   assert scanTask != None
    if scanTask == None:
        # create a scan task
        scanTask = CScanTask()
-       # just to be on the save side, delete any existing scan task
-       taskList.removeByName("Scan")
        # add the scan task
-       taskList.add(scanTask, True)
+       dataModel.getTaskList().add(scanTask, True)
 
    # get the problem
    scanProblem = scanTask.getProblem()
