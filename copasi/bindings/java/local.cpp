@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/04 19:22:39 $
+//   $Date: 2009/03/05 15:27:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,6 @@ typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 void initCopasi()
 {
   CCopasiRootContainer::init(false, 0, NULL);
-  CCopasiRootContainer::addDatamodel();
 }
 
 jobject DownCast_COptTask(JNIEnv* jenv, COptTask* pPointer)
@@ -1640,6 +1639,21 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CCopasiDataModel*>(pPointer))
+    {
+      // return a CCopasiDataModel
+      jclass clazz = jenv->FindClass("org/COPASI/CCopasiDataModel");
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CCopasiDataModel**)&cptr = static_cast<CCopasiDataModel*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
   else if (dynamic_cast<CChemEq*>(pPointer))
     {
       // return a CChemEq
@@ -2739,6 +2753,21 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                 {
                   jlong cptr = 0;
                   *(CCopasiRootContainer**)&cptr = static_cast<CCopasiRootContainer*>(pPointer);
+                  result = jenv->NewObject(clazz, mid, cptr, false);
+                }
+            }
+        }
+      else if (dynamic_cast<CCopasiDataModel*>(pPointer))
+        {
+          // return a CCopasiDataModel
+          jclass clazz = jenv->FindClass("org/COPASI/CCopasiDataModel");
+          if (clazz)
+            {
+              jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+              if (mid)
+                {
+                  jlong cptr = 0;
+                  *(CCopasiDataModel**)&cptr = static_cast<CCopasiDataModel*>(pPointer);
                   result = jenv->NewObject(clazz, mid, cptr, false);
                 }
             }

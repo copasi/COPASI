@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.22 $ 
+//   $Revision: 1.23 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/05 08:13:36 $ 
+//   $Date: 2009/03/05 15:27:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -171,17 +171,20 @@ TriUnspecified=-1
 TriFalse=0
 TriTrue=1
 
-// The global datamodel no longer exists
-// the backend can now handle several datamodels
-//CCopasiDataModel.GLOBAL=_COPASI.CCopasiDataModel_Global_get()
+CCopasiRootContainer.destroy=_COPASI.CCopasiRootContainer_destroy
+CCopasiRootContainer.getRoot=_COPASI.CCopasiRootContainer_getRoot
+CCopasiRootContainer.getConfiguration=_COPASI.CCopasiRootContainer_getConfiguration
+CCopasiRootContainer.getFunctionList=_COPASI.CCopasiRootContainer_getFunctionList
+CCopasiRootContainer.getDatamodelList=_COPASI.CCopasiRootContainer_getDatamodelList
+CCopasiRootContainer.addDatamodel=_COPASI.CCopasiRootContainer_addDatamodel
+CCopasiRootContainer.getUnsupportedDelay=_COPASI.CCopasiRootContainer_getUnsupportedDelay
+CCopasiRootContainer.getUndefinedFunction=_COPASI.CCopasiRootContainer_getUndefinedFunction
+CCopasiRootContainer.getKeyFactory=_COPASI.CCopasiRootContainer_getKeyFactory
 
 CCopasiObjectName.escape=_COPASI.CCopasiObjectName_escape
 CCopasiObjectName.unescape=_COPASI.CCopasiObjectName_unescape
 
 CCopasiMethod.TypeNameToEnum=_COPASI.CCopasiMethod_TypeNameToEnum
-
-// The object from name no longer exists in this form
-//CCopasiContainer.ObjectFromName=_COPASI.CCopasiContainer_ObjectFromName
 
 CEvaluationTree.create=_COPASI.CEvaluationTree_create
 CEvaluationTree.copy=_COPASI.CEvaluationTree_copy
