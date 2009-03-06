@@ -87,6 +87,22 @@ IMAGES = images/Compartments_01.png \
 	 figures/warning.eps \
 	 figures/warning.pdf
 
+PYTHON_EXAMPLES = ../../copasi/bindings/python/examples/example1.py \
+	          ../../copasi/bindings/python/examples/example2.py \
+	          ../../copasi/bindings/python/examples/example3.py \
+	          ../../copasi/bindings/python/examples/example4.py 
+
+JAVA_EXAMPLES =   ../../copasi/bindings/java/examples/example1.java \
+	          ../../copasi/bindings/java/examples/example2.java \
+	          ../../copasi/bindings/java/examples/example3.java \
+	          ../../copasi/bindings/java/examples/example4.java 
+
+CPP_EXAMPLES =    ../../copasi/bindings/cpp_examples/example1/example1.cpp \
+	          ../../copasi/bindings/cpp_examples/example2/example2.cpp \
+	          ../../copasi/bindings/cpp_examples/example3/example3.cpp \
+	          ../../copasi/bindings/cpp_examples/example4/example4.cpp 
+
+
 COPASI_DBLATEX=../../admin/documentation/dblatex
 COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
@@ -125,15 +141,15 @@ copasi.html: copasi.tex $(IMAGES) copasi_bindings_cpp.xml copasi_bindings_java.x
 		   -no_navigation -local_icons -discard \
 		   -mkdir -dir $@ $<
 
-copasi_bindings_cpp.xml: copasi_bindings.xml
+copasi_bindings_cpp.xml: copasi_bindings.xml $(CPP_EXAMPLES)
 	xsltproc --output tmp.out --stringparam profile.condition "CPP" $(PROFILE_DIR)/profiling/profile.xsl $< 
 	sed -e '1d' tmp.out > $@
 
-copasi_bindings_java.xml: copasi_bindings.xml
+copasi_bindings_java.xml: copasi_bindings.xml $(JAVA_EXAMPLES)
 	xsltproc --output tmp.out --stringparam profile.condition "JAVA" $(PROFILE_DIR)/profiling/profile.xsl $< 
 	sed -e '1d' tmp.out > $@
 
-copasi_bindings_python.xml: copasi_bindings.xml
+copasi_bindings_python.xml: copasi_bindings.xml $(PYTHON_EXAMPLES)
 	xsltproc --output tmp.out --stringparam profile.condition "PYTHON" $(PROFILE_DIR)/profiling/profile.xsl $< 
 	sed -e '1d' tmp.out > $@
 
