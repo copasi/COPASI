@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CVector.i,v $ 
-//   $Revision: 1.2.6.1 $ 
+//   $Revision: 1.2.6.1.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/12 15:18:48 $ 
+//   $Date: 2009/03/06 13:36:26 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,8 +21,8 @@
 
 %}
 
-%ignore operator<<(std::ostream& os,const CVector< CType >& A);
-%ignore operator<< <> (std::ostream& os,const CVector< CType >& A);
+//%ignore operator<< <> (std::ostream& os,const CVector< CType >& A);
+%ignore operator<< (std::ostream& os,const CVector< CType >& A);
 %ignore operator[](const unsigned C_INT32 & row);
 %ignore operator[](const unsigned C_INT32 & row) const;
 %ignore operator()(const unsigned C_INT32 & row);
