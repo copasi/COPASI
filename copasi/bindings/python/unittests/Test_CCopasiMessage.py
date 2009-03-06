@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiMessage.py,v $ 
-#   $Revision: 1.2.6.2 $ 
+#   $Revision: 1.2.6.2.4.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/18 09:43:24 $ 
+#   $Date: 2009/03/06 14:57:48 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -40,7 +40,7 @@ class Test_CCopasiMessage(unittest.TestCase):
     COPASI.CCopasiMessage.clearDeque()
 
   def test_clearDeque(self):
-    self.assert_(COPASI.CCopasiMessage.peekFirstMessage().getNumber()==COPASI.MCSBML + 2,"ERROR: Message number not correct.")
+    self.assert_(COPASI.CCopasiMessage.peekFirstMessage().getNumber()!=COPASI.MCCopasiMessage + 1,"ERROR: Message number not correct.")
     COPASI.CCopasiMessage.clearDeque();
     self.assert_(COPASI.CCopasiMessage.peekFirstMessage().getNumber()==COPASI.MCCopasiMessage + 1,"ERROR: Message number not correct.")
     COPASI.CCopasiMessage.clearDeque()
