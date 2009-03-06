@@ -3,8 +3,11 @@
 
 # The dblatex installation directory
 # DBLATEX_PATH=/home/usr
-# DBLATEX_PATH=/sw
+ DBLATEX_PATH=/sw
+DBLATEX_PATH=/usr/
 
+# directory where the profiling/profile.xsl file is located
+PROFILE_DIR=/usr/share/xml/docbook/stylesheet/nwalsh/
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
@@ -18,7 +21,8 @@ SOURCES = copasi.xml \
 	copasi_methods.xml \
 	copasi_errorMessages.xml \
 	copasi_bibliography.xml \
-	copasi_model.xml
+	copasi_model.xml \
+	copasi_bindings.xml
 
 IMAGES = images/Compartments_01.png \
          images/Compartments_02.png \
@@ -83,6 +87,22 @@ IMAGES = images/Compartments_01.png \
 	 figures/warning.eps \
 	 figures/warning.pdf
 
+PYTHON_EXAMPLES = ../../copasi/bindings/python/examples/example1.py \
+	          ../../copasi/bindings/python/examples/example2.py \
+	          ../../copasi/bindings/python/examples/example3.py \
+	          ../../copasi/bindings/python/examples/example4.py 
+
+JAVA_EXAMPLES =   ../../copasi/bindings/java/examples/example1.java \
+	          ../../copasi/bindings/java/examples/example2.java \
+	          ../../copasi/bindings/java/examples/example3.java \
+	          ../../copasi/bindings/java/examples/example4.java 
+
+CPP_EXAMPLES =    ../../copasi/bindings/cpp_examples/example1/example1.cpp \
+	          ../../copasi/bindings/cpp_examples/example2/example2.cpp \
+	          ../../copasi/bindings/cpp_examples/example3/example3.cpp \
+	          ../../copasi/bindings/cpp_examples/example4/example4.cpp 
+
+
 COPASI_DBLATEX=../../admin/documentation/dblatex
 COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
@@ -90,7 +110,7 @@ COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
 all: copasi.pdf copasi.xhtml
 
-copasi.tex: $(SOURCES)
+copasi.tex: $(SOURCES) copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_bindings_python.xml
 	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi.xml
 
 copasi.pdf: copasi.tex $(IMAGES)
@@ -98,7 +118,7 @@ copasi.pdf: copasi.tex $(IMAGES)
 	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
 	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
 
-copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl
+copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_bindings_python.xml
 	@[ -d $@ ] || mkdir $@
 	@[ -d $@/images ] || mkdir $@/images
 	@cp images/*.png $@/images
@@ -114,12 +134,26 @@ copasi.xhtml: $(SOURCES) $(IMAGES) copasi_xhtml.xsl
 	  rm *.mml;\
 	cd ..)
 
-copasi.html: copasi.tex $(IMAGES) 
+copasi.html: copasi.tex $(IMAGES) copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_bindings_python.xml 
 	@[ -d $@ ] || rm -rf copasi.html
 	TEXINPUTS=$(COPASI_TEXINPUTS) \
 	latex2html -white -split +0 -show_section_numbers -image_type gif \
 		   -no_navigation -local_icons -discard \
 		   -mkdir -dir $@ $<
+
+copasi_bindings_cpp.xml: copasi_bindings.xml $(CPP_EXAMPLES)
+	xsltproc --output tmp.out --stringparam profile.condition "CPP" $(PROFILE_DIR)/profiling/profile.xsl $< 
+	sed -e '1d' tmp.out > $@
+
+copasi_bindings_java.xml: copasi_bindings.xml $(JAVA_EXAMPLES)
+	xsltproc --output tmp.out --stringparam profile.condition "JAVA" $(PROFILE_DIR)/profiling/profile.xsl $< 
+	sed -e '1d' tmp.out > $@
+
+copasi_bindings_python.xml: copasi_bindings.xml $(PYTHON_EXAMPLES)
+	xsltproc --output tmp.out --stringparam profile.condition "PYTHON" $(PROFILE_DIR)/profiling/profile.xsl $< 
+	sed -e '1d' tmp.out > $@
+
+
 
 clean:
 	-rm -f copasi.tex
@@ -132,4 +166,5 @@ clean:
 	-rm -f fotex.log
 	-rm -rf copasi.html
 	-rm -rf copasi.xhtml
+	-rm -f copasi_bindings_*.xml
 
