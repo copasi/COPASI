@@ -1,23 +1,15 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TrajectoryTaskWidget.java,v $ 
-//   $Revision: 1.12 $ 
+//   $Revision: 1.13 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/04 19:22:40 $ 
+//   $Date: 2009/03/06 08:47:52 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
-
-//  © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// , Inc. and EML Research, gGmbH.
-//  rights reserved.
 
 package org.COPASI.gui;
 
