@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example3.java,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/06 16:32:36 $ 
+//   $Date: 2009/03/06 16:36:40 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -144,15 +144,26 @@ public class example3
           assert parameter.getType() == CCopasiParameter.DOUBLE;
           parameter.setDblValue(1.0e-12);
 
-
+          boolean result=true;
           try
           {
               // now we run the actual trajectory
-              trajectoryTask.process(true);
+              result=trajectoryTask.process(true);
           }
           catch (java.lang.Exception ex)
           {
               System.err.println( "Error. Running the time course simulation failed." );
+              // check if there are additional error messages
+              if (CCopasiMessage.size() > 0)
+              {
+                  // print the messages in chronological order
+                  System.err.println(CCopasiMessage.getAllMessageText(true));
+              }
+              System.exit(1);
+          }
+          if(result==false)
+          {
+              System.err.println( "An error occured while running the time course simulation." );
               // check if there are additional error messages
               if (CCopasiMessage.size() > 0)
               {
