@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModel.py,v $ 
-#   $Revision: 1.12.6.3 $ 
+#   $Revision: 1.12.6.3.4.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/24 17:05:42 $ 
+#   $Date: 2009/03/06 14:52:26 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -260,16 +260,16 @@ class Test_CModel(unittest.TestCase):
     v=self.model.getNumber2QuantityFactor()
     self.assert_(type(v)==FloatType)
 
-  def test_getConcentrationUnitName(self):
-    name=self.model.getConcentrationUnitName()
+  def test_getConcentrationUnits(self):
+    name=self.model.getConcentrationUnits()
     self.assert_(type(name)==StringType)
 
-  def test_getConcentrationRateUnitName(self):
-    name=self.model.getConcentrationRateUnitName()
+  def test_getConcentrationRateUnits(self):
+    name=self.model.getConcentrationRateUnits()
     self.assert_(type(name)==StringType)
 
-  def test_getQuantityRateUnitName(self):
-    name=self.model.getQuantityRateUnitName()
+  def test_getQuantityRateUnits(self):
+    name=self.model.getQuantityRateUnits()
     self.assert_(type(name)==StringType)
 
   def test_createMetabolite(self):
@@ -388,9 +388,9 @@ def suite():
          ,'test_setModelType'
          ,'test_getQuantity2NumberFactor'
          ,'test_getNumber2QuantityFactor'
-         ,'test_getConcentrationUnitName'
-         ,'test_getConcentrationRateUnitName'
-         ,'test_getQuantityRateUnitName'
+         ,'test_getConcentrationUnits'
+         ,'test_getConcentrationRateUnits'
+         ,'test_getQuantityRateUnits'
          ,'test_createMetabolite'
          ,'test_removeMetabolite'
          ,'test_createCompartment'

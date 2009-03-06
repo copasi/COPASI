@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiParameterGroup.py,v $ 
-#   $Revision: 1.9 $ 
+#   $Revision: 1.9.10.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:07 $ 
+#   $Date: 2009/03/06 14:52:26 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -78,10 +78,10 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
     self.assert_(type(t2)==IntType)
     self.assert_(t2==COPASI.CCopasiParameter.DOUBLE)
 
-  def test_getKey(self):
-    key=self.paramgroup.getKey("param1")
+  def test_getKeyForParameter(self):
+    key=self.paramgroup.getKeyForParameter("param1")
     self.assert_(type(key)==StringType)
-    key=self.paramgroup.getKey(2)
+    key=self.paramgroup.getKeyForParameter(2)
     self.assert_(type(key)==StringType)
 
   def test_getName(self):
@@ -113,7 +113,7 @@ def suite():
          ,'test_removeParameter'
          ,'test_getGroup'
          ,'test_getType'
-         ,'test_getKey'
+         ,'test_getKeyForParameter'
          ,'test_getName'
          ,'test_getIndex'
         ]
