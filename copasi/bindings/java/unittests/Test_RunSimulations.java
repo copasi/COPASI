@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSimulations.java,v $ 
-//   $Revision: 1.9 $ 
+//   $Revision: 1.10 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/04/21 10:27:06 $ 
+//   $Date: 2009/03/06 08:21:44 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -32,6 +32,7 @@ public class Test_RunSimulations extends TestCase
 {
 
 
+   protected CCopasiDataModel mDataModel;
    protected CModel model;
    protected int NUM_REPEATS;
 
@@ -40,14 +41,14 @@ public class Test_RunSimulations extends TestCase
     super(name);
    }
 
-   public static CTrajectoryTask runSimulation(int methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
+   public static CTrajectoryTask runSimulation(CCopasiDataModel dataModel,int methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
    {
     CTrajectoryTask task=null;
-    for(int  x=0;x < CCopasiDataModel.getGlobal().getTaskList().size();x++)
+    for(int  x=0;x < dataModel.getTaskList().size();x++)
     {
-        if(CCopasiDataModel.getGlobal().getTask(x).getType()==CCopasiTask.timeCourse)
+        if(dataModel.getTask(x).getType()==CCopasiTask.timeCourse)
         {
-          task=(CTrajectoryTask)CCopasiDataModel.getGlobal().getTask(x);
+          task=(CTrajectoryTask)dataModel.getTask(x);
         }
     }
     if(task==null)
@@ -135,7 +136,7 @@ public class Test_RunSimulations extends TestCase
     return task;
    }
 
-  public static CTrajectoryTask runDeterministicSimulation()
+  public static CTrajectoryTask runDeterministicSimulation(CCopasiDataModel dataModel)
   {
    HashMap<String,Object> problemParameters=new HashMap<String,Object>();
    problemParameters.put("StepSize",new Double(0.001));
@@ -145,10 +146,10 @@ public class Test_RunSimulations extends TestCase
    problemParameters.put("OutputStartTime",new Double(0.0));
    HashMap<String,Object> methodParameters=new HashMap<String,Object>();
    methodParameters.put("Absolute Tolerance",new Double(1.0e-20));
-   return runSimulation(CCopasiMethod.deterministic,problemParameters,methodParameters);
+   return runSimulation(dataModel,CCopasiMethod.deterministic,problemParameters,methodParameters);
   }
 
-  public static CTrajectoryTask runStochasticSimulation()
+  public static CTrajectoryTask runStochasticSimulation(CCopasiDataModel dataModel)
   {
    HashMap<String,Object> problemParameters=new HashMap<String,Object>();
    problemParameters.put("StepSize",new Double(0.001));
@@ -157,10 +158,10 @@ public class Test_RunSimulations extends TestCase
    problemParameters.put("TimeSeriesRequested",new Boolean(true));
    problemParameters.put("OutputStartTime",new Double(0.0));
    HashMap<String,Object> methodParameters=new HashMap<String,Object>();
-   return runSimulation(CCopasiMethod.stochastic,problemParameters,methodParameters);
+   return runSimulation(dataModel,CCopasiMethod.stochastic,problemParameters,methodParameters);
   }
 
-  public static CTrajectoryTask runHybridSimulation()
+  public static CTrajectoryTask runHybridSimulation(CCopasiDataModel dataModel)
   {
    HashMap<String,Object> problemParameters=new HashMap<String,Object>();
    problemParameters.put("StepSize",new Double(0.001));
@@ -169,12 +170,13 @@ public class Test_RunSimulations extends TestCase
    problemParameters.put("TimeSeriesRequested",new Boolean(true));
    problemParameters.put("OutputStartTime",new Double(0.0));
    HashMap<String,Object> methodParameters=new HashMap<String,Object>();
-   return runSimulation(CCopasiMethod.hybrid,problemParameters,methodParameters);
+   return runSimulation(dataModel,CCopasiMethod.hybrid,problemParameters,methodParameters);
   }
 
   public void setUp()
   {
-    this.model=Test_CreateSimpleModel.createModel();
+    mDataModel=CCopasiRootContainer.addDatamodel();
+    this.model=Test_CreateSimpleModel.createModel(mDataModel);
     this.NUM_REPEATS=20;
   }
 
@@ -184,7 +186,7 @@ public class Test_RunSimulations extends TestCase
     double[][] values=new double[this.NUM_REPEATS][4];
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
-      CTrajectoryTask task=runStochasticSimulation();
+      CTrajectoryTask task=runStochasticSimulation(mDataModel);
       assertTrue(task!=null);
       assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
@@ -221,7 +223,7 @@ public class Test_RunSimulations extends TestCase
     double[][] values=new double[this.NUM_REPEATS][4];
     for(int x=0;x < this.NUM_REPEATS; x++)
     {
-      CTrajectoryTask task=runHybridSimulation();
+      CTrajectoryTask task=runHybridSimulation(mDataModel);
       assertTrue(task!=null);
       assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
@@ -255,7 +257,7 @@ public class Test_RunSimulations extends TestCase
    
    public void test_runDeterministicSimulationOnSimpleModel()
    {
-    CTrajectoryTask task=runDeterministicSimulation();
+    CTrajectoryTask task=runDeterministicSimulation(mDataModel);
     assertTrue(task!=null);
     assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
     CTimeSeries timeseries=task.getTimeSeries();
@@ -279,7 +281,7 @@ public class Test_RunSimulations extends TestCase
     double[][] values=new double[this.NUM_REPEATS][5];
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
-      CTrajectoryTask task=runStochasticSimulation();
+      CTrajectoryTask task=runStochasticSimulation(mDataModel);
       assertTrue(task!=null);
       assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
@@ -318,7 +320,7 @@ public class Test_RunSimulations extends TestCase
     double[][] values=new double[this.NUM_REPEATS][5];
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
-      CTrajectoryTask task=runHybridSimulation();
+      CTrajectoryTask task=runHybridSimulation(mDataModel);
       assertTrue(task!=null);
       assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
@@ -354,7 +356,7 @@ public class Test_RunSimulations extends TestCase
    public void test_runDeterministicSimulationOnExtendedModel()
    {
     Test_CreateSimpleModel.extendModel(this.model);
-    CTrajectoryTask task=runDeterministicSimulation();
+    CTrajectoryTask task=runDeterministicSimulation(mDataModel);
     assertTrue(task!=null);
     assertTrue(task.getClass().getName().equals("org.COPASI.CTrajectoryTask"));
     CTimeSeries timeseries=task.getTimeSeries();

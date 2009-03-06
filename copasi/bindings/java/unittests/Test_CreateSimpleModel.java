@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_CreateSimpleModel.java,v $ 
-//   $Revision: 1.10 $ 
+//   $Revision: 1.11 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2008/01/15 17:53:26 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/03/06 08:21:44 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,7 @@ import junit.framework.*;
 public class Test_CreateSimpleModel extends TestCase
 {
 
+   CCopasiDataModel mDataModel;
    CModel model;
 
    public Test_CreateSimpleModel(String name)
@@ -30,17 +31,17 @@ public class Test_CreateSimpleModel extends TestCase
     super(name);
    }
 
-   public static CModel createModel()
+   public static CModel createModel(CCopasiDataModel dataModel)
    {
     try
     {
-      CCopasiDataModel.getGlobal().newModel();
+      dataModel.newModel();
     }
     catch(Exception e)
     {
         return null;
     }
-    CModel model=CCopasiDataModel.getGlobal().getModel();
+    CModel model=dataModel.getModel();
     model.setVolumeUnit(CModel.fl);
     model.setTimeUnit(CModel.s);
     model.setQuantityUnit(CModel.fMol);
@@ -91,7 +92,8 @@ public class Test_CreateSimpleModel extends TestCase
    
   public void setUp()
   {
-    this.model=this.createModel();
+    mDataModel=CCopasiRootContainer.addDatamodel();
+    this.model=this.createModel(mDataModel);
   }
 
   public void test_createModel()

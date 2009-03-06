@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunParameterFitting.java,v $ 
-//   $Revision: 1.2 $ 
+//   $Revision: 1.3 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:32 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/03/06 08:21:44 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -19,6 +19,8 @@ import junit.framework.*;
 public class Test_RunParameterFitting extends TestCase
 {
 
+   CCopasiDataModel mDataModel;
+
    public Test_RunParameterFitting(String name)
    {
     super(name);
@@ -26,13 +28,14 @@ public class Test_RunParameterFitting extends TestCase
 
     public void setUp()
     {
+        mDataModel=CCopasiRootContainer.addDatamodel();
         Test_CreateSimpleModel.createModel();
     }
 
 
     public void test_RunParameterFitting_simple()
     {
-        CFitTask fitTask=(CFitTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.parameterFitting);
+        CFitTask fitTask=(CFitTask)mDataModel.addTask(CCopasiTask.parameterFitting);
         assertTrue(fitTask!=null);
         assertTrue(fitTask.getClass()==CFitTask.class);
         // the method in a fit task is an instance of COptMethod or a subclass of
@@ -72,7 +75,7 @@ public class Test_RunParameterFitting extends TestCase
         result=objectMap.setRole(0,CExperiment.time);
         assertTrue(result==true);
         assertTrue(objectMap.getRole(0)==CExperiment.time);
-        CModel model=CCopasiDataModel.getGlobal().getModel();
+        CModel model=mDataModel.getModel();
         assertTrue(model!=null);
         assertTrue(model.getClass()==CModel.class);
         CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));

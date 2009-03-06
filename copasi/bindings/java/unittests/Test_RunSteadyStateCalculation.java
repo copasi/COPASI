@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSteadyStateCalculation.java,v $ 
-//   $Revision: 1.7 $ 
+//   $Revision: 1.8 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/01/16 20:41:09 $ 
+//   $Date: 2009/03/06 08:21:44 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,7 @@ import junit.framework.*;
 public class Test_RunSteadyStateCalculation extends TestCase
 {
 
+    CCopasiDataModel mDataModel;
     CModel mModel;
 
     public Test_RunSteadyStateCalculation(String name)
@@ -35,17 +36,17 @@ public class Test_RunSteadyStateCalculation extends TestCase
         super(name);
     }
 
-    public CModel createModel()
+    public CModel createModel(CCopasiDataModel dataModel)
     {
         try
         {
-            CCopasiDataModel.getGlobal().newModel();
+            dataModel.newModel();
         }
         catch(Exception e)
         {
             return null;
         }
-        CModel model=CCopasiDataModel.getGlobal().getModel();
+        CModel model=dataModel.getModel();
         model.setVolumeUnit(CModel.fl);
         model.setTimeUnit(CModel.s);
         model.setQuantityUnit(CModel.fMol);
@@ -75,12 +76,13 @@ public class Test_RunSteadyStateCalculation extends TestCase
 
     public void setUp()
     {
-        this.mModel=createModel();
+        mDataModel=CCopasiRootContainer.addDatamodel();
+        this.mModel=createModel(mDataModel);
     }
 
-    public static CSteadyStateTask runSteadyStateCalculation(HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
+    public static CSteadyStateTask runSteadyStateCalculation(CCopasiDataModel dataModel,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
     {
-        CSteadyStateTask steadyStateTask=(CSteadyStateTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.steadyState);
+        CSteadyStateTask steadyStateTask=(CSteadyStateTask)dataModel.addTask(CCopasiTask.steadyState);
         if(steadyStateTask==null) return null;
         CSteadyStateProblem steadyStateProblem=(CSteadyStateProblem)steadyStateTask.getProblem();
         if(steadyStateProblem==null) return null;
@@ -183,7 +185,7 @@ public class Test_RunSteadyStateCalculation extends TestCase
         methodParameters.put("Accept Negative Concentrations",new Boolean(false));
         methodParameters.put("Iteration Limit",new Integer(50));
         // objective function
-        CSteadyStateTask steadyStateTask=runSteadyStateCalculation(problemParameters,methodParameters);
+        CSteadyStateTask steadyStateTask=runSteadyStateCalculation(mDataModel,problemParameters,methodParameters);
         assertFalse(steadyStateTask==null);
         assertTrue(steadyStateTask.getResult()==CSteadyStateMethod.foundEquilibrium);
         CEigen eigenvalues=steadyStateTask.getEigenValues();

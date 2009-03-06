@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.6 $ 
+//   $Revision: 1.7 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:32 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/03/06 08:21:44 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -28,6 +28,7 @@ import junit.framework.*;
 public class Test_RunOptimization extends TestCase
 {
 
+    CCopasiDataModel mDataModel;
     CModel mModel;
     CModelValue mVariableModelValue;
     CModelValue mFixedModelValue;
@@ -39,15 +40,15 @@ public class Test_RunOptimization extends TestCase
 
    public CModel createModel()
    {
-     try
-     {
-    CCopasiDataModel.getGlobal().newModel();
+    try
+    {
+      mDataModel.newModel();
     }
     catch(Exception e)
     {
         return null;
     }
-    CModel model=CCopasiDataModel.getGlobal().getModel();
+    CModel model=mDataModel.getModel();
     model.setVolumeUnit(CModel.fl);
     model.setTimeUnit(CModel.s);
     model.setQuantityUnit(CModel.fMol);
@@ -67,12 +68,13 @@ public class Test_RunOptimization extends TestCase
     
     public void setUp()
     {
+        this.mDataModel=CCopasiRootContainer.addDatamodel();
         this.mModel=createModel();
     }
 
-    public static COptTask runOptimization(int methodType,int methodSubtype,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters,String objectiveFunction,COptItem optItem)
+    public static COptTask runOptimization(CCopasiDataModel dataModel,int methodType,int methodSubtype,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters,String objectiveFunction,COptItem optItem)
     {
-        COptTask optTask=(COptTask)CCopasiDataModel.getGlobal().addTask(CCopasiTask.optimization);
+        COptTask optTask=(COptTask)dataModel.addTask(CCopasiTask.optimization);
         if(optTask==null) return null;
         optTask.setMethodType(CCopasiMethod.LevenbergMarquardt);
         COptProblem optProblem=(COptProblem)optTask.getProblem();
@@ -148,8 +150,8 @@ public class Test_RunOptimization extends TestCase
         optProblem.setObjectiveFunction(objectiveFunction);
         COptItem optItem2=optProblem.addOptItem(optItem.getObjectCN());
         optItem2.setStartValue(optItem.getStartValue());
-        optItem2.setLowerBound(new CCopasiObjectName(optItem.getLowerBound()));
-        optItem2.setUpperBound(new CCopasiObjectName(optItem.getUpperBound()));
+        optItem2.setLowerBound(new CCopasiObjectName(optItem.getLowerBound()),dataModel);
+        optItem2.setUpperBound(new CCopasiObjectName(optItem.getUpperBound()),dataModel);
         boolean result=false;
         try
         {
@@ -169,11 +171,11 @@ public class Test_RunOptimization extends TestCase
     public void test_RunOptimization_LevenbergMarquardt()
     {
         String timeCourseKey="";
-        for(int  x=0;x < CCopasiDataModel.getGlobal().getTaskList().size();x++)
+        for(int  x=0;x < mDataModel.getTaskList().size();x++)
         {
-            if(CCopasiDataModel.getGlobal().getTask(x).getType()==CCopasiTask.timeCourse)
+            if(mDataModel.getTask(x).getType()==CCopasiTask.timeCourse)
             {
-                timeCourseKey=CCopasiDataModel.getGlobal().getTask(x).getKey();
+                timeCourseKey=mDataModel.getTask(x).getKey();
                 break;
             }
         }
@@ -181,10 +183,10 @@ public class Test_RunOptimization extends TestCase
         HashMap<String,Object> problemParameters=new HashMap<String,Object>();
         // opt_items 
         COptItem optItem=new COptItem();
-        optItem.setObjectCN(new CCopasiObjectName(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()));
+        optItem.setObjectCN(new CCopasiObjectName(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()),mDataModel);
         optItem.setStartValue(4.0);
-        optItem.setLowerBound(new CCopasiObjectName("-100"));
-        optItem.setUpperBound(new CCopasiObjectName("100"));
+        optItem.setLowerBound(new CCopasiObjectName("-100"),mDataModel);
+        optItem.setUpperBound(new CCopasiObjectName("100"),mDataModel);
         HashMap<String,Object> methodParameters=new HashMap<String,Object>();
         // iteration limit
         // tolerance
@@ -193,7 +195,7 @@ public class Test_RunOptimization extends TestCase
         // objective function
         String objectiveFunction=this.mVariableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
         objectiveFunction="<"+objectiveFunction+">";
-        COptTask optTask=runOptimization(CCopasiMethod.LevenbergMarquardt,CCopasiTask.timeCourse,problemParameters,methodParameters,objectiveFunction,optItem);
+        COptTask optTask=runOptimization(mDataModel,CCopasiMethod.LevenbergMarquardt,CCopasiTask.timeCourse,problemParameters,methodParameters,objectiveFunction,optItem);
         assertFalse(optTask==null);
         COptProblem optProblem=(COptProblem)optTask.getProblem();
         assertFalse(optProblem==null);
