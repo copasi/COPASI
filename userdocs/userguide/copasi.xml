@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi.xml,v $ -->
-<!--   $Revision: 1.14 $ -->
+<!--   $Revision: 1.15 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/02/26 11:51:32 $ -->
+<!--   $Date: 2009/03/06 12:58:24 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -60,7 +60,7 @@
 
 &cpp_bindings;
 &java_bindings;
-<!-- &python_bindings; -->
+&python_bindings;
 
 </book>
 

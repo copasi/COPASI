@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.4 $ -->
+<!--   $Revision: 1.5 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/03/06 10:04:51 $ -->
+<!--   $Date: 2009/03/06 12:58:24 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -135,7 +135,7 @@ In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some
 <title>Model Elements</title>
 
 <para>
-The class in COPASI that contains the actual model data is <emphasis>CModel</emphasis>. The model can be obtained from the instance of <emphasis>CCopasiDataModel</emphasis> via the <emphasis>getModel()</emphasis> method. To create a new empty model, <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>newModel()</emphasis>. There is also the method <emphasis condition="JAVA">loadModel(String filename)</emphasis><emphasis condition="CPP">loadModel(std::string filename)</emphasis><emphasis condition="PYTHON"><!-- TODO --></emphasis> which loads a COPASI model from the given filename, the method <emphasis condition="JAVA">importSBML(String filename)</emphasis><emphasis condition="CPP">importSBML(std::string filename)</emphasis><emphasis condition="PYTHON"><!-- TODO --></emphasis> which imports an SBML model from the file with the given name and last but not least the method <emphasis condition="JAVA">importSBMLFromString(String sbmlModelText)</emphasis><emphasis condition="CPP">importSBMLFromString(std::string sbmlModelText)</emphasis><emphasis condition="PYTHON"><!-- TODO --></emphasis> which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is <emphasis>true</emphasis> if the method succeeded and <emphasis>false</emphasis> otherwise. <!-- TODO PYTHON does not know boolean, so the last sentence is not correct.-->
+The class in COPASI that contains the actual model data is <emphasis>CModel</emphasis>. The model can be obtained from the instance of <emphasis>CCopasiDataModel</emphasis> via the <emphasis>getModel()</emphasis> method. To create a new empty model, <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>newModel()</emphasis>. There is also the method <emphasis condition="JAVA">loadModel(String filename)</emphasis><emphasis condition="CPP">loadModel(std::string filename)</emphasis><emphasis condition="PYTHON">loadModel(FILENAME_STRING)</emphasis> which loads a COPASI model from the given filename, the method <emphasis condition="JAVA">importSBML(String filename)</emphasis><emphasis condition="CPP">importSBML(std::string filename)</emphasis><emphasis condition="PYTHON">importSBML(FILENAME_STRING)</emphasis> which imports an SBML model from the file with the given name and last but not least the method <emphasis condition="JAVA">importSBMLFromString(String sbmlModelText)</emphasis><emphasis condition="CPP">importSBMLFromString(std::string sbmlModelText)</emphasis><emphasis condition="PYTHON">importSBMLFromString(SBML_CONTENT_STRING)</emphasis> which imports an SBML model from the given string. The string must be a valid SBML model string. All three methods return a boolean value which is <emphasis condition="CPP">true</emphasis><emphasis condition="JAVA">true</emphasis><emphasis condition="PYTHON">True</emphasis> if the method succeeded and <emphasis condition="CPP">false</emphasis><emphasis condition="JAVA">false</emphasis><emphasis condition="PYTHON">False</emphasis> otherwise. 
 </para>
 
 <para>
@@ -158,10 +158,20 @@ long getNumModelValues();
 long getNumReactions(); 
 </programlisting>
 <programlisting condition="CPP">
-<!-- TODO -->
+C_INT32 getCompartments().size();
+C_INT32 getMetabolites().size();
+C_INT32 getModelValues().size();
+C_INT32 getReactions().size();
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+// return the number of compartments in the model
+getNumCompartments()
+// return the number of metabolites in the model
+getNumMetabs()
+// return the number of global parameters in the model
+getNumModelValues()
+// return the number of reactions in the model
+getNumReactions()
 </programlisting>
 </para>
 
@@ -183,7 +193,10 @@ CModelValue* getModelValues()[const unsigned C_INT32&amp; index];
 CReaction* getReactions()[const unsigned C_INT32&amp; index];
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+getCompartment(INDEX)
+getMetabolite(INDEX)
+getModelValue(INDEX)
+getReaction(INDEX)
 </programlisting>
 </para>
 
@@ -305,7 +318,70 @@ CModelValue* createModelValue(const std::string name, const C_FLOAT64&amp; value
 CReaction* createReaction(const std::string&amp; name);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Creates a new compartment with the given name 
+# and an initial volume of 1.0 volume units.
+# The newly created compartment is added to the model
+# and the method also returns the new instance.
+# If the method fails, None is returned.
+# 
+COMPARTMENT=createCompartment(NAME_STRING)
+
+# 
+# Creates a new compartment with the given name 
+# and initial volume.
+# The newly created compartment is added to the model
+# and the method also returns the new instance.
+# If the method fails, None is returned.
+# 
+COMPARTMENT=createCompartment(NAME_STRING,VOLUME)
+
+# 
+# Creates a new metabolite with the given name and an 
+# initial concentration of 1.0 substance units/volume units.
+# The metabolite is added to the compartment that is specified
+# as the second argument.
+# The newly created metabolite is added to the model and
+# the method also returns the new instance.
+# If the method fails, None is returned.
+# 
+METABOLITE=createMetabolite(NAME_STRING, COMPARTMENT_NAME_STRING)
+
+# 
+# Creates a new metabolite with the given name and 
+# initial concentration.
+# The metabolite is added to the compartment that is 
+# specified as the second argument.
+# The newly created metabolite is added to the model and the
+# method also returns the new instance.
+# If the method fails, None is returned.
+# 
+METABOLITE=createMetabolite(NAME_STRING, COMPARTMENT_NAME_STRING, CONCENTRATION)
+
+# 
+# Creates a new model value with the given name and 
+# an initial value of 0.0.
+# The newly created model value is added to the model
+# and the method also returns the new instance.
+# If the method fails, None is returned.
+# 
+MODEL_VALUE=createModelValue(NAME_STRING)
+
+# 
+# Creates a new model value with the given name 
+# and initial value.
+# The newly created model value is added to the model
+# and the method also returns the new instance.
+# If the method fails, None is returned.
+# 
+MODEL_VALUE=createModelValue(NAME_STRING, VALUE)
+
+# 
+# Creates a new reaction with the given name.
+# The newly created reaction is added to the model and 
+# the method also returns the reaction instance.
+# 
+REACTION=createReaction(NAME_STRING)
 </programlisting>
 </para>
 
@@ -332,7 +408,13 @@ bool removeModelValue(const std::string&amp; key);
 bool removeReaction(const std::string&amp; key);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# each function get the key of the object that is to be removed
+# as the argument and return True or False depending on whether the remove
+# operation succeeded
+SUCCESS=removeCompartment(KEY_STRING)
+SUCCESS=removeMetabolite(KEY_STRING)
+SUCCESS=removeModelValue(KEY_STRING)
+SUCCESS=removeReaction(KEY_STRING)
 </programlisting>
 </para>
 
@@ -358,7 +440,10 @@ std::string key=pMetab->getKey();
 pModel->removeMetabolite(key);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+model=datamodel.getModel()
+metab=model.getMetabolite(3)
+key=metab.getKey()
+model.removeMetabolite(key)
 </programlisting>
 </para>
 
@@ -373,149 +458,217 @@ Most of the time, if you manipulate any of those classes, it will be done throug
 
 <para>
 <programlisting condition="JAVA">
-  /**
-   * Gets the status of the entity.
-   */
-  int getStatus();
+/**
+ * Gets the status of the entity.
+ */
+int getStatus();
 
-  /**
-   * sets the status of an entity.
-   */
-  void setStatus(int status);
+/**
+ * sets the status of an entity.
+ */
+void setStatus(int status);
 
-  /**
-   * gets the transient value of an entity.
-   */
-  double getValue();
+/**
+ * gets the transient value of an entity.
+ */
+double getValue();
 
-  /**
-   * Returns the initial value of an entity.
-   */
-  double getInitialValue();
+/**
+ * Returns the initial value of an entity.
+ */
+double getInitialValue();
 
-  /**
-   * Sets the initial value of an entity.
-   */
-  void setInitialValue(double initialValue);
+/**
+ * Sets the initial value of an entity.
+ */
+void setInitialValue(double initialValue);
 
-  /**
-   * Returns the SBML id of an entity. If none has been set,
-   * an empty string is returned.
-   */
-  String getSBMLId();
+/**
+ * Returns the SBML id of an entity. If none has been set,
+ * an empty string is returned.
+ */
+String getSBMLId();
 
-  /**
-   * Sets the SBML id on an entity.
-   * This is either done on importing an SBML file,
-   * or on exporting a model.
-   * Don't mess with this since it might break further
-   * exports to SBML.
-   */
-  void setSBMLId(String id);
+/**
+ * Sets the SBML id on an entity.
+ * This is either done on importing an SBML file,
+ * or on exporting a model.
+ * Don't mess with this since it might break further
+ * exports to SBML.
+ */
+void setSBMLId(String id);
 
-  /**
-   * If the entity is determined by an assignment or 
-   * an ODE, this method will return the mathematical
-   * expression for the assignment or the ODE.
-   */
-  String getExpression();
+/**
+ * If the entity is determined by an assignment or 
+ * an ODE, this method will return the mathematical
+ * expression for the assignment or the ODE.
+ */
+String getExpression();
 
-  /**
-   * With this method, the mathematical expression 
-   * for entities that are determined by an assignment
-   * or an ODE can be set.
-   * You might also have to set the status of the entity
-   * to indicate that it is now determined by an ODE 
-   * or an assignment. (see setStatus())
-   */
-  boolean setExpression(String expression);
+/**
+ * With this method, the mathematical expression 
+ * for entities that are determined by an assignment
+ * or an ODE can be set.
+ * You might also have to set the status of the entity
+ * to indicate that it is now determined by an ODE 
+ * or an assignment. (see setStatus())
+ */
+boolean setExpression(String expression);
 
-  /**
-   * Returns the mathematical expression for any initial 
-   * assignment that might have been set on the entity. 
-   * This is independent of the status of the entity.
-   */
-  String getInitialExpression();
+/**
+ * Returns the mathematical expression for any initial 
+ * assignment that might have been set on the entity. 
+ * This is independent of the status of the entity.
+ */
+String getInitialExpression();
 
-  /**
-   * With this method, the mathematical expression 
-   * for the initial assignment of an entity can be set.
-   */
-  boolean setInitialExpression(String expression);
+/**
+ * With this method, the mathematical expression 
+ * for the initial assignment of an entity can be set.
+ */
+boolean setInitialExpression(String expression);
 </programlisting>
 <programlisting condition="CPP">
-  /**
-   * Gets the status of the entity.
-   */
-  const CModelEntity::Status&amp; getStatus() const;
+/**
+ * Gets the status of the entity.
+ */
+const CModelEntity::Status&amp; getStatus() const;
 
-  /**
-   * sets the status of an entity.
-   */
-  void setStatus(const CModelEntity::Status&amp; status);
+/**
+ * sets the status of an entity.
+ */
+void setStatus(const CModelEntity::Status&amp; status);
 
-  /**
-   * gets the transient value of an entity.
-   */
-  const C_FLOAT64&amp; getValue() const;
+/**
+ * gets the transient value of an entity.
+ */
+const C_FLOAT64&amp; getValue() const;
 
-  /**
-   * Returns the initial value of an entity.
-   */
-  const C_FLOAT64&amp; getInitialValue() const;
+/**
+ * Returns the initial value of an entity.
+ */
+const C_FLOAT64&amp; getInitialValue() const;
 
-  /**
-   * Sets the initial value of an entity.
-   */
-  void setInitialValue(const C_FLOAT64&amp; initialValue);
+/**
+ * Sets the initial value of an entity.
+ */
+void setInitialValue(const C_FLOAT64&amp; initialValue);
 
-  /**
-   * Returns the SBML id of an entity. If none has been set,
-   * an empty string is returned.
-   */
-  const std::string&amp; getSBMLId() const;
+/**
+ * Returns the SBML id of an entity. If none has been set,
+ * an empty string is returned.
+ */
+const std::string&amp; getSBMLId() const;
 
-  /**
-   * Sets the SBML id on an entity.
-   * This is either done on importing an SBML file,
-   * or on exporting a model.
-   * Don't mess with this since it might break further
-   * exports to SBML.
-   */
-  void setSBMLId(const std::string&amp; id);
+/**
+ * Sets the SBML id on an entity.
+ * This is either done on importing an SBML file,
+ * or on exporting a model.
+ * Don't mess with this since it might break further
+ * exports to SBML.
+ */
+void setSBMLId(const std::string&amp; id);
 
-  /**
-   * If the entity is determined by an assignment or 
-   * an ODE, this method will return the mathematical
-   * expression for the assignment or the ODE.
-   */
-  std::string getExpression() const;
+/**
+ * If the entity is determined by an assignment or 
+ * an ODE, this method will return the mathematical
+ * expression for the assignment or the ODE.
+ */
+std::string getExpression() const;
 
-  /**
-   * With this method, the mathematical expression 
-   * for entities that are determined by an assignment
-   * or an ODE can be set.
-   * You might also have to set the status of the entity
-   * to indicate that it is now determined by an ODE 
-   * or an assignment. (see setStatus())
-   */
-  bool setExpression(cosnt std::string&amp; expression);
+/**
+ * With this method, the mathematical expression 
+ * for entities that are determined by an assignment
+ * or an ODE can be set.
+ * You might also have to set the status of the entity
+ * to indicate that it is now determined by an ODE 
+ * or an assignment. (see setStatus())
+ */
+bool setExpression(cosnt std::string&amp; expression);
 
-  /**
-   * Returns the mathematical expression for any initial 
-   * assignment that might have been set on the entity. 
-   * This is independent of the status of the entity.
-   */
-  std::string getInitialExpression() const;
+/**
+ * Returns the mathematical expression for any initial 
+ * assignment that might have been set on the entity. 
+ * This is independent of the status of the entity.
+ */
+std::string getInitialExpression() const;
 
-  /**
-   * With this method, the mathematical expression 
-   * for the initial assignment of an entity can be set.
-   */
-  bool setInitialExpression(const std::string&amp; expression);
+/**
+ * With this method, the mathematical expression 
+ * for the initial assignment of an entity can be set.
+ */
+bool setInitialExpression(const std::string&amp; expression);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Gets the status of the entity.
+# 
+STATUS=getStatus()
+
+# 
+# sets the status of an entity.
+# 
+setStatus(STATUS)
+
+# 
+# gets the transient value of an entity.
+# 
+VALUE=getValue()
+
+# 
+# Returns the initial value of an entity.
+# 
+VALUE=getInitialValue()
+
+# 
+# Sets the initial value of an entity.
+# 
+setInitialValue(VALUE)
+
+# 
+# Returns the SBML id of an entity. If none has been set,
+# an empty string is returned.
+# 
+ID_STRING=getSBMLId()
+
+# 
+# Sets the SBML id on an entity.
+# This is either done on importing an SBML file,
+# or on exporting a model.
+# Don't mess with this since it might break further
+# exports to SBML.
+# 
+setSBMLId(ID_STRING)
+
+# 
+# If the entity is determined by an assignment or 
+# an ODE, this method will return the mathematical
+# expression for the assignment or the ODE.
+# 
+EXPRESSION_STRING=getExpression()
+
+# 
+# With this method, the mathematical expression 
+# for entities that are determined by an assignment
+# or an ODE can be set.
+# You might also have to set the status of the entity
+# to indicate that it is now determined by an ODE 
+# or an assignment. (see setStatus())
+# 
+SUCCESS=setExpression(EXPRESSION_STRING)
+
+# 
+# Returns the mathematical expression for any initial 
+# assignment that might have been set on the entity. 
+# This is independent of the status of the entity.
+# 
+EXPRESSION_STRING=getInitialExpression()
+
+# 
+# With this method, the mathematical expression 
+# for the initial assignment of an entity can be set.
+# 
+SUCCESS=setInitialExpression(EXPRESSION_STRING)
 </programlisting>
 </para>
 
@@ -614,7 +767,28 @@ const CCopasiVectorNS&lt;CMetab&gt;&amp; getMetabolites() const;
 bool addMetabolite(CMetab* pMetabolite);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns a MetabVectorNS object which contains 
+# all metabolites that are contained in the compartment.
+# MetabVectorNS has a size method to determine the
+# number of metabolites and a get method that takes an 
+# index and returns the metabolite at that index.
+# 
+MATABOLITE_VECTOR=getMetabolites()
+
+# 
+# Adds the given metabolite to the compartment.
+# If the operation succeeded, true is returned, else false.
+# 
+SUCCESS=addMetabolite(METABOLITE_INSTANCE)
+
+# 
+# Removes the given metabolite from the compartment.
+# If the operation succeeded, true is returned, else false.
+# This method is obsolete and should no longer be used.
+# Future versions of the bindings might not contain this method.
+# 
+SUCCESS=removeMetabolite(METABOLITE_INSTANCE)
 </programlisting>
 </para>
 </sect3>
@@ -764,7 +938,64 @@ CFunction* getFunction();
 bool setFunction(const std::string&amp; functionName);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns the current flux of the reaction.
+# 
+FLUX=getFlux()
+
+# 
+# Returns the current flux of the reaction in terms 
+# of particle numbers rather than concentrations
+# 
+PARTICLE_FLUX=getParticleFlux()
+
+# 
+# If the reaction is reversible, this returns True, else False.
+# 
+IS_REVERSIBLE=isReversible()
+
+# 
+# Sets whether the reaction is reversible or not.
+# Arguments can be True or False
+# 
+setReversible(REVERSIBLE_FLAG)
+
+# 
+# Returns the number of compartments that are involved
+# in this reaction.
+# 
+COMPARTMENT_NUMBER=getCompartmentNumber()
+
+# 
+# Returns the SBML id of the reaction if one has been set,
+# otherwise an empty string is returned.
+# 
+ID_STRING=getSBMLId()
+
+# 
+# Sets the SBML id of the reaction.
+# This is done during import of an SBML model, or
+# during the first export of an SBML model.
+# If you change the SBML id of any entity, further 
+# exports to SBML might fail.
+# 
+setSBMLId(ID_STRING)
+
+# 
+# Returns the chemical equation object of the reaction.
+# 
+CHEMICAL_EQUATION=getChemEq()
+
+# 
+# Returns the function for the kinetic law used in the reaction.
+# 
+FUNCTION=getFunction()
+
+# 
+# Sets the kinetic law of the reaction via a functions name.
+# A function with that name must exist in the function database.
+# 
+SUCCESS=setFunction(FUNCTION_NAME_STRING)
 </programlisting>
 </para>
 
@@ -798,6 +1029,7 @@ public void setReversibility(boolean revers);
  * role is the role of the metabolite and it can be either
  * CChemEq.PRODUCT, CChemEq.SUBSTRATE, CChemEq.MODIFIER 
  * or CChemEq.NOROLE.
+ */
 public boolean addMetabolite(String key, double mult, int role);
 
 /**
@@ -926,7 +1158,86 @@ unsigned C_INT32 getCompartmentNumber() const;
 const CCompartment* getLargestCompartment() const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns true if the chemical reaction is reversible.
+# 
+REVERSIBLE=getReversibility()
+
+# 
+# Sets whether the given chemical equation is to be reversible.
+# 
+setReversibility(REVERSIBLE_FLAG)
+
+# 
+# Adds a new metabolite to the chemical equation.
+# key is the key of the metabolite 
+# (keys are the ids of COPASI objects)
+# mult is the stoichiometric coefficient
+# role is the role of the metabolite and it can be either
+# CChemEq.PRODUCT, CChemEq.SUBSTRATE, CChemEq.MODIFIER 
+# or CChemEq.NOROLE.
+SUCCESS=addMetabolite(METABOLITE_KEY_STRING, STOICHIOMETRY, ROLE)
+
+# 
+# Gets a container with all the substrates of the 
+# chemical equation.
+# The size of the container can be queried with
+# its size method,
+# the element with index i can be retrieved with the
+# get method which takes the index as the only argument.
+# 
+ELEMENT_VECTOR=getSubstrates()
+
+# 
+# Gets a container with all the products of the 
+# chemical equation.
+# The size of the container can be queried with 
+# its size method,
+# the element with index i can be retrieved with the
+# get method which takes the index as the only argument.
+# 
+ELEMENT_VECTOR=getProducts()
+
+# 
+# Gets a container with all the modifiers of the
+# chemical equation.
+# The size of the container can be queried with its
+# size method,
+# the element with index i can be retrieved with the 
+# get method which takes the index as the only argument.
+# 
+ELEMENT_VECTOR=getModifiers()
+
+# 
+# Returns the number of compartments that are 
+# involved in this reaction.
+# If all metabolites that are involved in the
+# reaction are in the same compartment 1 is returned.
+# 
+COMPARTMENT_NUMBER=getCompartmentNumber()
+
+# 
+# Returns the largest compartment involved in the reaction.
+# 
+COMPARTMENT=getLargestCompartment()
+
+# 
+# Returns a CChemEqElement that represents the substrate
+# with the given index.
+# 
+CHEMICAL_EQUATION_ELEMENT=getSubstrate(INDEX)
+
+# 
+# Returns a CChemEqElement that represents the product
+# with the given index.
+# 
+CHEMICAL_EQUATION_ELEMENT=getProduct(INDEX)
+
+# 
+# Returns a CChemEqElement that represents the modifier
+# with the given index.
+# 
+CHEMICAL_EQUATION_ELEMENT=getModifier(INDEX)
 </programlisting>
 </para>
 
@@ -989,7 +1300,30 @@ const std::string&amp; getMetaboliteKey() const;
 void setMetabolite(const std::string&amp; key);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns the stoichiometric coefficient of the element.
+# 
+STOICHIOMETRY=getMultiplicity()
+
+# 
+# Sets the stoichiometric coefficient of the element.
+# 
+setMultiplicity(STOICHIOMETRY)
+
+# 
+# Returns the associated CMetab instance.
+# 
+METABOLITE=getMetabolite()
+
+# 
+# Returns the key of the associated CMetab instance.
+# 
+METABOLITE_KEY_STRING=getMetaboliteKey()
+
+# 
+# Sets the associated CMetab instance via its key.
+# 
+setMetabolite(METABOLITE_KEY_STRING)
 </programlisting>
 </para>
 </sect3>
@@ -1014,7 +1348,7 @@ CFunctionDB funDB=CCopasiRootContainer.getFunctionList();
 CFunctionDB* funDB=CCopasiRootContainer::getFunctionList();
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+funDB=CCopasiRootContainer.getFunctionList();
 </programlisting>
 </para>
 
@@ -1090,7 +1424,37 @@ std::vector&lt;CFunction*&gt; suitableFunctions(const unsigned C_INT32 noSubstra
 bool removeFunction(const std::string&amp; key);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Finds the function with the given name.
+# If no function with this name can be found, null is returned.
+# 
+FUNCTION=findFunction(FUNCTION_NAME_STRING)
+
+# 
+# Returns a container with all known function definitions.
+# The size of the container can be queries with the size 
+# method and individual elements of type CEvaluationTree 
+# can be acquire with the get method. The only argument to
+# the get method is the index of the desired function.
+#   
+FUNCTION_VECTOR=loadedFunctions()
+
+# 
+# Returns a container with all functions that are suitable
+# for the given number of substrates and products and the 
+# given reversibility.
+# NUMBER_OF_SUBSTRATES: desired number of substrates
+# NUMBER_OF_PRODUCTS: desired number of products
+# reversibility: whether the function should be suitable for
+# reversible or irreversible reactions (TriTrue, TriFalse or TriUnspecified.
+#   
+FUNCTION_VECTOR=suitableFunctions(NUMBER_OF_SUBSTRATES, 
+                               NUMBER_OF_PRODUCTS, REVERSIBILITY_FLAG)
+
+# 
+# Removes the function definition with the given key.
+# 
+SUCCESS=removeFunction(FUNCTION_KEY_STRING)
 </programlisting>
 </para>
 
@@ -1100,7 +1464,7 @@ COPASI distinguishes between different types of function definitions:
 </para>
 
 <para>
-<variablelist>
+<variablelist condition="JAVA">
 <varlistentry>
 <term>CEvaluationTree.MassAction</term>
 <listitem><para>this is the type of the mass action kinetic function definition</para></listitem>
@@ -1129,7 +1493,18 @@ COPASI distinguishes between different types of function definitions:
 </varlistentry>
 </variablelist>
 <variablelist condition="PYTHON">
-<!-- TODO -->
+<varlistentry>
+<term>CEvaluationTree.MassAction</term>
+<listitem><para>this is the type of the mass action kinetic function definition</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>CEvaluationTree.PreDefined</term>
+<listitem><para>this type is set on all builtin function definitions that are not mass action</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>CEvaluationTree.UserDefined</term>
+<listitem><para>this type is set on all user defined function definitions</para></listitem>
+</varlistentry>
 </variablelist>
 </para>
 
@@ -1225,7 +1600,44 @@ bool isSuitable(const unsigned C_INT32 noSubstrates, const unsigned C_INT32 noPr
                           const TriLogic reversible);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# If the reaction is reversible, the return value
+# TriTrue,
+# if the reaction is not reversible it is
+# TriFalse.
+# If the function is not meant to be used as a kinetic law,
+# the result might  also be TriUnspecified.
+# 
+REVERSIBILITY_FLAG=isReversible()
+
+# 
+# Sets whether the function is meant to be used on reversible
+# reaction, irreversible reactions, or if it is a general function
+# not meant to be used as a kinetic law.
+# The allowed values are TriTrue, 
+# TriFalse or TriUnspecified, respectively.
+# 
+setReversible(REVERSIBILITY_FLAG)
+
+# 
+# Returns a CFunctionParameters structure that holds
+# all parameters for the function definition.
+# 
+FUNCTION_PARAMETERS=getVariables()
+
+# 
+# Returns the index of the variable with the given name.
+# If there is no function parameter with that name, 
+# -1 is returned.
+# 
+INDEX=getVariableIndex(VARIABLE_NAME_STRING)
+
+# 
+# Returns true if the function definition is suitable for the
+# given number of substrates, products and the given reversibility.
+# 
+SUITABLE=isSuitable(NUM_SUBSTRATS, NUM_PRODUCTS, REVERSIBILITY_FLAG)
+                          
 </programlisting>
 </para>
 
@@ -1253,7 +1665,7 @@ container.add(metab.getObject(new CCopasiObjectName("Reference=InitialConcentrat
 pContainer->add(pMetab->getObject(CCopasiObjectName("Reference=InitialConcentration")));
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+container.push_back(metab.getObject(CCopasiObjectName("Reference=InitialConcentration")))
 </programlisting>
 </para>
 
@@ -1276,7 +1688,7 @@ Lets make this a little more clear by looking at the task class for running time
 </para>
 
 <para>
-All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis>get(long index)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiTask</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis>getTask(long index)</emphasis> which also returns the <emphasis>CCopasiTask</emphasis> object with the given index. <!-- TODO get(long index) is java specific -->
+All tasks are stored in <emphasis>CCopasiDataModel</emphasis>. <emphasis>CCopasiDataModel</emphasis> provides the method <emphasis>getTaskList()</emphasis> to get the list of tasks. The returned object is of the type <emphasis>TaskVectorN</emphasis> and provides a method called <emphasis>size()</emphasis> to find out how many tasks it contains and a method <emphasis CONDITION="JAVA">get(long index)</emphasis><emphasis CONDITION="CPP">get(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">get(INDEX)</emphasis> to retrieve the task with the given index. The object that is returned is of type <emphasis>CCopasiObject</emphasis>. Alternatively, <emphasis>CCopasiDataModel</emphasis> has a method called <emphasis CONDITION="JAVA">getTask(long index)</emphasis><emphasis CONDITION="CPP">getTask(C_INT32 index)</emphasis><emphasis CONDITION="PYTHON">getTask(INDEX)</emphasis> which returns the <emphasis>CCopasiTask</emphasis> object with the given index. 
 </para>
 
 <para>
@@ -1346,7 +1758,17 @@ if(pTask==NULL)
 }]]>
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+<![CDATA[
+iMax=datamodel.getTaskList().size()
+task=None
+for i in range(0,iMax):
+   if datamodel.getTask(i).getType()==CCopasiTask.timeCourse:
+       task=datamodel.getTask(i)
+       break
+if task==None:
+   # create the task
+   task=datamodel.addTask(CCopasiTask.timeCourse)
+]]>
 </programlisting>
 </para>
 
@@ -1367,7 +1789,8 @@ CCopasiParameter* getParameter(const std::string&amp; name);
 const CCopasiParameter* getParameter(const std::string&amp; name) const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+PARAMETER=getParameter(INDEX)
+PARAMETER=getParameter(PARAMETER_NAME_STRING)
 </programlisting>
 </para>
 
@@ -1383,7 +1806,7 @@ Let us for example look at the parameter called "Duration" which is a parameter 
 <![CDATA[
 CTrajectoryProblem problem=(CTrajectoryProblem)task.getProblem();
 CCopasiParameter parameter=problem.getParameter("Duration");
-if(parameter!=null && parameter.getType()==DOUBLE)
+if(parameter!=null && parameter.getType()==CCopasiParameter.UDOUBLE)
 {
     parameter.setDblValue(100.3);
 }]]>
@@ -1392,13 +1815,18 @@ if(parameter!=null && parameter.getType()==DOUBLE)
 <![CDATA[
 CTrajectoryProblem* pProblem=(CTrajectoryProblem*)pTask->getProblem();
 CCopasiParameter* pParameter=pProblem->getParameter("Duration");
-if(pParameter!=NULL && pParameter->getType()==DOUBLE)
+if(pParameter!=NULL && pParameter->getType()==CCopasiParameter::UDOUBLE)
 {
     pParameter->setValue(100.3);
 }]]>
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+<![CDATA[
+problem=task.getProblem()
+parameter=problem.getParameter("Duration")
+if parameter!=null && parameter.getType()==CCopasiParameter.UDOUBLE:
+    parameter.setValue(100.3)
+]]>
 </programlisting>
 </para>
 
@@ -1603,7 +2031,7 @@ if(task!=null)
 {
   CTrajectoryProblem problem=(CTrajectoryProblem)task.getProblem();
   CCopasiParameter parameter=problem.getParameter("Duration");
-  if(parameter!=null && parameter.getType()==DOUBLE)
+  if(parameter!=null && parameter.getType()==CCopasiParameter.UDOUBLE)
   {
     parameter.setDblValue(100.3);
   }
@@ -1640,7 +2068,7 @@ if(pTask!=NULL)
 {
   CTrajectoryProblem* pProblem=(CTrajectoryProblem*)pTask->getProblem();
   CCopasiParameter* pParameter=pProblem->getParameter("Duration");
-  if(pParameter!=NULL && pParameter->getType()==DOUBLE)
+  if(pParameter!=NULL && pParameter->getType()==CCopasiParameter::UDOUBLE)
   {
     pParameter->setValue(100.3);
   }
@@ -1658,7 +2086,28 @@ if(pTask!=NULL)
   }
 }]]></programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+<![CDATA[
+iMax=datamodel.getTaskList().size()
+task=None
+for i in range(0,iMax):
+   if datamodel.getTask(i).getType()==CCopasiTask.timeCourse:
+       task=datamodel.getTask(i)
+       break
+if task==None:
+   # create the task
+   task=datamodel.addTask(CCopasiTask.timeCourse)
+if task!=None:
+  problem=task.getProblem()
+  parameter=problem.getParameter("Duration")
+  if(parameter!=null && parameter.getType()==CCopasiParameter.UDOUBLE)
+    parameter.setValue(100.3)
+  if task.setMethodType(CCopasiMethod.LSODAR):
+    # maybe change some method parameters
+    task.process(true)
+  else
+    # error handling
+    ...
+]]>
 </programlisting>
 </para>
 
@@ -1777,7 +2226,58 @@ const std::string&amp; getKey(const unsigned C_INT32&amp; var) const;
 const std::string&amp; getSBMLId(const unsigned C_INT32&amp; var);
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns the number of steps in the time series.
+# This should be the same number as the "StepNumber"
+# parameter of the CTrajectoryProblem instance plus
+# one for the initial state.
+# 
+NUM_STEPS=getRecordedSteps()
+
+# 
+# Returns the number of variables in each row of
+# the result. Which is the same as the number of 
+# columns. This includes the column for time.
+# 
+NUM_VARIABLES=getNumVariables()
+
+# 
+# Gets the value for a specific row and column of 
+# the result. The rows are the individual time steps 
+# and the columns are the variables.
+# Indices begin with 0 and the first column (var=0) is 
+# the time.
+# If the column represents a metabolite, this method 
+# returns the particle number.
+# 
+VALUE=getData(STEP_NUMBER, VARIABLE_INDEX)
+
+# 
+# Gets the value for a specific row and column of
+# the result. The rows are the individual time steps
+# and the columns are the variables.
+# Indices begin with 0 and the first column (var=0)
+# is the time.
+# If the column represents a metabolite, this method
+# returns the concentration.
+# For all other columns, the value is the same as the 
+# one you get with getData.
+# 
+VALUE=getConcentrationData(STEP_NUMBER, VARIABLE_INDEX)
+
+# 
+# Get the key (id) of the element represented by the
+# column with index var.
+# 
+KEY_STRING=getKey(VARIABLE_INDEX)
+
+# 
+# Get the SBML id of the element represented by the column
+# with index var.
+# Objects only have SBML ids if the model was imported from 
+# an SBML file, or has already been exported to an SBML file.
+# 
+ID_STRING=getSBMLId(VARIABLE_INDEX)
 </programlisting>
 </para>
 </sect2>
@@ -1888,7 +2388,6 @@ public CArrayAnnotation getJacobianAnnotated();
  * Indices are specified as long values, the return values
  * are of type double.
  */
- */
 public FloatMatrix getJacobianReduced();
 
 /**
@@ -1957,7 +2456,6 @@ const CArrayAnnotation* getJacobianAnnotated() const;
  * Indices are specified as long values, the return values
  * are of type double.
  */
- */
  const CMatrix&lt;C_FLOAT64&gt;&amp; getJacobianReduced() const;
 
 /**
@@ -1977,13 +2475,78 @@ const CEigen&amp; getEigenValues() const;
 const CEigen&amp; getEigenValuesReduced() const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns an integer value. The value can either be
+# CSteadyStateMethod.notFound, CSteadyStateMethod.found,
+# CSteadyStateMethod.foundEquilibirium or
+# CSteadyStateMethod.foundNegative depending on whether 
+# a steady state was found and what properties the 
+# found steady state has.
+# 
+RESULT=getResult()
+
+# 
+# If a steady state was found, the corresponding state
+# of the model can be acquire by this method.
+# 
+STATE=getState()
+
+# 
+# Returns the Jacobian Matrix that was calculated.
+# The returned FloatMatrix object has the method size
+# to query its size and the methods numCols() and 
+# numRows() to query for the number of columns and the
+# number of rows respectively.
+# Individual elements from the matrix can be fetched
+# with the get method which takes the row and the column
+# index as its two arguments.
+# Indices are specified as long values, the return values
+# are of type double.
+# 
+JACOBIAN=getJacobian()
+
+# 
+# Returns the Jacobian Matrix together with annotations
+# as to which column and row corresponds to what.
+# 
+ANNOTATED_JACOBIAN=getJacobianAnnotated()
+
+# 
+# Returns the Jacobian matrix for the reduced model 
+# (removed mass conservations).
+# The returned FloatMatrix object has the method size
+# to query its size and the methods numCols() and numRows()
+# to query for the number of columns and the number of rows
+# respectively.
+# Individual elements from the matrix can be fetched with 
+# the get method which takes the row and the column index
+# as its two arguments.
+# Indices are specified as long values, the return values
+# are of type double.
+# 
+REDUCED_JACOBIAN=getJacobianReduced()
+
+# 
+# Returns the annotated Jacobian matrix for the reduced model 
+# (removed mass conservations).
+# 
+ANNOTATED_JACOBIAN=getJacobianXAnnotated()
+
+# 
+# Returns the Eigenvalues for the full model.
+# 
+EIGENVALUES=getEigenValues()
+
+# 
+# Returns the Eigenvalues for the reduced model.
+# 
+EIGENVALUES=getEigenValuesReduced()
 </programlisting>
 </para>
 
 <para>
 <variablelist>
-<varlistentry>
+<varlistentry condition="JAVA">
 <term>CSteadyStateMethod.notFound</term>
 <listitem><para>no steady state was found</para></listitem>
 </varlistentry>
@@ -2019,7 +2582,22 @@ const CEigen&amp; getEigenValuesReduced() const;
 </varlistentry>
 </variablelist>
 <variablelist condition="PYTHON">
-<!-- TODO -->
+<varlistentry>
+<term>CSteadyStateMethod.notFound</term>
+<listitem><para>no steady state was found</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>CSteadyStateMethod.found</term>
+<listitem><para>a steady state was found</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>CSteadyStateMethod.foundEquilibrium</term>
+<listitem><para>a steady state was found where all reaction fluxes are zero</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>CSteadyStateMethod.foundNegative</term>
+<listitem><para>a steady state with negative concentrations was found</para></listitem>
+</varlistentry>
 </variablelist>
 </para>
 
@@ -2161,7 +2739,70 @@ const CVector&lt;C_FLOAT64&gt;&amp; getI() const;
 const CVector&lt;C_FLOAT64&gt;&amp; getR() const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns the largest real part in all Eigenvalues.
+# 
+MAX_REAL_PART=getMaxrealpart()
+
+# 
+# Returns the largest imaginary part in all Eigenvalues.
+# 
+MAX_IMAG_PART=getMaximagpart()
+
+# 
+# Returns the number of non-zero Eigenvalues.
+# 
+NUM_NONZERO=getNzero()
+
+# 
+# Returns the stiffness of the Eigenvalues.
+# 
+STIFFNESS=getStiffness()
+
+# 
+# Returns the hierarchy of the Eigenvalues.
+# 
+HIERARCHY=getHierarchy()
+
+# 
+# Returns the number of Eigenvalues with an
+# imaginary part equal to zero.
+# 
+NUM_REAL=getNreal()
+
+# 
+# Returns the number of Eigenvalues with an
+# imaginary part different from zero.
+# 
+NUM_IMAG=getNimag()
+
+# 
+# Get the number of Eigenvalues with
+# a positive real part.
+# 
+NUM_POS_REAL=getNposreal()
+
+# 
+# Get the number of Eigenvalues with
+# a negative real part.
+# 
+NUM_NEG_REAL=getNnegreal()
+
+# 
+# Returns a vector with the imaginary parts of
+# all Eigenvalues.
+# The vectors size can be queried with the size method.
+# Individual elements can be acquire with the get method.
+# 
+IMAG_PART_VECTOR=getI()
+
+# 
+# Returns a vector with the real parts of
+# all Eigenvalues.
+# The vectors size can be queried with the size method.
+# Individual elements can be acquire with the get method.
+# 
+REAL_PART_VECTOR=getR()
 </programlisting>
 </para>
 
@@ -2246,7 +2887,44 @@ const std::string &amp; getDimensionDescription(unsigned int d) const;
 const std::string &amp; getDescription() const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# Returns the number of dimensions of the contained matrix.
+# 
+DIMENSIONALITY=dimensionality()
+
+# 
+# Returns a vector of common names for the given 
+# dimension of the matrix.
+# 
+REPORT_ITEM_VECTOR=getAnnotationsCN(DIMENSION)
+
+# 
+# Returns a vector of strings that represent the 
+# column entries in dimension d. The display
+# argument determines whether the string contain
+# the display name or the object name of the object 
+# represented in a column.
+# A value of true means that display names are returned.
+# 
+STRING_VECTOR=getAnnotationsString(DIMENSION, RETURN_DISPLAY_STRING)
+
+# 
+# Same as the method above, only that the second
+# argument is assumed to be true. So the returned
+# vector will contain display names.
+# 
+STRING_VECTOR=getAnnotationsString(DIMENSION)
+
+# 
+# Gets a description of what is represented by the 
+# dimension given as the argument to the method.
+#   
+DESCRIPTION_STRING=getDimensionDescription(DIMENSION)
+
+# 
+# Returns a description of the matrix.
+# 
+DESCRIPTION=getDescription()
 </programlisting>
 </para>
 
@@ -2291,6 +2969,7 @@ public int getSubtask();
  * A value of false means always use the original initial
  * values and a value of true means use the result of the last 
  * run as initial state for the next run.
+ */
 public void setAdjustInitialConditions(boolean aic);
 
 /**
@@ -2340,6 +3019,7 @@ CCopasiTask::Type getSubtask() const;
  * A value of false means always use the original initial
  * values and a value of true means use the result of the last 
  * run as initial state for the next run.
+ */
  void setAdjustInitialConditions(bool aic);
 
 /**
@@ -2367,7 +3047,54 @@ void setOutputInSubtask(bool ois);
 const bool&amp; getOutputInSubtask() const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# This method set the subtask for which the scan task
+# can be run. E.g. whether the scan is run on a steady
+# state calculation or on a time course.
+# Allowed types are defined in CCopasiTask.
+# 
+setSubtask(SUBTASK_TYPE)
+
+# 
+# Returns the type of the subtask for which the parameter
+# scan is run.
+# 
+SUBTASK_TYPE=getSubtask()
+
+# 
+# This method sets whether the initial values of the model
+# are set to the result of each run of the subtask or if the 
+# initial values should be set to the original initial values
+# of the model.
+# A value of false means always use the original initial
+# values and a value of true means use the result of the last 
+# run as initial state for the next run.
+#
+setAdjustInitialConditions(DO_ADJUST_INITIAL_CONDITIONS)
+
+# 
+# Returns true or false depending on whether the scan will adjust
+# the initial values of the model after each run of the subtask.
+# 
+ADJUST_INITIAL_CONDITIONS=getAdjustInitialConditions()
+
+# 
+# This methods sets whether output from the subtask is
+# collected, or if the output only consists of the end-
+# result of each subtask.
+# Assuming the subtask is a time course simulation, 
+# setting this to true will produce a time course for
+# each run of the subtask. If the value is set to false,
+# only the end state of each time course simulation will
+# be written to the report.
+# 
+setOutputInSubtask(DO_OUTPUT_IN_SUBTASK)
+
+# 
+# Returns true or false depending on whether output from the
+# subtask is collected or not.
+# 
+OUTPUT_FROM_SUBTASK=getOutputInSubtask()
 </programlisting>
 </para>
 
@@ -2463,7 +3190,7 @@ parameterGroup.addParameter("Type", CCopasiParameter.UINT);
 parameter=parameterGroup.getParameter("Type")
 parameter.setUIntValue(CScanProblem.SCAN_REPEAT);
 parameterGroup.addParameter("Object", CCopasiParameter.CN);
-parameter=parameterGroup.getParameter("Object")
+parameter=parameterGroup.getParameter("Object");
 parameter.setStringValue("");
 try
 {
@@ -2495,7 +3222,7 @@ pParameterGroup->addParameter("Type", CCopasiParameter::UINT);
 pParameter=pParameterGroup->getParameter("Type")
 pParameter->setValue(CScanProblem::SCAN_REPEAT);
 pParameterGroup->addParameter("Object", CCopasiParameter::CN);
-pParameter=pParameterGroup->getParameter("Object")
+pParameter=pParameterGroup->getParameter("Object");
 pParameter.setValue("");
 try
 {
@@ -2508,7 +3235,31 @@ catch(...)
     std::cerr &lt;&lt; "ERROR: " &lt;&lt; Scan failed. &lt;&lt; std::endl;;
 }</programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+scanTask= datamodel.addTask(CCopasiTask.scan)
+scanProblem=scanTask.getProblem()
+# set the desired subtask
+scanProblem.setSubtask(CCopasiTask.timeCourse)
+# always use the same initial values
+scanProblem.setAdjustInitialConditions(False)
+# get the ScanItems parameter group from the problem
+scanItems=scanProblem.getGroup("ScanItems")
+# create a new parameter group to hold a scan item
+scanItem=new CCopasiParameterGroup("scanItem")
+# add the parameters "Number of steps", "Type" and "Object" to the 
+# scan item and set their values
+parameterGroup.addParameter("Number of steps", CCopasiParameter.UINT)
+parameter=parameterGroup.getParameter("Number of steps")
+parameter.setValue(10)
+parameterGroup.addParameter("Type", CCopasiParameter.UINT)
+parameter=parameterGroup.getParameter("Type")
+parameter.setUIntValue(CScanProblem.SCAN_REPEAT)
+parameterGroup.addParameter("Object", CCopasiParameter.CN)
+parameter=parameterGroup.getParameter("Object")
+parameter.setStringValue("")
+try:
+  result=scanTask.process(true)
+except:
+  print >> sys.stderr, "ERROR while running scan task."
 </programlisting>
 </para>
 
@@ -2576,9 +3327,9 @@ ref=new CCopasiObjectName("Reference=InitialValue");
 object=SomeFixedModelValue.getObject(ref);
 CCopasiObjectName optObjectName=object.getCN();
 COptItem optItem2=optProblem.addOptItem(optObjectName);
-optItem2.setStartValue(1.0);
-optItem2.setLowerBound(0.0);
-optItem2.setUpperBound(2.0);
+optItem2.setStartValue(1.0,datamodel);
+optItem2.setLowerBound(0.0,datamodel);
+optItem2.setUpperBound(2.0,datamodel);
 
 // change some of the parameters of the method
 COptMethod optMethod=optTask.getMethod();
@@ -2632,9 +3383,9 @@ ref=CCopasiObjectName("Reference=InitialValue");
 pObject=pSomeFixedModelValue->getObject(ref);
 CCopasiObjectName optObjectName=pObject->getCN();
 COptItem* pOptItem2=pOptProblem->addOptItem(optObjectName);
-pOptItem2->setStartValue(1.0);
-pOptItem2->setLowerBound(0.0);
-pOptItem2->setUpperBound(2.0);
+pOptItem2->setStartValue(1.0,datamodel);
+pOptItem2->setLowerBound(0.0,datamodel);
+pOptItem2->setUpperBound(2.0,datamodel);
 
 // change some of the parameters of the method
 COptMethod* pOptMethod=(COptMethod*)pOptTask->getMethod();
@@ -2655,7 +3406,59 @@ catch(...)
 }]]>
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+<![CDATA[
+# create the optimization task
+COptTask optTask=datamodel.addTask(CCopasiTask.optimization)
+if optTask==None:
+   return None
+
+# use the Levenberg-Marquardt method for the optimization
+optTask.setMethodType(CCopasiMethod.LevenbergMarquardt)
+
+# acquire the problem instance from the task
+optProblem=optTask.getProblem()
+if optProblem==None:
+    return None
+
+# create the objective function
+# in this case the objective function is the transient
+# value of some model parameter
+# so COPASI will try to find values for all COptItems
+# so that the transient value of the parameter after
+# the simulation is minimal
+ref=CCopasiObjectName("Reference=Value")
+object=SomeVariableModelValue.getObject(ref)
+objectiveFunction=object.getCN().getString()
+objectiveFunction="<"+objectiveFunction+">"
+# set the objective function on the problem
+optProblem.setObjectiveFunction(objectiveFunction)
+# set the problems subtask type to indicate that the optimization
+# is to be run on a time course simulation
+optProblem.setSubtaskType(CCopasiTask.timeCourse)
+
+# create an optimization item for the 
+# initial value of some model parameter
+ref=CCopasiObjectName("Reference=InitialValue")
+object=SomeFixedModelValue.getObject(ref)
+optObjectName=object.getCN()
+optItem2=optProblem.addOptItem(optObjectName)
+optItem2.setStartValue(1.0,datamodel)
+optItem2.setLowerBound(0.0,datamodel)
+optItem2.setUpperBound(2.0,datamodel)
+
+# change some of the parameters of the method
+optMethod=optTask.getMethod()
+param=optMethod.getParameter("Iteration Limit")
+param.setIntValue(2000)
+param=optMethod.getParameter("Tolerance")
+param.setValue(1.0e-5)
+result=False
+try:
+  # run the optimization
+  result=optTask.process(True)
+except:
+  print >> sys.stderr, "ERROR while running optimization." 
+]]>
 </programlisting>
 </para>
 
@@ -2725,175 +3528,245 @@ A fit problem can actually contain many experiments and many fit items, but the 
 
 <para>
 <programlisting condition="JAVA">
- CFitTask fitTask=
-   (CFitTask)datamodel.addTask(CCopasiTask.parameterFitting);
- // the method in a fit task is an instance of COptMethod or a subclass of
- // it.
- COptMethod fitMethod=(COptMethod)fitTask.getMethod();
- // the object must be an instance of COptMethod or a subclass thereof
- // (CFitMethod)
- CFitProblem fitProblem=(CFitProblem)fitTask.getProblem();
- CExperimentSet experimentSet=(CExperimentSet)fitProblem.getParameter("Experiment Set");
- // first experiment
- CExperiment experiment=new CExperiment();
- experiment.setFileName("parameter_fitting_data_simple.txt");
- experiment.setFirstRow(1);
- experiment.setLastRow(22);
- experiment.setHeaderRow(1);
- experiment.setExperimentType(CCopasiTask.timeCourse);
- experiment.setNumColumns(3);
- CExperimentObjectMap objectMap=experiment.getObjectMap();
- boolean result=objectMap.setNumCols(3);
- result=objectMap.setRole(0,CExperiment.time);
- CModel model=datamodel.getModel();
- // create the common name for time (column 0)
- CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
- objectMap.setObjectCN(0,timeReference.getCN().getString());
- CMetab metabA=model.getMetabolite(0);
- CMetab metabB=null;
- if(metabA.getObjectName()!="A")
- {
-     metabB=metabA;
-     metabA=model.getMetabolite(1);
- }
- else
- {
-     metabB=model.getMetabolite(1);
- }
- // set the role to dependent
- objectMap.setRole(1,CExperiment.dependent);
- // create the common name for the particle number of A (column 1)
- CCopasiObject particleReference=
-     metabA.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
- objectMap.setObjectCN(1,particleReference.getCN().getString());
- // set the role to dependent
- objectMap.setRole(2,CExperiment.dependent);
- // create the common name for the particle number of B (column 1)
- particleReference=metabB.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
- objectMap.setObjectCN(2,particleReference.getCN().getString());
- // getObjectCN returns a string whereas getCN returns a
- // CCopasiObjectname
- experimentSet.addExperiment(experiment);
- // addExperiment makes a copy, so we need to get the added experiment
- // again
- experiment=experimentSet.getExperiment(0);
+CFitTask fitTask=
+  (CFitTask)datamodel.addTask(CCopasiTask.parameterFitting);
+// the method in a fit task is an instance of COptMethod or a subclass of
+// it.
+COptMethod fitMethod=(COptMethod)fitTask.getMethod();
+// the object must be an instance of COptMethod or a subclass thereof
+// (CFitMethod)
+CFitProblem fitProblem=(CFitProblem)fitTask.getProblem();
+CExperimentSet experimentSet=(CExperimentSet)fitProblem.getParameter("Experiment Set");
+// first experiment
+CExperiment experiment=new CExperiment();
+experiment.setFileName("parameter_fitting_data_simple.txt");
+experiment.setFirstRow(1);
+experiment.setLastRow(22);
+experiment.setHeaderRow(1);
+experiment.setExperimentType(CCopasiTask.timeCourse);
+experiment.setNumColumns(3);
+CExperimentObjectMap objectMap=experiment.getObjectMap();
+boolean result=objectMap.setNumCols(3);
+result=objectMap.setRole(0,CExperiment.time);
+CModel model=datamodel.getModel();
+// create the common name for time (column 0)
+CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
+objectMap.setObjectCN(0,timeReference.getCN().getString());
+CMetab metabA=model.getMetabolite(0);
+CMetab metabB=null;
+if(metabA.getObjectName()!="A")
+{
+    metabB=metabA;
+    metabA=model.getMetabolite(1);
+}
+else
+{
+    metabB=model.getMetabolite(1);
+}
+// set the role to dependent
+objectMap.setRole(1,CExperiment.dependent);
+// create the common name for the particle number of A (column 1)
+CCopasiObject particleReference=
+    metabA.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+objectMap.setObjectCN(1,particleReference.getCN().getString());
+// set the role to dependent
+objectMap.setRole(2,CExperiment.dependent);
+// create the common name for the particle number of B (column 1)
+particleReference=metabB.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+objectMap.setObjectCN(2,particleReference.getCN().getString());
+// getObjectCN returns a string whereas getCN returns a
+// CCopasiObjectname
+experimentSet.addExperiment(experiment);
+// addExperiment makes a copy, so we need to get the added experiment
+// again
+experiment=experimentSet.getExperiment(0);
 
- CReaction reaction=model.getReaction(0);
- CCopasiParameter parameter=reaction.getParameters().getParameter(0);
- 
- // define CFitItems
- CCopasiObject parameterReference=
-     parameter.getObject(new CCopasiObjectName("Reference=Value"));
- CFitItem fitItem=new CFitItem();
- fitItem.setObjectCN(parameterReference.getCN());
- fitItem.setStartValue(4.0);
- fitItem.setLowerBound(new CCopasiObjectName("0.0001"));
- fitItem.setUpperBound(new CCopasiObjectName("10"));
- // add the experiment to the fit item
- //fitItem.addExperiment(experiment.getKey())
- // add the fit item to the correct parameter group
- CCopasiParameterGroup optimizationItemGroup=
-     (CCopasiParameterGroup)fitProblem.getParameter("OptimizationItemList");
- optimizationItemGroup.addParameter(fitItem);
- // addParameter makes a copy of the fit item, so we have to get it back
- fitItem=(CFitItem)optimizationItemGroup.getParameter(0);
- result=true;
- try
- {
-   result=fitTask.process(true);
- }
- catch(Exception e)
- {
-   result=false;
- }
- // get the fitted value for the reaction parameter
- double fittedK=fitItem.getLocalValue();
+CReaction reaction=model.getReaction(0);
+CCopasiParameter parameter=reaction.getParameters().getParameter(0);
+
+// define CFitItems
+CCopasiObject parameterReference=
+    parameter.getObject(new CCopasiObjectName("Reference=Value"));
+CFitItem fitItem=new CFitItem();
+fitItem.setObjectCN(parameterReference.getCN());
+fitItem.setStartValue(4.0);
+fitItem.setLowerBound(new CCopasiObjectName("0.0001"),datamodel);
+fitItem.setUpperBound(new CCopasiObjectName("10"),datamodel);
+// add the experiment to the fit item
+//fitItem.addExperiment(experiment.getKey())
+// add the fit item to the correct parameter group
+CCopasiParameterGroup optimizationItemGroup=
+    (CCopasiParameterGroup)fitProblem.getParameter("OptimizationItemList");
+optimizationItemGroup.addParameter(fitItem);
+// addParameter makes a copy of the fit item, so we have to get it back
+fitItem=(CFitItem)optimizationItemGroup.getParameter(0);
+result=true;
+try
+{
+  result=fitTask.process(true);
+}
+catch(Exception e)
+{
+  result=false;
+}
+// get the fitted value for the reaction parameter
+double fittedK=fitItem.getLocalValue();
 </programlisting>
 <programlisting condition="CPP">
- CFitTask* pFitTask= (CFitTask*)pDataModel->addTask(CCopasiTask::parameterFitting);
- // the method in a fit task is an instance of COptMethod or a subclass of
- // it.
- COptMethod pFitMethod=(COptMethod*)pFitTask->getMethod();
- // the object must be an instance of COptMethod or a subclass thereof
- // (CFitMethod)
- CFitProblem* pFitProblem=(CFitProblem*)pFitTask->getProblem();
- CExperimentSet* pExperimentSet=&amp;(CExperimentSet*)pFitProblem->getParameter("Experiment Set");
- // first experiment
- CExperiment* pExperiment=new CExperiment();
- pExperiment->setFileName("parameter_fitting_data_simple.txt");
- pExperiment->setFirstRow(1);
- pExperiment->setLastRow(22);
- pExperiment->setHeaderRow(1);
- pExperiment->setExperimentType(CCopasiTask::timeCourse);
- pExperiment->setNumColumns(3);
- CExperimentObjectMap* pObjectMap=&amp;pExperiment->getObjectMap();
- bool result=pObjectMap->setNumCols(3);
- result=pObjectMap->setRole(0,CExperiment::time);
- CModel* pModel=pDataModel->getModel();
- // create the common name for time (column 0)
- CCopasiObject* pTimeReference=pModel->getObject(CCopasiObjectName("Reference=Time"));
- pObjectMap->setObjectCN(0,pTimeReference->getCN());
- CMetab* pMetabA=(*pModel->getMetabolites())[0];
- CMetab* pMetabB=NULL;
- if(pMetabA->getObjectName()!="A")
- {
-     pMetabB=pMetabA;
-     pMetabA=(*pModel->getMetabolites())[1];
- }
- else
- {
-     pMetabB=(*pModel->getMetabolites())[1];
- }
- // set the role to dependent
- pObjectMap->setRole(1,CExperiment::dependent);
- // create the common name for the particle number of A (column 1)
- CCopasiObject* pParticleReference=pMetabA->getObject(CCopasiObjectName("Reference=ParticleNumber"));
- pObjectMap->setObjectCN(1,pParticleReference->getCN());
- // set the role to dependent
- pObjectMap->setRole(2,CExperiment::dependent);
- // create the common name for the particle number of B (column 1)
- pParticleReference=pMetabB->getObject(CCopasiObjectName("Reference=ParticleNumber"));
- pObjectMap->setObjectCN(2,pParticleReference->getCN());
- // getObjectCN returns a string whereas getCN returns a
- // CCopasiObjectName
- pExperimentSet->addExperiment(pExperiment);
- // addExperiment makes a copy, so we need to get the added experiment
- // again
- delete pExperiment;
- pExperiment=pExperimentSet->getExperiment(0);
+CFitTask* pFitTask= (CFitTask*)pDataModel->addTask(CCopasiTask::parameterFitting);
+// the method in a fit task is an instance of COptMethod or a subclass of
+// it.
+COptMethod pFitMethod=(COptMethod*)pFitTask->getMethod();
+// the object must be an instance of COptMethod or a subclass thereof
+// (CFitMethod)
+CFitProblem* pFitProblem=(CFitProblem*)pFitTask->getProblem();
+CExperimentSet* pExperimentSet=&amp;(CExperimentSet*)pFitProblem->getParameter("Experiment Set");
+// first experiment
+CExperiment* pExperiment=new CExperiment();
+pExperiment->setFileName("parameter_fitting_data_simple.txt");
+pExperiment->setFirstRow(1);
+pExperiment->setLastRow(22);
+pExperiment->setHeaderRow(1);
+pExperiment->setExperimentType(CCopasiTask::timeCourse);
+pExperiment->setNumColumns(3);
+CExperimentObjectMap* pObjectMap=&amp;pExperiment->getObjectMap();
+bool result=pObjectMap->setNumCols(3);
+result=pObjectMap->setRole(0,CExperiment::time);
+CModel* pModel=pDataModel->getModel();
+// create the common name for time (column 0)
+CCopasiObject* pTimeReference=pModel->getObject(CCopasiObjectName("Reference=Time"));
+pObjectMap->setObjectCN(0,pTimeReference->getCN());
+CMetab* pMetabA=(*pModel->getMetabolites())[0];
+CMetab* pMetabB=NULL;
+if(pMetabA->getObjectName()!="A")
+{
+    pMetabB=pMetabA;
+    pMetabA=(*pModel->getMetabolites())[1];
+}
+else
+{
+    pMetabB=(*pModel->getMetabolites())[1];
+}
+// set the role to dependent
+pObjectMap->setRole(1,CExperiment::dependent);
+// create the common name for the particle number of A (column 1)
+CCopasiObject* pParticleReference=pMetabA->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+pObjectMap->setObjectCN(1,pParticleReference->getCN());
+// set the role to dependent
+pObjectMap->setRole(2,CExperiment::dependent);
+// create the common name for the particle number of B (column 1)
+pParticleReference=pMetabB->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+pObjectMap->setObjectCN(2,pParticleReference->getCN());
+// getObjectCN returns a string whereas getCN returns a
+// CCopasiObjectName
+pExperimentSet->addExperiment(pExperiment);
+// addExperiment makes a copy, so we need to get the added experiment
+// again
+delete pExperiment;
+pExperiment=pExperimentSet->getExperiment(0);
 
- CReaction* pReaction=(*pModel->getReactions())[0];
- CCopasiParameter* pParameter=pReaction->getParameters()->getParameter(0);
- 
- // define CFitItems
- CCopasiObject* pParameterReference=pParameter->getObject(CCopasiObjectName("Reference=Value"));
- CFitItem* pFitItem=new CFitItem();
- pFitItem->setObjectCN(pParameterReference->getCN());
- pFitItem->setStartValue(4.0);
- pFitItem->setLowerBound(CCopasiObjectName("0.0001"));
- pFitItem->setUpperBound(CCopasiObjectName("10"));
- // add the fit item to the correct parameter group
- CCopasiParameterGroup* pOptimizationItemGroup=(CCopasiParameterGroup*)pFitProblem->getParameter("OptimizationItemList");
- pOptimizationItemGroup->addParameter(pFitItem);
- // addParameter makes a copy of the fit item, so we have to get it back
- delete pFitItem;
- pFitItem=(CFitItem*)pOptimizationItemGroup->getParameter(0);
- result=true;
- try
- {
-   pFitTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pGobalDataModel, NULL);
-   result=pFitTask->process(true);
-   pFitTask->restore();
- }
- catch(...)
- {
-   result=false;
- }
- // get the fitted value for the reaction parameter
- double fittedK=pFitItem->getLocalValue();
+CReaction* pReaction=(*pModel->getReactions())[0];
+CCopasiParameter* pParameter=pReaction->getParameters()->getParameter(0);
+
+// define CFitItems
+CCopasiObject* pParameterReference=pParameter->getObject(CCopasiObjectName("Reference=Value"));
+CFitItem* pFitItem=new CFitItem();
+pFitItem->setObjectCN(pParameterReference->getCN());
+pFitItem->setStartValue(4.0);
+pFitItem->setLowerBound(CCopasiObjectName("0.0001"),datamodel);
+pFitItem->setUpperBound(CCopasiObjectName("10"),datamodel);
+// add the fit item to the correct parameter group
+CCopasiParameterGroup* pOptimizationItemGroup=(CCopasiParameterGroup*)pFitProblem->getParameter("OptimizationItemList");
+pOptimizationItemGroup->addParameter(pFitItem);
+// addParameter makes a copy of the fit item, so we have to get it back
+delete pFitItem;
+pFitItem=(CFitItem*)pOptimizationItemGroup->getParameter(0);
+result=true;
+try
+{
+  pFitTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pGobalDataModel, NULL);
+  result=pFitTask->process(true);
+  pFitTask->restore();
+}
+catch(...)
+{
+  result=false;
+}
+// get the fitted value for the reaction parameter
+double fittedK=pFitItem->getLocalValue();
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+fitTask=datamodel.addTask(CCopasiTask.parameterFitting)
+# the method in a fit task is an instance of COptMethod or a subclass of
+# it.
+fitMethod=fitTask.getMethod()
+# the object must be an instance of COptMethod or a subclass thereof
+# (CFitMethod)
+fitProblem=fitTask.getProblem()
+experimentSet=fitProblem.getParameter("Experiment Set")
+# first experiment
+experiment=CExperiment()
+experiment.setFileName("parameter_fitting_data_simple.txt")
+experiment.setFirstRow(1)
+experiment.setLastRow(22)
+experiment.setHeaderRow(1)
+experiment.setExperimentType(CCopasiTask.timeCourse)
+experiment.setNumColumns(3)
+objectMap=experiment.getObjectMap()
+result=objectMap.setNumCols(3)
+result=objectMap.setRole(0,CExperiment.time)
+model=datamodel.getModel()
+# create the common name for time (column 0)
+timeReference=model.getObject(CCopasiObjectName("Reference=Time"))
+objectMap.setObjectCN(0,timeReference.getCN().getString())
+metabA=model.getMetabolite(0)
+metabB=null
+if metabA.getObjectName()!="A":
+    metabB=metabA;
+    metabA=model.getMetabolite(1);
+else:
+    metabB=model.getMetabolite(1);
+# set the role to dependent
+objectMap.setRole(1,CExperiment.dependent)
+# create the common name for the particle number of A (column 1)
+particleReference=metabA.getObject(CCopasiObjectName("Reference=ParticleNumber"))
+objectMap.setObjectCN(1,particleReference.getCN().getString())
+# set the role to dependent
+objectMap.setRole(2,CExperiment.dependent)
+# create the common name for the particle number of B (column 1)
+particleReference=metabB.getObject(CCopasiObjectName("Reference=ParticleNumber"))
+objectMap.setObjectCN(2,particleReference.getCN().getString())
+# getObjectCN returns a string whereas getCN returns a
+# CCopasiObjectname
+experimentSet.addExperiment(experiment)
+# addExperiment makes a copy, so we need to get the added experiment
+# again
+experiment=experimentSet.getExperiment(0)
+
+reaction=model.getReaction(0)
+parameter=reaction.getParameters().getParameter(0)
+
+# define CFitItems
+parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
+fitItem=CFitItem()
+fitItem.setObjectCN(parameterReference.getCN())
+fitItem.setStartValue(4.0)
+fitItem.setLowerBound(new CCopasiObjectName("0.0001"),datamodel)
+fitItem.setUpperBound(new CCopasiObjectName("10"),datamodel)
+# add the experiment to the fit item
+# fitItem.addExperiment(experiment.getKey())
+# add the fit item to the correct parameter group
+optimizationItemGroup=fitProblem.getParameter("OptimizationItemList")
+optimizationItemGroup.addParameter(fitItem)
+# addParameter makes a copy of the fit item, so we have to get it back
+fitItem=optimizationItemGroup.getParameter(0)
+result=True
+try:
+  result=fitTask.process(true)
+except:
+  result=False
+# get the fitted value for the reaction parameter
+fittedK=fitItem.getLocalValue()
 </programlisting>
 </para>
 
@@ -2926,13 +3799,13 @@ In COPASI the reports definitions are stored in the instances of <emphasis>CCopa
 
 <para>
 <programlisting condition="JAVA">
-datamodel.getReportDefinitionList()
+datamodel.getReportDefinitionList();
 </programlisting>
 <programlisting condition="CPP">
-pDataModel->getReportDefinitionList()
+pDataModel->getReportDefinitionList();
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+datamodel.getReportDefinitionList()
 </programlisting>
 </para>
 
@@ -3044,7 +3917,50 @@ pReport->setTarget("table.xhtml");
  ...]]>
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+<![CDATA[
+...
+reportDefs=datamodel.getReportDefinitionList()
+repDef=reportDefs.createReportDefinition("htmlConc",
+                                        "value table in HTML format")
+repDef.setIsTable(False)
+htmlHeader=CCopasiStaticString("<?xml version=\"1.0\"" 
+ + " encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC "
+ + "\"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
+ + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+ + "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\""
+ + "lang=\"en\">\n<body>\n<table>\n")
+htmlFooter=CCopasiStaticString("</table>\n</body>\n</html>\n")
+header=repDef.getHeaderAddr() 
+header.push_back(CRegisteredObjectName(htmlHeader.getCN().getString()))
+footer=repDef.getFooterAddr()
+footer.push_back(CRegisteredObjectName(htmlFooter.getCN().getString()))
+body=repDef.getBodyAddr()
+model=datamodel.getModel()
+name=CCopasiObjectName("Reference=Time")
+timeObject=model.getObject(name)
+s=CCopasiStaticString("<tr>\n<td>")
+body.push_back(CRegisteredObjectName(s.getCN().getString()))
+body.push_back(CRegisteredObjectName(timeObject.getCN().getString()))
+s=CCopasiStaticString("</td>\n")
+body.push_back(CRegisteredObjectName(s.getCN().getString()))
+name=CCopasiObjectName("Reference=Value")
+iMax=model.getNumModelValues()
+for i in range(0,iMax):
+    s=CCopasiStaticString("<td>")
+    body.push_back(CRegisteredObjectName(s.getCN().getString()))
+    mv=model.getModelValue(i)
+    valueObject=mv.getObject(name)
+    body.push_back(CRegisteredObjectName(valueObject.getCN().getString()))
+    s=CCopasiStaticString("</td>\n")
+    body.push_back(CRegisteredObjectName(s.getCN().getString()))
+s=CCopasiStaticString("</tr>\n")
+body.push_back(CRegisteredObjectName(s.getCN().getString()))
+repDef.setTaskType(CCopasiTask.timeCourse)
+report=task.getReport()
+report.setReportDefinition(repDef)
+report.setAppend(False)
+report.setTarget("table.xhtml")
+ ...]]>
 </programlisting>
 </para>
 </sect1>
@@ -3233,7 +4149,87 @@ const CCopasiMessage::Type&amp; getType() const;
 const unsigned C_INT32&amp; getNumber() const;
 </programlisting>
 <programlisting condition="PYTHON">
-<!-- TODO -->
+# 
+# This static method peeks at the first message created in COPASI.
+# If no more messages are in the deque the message
+# (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+# 
+MESSAGE=peekFirstMessage()
+
+# 
+# This static method peeks at the last message created in COPASI.
+# If no more messages are in the deque the message
+# (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
+# 
+MESSAGE=peekLastMessage()
+
+# 
+# This static method retrieves the first message created in COPASI.
+# Consecutive calls allow for the retrieval of all generated
+# messages in chronological order. If no more messages are in
+# the deque the message (MCCopasiMessage + 1, "Message (1):
+# No more messages." is returned.
+# 
+MESSAGE=getFirstMessage()
+
+# 
+# This static method retrieves the last message created in COPASI.
+# Consecutive calls allow for the retrieval of all generated
+# messages in reverse chronological order. If no more messages
+# are in the deque the message (MCCopasiMessage + 1, "Message
+# (1): No more messages." is returned.
+# 
+MESSAGE=getLastMessage()
+
+# 
+# Static method that retrieves the text of all messages in the deque in chronological
+# or reverse chronological order. If more than on message is in
+# the deque the messages are seperated by an empty line.
+# 
+MESSAGE_TEXT=getAllMessageText(CHRONOLOGICAL)
+
+# 
+# Static method that clears the message deque.
+# 
+clearDeque()
+
+# 
+# Static method that retreives the size of the message deque
+# 
+SIZE=size()
+
+# 
+# Static method that retrieves the highest severity of the messages in the deque.
+# The returned severity can be CCopasiMessage.RAW, CCopasiMessage.TRACE,
+# CCopasiMessage.COMMANDLINE, CCopasiMessage.WARNING, CCopasiMessage.ERROR,
+# CCopasiMessage.EXCEPTION, CCopasiMessage.RAW_FILTERED,
+# CCopasiMessage.TRACE_FILTERED, CCopasiMessage.COMMANDLINE_FILTERED,
+# CCopasiMessage.WARNING_FILTERED, CCopasiMessage.ERROR_FILTERED or 
+# CCopasiMEssage.EXCEPTION_FILTERED.
+# 
+# The most common of those are WARNING, ERROR or EXCEPTION.
+# 
+SEVERITY=getHighestSeverity()
+
+# 
+# Static method that checks whether a message with the given number is in the deque
+# 
+EXISTS=checkForMessage(MESSAGE_NUMBER)
+
+# 
+#  Retrieves the text of the message instance.
+# 
+TEXT=getText()
+
+# 
+#  Retrieves the type of the message instance.
+# 
+TYPE=getType()
+
+# 
+#  Retrieves the number of the message instance.
+# 
+NUMBER=getNumber()
 </programlisting>
 </para>
 
