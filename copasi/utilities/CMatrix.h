@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:26:08 $
+//   $Author: gauges $
+//   $Date: 2009/03/06 08:46:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -363,6 +363,10 @@ class CMatrix
      * @param const CMatrix< CType > & A
      * @return ostream & os
      */
+#if defined SWIG
+    friend std::ostream &operator <<(std::ostream &os,
+                                     const CMatrix< CType > & A);
+#else
 #if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
     friend std::ostream &operator <<(std::ostream &os,
                                      const CMatrix< CType > & A);
@@ -370,6 +374,8 @@ class CMatrix
     friend std::ostream &operator << <> (std::ostream &os,
                                          const CMatrix< CType > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class Matrix>
@@ -476,6 +482,11 @@ class CUpperTriangularView
      * @param const CUpperTriangularView< Matrix > & A
      * @return ostream & os
      */
+#ifdef SWIG
+    friend
+    std::ostream &operator << (std::ostream &os,
+                               const CUpperTriangularView< Matrix > & A);
+#else
 #ifdef WIN32
     friend
     std::ostream &operator << (std::ostream &os,
@@ -485,6 +496,8 @@ class CUpperTriangularView
     std::ostream &operator << <>(std::ostream &os,
                                  const CUpperTriangularView< Matrix > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class Matrix>
@@ -538,6 +551,11 @@ class CLowerTriangularView
      * @param const CLowerTriangularView< Matrix > & A
      * @return ostream & os
      */
+#ifdef SWIG
+    friend
+    std::ostream &operator << (std::ostream &os,
+                               const CLowerTriangularView< Matrix > & A);
+#else
 #ifdef WIN32
     friend
     std::ostream &operator << (std::ostream &os,
@@ -547,6 +565,8 @@ class CLowerTriangularView
     std::ostream &operator << <>(std::ostream &os,
                                  const CLowerTriangularView< Matrix > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class Matrix>
@@ -606,6 +626,11 @@ class CUnitUpperTriangularView
      * @param const CUnitUpperTriangularView< Matrix > & A
      * @return ostream & os
      */
+#ifdef SWIG
+    friend
+    std::ostream &operator << (std::ostream &os,
+                               const CUnitUpperTriangularView< Matrix > & A);
+#else
 #ifdef WIN32
     friend
     std::ostream &operator << (std::ostream &os,
@@ -615,6 +640,8 @@ class CUnitUpperTriangularView
     std::ostream &operator << <>(std::ostream &os,
                                  const CUnitUpperTriangularView< Matrix > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class Matrix>
@@ -674,6 +701,11 @@ class CUnitLowerTriangularView
      * @param const CUnitLowerTriangularView< Matrix > & A
      * @return ostream & os
      */
+#ifdef SWIG
+    friend
+    std::ostream &operator << (std::ostream &os,
+                               const CUnitLowerTriangularView< Matrix > & A);
+#else
 #ifdef WIN32
     friend
     std::ostream &operator << (std::ostream &os,
@@ -683,6 +715,8 @@ class CUnitLowerTriangularView
     std::ostream &operator << <> (std::ostream &os,
                                   const CUnitLowerTriangularView< Matrix > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class Matrix>
@@ -727,6 +761,11 @@ class CTransposeView
      * @param const CTransposeView< Matrix > & A
      * @return ostream & os
      */
+#ifdef SWIG
+    friend
+    std::ostream &operator << (std::ostream &os,
+                               const CTransposeView< Matrix > & A);
+#else
 #ifdef WIN32
     friend
     std::ostream &operator << (std::ostream &os,
@@ -736,6 +775,8 @@ class CTransposeView
     std::ostream &operator << <>(std::ostream &os,
                                  const CTransposeView< Matrix > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class CType>

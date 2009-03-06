@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.25 $ 
+//   $Revision: 1.26 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/05 21:36:23 $ 
+//   $Date: 2009/03/06 08:46:56 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -22,7 +22,7 @@
 %}
 
 %ignore operator<< ;
-%ignore operator<< <>;
+//%ignore operator<< <>;
 
 // for now we ignore the resize method since it uses the copy constructor of
 // the item, which is not implemented for most items

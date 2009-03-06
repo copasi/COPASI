@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:26:08 $
+//   $Author: gauges $
+//   $Date: 2009/03/06 08:46:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,6 +260,10 @@ template <class CType> class CVector
      * @param const CVector< CType > & A
      * @retrun ostream & os
      */
+#if defined SWIG
+    friend std::ostream &operator << (std::ostream &os,
+                                      const CVector< CType > & A);
+#else
 #if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
     friend std::ostream &operator << (std::ostream &os,
                                       const CVector< CType > & A);
@@ -267,6 +271,8 @@ template <class CType> class CVector
     friend std::ostream &operator << <> (std::ostream &os,
                                          const CVector< CType > & A);
 #endif // WIN32
+#endif // SWIG
+
   };
 
 template <class CType>
