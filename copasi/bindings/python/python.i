@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.19.16.2 $ 
+//   $Revision: 1.19.16.2.4.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2008/11/24 09:16:52 $ 
+//   $Date: 2009/03/06 16:06:47 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -204,6 +204,7 @@ CCopasiMessage.getAllMessageText=_COPASI.CCopasiMessage_getAllMessageText
 CCopasiMessage.clearDeque=_COPASI.CCopasiMessage_clearDeque
 CCopasiMessage.getHighestSeverity=_COPASI.CCopasiMessage_getHighestSeverity
 CCopasiMessage.checkForMessage=_COPASI.CCopasiMessage_checkForMessage
+CCopasiMessage.size=_COPASI.CCopasiMessage_size
 
 %}
 

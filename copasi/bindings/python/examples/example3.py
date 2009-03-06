@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.4.2.2 $ 
+#   $Revision: 1.4.2.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/06 14:24:27 $ 
+#   $Date: 2009/03/06 16:06:47 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -123,11 +123,18 @@ def main(args):
       assert parameter.getType() == CCopasiParameter.UDOUBLE
       parameter.setValue(1.0e-12)
 
-
+      result=True
       try:
           # now we run the actual trajectory
-          trajectoryTask.process(True)
+          result=trajectoryTask.process(True)
       except:
+          print >> sys.stderr,  "Error. Running the time course simulation failed." 
+          # check if there are additional error messages
+          if CCopasiMessage.size() > 0:
+              # print the messages in chronological order
+              print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+          return 1
+      if result == False:
           print >> sys.stderr,  "Error. Running the time course simulation failed." 
           # check if there are additional error messages
           if CCopasiMessage.size() > 0:

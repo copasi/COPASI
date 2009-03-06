@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.23.6.2 $ 
+#   $Revision: 1.23.6.2.4.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/11/15 20:47:01 $ 
+#   $Date: 2009/03/06 16:06:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ contains(BUILD_OS,Linux){
 }
 
 contains(BUILD_OS, Darwin) {
-    LIBS += -framework Python
+    LIBS += `python-config --libs` 
     LIBS += -framework QuickTime
     LIBS += -framework Carbon
     LIBS += -framework Accelerate
@@ -80,6 +80,7 @@ contains(BUILD_OS, Darwin) {
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH += $$PYTHON_INCLUDE_PATH
   }
+  QMAKE_CXXFLAGS += `python-config --includes` 
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }
@@ -277,3 +278,5 @@ SOURCES += copasi_wrapper.cpp
 # under windows qmake seems to ignore the last line of progject files
 
 
+#The following line was inserted by qt3to4
+QT += xml  opengl qt3support 
