@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.4.2.3 $ 
+#   $Revision: 1.4.2.4 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/06 16:06:47 $ 
+#   $Date: 2009/03/06 16:11:05 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -75,7 +75,7 @@ def main(args):
 
 
       # get the trajectory task object
-      trajectoryTask = None #CCopasiDataModel.GLOBAL.getTask("Time-Course")
+      trajectoryTask = CCopasiDataModel.GLOBAL.getTask("Time-Course")
       # if there isn't one
       if (trajectoryTask == None):
           # create a one
