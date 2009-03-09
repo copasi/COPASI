@@ -1,4 +1,17 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui,v $ </comment>
+<comment>   $Revision: 1.7 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: gauges $ </comment>
+<comment>   $Date: 2009/03/09 11:47:17 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
 <class>CQReportDefinition</class>
 <widget class="CopasiWidget">
     <property name="name">
@@ -763,6 +776,6 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>copasiwidget.h</includehint>
+    <includehint>copasiWidget.h</includehint>
 </includehints>
 </UI>
