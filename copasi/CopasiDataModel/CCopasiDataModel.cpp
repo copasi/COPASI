@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.125.2.2 $
+//   $Revision: 1.125.2.2.4.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/11/18 02:47:37 $
+//   $Author: gauges $
+//   $Date: 2009/03/10 09:17:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,35 +70,36 @@ CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
 {}
 
 bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
-  {
-    //std::cout << "CDataModelRenameHandler::handle()" << std::endl;
-    //std::cout << " old: " << oldCN << std::endl;
-    //std::cout << " new: " << newCN << std::endl;
+{
+  //std::cout << "CDataModelRenameHandler::handle()" << std::endl;
+  //std::cout << " old: " << oldCN << std::endl;
+  //std::cout << " new: " << newCN << std::endl;
 
-    const std::set<CRegisteredObjectName*> nameSet = CRegisteredObjectName::getSet();
+  const std::set<CRegisteredObjectName*> nameSet = CRegisteredObjectName::getSet();
 
-    //std::cout << " ************ " << nameSet.size() << std::endl;
-    std::set<CRegisteredObjectName*>::const_iterator it, itEnd = nameSet.end();
-    for (it = nameSet.begin(); it != itEnd; ++it)
-      {
-        // We need to make sure that we not change partial names
-        if (((*it)->size() == oldCN.size() ||
-             ((*it)->size() > oldCN.size() && (**it)[oldCN.size()] == ',')) &&
-            oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
-          {
-            //std::cout << "   match:   " << **it << std::endl;
-            (**it).replace(0, oldCN.size(), newCN);
-            //std::cout << "     -->    " << **it << std::endl;
-          }
-        else
-          {
-            //std::cout << "            " << **it << std::endl;
-          }
-      }
+  //std::cout << " ************ " << nameSet.size() << std::endl;
+  std::set<CRegisteredObjectName*>::const_iterator it, itEnd = nameSet.end();
 
-    //std::cout << " " << std::endl;
-    return true;
-  }
+  for (it = nameSet.begin(); it != itEnd; ++it)
+    {
+      // We need to make sure that we not change partial names
+      if (((*it)->size() == oldCN.size() ||
+           ((*it)->size() > oldCN.size() && (**it)[oldCN.size()] == ',')) &&
+          oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
+        {
+          //std::cout << "   match:   " << **it << std::endl;
+          (**it).replace(0, oldCN.size(), newCN);
+          //std::cout << "     -->    " << **it << std::endl;
+        }
+      else
+        {
+          //std::cout << "            " << **it << std::endl;
+        }
+    }
+
+  //std::cout << " " << std::endl;
+  return true;
+}
 
 //********************************************************************
 
@@ -146,8 +147,10 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 CCopasiDataModel::~CCopasiDataModel()
 {
   CCopasiObject::setRenameHandler(NULL);
+
   if (mpConfiguration != NULL)
     mpConfiguration->save();
+
   pdelete(mpConfiguration);
 
   pdelete(mpVersion);
@@ -193,6 +196,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
     {
       File.close();
       CReadConfig inbuf(FileName.c_str());
+
       if (inbuf.getVersion() >= "4")
         {
           CCopasiMessage(CCopasiMessage::ERROR,
@@ -211,6 +215,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
                       + CDirEntry::baseName(FileName);
 
       std::string Suffix = CDirEntry::suffix(FileName);
+
       if (strcasecmp(Suffix.c_str(), ".gps") != 0)
         mSaveFileName += Suffix;
 
@@ -238,7 +243,26 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
       // save the copasi2sbml map somewhere and clear it
       std::map<CCopasiObject*, SBase*> mapBackup(mCopasi2SBMLMap);
       mCopasi2SBMLMap.clear();
-      if (!XML.load(File, FileName))
+
+      try
+        {
+          if (!XML.load(File, FileName))
+            {
+              XML.freeModel();
+              XML.freeTaskList();
+              XML.freeReportList();
+              XML.freePlotList();
+              XML.freeGUI();
+              XML.freeLayoutList();
+
+              // restore the copasi2sbml map
+              mCopasi2SBMLMap = mapBackup;
+              mSBMLFileName = SBMLFileNameBkp;
+
+              return false;
+            }
+        }
+      catch (...)
         {
           XML.freeModel();
           XML.freeTaskList();
@@ -250,8 +274,9 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           // restore the copasi2sbml map
           mCopasi2SBMLMap = mapBackup;
           mSBMLFileName = SBMLFileNameBkp;
-
-          return false;
+          // rethrow the exception so the program flow should still be
+          // the same as before
+          throw;
         }
 
       newModel(XML.getModel(), pProcessReport);
@@ -425,6 +450,7 @@ bool CCopasiDataModel::autoSave()
   std::string AutoSave;
 
   COptions::getValue("Tmp", AutoSave);
+
   if (AutoSave == "") return false;
 
   AutoSave += CDirEntry::Separator + "tmp_";
@@ -500,6 +526,7 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
       mpModel->compileIfNecessary(pProcessReport);
       mpModel->updateInitialValues();
     }
+
   changed(false);
 
   return true;
@@ -599,6 +626,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
                   + CDirEntry::baseName(FileName);
 
   std::string Suffix = CDirEntry::suffix(FileName);
+
   if (strcasecmp(Suffix.c_str(), ".xml") != 0)
     mSaveFileName += Suffix;
 
@@ -637,6 +665,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
         {
           pdelete(mpCurrentSBMLDocument);
         }
+
       // disown the SBML Document from the exporter so we don't have to copy it
       exporter.disownSBMLDocument();
       mpCurrentSBMLDocument = exporter.getSBMLDocument();
@@ -645,12 +674,14 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
       this->mCopasi2SBMLMap.clear();
       std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
       std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+
       while (it != endit)
         {
           this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
           ++it;
         }
     }
+
   return str;
 }
 
@@ -701,8 +732,10 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   CSBMLExporter exporter;
   exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
+
   //exporter.setExportHandler(pExportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;
+
   // only get the new model if it is not a Level 1 model
   // During export to Level 1 the function definitions have been deleted and therefore
   // all information assiociated with the function definitions will be gone if the user exports
@@ -724,12 +757,14 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
       this->mCopasi2SBMLMap.clear();
       std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
       std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+
       while (it != endit)
         {
           this->mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
           ++it;
         }
     }
+
   mSBMLFileName = FileName;
   return true;
 }
@@ -786,12 +821,14 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
       return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
     }
+
   if (filter == "Berkeley Madonna Files (*.mmd)")
     {
       CODEExporterBM exporter;
 
       return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
     }
+
   if (filter == "XPPAUT (*.ode)")
     {
       CODEExporterXPPAUT exporter;
@@ -803,7 +840,7 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 }
 
 const CModel * CCopasiDataModel::getModel() const
-  {return mpModel;}
+{return mpModel;}
 
 CModel * CCopasiDataModel::getModel()
 {return mpModel;}
@@ -817,61 +854,61 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
   switch (taskType)
     {
-    case CCopasiTask::steadyState:
-      pTask = new CSteadyStateTask(mpTaskList);
-      break;
+      case CCopasiTask::steadyState:
+        pTask = new CSteadyStateTask(mpTaskList);
+        break;
 
-    case CCopasiTask::timeCourse:
-      pTask = new CTrajectoryTask(mpTaskList);
-      break;
+      case CCopasiTask::timeCourse:
+        pTask = new CTrajectoryTask(mpTaskList);
+        break;
 
-    case CCopasiTask::scan:
-      pTask = new CScanTask(mpTaskList);
-      break;
+      case CCopasiTask::scan:
+        pTask = new CScanTask(mpTaskList);
+        break;
 
-    case CCopasiTask::fluxMode:
-      pTask = new CEFMTask(mpTaskList);
-      break;
+      case CCopasiTask::fluxMode:
+        pTask = new CEFMTask(mpTaskList);
+        break;
 
-    case CCopasiTask::optimization:
-      pTask = new COptTask(taskType, mpTaskList);
-      break;
+      case CCopasiTask::optimization:
+        pTask = new COptTask(taskType, mpTaskList);
+        break;
 
-    case CCopasiTask::parameterFitting:
-      pTask = new CFitTask(taskType, mpTaskList);
-      break;
+      case CCopasiTask::parameterFitting:
+        pTask = new CFitTask(taskType, mpTaskList);
+        break;
 
-    case CCopasiTask::mca:
-      pTask = new CMCATask(mpTaskList);
-      static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
-      break;
+      case CCopasiTask::mca:
+        pTask = new CMCATask(mpTaskList);
+        static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
+        break;
 
-    case CCopasiTask::lyap:
-      pTask = new CLyapTask(mpTaskList);
-      break;
+      case CCopasiTask::lyap:
+        pTask = new CLyapTask(mpTaskList);
+        break;
 
 #ifdef COPASI_TSS
-    case CCopasiTask::tss:
-      pTask = new CTSSTask(mpTaskList);
-      break;
+      case CCopasiTask::tss:
+        pTask = new CTSSTask(mpTaskList);
+        break;
 #endif // COPASI_TSS
 
-    case CCopasiTask::sens:
-      pTask = new CSensTask(mpTaskList);
-      break;
+      case CCopasiTask::sens:
+        pTask = new CSensTask(mpTaskList);
+        break;
 
 #ifdef COPASI_TSSA
-    case CCopasiTask::tssAnalysis:
-      pTask = new CTSSATask(mpTaskList);
-      break;
+      case CCopasiTask::tssAnalysis:
+        pTask = new CTSSATask(mpTaskList);
+        break;
 #endif // COPASI_TSSA
 
-    case CCopasiTask::moieties:
-      pTask = new CMoietiesTask(taskType, mpTaskList);
-      break;
+      case CCopasiTask::moieties:
+        pTask = new CMoietiesTask(taskType, mpTaskList);
+        break;
 
-    default:
-      return pTask;
+      default:
+        return pTask;
     }
 
   pTask->getProblem()->setModel(mpModel);
@@ -883,6 +920,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 bool CCopasiDataModel::addDefaultTasks()
 {
   unsigned C_INT32 i;
+
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
       addTask((CCopasiTask::Type) i);
@@ -896,9 +934,11 @@ std::set<std::string> CCopasiDataModel::listTaskDependentOnReport(const std::str
 
   CReportDefinition * pReportDefinition
   = dynamic_cast< CReportDefinition * >(GlobalKeys.get(key));
+
   if (!pReportDefinition) return TaskKeys;
 
   unsigned C_INT32 i, imax = mpTaskList->size();
+
   for (i = 0; i < imax; i++)
     if (pReportDefinition == (*mpTaskList)[i]->getReport().getReportDefinition())
       TaskKeys.insert((*mpTaskList)[i]->getKey());
@@ -912,161 +952,161 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
   switch (taskType)
     {
-    case CCopasiTask::steadyState:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
-      break;
+      case CCopasiTask::steadyState:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
+        break;
 
-    case CCopasiTask::timeCourse:
-      // No default report available.
-      break;
+      case CCopasiTask::timeCourse:
+        // No default report available.
+        break;
 
-    case CCopasiTask::scan:
-      // No default report available.
-      break;
+      case CCopasiTask::scan:
+        // No default report available.
+        break;
 
-    case CCopasiTask::fluxMode:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"));
-      break;
+      case CCopasiTask::fluxMode:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"));
+        break;
 
-    case CCopasiTask::optimization:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setTitle(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
+      case CCopasiTask::optimization:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
 
-      // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
-      // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters"));
+        // Body
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters"));
 
-      // Footer
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
-      break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
+        break;
 
-      //**************************************************************************
-    case CCopasiTask::parameterFitting:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setTitle(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
+        //**************************************************************************
+      case CCopasiTask::parameterFitting:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
 
-      // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
-      // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
+        // Body
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+        pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
 
-      // Footer
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
-      break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
+        break;
 
-      //**************************************************************************
-    case CCopasiTask::lyap:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setTitle(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
+        //**************************************************************************
+      case CCopasiTask::lyap:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
 
-      // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
 
-      // Footer
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
-      break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
+        break;
 
-      //**************************************************************************
-    case CCopasiTask::mca:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setTitle(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
+        //**************************************************************************
+      case CCopasiTask::mca:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
 
-      // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"));
 
-      // Footer
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
-      break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
+        break;
 
-      //**************************************************************************
-    case CCopasiTask::sens:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setTitle(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
+        //**************************************************************************
+      case CCopasiTask::sens:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
 
-      // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Description"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Description"));
 
-      // Footer
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
-      break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
+        break;
 
-      //**************************************************************************
+        //**************************************************************************
 #ifdef COPASI_TSSA
-    case CCopasiTask::tssAnalysis:
-      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
-      pReport->setTaskType(taskType);
-      pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(false);
-      pReport->setTitle(false);
-      pReport->setSeparator(CCopasiReportSeparator("\t"));
+      case CCopasiTask::tssAnalysis:
+        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator(CCopasiReportSeparator("\t"));
 
-      // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description"));
 
-      // Footer
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
-      break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
+        break;
 #endif //COPASI_TSSA
 
-    default:
-      return pReport;
+      default:
+        return pReport;
     }
 
   if (pReport) mpReportDefinitionList->add(pReport, true);
@@ -1077,6 +1117,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 bool CCopasiDataModel::addDefaultReports()
 {
   unsigned C_INT32 i;
+
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     {
       //try to create the report if it doesn't exist
@@ -1087,11 +1128,13 @@ bool CCopasiDataModel::addDefaultReports()
 
       //see if the report exists now
       CReportDefinition* pReportDef = NULL;
+
       if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
         pReportDef = (*mpReportDefinitionList)[CCopasiTask::TypeName[i]];
 
       //see if the task exists
       CCopasiTask* pTask = NULL;
+
       if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
         pTask = (*mpTaskList)[CCopasiTask::TypeName[i]];
 
@@ -1107,6 +1150,7 @@ bool CCopasiDataModel::addDefaultReports()
           //even if a report is already set?
         }
     }
+
   return true;
 }
 
@@ -1132,10 +1176,10 @@ CVersion * CCopasiDataModel::getVersion()
 {return mpVersion;}
 
 const std::string & CCopasiDataModel::getFileName() const
-  {return mSaveFileName;}
+{return mSaveFileName;}
 
 bool CCopasiDataModel::isChanged() const
-  {return mChanged;}
+{return mChanged;}
 
 void CCopasiDataModel::changed(const bool & changed)
 {
@@ -1171,7 +1215,8 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
 {
   CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
   unsigned int i, iMax = pFunDB->loadedFunctions().size();
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       pFunDB->loadedFunctions()[i]->setSBMLId("");
     }
@@ -1211,6 +1256,7 @@ bool CCopasiDataModel::removeLayout(const std::string & key)
   //Check if Layout with that name exists
   unsigned C_INT32 index =
     mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
+
   if (index == C_INVALID_INDEX)
     return false;
 
