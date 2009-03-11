@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.188.2.3.4.2 $
+//   $Revision: 1.188.2.3.4.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/10 16:24:13 $
+//   $Author: ssahle $
+//   $Date: 2009/03/11 14:25:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -6483,9 +6483,10 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
 
           CLMetabGlyph * pMetabGlyph = dynamic_cast< CLMetabGlyph * >(mCommon.KeyMap.get(metaboliteGlyph));
 
-          if (!pMetabGlyph) fatalError();
+          //if (!pMetabGlyph) fatalError();
 
-          mCommon.pMetaboliteReferenceGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          if (pMetabGlyph)
+            mCommon.pMetaboliteReferenceGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
 
           //interpret role string
           C_INT32 i;
