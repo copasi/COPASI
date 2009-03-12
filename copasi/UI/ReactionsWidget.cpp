@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.100.10.2 $
+//   $Revision: 1.100.10.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/10 14:25:16 $
+//   $Date: 2009/03/12 13:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,16 +44,17 @@
 #define COL_PARTICLE_FLUX      5
 
 std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
-  {
-    CCopasiVectorN<CReaction>& tmp = CCopasiDataModel::Global->getModel()->getReactions();
-    std::vector<const CCopasiObject*> ret;
+{
+  CCopasiVectorN<CReaction>& tmp = CCopasiDataModel::Global->getModel()->getReactions();
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+  C_INT32 i, imax = tmp.size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back(tmp[i]);
+
+  return ret;
+}
 
 void ReactionsWidget::init()
 {
@@ -77,9 +78,9 @@ void ReactionsWidget::init()
   //table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function names
-  table->setColumnReadOnly (COL_RATE_LAW, true);
-  table->setColumnReadOnly (COL_FLUX, true);
-  table->setColumnReadOnly (COL_PARTICLE_FLUX, true);
+  table->setColumnReadOnly(COL_RATE_LAW, true);
+  table->setColumnReadOnly(COL_FLUX, true);
+  table->setColumnReadOnly(COL_PARTICLE_FLUX, true);
 
   setFramework(mFramework);
 }
@@ -106,9 +107,11 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+
   std::string objKey = obj->getKey();
 
   CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL) return;
 
   // this loads the reaction into a CReactionInterface object.
@@ -117,6 +120,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   ri.initFromReaction(objKey);
 
   QString equation(table->text(row, COL_EQUATION));
+
   if ((const char *)equation.utf8() != ri.getChemEqString())
     {
       //first check if the string is a valid equation
@@ -136,6 +140,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   // If that is the case the user must have option to cancel the changes or remove the
   // affected expressions.
   std::set< const CCopasiObject * > DeletedParameters = ri.getDeletedParameters();
+
   if (DeletedParameters.size() != 0)
     {
       QString parameterList = "Are you sure you want to delete listed PARAMETERS of reaction " + table->text(row, 1) + "?\n";
@@ -171,6 +176,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
             {
               reacFound = true;
               std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
               for (it = Reactions.begin(); it != itEnd; ++it)
                 {
                   affectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -187,6 +193,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
             {
               metabFound = true;
               std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
               for (it = Metabolites.begin(); it != itEnd; ++it)
                 {
                   affectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -203,6 +210,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
             {
               valueFound = true;
               std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
               for (it = Values.begin(); it != itEnd; ++it)
                 {
                   affectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -219,6 +227,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
             {
               compartmentFound = true;
               std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
               for (it = Compartments.begin(); it != itEnd; ++it)
                 {
                   affectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -261,7 +270,8 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
         }
 
       C_INT32 choice = 0;
-      if (metabFound || reacFound || valueFound || valueFound)
+
+      if (metabFound || reacFound || valueFound || compartmentFound)
         choice = CQMessageBox::question(this,
                                         "CONFIRM DELETE",
                                         msg,
@@ -269,22 +279,25 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
 
       switch (choice)
         {
-          // Yes or Enter
-        case 0:
-          for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
-            pModel->removeLocalReactionParameter((*itParameter)->getKey());
-          break;
+            // Yes or Enter
+          case 0:
 
-          // No or Escape
-        default:
-          return;
-          break;
+            for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+              pModel->removeLocalReactionParameter((*itParameter)->getKey());
+
+            break;
+
+            // No or Escape
+          default:
+            return;
+            break;
         }
     }
 
   // We need to check whether the current reaction still exists, since it is possible that
   // removing a local reaction parameter triggers its deletion.
   CReaction * reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+
   if (reac == NULL)
     {
       ri.setFunctionWithEmptyMapping("");
@@ -297,6 +310,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   bool createdObjects = ri.createOtherObjects();
   //this writes all changes to the reaction
   ri.writeBackToReaction(NULL);
+
   //CCopasiDataModel::Global->getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdObjects)
@@ -304,6 +318,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   else
     {
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+
       protectedNotify(ListViews::REACTION, ListViews::CHANGE, "");
     }
 }
@@ -321,27 +336,30 @@ void ReactionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_I
 }
 
 QString ReactionsWidget::defaultObjectName() const
-  {
-    return "reaction";
-  }
+{
+  return "reaction";
+}
 
 CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
   CReaction* pRea;
+
   while (!(pRea = CCopasiDataModel::Global->getModel()->createReaction(nname)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
+
   return pRea;
 }
 
 void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL)
     return;
 
@@ -360,6 +378,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
   bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
+
   for (i = 0; i < imax; i++) //all compartments
     {
       CReaction * pReaction =
@@ -380,6 +399,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           reacFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
           for (it = Reactions.begin(); it != itEnd; ++it)
             {
               effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -396,6 +416,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           metabFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
           for (it = Metabolites.begin(); it != itEnd; ++it)
             {
               effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -412,6 +433,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           valueFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
           for (it = Values.begin(); it != itEnd; ++it)
             {
               effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -428,6 +450,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           compartmentFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
           for (it = Compartments.begin(); it != itEnd; ++it)
             {
               effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -470,7 +493,8 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -478,7 +502,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                           // Yes or Enter
+      case 0:                                           // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -491,8 +515,8 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         mChanged = true;
         break;
       }
-    default:                                           // No or Escape
-      break;
+      default:                                           // No or Escape
+        break;
     }
 }
 
@@ -502,32 +526,37 @@ void ReactionsWidget::setFramework(int framework)
 
   switch (mFramework)
     {
-    case 0:
-      table->showColumn(COL_FLUX);
-      table->hideColumn(COL_PARTICLE_FLUX);
-      break;
+      case 0:
+        table->showColumn(COL_FLUX);
+        table->hideColumn(COL_PARTICLE_FLUX);
+        break;
 
-    case 1:
-      table->hideColumn(COL_FLUX);
-      table->showColumn(COL_PARTICLE_FLUX);
-      break;
+      case 1:
+        table->hideColumn(COL_FLUX);
+        table->showColumn(COL_PARTICLE_FLUX);
+        break;
     }
 }
 
 void ReactionsWidget::updateHeaderUnits()
 {
   const CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL) return;
 
   QString RateUnits;
+
   if (pModel)
     RateUnits = FROM_UTF8(pModel->getQuantityRateUnits());
+
   if (!RateUnits.isEmpty())
     RateUnits = "\n(" + RateUnits + ")";
 
   QString FrequencyUnits;
+
   if (pModel)
     FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnits());
+
   if (!FrequencyUnits.isEmpty())
     FrequencyUnits = "\n(" + FrequencyUnits + ")";
 

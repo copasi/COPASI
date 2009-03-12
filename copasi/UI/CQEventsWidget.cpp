@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.7.4.1 $
+//   $Revision: 1.7.4.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/17 19:08:16 $
+//   $Date: 2009/03/12 13:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,16 +32,17 @@
 #define COL_ASSIGNEXPRESSION 5
 
 std::vector<const CCopasiObject*> CQEventsWidget::getObjects() const
-  {
-    CCopasiVectorN<CEvent>& tmp = CCopasiDataModel::Global->getModel()->getEvents();
-    std::vector<const CCopasiObject*> ret;
+{
+  CCopasiVectorN<CEvent>& tmp = CCopasiDataModel::Global->getModel()->getEvents();
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+  C_INT32 i, imax = tmp.size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back(tmp[i]);
+
+  return ret;
+}
 
 void CQEventsWidget::init()
 {
@@ -86,6 +87,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   QString assignmentExpression = "";
 
   unsigned C_INT32 i;
+
   for (i = 0; i < pEv->getNumAssignments(); i++)
     {
       //    assignmentTarget += FROM_UTF8(pEv->getAssignmentObjectKey(i));
@@ -110,7 +112,9 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
           // std::cout << "sObjectName = " << sObjectName << std::endl;
           assignmentTarget += "ERROR";
         }
+
       assignmentExpression += FROM_UTF8(pEv->getAssignmentExpressionStr(i));
+
       if (i != pEv->getNumAssignments() - 1) // not the last object
         {
           assignmentTarget += "\n";
@@ -148,21 +152,23 @@ void CQEventsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_IN
 }
 
 QString CQEventsWidget::defaultObjectName() const
-  {
-    return "event";
-  }
+{
+  return "event";
+}
 
 CCopasiObject* CQEventsWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
   CEvent* pEv;
+
   while (!(pEv = CCopasiDataModel::Global->getModel()->createEvent(nname)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
+
   //std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
   return pEv;
 }
@@ -170,6 +176,7 @@ CCopasiObject* CQEventsWidget::createNewObject(const std::string & name)
 void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL)
     return;
 
@@ -177,6 +184,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
     return;
 
   unsigned C_INT32 i, imax = keys.size();
+
   for (i = 0; i < imax; i++)
     {
       CCopasiDataModel::Global->getModel()->removeEvent(keys[i]);
@@ -309,7 +317,7 @@ void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
       }
 
     C_INT32 choice = 0;
-    if (metabFound || reacFound || valueFound || valueFound)
+    if (metabFound || reacFound || valueFound || compartmentFound)
       choice = CQMessageBox::question(this,
                                       "CONFIRM DELETE",
                                       msg,

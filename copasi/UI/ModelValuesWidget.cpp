@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.23.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/10 20:40:09 $
+//   $Date: 2009/03/12 13:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,26 +43,27 @@
 #define COL_EXPRESSION 7
 
 std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
-  {
-    CCopasiVectorN<CModelValue>& tmp = CCopasiDataModel::Global->getModel()->getModelValues();
-    std::vector<const CCopasiObject*> ret;
+{
+  CCopasiVectorN<CModelValue>& tmp = CCopasiDataModel::Global->getModel()->getModelValues();
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+  C_INT32 i, imax = tmp.size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back(tmp[i]);
+
+  return ret;
+}
 
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
   numCols = 8; // + 1;
   table->setNumCols(numCols);
-  table->setColumnReadOnly (COL_TRANSIENT, true);
-  table->setColumnReadOnly (COL_RATE, true);
-  table->setColumnReadOnly (COL_IEXPRESSION, true);
-  table->setColumnReadOnly (COL_EXPRESSION, true);
+  table->setColumnReadOnly(COL_TRANSIENT, true);
+  table->setColumnReadOnly(COL_RATE, true);
+  table->setColumnReadOnly(COL_IEXPRESSION, true);
+  table->setColumnReadOnly(COL_EXPRESSION, true);
 
   //table->QTable::setNumRows(1);
 
@@ -96,6 +97,7 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   if (!obj) return;
 
   const CModelValue* pMV = dynamic_cast<const CModelValue*>(obj);
+
   if (!pMV) return;
 
   // Name
@@ -123,9 +125,11 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   // Expression
   const CExpression * pExpression = NULL;
+
   if (pMV->getInitialExpression() != "")
     {
       pExpression = pMV->getInitialExpressionPtr();
+
       if (pExpression != NULL)
         table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
       else
@@ -134,6 +138,7 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   // Expression
   pExpression = pMV->getExpressionPtr();
+
   if (pExpression != NULL)
     table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
@@ -143,10 +148,13 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+
   CModelValue* pMV = dynamic_cast<CModelValue*>(obj);
+
   if (!pMV) return;
 
   CModelEntity::Status OldStatus = pMV->getStatus();
+
   if (dynamic_cast<QComboTableItem *>(table->item(row, COL_TYPE)))
     pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
 
@@ -178,27 +186,30 @@ void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
 }
 
 QString ModelValuesWidget::defaultObjectName() const
-  {
-    return "quantity";
-  }
+{
+  return "quantity";
+}
 
 CCopasiObject* ModelValuesWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
   CModelValue* pMV;
+
   while (!(pMV = CCopasiDataModel::Global->getModel()->createModelValue(nname)))
     {
       i++;
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
+
   return pMV;
 }
 
 void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL)
     return;
 
@@ -217,6 +228,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
   bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
+
   for (i = 0; i < imax; i++) //all compartments
     {
       CModelValue * pValue =
@@ -237,6 +249,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           reacFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
           for (it = Reactions.begin(); it != itEnd; ++it)
             {
               effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -253,6 +266,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           metabFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
           for (it = Metabolites.begin(); it != itEnd; ++it)
             {
               effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -269,6 +283,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           valueFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
           for (it = Values.begin(); it != itEnd; ++it)
             {
               effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -285,6 +300,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           compartmentFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
           for (it = Compartments.begin(); it != itEnd; ++it)
             {
               effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -327,7 +343,8 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::warning(this,
                                    "CONFIRM DELETE",
                                    msg,
@@ -335,7 +352,7 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                     // Yes or Enter
+      case 0:                     // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -344,14 +361,15 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
 
         for (i = 0; i < imax; i++)
           protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, keys[i]);
+
         //TODO notify about metabs and reactions
 
         mChanged = true;
         break;
       }
 
-    default:                     // No or Escape
-      break;
+      default:                     // No or Escape
+        break;
     }
 }
 
@@ -359,15 +377,18 @@ void ModelValuesWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
 {
   switch (col)
     {
-    case COL_TYPE:
-      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
-        table->item(row, COL_INITIAL)->setEnabled(false);
-      else
-        table->item(row, COL_INITIAL)->setEnabled(true);
-      break;
+      case COL_TYPE:
 
-    default:
-      break;
+        if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+          table->item(row, COL_INITIAL)->setEnabled(false);
+        else
+          table->item(row, COL_INITIAL)->setEnabled(true);
+
+        break;
+
+      default:
+        break;
     }
+
   return;
 }

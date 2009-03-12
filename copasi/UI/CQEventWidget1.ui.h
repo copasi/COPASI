@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.14.4.3.4.1 $
+//   $Revision: 1.14.4.3.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Date: 2009/03/12 13:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,8 +56,10 @@ void CQEventWidget1::slotBtnCommitClicked()
 void CQEventWidget1::slotBtnDeleteClicked()
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL)
     return;
+
   /*
     CEvent * pEvent = dynamic_cast< CEvent * >(GlobalKeys.get(mEventKey));
     if (pEvent == NULL) return;
@@ -88,6 +90,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
     {
       reacFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
           effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -104,6 +107,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
     {
       metabFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
           effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -120,6 +124,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
           effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -136,6 +141,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
           effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -177,7 +183,8 @@ void CQEventWidget1::slotBtnDeleteClicked()
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -185,7 +192,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                                     // Yes or Enter
+      case 0:                                                     // Yes or Enter
       {
         unsigned C_INT32 index
         = static_cast<CCopasiVector< CEvent > *>(&CCopasiDataModel::Global->getModel()->getEvents())->getIndex(GlobalKeys.get(mEventKey));
@@ -205,8 +212,8 @@ void CQEventWidget1::slotBtnDeleteClicked()
         protectedNotify(ListViews::EVENT, ListViews::DELETE, mEventKey);
         break;
       }
-    default:                                                     // No or Escape
-      break;
+      default:                                                     // No or Escape
+        break;
     }
 }
 
@@ -224,6 +231,7 @@ void CQEventWidget1::slotBtnNewClicked()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 0;
+
   while (!CCopasiDataModel::Global->getModel()->createEvent(name))
     {
       i++;
@@ -231,6 +239,7 @@ void CQEventWidget1::slotBtnNewClicked()
       name += (const char *) QString::number(i).utf8();
       // std::cout << "NAME = " << name << std::endl;
     }
+
   protectedNotify(ListViews::EVENT, ListViews::ADD);
   enter(CCopasiDataModel::Global->getModel()->getEvents()[name]->getKey());
 }
@@ -427,6 +436,7 @@ void CQEventWidget1::slotDeleteTarget()
       bool containNoObject = false;
 
       unsigned int idxTarget = 0;
+
       for (; idxTarget < mpLBTarget->count(); idxTarget++)
         {
           if (mpLBTarget->text(idxTarget).contains("No Object"))
@@ -527,10 +537,12 @@ bool CQEventWidget1::loadFromEvent()
 
   // *** Expression of Trigger
   std::string expr;
+
   if (mpEvent->getTriggerExpressionPtr() != NULL)
     {
       expr = mpEvent->getTriggerExpressionPtr()->getInfix();
     }
+
   mpExpressionTrigger->mpExpressionWidget->setExpression(expr);
 
   // std::cout << "EXP of Trigger: " << expr << std::endl;
@@ -542,6 +554,7 @@ bool CQEventWidget1::loadFromEvent()
 
   // *** Expression of Delay
   expr = "";
+
   if (mpEvent->getDelayExpressionPtr() != NULL)
     {
       expr = mpEvent->getDelayExpressionPtr()->getInfix();
@@ -587,6 +600,7 @@ bool CQEventWidget1::loadFromEvent()
 
   mObjectKeyDisplayName.resize(0);
   int ijk = 0;
+
   for (it = currentAssignment.begin(); it != currentAssignment.end(); ++it, ijk++)
     {
       QStringList sKeyDisplay = QStringList::split("_", FROM_UTF8(it->first));
@@ -601,11 +615,13 @@ bool CQEventWidget1::loadFromEvent()
           sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName() + ".Volume");
           // std::cout << "Compartments: " << sName << std::endl;
         }
+
       if (sObjectName == "Metabolite")
         {
           sName = FROM_UTF8("[" + GlobalKeys.get(it->first)->getObjectDisplayName() + "]");
           // std::cout << "Metabolites: " << sName << std::endl;
         }
+
       if (sObjectName.contains("ModelValue"))
         {
           sName = FROM_UTF8(GlobalKeys.get(it->first)->getObjectDisplayName());
@@ -627,6 +643,7 @@ bool CQEventWidget1::loadFromEvent()
   mpLBTarget->clear();
 
   unsigned C_INT32 idx = 0;
+
   for (it = currentAssignment.begin(); it != currentAssignment.end(); ++it)
     {
       mpLBTarget->insertItem(FROM_UTF8("<" + mObjectKeyDisplayName[idx].second + ">")); // the list box
@@ -709,10 +726,12 @@ void CQEventWidget1::saveToEvent()
   // set expression of Trigger
   // std::cout << "Expression Trigger: " << mpExpressionTrigger->mpExpressionWidget->getExpression() << std::endl;
   std::string expr;
+
   if (mpEvent->getTriggerExpressionPtr() != NULL)
     {
       expr = mpEvent->getTriggerExpressionPtr()->getInfix();
     }
+
   if (expr != mpExpressionTrigger->mpExpressionWidget->getExpression())
     {
       CExpression* pNewExpression = dynamic_cast<CExpression*>(CEvaluationTree::create(CEvaluationTree::Boolean));
@@ -729,10 +748,12 @@ void CQEventWidget1::saveToEvent()
 
   // std::cout << "Expression Delay: " << (mpExpressionDelay->mpExpressionWidget->getExpression()) << std::endl;
   expr = "";
+
   if (mpEvent->getDelayExpressionPtr() != NULL)
     {
       expr = mpEvent->getDelayExpressionPtr()->getInfix();
     }
+
   if (expr != mpExpressionDelay->mpExpressionWidget->getExpression())
     {
       CExpression* pNewExpression = new CExpression;
@@ -793,6 +814,7 @@ void CQEventWidget1::saveToEvent()
   // std::cout << "Mod position: " << modPosition << " - expression: " << modExpression << std::endl;
 
   int i;
+
   for (i = 0; i < (int) mpLBTarget->count(); i++)
     {
       if (i == newPosition)
@@ -947,6 +969,7 @@ void CQEventWidget1::slotSelectObject()
 
       // We need to escape >
       std::string::size_type pos = Insert.find_first_of("\\>");
+
       while (pos != std::string::npos)
         {
           Insert.insert(pos, "\\");
@@ -962,6 +985,7 @@ void CQEventWidget1::slotSelectObject()
       // check duplicate -> as single event cannot have multiple EventAssignment !!!
       //      bool duplicate = false;
       unsigned int i;
+
       for (i = 0; i < mpLBTarget->count(); i++)
         {
           if (mpLBTarget->text(i) == newText)
@@ -991,6 +1015,7 @@ void CQEventWidget1::slotSelectObject()
 
       // as index starts from 0
       unsigned int index = mpLBTarget->currentItem();
+
       if (index + 1 > mObjectKeyDisplayName.size()) // new assignment target
         mObjectKeyDisplayName.push_back(std::make_pair(mAssignmentKey, Insert));
       else // target name is changed
@@ -1010,6 +1035,7 @@ void CQEventWidget1::slotSelectObject()
       // in case user replace other object target instead of one with 'No Object' text, which remains still.
       bool containNoObject = false;
       unsigned int j;
+
       for (j = 0; j < mpLBTarget->count(); j++)
         {
           if (mpLBTarget->text(j).contains("No Object"))
@@ -1229,9 +1255,11 @@ void CQEventWidget1::slotApplyDelay(bool display)
 std::string CQEventWidget1::getAssignmentKeyFromDisplayName(const std::string displayName)
 {
   std::vector<std::pair<std::string, std::string> >::iterator itA = mObjectKeyDisplayName.begin();
+
   for (; itA != mObjectKeyDisplayName.end(); ++itA)
     {
       if (displayName == itA->second) {return itA->first;}
     }
+
   return "";
 }

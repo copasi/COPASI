@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.28.6.1.4.1 $
+//   $Revision: 1.28.6.1.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Date: 2009/03/12 13:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,6 +62,7 @@ void CQModelValue::slotBtnNew()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 0;
+
   while (!(mpModelValue = CCopasiDataModel::Global->getModel()->createModelValue(name)))
     {
       i++;
@@ -76,8 +77,10 @@ void CQModelValue::slotBtnNew()
 void CQModelValue::slotBtnDelete()
 {
   CModel * pModel = CCopasiDataModel::Global->getModel();
+
   if (pModel == NULL)
     return;
+
   /*
   std::set< const CCopasiObject * > DeletedObjects;
   unsigned C_INT32 NumberDeleted = 0;
@@ -109,6 +112,7 @@ void CQModelValue::slotBtnDelete()
     {
       reacFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
           effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -125,6 +129,7 @@ void CQModelValue::slotBtnDelete()
     {
       metabFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
           effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -141,6 +146,7 @@ void CQModelValue::slotBtnDelete()
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
           effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -157,6 +163,7 @@ void CQModelValue::slotBtnDelete()
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
           effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -198,7 +205,8 @@ void CQModelValue::slotBtnDelete()
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -206,7 +214,7 @@ void CQModelValue::slotBtnDelete()
 
   switch (choice)
     {
-    case 0:  // Yes or Enter
+      case 0:  // Yes or Enter
       {
         unsigned C_INT32 index =
           static_cast<CCopasiVector< CModelValue > *>(&CCopasiDataModel::Global->getModel()->getModelValues())->getIndex(GlobalKeys.get(mKey));
@@ -227,8 +235,8 @@ void CQModelValue::slotBtnDelete()
         break;
       }
 
-    default:  // No or Escape
-      break;
+      default:  // No or Escape
+        break;
     }
 }
 
@@ -240,58 +248,58 @@ void CQModelValue::slotTypeChanged(int type)
 {
   switch ((CModelEntity::Status) mItemToType[type])
     {
-    case CModelEntity::FIXED:
-      // remove expression layout from GUI screen
-      CQModelValueLayout->remove(mpLblExpression);
+      case CModelEntity::FIXED:
+        // remove expression layout from GUI screen
+        CQModelValueLayout->remove(mpLblExpression);
 
-      // hide label, widget, and all buttons
-      mpLblExpression->hide();
-      mpExpressionEMW->hide();
+        // hide label, widget, and all buttons
+        mpLblExpression->hide();
+        mpExpressionEMW->hide();
 
-      // enable the option of use Initial Expression
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        // enable the option of use Initial Expression
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
-      // we don't need to update the expression widget as it is already hidden
+        // we don't need to update the expression widget as it is already hidden
 
-      break;
+        break;
 
-    case CModelEntity::ASSIGNMENT:
-      // add expression layout
-      CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
+      case CModelEntity::ASSIGNMENT:
+        // add expression layout
+        CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
 
-      // show label, widget, and correct buttons
-      mpLblExpression->show();   // show the label
-      mpExpressionEMW->show();  // show the widget
+        // show label, widget, and correct buttons
+        mpLblExpression->show();   // show the label
+        mpExpressionEMW->show();  // show the widget
 
-      // disable the option of use Initial Expression
-      mpBoxUseInitialExpression->setEnabled(false);
-      slotInitialTypeChanged(false);
+        // disable the option of use Initial Expression
+        mpBoxUseInitialExpression->setEnabled(false);
+        slotInitialTypeChanged(false);
 
-      // update the expression widget
-      mpExpressionEMW->updateWidget();
+        // update the expression widget
+        mpExpressionEMW->updateWidget();
 
-      break;
+        break;
 
-    case CModelEntity::ODE:
-      // add expression layout
-      CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
+      case CModelEntity::ODE:
+        // add expression layout
+        CQModelValueLayout->addWidget(mpLblExpression, 2, 0);
 
-      // show label, widget, and correct buttons
-      mpLblExpression->show();   // show the label
-      mpExpressionEMW->show();  // show the widget
+        // show label, widget, and correct buttons
+        mpLblExpression->show();   // show the label
+        mpExpressionEMW->show();  // show the widget
 
-      // enable the option of use Initial Expression
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        // enable the option of use Initial Expression
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
-      // update the expression widget
-      mpExpressionEMW->updateWidget();
+        // update the expression widget
+        mpExpressionEMW->updateWidget();
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
 }
 
