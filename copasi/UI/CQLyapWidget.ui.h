@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQLyapWidget.ui.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.18.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/11/01 17:51:00 $
+//   $Author: ssahle $
+//   $Date: 2009/03/12 14:58:08 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +32,7 @@
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
 #include "UI/CProgressBar.h"
+#include "UI/CQValidator.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "lyap/CLyapTask.h"
@@ -39,6 +45,7 @@ bool CQLyapWidget::runTask()
 {
   CLyapTask * pTask =
     dynamic_cast< CLyapTask * >(GlobalKeys.get(mObjectKey));
+
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
@@ -59,6 +66,7 @@ CCopasiMethod * CQLyapWidget::createMethod(const CCopasiMethod::SubType & type)
 bool CQLyapWidget::loadTask()
 {
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
+
   if (!pTask) return false;
 
   loadCommon();
@@ -66,9 +74,10 @@ bool CQLyapWidget::loadTask()
 
   CLyapProblem* pProblem =
     dynamic_cast< CLyapProblem * >(mpTask->getProblem());
+
   if (!pProblem) return false;
 
-  mpEditExponent->setText(QString::number(std::max<unsigned C_INT32>(1, pProblem->getExponentNumber())));
+  mpEditExponent->setText(QString::number(pProblem->getExponentNumber()));
 
   bool enabled =
     (CCopasiDataModel::Global->getModel()->getInitialTime() != pProblem->getTransientTime());
@@ -87,6 +96,7 @@ bool CQLyapWidget::loadTask()
 bool CQLyapWidget::saveTask()
 {
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
+
   if (!pTask) return false;
 
   saveCommon();
@@ -94,11 +104,12 @@ bool CQLyapWidget::saveTask()
 
   CLyapProblem* pProblem =
     dynamic_cast< CLyapProblem * >(mpTask->getProblem());
+
   if (!pProblem) return false;
 
   if (QString::number(pProblem->getExponentNumber()) != mpEditExponent->text())
     {
-      pProblem->setExponentNumber(std::max(1, mpEditExponent->text().toInt()));
+      pProblem->setExponentNumber(std::max(0, mpEditExponent->text().toInt()));
       mChanged = true;
     }
 
@@ -135,6 +146,10 @@ void CQLyapWidget::init()
 
   CQLyapWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQLyapWidgetLayout->addWidget(mpBtnWidget);
+
+  CQValidatorInt* tmpval = new CQValidatorInt(mpEditExponent);
+  tmpval->setRange(0, LONG_MAX);
+  mpEditExponent->setValidator(tmpval);
 
   //  addMethodSelectionBox(CLyapTask::ValidMethods);
   addMethodParameterTable(0, 2);
