@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.14.6.1.4.1 $
+//   $Revision: 1.14.6.1.4.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/03/12 15:06:10 $
+//   $Date: 2009/03/12 16:20:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,6 @@ void CLyapWolfMethod::initializeParameter()
   assertParameter("Orthonormalization Interval", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   assertParameter("Overall time", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
   assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  //assertParameter("Use Default Absolute Tolerance", CCopasiParameter::BOOL, (bool) true);
   assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
   assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
   assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
@@ -173,30 +172,34 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mData.dim << std::endl;
 
+  //reserve space for exponents. The vectors in the task are resized by the task because they
+  //need to have a minimum size defined in the task
+  //pTask->mLocalExponents.resize(mNumExp);
+  mSumExponents.resize(mNumExp);
+  mNorms.resize(mNumExp);
+  //pTask->mExponents.resize(mNumExp);
+
   //initialize the vector on which lsoda will work
   mVariables.resize(mData.dim);
   memcpy(mVariables.array(), mpState->beginIndependent(), mSystemSize * sizeof(C_FLOAT64));
 
-  //generate base vectors; first fill the array with 0
+  //generate base vectors. Just define some arbitrary starting vectors that are not too specific and orthonormalize
+  // first fill the array with 0.1
   C_FLOAT64 *dbl, *dblEnd = mVariables.array() + mData.dim;
 
   for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
-    *dbl = 0.0;
+    *dbl = 0.01;
 
   //now add 1.0
   if (mNumExp > 0)
     for (dbl = mVariables.array() + mSystemSize; dbl < dblEnd; dbl += (mSystemSize + 1))
       * dbl = 1.0;
 
+  orthonormalize();
+
   //reserve space for jacobian
   mJacobian.resize(mSystemSize, mSystemSize);
 
-  //reserve space for exponents. The vectors in the task are resized by the task because they
-  //need to have a minimum size.
-  //pTask->mLocalExponents.resize(mNumExp);
-  mSumExponents.resize(mNumExp);
-  mNorms.resize(mNumExp);
-  //pTask->mExponents.resize(mNumExp);
   unsigned C_INT32 i, imax = mNumExp;
 
   for (i = 0; i < imax; ++i)
@@ -216,15 +219,13 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
   CVector< C_FLOAT64 > tmpAtol = mpProblem->getModel()->initializeAtolVector(*pTolerance, mReducedModel);
 
-//  mAtol = mpProblem->getModel()->initializeAtolVector(*pTolerance, mReducedModel);
-
   mAtol.resize(mData.dim);
 
   for (i = 0; i < mSystemSize; ++i)
     mAtol[i] = tmpAtol[i];
 
   for (i = mSystemSize; (int)i < mData.dim; ++i)
-    mAtol[i] = 1e-25;
+    mAtol[i] = 1e-20;
 
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
@@ -234,8 +235,6 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mIWork[5] = * getValue("Max Internal Steps").pUINT;
   mIWork[7] = * getValue("Adams Max Order").pUINT;
   mIWork[8] = * getValue("BDF Max Order").pUINT;
-
-  //orthonormalize();
 
   return;
 }
@@ -391,7 +390,7 @@ bool CLyapWolfMethod::calculate()
   memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
   mpState->setTime(mTime);
 
-  //copy state to model
+  //copy state to model and do output
   mpProblem->getModel()->setState(*mpState);
   mpProblem->getModel()->updateSimulatedValues(mReducedModel);
   mpTask->methodCallback((mTime - startTime) * handlerFactor, false);
@@ -440,7 +439,7 @@ bool CLyapWolfMethod::calculate()
       //copy working array to state
       memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
       mpState->setTime(mTime);
-      //copy state to model
+      //copy state to model and do output
       mpProblem->getModel()->setState(*mpState);
       mpProblem->getModel()->updateSimulatedValues(mReducedModel);
       flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor, false);
