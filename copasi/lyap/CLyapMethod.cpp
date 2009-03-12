@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.5.26.1 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2007/02/20 23:54:21 $
+//   $Date: 2009/03/12 15:06:10 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -51,13 +56,13 @@ CLyapMethod * CLyapMethod::createMethod(CCopasiMethod::SubType subType)
 
   switch (subType)
     {
-    case unset:
-    case lyapWolf:
-      pMethod = new CLyapWolfMethod();
-      break;
+      case unset:
+      case lyapWolf:
+        pMethod = new CLyapWolfMethod();
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   return pMethod;
@@ -111,8 +116,8 @@ void CLyapMethod::setProblem(CLyapProblem * problem)
  *  The return value is the actual timestep taken.
  *  @param "const double &" deltaT
  */
-void CLyapMethod::step(const double & C_UNUSED(deltaT))
-{return ;}
+double CLyapMethod::step(const double & C_UNUSED(deltaT))
+{return 0;}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -132,6 +137,7 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CLyapProblem * pLP = dynamic_cast<const CLyapProblem *>(pProblem);
+
   if (!pLP)
     {
       //not a LyapProblem
@@ -139,14 +145,14 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pLP->getExponentNumber() < 1)
+  if ((!pLP->divergenceRequested()) && (pLP->getExponentNumber() < 1))
     {
-      //to few exponents
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 2);
       return false;
     }
 
   unsigned C_INT32 tmp = pLP->getModel()->getState().getNumIndependent();
+
   if (pLP->getExponentNumber() > tmp)
     {
       //to few exponents

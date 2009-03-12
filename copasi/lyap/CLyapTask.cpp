@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.13.12.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/11 23:32:34 $
+//   $Author: ssahle $
+//   $Date: 2009/03/12 15:06:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,11 +80,15 @@ void CLyapTask::initObjects()
   unsigned C_INT32 i;
 
   mExponents.resize(LYAP_NUM_REF);
+
   for (i = 0; i < LYAP_NUM_REF; ++i) mExponents[i] = 0.0;
+
   mvExpRef.resize(LYAP_NUM_REF);
 
   mLocalExponents.resize(LYAP_NUM_REF);
+
   for (i = 0; i < LYAP_NUM_REF; ++i) mLocalExponents[i] = 0.0;
+
   mvLocExpRef.resize(LYAP_NUM_REF);
 
   addVectorReference("Exponents", mExponents, CCopasiObject::ValueDbl);
@@ -129,6 +133,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
   bool success = mpMethod->isValidProblem(mpProblem);
 
   unsigned C_INT32 nnn;
+
   if (mpLyapProblem->getExponentNumber() > LYAP_NUM_REF)
     nnn = mpLyapProblem->getExponentNumber();
   else
@@ -140,6 +145,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
   //update object references because the object may have been
   //moved by the resize above
   unsigned C_INT32 i;
+
   for (i = 0; i < LYAP_NUM_REF; ++i)
     {
       mvExpRef[i]->setReference(mExponents.array()[i]);
@@ -147,6 +153,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
     }
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+
   //mTimeSeriesRequested = mpLyapProblem->timeSeriesRequested();
 
   return success;
@@ -185,6 +192,7 @@ bool CLyapTask::process(const bool & useInitialValues)
       output(COutputInterface::DURING);
 
       if (mpCallBack) mpCallBack->finish(mhProcess);
+
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
@@ -226,9 +234,10 @@ bool CLyapTask::setMethodType(const int & type)
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
   if (!CLyapMethod::isValidSubType(Type)) return false;
+
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
   mpMethod =
     CLyapMethod::createMethod(Type);
   this->add(mpMethod, true);
@@ -243,35 +252,23 @@ void CLyapTask::output(const COutputInterface::Activity & activity)
 {
   if (mDoOutput != NO_OUTPUT)
     CCopasiDataModel::Global->output(activity);
-
-  /*if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
-    switch (activity)
-      {
-      case COutputInterface::BEFORE:
-        //TODO
-        mTimeSeries.init(mpLyapProblem->getStepNumber(), mpProblem->getModel());
-        break;
-
-      case COutputInterface::DURING:
-        mTimeSeries.add();
-        break;
-
-      case COutputInterface::AFTER:
-        mTimeSeries.finish();
-        break;
-      }*/
 }
 
-bool CLyapTask::methodCallback(const C_FLOAT64 & percentage)
+bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)
 {
-  calculationsBeforeOutput();
-  output(COutputInterface::DURING);
+  if (!onlyProgress)
+    {
+      calculationsBeforeOutput();
+      output(COutputInterface::DURING);
+    }
 
   mPercentage = percentage;
+
   if (mpCallBack)
     {
       return mpCallBack->progress(mhProcess);
     }
+
   return true;
 }
 
@@ -281,69 +278,58 @@ void CLyapTask::calculationsBeforeOutput()
   mSumOfLocalExponents = 0;
 
   C_INT32 i, imax = mpLyapProblem->getExponentNumber();
+
   for (i = 0; i < imax; ++i)
     {
       mSumOfExponents += mExponents[i];
       mSumOfLocalExponents += mLocalExponents[i];
     }
-
-  //calculate divergence
-  /*
-  CModel * pModel = mpLyapProblem->getModel();
-  CMatrix<C_FLOAT64> jacobian;
-  pModel->calculateElasticityMatrix(1e-6, 1e-12); //TODO configure parameters
-  pModel->calculateJacobianX(jacobian);
-  C_FLOAT64 sum = 0;
-  imax = jacobian.numRows();
-  for (i = 0; i < imax; ++i)
-    sum += jacobian(i, i);
-  //std::cout << sum << std::endl;
-  mDivergence = sum;
-  */
 }
 
 void CLyapTask::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
+{
+  std::ostream & os = *ostream;
 
-    //     CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
-    //     os << "    CPU Time [s]:\t"
-    //     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-    //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+  //     CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+  //     os << "    CPU Time [s]:\t"
+  //     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+  //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
 
-    os << "Lyapunov Exponents:" << std::endl;
+  os << "Lyapunov Exponents:" << std::endl;
 
-    if (!mpLyapProblem) //this means that task was not yet executed
-      {
-        os << "No results available." << std::endl;
-        return;
-      }
+  if (!mpLyapProblem) //this means that task was not yet executed
+    {
+      os << "No results available." << std::endl;
+      return;
+    }
 
-    unsigned C_INT32 i, imax = mpLyapProblem->getExponentNumber();
-    for (i = 0; i < imax; ++i)
-      os << mExponents[i] << " ";
-    os << std::endl;
+  unsigned C_INT32 i, imax = mpLyapProblem->getExponentNumber();
 
-    if (mpLyapProblem->divergenceRequested())
-      os << std::endl << "Average divergence: " << mAverageDivergence << std::endl;
-  }
+  for (i = 0; i < imax; ++i)
+    os << mExponents[i] << " ";
+
+  os << std::endl;
+
+  if (mpLyapProblem->divergenceRequested())
+    os << std::endl << "Average divergence: " << mAverageDivergence << std::endl;
+}
 
 bool CLyapTask::resultAvailable() const
-  {
-    return mResultAvailable;
-  }
+{
+  return mResultAvailable;
+}
 
 bool CLyapTask::resultHasDivergence() const
-  {
-    return mResultHasDivergence;
-  }
+{
+  return mResultHasDivergence;
+}
 
 unsigned C_INT32 CLyapTask::modelVariablesInResult() const
-  {
-    return mModelVariablesInResult;
-  }
+{
+  return mModelVariablesInResult;
+}
 
 unsigned C_INT32 CLyapTask::numberOfExponentsCalculated() const
-  {
-    return mNumExponentsCalculated;
-  }
+{
+  return mNumExponentsCalculated;
+}
