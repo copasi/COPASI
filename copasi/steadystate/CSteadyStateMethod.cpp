@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.30.14.1 $
+//   $Revision: 1.30.14.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/10/23 14:11:18 $
+//   $Date: 2009/03/16 14:02:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,13 +43,13 @@ CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType)
 
   switch (subType)
     {
-    case unset:
-    case Newton:
-      pMethod = new CNewtonMethod();
-      break;
+      case unset:
+      case Newton:
+        pMethod = new CNewtonMethod();
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   return pMethod;
@@ -174,17 +174,17 @@ CSteadyStateMethod::processInternal()
 {return CSteadyStateMethod::notFound;}
 
 bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
-  {
-    const CCopasiVectorNS < CReaction > & Reaction =
-      mpProblem->getModel()->getReactions();
-    unsigned C_INT32 i, imax = Reaction.size();
+{
+  const CCopasiVectorNS < CReaction > & Reaction =
+    mpProblem->getModel()->getReactions();
+  unsigned C_INT32 i, imax = Reaction.size();
 
-    for (i = 0; i < imax; i++)
-      if (Reaction[i]->getFlux() / Reaction[i]->getLargestCompartment().getValue() > resolution)
-        return false; //TODO: smallest or largest ?
+  for (i = 0; i < imax; i++)
+    if (Reaction[i]->getFlux() / Reaction[i]->getLargestCompartment().getValue() > resolution)
+      return false; //TODO: smallest or largest ?
 
-    return true;
-  }
+  return true;
+}
 
 bool CSteadyStateMethod::allPositive()
 {
@@ -192,8 +192,8 @@ bool CSteadyStateMethod::allPositive()
   mpModel->updateSimulatedValues(true);
 
   CModelEntity *const* ppEntity = mpModel->getStateTemplate().beginIndependent();
-  const C_FLOAT64 * pIt = mpSteadyState->beginIndependent();
-  const C_FLOAT64 * pEnd = mpSteadyState->endDependent();
+  const C_FLOAT64 * pIt = mpModel->getState().beginIndependent();
+  const C_FLOAT64 * pEnd = mpModel->getState().endDependent();
 
   // Skip Model quantities of type ODE
   for (; pIt != pEnd; ++pIt, ++ppEntity)
@@ -206,6 +206,7 @@ bool CSteadyStateMethod::allPositive()
     {
       if (dynamic_cast< const CCompartment *>(*ppEntity) == NULL)
         break;
+
       if (*pIt < - *mpDerivationResolution)
         return false;
     }
@@ -214,10 +215,12 @@ bool CSteadyStateMethod::allPositive()
   // with respect to the given resolution.
   C_FLOAT64 ParticleResolution =
     - *mpDerivationResolution * mpModel->getQuantity2NumberFactor();
+
   for (; pIt != pEnd; ++pIt, ++ppEntity)
     {
       if (dynamic_cast< const CMetab *>(*ppEntity) == NULL)
         break;
+
       if (*pIt < ParticleResolution)
         return false;
     }
@@ -227,6 +230,7 @@ bool CSteadyStateMethod::allPositive()
     {
       if (dynamic_cast< CCompartment *>(*ppEntity) == NULL)
         break;
+
       if (*pIt < - *mpDerivationResolution)
         return false;
     }
@@ -240,6 +244,7 @@ bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
+
   if (!pP)
     {
       //not a TrajectoryProblem
@@ -286,6 +291,6 @@ void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
 }
 
 std::string CSteadyStateMethod::getMethodLog() const
-  {
-    return mMethodLog.str();
-  }
+{
+  return mMethodLog.str();
+}
