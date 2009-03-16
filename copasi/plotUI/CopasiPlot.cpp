@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.54.2.2.4.1 $
+//   $Revision: 1.54.2.2.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/03 17:42:38 $
+//   $Date: 2009/03/16 14:03:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,124 +48,132 @@ MyQwtCPointerData & MyQwtCPointerData::operator=(const MyQwtCPointerData & rhs)
 }
 
 QwtData * MyQwtCPointerData::copy() const
-  {return new MyQwtCPointerData(xData(), yData(), size());}
+{return new MyQwtCPointerData(xData(), yData(), size());}
 
 QwtDoubleRect MyQwtCPointerData::boundingRect() const
-  {
-    const size_t sz = size();
+{
+  const size_t sz = size();
 
-    if (sz <= 0)
-      return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+  if (sz <= 0)
+    return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
-    double minX, maxX, minY, maxY;
+  double minX, maxX, minY, maxY;
 
-    const double *xIt = xData();
-    const double *yIt = yData();
-    const double *end = xIt + sz;
+  const double *xIt = xData();
+  const double *yIt = yData();
+  const double *end = xIt + sz;
 
-    // Unfortunately this may be NaN
-    minX = maxX = *xIt++;
-    minY = maxY = *yIt++;
+  // Unfortunately this may be NaN
+  minX = maxX = *xIt++;
+  minY = maxY = *yIt++;
 
-    // We have to rememember whether we have an initial NaN
-    bool isNaNminX = isnan(minX);
-    bool isNaNmaxX = isnan(maxX);
-    bool isNaNminY = isnan(minY);
-    bool isNaNmaxY = isnan(maxY);
+  // We have to rememember whether we have an initial NaN
+  bool isNaNminX = isnan(minX);
+  bool isNaNmaxX = isnan(maxX);
+  bool isNaNminY = isnan(minY);
+  bool isNaNmaxY = isnan(maxY);
 
-    while (xIt < end)
-      {
-        const double xv = *xIt++;
-        if (!isnan(xv))
-          {
-            if (xv < minX || isNaNminX)
-              {
-                minX = xv;
-                isNaNminX = false;
-              }
-            if (xv > maxX || isNaNmaxX)
-              {
-                maxX = xv;
-                isNaNmaxX = false;
-              }
-          }
+  while (xIt < end)
+    {
+      const double xv = *xIt++;
 
-        const double yv = *yIt++;
-        if (!isnan(yv))
-          {
-            if (yv < minY || isNaNminY)
-              {
-                minY = yv;
-                isNaNminY = false;
-              }
-            if (yv > maxY || isNaNmaxY)
-              {
-                maxY = yv;
-                isNaNmaxY = false;
-              }
-          }
-      }
+      if (!isnan(xv))
+        {
+          if (xv < minX || isNaNminX)
+            {
+              minX = xv;
+              isNaNminX = false;
+            }
 
-    if (isnan(minX + maxX + minY + maxY))
-      return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+          if (xv > maxX || isNaNmaxX)
+            {
+              maxX = xv;
+              isNaNmaxX = false;
+            }
+        }
 
-    // We need to avoid very small data ranges (absolute and relative)
-    C_FLOAT64 minRange = (minX + maxX) * 5.e-5 + DBL_MIN * 100.0;
-    if (maxX - minX < minRange)
-      {
-        minX = minX - minRange * 0.5;
-        maxX = maxX + minRange * 0.5;
-      }
+      const double yv = *yIt++;
 
-    minRange = (minY + maxY) * 5e-5 + DBL_MIN * 100.0;
-    if (maxY - minY < minRange)
-      {
-        minY = minY - minRange * 0.5;
-        maxY = maxY + minRange * 0.5;
-      }
+      if (!isnan(yv))
+        {
+          if (yv < minY || isNaNminY)
+            {
+              minY = yv;
+              isNaNminY = false;
+            }
 
-    return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
-  }
+          if (yv > maxY || isNaNmaxY)
+            {
+              maxY = yv;
+              isNaNmaxY = false;
+            }
+        }
+    }
+
+  if (isnan(minX + maxX + minY + maxY))
+    return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+
+  // We need to avoid very small data ranges (absolute and relative)
+  C_FLOAT64 minRange = fabs(minX + maxX) * 5.e-5 + DBL_MIN * 100.0;
+
+  if (maxX - minX < minRange)
+    {
+      minX = minX - minRange * 0.5;
+      maxX = maxX + minRange * 0.5;
+    }
+
+  minRange = fabs(minY + maxY) * 5e-5 + DBL_MIN * 100.0;
+
+  if (maxY - minY < minRange)
+    {
+      minY = minY - minRange * 0.5;
+      maxY = maxY + minRange * 0.5;
+    }
+
+  return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
+}
 //********************  curve  ********************************************
 
 //draw the several curves, separated by NaNs.
 void MyQwtPlotCurve::myDrawLines(QPainter *painter,
                                  const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                                  int from, int to) const
-  {
-    int to2;
-    do
-      {
-        int i;
-        for (i = from; i <= to; ++i)
-          if (isnan(x(i))) //NaN
-            break;
+{
+  int to2;
 
-        if (i == from)
-          {
-            ++from;
-            continue;
-          }
+  do
+    {
+      int i;
 
-        to2 = i - 1;
+      for (i = from; i <= to; ++i)
+        if (isnan(x(i))) //NaN
+          break;
 
-        QwtPlotCurve::drawLines(painter, xMap, yMap, from, to2);
+      if (i == from)
+        {
+          ++from;
+          continue;
+        }
 
-        from = to2 + 2;
-      }
-    while (from < to);
-  }
+      to2 = i - 1;
+
+      QwtPlotCurve::drawLines(painter, xMap, yMap, from, to2);
+
+      from = to2 + 2;
+    }
+  while (from < to);
+}
 
 //virtual
 void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
                                const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                                int from, int to) const
-  {
-    if (style == Lines)
-      myDrawLines(painter, xMap, yMap, from, to);
-    else
-      QwtPlotCurve::drawCurve(painter, style, xMap, yMap, from, to);
-  }
+{
+  if (style == Lines)
+    myDrawLines(painter, xMap, yMap, from, to);
+  else
+    QwtPlotCurve::drawCurve(painter, style, xMap, yMap, from, to);
+}
 
 //************************************
 C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -286,41 +294,44 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       switch (mCurveTypes[k])
         {
-        case CPlotItem::curve2d:
-          switch (*pItem->getValue("Line type").pUINT)
-            {
-            case 0:          //curve
-              pCurve->setStyle(QwtPlotCurve::Lines);
-              break;
-            case 1:          //points
-              pCurve->setStyle(QwtPlotCurve::Dots);
-              break;
-            case 2:          //symbols
-              pCurve->setStyle(QwtPlotCurve::NoCurve);
-              const QColor &c = curveColours[k % 6];
-              pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
-              break;
-            }
-          break;
+          case CPlotItem::curve2d:
 
-        case CPlotItem::histoItem1d:
-          // Store the index of the histogram to be created
-          mHistoIndices[k] = mHistograms.size();
-          mHistograms.push_back(CHistogram(*pItem->getValue("increment").pDOUBLE));
+            switch (*pItem->getValue("Line type").pUINT)
+              {
+                case 0:          //curve
+                  pCurve->setStyle(QwtPlotCurve::Lines);
+                  break;
+                case 1:          //points
+                  pCurve->setStyle(QwtPlotCurve::Dots);
+                  break;
+                case 2:          //symbols
+                  pCurve->setStyle(QwtPlotCurve::NoCurve);
+                  const QColor &c = curveColours[k % 6];
+                  pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
+                  break;
+              }
 
-          pCurve->setStyle(QwtPlotCurve::Steps);
-          pCurve->setYAxis(QwtPlot::yRight);
-          pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
-          break;
+            break;
 
-        default :
-          fatalError();
+          case CPlotItem::histoItem1d:
+            // Store the index of the histogram to be created
+            mHistoIndices[k] = mHistograms.size();
+            mHistograms.push_back(CHistogram(*pItem->getValue("increment").pDOUBLE));
+
+            pCurve->setStyle(QwtPlotCurve::Steps);
+            pCurve->setYAxis(QwtPlot::yRight);
+            pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
+            break;
+
+          default :
+            fatalError();
         }
     }
 
   // Remove unused curves if definitioan has changed
   std::map< std::string, QwtPlotCurve * >::iterator it = CurveMap.begin();
   std::map< std::string, QwtPlotCurve * >::iterator end = CurveMap.end();
+
   for (; it != end; ++it)
     pdelete(it->second);
 
@@ -328,12 +339,14 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
   else
     setAxisScaleEngine(xBottom, new QwtLinearScaleEngine());
+
   setAxisAutoScale(xBottom);
 
   if (plotspec->isLogY())
     setAxisScaleEngine(yLeft, new QwtLog10ScaleEngine());
   else
     setAxisScaleEngine(yLeft, new QwtLinearScaleEngine());
+
   setAxisAutoScale(yLeft);
 
   replot();
@@ -416,7 +429,9 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
           if (Inserted.second)
             {
               if (ItemActivity & COutputInterface::BEFORE) mHaveBefore = true;
+
               if (ItemActivity & COutputInterface::DURING) mHaveDuring = true;
+
               if (ItemActivity & COutputInterface::AFTER) mHaveAfter = true;
 
               // The insert was succesful
@@ -428,6 +443,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
               // Store the pointer to the current object value. (Only if it has a double or integer value
               // and the value pointer actually exists. If not, use a dummy value.)
               void * tmp;
+
               if ((pObj && (pObj->isValueInt() || pObj->isValueDbl())) && (tmp = pObj->getValuePointer()))
                 {
                   mObjectValues[ItemActivity].push_back((C_FLOAT64 *) tmp); //pObj->getValuePointer());
@@ -482,6 +498,7 @@ void CopasiPlot::output(const Activity & activity)
             if (ndata >= data[0]->size())
               {
                 unsigned C_INT32 newSize = data[0]->size() + 1000;
+
                 for (i = 0; i < imax; i++)
                   data[i]->resize(newSize); // :TODO: check for allocation problems
 
@@ -507,6 +524,7 @@ void CopasiPlot::output(const Activity & activity)
         mCurveActivities[i] & activity)
       {
         std::pair< Activity, unsigned C_INT32 > * pDataIndex = &mDataIndex[i][0];
+
         if (mObjectInteger[pDataIndex->first][pDataIndex->second])
           mHistograms[mHistoIndices[i]].addValue(*(C_INT32 *)mObjectValues[pDataIndex->first][pDataIndex->second]);
         else
@@ -522,7 +540,9 @@ void CopasiPlot::separate(const Activity & activity)
   C_INT32 ItemActivity;
 
   if (mHaveBefore && (activity == COutputInterface::BEFORE)) mDataBefore++;
+
   if (mHaveDuring && (activity == COutputInterface::DURING)) mDataDuring++;
+
   if (mHaveAfter && (activity == COutputInterface::AFTER)) mDataAfter++;
 
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
@@ -536,6 +556,7 @@ void CopasiPlot::separate(const Activity & activity)
             if (ndata >= data[0]->size())
               {
                 unsigned C_INT32 newSize = data[0]->size() + 1000;
+
                 for (i = 0; i < data.size(); i++)
                   data[i]->resize(newSize); // :TODO: check for allocation problems
 
@@ -598,21 +619,23 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
 
         switch (mCurveTypes[k])
           {
-          case CPlotItem::curve2d:
-            mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->data(),
-                                                  data[mDataIndex[k][1].second]->data(),
-                                                  ndata));
-            break;
+            case CPlotItem::curve2d:
+              mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->data(),
+                                                    data[mDataIndex[k][1].second]->data(),
+                                                    ndata));
+              break;
 
-          case CPlotItem::histoItem1d:
-            if (doHisto)
-              mCurves[k]->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
-                                     mHistograms[mHistoIndices[k]].getYArray(),
-                                     mHistograms[mHistoIndices[k]].size());
-            break;
+            case CPlotItem::histoItem1d:
 
-          default :
-            fatalError();
+              if (doHisto)
+                mCurves[k]->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
+                                       mHistograms[mHistoIndices[k]].getYArray(),
+                                       mHistograms[mHistoIndices[k]].size());
+
+              break;
+
+            default :
+              fatalError();
           }
       }
 }
@@ -660,6 +683,7 @@ bool CopasiPlot::saveData(const std::string & filename)
   if (ItemActivity == ActivitySize) return true;
 
   std::ofstream fs(utf8ToLocale(filename).c_str());
+
   if (!fs.good()) return false;
 
   // Write the table header
@@ -707,19 +731,22 @@ bool CopasiPlot::saveData(const std::string & filename)
                 Data[i] = mData[COutputInterface::BEFORE][itObject->second];
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
@@ -735,8 +762,10 @@ bool CopasiPlot::saveData(const std::string & filename)
             {
               if (*itData) fs << (*itData)->at(i);
               else fs << MissingValue;
+
               fs << "\t";
             }
+
           fs << std::endl;
         }
     }
@@ -753,21 +782,24 @@ bool CopasiPlot::saveData(const std::string & filename)
                 Offset[i] = 0;
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
                 Offset[i] = mDataBefore;
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 Offset[i] = 0;
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
@@ -784,8 +816,10 @@ bool CopasiPlot::saveData(const std::string & filename)
             {
               if (*itData) fs << (*itData)->at(i + *itOffset);
               else fs << MissingValue;
+
               fs << "\t";
             }
+
           fs << std::endl;
         }
     }
@@ -802,21 +836,24 @@ bool CopasiPlot::saveData(const std::string & filename)
                 Offset[i] = 0;
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
                 Offset[i] = mDataBefore;
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 Offset[i] = mDataDuring;
                 continue;
               }
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity) (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
+
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
                 (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
@@ -833,8 +870,10 @@ bool CopasiPlot::saveData(const std::string & filename)
             {
               if (*itData) fs << (*itData)->at(i + *itOffset);
               else fs << MissingValue;
+
               fs << "\t";
             }
+
           fs << std::endl;
         }
     }
@@ -846,6 +885,7 @@ bool CopasiPlot::saveData(const std::string & filename)
       C_INT32 i, imax;
 
       C_INT32 j, jmax = mHistograms.size();
+
       for (j = 0; j < jmax; ++j)
         {
           if (mSaveHistogramObjects[j] != NULL)
@@ -858,6 +898,7 @@ bool CopasiPlot::saveData(const std::string & filename)
           imax = mHistograms[j].size();
           const double* x = mHistograms[j].getXArray();
           const double* y = mHistograms[j].getYArray();
+
           for (i = 0; i < imax; ++i)
             {
               fs << *x++ << "\t" << *y++ << "\n";
@@ -866,6 +907,7 @@ bool CopasiPlot::saveData(const std::string & filename)
     }
 
   fs.close();
+
   if (!fs.good()) return false;
 
   return true;
@@ -876,6 +918,7 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
   item->setVisible(on);
   item->setItemAttribute(QwtPlotItem::AutoScale, on);
   QWidget *w = legend()->find(item);
+
   if (w && w->inherits("QwtLegendItem"))
     static_cast< QwtLegendItem * >(w)->setChecked(on);
 
@@ -892,6 +935,7 @@ void CopasiPlot::setCurvesVisibility(const bool & visibility)
       it->second->setVisible(visibility);
       it->second->setItemAttribute(QwtPlotItem::AutoScale, visibility);
       QWidget *w = legend()->find(it->second);
+
       if (w && w->inherits("QwtLegendItem"))
         static_cast< QwtLegendItem * >(w)->setChecked(visibility);
     }
@@ -942,6 +986,7 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
   if (pObject == NULL) return;
 
   std::string Units = pObject->getUnits();
+
   if (Units != "")
     setAxisTitle(index, FROM_UTF8(Units));
 
