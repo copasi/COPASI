@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: aekamal $
+//   $Date: 2009/03/16 14:52:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,17 +38,18 @@
 #include "report/CKeyFactory.h"
 
 std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
-  {
-    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    CCopasiVectorN<CReaction>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
-    std::vector<const CCopasiObject*> ret;
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiVectorN<CReaction>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+  C_INT32 i, imax = tmp.size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back(tmp[i]);
+
+  return ret;
+}
 
 void ReactionsWidget::init()
 {
@@ -71,8 +72,8 @@ void ReactionsWidget::init()
   //table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function names
-  table->setColumnReadOnly (3, true);
-  table->setColumnReadOnly (4, true);
+  table->setColumnReadOnly(3, true);
+  table->setColumnReadOnly(4, true);
 }
 
 void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -108,6 +109,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   ri.initFromReaction(obj->getKey());
 
   QString equation(table->text(row, 2));
+
   if (TO_UTF8(equation) != ri.getChemEqString())
     {
       //first check if the string is a valid equation
@@ -127,6 +129,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   bool createdObjects = ri.createOtherObjects();
   //this writes all changes to the reaction
   ri.writeBackToReaction(NULL);
+
   //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdObjects)
@@ -134,6 +137,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   else
     {
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+
       protectedNotify(ListViews::REACTION, ListViews::CHANGE, "");
     }
 }
@@ -151,9 +155,9 @@ void ReactionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_I
 }
 
 QString ReactionsWidget::defaultObjectName() const
-  {
-    return "reaction";
-  }
+{
+  return "reaction";
+}
 
 CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 {
@@ -163,12 +167,14 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   while (!(pRea = pDataModel->getModel()->createReaction(nname)))
     {
       i++;
       nname = name + "_";
       nname += TO_UTF8(QString::number(i));
     }
+
   return pRea;
 }
 
@@ -178,6 +184,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL)
     return;
 
@@ -196,6 +203,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
   bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
+
   for (i = 0; i < imax; i++) //all compartments
     {
       CReaction * pReaction =
@@ -216,6 +224,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           reacFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
           for (it = Reactions.begin(); it != itEnd; ++it)
             {
               effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -232,6 +241,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           metabFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
           for (it = Metabolites.begin(); it != itEnd; ++it)
             {
               effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -248,6 +258,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           valueFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
           for (it = Values.begin(); it != itEnd; ++it)
             {
               effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -264,6 +275,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           compartmentFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
           for (it = Compartments.begin(); it != itEnd; ++it)
             {
               effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -306,6 +318,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
     }
 
   C_INT32 choice = 0;
+
   if (metabFound || reacFound || valueFound || valueFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
@@ -314,11 +327,10 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case QMessageBox::Ok:
+      case QMessageBox::Ok:
       {
         for (i = 0; i < imax; i++)
           {
-            pDataModel->getModel()->removeReaction(keys[i]);
           }
 
         for (i = 0; i < imax; i++)
@@ -327,7 +339,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
         mChanged = true;
         break;
       }
-    default:                                           // No or Escape
-      break;
+      default:                                           // No or Escape
+        break;
     }
 }

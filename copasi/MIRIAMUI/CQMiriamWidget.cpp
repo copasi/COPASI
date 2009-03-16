@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/05 17:23:47 $
+//   $Date: 2009/03/16 14:52:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpResourceDelegate1 = new CQComboDelegate(&mResources, this);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
 
-  mpResourceDelegate2 = new CQComboDelegate(&mResources, this);
+  mpResourceDelegate2 = new CQComboDelegate(&mReferences, this);
   mpTblDescription->setItemDelegateForColumn(COL_RESOURCE_BD, mpResourceDelegate2);
 
   mpPredicateDelegate = new CQComboDelegate(&mPredicates, this);
@@ -66,6 +66,19 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
+
+  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<QTableView*>::const_iterator end = mWidgets.end();
+
+  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
+
+  for (; it != end && itDM != endDM; it++, itDM++)
+    {
+      (*it)->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      connect((*itDM), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+              this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+    }
 
   // Build the list of known resources
   updateResourcesList();
@@ -100,13 +113,13 @@ void CQMiriamWidget::languageChange()
 void CQMiriamWidget::slotBtnDeleteClicked()
 {
   if (mpTblAuthors->hasFocus())
-  {deleteSelectedAuthor();}
+    {deleteSelectedAuthor();}
   else if (mpTblReferences->hasFocus())
-  {deleteSelectedReference();}
+    {deleteSelectedReference();}
   else if (mpTblModified->hasFocus())
-  {deleteSelectedModified();}
+    {deleteSelectedModified();}
   else if (mpTblDescription->hasFocus())
-  {deleteSelectedBiologicalDescription();}
+    {deleteSelectedBiologicalDescription();}
 }
 
 void CQMiriamWidget::deleteSelectedAuthor()
@@ -117,21 +130,25 @@ void CQMiriamWidget::deleteSelectedAuthor()
       QString givenName = mpTblAuthors->model()->data(mpTblAuthors->selectionModel()->selectedIndexes().value(COL_GIVEN_NAME)).toString();
       QString familyName = mpTblAuthors->model()->data(mpTblAuthors->selectionModel()->selectedIndexes().value(COL_FAMILY_NAME)).toString();
       QString msg = "Do you want to delete author '";
+
       if (!givenName.isNull())
         {
           msg.append(givenName);
         }
+
       if (!familyName.isNull())
         {
           msg.append(" ");
           msg.append(familyName);
         }
+
       msg.append("'?");
 
       int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpCreatorDM->removeRow(delRow);}
+        {mpCreatorDM->removeRow(delRow);}
     }
 }
 
@@ -143,21 +160,25 @@ void CQMiriamWidget::deleteSelectedReference()
       QString resource = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_RESOURCE_REFERENCE)).toString();
       QString Id = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_ID_REFERENCE)).toString();
       QString msg = "Do you want to delete Reference '";
+
       if (!resource.isNull())
         {
           msg.append(resource);
         }
+
       if (!Id.isNull())
         {
           msg.append(":");
           msg.append(Id);
         }
+
       msg.append("'?");
 
       int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpReferenceDM->removeRow(delRow);}
+        {mpReferenceDM->removeRow(delRow);}
     }
 }
 
@@ -169,21 +190,25 @@ void CQMiriamWidget::deleteSelectedBiologicalDescription()
       QString resource = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_RESOURCE_BD)).toString();
       QString Id = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_ID_BD)).toString();
       QString msg = "Do you want to delete Description '";
+
       if (!resource.isNull())
         {
           msg.append(resource);
         }
+
       if (!Id.isNull())
         {
           msg.append(":");
           msg.append(Id);
         }
+
       msg.append("'?");
 
       int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpBiologicalDescriptionDM->removeRow(delRow);}
+        {mpBiologicalDescriptionDM->removeRow(delRow);}
     }
 }
 
@@ -194,16 +219,19 @@ void CQMiriamWidget::deleteSelectedModified()
       int delRow = mpTblModified->selectionModel()->selectedIndexes().value(0).row();
       QString dateModified = mpTblModified->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_DATE_MODIFIED)).toString();
       QString msg = "Do you want to delete Date/Time Modified '";
+
       if (!dateModified.isNull())
         {
           msg.append(dateModified);
         }
+
       msg.append("'?");
 
       int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpModifiedDM->removeRow(delRow);}
+        {mpModifiedDM->removeRow(delRow);}
     }
 }
 
@@ -216,8 +244,13 @@ void CQMiriamWidget::slotBtnNewClicked()
   std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
 
   for (; it != end && itDM != endDM; it++, itDM++)
-    if ((*it)->hasFocus())
-      (*itDM)->insertRow();
+    {
+      if ((*it)->hasFocus())
+        {
+          (*itDM)->insertRow();
+          (*it)->resizeColumnsToContents();
+        }
+    }
 }
 
 void CQMiriamWidget::slotBtnClearClicked()
@@ -232,29 +265,33 @@ void CQMiriamWidget::slotBtnClearClicked()
     {
       int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Creators?",
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpCreatorDM->clear();}
+        {mpCreatorDM->clear();}
     }
   else if (mpTblReferences->hasFocus())
     {
       int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all References?",
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpReferenceDM->clear();}
+        {mpReferenceDM->clear();}
     }
   else if (mpTblDescription->hasFocus())
     {
       int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Descriptions?",
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpBiologicalDescriptionDM->clear();}
+        {mpBiologicalDescriptionDM->clear();}
     }
   else if (mpTblModified->hasFocus())
     {
       int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Date/Time Modifieds?",
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
       if (ret == QMessageBox::Yes)
-      {mpModifiedDM->clear();}
+        {mpModifiedDM->clear();}
     }
 }
 
@@ -278,18 +315,12 @@ bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action 
   return success;
 }
 
-bool CQMiriamWidget::leave()
-{
-  mpMIRIAMInfo->save();
-  protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
-  return true;
-}
-
 void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 {
   //Now update.
   // Created at
   std::string DT = "";
+
   if (newDT.isValid())
     {
       DT = TO_UTF8(newDT.toString(Qt::ISODate));
@@ -317,11 +348,12 @@ bool CQMiriamWidget::enter(const std::string & key)
     {
       (*it)->setModel(NULL);
       (*it)->setModel(*itDM);
-      (*it)->resizeRowsToContents();
+      (*itDM)->insertRow();
       (*it)->resizeColumnsToContents();
     }
 
   QDateTime DTCreated;
+
   if (mpMIRIAMInfo->getCreatedDT() != "")
     DTCreated = QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate);
 
@@ -331,28 +363,74 @@ bool CQMiriamWidget::enter(const std::string & key)
     {
       mpDTCreated->setDateTime(QDateTime::currentDateTime());
     }
+
+  return true;
+}
+
+bool CQMiriamWidget::leave()
+{
+  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<QTableView*>::const_iterator end = mWidgets.end();
+
+  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
+
+  for (; it != end && itDM != endDM; it++, itDM++)
+    {
+      (*itDM)->removeLastRowIfEmpty();
+    }
+
+  mpMIRIAMInfo->save();
+  protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
   return true;
 }
 
 const CMIRIAMInfo & CQMiriamWidget::getMIRIAMInfo() const
-  {return *mpMIRIAMInfo;}
+{return *mpMIRIAMInfo;}
 
 void CQMiriamWidget::updateResourcesList()
 {
   mResources.clear();
+  mReferences.clear();
   // Build the list of known resources
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
   mResources.push_back("-- select --");
+  mReferences.push_back("-- select --");
 
   unsigned C_INT32 i, imax = pResource->getResourceList().size();
+
   for (i = 0; i < imax; i++)
     if (pResource->getMIRIAMResource(i).getMIRIAMCitation())
       mResources.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
+    else
+      mReferences.push_back(FROM_UTF8(pResource->getMIRIAMResource(i).getMIRIAMDisplayName()));
 }
 
 void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
+}
+
+void CQMiriamWidget::dataChanged(const QModelIndex& topLeft, const QModelIndex& C_UNUSED(bottomRight))
+{
+  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
+  std::vector<QTableView*>::const_iterator end = mWidgets.end();
+
+  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
+
+  for (; it != end && itDM != endDM; it++, itDM++)
+    {
+      if ((*itDM) == topLeft.model())
+        {
+          if (topLeft.row() == ((*itDM)->rowCount() - 1))
+            //If edit was done on last row, insert a new empty row.
+            {
+              (*itDM)->insertRow();
+              (*it)->resizeColumnsToContents();
+            }
+        }
+    }
 }

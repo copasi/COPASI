@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/05 17:23:47 $
+//   $Date: 2009/03/16 14:52:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,28 +23,29 @@ CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 }
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
-  {
-    return mpMIRIAMInfo->getModifications().size();
-  }
+{
+  return mpMIRIAMInfo->getModifications().size();
+}
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
-  {
-    return TOTAL_COLS_MODIFIEDS;
-  }
+{
+  return TOTAL_COLS_MODIFIEDS;
+}
 
 QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
-  {
-    if (!index.isValid())
-      return QVariant();
+{
+  if (!index.isValid())
+    return QVariant();
 
-    if (index.row() >= rowCount())
-      return QVariant();
+  if (index.row() >= rowCount())
+    return QVariant();
 
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
-      {
-        switch (index.column())
-          {
+  if (role == Qt::DisplayRole || role == Qt::EditRole)
+    {
+      switch (index.column())
+        {
           case COL_DATE_MODIFIED:
             QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
+
             if (dt.isValid())
               {
                 if (role == Qt::DisplayRole)
@@ -52,30 +53,31 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant(dt.toString(Qt::ISODate));
               }
-          }
-      }
-    return QVariant();
-  }
+        }
+    }
+
+  return QVariant();
+}
 
 QVariant CQModifiedDM::headerData(int section, Qt::Orientation orientation,
                                   int role) const
-  {
-    if (role != Qt::DisplayRole)
-      return QVariant();
+{
+  if (role != Qt::DisplayRole)
+    return QVariant();
 
-    if (orientation == Qt::Horizontal)
-      {
-        switch (section)
-          {
+  if (orientation == Qt::Horizontal)
+    {
+      switch (section)
+        {
           case COL_DATE_MODIFIED:
             return QVariant(QString("Date and Time Modified"));
           default:
             return QVariant();
-          }
-      }
-    else
-      return QString("%1").arg(section + 1);
-  }
+        }
+    }
+  else
+    return QString("%1").arg(section + 1);
+}
 
 bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
@@ -84,13 +86,15 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
     {
       switch (index.column())
         {
-        case COL_DATE_MODIFIED:
-          mpMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toString()));
-          break;
+          case COL_DATE_MODIFIED:
+            mpMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toString()));
+            break;
         }
+
       emit dataChanged(index, index);
       return true;
     }
+
   return false;
 }
 
@@ -100,7 +104,8 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      mpMIRIAMInfo->createModification(TO_UTF8(QDateTime::currentDateTime().toString(Qt::ISODate)));
+      //mpMIRIAMInfo->createModification(TO_UTF8(QDateTime::currentDateTime().toString(Qt::ISODate)));
+      mpMIRIAMInfo->createModification("");
     }
 
   endInsertRows();

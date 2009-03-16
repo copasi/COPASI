@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/05 17:23:46 $
+//   $Date: 2009/03/16 14:52:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ CRDFGraph * CMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
 
 const CCopasiVector <CCreator> & CMIRIAMInfo::getCreators() const
-  {return mCreators;}
+{return mCreators;}
 
 CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
 {
@@ -106,11 +106,11 @@ void CMIRIAMInfo::loadCreators()
   mCreators.cleanup();
 
   CRDFPredicate::ePredicateType Predicates[] =
-    {
-      CRDFPredicate::dcterms_creator,
-      CRDFPredicate::dc_creator,
-      CRDFPredicate::end
-    };
+  {
+    CRDFPredicate::dcterms_creator,
+    CRDFPredicate::dc_creator,
+    CRDFPredicate::end
+  };
 
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
   std::set< CRDFTriplet > Triples;
@@ -118,6 +118,7 @@ void CMIRIAMInfo::loadCreators()
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
   std::set< CRDFTriplet >::iterator it;
   std::set< CRDFTriplet >::iterator end;
+
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples =
@@ -183,12 +184,12 @@ void CMIRIAMInfo::loadReferences()
   mReferences.cleanup();
 
   CRDFPredicate::ePredicateType Predicates[] =
-    {
-      CRDFPredicate::dcterms_bibliographicCitation,
-      CRDFPredicate::bqbiol_isDescribedBy,
-      CRDFPredicate::bqmodel_isDescribedBy,
-      CRDFPredicate::end
-    };
+  {
+    CRDFPredicate::dcterms_bibliographicCitation,
+    CRDFPredicate::bqbiol_isDescribedBy,
+    CRDFPredicate::bqmodel_isDescribedBy,
+    CRDFPredicate::end
+  };
 
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
   std::set< CRDFTriplet > Triples;
@@ -196,6 +197,7 @@ void CMIRIAMInfo::loadReferences()
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
   std::set< CRDFTriplet >::iterator it;
   std::set< CRDFTriplet >::iterator end;
+
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples = mTriplet.pObject->getDescendantsWithPredicate(*pPredicate);
@@ -210,16 +212,17 @@ void CMIRIAMInfo::loadReferences()
 }
 
 const std::string CMIRIAMInfo::getCreatedDT() const
-  {
-    if (!mCreated)
-      return "";
+{
+  if (!mCreated)
+    return "";
 
-    return mCreated.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF);
-  }
+  return mCreated.pObject->getFieldValue(CRDFPredicate::dcterms_W3CDTF);
+}
 
 void CMIRIAMInfo::setCreatedDT(const std::string& dt)
 {
   std::string Date = dt;
+
   if (Date == "0000-00-00T00:00:00")
     Date = ""; // This causes deletion of the edge
 
@@ -242,7 +245,7 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
 }
 
 const CCopasiVector <CModification> & CMIRIAMInfo::getModifications() const
-  {return mModifications;}
+{return mModifications;}
 
 CModification * CMIRIAMInfo::createModification(const std::string& dateTime)
 {
@@ -261,6 +264,7 @@ CModification * CMIRIAMInfo::createModification(const std::string& dateTime)
     return NULL;
 
   CModification * pModification = new CModification(Triplet);
+
   if (dateTime.size())
     pModification->setDate(dateTime);
 
@@ -342,7 +346,7 @@ bool CMIRIAMInfo::removeBiologicalDescription(int position)
   const CRDFTriplet & Triplet = pBiologicalDescription->getTriplet();
 
   mpRDFGraph->removeTriplet(Triplet.pSubject,
-                            CRDFPredicate::getURI(Triplet.Predicate),
+                            Triplet.Predicate,//CRDFPredicate::getURI(Triplet.Predicate),
                             Triplet.pObject);
 
   return mBiologicalDescriptions.remove(pBiologicalDescription);
@@ -353,28 +357,28 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
   mBiologicalDescriptions.cleanup();
 
   CRDFPredicate::ePredicateType Predicates[] =
-    {
-      CRDFPredicate::copasi_encodes,
-      CRDFPredicate::copasi_hasPart,
-      CRDFPredicate::copasi_hasVersion,
-      CRDFPredicate::copasi_is,
-      CRDFPredicate::copasi_isEncodedBy,
-      CRDFPredicate::copasi_isHomologTo,
-      CRDFPredicate::copasi_isPartOf,
-      CRDFPredicate::copasi_isVersionOf,
-      CRDFPredicate::copasi_occursIn,
-      CRDFPredicate::bqbiol_encodes,
-      CRDFPredicate::bqbiol_hasPart,
-      CRDFPredicate::bqbiol_hasVersion,
-      CRDFPredicate::bqbiol_is,
-      CRDFPredicate::bqbiol_isEncodedBy,
-      CRDFPredicate::bqbiol_isHomologTo,
-      CRDFPredicate::bqbiol_isPartOf,
-      CRDFPredicate::bqbiol_isVersionOf,
-      CRDFPredicate::bqbiol_occursIn,
-      CRDFPredicate::bqmodel_is,
-      CRDFPredicate::end
-    };
+  {
+    CRDFPredicate::copasi_encodes,
+    CRDFPredicate::copasi_hasPart,
+    CRDFPredicate::copasi_hasVersion,
+    CRDFPredicate::copasi_is,
+    CRDFPredicate::copasi_isEncodedBy,
+    CRDFPredicate::copasi_isHomologTo,
+    CRDFPredicate::copasi_isPartOf,
+    CRDFPredicate::copasi_isVersionOf,
+    CRDFPredicate::copasi_occursIn,
+    CRDFPredicate::bqbiol_encodes,
+    CRDFPredicate::bqbiol_hasPart,
+    CRDFPredicate::bqbiol_hasVersion,
+    CRDFPredicate::bqbiol_is,
+    CRDFPredicate::bqbiol_isEncodedBy,
+    CRDFPredicate::bqbiol_isHomologTo,
+    CRDFPredicate::bqbiol_isPartOf,
+    CRDFPredicate::bqbiol_isVersionOf,
+    CRDFPredicate::bqbiol_occursIn,
+    CRDFPredicate::bqmodel_is,
+    CRDFPredicate::end
+  };
 
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
   std::set< CRDFTriplet > Triples;
@@ -382,6 +386,7 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
   CRDFPredicate::ePredicateType * pPredicate = Predicates;
   std::set< CRDFTriplet >::iterator it;
   std::set< CRDFTriplet >::iterator end;
+
   for (; *pPredicate != CRDFPredicate::end; ++pPredicate)
     {
       Triples = mTriplet.pObject->getDescendantsWithPredicate(*pPredicate);
@@ -403,6 +408,7 @@ void CMIRIAMInfo::load(const std::string& key)
   if (pCopasiObject != NULL)
     {
       const std::string * pMiriamAnnotation = NULL;
+
       if (dynamic_cast< CModelEntity * >(pCopasiObject))
         pMiriamAnnotation =
           &dynamic_cast< CModelEntity * >(pCopasiObject)->getMiriamAnnotation();
@@ -427,6 +433,7 @@ void CMIRIAMInfo::load(const std::string& key)
   CRDFPredicate::Path Path = mTriplet.pObject->getPath();
   std::set< CRDFTriplet > Triples =
     mTriplet.pObject->getDescendantsWithPredicate(CRDFPredicate::dcterms_created);
+
   if (Triples.size() > 0)
     mCreated = *Triples.begin();
   else

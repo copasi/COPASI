@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/05 17:23:47 $
+//   $Date: 2009/03/16 14:52:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@
 #include "copasi.h"
 #include "CQMessageBox.h"
 
-
 /*
  *  Constructs a CQReactionsWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -32,6 +31,8 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
 
   //Create Data Models for the 4 tables
   mpReactionDM = new CQReactionDM(this);
+
+  mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
   // Connect the table widget
   connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
@@ -58,13 +59,13 @@ void CQReactionsWidget::languageChange()
 void CQReactionsWidget::slotBtnDeleteClicked()
 {
   if (mpTblReactions->hasFocus())
-  {deleteSelectedReaction();}
+    {deleteSelectedReaction();}
 }
 
 void CQReactionsWidget::deleteSelectedReaction()
 {
   if (mpTblReactions->selectionModel()->selectedIndexes().empty())
-  { return; }
+    {return;}
 
   int delRow = mpTblReactions->selectionModel()->selectedIndexes().value(0).row();
 
@@ -72,6 +73,7 @@ void CQReactionsWidget::deleteSelectedReaction()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL)
     return;
 
@@ -103,6 +105,7 @@ void CQReactionsWidget::deleteSelectedReaction()
     {
       reacFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
           effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -119,6 +122,7 @@ void CQReactionsWidget::deleteSelectedReaction()
     {
       metabFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
           effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -135,6 +139,7 @@ void CQReactionsWidget::deleteSelectedReaction()
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
           effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -151,6 +156,7 @@ void CQReactionsWidget::deleteSelectedReaction()
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
           effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -162,6 +168,7 @@ void CQReactionsWidget::deleteSelectedReaction()
       effectedCompartmentList.append(FROM_UTF8(pReaction->getObjectName()));
       effectedCompartmentList.append("\n");
     }
+
   reactionList.remove(reactionList.length() - 2, 2);
 
   QString msg = reactionList;
@@ -191,17 +198,17 @@ void CQReactionsWidget::deleteSelectedReaction()
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
-    choice = CQMessageBox::question(this,
-                                    "CONFIRM DELETE",
-                                    msg,
-                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+  //if (metabFound || reacFound || valueFound || compartmentFound)
+  choice = CQMessageBox::question(this,
+                                  "CONFIRM DELETE",
+                                  msg,
+                                  QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 
   if (choice == QMessageBox::Ok)
     {
       if (mpTblReactions->hasFocus())
         {
-          pDataModel->getModel()->removeReaction(delRow);
+          mpReactionDM->removeRow(delRow);
           protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
         }
     }
@@ -210,7 +217,10 @@ void CQReactionsWidget::deleteSelectedReaction()
 void CQReactionsWidget::slotBtnNewClicked()
 {
   if (mpReactionDM->insertRow())
-    protectedNotify(ListViews::REACTION, ListViews::ADD, "");;
+    {
+      mpTblReactions->resizeColumnsToContents();
+      protectedNotify(ListViews::REACTION, ListViews::ADD, "");;
+    }
 }
 
 void CQReactionsWidget::slotBtnClearClicked()
@@ -218,8 +228,9 @@ void CQReactionsWidget::slotBtnClearClicked()
 
   int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Reactions?",
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
   if (ret == QMessageBox::Yes)
-  {mpReactionDM->clear();}
+    {mpReactionDM->clear();}
 }
 
 bool CQReactionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -229,6 +240,7 @@ bool CQReactionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListV
 
 bool CQReactionsWidget::leave()
 {
+  mpReactionDM->removeLastRowIfEmpty();
   return true;
 }
 
@@ -237,19 +249,28 @@ bool CQReactionsWidget::enter(const std::string & C_UNUSED(key))
   //Set Model for the TableView
   mpTblReactions->setModel(NULL);
   mpTblReactions->setModel(mpReactionDM);
-  mpTblReactions->resizeRowsToContents();
+  mpReactionDM->insertRow();
   mpTblReactions->resizeColumnsToContents();
 
   return true;
 }
 
-void CQReactionsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
+void CQReactionsWidget::dataChanged(const QModelIndex& topLeft,
                                     const QModelIndex& C_UNUSED(bottomRight))
 {
+  if (mpReactionDM == topLeft.model())
+    {
+      if (topLeft.row() == (mpReactionDM->rowCount() - 1))
+        //If edit was done on last row, insert a new empty row.
+        {
+          mpReactionDM->insertRow();
+          mpTblReactions->resizeColumnsToContents();
+        }
+    }
+
   protectedNotify(ListViews::REACTION, ListViews::CHANGE, "");
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
-
 
 void CQReactionsWidget::slotDoubleClicked(const QModelIndex index)
 {
@@ -257,9 +278,12 @@ void CQReactionsWidget::slotDoubleClicked(const QModelIndex index)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL)
     return;
+
   std::string key = pModel->getReactions()[index.row()]->getKey();
+
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(0, key);
 }
