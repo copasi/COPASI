@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.ui,v $ </comment>
-<comment>   $Revision: 1.11 $ </comment>
+<comment>   $Revision: 1.12 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/01/28 13:11:39 $ </comment>
+<comment>   $Date: 2009/03/18 12:40:00 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -19,8 +19,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
-    <height>93</height>
+    <width>501</width>
+    <height>119</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -29,25 +29,13 @@
   <property name="autoFillBackground" >
    <bool>false</bool>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>5</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
    <item>
-    <widget class="Q3Frame" name="frame" >
+    <widget class="QFrame" name="frame" >
      <property name="palette" >
       <palette>
        <active>
         <colorrole role="Base" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>191</red>
-           <green>236</green>
-           <blue>183</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Window" >
          <brush brushstyle="SolidPattern" >
           <color alpha="255" >
            <red>191</red>
@@ -67,15 +55,6 @@
           </color>
          </brush>
         </colorrole>
-        <colorrole role="Window" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>191</red>
-           <green>236</green>
-           <blue>183</blue>
-          </color>
-         </brush>
-        </colorrole>
        </inactive>
        <disabled>
         <colorrole role="Base" >
@@ -84,15 +63,6 @@
            <red>212</red>
            <green>208</green>
            <blue>200</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Window" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
-           <red>191</red>
-           <green>236</green>
-           <blue>183</blue>
           </color>
          </brush>
         </colorrole>
@@ -108,10 +78,7 @@
      <property name="frameShadow" >
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>6</number>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
       <item>
        <layout class="QHBoxLayout" >
         <item>
@@ -276,14 +243,6 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
