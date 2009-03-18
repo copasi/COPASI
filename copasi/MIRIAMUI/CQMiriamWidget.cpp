@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Author: pwilly $
+//   $Date: 2009/03/18 12:23:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include <QMessageBox>
+#include <QHeaderView>
 
 #include "CQMiriamWidget.h"
 #include "copasi.h"
