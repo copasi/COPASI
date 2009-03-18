@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.207 $
+//   $Revision: 1.208 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: pwilly $
+//   $Date: 2009/03/18 12:40:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
     setName("ScanWidget");
 
   setCaption(trUtf8("ScanWidget"));
-  ScanWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
+//  ScanWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
+  ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
   mpHeaderWidget->setTaskName("Parameter Scan");
 
@@ -71,7 +72,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
 
   //*****************
 
-  Q3HBoxLayout* tmpLayout = new Q3HBoxLayout();
+//  Q3HBoxLayout* tmpLayout = new Q3HBoxLayout();
+  QHBoxLayout* tmpLayout = new QHBoxLayout();
 
   QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
   tmpLayout->addItem(tmpSpacer);
@@ -88,6 +90,9 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
   //comboType->insertItem("Output separator");
   tmpLayout->addWidget(comboType);
 
+  QSpacerItem *mpSpacer = new QSpacerItem(20, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+  tmpLayout->addItem(mpSpacer);
+
   buttonNewItem = new QPushButton(this, "buttonNewItem");
   buttonNewItem->setText("... Create!");
   //ScanWidgetLayout->addWidget(buttonNewItem, 1, 2);
@@ -97,7 +102,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
 
   //*****************************
 
-  Layout24 = new Q3HBoxLayout(0, 0, 6, "Layout24");
+//  Layout24 = new Q3HBoxLayout(0, 0, 6, "Layout24");
+  Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
 
   scrollview = new CScanContainerWidget(this);
   Layout24->addWidget(scrollview);
@@ -119,6 +125,7 @@ bool ScanWidget::runTask()
   if (!commonBeforeRunTask()) return false;
 
   bool success = true;
+
   if (!commonRunTask()) success = false;
 
   if (!commonAfterRunTask()) success = false;
@@ -132,9 +139,11 @@ bool ScanWidget::loadTask()
 
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+
   if (!scanTask) return false;
 
   CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
+
   if (!scanProblem) return false;
 
   scrollview->clearWidgetList();
@@ -152,41 +161,44 @@ bool ScanWidget::loadTask()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   unsigned C_INT32 i, imax = scanProblem->getNumberOfScanItems();
+
   for (i = 0; i < imax; ++i)
     {
       void* pTmp;
+
       if (!(pTmp = scanProblem->getScanItem(i)->getValue("Type").pVOID)) return false;
+
       CScanProblem::Type type = *(CScanProblem::Type*)pTmp;
 
       switch (type)
         {
-          //+++
-        case CScanProblem::SCAN_LINEAR:
-          tmp1 = new CScanWidgetScan(scrollview);
-          tmp1->initFromScanItem(scanProblem->getScanItem(i), pDataModel->getModel());
-          scrollview->addWidget(tmp1);
-          break;
+            //+++
+          case CScanProblem::SCAN_LINEAR:
+            tmp1 = new CScanWidgetScan(scrollview);
+            tmp1->initFromScanItem(scanProblem->getScanItem(i), pDataModel->getModel());
+            scrollview->addWidget(tmp1);
+            break;
 
-        case CScanProblem::SCAN_REPEAT:
-          tmp2 = new CScanWidgetRepeat(scrollview);
-          tmp2->initFromScanItem(scanProblem->getScanItem(i));
-          scrollview->addWidget(tmp2);
-          break;
+          case CScanProblem::SCAN_REPEAT:
+            tmp2 = new CScanWidgetRepeat(scrollview);
+            tmp2->initFromScanItem(scanProblem->getScanItem(i));
+            scrollview->addWidget(tmp2);
+            break;
 
-        case CScanProblem::SCAN_RANDOM:
-          tmp3 = new CScanWidgetRandom(scrollview);
-          tmp3->initFromScanItem(scanProblem->getScanItem(i), pDataModel->getModel());
-          scrollview->addWidget(tmp3);
-          break;
+          case CScanProblem::SCAN_RANDOM:
+            tmp3 = new CScanWidgetRandom(scrollview);
+            tmp3->initFromScanItem(scanProblem->getScanItem(i), pDataModel->getModel());
+            scrollview->addWidget(tmp3);
+            break;
 
-          /*case CScanProblem::SCAN_BREAK:
-            tmp4 = new CScanWidgetBreak(scrollview);
-            tmp4->initFromScanItem(scanProblem->getScanItem(i));
-            scrollview->addWidget(tmp4);
-            break;*/
+            /*case CScanProblem::SCAN_BREAK:
+              tmp4 = new CScanWidgetBreak(scrollview);
+              tmp4->initFromScanItem(scanProblem->getScanItem(i));
+              scrollview->addWidget(tmp4);
+              break;*/
 
-        default:
-;
+          default:
+            ;
         }
     }
 
@@ -210,23 +222,24 @@ bool ScanWidget::slotAddItem()
 
   int intType = comboType->currentItem();
   CScanProblem::Type type;
+
   switch (intType)
     {
-      //+++
-    case 0:
-      type = CScanProblem::SCAN_LINEAR;
-      break;
-    case 1:
-      type = CScanProblem::SCAN_REPEAT;
-      break;
-    case 2:
-      type = CScanProblem::SCAN_RANDOM;
-      break;
-      /*case 3:
-        type = CScanProblem::SCAN_BREAK;
-        break;*/
-    default:
-      type = CScanProblem::SCAN_LINEAR;
+        //+++
+      case 0:
+        type = CScanProblem::SCAN_LINEAR;
+        break;
+      case 1:
+        type = CScanProblem::SCAN_REPEAT;
+        break;
+      case 2:
+        type = CScanProblem::SCAN_RANDOM;
+        break;
+        /*case 3:
+          type = CScanProblem::SCAN_BREAK;
+          break;*/
+      default:
+        type = CScanProblem::SCAN_LINEAR;
     }
 
   //create item to get the default values
@@ -238,42 +251,42 @@ bool ScanWidget::slotAddItem()
 
   switch (type)
     {
-      //+++
-    case CScanProblem::SCAN_LINEAR:
-      tmp1 = new CScanWidgetScan(scrollview);
-      tmp1->initFromScanItem(tmpItem, pDataModel->getModel());
-      scrollview->insertWidget(tmp1);
-      totalRows = scrollview->numRows();
-      scrollview->ensureCellVisible(totalRows - 1, 0);
-      tmp1->lineEditMin->setFocus();
-      break;
+        //+++
+      case CScanProblem::SCAN_LINEAR:
+        tmp1 = new CScanWidgetScan(scrollview);
+        tmp1->initFromScanItem(tmpItem, pDataModel->getModel());
+        scrollview->insertWidget(tmp1);
+        totalRows = scrollview->numRows();
+        scrollview->ensureCellVisible(totalRows - 1, 0);
+        tmp1->lineEditMin->setFocus();
+        break;
 
-    case CScanProblem::SCAN_REPEAT:
-      tmp2 = new CScanWidgetRepeat(scrollview);
-      tmp2->initFromScanItem(tmpItem);
-      scrollview->insertWidget(tmp2);
-      totalRows = scrollview->numRows();
-      scrollview->ensureCellVisible(totalRows - 1, 0);
-      tmp2->lineEditNumber->setFocus();
-      break;
+      case CScanProblem::SCAN_REPEAT:
+        tmp2 = new CScanWidgetRepeat(scrollview);
+        tmp2->initFromScanItem(tmpItem);
+        scrollview->insertWidget(tmp2);
+        totalRows = scrollview->numRows();
+        scrollview->ensureCellVisible(totalRows - 1, 0);
+        tmp2->lineEditNumber->setFocus();
+        break;
 
-    case CScanProblem::SCAN_RANDOM:
-      tmp3 = new CScanWidgetRandom(scrollview);
-      tmp3->initFromScanItem(tmpItem, pDataModel->getModel());
-      scrollview->insertWidget(tmp3);
-      totalRows = scrollview->numRows();
-      scrollview->ensureCellVisible(totalRows - 1, 0);
-      tmp3->lineEditMin->setFocus();
-      break;
+      case CScanProblem::SCAN_RANDOM:
+        tmp3 = new CScanWidgetRandom(scrollview);
+        tmp3->initFromScanItem(tmpItem, pDataModel->getModel());
+        scrollview->insertWidget(tmp3);
+        totalRows = scrollview->numRows();
+        scrollview->ensureCellVisible(totalRows - 1, 0);
+        tmp3->lineEditMin->setFocus();
+        break;
 
-      /*case CScanProblem::SCAN_BREAK:
-        tmp4 = new CScanWidgetBreak(scrollview);
-        tmp4->initFromScanItem(tmpItem);
-        scrollview->insertWidget(tmp4);
-        break;*/
+        /*case CScanProblem::SCAN_BREAK:
+          tmp4 = new CScanWidgetBreak(scrollview);
+          tmp4->initFromScanItem(tmpItem);
+          scrollview->insertWidget(tmp4);
+          break;*/
 
-    default:
-;
+      default:
+        ;
     }
 
   if (tmpProblem) delete tmpProblem;
@@ -287,9 +300,11 @@ bool ScanWidget::saveTask()
 
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+
   if (!scanTask) return false;
 
   CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
+
   if (!scanProblem) return false;
 
   scanProblem->clearScanItems();
@@ -297,20 +312,24 @@ bool ScanWidget::saveTask()
   const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
 
   unsigned C_INT32 i, imax = widgetList.size();
+
   for (i = 0; i < imax; ++i)
     {
       //+++
 
       // item: scan parameter
       const CScanWidgetScan* tmp1 = dynamic_cast<CScanWidgetScan*>(widgetList[i]);
+
       if (tmp1) {tmp1->saveToScanItem(scanProblem); continue;}
 
       // item: repeat
       const CScanWidgetRepeat* tmp2 = dynamic_cast<CScanWidgetRepeat*>(widgetList[i]);
+
       if (tmp2) {tmp2->saveToScanItem(scanProblem); continue;}
 
       // item: random
       const CScanWidgetRandom* tmp3 = dynamic_cast<CScanWidgetRandom*>(widgetList[i]);
+
       if (tmp3) {tmp3->saveToScanItem(scanProblem); continue;}
 
       // item: break
@@ -319,6 +338,7 @@ bool ScanWidget::saveTask()
 
       // the subtask
       const CScanWidgetTask* tmpT = dynamic_cast<CScanWidgetTask*>(widgetList[i]);
+
       if (tmpT) {tmpT->saveToScanProblem(scanProblem); continue;}
 
       return false;

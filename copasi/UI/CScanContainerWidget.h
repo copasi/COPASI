@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Author: pwilly $
+//   $Date: 2009/03/18 12:37:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,13 +20,18 @@
 
 #include <vector>
 //#include <qvariant.h>
+
 #include <q3table.h>
+//#include <QTableWidget>
+
 //Added by qt3to4:
 #include <Q3VBoxLayout>
 #include <Q3Frame>
 #include <Q3GridLayout>
 #include <Q3HBoxLayout>
 
+class QHeaderView;
+/*
 class Q3VBoxLayout;
 class Q3HBoxLayout;
 class Q3GridLayout;
@@ -35,7 +40,7 @@ class Q3Frame;
 class QLineEdit;
 class QToolButton;
 class Q3VBox;
-
+ */
 class CUpDownSubwidget;
 
 /**
@@ -43,34 +48,38 @@ class CUpDownSubwidget;
  *  it adds buttons to delete, move up or down the widgets
  */
 class CScanContainerWidget : public Q3Table
-  {
-    Q_OBJECT
+//class CScanContainerWidget : public QTableWidget
+//class CScanContainerWidget : public QTableView
+{
+  Q_OBJECT
 
-  public:
-    CScanContainerWidget(QWidget* parent = 0, const char* name = 0 /*, WFlags fl = 0*/);
-    ~CScanContainerWidget();
+public:
+  CScanContainerWidget(QWidget* parent = 0, const char* name = 0 /*, WFlags fl = 0*/);
+  ~CScanContainerWidget();
 
-    std::vector<QWidget*> getWidgetList() const;
-    void clearWidgetList();
-    void addWidget(QWidget* widget, bool controls = true);
+  std::vector<QWidget*> getWidgetList() const;
+  void clearWidgetList();
+  void addWidget(QWidget* widget, bool controls = true);
 
-    //insert before row, if row=-1 insert before the last row
-    void insertWidget(QWidget* widget, int row = -1);
-    void enableCopy(const bool & enable);
+  //insert before row, if row=-1 insert before the last row
+  void insertWidget(QWidget* widget, int row = -1);
+  void enableCopy(const bool & enable);
 
-  protected slots:
-    void slotUp(int index);
-    void slotDown(int index);
-    void slotDel(int index);
-    void slotCopy(int index);
+protected slots:
+  void slotUp(int index);
+  void slotDown(int index);
+  void slotDel(int index);
+  void slotCopy(int index);
 
-  protected:
-    void updateIndices();
-    bool mCopyEnabled;
+protected:
+  void updateIndices();
+  void updateTable();
+  bool mCopyEnabled;
+  void resizeEvent(QResizeEvent *event);
 
-  signals:
-    void itemDeleted();
-    void copyWidget(int);
-  };
+signals:
+  void itemDeleted();
+  void copyWidget(int);
+};
 
 #endif

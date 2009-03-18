@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:12 $
+//   $Author: pwilly $
+//   $Date: 2009/03/18 12:40:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,46 +20,54 @@
 
 #include "copasi.h"
 #include "TaskWidget.h"
+
+#include <QGridLayout>
+#include <QHBoxLayout>
+
 //Added by qt3to4:
 #include <Q3GridLayout>
 #include <Q3HBoxLayout>
 
-class Q3HBoxLayout;
-class Q3GridLayout;
+//class Q3HBoxLayout;
+//class Q3GridLayout;
 class QPushButton;
 class QComboBox;
 
 class CScanContainerWidget;
 
 class ScanWidget : public TaskWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    ScanWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~ScanWidget();
+public:
+  ScanWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~ScanWidget();
 
-    virtual bool runTask();
+  virtual bool runTask();
 
-  protected:
+protected:
 
-    virtual bool loadTask();
+  virtual bool loadTask();
 
-    virtual bool saveTask();
+  virtual bool saveTask();
 
-    //dummy, should not be used in this widget
-    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & /*type*/) {return NULL;};
+  //dummy, should not be used in this widget
+  virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & /*type*/) {return NULL;};
 
-    CScanContainerWidget* scrollview;
+  CScanContainerWidget* scrollview;
 
-    QPushButton* buttonNewItem;
-    QComboBox* comboType;
+  QPushButton* buttonNewItem;
+  QComboBox* comboType;
 
-    Q3GridLayout* ScanWidgetLayout;
-    Q3HBoxLayout* Layout24;
+  /*
+      Q3GridLayout* ScanWidgetLayout;
+      Q3HBoxLayout* Layout24;
+  */
+  QGridLayout* ScanWidgetLayout;
+  QHBoxLayout* Layout24;
 
-  protected slots:
-    bool slotAddItem();
-  };
+protected slots:
+  bool slotAddItem();
+};
 
 #endif
