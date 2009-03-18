@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-$Revision: 1.8 $
+$Revision: 1.9 $
 $Name:  $
-$Author: shoops $
-$Date: 2008/12/18 19:57:33 $
+$Author: pwilly $
+$Date: 2009/03/18 12:36:19 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,9 +15,13 @@ End CVS Header */
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "CScanContainerWidget.h"
-
 #include "copasi.h"
+#include <iostream>
+
+#include <qapplication.h>
+#include <QResizeEvent>
+
+#include "CScanContainerWidget.h"
 
 #include "CUpDownSubwidget.h"
 
@@ -48,19 +52,22 @@ CScanContainerWidget::~CScanContainerWidget()
 {}
 
 std::vector<QWidget*> CScanContainerWidget::getWidgetList() const
-  {
-    std::vector<QWidget*> ret;
-    QWidget* tmpWidget;
+{
+  std::vector<QWidget*> ret;
+  QWidget* tmpWidget;
 
-    C_INT32 i, imax = numRows();
-    for (i = 0; i < imax; ++i)
-      {
-        tmpWidget = cellWidget(i, 1);
-        if (tmpWidget)
-          ret.push_back(tmpWidget);
-      }
-    return ret;
-  }
+  C_INT32 i, imax = numRows();
+
+  for (i = 0; i < imax; ++i)
+    {
+      tmpWidget = cellWidget(i, 1);
+
+      if (tmpWidget)
+        ret.push_back(tmpWidget);
+    }
+
+  return ret;
+}
 
 void CScanContainerWidget::clearWidgetList()
 {
@@ -90,22 +97,28 @@ void CScanContainerWidget::addWidget(QWidget* widget, bool controls /*=true*/)
       if (i > 0)
         {
           CUpDownSubwidget* tmpWidget = dynamic_cast<CUpDownSubwidget*>(cellWidget(i - 1, 0));
+
           if (tmpWidget)
             tmpWidget->setIndex(i - 1, false, false); //assumes...
         }
     }
+
   setCellWidget(i, 1, widget);
   adjustRow(i);
 
   adjustColumn(0);
   setColumnStretchable(1, true);
+
+//  updateTable();
+  qApp->processEvents();
 }
 
 void CScanContainerWidget::insertWidget(QWidget* widget, int row)
 {
   //setNumRows(numRows()+1);
   if (row == -1)
-  {if (numRows() == 0) row = 0; else row = numRows() - 1;}
+    {if (numRows() == 0) row = 0; else row = numRows() - 1;}
+
   insertRows(row);
 
   unsigned C_INT32 i = row;
@@ -129,41 +142,62 @@ void CScanContainerWidget::insertWidget(QWidget* widget, int row)
             tmpWidget->setIndex(i-1, false);
         }*/
     }
+
   setCellWidget(i, 1, widget);
-  adjustRow(i);
+  /*
+    adjustRow(i);
 
-  adjustColumn(0);
-  setColumnStretchable(1, true);
-
+    adjustColumn(0);
+    setColumnStretchable(1, true);
+  */
   updateIndices();
+  updateTable();
+  qApp->processEvents();
 }
 
 void CScanContainerWidget::slotUp(int index)
 {
   if (index <= 0) return; //do nothing
 
-  swapCells(index, 1, index - 1, 1);
-  adjustRow(index);
-  adjustRow(index - 1);
-  //updateIndices();
+//  swapCells(index, 1, index - 1, 1);
+  slotDown(index - 1);
+
+//  updateIndices();
+//  updateTable();
 }
 
 void CScanContainerWidget::slotDown(int index)
 {
   if (index >= numRows() - 1) return; //do nothing
 
-  swapCells(index, 1, index + 1, 1);
-  adjustRow(index);
-  adjustRow(index + 1);
-  //updateIndices();
+//  swapCells(index, 1, index + 1, 1);
+
+  insertRows(index + 2);
+  swapRows(index, index + 2);
+
+  updateTable();
+
+  removeRow(index);
+
+  updateIndices();
+  updateTable();
 }
 
 void CScanContainerWidget::slotDel(int index)
 {
+//  clearCellWidget(index, 0);
+//  clearCellWidget(index, 1);
+  clearCell(index, 0);
+  clearCell(index, 1);
   removeRow(index);
-  updateIndices();
 
-  emit itemDeleted();
+//  if (numRows() == 1) adjustColumn(0);
+
+  updateIndices();
+//  setCurrentCell(0, 1);
+
+  updateTable();
+//  emit itemDeleted();
 }
 
 void CScanContainerWidget::slotCopy(int index)
@@ -175,11 +209,13 @@ void CScanContainerWidget::updateIndices()
   CUpDownSubwidget* tmp, *tmp_last, *tmp_next;
 
   C_INT32 i, imax = numRows();
+
   for (i = 0; i < imax; ++i)
     {
       tmp_last = dynamic_cast<CUpDownSubwidget*>(cellWidget(i - 1, 0));
       tmp = dynamic_cast<CUpDownSubwidget*>(cellWidget(i, 0));
       tmp_next = dynamic_cast<CUpDownSubwidget*>(cellWidget(i + 1, 0));
+
       if (tmp)
         {
           tmp->setIndex(i, (tmp_last == NULL), (tmp_next == NULL));
@@ -187,5 +223,37 @@ void CScanContainerWidget::updateIndices()
     }
 }
 
+// repaints the whole table
+void CScanContainerWidget::updateTable()
+{
+  qApp->processEvents();
+
+  unsigned C_INT32 i;
+
+  for (i = 0; i < numRows(); i++)
+    adjustRow(i);
+
+  adjustColumn(0);
+//  if (numRows() == 1) adjustColumn(0);
+  setColumnStretchable(1, true);
+
+  qApp->processEvents();
+}
+
 void CScanContainerWidget::enableCopy(const bool & enable)
 {mCopyEnabled = enable;}
+
+void CScanContainerWidget::resizeEvent(QResizeEvent *e)
+{
+  Q3Table::resizeEvent(e);
+
+  unsigned C_INT32 i;
+
+  for (i = 0; i < numRows(); i++)
+    adjustRow(i);
+
+  adjustColumn(0);
+  setColumnStretchable(1, true);
+
+//  std::cout << numRows() << ": " << e->size().width() << " - " << e->size().height() << std::endl;
+}
