@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.186 $
+#   $Revision: 1.187 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/03/05 17:23:47 $
+#   $Author: pwilly $
+#   $Date: 2009/03/18 12:41:52 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.186 $ $Author: aekamal $ $Date: 2009/03/05 17:23:47 $
+# $Revision: 1.187 $ $Author: pwilly $ $Date: 2009/03/18 12:41:52 $
 ######################################################################
 
 LIB = UI
@@ -292,11 +292,14 @@ HEADERS += \
            CScanWidgetBreak.h \
            CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
-           CScanWidgetRandom.ui.h \
+           ui_CScanWidgetRandom.h \
+#           CScanWidgetRandom.ui.h \
            CScanWidgetRepeat.h \
-           CScanWidgetRepeat.ui.h \
+           ui_CScanWidgetRepeat.h \
+#           CScanWidgetRepeat.ui.h \
            CScanWidgetScan.h \
-           CScanWidgetScan.ui.h \
+           ui_CScanWidgetScan.h \
+#           CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \
            ui_CScanWidgetTask.h  \
 #           CScanWidgetTask4.ui.h  \
