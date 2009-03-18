@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Author: pwilly $
+//   $Date: 2009/03/18 12:32:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,9 @@ bool CQBaseDataModel::removeLastRowIfEmpty()
 
   for (int j = 0; j < columnCount(); j++)
     {
-      QModelIndex& ind = index((rowCount() - 1), j);
+      QModelIndex indAux = index((rowCount() - 1), j);
+      QModelIndex& ind = indAux;
+
       QString value = ind.data().toString();
 
       if (!value.isEmpty() && (value != "-- select --") && (value != "No Name") && (value != "0") && (value != "undefined"))
