@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/ui_CQMiriamWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/03/18 12:30:00 $
+//   $Date: 2009/03/18 13:00:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,6 @@
 #include <QtGui/QTableView>
 #include <vector>
 #include "copasi/UI/copasiWidget.h"
-
-QT_BEGIN_NAMESPACE
 
 class Ui_CQMiriamWidget
 {
@@ -222,7 +220,5 @@ namespace Ui
 {
 class CQMiriamWidget: public Ui_CQMiriamWidget {};
 } // namespace Ui
-
-QT_END_NAMESPACE
 
 #endif // UI_CQMIRIAMWIDGET_H
