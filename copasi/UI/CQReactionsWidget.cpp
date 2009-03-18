@@ -1,15 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Author: pwilly $
+//   $Date: 2009/03/18 12:33:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include <QHeaderView>
 
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
