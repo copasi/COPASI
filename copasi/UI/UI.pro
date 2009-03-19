@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.187 $
+#   $Revision: 1.188 $
 #   $Name:  $
 #   $Author: pwilly $
-#   $Date: 2009/03/18 12:41:52 $
+#   $Date: 2009/03/19 10:20:18 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.187 $ $Author: pwilly $ $Date: 2009/03/18 12:41:52 $
+# $Revision: 1.188 $ $Author: pwilly $ $Date: 2009/03/19 10:20:18 $
 ######################################################################
 
 LIB = UI
@@ -292,16 +292,16 @@ HEADERS += \
            CScanWidgetBreak.h \
            CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
-           ui_CScanWidgetRandom.h \
+#           ui_CScanWidgetRandom.h \
 #           CScanWidgetRandom.ui.h \
            CScanWidgetRepeat.h \
-           ui_CScanWidgetRepeat.h \
+#           ui_CScanWidgetRepeat.h \
 #           CScanWidgetRepeat.ui.h \
            CScanWidgetScan.h \
-           ui_CScanWidgetScan.h \
+#           ui_CScanWidgetScan.h \
 #           CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \
-           ui_CScanWidgetTask.h  \
+#           ui_CScanWidgetTask.h  \
 #           CScanWidgetTask4.ui.h  \
            CUpDownSubwidget.h \
            CUpDownSubwidget.ui.h \
@@ -358,6 +358,11 @@ SOURCES += \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp
+
+FORMS += CScanWidgetRandom.ui
+FORMS += CScanWidgetRepeat.ui
+FORMS += CScanWidgetScan.ui
+FORMS += CScanWidgetTask.ui
 
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h

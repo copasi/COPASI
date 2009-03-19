@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
-#   $Revision: 1.15 $
+#   $Revision: 1.16 $
 #   $Name:  $
 #   $Author: pwilly $
-#   $Date: 2009/03/18 12:26:31 $
+#   $Date: 2009/03/19 10:21:49 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@ CONFIG += qt
 
 HEADERS += \
 		CQMiriamWidget.h \
-                ui_CQMiriamWidget.h \
+#                ui_CQMiriamWidget.h \
 		CQCreatorDM.h \
 		CQReferenceDM.h \
 		CQBiologicalDescriptionDM.h \		
@@ -42,7 +42,7 @@ SOURCES += \
 		CRDFListView.cpp \
 		CRDFListViewItem.cpp
 		
-#FORMS   += CQMiriamWidget.ui
+FORMS   += CQMiriamWidget.ui
 
 #The following line was changed from FORMS to FORMS3 by qt3to4
 FORMS3    = CQRDFListViewWidget.ui
