@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Mar 20 13:11:29 2009
+ ** Created: Fri Mar 20 15:34:01 2009
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -66,6 +66,7 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
   CQTSSAResultSubWidgetLayout->addLayout(toplayout, 0, 0);
 
   tabWidget2 = new QTabWidget(this, "tabWidget2");
+  tabWidget2->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)7, 0, 0, tabWidget2->sizePolicy().hasHeightForWidth()));
   tabWidget2->setMargin(1);
 
   tab = new QWidget(tabWidget2, "tab");
@@ -143,6 +144,7 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
   TabPage_ILDMLayout->addWidget(mLabel6, 0, 6);
 
   mTabWidget = new QTabWidget(TabPage_ILDM, "mTabWidget");
+  mTabWidget->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)7, 0, 0, mTabWidget->sizePolicy().hasHeightForWidth()));
   mTabWidget->setMargin(0);
 
   tab_3 = new QWidget(mTabWidget, "tab_3");
@@ -308,6 +310,7 @@ CQTSSAResultSubWidget::CQTSSAResultSubWidget(QWidget* parent, const char* name, 
   TabPage_CSPLayout = new QGridLayout(TabPage_CSP, 1, 1, 11, 6, "TabPage_CSPLayout");
 
   mTabWidget_3 = new QTabWidget(TabPage_CSP, "mTabWidget_3");
+  mTabWidget_3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)2, (QSizePolicy::SizeType)7, 0, 0, mTabWidget_3->sizePolicy().hasHeightForWidth()));
   mTabWidget_3->setMargin(0);
 
   tab_7 = new QWidget(mTabWidget_3, "tab_7");

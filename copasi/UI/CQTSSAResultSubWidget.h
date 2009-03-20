@@ -14,7 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAResultSubWidget.ui'
  **
- ** Created: Fri Mar 20 13:07:21 2009
+ ** Created: Fri Mar 20 15:33:58 2009
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

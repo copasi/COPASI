@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.8.6.3.4.1 $ </comment>
+<comment>   $Revision: 1.8.6.3.4.2 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: nsimus $ </comment>
-<comment>   $Date: 2009/03/20 13:22:19 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2009/03/20 14:57:44 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -116,6 +116,14 @@
         <widget class="QTabWidget" row="1" column="0">
             <property name="name">
                 <cstring>tabWidget2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>2</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
             </property>
             <property name="margin">
                 <number>1</number>
@@ -355,6 +363,14 @@
                     <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="8">
                         <property name="name">
                             <cstring>mTabWidget</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>2</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
                         </property>
                         <property name="margin">
                             <number>0</number>
@@ -779,6 +795,14 @@
                     <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="7">
                         <property name="name">
                             <cstring>mTabWidget_3</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>2</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
                         </property>
                         <property name="margin">
                             <number>0</number>
