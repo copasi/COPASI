@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.27.2.5.2.1.2.1 $
+//   $Revision: 1.27.2.5.2.1.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/29 20:25:22 $
+//   $Date: 2009/03/20 16:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@ bool CQOptimizationWidget::saveTask()
 {
   COptTask * pTask =
     dynamic_cast< COptTask * >(mpTask);
+
   if (!pTask) return false;
 
   saveCommon();
@@ -47,6 +48,7 @@ bool CQOptimizationWidget::saveTask()
 
   COptProblem * pProblem =
     dynamic_cast<COptProblem *>(mpTask->getProblem());
+
   if (!pProblem) return false;
 
   // expression
@@ -89,6 +91,7 @@ bool CQOptimizationWidget::loadTask()
 {
   COptTask * pTask =
     dynamic_cast< COptTask * >(mpTask);
+
   if (!pTask) return false;
 
   loadCommon();
@@ -96,6 +99,7 @@ bool CQOptimizationWidget::loadTask()
 
   COptProblem * pProblem =
     dynamic_cast<COptProblem *>(mpTask->getProblem());
+
   if (!pProblem) return false;
 
   // expression
@@ -103,6 +107,7 @@ bool CQOptimizationWidget::loadTask()
   mpExpressionEMW->updateWidget();
 
   mpBtnMaximize->setChecked(pProblem->maximize());
+  mpBtnMinimize->setChecked(!pProblem->maximize());
 
   mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
@@ -125,6 +130,7 @@ bool CQOptimizationWidget::runTask()
 
   COptTask * pTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(mObjectKey));
+
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
