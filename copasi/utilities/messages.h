@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.122.4.3.4.2 $
+//   $Revision: 1.122.4.3.4.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/03/12 15:00:15 $
+//   $Author: nsimus $
+//   $Date: 2009/03/20 13:24:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -318,6 +318,7 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
   {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
   {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assigments or ODE are presenting. "},
+  {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f' the fastest of slow modes has positive eigen value. "},
 
   // CTSSAProblem
   {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},
