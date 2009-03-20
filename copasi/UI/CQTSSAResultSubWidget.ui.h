@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.18.2.6.2.1 $
+//   $Revision: 1.18.2.6.2.1.2.1 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2008/12/16 11:58:57 $
+//   $Date: 2009/03/20 13:22:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,16 +61,30 @@ const CArrayAnnotation * pResult3;
 const CArrayAnnotation * pResult4;
 const CArrayAnnotation * pResult5; //NEW TAB
 
+/* temporary tables */
+
+const CArrayAnnotation * pResultTMP1;
+const CArrayAnnotation * pResultTMP2;
+const CArrayAnnotation * pResultTMP3;
+
+/* ILDM Modified */
 const CArrayAnnotation * pResult_M;
 const CArrayAnnotation * pResult2_M;
 const CArrayAnnotation * pResult3_M;
 const CArrayAnnotation * pResult4_M;
 
+/* CSP */
 const CArrayAnnotation * pResultCSP;
 const CArrayAnnotation * pResult2CSP;
 const CArrayAnnotation * pResult3CSP;
 const CArrayAnnotation * pResult4CSP;
 const CArrayAnnotation * pResult5CSP;
+
+/* CSP normed tables */
+const CArrayAnnotation * pResult3NormedCSP;
+const CArrayAnnotation * pResult4NormedRowCSP;
+const CArrayAnnotation * pResult4NormedColumnCSP;
+const CArrayAnnotation * pResult5NormedRowCSP;
 
 bool mILDM = true;
 bool mILDMModified = false;
@@ -99,10 +113,12 @@ void CQTSSAResultSubWidget::saveDataToFile()
     }
 
   std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
+
   if (file.fail()) return;
 
   CCopasiTask* mpTask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+
   if (!mpTask) return;
 
   CCopasiProblem* mpProblem = mpTask->getProblem();
@@ -179,6 +195,23 @@ void CQTSSAResultSubWidget::init()
   pArrayWidget_3_2->setColorCoding(pcss);
   pArrayWidget_3_2->setColorScalingAutomatic(true);
 
+  /* temporary tabs */
+
+  CColorScaleSimple* ttTMP1 = new CColorScaleSimple();
+  ttTMP1->setSymmetric(true);
+  pArrayWidgetTMP1->setColorCoding(ttTMP1);
+  pArrayWidgetTMP1->setColorScalingAutomatic(true);
+
+  CColorScaleSimple* ttTMP2 = new CColorScaleSimple();
+  ttTMP2->setSymmetric(true);
+  pArrayWidgetTMP2->setColorCoding(ttTMP2);
+  pArrayWidgetTMP2->setColorScalingAutomatic(true);
+
+  CColorScaleSimple* ttTMP3 = new CColorScaleSimple();
+  ttTMP3->setSymmetric(true);
+  pArrayWidgetTMP3->setColorCoding(ttTMP3);
+  pArrayWidgetTMP3->setColorScalingAutomatic(true);
+
   // ILDM Modified
 
   mpTimeScaleWidgetILDMModified = new CQTSSATimeScaleWidget();
@@ -222,25 +255,50 @@ void CQTSSAResultSubWidget::init()
   pArrayWidget2_3->setColorCoding(tcs);
   pArrayWidget2_3->setColorScalingAutomatic(true);
   // Fast Reaction Pointer widget
-  tcs = new CColorScaleAdvanced();
-  tcs->setColorMin(QColor(240, 240, 240));
-  tcs->setColorMax(QColor(0, 255, 0));
-  pArrayWidget3_3->setColorCoding(tcs);
-  pArrayWidget3_3->setColorScalingAutomatic(true);
+  //tcs = new CColorScaleAdvanced();
+  //tcs->setColorMin(QColor(240, 240, 240));
+  //tcs->setColorMax(QColor(0, 255, 0));
+  //pArrayWidget3_3->setColorCoding(tcs);
+  //pArrayWidget3_3->setColorScalingAutomatic(true);
 
   // Participation Index widget
-
   CColorScaleSimple* pics = new CColorScaleSimple();
   pics->setSymmetric(true);
   pArrayWidget4_3->setColorCoding(pics);
   pArrayWidget4_3->setColorScalingAutomatic(true);
 
   // Importance Index widget
-
   CColorScaleSimple* iics = new CColorScaleSimple();
   iics->setSymmetric(true);
   pArrayWidget4_3_2->setColorCoding(iics);
   pArrayWidget4_3_2->setColorScalingAutomatic(true);
+
+  /* CSP normed tables */
+
+  // Normed Fast Reaction Pointer widget
+  tcs = new CColorScaleAdvanced();
+  tcs->setColorMin(QColor(240, 240, 240));
+  tcs->setColorMax(QColor(0, 255, 0));
+  pArrayWidget3_3->setColorCoding(tcs);
+  pArrayWidget3_3->setColorScalingAutomatic(true);
+
+  // Normed Participation Index (by row) widget
+  CColorScaleSimple* npircs = new CColorScaleSimple();
+  npircs->setSymmetric(true);
+  pArrayWidgetNPIr->setColorCoding(npircs);
+  pArrayWidgetNPIr->setColorScalingAutomatic(true);
+
+  // Normed Participation Index (by column) widget
+  CColorScaleSimple* npiccs = new CColorScaleSimple();
+  npiccs->setSymmetric(true);
+  pArrayWidgetNPIc->setColorCoding(npiccs);
+  pArrayWidgetNPIc->setColorScalingAutomatic(true);
+
+  // Normed Importance Index (by row) widget
+  CColorScaleSimple* niircs = new CColorScaleSimple();
+  niircs->setSymmetric(true);
+  pArrayWidgetNIIr->setColorCoding(niircs);
+  pArrayWidgetNIIr->setColorScalingAutomatic(true);
 
   connect(mSlider, SIGNAL(valueChanged(int)), this, SLOT(changeILDMInterval()));
   connect(mSlider_4, SIGNAL(valueChanged(int)), this, SLOT(changeILDMModifiedInterval()));
@@ -271,7 +329,9 @@ void CQTSSAResultSubWidget::setStepNumber()
 {
   CTSSATask* pTSSTask =
     dynamic_cast<CTSSATask *>((*CCopasiDataModel::Global->getTaskList())["Time Scale Separation Analysis"]);
+
   if (!pTSSTask) return;
+
   // pTSSMethod = dynamic_cast<CTSSAMethod*>(pTSSTask->getMethod());
   //if (!pTSSMethod) return;
   //  pTimeScaleSeperation = dynamic_cast<CILDMMethod*>(pTSSTask->getMethod());
@@ -290,32 +350,31 @@ void CQTSSAResultSubWidget::setStepNumber()
       mSlider->setValue(mSlider->minValue());
       changeILDMInterval();
     }
+  else if (mILDMModified)
+    {
+      pILDMModifiedMethod = dynamic_cast<CILDMModifiedMethod*>(pTSSTask->getMethod());
+
+      QString a = FROM_UTF8(pModel->getTimeUnitName());
+      // mLabel7->setText(a);
+
+      mLabel6_6->setNum((double)pProblem->getStepNumber());
+      mSlider_4->setRange(1, pProblem->getStepNumber());
+      mSlider_4->setValue(mSlider_4->minValue());
+      changeILDMModifiedInterval();
+    }
   else
-    if (mILDMModified)
-      {
-        pILDMModifiedMethod = dynamic_cast<CILDMModifiedMethod*>(pTSSTask->getMethod());
+    {
+      pCSPMethod = dynamic_cast<CCSPMethod*>(pTSSTask->getMethod());
 
-        QString a = FROM_UTF8(pModel->getTimeUnitName());
-        // mLabel7->setText(a);
-
-        mLabel6_6->setNum((double)pProblem->getStepNumber());
-        mSlider_4->setRange(1, pProblem->getStepNumber());
-        mSlider_4->setValue(mSlider_4->minValue());
-        changeILDMModifiedInterval();
-      }
-    else
-      {
-        pCSPMethod = dynamic_cast<CCSPMethod*>(pTSSTask->getMethod());
-
-        QString a = FROM_UTF8(pModel->getTimeUnitName());
-        // mLabel7_3->setText(a);
-        mLabel6_3->setNum((double)pProblem->getStepNumber());
-        mSlider_3->setRange(1, pProblem->getStepNumber());
-        mSlider_3->setValue(mSlider_3->minValue());
-        //mSlider->setRange(1, pProblem->getStepNumber());
-        //mSlider->setValue(mSlider->minValue());
-        changeCSPInterval();
-      }
+      QString a = FROM_UTF8(pModel->getTimeUnitName());
+      // mLabel7_3->setText(a);
+      mLabel6_3->setNum((double)pProblem->getStepNumber());
+      mSlider_3->setRange(1, pProblem->getStepNumber());
+      mSlider_3->setValue(mSlider_3->minValue());
+      //mSlider->setRange(1, pProblem->getStepNumber());
+      //mSlider->setValue(mSlider->minValue());
+      changeCSPInterval();
+    }
 }
 
 /**
@@ -339,6 +398,10 @@ void CQTSSAResultSubWidget::discardOldResults()
   pArrayWidget3_3->setArrayAnnotation(NULL);
   pArrayWidget4_3->setArrayAnnotation(NULL);
   pArrayWidget4_3_2->setArrayAnnotation(NULL);
+
+  pArrayWidgetNPIr->setArrayAnnotation(NULL);
+  pArrayWidgetNPIc->setArrayAnnotation(NULL);
+  pArrayWidgetNIIr->setArrayAnnotation(NULL);
 
   mLabel2->setNum(0);
   mLabel4->setNum(0);
@@ -390,6 +453,15 @@ void CQTSSAResultSubWidget::changeILDMInterval()
   pArrayWidget4->setArrayAnnotation(pResult4);
   pArrayWidget_3_2->setArrayAnnotation(pResult5); //NEW TAB
   mpTimeScaleWidgetILDM->paintTimeScale(pILDMMethod->getVec_TimeScale(step));
+
+  /* temporary tables */
+
+  pResultTMP1 = pILDMMethod->getTMP1PrintAnn();
+  pResultTMP2 = pILDMMethod->getTMP2PrintAnn();
+  pResultTMP3 = pILDMMethod->getTMP3PrintAnn();
+  pArrayWidgetTMP1->setArrayAnnotation(pResultTMP1);
+  pArrayWidgetTMP2->setArrayAnnotation(pResultTMP2);
+  pArrayWidgetTMP3->setArrayAnnotation(pResultTMP3);
 }
 
 /**
@@ -416,12 +488,20 @@ void CQTSSAResultSubWidget::changeCSPInterval()
   pResult3CSP = pCSPMethod->getFastReactionPointerAnn();
   pResult4CSP = pCSPMethod->getParticipationIndexAnn();
   pResult5CSP = pCSPMethod->getImportanceIndexAnn();
+  pResult3NormedCSP = pCSPMethod->getFastReactionPointerNormedAnn();
+  pResult4NormedRowCSP = pCSPMethod->getParticipationIndexNormedRowAnn();
+  pResult4NormedColumnCSP = pCSPMethod->getParticipationIndexNormedColumnAnn();
+  pResult5NormedRowCSP = pCSPMethod->getImportanceIndexNormedRowAnn();
 
   pArrayWidget_3->setArrayAnnotation(pResultCSP);
   pArrayWidget2_3->setArrayAnnotation(pResult2CSP);
-  pArrayWidget3_3->setArrayAnnotation(pResult3CSP);
+  //pArrayWidget3_3->setArrayAnnotation(pResult3CSP);
   pArrayWidget4_3->setArrayAnnotation(pResult4CSP);
   pArrayWidget4_3_2->setArrayAnnotation(pResult5CSP);
+  pArrayWidget3_3->setArrayAnnotation(pResult3NormedCSP);
+  pArrayWidgetNPIr->setArrayAnnotation(pResult4NormedRowCSP);
+  pArrayWidgetNPIc->setArrayAnnotation(pResult4NormedColumnCSP);
+  pArrayWidgetNIIr->setArrayAnnotation(pResult5NormedRowCSP);
 }
 /**
  * Hide the above buttons if ILDM-tab is currently active.
@@ -437,6 +517,10 @@ void CQTSSAResultSubWidget::hideButtons()
       comboBox->setEnabled(true);
     }
 
+  ButtonSaveData->setEnabled(true);
+
+#if 0 //TO REMOVE
+
   if ((tabWidget2->currentPageIndex() == 3))
     {
       ButtonSaveData->setDisabled(true);
@@ -445,6 +529,8 @@ void CQTSSAResultSubWidget::hideButtons()
     {
       ButtonSaveData->setEnabled(true);
     }
+
+#endif
 }
 /**
  * Able / Disable the slider.
