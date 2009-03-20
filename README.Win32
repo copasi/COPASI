@@ -1,4 +1,4 @@
-This is the Windows build of a COPASI test version.
+This is the Windows build of a COPASI stable version.
 
 INSTALLATION:
 
@@ -15,11 +15,8 @@ folder (inside the Copasi installation folder). You may want to add this
 folder to your PATH environment variable, or otherwise you need to call
 it with its full pathname. 
 
-KNOWN PROBLEMS:
 
-Please visit the Copasi web page for more information:
-http://www.copasi.org
+FURTHER HELP
 
+Documentation and a user forum can be found on www.copasi.org. Bug reports can also be sent to bugs@copasi.org.
 
-COPASI was developed by the Mendes and Kummer groups at the Virginia 
-Bioinformatics Institute and the European Media Lab Research.

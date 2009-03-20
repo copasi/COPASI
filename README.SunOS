@@ -1,4 +1,4 @@
-This is the Solaris build of a COPASI test version.
+This is the Solaris build of a COPASI stable version.
 
 INSTALLATION:
 
@@ -36,3 +36,8 @@ You are missing libgcc_s.so.1 or have a version stemming from gcc
 prior to version 3.3. You have to install the new version of
 libgcc_s.so.1. Note, that it is possible to have multiple versions of
 gcc installed in parallel.
+
+FURTHER HELP
+
+Documentation and a user forum can be found on www.copasi.org. Bug reports can also be sent to bugs@copasi.org.
+
