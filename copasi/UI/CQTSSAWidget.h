@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.6.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/16 10:10:32 $
+//   $Author: nsimus $
+//   $Date: 2009/03/20 13:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTSSAWidget.ui'
  **
- ** Created: Tue Sep 16 12:03:16 2008
- **      by: The User Interface Compiler ($Id: CQTSSAWidget.h,v 1.7 2008/09/16 10:10:32 ssahle Exp $)
+ ** Created: Fri Mar 20 13:07:21 2009
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -40,55 +39,55 @@ class CQValidatorInt;
 class CQValidatorDouble;
 
 class CQTSSAWidget : public TaskWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQTSSAWidget(QWidget* parent = 0, const char* name = 0);
-    ~CQTSSAWidget();
+public:
+  CQTSSAWidget(QWidget* parent = 0, const char* name = 0);
+  ~CQTSSAWidget();
 
-    QLineEdit* mpEditIntervals;
-    QLineEdit* mpEditIntervalSize;
-    QLabel* mpLbDeuflTol;
-    QLineEdit* mpEditDuration;
-    QLabel* mpLblIntervals;
-    QLineEdit* mpEditDeufelTol;
-    QLabel* mpLblDuration;
-    QLabel* mpLblIntervalSize;
-    QCheckBox* mpCheckSave;
-    QFrame* line1;
+  QLineEdit* mpEditIntervals;
+  QLineEdit* mpEditIntervalSize;
+  QLabel* mpLbDeuflTol;
+  QLineEdit* mpEditDuration;
+  QLabel* mpLblIntervals;
+  QLineEdit* mpEditDeufelTol;
+  QLabel* mpLblDuration;
+  QLabel* mpLblIntervalSize;
+  QCheckBox* mpCheckSave;
+  QFrame* line1;
 
-    virtual bool runTask();
+  virtual bool runTask();
 
-  public slots:
-    void slotDuration();
-    void slotIntervalSize();
-    void slotIntervals();
-    virtual void disableDeuflhard(int);
+public slots:
+  void slotDuration();
+  void slotIntervalSize();
+  void slotIntervals();
+  virtual void disableDeuflhard(int);
 
-  protected:
-    virtual bool saveTask();
-    virtual bool loadTask();
-    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
+protected:
+  virtual bool saveTask();
+  virtual bool loadTask();
+  virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
-    QVBoxLayout* CQTSSAWidgetLayout;
-    QGridLayout* mpGridLayout;
+  QVBoxLayout* CQTSSAWidgetLayout;
+  QGridLayout* mpGridLayout;
 
-  protected slots:
-    virtual void languageChange();
+protected slots:
+  virtual void languageChange();
 
-  private:
-    CTSSAProblem * mpTSSAProblem;
-    CQValidatorDouble * mpValidatorDuration;
-    CQValidatorDouble * mpValidatorIntervalSize;
-    CQValidatorDouble * mpValidatorDelay;
-    CQValidatorInt * mpValidatorIntervals;
+private:
+  CTSSAProblem * mpTSSAProblem;
+  CQValidatorDouble * mpValidatorDuration;
+  CQValidatorDouble * mpValidatorIntervalSize;
+  CQValidatorDouble * mpValidatorDelay;
+  CQValidatorInt * mpValidatorIntervals;
 
-    QPixmap image0;
+  QPixmap image0;
 
-    void init();
-    void destroy();
-    void checkTimeSeries();
-  };
+  void init();
+  void destroy();
+  void checkTimeSeries();
+};
 
 #endif // CQTSSAWIDGET_H

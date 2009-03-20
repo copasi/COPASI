@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.7.6.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/09/16 10:10:31 $
+//   $Author: nsimus $
+//   $Date: 2009/03/20 13:23:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTSSAWidget.ui'
  **
- ** Created: Tue Sep 16 12:03:16 2008
- **      by: The User Interface Compiler ($Id: CQTSSAWidget.cpp,v 1.7 2008/09/16 10:10:31 ssahle Exp $)
+ ** Created: Fri Mar 20 13:11:26 2009
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -37,11 +36,12 @@
  *  Constructs a CQTSSAWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQTSSAWidget::CQTSSAWidget(QWidget* parent, const char* name)
+CQTSSAWidget::CQTSSAWidget(QWidget* parent,  const char* name)
     : TaskWidget(parent, name)
 {
   if (!name)
     setName("CQTSSAWidget");
+
   CQTSSAWidgetLayout = new QVBoxLayout(this, 11, 6, "CQTSSAWidgetLayout");
 
   mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
