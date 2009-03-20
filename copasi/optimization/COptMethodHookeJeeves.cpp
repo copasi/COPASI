@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.11.8.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2009/03/20 16:04:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-// hoojee.cpp : optimisation by the method of Hooke and Jeeves
+// hoojee.cpp : optimization by the method of Hooke and Jeeves
 //
 
 /* Nonlinear Optimization using the algorithm of Hooke and Jeeves  */
@@ -79,13 +79,13 @@ bool COptMethodHookeJeeves::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -110,6 +110,7 @@ bool COptMethodHookeJeeves::optimise()
     {
       mNew[i] = mBefore[i] = mIndividual[i];
       mDelta[i] = fabs(mIndividual[i] * mRho);
+
       if (mDelta[i] == 0.0) mDelta[i] = mRho;
     }
 
@@ -134,6 +135,7 @@ bool COptMethodHookeJeeves::optimise()
 
       /* if we made some improvements, pursue that direction */
       Keep = true;
+
       while ((newf < mBestValue) && Keep && mContinue)
         {
           // We found a better value
@@ -142,6 +144,7 @@ bool COptMethodHookeJeeves::optimise()
           mpParentTask->output(COutputInterface::DURING);
 
           iadj = 0;
+
           for (i = 0; i < mVariableSize; i++)
             {
               C_FLOAT64 & mut = mNew[i];
@@ -161,13 +164,13 @@ bool COptMethodHookeJeeves::optimise()
               // force it to be within the bounds
               switch (OptItem.checkConstraint(mut))
                 {
-                case - 1:
-                  mut = *OptItem.getLowerBoundValue();
-                  break;
+                  case - 1:
+                    mut = *OptItem.getLowerBoundValue();
+                    break;
 
-                case 1:
-                  mut = *OptItem.getUpperBoundValue();
-                  break;
+                  case 1:
+                    mut = *OptItem.getUpperBoundValue();
+                    break;
                 }
 
               // We need to set the value here so that further checks take
@@ -176,6 +179,7 @@ bool COptMethodHookeJeeves::optimise()
             }
 
           newf = bestNearby();
+
           /* if the further (optimistic) move was bad.... */
           if (newf >= mBestValue) break;
 
@@ -184,6 +188,7 @@ bool COptMethodHookeJeeves::optimise()
           /* displacements; beware of roundoff errors that */
           /* might cause newf < mBestValue */
           Keep = false;
+
           for (i = 0; i < mVariableSize; i++)
             if (fabs(mNew[i] - mBefore[i]) > (0.5 * fabs(mDelta[i])))
               {
@@ -195,6 +200,7 @@ bool COptMethodHookeJeeves::optimise()
       if ((steplength >= mTolerance) && (newf >= mBestValue))
         {
           steplength = steplength * mRho;
+
           for (i = 0; i < mVariableSize; i++)
             mDelta[i] *= mRho;
         }
@@ -226,6 +232,7 @@ bool COptMethodHookeJeeves::initialize()
   mRho = * getValue("Rho").pDOUBLE;
 
   mIteration = 0;
+
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Current Iteration",
@@ -240,7 +247,7 @@ bool COptMethodHookeJeeves::initialize()
   mNew.resize(mVariableSize);
   mDelta.resize(mVariableSize);
 
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
 
   return true;
 }
@@ -268,7 +275,7 @@ bool COptMethodHookeJeeves::evaluate()
 
   mContinue &= mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
+  // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
     mEvaluationValue = 2.0 * DBL_MAX;
   else
@@ -298,13 +305,13 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -323,13 +330,13 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
             {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              break;
+              case - 1:
+                mut = *OptItem.getLowerBoundValue();
+                break;
 
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              break;
+              case 1:
+                mut = *OptItem.getUpperBoundValue();
+                break;
             }
 
           // We need to set the value here so that further checks take

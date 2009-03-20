@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.6.12.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 01:25:56 $
+//   $Date: 2009/03/20 16:04:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,16 +90,16 @@ bool COptMethodTruncatedNewton::optimise()
 
       switch (OptItem.checkConstraint(mCurrent[i]))
         {
-        case - 1:
-          mCurrent[i] = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mCurrent[i] = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mCurrent[i] = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mCurrent[i] = *OptItem.getUpperBoundValue();
+            break;
 
-        case 0:
-          break;
+          case 0:
+            break;
         }
 
       // set the value
@@ -143,6 +143,7 @@ bool COptMethodTruncatedNewton::optimise()
       // leads to an improved solution.
 
       bool withinBounds = true;
+
       for (i = 0; i < mVariableSize; i++)
         {
           const COptItem & OptItem = *(*mpOptItem)[i];
@@ -150,19 +151,20 @@ bool COptMethodTruncatedNewton::optimise()
           //force it to be within the bounds
           switch (OptItem.checkConstraint(mCurrent[i]))
             {
-            case - 1:
-              withinBounds = false;
-              mCurrent[i] = *OptItem.getLowerBoundValue();
-              break;
+              case - 1:
+                withinBounds = false;
+                mCurrent[i] = *OptItem.getLowerBoundValue();
+                break;
 
-            case 1:
-              withinBounds = false;
-              mCurrent[i] = *OptItem.getUpperBoundValue();
-              break;
+              case 1:
+                withinBounds = false;
+                mCurrent[i] = *OptItem.getUpperBoundValue();
+                break;
 
-            case 0:
-              break;
+              case 0:
+                break;
             }
+
           (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
         }
 
@@ -188,6 +190,7 @@ bool COptMethodTruncatedNewton::optimise()
 
       // Choosing another starting point will be left to the user
 #ifdef XXXX
+
       // Try another starting point
       for (i = 0; i < mVariableSize; i++)
         {
@@ -197,16 +200,16 @@ bool COptMethodTruncatedNewton::optimise()
           //force it to be within the bounds
           switch (OptItem.checkConstraint(mCurrent[i]))
             {
-            case - 1:
-              mCurrent[i] = *OptItem.getLowerBoundValue();
-              break;
+              case - 1:
+                mCurrent[i] = *OptItem.getLowerBoundValue();
+                break;
 
-            case 1:
-              mCurrent[i] = *OptItem.getUpperBoundValue();
-              break;
+              case 1:
+                mCurrent[i] = *OptItem.getUpperBoundValue();
+                break;
 
-            case 0:
-              break;
+              case 0:
+                break;
             }
 
           (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
@@ -227,6 +230,7 @@ bool COptMethodTruncatedNewton::optimise()
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
+
 #endif // XXXX
     }
 
@@ -244,7 +248,7 @@ bool COptMethodTruncatedNewton::initialize()
   mBest.resize(mVariableSize);
 
   mContinue = true;
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
   mGradient.resize(mVariableSize);
 
   return true;

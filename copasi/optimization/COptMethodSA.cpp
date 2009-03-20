@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.18.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2009/03/20 16:04:25 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -72,17 +77,17 @@ bool COptMethodSA::optimise()
 
       switch (OptItem.checkConstraint())
         {
-        case - 1:
-          mCurrent[i] = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mCurrent[i] = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mCurrent[i] = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mCurrent[i] = *OptItem.getUpperBoundValue();
+            break;
 
-        case 0:
-          mCurrent[i] = OptItem.getStartValue();
-          break;
+          case 0:
+            mCurrent[i] = OptItem.getStartValue();
+            break;
         }
 
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
@@ -109,6 +114,7 @@ bool COptMethodSA::optimise()
 
   // set the number of steps at one single temperature
   nt = 5 * mVariableSize;
+
   if (nt < 100) nt = 100;
 
   // no temperature reductions yet
@@ -148,7 +154,7 @@ bool COptMethodSA::optimise()
                       continue;
                     }
 
-                  // here we have a completly feasible point
+                  // here we have a completely feasible point
                   // keep if energy is reduced
                   if (mEvaluationValue <= mCurrentValue)
                     {
@@ -172,6 +178,7 @@ bool COptMethodSA::optimise()
                     {
                       // keep with probability p, if energy is increased
                       p = exp((mCurrentValue - mEvaluationValue) / (K * mTemperature));
+
                       if (p > mpRandom->getRandomCO())
                         {
                           // only one value has changed...
@@ -191,22 +198,27 @@ bool COptMethodSA::optimise()
           for (a = 0; a < mVariableSize; a++)
             {
               c = (C_FLOAT64) mAccepted[a] / (C_FLOAT64) NS;
+
               if (c > 0.6)
                 mStep[a] *= 1 + 5 * (c - 0.6);
               else if (c < 0.4)
                 mStep[a] /= 1 + 5 * (0.4 - c);
+
               mAccepted[a] = 0;
             }
         }
+
       // the equilibrium energy
 
       k++;
+
       // if this is the first cycle ignore the convergence tests
       if (k == 1)
         ready = false;
       else
         {
           ready = true;
+
           // check termination criterion of not much change since last STORED times
           for (a = 0; a < STORED; a++)
             if (fabs(fk[a] - mCurrentValue) > mTolerance)
@@ -232,6 +244,7 @@ bool COptMethodSA::optimise()
           i++;
 
           mCurrent = mpOptProblem->getSolutionVariables();
+
           for (a = 0; a < mVariableSize; a++)
             (*(*mpSetCalculateVariable)[a])(mCurrent[a]);
 
@@ -240,6 +253,7 @@ bool COptMethodSA::optimise()
 
       // update the temperature
       mTemperature *= mCoolingFactor;
+
       if (mpCallBack)
         mContinue &= mpCallBack->progress(mhTemperature);
     }
@@ -299,7 +313,7 @@ bool COptMethodSA::initialize()
                           & mTemperature,
                           NULL);
 
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
   mContinue = true;
 
   mVariableSize = mpOptItem->size();

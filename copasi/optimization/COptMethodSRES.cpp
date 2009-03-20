@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.11.8.1 $
+//   $Revision: 1.11.8.1.2.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/16 19:47:36 $
+//   $Date: 2009/03/20 16:04:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,7 +134,7 @@ bool COptMethodSRES::replicate()
   // iterate over parents
   for (i = 0; itSrc != endSrc && Continue; ++itSrc, ++itSrcVariance, ++i)
     {
-      // iterate over the childrate - 1 since the first child is the
+      // iterate over the child rate - 1 since the first child is the
       // parent.
       for (j = 1; j < childrate; ++j, ++itTarget, ++itTargetVariance)
         {
@@ -205,6 +205,7 @@ bool COptMethodSRES::mutate()
                 {
                   // calculate the mutated parameter
                   mut = Store + *pVariance * mpRandom->getRandomNormal01();
+
                   if (OptItem.checkConstraint(mut) == 0)
                     break;
                 }
@@ -292,7 +293,7 @@ unsigned C_INT32 COptMethodSRES::fittest()
   return BestIndex;
 }
 
-// initialise the population
+// Initialize the population
 bool COptMethodSRES::creation(unsigned C_INT32 first)
 {
   unsigned C_INT32 i;
@@ -333,27 +334,31 @@ bool COptMethodSRES::creation(unsigned C_INT32 first)
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
             {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
-              break;
+              case - 1:
+                mut = *OptItem.getLowerBoundValue();
 
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
-              break;
+                if (!OptItem.checkLowerBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = DBL_MIN;
+                    else
+                      mut += mut * DBL_EPSILON;
+                  }
+
+                break;
+
+              case 1:
+                mut = *OptItem.getUpperBoundValue();
+
+                if (!OptItem.checkUpperBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = - DBL_MIN;
+                    else
+                      mut -= mut * DBL_EPSILON;
+                  }
+
+                break;
             }
 
           // We need to set the value here so that further checks take
@@ -413,6 +418,7 @@ bool COptMethodSRES::creation(unsigned C_INT32 first)
                     {
                       C_FLOAT64 mean = (mx + mn) * 0.5;
                       C_FLOAT64 sigma = mean * 0.01;
+
                       do
                         {
                           mut = mpRandom->getRandomNormal(mean, sigma);
@@ -444,28 +450,33 @@ bool COptMethodSRES::creation(unsigned C_INT32 first)
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
             {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
-              break;
+              case - 1:
+                mut = *OptItem.getLowerBoundValue();
 
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
-              break;
+                if (!OptItem.checkLowerBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = DBL_MIN;
+                    else
+                      mut += mut * DBL_EPSILON;
+                  }
+
+                break;
+
+              case 1:
+                mut = *OptItem.getUpperBoundValue();
+
+                if (!OptItem.checkUpperBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = - DBL_MIN;
+                    else
+                      mut -= mut * DBL_EPSILON;
+                  }
+
+                break;
             }
+
           // We need to set the value here so that further checks take
           // account of the value.
           (*(*mpSetCalculateVariable)[j])(mut);
@@ -511,11 +522,13 @@ bool COptMethodSRES::initialize()
                           CCopasiParameter::UINT,
                           & mGeneration,
                           & mGenerations);
+
   mGeneration++;
 
   mPopulationSize = * getValue("Population Size").pUINT;
 
   mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
+
   if (mPf < 0.0 || 1.0 < mPf)
     {
       mPf = 0.475;
@@ -529,14 +542,17 @@ bool COptMethodSRES::initialize()
   mVariableSize = mpOptItem->size();
 
   mIndividual.resize(childrate * mPopulationSize);
+
   for (i = 0; i < childrate * mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mVariance.resize(childrate * mPopulationSize);
+
   for (i = 0; i < childrate * mPopulationSize; i++)
     mVariance[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mMaxVariance.resize(mVariableSize);
+
   for (i = 0; i < mVariableSize; i++)
     {
       COptItem & OptItem = *(*mpOptItem)[i];
@@ -553,8 +569,8 @@ bool COptMethodSRES::initialize()
     }
 
   mValue.resize(childrate * mPopulationSize);
-  mValue = mpOptProblem->getSolutionValue();
-  mBestValue = mpOptProblem->getSolutionValue();
+  mValue = 2.0 * DBL_MAX;
+  mBestValue = 2.0 * DBL_MAX;
 
   mPhi.resize(childrate * mPopulationSize);
 
@@ -604,15 +620,15 @@ C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
     {
       switch ((*it)->checkConstraint())
         {
-        case - 1:
-          phiCalc = *(*it)->getLowerBoundValue() - *pValue;
-          phiVal += phiCalc * phiCalc;
-          break;
+          case - 1:
+            phiCalc = *(*it)->getLowerBoundValue() - *pValue;
+            phiVal += phiCalc * phiCalc;
+            break;
 
-        case 1:
-          phiCalc = *pValue - *(*it)->getUpperBoundValue();
-          phiVal += phiCalc * phiCalc;
-          break;
+          case 1:
+            phiCalc = *pValue - *(*it)->getUpperBoundValue();
+            phiVal += phiCalc * phiCalc;
+            break;
         }
     }
 
@@ -622,6 +638,7 @@ C_FLOAT64 COptMethodSRES::phi(C_INT32 indivNum)
   for (; it != end; ++it)
     {
       phiCalc = (*it)->getConstraintViolation();
+
       if (phiCalc > 0.0)
         phiVal += phiCalc * phiCalc;
     }
@@ -667,6 +684,7 @@ bool COptMethodSRES::optimise()
 
   // ITERATE FOR gener GENERATIONS
 #ifdef RANDOMIZE
+
   for (mGeneration = 2;
        mGeneration <= mGenerations && Continue;
        mGeneration++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
@@ -674,25 +692,27 @@ bool COptMethodSRES::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.2));
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.2));
           Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
         }
       else if (Stalled40 > 40)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.6));
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.6));
           Stalled10 = Stalled20 = Stalled40 = 0;
         }
       else if (Stalled20 > 20)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.8));
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.8));
           Stalled10 = Stalled20 = 0;
         }
       else if (Stalled10 > 10)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.9));
+          Continue = creation((unsigned C_INT32)(mPopulationSize * 0.9));
           Stalled10 = 0;
         }
+
 #else
+
   for (mGeneration = 2;
        mGeneration <= mGenerations && Continue;
        mGeneration++)
@@ -723,5 +743,6 @@ bool COptMethodSRES::optimise()
       if (mpCallBack)
         Continue = mpCallBack->progress(mhGenerations);
     }
+
   return 0;
 }

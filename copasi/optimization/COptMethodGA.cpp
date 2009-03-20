@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.49.4.1 $
+//   $Revision: 1.49.4.1.4.1 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/11/06 08:01:57 $
+//   $Author: shoops $
+//   $Date: 2009/03/20 16:04:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@ bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // evaluate the fitness
   Continue &= mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
+  // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
     mEvaluationValue = 2.0 * DBL_MAX;
   else
@@ -138,13 +138,13 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -186,7 +186,9 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
     }
 
   const CVector< C_FLOAT64 > * pParent1 = & parent1;
+
   const CVector< C_FLOAT64 > * pParent2 = & parent2;
+
   const CVector< C_FLOAT64 > * pTmp;
 
   for (i = 0; i < mVariableSize; i++)
@@ -358,13 +360,13 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
             {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              break;
+              case - 1:
+                mut = *OptItem.getLowerBoundValue();
+                break;
 
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              break;
+              case 1:
+                mut = *OptItem.getUpperBoundValue();
+                break;
             }
 
           // We need to set the value here so that further checks take
@@ -408,6 +410,7 @@ bool COptMethodGA::initialize()
                           CCopasiParameter::UINT,
                           & mGeneration,
                           & mGenerations);
+
   mGeneration++;
 
   mPopulationSize = * getValue("Population Size").pUINT;
@@ -418,6 +421,7 @@ bool COptMethodGA::initialize()
   mVariableSize = mpOptItem->size();
 
   mIndividual.resize(2*mPopulationSize);
+
   for (i = 0; i < 2*mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
@@ -426,16 +430,17 @@ bool COptMethodGA::initialize()
   mCrossOver.resize(mVariableSize);
 
   mValue.resize(2*mPopulationSize);
-  mValue = mpOptProblem->getSolutionValue();
-  mBestValue = mpOptProblem->getSolutionValue();
+  mValue = 2.0 * DBL_MAX;
+  mBestValue = 2.0 * DBL_MAX;
 
   mShuffle.resize(mPopulationSize);
+
   for (i = 0; i < mPopulationSize; i++)
     mShuffle[i] = i;
 
   mLosses.resize(2*mPopulationSize);
 
-  // initialise the variance for mutations
+  // Initialize the variance for mutations
   mMutationVarians = 0.1;
 
   return true;
@@ -450,6 +455,7 @@ bool COptMethodGA::cleanup()
   unsigned C_INT32 i;
 
   pdelete(mpRandom);
+
   for (i = 0; i < mIndividual.size(); i++)
     pdelete(mIndividual[i]);
 
@@ -481,13 +487,13 @@ bool COptMethodGA::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -539,19 +545,19 @@ bool COptMethodGA::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          Continue &= creation((unsigned C_INT32) (mPopulationSize / 2),
+          Continue &= creation((unsigned C_INT32)(mPopulationSize / 2),
                                mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          Continue &= creation((unsigned C_INT32) (mPopulationSize * 0.7),
+          Continue &= creation((unsigned C_INT32)(mPopulationSize * 0.7),
                                mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          Continue &= creation((unsigned C_INT32) (mPopulationSize * 0.9),
+          Continue &= creation((unsigned C_INT32)(mPopulationSize * 0.9),
                                mPopulationSize);
           Stalled10 = 0;
         }
@@ -564,6 +570,7 @@ bool COptMethodGA::optimise()
 
       // get the index of the fittest
       mBestIndex = fittest();
+
       if (mBestIndex != C_INVALID_INDEX &&
           mValue[mBestIndex] < mBestValue)
         {

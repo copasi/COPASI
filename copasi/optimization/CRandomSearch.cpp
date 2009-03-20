@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.35.4.1 $
+//   $Revision: 1.35.4.1.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/11/11 18:12:55 $
+//   $Date: 2009/03/20 16:04:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ bool CRandomSearch::initialize()
   mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                                       * getValue("Seed").pUINT);
 
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
 
   mVariableSize = mpOptItem->size();
   mIndividual.resize(mVariableSize);
@@ -105,7 +105,7 @@ bool CRandomSearch::initialize()
  * Returns: nothing
  * should return a boolean
  */
-//C_INT32 CRandomSearch::optimise()
+//C_INT32 CRandomSearch::optimize()
 bool CRandomSearch::optimise()
 {
   bool Continue = true;
@@ -126,13 +126,13 @@ bool CRandomSearch::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -161,27 +161,31 @@ bool CRandomSearch::optimise()
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
             {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
-              break;
+              case - 1:
+                mut = *OptItem.getLowerBoundValue();
 
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
-              break;
+                if (!OptItem.checkLowerBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = DBL_MIN;
+                    else
+                      mut += mut * DBL_EPSILON;
+                  }
+
+                break;
+
+              case 1:
+                mut = *OptItem.getUpperBoundValue();
+
+                if (!OptItem.checkUpperBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = - DBL_MIN;
+                    else
+                      mut -= mut * DBL_EPSILON;
+                  }
+
+                break;
             }
 
           // We need to set the value here so that further checks take
