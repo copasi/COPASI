@@ -68,6 +68,7 @@
     <ROW File="DimericMWC_stiff.cps" Component_="brusselator.cps" FileName="Dimeri~1.cps|DimericMWC-stiff.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\DimericMWC-stiff.cps" SelfReg="false" Sequence="19"/>
     <ROW File="Genetic_2000Elo.xml" Component_="brusselator.cps" FileName="Geneti~1.xml|Genetic-2000Elo.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\Genetic-2000Elo.xml" SelfReg="false" Sequence="12"/>
     <ROW File="LICENSE.txt" Component_="LICENSE.txt" FileName="LICENSE.txt" Attributes="0" SourcePath="..\setup\copasi\LICENSE.txt" SelfReg="false" Sequence="3"/>
+    <ROW File="MAPK_HF96_layout.cps" Component_="brusselator.cps" FileName="MAPK-H~1.cps|MAPK-HF96-layout.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\MAPK-HF96-layout.cps" SelfReg="false" Sequence="39"/>
     <ROW File="MIRIAMResources.xml" Component_="MIRIAMResources.xml" FileName="MIRIAM~1.xml|MIRIAMResources.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\config\MIRIAMResources.xml" SelfReg="false" Sequence="38"/>
     <ROW File="Metabolism_2000Poo.xml" Component_="brusselator.cps" FileName="Metabo~1.xml|Metabolism-2000Poo.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\Metabolism-2000Poo.xml" SelfReg="false" Sequence="13"/>
     <ROW File="ModelSettingsDialog.png" Component_="DefaultPlotAdded.jpg" FileName="ModelS~1.png|ModelSettingsDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ModelSettingsDialog.png" SelfReg="false" Sequence="33"/>
