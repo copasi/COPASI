@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: pwilly $
+//   $Date: 2009/03/23 12:58:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,21 +45,21 @@ StateWidget::StateWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   if (!name)
     setName("StateWidget");
+
   setCaption(trUtf8("StateWidget"));
 
+  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "Layout");
+  /*
+    buttonSetInitialState = new QPushButton(this, "buttonSetInitialState");
+    buttonSetInitialState->setText(trUtf8("Set Results As Next Initial State"));
+    mWidgetLayout->addWidget(buttonSetInitialState, 1, 0);
+  */
   setInitialState = new QPushButton(this, "setInitialState");
-  setInitialState->setText(trUtf8("SetResultsAsNextInitialState"));
-
-  parentLayout = new Q3VBoxLayout(this, 0, 0, "parentLayout");
-  stateLayout = new Q3HBoxLayout(0, 0 , 6, "StateLayout");
-  mWidgetLayout = new Q3GridLayout(NULL, 1, 1, 0, -1, "Layout");
+  setInitialState->setText(trUtf8("Set Results As Next Initial State"));
+  mWidgetLayout->addWidget(setInitialState, 1, 0);
 
   mCentralWidget = new StateSubwidget(this, "StateSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
-
-  //parentLayout->addLayout(stateLayout);
-  parentLayout->addLayout(mWidgetLayout);
-  stateLayout->addWidget(setInitialState);
 
   /*commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));

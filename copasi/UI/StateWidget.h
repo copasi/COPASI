@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Author: pwilly $
+//   $Date: 2009/03/23 12:58:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 
 #include "UI/copasiWidget.h"
 //Added by qt3to4:
+/*
 #include <Q3VBoxLayout>
 #include <Q3GridLayout>
 #include <Q3HBoxLayout>
@@ -31,35 +32,45 @@ class StateSubwidget;
 class QPushButton;
 class Q3HBoxLayout;
 class Q3VBoxLayout;
+ */
+
+#include <QGridLayout>
+
+class StateSubwidget;
+class QPushButton;
 
 class StateWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    QPushButton* setInitialState;
+public:
+//    QPushButton* buttonSetInitialState;
+  QPushButton* setInitialState;
 
-    StateWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~StateWidget();
+  StateWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~StateWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-    bool loadFromBackend();
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
+  virtual bool enter(const std::string & key = "");
+  bool loadFromBackend();
 
-  protected slots:
-    //virtual void slotBtnCancelClicked();
-    //virtual void slotBtnOKClicked();
+protected slots:
+  //virtual void slotBtnCancelClicked();
+  //virtual void slotBtnOKClicked();
 
-  protected:
-    bool saveToBackend();
-    std::string objKey;
+protected:
+  bool saveToBackend();
+  std::string objKey;
 
-    Q3GridLayout* mWidgetLayout;
-    Q3HBoxLayout* stateLayout;
-    Q3VBoxLayout* parentLayout;
-    StateSubwidget* mCentralWidget;
-    bool mUpToDate;
-  };
+  /*
+      Q3GridLayout* mWidgetLayout;
+      Q3HBoxLayout* stateLayout;
+      Q3VBoxLayout* parentLayout;
+  */
+  QGridLayout* mWidgetLayout;
+  StateSubwidget* mCentralWidget;
+  bool mUpToDate;
+};
 
 #endif
