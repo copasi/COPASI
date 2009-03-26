@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.188 $
+#   $Revision: 1.189 $
 #   $Name:  $
 #   $Author: pwilly $
-#   $Date: 2009/03/19 10:20:18 $
+#   $Date: 2009/03/26 09:02:35 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.188 $ $Author: pwilly $ $Date: 2009/03/19 10:20:18 $
+# $Revision: 1.189 $ $Author: pwilly $ $Date: 2009/03/26 09:02:35 $
 ######################################################################
 
 LIB = UI
@@ -310,7 +310,7 @@ HEADERS += \
            SliderSettingsDialog.h \
            SliderSettingsDialog.ui.h \
            StateSubwidget.h \
-           StateSubwidget.ui.h \
+#           StateSubwidget.ui.h \
            TimeSeriesSubwidget.h \
            TimeSeriesSubwidget.ui.h \
            objectdebug.h \
@@ -363,6 +363,8 @@ FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
 FORMS += CScanWidgetTask.ui
+
+FORMS += StateSubwidget.ui
 
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
