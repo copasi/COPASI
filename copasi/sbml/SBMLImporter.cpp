@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.217.2.1.4.2 $
+//   $Revision: 1.217.2.1.4.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/27 14:47:54 $
+//   $Date: 2009/03/27 15:12:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -945,7 +945,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
       fatalError();
     }
 
-  if (sbmlReaction->isSetFast())
+  if (sbmlReaction->isSetFast() && sbmlReaction->getFast() == true)
     {
       const_cast<Reaction*>(sbmlReaction)->setFast(false);
       this->mFastReactions.insert(sbmlReaction->getId());
