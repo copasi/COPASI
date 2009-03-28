@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/bindings.pro,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.4.10.1 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2008/04/21 10:27:06 $ 
+#   $Date: 2009/03/28 22:52:07 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -18,6 +18,8 @@
 TEMPLATE = subdirs
 
 include(../common.pri)
+
+SUBDIRS += cpp_examples
 
 contains(ENABLE_JAVA,yes){
   SUBDIRS += java
