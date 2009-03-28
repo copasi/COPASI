@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.8.1 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/09/01 16:55:50 $
+//   $Author: gauges $
+//   $Date: 2009/03/28 11:00:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,47 +27,47 @@ CEvaluationNodeLogical::CEvaluationNodeLogical():
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::LOGICAL | subType), data),
+    CEvaluationNode((Type)(CEvaluationNode::LOGICAL | subType), data),
     mpLeft(NULL),
     mpRight(NULL)
 {
   switch (mType & 0x00FFFFFF)
     {
-    case OR:
-      mPrecedence = PRECEDENCE_LOGIG_OR;
-      break;
+      case OR:
+        mPrecedence = PRECEDENCE_LOGIG_OR;
+        break;
 
-    case XOR:
-      mPrecedence = PRECEDENCE_LOGIG_XOR;
-      break;
+      case XOR:
+        mPrecedence = PRECEDENCE_LOGIG_XOR;
+        break;
 
-    case AND:
-      mPrecedence = PRECEDENCE_LOGIG_AND;
-      break;
+      case AND:
+        mPrecedence = PRECEDENCE_LOGIG_AND;
+        break;
 
-    case EQ:
-      mPrecedence = PRECEDENCE_LOGIG_EQ;
-      break;
+      case EQ:
+        mPrecedence = PRECEDENCE_LOGIG_EQ;
+        break;
 
-    case NE:
-      mPrecedence = PRECEDENCE_LOGIG_NE;
-      break;
+      case NE:
+        mPrecedence = PRECEDENCE_LOGIG_NE;
+        break;
 
-    case GT:
-      mPrecedence = PRECEDENCE_LOGIG_GT;
-      break;
+      case GT:
+        mPrecedence = PRECEDENCE_LOGIG_GT;
+        break;
 
-    case GE:
-      mPrecedence = PRECEDENCE_LOGIG_GE;
-      break;
+      case GE:
+        mPrecedence = PRECEDENCE_LOGIG_GE;
+        break;
 
-    case LT:
-      mPrecedence = PRECEDENCE_LOGIG_LT;
-      break;
+      case LT:
+        mPrecedence = PRECEDENCE_LOGIG_LT;
+        break;
 
-    case LE:
-      mPrecedence = PRECEDENCE_LOGIG_LE;
-      break;
+      case LE:
+        mPrecedence = PRECEDENCE_LOGIG_LE;
+        break;
     }
 }
 
@@ -80,71 +80,73 @@ CEvaluationNodeLogical::~CEvaluationNodeLogical() {}
 bool CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 {
   mpLeft = static_cast<CEvaluationNode *>(getChild());
+
   if (mpLeft == NULL) return false;
 
   mpRight = static_cast<CEvaluationNode *>(mpLeft->getSibling());
+
   if (mpRight == NULL) return false;
 
   return (mpRight->getSibling() == NULL); // We must have exactly two children
 }
 
 std::string CEvaluationNodeLogical::getInfix() const
-  {
-    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
-      {
-        Data Infix;
+{
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+    {
+      Data Infix;
 
-        if (*mpLeft < *(CEvaluationNode *)this)
-          Infix = "(" + mpLeft->getInfix() + ")";
-        else
-          Infix = mpLeft->getInfix();
+      if (*mpLeft < *(CEvaluationNode *)this)
+        Infix = "(" + mpLeft->getInfix() + ")";
+      else
+        Infix = mpLeft->getInfix();
 
-        Infix += " " + mData + " ";
+      Infix += " " + mData + " ";
 
-        if (!(*(CEvaluationNode *)this < *mpRight))
-          Infix += "(" + mpRight->getInfix() + ")";
-        else
-          Infix += mpRight->getInfix();
+      if (!(*(CEvaluationNode *)this < *mpRight))
+        Infix += "(" + mpRight->getInfix() + ")";
+      else
+        Infix += mpRight->getInfix();
 
-        return Infix;
-      }
-    else
-      return "@";
-  }
+      return Infix;
+    }
+  else
+    return "@";
+}
 
 std::string CEvaluationNodeLogical::getDisplayString(const CEvaluationTree * pTree) const
-  {
-    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
-      {
-        Data DisplayString;
+{
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+    {
+      Data DisplayString;
 
-        if (*mpLeft < *(CEvaluationNode *)this)
-          DisplayString = "(" + mpLeft->getDisplayString(pTree) + ")";
-        else
-          DisplayString = mpLeft->getDisplayString(pTree) + " ";
+      if (*mpLeft < *(CEvaluationNode *)this)
+        DisplayString = "(" + mpLeft->getDisplayString(pTree) + ")";
+      else
+        DisplayString = mpLeft->getDisplayString(pTree) + " ";
 
-        DisplayString += mData;
+      DisplayString += mData;
 
-        if (!(*(CEvaluationNode *)this < *mpRight))
-          DisplayString += "(" + mpRight->getDisplayString(pTree) + ")";
-        else
-          DisplayString += " " + mpRight->getDisplayString(pTree);
+      if (!(*(CEvaluationNode *)this < *mpRight))
+        DisplayString += "(" + mpRight->getDisplayString(pTree) + ")";
+      else
+        DisplayString += " " + mpRight->getDisplayString(pTree);
 
-        return DisplayString;
-      }
-    else
-      return "@";
-  }
+      return DisplayString;
+    }
+  else
+    return "@";
+}
 
 std::string CEvaluationNodeLogical::getDisplay_C_String(const CEvaluationTree * pTree) const
-  {
-    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
-      {
-        Data DisplayString;
-        Data data;
+{
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+    {
+      Data DisplayString;
+      Data data;
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case AND:
             data = "&&";
             break;
@@ -175,35 +177,35 @@ std::string CEvaluationNodeLogical::getDisplay_C_String(const CEvaluationTree * 
              */
             data = "@";
             break;
-          }
+        }
 
-        if (*mpLeft < *(CEvaluationNode *)this)
-          DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
-        else
-          DisplayString = mpLeft->getDisplay_C_String(pTree) + " ";
+      if (*mpLeft < *(CEvaluationNode *)this)
+        DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+      else
+        DisplayString = mpLeft->getDisplay_C_String(pTree) + " ";
 
-        DisplayString += data;
+      DisplayString += data;
 
-        if (!(*(CEvaluationNode *)this < *mpRight))
-          DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
-        else
-          DisplayString += " " + mpRight->getDisplay_C_String(pTree);
+      if (!(*(CEvaluationNode *)this < *mpRight))
+        DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
+      else
+        DisplayString += " " + mpRight->getDisplay_C_String(pTree);
 
-        return DisplayString;
-      }
-    else
-      return "@";
-  }
+      return DisplayString;
+    }
+  else
+    return "@";
+}
 
 std::string CEvaluationNodeLogical::getDisplay_MMD_String(const CEvaluationTree * pTree) const
-  {
-    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
-      {
-        Data DisplayString;
-        Data data;
+{
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+    {
+      Data DisplayString;
+      Data data;
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case AND:
             data = "AND";
             break;
@@ -233,35 +235,35 @@ std::string CEvaluationNodeLogical::getDisplay_MMD_String(const CEvaluationTree 
           default:
             data = "@";
             break;
-          }
+        }
 
-        if (*mpLeft < *(CEvaluationNode *)this)
-          DisplayString = "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
-        else
-          DisplayString = mpLeft->getDisplay_MMD_String(pTree) + " ";
+      if (*mpLeft < *(CEvaluationNode *)this)
+        DisplayString = "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
+      else
+        DisplayString = mpLeft->getDisplay_MMD_String(pTree) + " ";
 
-        DisplayString += data;
+      DisplayString += data;
 
-        if (!(*(CEvaluationNode *)this < *mpRight))
-          DisplayString += "(" + mpRight->getDisplay_MMD_String(pTree) + ")";
-        else
-          DisplayString += " " + mpRight->getDisplay_MMD_String(pTree);
+      if (!(*(CEvaluationNode *)this < *mpRight))
+        DisplayString += "(" + mpRight->getDisplay_MMD_String(pTree) + ")";
+      else
+        DisplayString += " " + mpRight->getDisplay_MMD_String(pTree);
 
-        return DisplayString;
-      }
-    else
-      return "@";
-  }
+      return DisplayString;
+    }
+  else
+    return "@";
+}
 
 std::string CEvaluationNodeLogical::getDisplay_XPP_String(const CEvaluationTree * pTree) const
-  {
-    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
-      {
-        Data DisplayString;
-        Data data;
+{
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+    {
+      Data DisplayString;
+      Data data;
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case AND:
             data = "&";
             break;
@@ -291,89 +293,123 @@ std::string CEvaluationNodeLogical::getDisplay_XPP_String(const CEvaluationTree 
             CCopasiMessage(CCopasiMessage::WARNING, " TODO   ");
             data = "@"; //TODO
             break;
-          }
+        }
 
-        if (*mpLeft < *(CEvaluationNode *)this)
-          DisplayString = "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
-        else
-          DisplayString = mpLeft->getDisplay_XPP_String(pTree) + " ";
+      if (*mpLeft < *(CEvaluationNode *)this)
+        DisplayString = "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
+      else
+        DisplayString = mpLeft->getDisplay_XPP_String(pTree) + " ";
 
-        DisplayString += data;
+      DisplayString += data;
 
-        if (!(*(CEvaluationNode *)this < *mpRight))
-          DisplayString += "(" + mpRight->getDisplay_XPP_String(pTree) + ")";
-        else
-          DisplayString += " " + mpRight->getDisplay_XPP_String(pTree);
+      if (!(*(CEvaluationNode *)this < *mpRight))
+        DisplayString += "(" + mpRight->getDisplay_XPP_String(pTree) + ")";
+      else
+        DisplayString += " " + mpRight->getDisplay_XPP_String(pTree);
 
-        return DisplayString;
-      }
-    else
-      return "@"; //TODO
-  }
+      return DisplayString;
+    }
+  else
+    return "@"; //TODO
+}
 
 CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& node)
 {
   SubType subType;
   std::string data = "";
+
   switch (node.getType())
     {
-    case AST_LOGICAL_AND:
-      subType = AND;
-      data = "and";
-      break;
-    case AST_LOGICAL_OR:
-      subType = OR;
-      data = "or";
-      break;
-    case AST_LOGICAL_XOR:
-      subType = XOR;
-      data = "xor";
-      break;
-    case AST_RELATIONAL_EQ:
-      subType = EQ;
-      data = "eq";
-      break;
-    case AST_RELATIONAL_GEQ:
-      subType = GE;
-      data = "ge";
-      break;
-    case AST_RELATIONAL_GT:
-      subType = GT;
-      data = "gt";
-      break;
-    case AST_RELATIONAL_LEQ:
-      subType = LE;
-      data = "le";
-      break;
-    case AST_RELATIONAL_LT:
-      subType = LT;
-      data = "lt";
-      break;
-    case AST_RELATIONAL_NEQ:
-      subType = NE;
-      data = "ne";
-      break;
-    default:
-      subType = INVALID;
-      break;
+      case AST_LOGICAL_AND:
+        subType = AND;
+        data = "and";
+        break;
+      case AST_LOGICAL_OR:
+        subType = OR;
+        data = "or";
+        break;
+      case AST_LOGICAL_XOR:
+        subType = XOR;
+        data = "xor";
+        break;
+      case AST_RELATIONAL_EQ:
+        subType = EQ;
+        data = "eq";
+        break;
+      case AST_RELATIONAL_GEQ:
+        subType = GE;
+        data = "ge";
+        break;
+      case AST_RELATIONAL_GT:
+        subType = GT;
+        data = "gt";
+        break;
+      case AST_RELATIONAL_LEQ:
+        subType = LE;
+        data = "le";
+        break;
+      case AST_RELATIONAL_LT:
+        subType = LT;
+        data = "lt";
+        break;
+      case AST_RELATIONAL_NEQ:
+        subType = NE;
+        data = "ne";
+        break;
+      default:
+        subType = INVALID;
+        break;
     }
+
   CEvaluationNode* convertedNode = new CEvaluationNodeLogical(subType, data);
   // convert the two children
-  if (subType != INVALID)
+  int i, iMax = node.getNumChildren();
+
+  switch (subType)
     {
-      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
-      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+      case AND:
+      case OR:
+      case XOR:
+        // these can have two or more children
+        assert(iMax >= 2);
+        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 1)));
+        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 2)));
+        iMax -= 3;
+
+        for (i = iMax; i >= 0; --i)
+          {
+            CEvaluationNode* pTmpNode = new CEvaluationNodeLogical(subType, data);
+            pTmpNode->addChild(convertedNode);
+            pTmpNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
+            convertedNode = pTmpNode;
+          }
+
+        break;
+      case EQ:
+      case NE:
+      case GE:
+      case GT:
+      case LE:
+      case LT:
+        // all these are binary
+        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
+        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+        break;
+      case INVALID:
+        // do nothing
+        break;
     }
 
   return convertedNode;
 }
 
 ASTNode* CEvaluationNodeLogical::toAST() const
-  {
-    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
-    ASTNode* node = new ASTNode();
-    switch (subType)
-      {
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+
+  switch (subType)
+    {
       case AND:
         node->setType(AST_LOGICAL_AND);
         break;
@@ -406,17 +442,18 @@ ASTNode* CEvaluationNodeLogical::toAST() const
       default:
         subType = INVALID;
         break;
-      }
-    if (subType != INVALID)
-      {
-        const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-        node->addChild(child1->toAST());
-        node->addChild(child2->toAST());
-      }
+    }
 
-    return node;
-  }
+  if (subType != INVALID)
+    {
+      const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+      const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
+      node->addChild(child1->toAST());
+      node->addChild(child2->toAST());
+    }
+
+  return node;
+}
 
 #include "utilities/copasimathml.h"
 
@@ -424,14 +461,14 @@ void CEvaluationNodeLogical::writeMathML(std::ostream & out,
     const std::vector<std::vector<std::string> > & env,
     bool expand,
     unsigned C_INT32 l) const
-  {
-    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
-      {
-        std::string data = "";
-        bool flag = false;
+{
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+    {
+      std::string data = "";
+      bool flag = false;
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case AND:
             data = " and ";
             break;
@@ -465,24 +502,28 @@ void CEvaluationNodeLogical::writeMathML(std::ostream & out,
              */
             data = "@";
             break;
-          }
+        }
 
-        out << SPC(l) << "<mrow>" << std::endl;
+      out << SPC(l) << "<mrow>" << std::endl;
 
-        flag = ((*mpLeft < *(CEvaluationNode *)this));
+      flag = ((*mpLeft < *(CEvaluationNode *)this));
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
-        mpLeft->writeMathML(out, env, expand, l + 1);
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+      if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-        out << SPC(l + 1) << "<mo>" << data << "</mo>" << std::endl;
+      mpLeft->writeMathML(out, env, expand, l + 1);
 
-        flag = ((*(CEvaluationNode *)this < *mpRight));
+      if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
-        if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
-        mpRight->writeMathML(out, env, expand, l + 1);
-        if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+      out << SPC(l + 1) << "<mo>" << data << "</mo>" << std::endl;
 
-        out << SPC(l) << "</mrow>" << std::endl;
-      }
-  }
+      flag = ((*(CEvaluationNode *)this < *mpRight));
+
+      if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+      mpRight->writeMathML(out, env, expand, l + 1);
+
+      if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+      out << SPC(l) << "</mrow>" << std::endl;
+    }
+}
