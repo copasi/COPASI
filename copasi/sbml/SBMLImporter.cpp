@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.217.2.1.4.3 $
+//   $Revision: 1.217.2.1.4.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/27 15:12:02 $
+//   $Date: 2009/03/28 11:59:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3345,7 +3345,9 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                               pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
                               assert(pChildNode);
 
-                              if (CEvaluationNode::type(pChildNode->getType()) == CEvaluationNode::NUMBER)
+                              CEvaluationNode::Type type = CEvaluationNode::type(pChildNode->getType());
+
+                              if (type == CEvaluationNode::NUMBER)
                                 {
                                   const CMetab* pMetab = static_cast<const CMetab*>(pObject);
 
@@ -3357,6 +3359,15 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                                     {
                                       multiplicityMap[pMetab] = pChildNode->value();
                                     }
+                                }
+                              else if (type == CEvaluationNode::FUNCTION && (CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChildNode->getType()) == CEvaluationNodeFunction::MINUS && CEvaluationNode::type(((CEvaluationNode*)pChildNode->getChild())->getType()) == CEvaluationNode::NUMBER)
+                                {
+                                  const CMetab* pMetab = static_cast<const CMetab*>(pObject);
+                                  multiplicityMap[pMetab] = -1 * ((CEvaluationNodeNumber*)(pChildNode->getChild()))->value();
+                                }
+                              else
+                                {
+                                  // not a math action
                                 }
                             }
                         }
