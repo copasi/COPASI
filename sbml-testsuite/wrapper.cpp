@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.8.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/28 19:24:40 $
+//   $Date: 2009/03/28 17:06:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,29 @@
 #include "copasi/report/CReportDefinition.h"
 #include "copasi/report/CCopasiStaticString.h"
 
+void parse_items(const std::string& text, std::list<std::string>& itemList)
+{
+  // parse the items
+  //std::cout << "parsing: " << text << std::endl;
+  std::istringstream iss(text);
+  std::string token;
+  std::string delimiter = " \t\r\n";
+  std::size_t begin, end;
+
+  while (getline(iss, token, ','))
+    {
+      // strip whitespaces
+      begin = token.find_first_not_of(delimiter);
+      end = token.find_last_not_of(delimiter);
+
+      if (begin != std::string::npos)
+        {
+          //std::cout << token.substr(begin,end-begin+1) << std::endl;
+          itemList.push_back(token.substr(begin, end - begin + 1));
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
   std::string in_dir;
@@ -49,6 +72,8 @@ int main(int argc, char** argv)
   double duration = 0.0;
   unsigned int steps = 0;
   std::list<std::string> variables;
+  std::set<std::string> amounts;
+  std::set<std::string> concentrations;
   double absolute_error = 0.0;
   double relative_error = 0.0;
 
@@ -59,25 +84,29 @@ int main(int argc, char** argv)
     }
 
   catch (copasi::autoexcept &e)
-  {}
+    {}
 
   catch (copasi::option_error &e)
-  {}
+    {}
+
   if (argc != 6)
     {
       std::cerr << "Usage: sbml-testsuite INPUT_DIRECTORY TESTNAME OUTPUTDIRECTORY SBMLLEVEL SBMLVERSION" << std::endl;
       exit(1);
     }
+
   in_dir = argv[1];
   test_name = argv[2];
   out_dir = argv[3];
   level = strtol(argv[4], NULL, 10);
   version = strtol(argv[5], NULL, 10);
+
   if (level != 1 && level != 2)
     {
       std::cerr << "SBML Level " << level << " Version " << version << " not supported." << std::endl;
       exit(1);
     }
+
   if (level == 1 && (version < 1 || version > 2))
     {
       std::cerr << "SBML Level " << level << " Version " << version << " not supported." << std::endl;
@@ -88,22 +117,28 @@ int main(int argc, char** argv)
       std::cerr << "SBML Level " << level << " Version " << version << " not supported." << std::endl;
       exit(1);
     }
+
   std::ostringstream os;
   os << in_dir << "/" << test_name << "/" << test_name << "-settings.txt";
   // open the settings file and parse it
+  std::cout << "parsing file: " << os.str() << std::endl;
   std::ifstream f;
   f.open(os.str().c_str());
+
   if (f.is_open())
     {
       std::string line;
+
       while (! f.eof())
         {
-          getline (f, line);
+          getline(f, line);
           unsigned int pos = line.find(':');
+
           if (pos != std::string::npos)
             {
               std::string tag = line.substr(0, pos);
               std::string value = line.substr(pos + 1);
+
               if (tag == "start")
                 {
                   start_time = strtod(value.c_str(), NULL);
@@ -119,21 +154,21 @@ int main(int argc, char** argv)
               else if (tag == "variables")
                 {
                   // parse the variables
-                  std::string delimiter = ",";
-                  std::string delimiter2 = " \t\r\n";
-                  std::size_t lastPos = value.find_first_not_of(delimiter);
-                  std::size_t pos;
-                  std::size_t begin, end;
-                  std::string variable;
-                  while (lastPos != std::string::npos)
-                    {
-                      pos = value.find_first_of(delimiter, lastPos);
-                      variable = value.substr(lastPos, pos - lastPos);
-                      begin = variable.find_first_not_of(delimiter2);
-                      end = variable.find_first_of(delimiter2, begin);
-                      variables.push_back(variable.substr(begin, end));
-                      lastPos = value.find_first_not_of(delimiter, pos);
-                    }
+                  parse_items(value, variables);
+                }
+              else if (tag == "amount")
+                {
+                  // parse the variables
+                  std::list<std::string> tmp;
+                  parse_items(value, tmp);
+                  amounts.insert(tmp.begin(), tmp.end());
+                }
+              else if (tag == "concentration")
+                {
+                  // parse the variables
+                  std::list<std::string> tmp;
+                  parse_items(value, tmp);
+                  concentrations.insert(tmp.begin(), tmp.end());
                 }
               else if (tag == "absolute")
                 {
@@ -149,6 +184,7 @@ int main(int argc, char** argv)
                 }
             }
         }
+
       f.close();
     }
   else
@@ -156,36 +192,43 @@ int main(int argc, char** argv)
       std::cerr << "Error. Unable to open file \"" << os.str() << "\"." << std::endl;
       exit(1);
     }
+
   if (duration <= 0.0)
     {
       std::cerr << "Error. Duration < 0.0." << std::endl;
       exit(1);
     }
+
   if (steps == 0)
     {
       std::cerr << "Error. Number of steps set to 0." << std::endl;
       exit(1);
     }
+
   if (variables.empty())
     {
       std::cerr << "Error. No variables specified." << std::endl;
       exit(1);
     }
+
   if (start_time < 0.0)
     {
       std::cerr << "Error. Start time < 0.0." << std::endl;
       exit(1);
     }
+
   if (absolute_error < 0.0)
     {
       std::cerr << "Error. Absolute error < 0.0." << std::endl;
       exit(1);
     }
+
   if (relative_error < 0.0)
     {
       std::cerr << "Error. Relative error < 0.0." << std::endl;
       exit(1);
     }
+
   /*
   std::cout << "Simulating " << in_dir << "/" << test_name << "/" << test_name << "-sbml-l" << level << "v" << version << ".xml" << std::endl;
   std::cout << "Start time: " << start_time << std::endl;
@@ -207,16 +250,18 @@ int main(int argc, char** argv)
   double end_time = start_time + duration;
   os.str("");
 
-  os << out_dir << "/" << "results" << test_name << ".csv";
+  os << out_dir << "/" << test_name << ".csv";
   std::string output_filename = os.str();
   CTrajectoryTask* pTrajectoryTask = NULL;
 
   std::string CWD = COptions::getPWD();
+
   if (end_time == 0.0)
     {
       std::cerr << "Error. Invalid endtime " << end_time << std::endl;
       exit(1);
     }
+
   try
     {
       // Create the root container.
@@ -227,7 +272,6 @@ int main(int argc, char** argv)
 
       // Import the SBML File
       CCopasiDataModel::Global->importSBML(sbml_filename.c_str());
-
       // create a report with the correct filename and all the species against
       // time.
       CReportDefinitionVector* pReports = CCopasiDataModel::Global->getReportDefinitionList();
@@ -242,35 +286,72 @@ int main(int argc, char** argv)
       std::map<std::string, const CModelEntity*> variableMap;
       const CCopasiVector<CMetab>& metabolites = CCopasiDataModel::Global->getModel()->getMetabolites();
       unsigned int i, iMax = metabolites.size();
-      for (i = 0; i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           variableMap.insert(std::pair<std::string, const CModelEntity*>(metabolites[i]->getSBMLId(), metabolites[i]));
         }
+
       const CCopasiVector<CCompartment>& compartments = CCopasiDataModel::Global->getModel()->getCompartments();
+
       iMax = compartments.size();
-      for (i = 0; i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           variableMap.insert(std::pair<std::string, const CModelEntity*>(compartments[i]->getSBMLId(), compartments[i]));
         }
+
       const CCopasiVector<CModelValue>& modelValues = CCopasiDataModel::Global->getModel()->getModelValues();
+
       iMax = modelValues.size();
-      for (i = 0; i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           variableMap.insert(std::pair<std::string, const CModelEntity*>(modelValues[i]->getSBMLId(), modelValues[i]));
         }
+
       std::list<std::string>::const_iterator it = variables.begin(), endit = variables.end();
       std::map<std::string, const CModelEntity*>::const_iterator pos;
+      unsigned int dummyCount = 1;
+
       while (it != endit)
         {
           pos = variableMap.find(*it);
+
           if (pos == variableMap.end())
             {
               std::cerr << "Could not find a model entity for the SBML id " << *it << std::endl;
               exit(1);
             }
+
           if (dynamic_cast<const CMetab*>(pos->second) != NULL)
             {
-              pTable->push_back(pos->second->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+              if (amounts.find(*it) != amounts.end())
+                {
+                  // create a new global value with an assignment
+                  std::stringstream ss;
+                  ss << "dummy_modelvalue_" << dummyCount;
+                  CModelValue* pTmpMV = CCopasiDataModel::Global->getModel()->createModelValue(ss.str());
+                  ++dummyCount;
+                  ss.str("");
+                  assert(pTmpMV);
+                  // create an assignment that takes the concentration of the
+                  // metabolite and multiplies it by the compartment
+                  ss << "<" << pos->second->getObject(CCopasiObjectName("Reference=Concentration"))->getCN() << "> * <" << dynamic_cast<const CMetab*>(pos->second)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))->getCN() << ">";
+                  pTmpMV->setStatus(CModelEntity::ASSIGNMENT);
+                  assert(pTmpMV->setExpression(ss.str()));
+
+                  pTable->push_back(pTmpMV->getObject(CCopasiObjectName("Reference=Value"))->getCN());
+                }
+              else if (concentrations.find(*it) != concentrations.end())
+                {
+                  pTable->push_back(pos->second->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                }
+              else
+                {
+                  std::cerr << "Species \"" << *it << "\" neither given in the amounts or the conentration section." << std::endl;
+                  exit(1);
+                }
             }
           else if (dynamic_cast<const CCompartment*>(pos->second) != NULL)
             {
@@ -280,6 +361,7 @@ int main(int argc, char** argv)
             {
               pTable->push_back(pos->second->getObject(CCopasiObjectName("Reference=Value"))->getCN());
             }
+
           ++it;
         }
 
@@ -301,7 +383,7 @@ int main(int argc, char** argv)
 
       CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
-      pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-20);
+      pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
       CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
 
