@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.1.2.5 $ -->
+<!--   $Revision: 1.1.2.6 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/03/06 17:28:38 $ -->
+<!--   $Date: 2009/03/29 09:26:38 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4206,7 +4206,12 @@ NUMBER=getNumber()
 </sect1>
  <sect1 id="programmingExamples" xreflabel="programmingExamples">
 <title>Programming Examples</title>
+<para>
 This section contains some programming examples that might be helpful. We hope that eventually these examples will cover most of the backend.
+</para>
+<para>
+Since we also use these programs to "test" the bindings, they contain many assert statements, which might not be necessary if you write a program using the same functionality.
+</para>
 <sect2 id="modelCreation" xreflabel="modelCreation">
 <title>Creating and saving a model</title>
 <para>
@@ -4325,6 +4330,36 @@ The example also shows how a report can be defined from the backend in order to 
 </programlisting>
 <programlisting condition="PYTHON">
 <xi:include  href="../../copasi/bindings/python/examples/example4.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+</para>
+</sect2>
+
+<sect2 id="optimization" xreflabel="optimization">
+<title>Running an optimization on a timecourse simulation of two global parameters.</title>
+<para>
+This example demonstrates how to run an optimization using a time course simulation and how to generate a report for it.
+</para>
+<para>
+<programlisting condition="CPP">
+<xi:include  href="../../copasi/bindings/cpp_examples/example5/example5.cpp" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="JAVA">
+<xi:include  href="../../copasi/bindings/java/examples/example5.java" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="PYTHON">
+<xi:include  href="../../copasi/bindings/python/examples/example5.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
   <xi:fallback>
     <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
   </xi:fallback>
