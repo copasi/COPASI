@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example5.java,v $ 
-//   $Revision: 1.1.2.1 $ 
+//   $Revision: 1.1.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/28 22:52:07 $ 
+//   $Date: 2009/03/29 09:17:03 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -151,7 +151,7 @@ public class example5
      ReportItemVector body = report.getBodyAddr();
      
      // in the report header we write two strings and a separator
-     header.add(new CRegisteredObjectName(new CCopasiStaticString("value of objective function").getCN().getString()));
+     header.add(new CRegisteredObjectName(new CCopasiStaticString("best value of objective function").getCN().getString()));
      header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
      header.add(new CRegisteredObjectName(new CCopasiStaticString("initial value of F").getCN().getString()));
      // in the report body we write the best value of the objective function and
@@ -177,10 +177,12 @@ public class example5
      catch(Exception e)
      {
          System.err.println("ERROR: "+e.getMessage());
+         System.exit(1);
      }
      if(!result)
      {
          System.err.println("Running the optimization failed.");
+         System.exit(1);
      }
      // now we check if the optimization actually got the correct result
      // the best value it should have is 0 and the best parameter value for

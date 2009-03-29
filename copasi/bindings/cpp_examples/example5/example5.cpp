@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/28 22:51:40 $
+//   $Date: 2009/03/29 09:17:03 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -222,12 +222,13 @@ int main()
 
       delete CCopasiDataModel::Global;
       delete CCopasiContainer::Root;
-      return 1;
+      exit(1);
     }
 
   if (!result)
     {
       std::cerr << "Running the optimization failed." << std::endl;
+      exit(1);
     }
 
   // restore the state of the trajectory
