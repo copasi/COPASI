@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example3.java,v $ 
-//   $Revision: 1.5.2.2 $ 
+//   $Revision: 1.5.2.3 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/06 16:35:16 $ 
+//   $Date: 2009/03/29 09:17:32 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -108,7 +108,7 @@ public class example3
           // pass a pointer of the model to the problem
           trajectoryTask.getProblem().setModel(CCopasiDataModel.getGlobal().getModel());
 
-          // actiavate the task so that it will be run when the model is saved
+          // activate the task so that it will be run when the model is saved
           // and passed to CopasiSE
           trajectoryTask.setScheduled(true);
 
