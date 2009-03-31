@@ -117,6 +117,7 @@ if [ x"$#" = x1 ]; then
     sed -e '/ProductCode/s/[0-9A-F]*}/'$productcode'}/' \
         -e '/ProductVersion/s/Value=".*"/Value="'$productversion'"/' \
         -e '/PackageName/s/Copasi-.*-WIN32/Copasi-'$build'-'$1'/' \
+        -e '/ProductName/s/COPASI/COPASI '$productversion'/' \
         copasi.aip > tmp.aip
 
 #   run Advanced Installer to create msi package
