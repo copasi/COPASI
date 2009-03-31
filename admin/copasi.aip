@@ -44,19 +44,16 @@
     <ROW Component="MIRIAMResources.xml" ComponentId="{799962BC-34C7-4444-888B-1213EF6AC444}" Directory_="config_DIR" Attributes="0" KeyPath="MIRIAMResources.xml" Type="0"/>
     <ROW Component="PerceivedType_1" ComponentId="{DF030F8B-A766-45B8-A8AE-D3AB00BEC798}" Directory_="APPDIR" Attributes="4" KeyPath="PerceivedType_1"/>
     <ROW Component="README.txt" ComponentId="{4F9D3A12-77E9-41D2-AC58-E4684E63A4EE}" Directory_="APPDIR" Attributes="0" KeyPath="README.txt" Type="0"/>
-    <ROW Component="SBW.dll" ComponentId="{EA794F50-8F7C-4DD5-84DB-C70CA0917DAC}" Directory_="bin_DIR" Attributes="0" KeyPath="SBW.dll"/>
     <ROW Component="TutWiz_Step1.html" ComponentId="{D9A58644-F85B-4FC5-A53E-B849BF79FE00}" Directory_="html_DIR" Attributes="0" KeyPath="TutWiz_Step1.html" Type="0"/>
     <ROW Component="brusselator.cps" ComponentId="{D7ED136C-BB0F-4739-9B7B-89F12B8627EE}" Directory_="examples_DIR" Attributes="0" KeyPath="brusselator.cps" Type="0"/>
     <ROW Component="command" ComponentId="{5A07C51A-1D21-4DF6-A6DA-050E5C32BAB2}" Directory_="APPDIR" Attributes="4" KeyPath="__4"/>
     <ROW Component="cps" ComponentId="{E62377FB-AC3C-4FBC-ACD8-FA8B1813731D}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
-    <ROW Component="msvcp80.dll" ComponentId="{D90539F4-91B0-4FEB-8AD5-EC48DA1ADD90}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcp80.dll"/>
-    <ROW Component="msvcr80.dll" ComponentId="{36A7810B-0ACF-44FE-93D4-CC43FD82003C}" Directory_="bin_DIR" Attributes="0" KeyPath="msvcr80.dll"/>
     <ROW Component="open" ComponentId="{102D3063-DEA3-4E69-AF32-24D6ED680EF2}" Directory_="APPDIR" Attributes="4" KeyPath="__3"/>
     <ROW Component="qt_mt338.dll" ComponentId="{9A8F5271-4227-4FE3-BDAE-03F709181D56}" Directory_="bin_DIR" Attributes="0" KeyPath="qt_mt338.dll"/>
     <ROW Component="shell" ComponentId="{204FCDFD-1F05-46E3-88C4-931D75005CDC}" Directory_="APPDIR" Attributes="4" KeyPath="__2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon msvcp80.dll msvcr80.dll qt_mt338.dll SBW.dll MIRIAMResources.xml"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="CopasiSE.exe CopasiUI.exe LICENSE.txt DefaultPlotAdded.jpg TutWiz_Step1.html brusselator.cps README.txt cps COPASI.document shell open command Content_Type_1 PerceivedType_1 Copasi.ico DefaultIcon qt_mt338.dll MIRIAMResources.xml"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -68,8 +65,8 @@
     <ROW File="DimericMWC_stiff.cps" Component_="brusselator.cps" FileName="Dimeri~1.cps|DimericMWC-stiff.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\DimericMWC-stiff.cps" SelfReg="false" Sequence="19"/>
     <ROW File="Genetic_2000Elo.xml" Component_="brusselator.cps" FileName="Geneti~1.xml|Genetic-2000Elo.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\Genetic-2000Elo.xml" SelfReg="false" Sequence="12"/>
     <ROW File="LICENSE.txt" Component_="LICENSE.txt" FileName="LICENSE.txt" Attributes="0" SourcePath="..\setup\copasi\LICENSE.txt" SelfReg="false" Sequence="3"/>
-    <ROW File="MAPK_HF96_layout.cps" Component_="brusselator.cps" FileName="MAPK-H~1.cps|MAPK-HF96-layout.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\MAPK-HF96-layout.cps" SelfReg="false" Sequence="39"/>
-    <ROW File="MIRIAMResources.xml" Component_="MIRIAMResources.xml" FileName="MIRIAM~1.xml|MIRIAMResources.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\config\MIRIAMResources.xml" SelfReg="false" Sequence="38"/>
+    <ROW File="MAPK_HF96_layout.cps" Component_="brusselator.cps" FileName="MAPK-H~1.cps|MAPK-HF96-layout.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\MAPK-HF96-layout.cps" SelfReg="false" Sequence="36"/>
+    <ROW File="MIRIAMResources.xml" Component_="MIRIAMResources.xml" FileName="MIRIAM~1.xml|MIRIAMResources.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\config\MIRIAMResources.xml" SelfReg="false" Sequence="35"/>
     <ROW File="Metabolism_2000Poo.xml" Component_="brusselator.cps" FileName="Metabo~1.xml|Metabolism-2000Poo.xml" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\Metabolism-2000Poo.xml" SelfReg="false" Sequence="13"/>
     <ROW File="ModelSettingsDialog.png" Component_="DefaultPlotAdded.jpg" FileName="ModelS~1.png|ModelSettingsDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ModelSettingsDialog.png" SelfReg="false" Sequence="33"/>
     <ROW File="NF_kappaB.cps" Component_="brusselator.cps" FileName="NF-kap~1.cps|NF-kappaB.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\NF-kappaB.cps" SelfReg="false" Sequence="20"/>
@@ -86,7 +83,6 @@
     <ROW File="ReactionOverview.png" Component_="DefaultPlotAdded.jpg" FileName="Reacti~2.png|ReactionOverview.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReactionOverview.png" SelfReg="false" Sequence="30"/>
     <ROW File="ReactionOverviewEmpty.png" Component_="DefaultPlotAdded.jpg" FileName="Reacti~3.png|ReactionOverviewEmpty.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReactionOverviewEmpty.png" SelfReg="false" Sequence="31"/>
     <ROW File="ReportDefinitionDialog.png" Component_="DefaultPlotAdded.jpg" FileName="Report~1.png|ReportDefinitionDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\ReportDefinitionDialog.png" SelfReg="false" Sequence="32"/>
-    <ROW File="SBW.dll" Component_="SBW.dll" FileName="SBW.dll" Attributes="0" SourcePath="..\setup\copasi\bin\SBW.dll" SelfReg="false" Sequence="37"/>
     <ROW File="TimeCourseDialog.png" Component_="DefaultPlotAdded.jpg" FileName="TimeCo~1.png|TimeCourseDialog.png" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\figures\TimeCourseDialog.png" SelfReg="false" Sequence="21"/>
     <ROW File="TutWiz_Step1.html" Component_="TutWiz_Step1.html" FileName="TutWiz~1.htm|TutWiz-Step1.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step1.html" SelfReg="false" Sequence="4"/>
     <ROW File="TutWiz_Step2.html" Component_="TutWiz_Step1.html" FileName="TutWiz~2.htm|TutWiz-Step2.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step2.html" SelfReg="false" Sequence="5"/>
@@ -96,9 +92,7 @@
     <ROW File="TutWiz_Step6.html" Component_="TutWiz_Step1.html" FileName="TutWiz~6.htm|TutWiz-Step6.html" Attributes="0" SourcePath="..\setup\copasi\share\copasi\doc\html\TutWiz-Step6.html" SelfReg="false" Sequence="9"/>
     <ROW File="YeastGlycolysis.gps" Component_="brusselator.cps" FileName="YeastG~1.gps|YeastGlycolysis.gps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\YeastGlycolysis.gps" SelfReg="false" Sequence="14"/>
     <ROW File="brusselator.cps" Component_="brusselator.cps" FileName="brusse~1.cps|brusselator.cps" Attributes="1" SourcePath="..\setup\copasi\share\copasi\examples\brusselator.cps" SelfReg="false" Sequence="10"/>
-    <ROW File="msvcp80.dll" Component_="msvcp80.dll" FileName="msvcp80.dll" Attributes="0" SourcePath="..\setup\copasi\bin\msvcp80.dll" SelfReg="false" Sequence="34"/>
-    <ROW File="msvcr80.dll" Component_="msvcr80.dll" FileName="msvcr80.dll" Attributes="0" SourcePath="..\setup\copasi\bin\msvcr80.dll" SelfReg="false" Sequence="35"/>
-    <ROW File="qt_mt338.dll" Component_="qt_mt338.dll" FileName="qt-mt338.dll" Attributes="0" SourcePath="..\setup\copasi\bin\qt-mt338.dll" SelfReg="false" Sequence="36"/>
+    <ROW File="qt_mt338.dll" Component_="qt_mt338.dll" FileName="qt-mt338.dll" Attributes="0" SourcePath="..\setup\copasi\bin\qt-mt338.dll" SelfReg="false" Sequence="34"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageName="..\Copasi-26-WIN32" Languages="en" InstallationType="4"/>
