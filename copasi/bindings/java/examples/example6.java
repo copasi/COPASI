@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example6.java,v $ 
-//   $Revision: 1.1.2.1 $ 
+//   $Revision: 1.1.2.2 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/30 10:40:07 $ 
+//   $Date: 2009/04/01 06:25:36 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -307,10 +307,6 @@ public class example6
         CCopasiParameterGroup optimizationItemGroup=(CCopasiParameterGroup)fitProblem.getParameter("OptimizationItemList");
         assert optimizationItemGroup != null;
         optimizationItemGroup.addParameter(fitItem1);
-        // addParameter makes a copy of the fit item, so we have to get it back 
-        // we need it later to determine the result
-        fitItem1=(CFitItem)optimizationItemGroup.getParameter(0);
-        assert fitItem1 != null;
         
         reaction=model.getReaction(1);
         assert reaction != null;
@@ -329,9 +325,7 @@ public class example6
         fitItem2.setUpperBound(new CCopasiObjectName("10"));
         // add the fit item to the correct parameter group
         optimizationItemGroup.addParameter(fitItem2);
-        // addParameter makes a copy of the fit item, so we have to get it back
-        fitItem2=(CFitItem)optimizationItemGroup.getParameter(1);
-        assert fitItem2 != null;
+        
         result=true;
         try
         {
@@ -345,17 +339,20 @@ public class example6
           System.exit(1);
         }
         assert result == true;
-        // the actual results are stored in the fit items we created.
-        // the first fit item stores the result for the parameter of the first
-        // reaction, which should be close to 0.03
-        System.out.println("fitted parameter for reaction 1: "+(new Double(fitItem1.getLocalValue())).toString());
-        // the second fit item stores the result for the parameter of the
-        // second reaction, which should be close to 0.004
-        System.out.println("fitted parameter for reaction 2: "+(new Double(fitItem2.getLocalValue())).toString());
+        // assert that there are two optimization items
+        assert fitProblem.getOptItemList().size() == 2;
+        // the order should be the order in whih we added the items above
+        COptItem optItem1 = fitProblem.getOptItemList().get(0);
+        COptItem optItem2 = fitProblem.getOptItemList().get(1);
+        // the actual results are stored in the fit problem
+        assert fitProblem.getSolutionVariables().size() == 2;
+        System.out.println("value for " + optItem1.getObject().getCN().getString() + ": " + fitProblem.getSolutionVariables().get(0));
+        System.out.println("value for " + optItem2.getObject().getCN().getString() + ": " + fitProblem.getSolutionVariables().get(1));
         // depending on the noise, the fit can be quite bad, so we are a litle
         // relaxed here (we should be within 3% of the original values)
-        assert (Math.abs(fitItem1.getLocalValue()-0.03)/0.03) < 3e-2;
-        assert (Math.abs(fitItem2.getLocalValue()-0.004)/0.004) < 3e-2;
+        assert (Math.abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2;
+        assert (Math.abs(fitProblem.getSolutionVariables().get(1) - 0.004) / 0.004) < 3e-2;
+ 
     }
 
     static String MODEL_STRING=

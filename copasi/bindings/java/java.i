@@ -1,12 +1,17 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
-//   $Revision: 1.15 $ 
+//   $Revision: 1.15.18.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2007/12/11 21:10:26 $ 
+//   $Date: 2009/04/01 06:25:36 $ 
 // End CVS Header 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -25,6 +30,7 @@
 
 
 void initCopasi();
+
 %typemap(jni) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
 %typemap(jtype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
 %typemap(jstype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
@@ -73,6 +79,23 @@ void initCopasi();
         std::cout << "Failed to create new java object" << std::endl;
     }
 }
+
+%typemap(jni) CCopasiObject* CKeyFactory::get "jobject"
+%typemap(jtype) CCopasiObject* CKeyFactory::get "CCopasiObject"
+%typemap(jstype) CCopasiObject* CKeyFactory::get "CCopasiObject"
+%typemap(javaout) CCopasiObject* CKeyFactory::get
+{
+  return $jnicall;
+}
+%typemap(out) CCopasiObject* CKeyFactory::get
+{
+    $result = DownCast_CCopasiObject(jenv,$1);
+    if(!$result)
+    {
+        std::cout << "Failed to create new java object" << std::endl;
+    }
+}
+
 
 %typemap(jni) CCopasiContainer* CCopasiObject::getObjectParent "jobject"
 %typemap(jtype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
