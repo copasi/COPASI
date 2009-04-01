@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example6.py,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/30 16:31:56 $ 
+#   $Date: 2009/04/01 06:27:19 $ 
 # End CVS Header 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -371,8 +371,8 @@ def main():
    optItem2 = fitProblem.getOptItemList()[1]
    # the actual results are stored in the fit problem
    assert fitProblem.getSolutionVariables().size() == 2
-   print "value for " , optItem1.getObject().getCN() , ": " , fitProblem.getSolutionVariables().get(0)
-   print "value for " , optItem2.getObject().getCN() , ": " , fitProblem.getSolutionVariables().get(1)
+   print "value for " , optItem1.getObject().getCN().getString() , ": " , fitProblem.getSolutionVariables().get(0)
+   print "value for " , optItem2.getObject().getCN().getString() , ": " , fitProblem.getSolutionVariables().get(1)
    # depending on the noise, the fit can be quite bad, so we are a litle
    # relaxed here (we should be within 3% of the original values)
    assert (abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2
