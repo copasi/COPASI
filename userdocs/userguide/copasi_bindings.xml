@@ -1,10 +1,10 @@
 <chapter id="bindings" xreflabel="bindings">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
-<!--   $Revision: 1.1.2.6 $ -->
+<!--   $Revision: 1.1.2.7 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: gauges $ -->
-<!--   $Date: 2009/03/29 09:26:38 $ -->
+<!--   $Date: 2009/04/01 06:29:03 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -4360,6 +4360,39 @@ This example demonstrates how to run an optimization using a time course simulat
 </programlisting>
 <programlisting condition="PYTHON">
 <xi:include  href="../../copasi/bindings/python/examples/example5.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+</para>
+</sect2>
+
+<sect2 id="parameterEstimation" xreflabel="parameterEstimation">
+<title>Running a parameter estimation on a simple model.</title>
+<para>
+This example demonstrates how to setup and run a parameter estimation with the COPASI API.
+</para>
+<para>
+The example reads in a simple SBML model and creates some fake time course data with noise to use as the data for the parameter fitting.
+</para>
+<para>
+<programlisting condition="CPP">
+<xi:include  href="../../copasi/bindings/cpp_examples/example6/example6.cpp" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="JAVA">
+<xi:include  href="../../copasi/bindings/java/examples/example6.java" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
+  <xi:fallback>
+    <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
+  </xi:fallback>
+</xi:include>
+</programlisting>
+<programlisting condition="PYTHON">
+<xi:include  href="../../copasi/bindings/python/examples/example6.py" xmlns:xi="http://www.w3.org/2001/XInclude" parse="text">
   <xi:fallback>
     <para><emphasis>FIXME:  MISSING XINCLUDE CONTENT</emphasis></para>
   </xi:fallback>
