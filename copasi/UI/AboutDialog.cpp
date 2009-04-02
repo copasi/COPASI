@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.10.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/09 21:22:03 $
+//   $Date: 2009/04/02 19:06:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,13 +61,14 @@ const char* AboutDialog::text =
   "<li>Expat 2.0.1 XML parser</li>"
   "<li>libsbml 3.1.1</li>"
   "<li>raptor 1.4.18</li>"
+  "<li>Systems Biology Workbench 2.7.8</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
   "<li>LSODA from ODEPACK</li>"
   "<li>Mersenne Twister random number generator, "
   "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura</li>"
   "</ul>"
   "</p>"
-;
+  ;
 
 AboutDialog::AboutDialog(QWidget* parent,
                          const QString & text,
