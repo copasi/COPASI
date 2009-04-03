@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.7.2.8.4.2 $
+//   $Revision: 1.7.2.8.4.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/03/20 15:27:09 $
+//   $Author: nsimus $
+//   $Date: 2009/04/03 09:32:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,10 +83,14 @@ void CILDMModifiedMethod::start(const CState * initialState)
 
   mDtol = mpProblem->getDeufelhardTol();
 
+  std::cout << "ILDM Modified :  " << mDtol << std::endl;
+
   mVslow.resize(mData.dim, mData.dim);
   mVslow_metab.resize(mData.dim, mData.dim);
   mVslow_space.resize(mData.dim);
   mVfast_space.resize(mData.dim);
+
+  emptyVectors();
 
   return;
 }
