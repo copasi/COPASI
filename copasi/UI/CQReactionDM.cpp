@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Date: 2009/04/07 23:14:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,8 @@
 CQReactionDM::CQReactionDM(QObject *parent)
     : CQBaseDataModel(parent)
 
-{}
+{
+}
 
 int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -190,4 +191,48 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
 
   endRemoveRows();
   return true;
+}
+
+bool CQReactionDM::isDefaultRow(const QModelIndex& i) const
+{
+  if (!i.isValid())
+    {return false;}
+
+  bool rowDefault = true;
+
+  for (int j = 0; j < columnCount(); j++)
+    {
+      QModelIndex ind = index(i.row(), j);
+      QString value = ind.data().toString();
+
+      if (!value.isEmpty())
+        {
+          switch (j)
+            {
+              case COL_NAME:
+
+                if (value != "No Name")
+                  rowDefault = false;
+
+                break;
+              case COL_RATE_LAW:
+
+                if (value != "undefined")
+                  rowDefault = false;
+
+                break;
+              case COL_FLUX:
+
+                if (value != "0")
+                  rowDefault = false;
+
+                break;
+              default:
+                rowDefault = false;
+                break;
+            }
+        }
+    }
+
+  return rowDefault;
 }

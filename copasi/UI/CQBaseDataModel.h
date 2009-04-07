@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Date: 2009/04/07 23:14:25 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -31,7 +31,9 @@ public:
   bool insertRow();
   bool removeRow(int position);
   bool clear();
-  virtual bool removeLastRowIfEmpty();
+  bool removeLastRowIfEmpty();
+  bool isLastDefaultRow();
+  virtual bool isDefaultRow(const QModelIndex& i) const;
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;

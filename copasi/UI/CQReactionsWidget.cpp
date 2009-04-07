@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/18 12:33:41 $
+//   $Author: aekamal $
+//   $Date: 2009/04/07 23:14:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,13 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
 {
   setupUi(this);
 
-  //Create Data Models for the 4 tables
+  //Create Source Data Model.
   mpReactionDM = new CQReactionDM(this);
+
+  //Create the Proxy Model for sorting/filtering and set its properties.
+  mpProxyModel = new CQSortFilterProxyModel();
+  mpProxyModel->setDynamicSortFilter(true);
+  mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 
   mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
@@ -45,6 +50,7 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
  */
 CQReactionsWidget::~CQReactionsWidget()
 {
+  pdelete(mpProxyModel);
   pdelete(mpReactionDM);
   // no need to delete child widgets, Qt does it all for us
 }
@@ -218,7 +224,7 @@ void CQReactionsWidget::deleteSelectedReaction()
 
 void CQReactionsWidget::slotBtnNewClicked()
 {
-  if (mpReactionDM->insertRow())
+  if (!mpReactionDM->isLastDefaultRow() && mpReactionDM->insertRow())
     {
       mpTblReactions->resizeColumnsToContents();
       protectedNotify(ListViews::REACTION, ListViews::ADD, "");;
@@ -248,9 +254,10 @@ bool CQReactionsWidget::leave()
 
 bool CQReactionsWidget::enter(const std::string & C_UNUSED(key))
 {
+  mpProxyModel->setSourceModel(mpReactionDM);
   //Set Model for the TableView
   mpTblReactions->setModel(NULL);
-  mpTblReactions->setModel(mpReactionDM);
+  mpTblReactions->setModel(mpProxyModel);
   mpReactionDM->insertRow();
   mpTblReactions->resizeColumnsToContents();
 
@@ -265,8 +272,8 @@ void CQReactionsWidget::dataChanged(const QModelIndex& topLeft,
       if (topLeft.row() == (mpReactionDM->rowCount() - 1))
         //If edit was done on last row, insert a new empty row.
         {
-          mpReactionDM->insertRow();
-          mpTblReactions->resizeColumnsToContents();
+          if (!mpReactionDM->isLastDefaultRow() && mpReactionDM->insertRow())
+            mpTblReactions->resizeColumnsToContents();
         }
     }
 

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.189 $
+#   $Revision: 1.190 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/03/26 09:02:35 $
+#   $Author: aekamal $
+#   $Date: 2009/04/07 23:14:25 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.189 $ $Author: pwilly $ $Date: 2009/03/26 09:02:35 $
+# $Revision: 1.190 $ $Author: aekamal $ $Date: 2009/04/07 23:14:25 $
 ######################################################################
 
 LIB = UI
@@ -69,6 +69,7 @@ HEADERS	+= \
 	CQReportListItem.h \
 	CQSBMLFileDialog.h \
 	CQSensResultWidget.h \
+	CQSortFilterProxyModel.h \
 	CQUpdatesWidget.h \
 	CQValidator.h \
 	CScanContainerWidget.h \
@@ -141,6 +142,7 @@ SOURCES	+= \
 	CQReportListItem.cpp \
 	CQSBMLFileDialog.cpp \
 	CQSensResultWidget.cpp \
+	CQSortFilterProxyModel.cpp \
 	CQUpdatesWidget.cpp \
 	CQValidator.cpp \
 	CScanContainerWidget.cpp \

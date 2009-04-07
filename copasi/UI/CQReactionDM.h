@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/05 22:48:12 $
+//   $Date: 2009/04/07 23:14:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,23 +18,24 @@
 #include "CQBaseDataModel.h"
 
 class CQReactionDM : public CQBaseDataModel
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQReactionDM(QObject *parent = 0);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole);
+public:
+  CQReactionDM(QObject *parent = 0);
+  int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const;
+  QVariant data(const QModelIndex &index, int role) const;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const;
+  bool setData(const QModelIndex &index, const QVariant &value,
+               int role = Qt::EditRole);
+  virtual bool isDefaultRow(const QModelIndex& i) const;
 
-  protected:
-    bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-    bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  };
+protected:
+  bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+};
 
 #endif //CQReactionDM_H

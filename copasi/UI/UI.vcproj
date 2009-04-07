@@ -338,6 +338,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQSortFilterProxyModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQSplashWidget.cpp"
 				>
 			</File>
@@ -908,6 +912,10 @@
 			</File>
 			<File
 				RelativePath="CQSensResultWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQSortFilterProxyModel.h"
 				>
 			</File>
 			<File
