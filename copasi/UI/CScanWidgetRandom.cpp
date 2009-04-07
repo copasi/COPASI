@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/18 12:37:05 $
+//   $Author: aekamal $
+//   $Date: 2009/04/07 23:36:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,8 +183,9 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
     checkBoxLog->setChecked(* pBool);
 
     std::cout << "iFSI: C" << std::endl;
-    return true;
-  */}
+   */
+  return true;
+}
 
 bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
 {
@@ -202,8 +203,9 @@ bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
       tmp->setValue("log", checkBoxLog->isChecked());
 
     std::cout << "sTSI: B" << std::endl;
-      return true;
-  */}
+   */
+  return true;
+}
 
 void CScanWidgetRandom::changeType()
 {
