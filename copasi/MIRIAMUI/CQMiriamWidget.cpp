@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/18 12:23:52 $
+//   $Author: aekamal $
+//   $Date: 2009/04/07 23:37:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,12 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpBiologicalDescriptionDM = new CQBiologicalDescriptionDM(mpMIRIAMInfo, this);
   mpModifiedDM = new CQModifiedDM(mpMIRIAMInfo, this);
 
+  //Create Proxy Data Models for the 4 tables
+  mpCreatorPDM = new CQSortFilterProxyModel();
+  mpReferencePDM = new CQSortFilterProxyModel();
+  mpBiologicalDescriptionPDM = new CQSortFilterProxyModel();
+  mpModifiedPDM = new CQSortFilterProxyModel();
+
   //Create Required Delegates
   mpDTEDelegate = new CQDateTimeEditDelegate(this);
   mpTblModified->setItemDelegateForColumn(COL_DATE_MODIFIED, mpDTEDelegate);
@@ -52,10 +58,10 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpPredicateDelegate = new CQComboDelegate(&mPredicates, this);
   mpTblDescription->setItemDelegateForColumn(COL_RELATIONSHIP, mpPredicateDelegate);
 
-  mWidgets.push_back(mpTblAuthors); mDMs.push_back(mpCreatorDM);
-  mWidgets.push_back(mpTblReferences); mDMs.push_back(mpReferenceDM);
-  mWidgets.push_back(mpTblDescription); mDMs.push_back(mpBiologicalDescriptionDM);
-  mWidgets.push_back(mpTblModified); mDMs.push_back(mpModifiedDM);
+  mWidgets.push_back(mpTblAuthors); mDMs.push_back(mpCreatorDM); mProxyDMs.push_back(mpCreatorPDM);
+  mWidgets.push_back(mpTblReferences); mDMs.push_back(mpReferenceDM); mProxyDMs.push_back(mpReferencePDM);
+  mWidgets.push_back(mpTblDescription); mDMs.push_back(mpBiologicalDescriptionDM); mProxyDMs.push_back(mpBiologicalDescriptionPDM);
+  mWidgets.push_back(mpTblModified); mDMs.push_back(mpModifiedDM); mProxyDMs.push_back(mpModifiedPDM);
 
   // Build the list of supported predicates
   mPredicates.push_back("-- select --");
@@ -74,8 +80,15 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
   std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
 
-  for (; it != end && itDM != endDM; it++, itDM++)
+  std::vector<CQSortFilterProxyModel*>::const_iterator itPDM = mProxyDMs.begin();
+  std::vector<CQSortFilterProxyModel*>::const_iterator endPDM = mProxyDMs.end();
+
+  for (; it != end && itDM != endDM && itPDM != endPDM; it++, itDM++, itPDM++)
     {
+      //Set Proxy Data Model properties
+      (*itPDM)->setDynamicSortFilter(true);
+      (*itPDM)->setSortCaseSensitivity(Qt::CaseInsensitive);
+
       (*it)->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
               this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
@@ -90,6 +103,10 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
  */
 CQMiriamWidget::~CQMiriamWidget()
 {
+  pdelete(mpCreatorPDM);
+  pdelete(mpReferencePDM);
+  pdelete(mpBiologicalDescriptionPDM);
+  pdelete(mpModifiedPDM);
   pdelete(mpCreatorDM);
   pdelete(mpReferenceDM);
   pdelete(mpBiologicalDescriptionDM);
@@ -248,8 +265,8 @@ void CQMiriamWidget::slotBtnNewClicked()
     {
       if ((*it)->hasFocus())
         {
-          (*itDM)->insertRow();
-          (*it)->resizeColumnsToContents();
+          if (!(*itDM)->isLastDefaultRow() && (*itDM)->insertRow())
+            (*it)->resizeColumnsToContents();
         }
     }
 }
@@ -345,10 +362,14 @@ bool CQMiriamWidget::enter(const std::string & key)
   std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
   std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
 
-  for (; it != end && itDM != endDM; it++, itDM++)
+  std::vector<CQSortFilterProxyModel*>::const_iterator itPDM = mProxyDMs.begin();
+  std::vector<CQSortFilterProxyModel*>::const_iterator endPDM = mProxyDMs.end();
+
+  for (; it != end && itDM != endDM && itPDM != endPDM; it++, itDM++, itPDM++)
     {
+      (*itPDM)->setSourceModel(*itDM);
       (*it)->setModel(NULL);
-      (*it)->setModel(*itDM);
+      (*it)->setModel(*itPDM);
       (*itDM)->insertRow();
       (*it)->resizeColumnsToContents();
     }
@@ -429,8 +450,8 @@ void CQMiriamWidget::dataChanged(const QModelIndex& topLeft, const QModelIndex& 
           if (topLeft.row() == ((*itDM)->rowCount() - 1))
             //If edit was done on last row, insert a new empty row.
             {
-              (*itDM)->insertRow();
-              (*it)->resizeColumnsToContents();
+              if (!(*itDM)->isLastDefaultRow() && (*itDM)->insertRow())
+                (*it)->resizeColumnsToContents();
             }
         }
     }

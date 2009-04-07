@@ -1,10 +1,10 @@
-<ui version="4.0">
+<?xml version="1.0" encoding="UTF-8"?>
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/03/20 07:45:31 $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2009/04/07 23:37:16 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+<ui version="4.0">
  <comment> All rights reserved. </comment>
  <class>CQMiriamWidget</class>
  <widget class="CopasiWidget" name="CQMiriamWidget">
@@ -180,7 +181,7 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="sortingEnabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -199,7 +200,7 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="sortingEnabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -218,7 +219,7 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="sortingEnabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -237,7 +238,7 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="sortingEnabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>

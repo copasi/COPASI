@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Date: 2009/04/07 23:37:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 
 #include <QWidget>
 #include <QVariant>
+
+#include "UI/CQSortFilterProxyModel.h"
 
 #include "ui_CQMiriamWidget.h"
 #include "CQCreatorDM.h"
@@ -47,6 +49,10 @@ private:
   CQReferenceDM* mpReferenceDM;
   CQBiologicalDescriptionDM* mpBiologicalDescriptionDM;
   CQModifiedDM* mpModifiedDM;
+  CQSortFilterProxyModel* mpCreatorPDM;
+  CQSortFilterProxyModel* mpReferencePDM;
+  CQSortFilterProxyModel* mpBiologicalDescriptionPDM;
+  CQSortFilterProxyModel* mpModifiedPDM;
   CQDateTimeEditDelegate* mpDTEDelegate;
   CQComboDelegate* mpResourceDelegate1;
   CQComboDelegate* mpResourceDelegate2;
@@ -56,6 +62,7 @@ private:
   QStringList mReferences;
   std::vector< QTableView * > mWidgets;
   std::vector< CQBaseDataModel * > mDMs;
+  std::vector< CQSortFilterProxyModel * > mProxyDMs;
   void deleteSelectedAuthor();
   void deleteSelectedReference();
   void deleteSelectedBiologicalDescription();
