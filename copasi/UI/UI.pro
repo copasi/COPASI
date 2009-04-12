@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.190 $
+#   $Revision: 1.191 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/04/07 23:14:25 $
+#   $Author: pwilly $
+#   $Date: 2009/04/12 20:04:20 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.190 $ $Author: aekamal $ $Date: 2009/04/07 23:14:25 $
+# $Revision: 1.191 $ $Author: pwilly $ $Date: 2009/04/12 20:04:20 $
 ######################################################################
 
 LIB = UI
@@ -94,6 +94,7 @@ HEADERS	+= \
 	ReactionsWidget1.h \
 	ScanWidget.h \
 	SensitivitiesWidget.h \
+	SensWidgetComboBox.h \
 	SliderDialog.h \
 	StateWidget.h \
 	SteadyStateWidget.h \
@@ -102,7 +103,7 @@ HEADERS	+= \
 	TimeSeriesWidget.h \
 	Tree.h \
 	TSSWidget.h \
-    CQExpressionMmlWidgetStack.h \
+        CQExpressionMmlWidgetStack.h \
 	CQMmlScrollView.h
 
 SOURCES	+= \
@@ -166,6 +167,7 @@ SOURCES	+= \
 	ReactionsWidget1.cpp \
 	ScanWidget.cpp \
 	SensitivitiesWidget.cpp \
+	SensWidgetComboBox.cpp \
 	SliderDialog.cpp \
 	StateWidget.cpp \
 	SteadyStateWidget.cpp \
@@ -201,7 +203,7 @@ FORMS3 += CQEFMWidget.ui
 # FORMS3 += CQModelValue.ui
 # FORMS3 += CQMoietiesTaskWidget.ui
 # FORMS3 += CQMoietiesTaskResult.ui
-FORMS3 += CQOptimizationWidget.ui
+#FORMS3 += CQOptimizationWidget.ui
 FORMS3 += CQOptimizationResult.ui
 # FORMS3 += CQPreferenceDialog.ui
 # FORMS3 += CQProgressDialog.ui
@@ -229,6 +231,63 @@ FORMS3 += CQOptimizationResult.ui
 # FORMS3 += CQExpressionMmlWidget.ui
 # FORMS3 += CQEventWidget1.ui
 
+# FORMS3 += CMCAResultSubwidget.ui
+# FORMS3 += CQCompartment.ui
+# FORMS3 += CQDifferentialEquations.ui
+#FORMS3 += CQEFMWidget.ui
+# FORMS3 += CQExperimentData.ui
+# FORMS3 += CQExperimentSelection.ui
+# FORMS3 += CQFileDialogBtnGrp.ui
+FORMS += CQFittingItemWidget.ui
+# FORMS3 += CQFittingResult.ui
+# FORMS3 += CQFittingResultTab1.ui
+FORMS += CQFittingWidget.ui
+FORMS += CQLyapWidget.ui
+FORMS += CQMCAWidget.ui
+# FORMS3 += CQMetabolite.ui
+# FORMS3 += CQModelValue.ui
+# FORMS3 += CQMoietiesTaskWidget.ui
+# FORMS3 += CQMoietiesTaskResult.ui
+FORMS += CQOptimizationWidget.ui
+#FORMS3 += CQOptimizationResult.ui
+# FORMS3 += CQPreferenceDialog.ui
+# FORMS3 += CQProgressDialog.ui
+# FORMS3 += CQProgressItem.ui
+# FORMS3 += CQProgressItemBar.ui
+# FORMS3 += CQProgressItemText.ui
+# FORMS3 += CQReportDefinition.ui
+# FORMS3 += CQSplashWidget.ui
+# FORMS3 += CQStartValueReset.ui
+# FORMS3 += CQTaskBtnWidget.ui
+# FORMS3 += CQTaskHeaderWidget.ui
+# FORMS3 += CQTextDialog.ui
+FORMS += CQTrajectoryWidget.ui
+# FORMS3 += CScanWidgetBreak.ui
+FORMS += CScanWidgetRandom.ui
+FORMS += CScanWidgetRepeat.ui
+FORMS += CScanWidgetScan.ui
+FORMS += CScanWidgetTask.ui
+# FORMS3 += CUpDownSubwidget.ui
+# FORMS3 += DefaultplotDialog.ui
+# FORMS3 += SliderSettingsDialog.ui
+FORMS += StateSubwidget.ui
+# FORMS3 += TimeSeriesSubwidget.ui
+# FORMS3 += objectdebug.ui
+# FORMS3 += CQExpressionMmlWidget.ui
+# FORMS3 += CQEventWidget1.ui
+
+FORMS += SensitivitiesWidget.ui
+FORMS += SteadyStateWidget.ui
+
+#FORMS += CScanWidgetRandom.ui
+#FORMS += CScanWidgetRepeat.ui
+#FORMS += CScanWidgetScan.ui
+#FORMS += CScanWidgetTask.ui
+
+#FORMS += StateSubwidget.ui
+
+#FORMS += CQTrajectoryWidget.ui
+
 # headers generated from .ui files
 HEADERS += \
            CMCAResultSubwidget.h \
@@ -247,17 +306,17 @@ HEADERS += \
            CQExpressionMmlWidget.h \
            CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
-           CQFittingItemWidget.ui.h \
+#           CQFittingItemWidget.ui.h \
            CQFittingResult.h \
            CQFittingResult.ui.h \
            CQFittingResultTab1.h \
            CQFittingResultTab1.ui.h \
            CQFittingWidget.h \
-           CQFittingWidget.ui.h \
+#           CQFittingWidget.ui.h \
            CQLyapWidget.h \
-           CQLyapWidget.ui.h \
+#           CQLyapWidget.ui.h \
            CQMCAWidget.h \
-           CQMCAWidget.ui.h \
+#           CQMCAWidget.ui.h \
            CQMetabolite.h \
            CQMetabolite.ui.h \
            CQModelValue.h \
@@ -266,7 +325,8 @@ HEADERS += \
            CQMoietiesTaskResult.ui.h \
            CQMoietiesTaskWidget.h \
            CQMoietiesTaskWidget.ui.h \
-           CQOptimizationWidget.ui.h \
+           CQOptimizationWidget.h \
+#           CQOptimizationWidget.ui.h \
            CQOptimizationResult.ui.h \
            CQPreferenceDialog.h \
            CQPreferenceDialog.ui.h \
@@ -290,7 +350,7 @@ HEADERS += \
            CQTextDialog.h \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
-           CQTrajectoryWidget.ui.h \
+#           CQTrajectoryWidget.ui.h \
            CScanWidgetBreak.h \
            CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
@@ -309,6 +369,7 @@ HEADERS += \
            CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
            DefaultplotDialog.ui.h \
+#	   SensitivitiesWidget.h \
            SliderSettingsDialog.h \
            SliderSettingsDialog.ui.h \
            StateSubwidget.h \
@@ -338,6 +399,7 @@ SOURCES += \
            CQModelValue.cpp \
            CQMoietiesTaskResult.cpp \
            CQMoietiesTaskWidget.cpp \
+           CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
@@ -357,16 +419,10 @@ SOURCES += \
            CScanWidgetTask.cpp \
            DefaultplotDialog.cpp \
            objectdebug.cpp \
+#	   SensitivitiesWidget.cpp \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp
-
-FORMS += CScanWidgetRandom.ui
-FORMS += CScanWidgetRepeat.ui
-FORMS += CScanWidgetScan.ui
-FORMS += CScanWidgetTask.ui
-
-FORMS += StateSubwidget.ui
 
 !contains(DEFINES, HAVE_MML) {
   HEADERS -= CQDifferentialEquations.h
@@ -380,8 +436,11 @@ contains(DEFINES, COPASI_TSSA) {
 # FORMS3 += CQTSSAWidget.ui
 # FORMS3 += CQTSSAResultSubWidget.ui
 
+FORMS += CQTSSAWidget.ui
+# FORMS3 += CQTSSAResultSubWidget.ui
+
   HEADERS += CQTSSAWidget.h \
-             CQTSSAWidget.ui.h \
+#             CQTSSAWidget.ui.h \
              CQTSSAResultSubWidget.h \
              CQTSSAResultSubWidget.ui.h \
              CQTSSATimeScaleWidget.h
