@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:14 $
+//   $Author: pwilly $
+//   $Date: 2009/04/12 20:06:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,25 +15,29 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <q3filedialog.h>
+//#include <q3filedialog.h>
 
 #include <qvariant.h>
-#include <qcheckbox.h> 
+#include <qcheckbox.h>
 //#include <qcombobox.h>
-#include <q3frame.h>
+//#include <q3frame.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <q3table.h>
+//#include <q3table.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <q3whatsthis.h>
 #include <qmessagebox.h>
 #include <qtoolbutton.h>
-#include <qimage.h> 
+#include <qimage.h>
 //Added by qt3to4:
-#include <Q3GridLayout>
+//#include <Q3GridLayout>
+
+#include <QFrame>
+#include <QFileDialog>
+//#include <QTableWidget>
 
 #include <algorithm>
 
@@ -54,111 +58,67 @@
 #include "report/CKeyFactory.h"
 #include "CQSensResultWidget.h"
 
-SensWidgetComboBox::SensWidgetComboBox(QWidget * parent, const char * name)
-    : QComboBox(false, parent, name)
-{}
-
-void SensWidgetComboBox::fillFromList(const std::vector<CObjectLists::ListType> & list)
-{
-  //store old selection
-  CObjectLists::ListType oldItem = getCurrentObjectList();
-
-  mIndexTable = list;
-
-  //fill combobox
-  clear();
-  std::vector<CObjectLists::ListType>::const_iterator it, itEnd = mIndexTable.end();
-  for (it = mIndexTable.begin(); it != itEnd; ++it)
-    insertItem(FROM_UTF8(CObjectLists::ListTypeName[*it]));
-
-  //restore old selection, if possible
-  if (!setCurrentObjectList(oldItem))
-    setCurrentItem(0);
-}
-
-CObjectLists::ListType SensWidgetComboBox::getCurrentObjectList() const
-  {
-    unsigned int index = currentItem();
-    if (index < mIndexTable.size())
-      return mIndexTable[currentItem()];
-    else
-      return CObjectLists::EMPTY_LIST;
-  }
-
-bool SensWidgetComboBox::setCurrentObjectList(CObjectLists::ListType lt)
-{
-  std::vector<CObjectLists::ListType>::const_iterator it;
-  it = std::find(mIndexTable.begin(),
-                 mIndexTable.end(),
-                 lt);
-
-  if (it == mIndexTable.end()) return false;
-
-  setCurrentItem(it - mIndexTable.begin());
-  return true;
-}
-
 //**************** SensitivitiesWidget *********************************
 
 static const unsigned char button_image_data[] =
-  {
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
-    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
-    0x5c, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0xa5, 0x93, 0x4d, 0x4f, 0x13,
-    0x71, 0x10, 0x87, 0x9f, 0xff, 0xee, 0xd6, 0xd6, 0xb6, 0xdb, 0x52, 0x5a,
-    0x40, 0x81, 0x16, 0x85, 0x5a, 0x5e, 0x04, 0xa2, 0xa9, 0x26, 0x26, 0x98,
-    0x88, 0x89, 0x07, 0xaf, 0xc6, 0x0f, 0xe8, 0x47, 0xc0, 0x98, 0x78, 0x30,
-    0x6a, 0x0c, 0x97, 0x62, 0xc4, 0x82, 0xc8, 0x6b, 0x63, 0x43, 0xaa, 0xa0,
-    0xad, 0x5d, 0xe8, 0xf2, 0x62, 0x29, 0xdd, 0x6d, 0x3b, 0x1e, 0x10, 0x22,
-    0x41, 0xf4, 0xe0, 0x9c, 0x26, 0x33, 0xf3, 0xfc, 0x0e, 0xbf, 0x99, 0x51,
-    0x99, 0x4c, 0x86, 0xff, 0x09, 0xe3, 0x6f, 0x4d, 0x9f, 0xaf, 0x2c, 0xae,
-    0xab, 0x61, 0xdb, 0x65, 0xb6, 0xb6, 0x2a, 0x78, 0xbd, 0x06, 0x3d, 0x3d,
-    0x77, 0xd4, 0x3f, 0x05, 0x4c, 0xd3, 0x96, 0x4a, 0xe5, 0x80, 0x6c, 0xb6,
-    0x40, 0xa1, 0x50, 0xc7, 0xeb, 0x15, 0x62, 0x31, 0x61, 0x60, 0x20, 0x4a,
-    0x38, 0x5c, 0x91, 0xdd, 0xdd, 0x76, 0x75, 0xae, 0x80, 0xcf, 0x57, 0x97,
-    0xf9, 0xf9, 0x0d, 0xe6, 0xe6, 0x2c, 0x82, 0x41, 0xc5, 0xc4, 0x44, 0x37,
-    0x89, 0x44, 0x02, 0x91, 0x1f, 0x18, 0x86, 0xf0, 0x3b, 0x7c, 0x46, 0xc0,
-    0xb6, 0xbf, 0xca, 0xcc, 0xcc, 0x67, 0x2c, 0xeb, 0x80, 0x64, 0xd2, 0xc3,
-    0xe8, 0x68, 0x2f, 0xe1, 0xf0, 0x80, 0x72, 0x1c, 0x00, 0x3f, 0xae, 0xfb,
-    0x17, 0x0f, 0xf2, 0xf9, 0x9c, 0x64, 0xe7, 0x4a, 0x04, 0xfc, 0x1a, 0x93,
-    0x93, 0x7d, 0xf4, 0xf5, 0x5d, 0x53, 0x67, 0xc7, 0xcf, 0x11, 0xc8, 0xe7,
-    0xd7, 0x64, 0x61, 0xe1, 0x3b, 0x83, 0xa9, 0x20, 0xe9, 0xf4, 0x75, 0x9a,
-    0x4d, 0xdf, 0x29, 0x38, 0xac, 0xd6, 0x44, 0x73, 0x04, 0x6b, 0x7d, 0x95,
-    0xda, 0x4e, 0x85, 0x50, 0x7b, 0x94, 0xee, 0xe1, 0x34, 0x5f, 0x1b, 0x09,
-    0x65, 0x94, 0x4a, 0x39, 0xc9, 0x66, 0xbf, 0x91, 0x4c, 0x06, 0x19, 0x1b,
-    0xeb, 0x3a, 0x05, 0x07, 0xdc, 0x05, 0xd9, 0x2f, 0x16, 0x59, 0x5a, 0x5a,
-    0xa2, 0xb4, 0xd1, 0xc4, 0xda, 0x0f, 0x50, 0x6f, 0x18, 0xb4, 0x7b, 0x3e,
-    0x71, 0x75, 0x3e, 0xc7, 0xed, 0xc7, 0x0f, 0xc4, 0x98, 0x9d, 0x9d, 0xc7,
-    0x34, 0x03, 0xa4, 0x52, 0x09, 0x74, 0xbd, 0xf7, 0x04, 0xbe, 0xb0, 0xf1,
-    0x42, 0x16, 0x3f, 0xac, 0x91, 0x2b, 0x18, 0x78, 0xc2, 0x31, 0xe2, 0x63,
-    0x6d, 0xdc, 0x1c, 0xe9, 0xc7, 0x17, 0x08, 0x52, 0xdb, 0xb6, 0xc9, 0x3e,
-    0x7f, 0x49, 0x7e, 0xe6, 0x15, 0x86, 0x65, 0xd9, 0x8c, 0x8f, 0xb7, 0x61,
-    0x9a, 0xc9, 0x13, 0x58, 0xcf, 0x3f, 0x93, 0x77, 0xaf, 0x57, 0xd8, 0xb9,
-    0x18, 0x65, 0xf0, 0x5e, 0x92, 0xc1, 0xf1, 0x1b, 0xb8, 0x44, 0x14, 0x40,
-    0x03, 0xd0, 0xcd, 0x4d, 0xb1, 0x1b, 0x21, 0x76, 0xec, 0x6f, 0x67, 0xd7,
-    0x98, 0x08, 0x94, 0xe5, 0xcd, 0xdb, 0x45, 0x0e, 0x82, 0x31, 0x26, 0x1f,
-    0x3d, 0x04, 0x7f, 0x5c, 0xfd, 0x6e, 0xbe, 0x6e, 0xbd, 0x97, 0xcc, 0xf4,
-    0x3a, 0x5e, 0xd1, 0xb8, 0x9c, 0x7e, 0x88, 0xd1, 0xd1, 0x11, 0xa1, 0x54,
-    0x72, 0xb0, 0xac, 0x15, 0xe9, 0xe8, 0x18, 0x51, 0xf5, 0xba, 0xcd, 0x8f,
-    0xea, 0x01, 0xa1, 0x78, 0x83, 0x20, 0x45, 0xcc, 0xe6, 0xb6, 0xb4, 0x9a,
-    0x0d, 0xaa, 0xd5, 0x2a, 0x85, 0x8f, 0xab, 0x7c, 0x59, 0x2c, 0x72, 0xa8,
-    0x5d, 0x62, 0xfc, 0xfe, 0x18, 0x46, 0xf7, 0x5d, 0xa5, 0xa6, 0xa6, 0x9e,
-    0xc8, 0xf4, 0xf4, 0x17, 0xa2, 0x51, 0x97, 0x91, 0xe1, 0x5e, 0xa2, 0xa1,
-    0x06, 0x9b, 0xb3, 0x4f, 0x29, 0xe7, 0xca, 0x38, 0xc5, 0x0b, 0x38, 0x7b,
-    0xa0, 0xeb, 0x1a, 0x8e, 0x3f, 0x42, 0x35, 0x10, 0xa3, 0x2b, 0xd5, 0xc6,
-    0xc8, 0xad, 0x21, 0x22, 0xf1, 0xb4, 0x02, 0x50, 0x99, 0x4c, 0x86, 0x5a,
-    0xad, 0x20, 0xcb, 0xcb, 0x6b, 0x2c, 0x2f, 0x7b, 0xa8, 0x1f, 0x2a, 0xdc,
-    0x9a, 0x8d, 0xb3, 0x5f, 0xa7, 0xbe, 0x27, 0xe8, 0x2d, 0xa1, 0x27, 0x2e,
-    0xa4, 0x46, 0x4d, 0xae, 0x0c, 0xc5, 0x69, 0xef, 0x8a, 0xa0, 0x79, 0xfa,
-    0x4f, 0xfc, 0x52, 0xc7, 0xdf, 0xe8, 0xf1, 0x6c, 0x8a, 0xeb, 0x7a, 0x68,
-    0xb5, 0xe4, 0xa8, 0xd3, 0x82, 0x96, 0x80, 0xae, 0x0c, 0xfc, 0xc1, 0x10,
-    0xd2, 0xda, 0xe1, 0xd0, 0xe9, 0x3c, 0x73, 0x5c, 0x27, 0x26, 0xba, 0xee,
-    0xd1, 0x0a, 0x35, 0xed, 0x57, 0x41, 0x83, 0xe3, 0xb4, 0x76, 0x08, 0xd0,
-    0xf9, 0xc7, 0x4b, 0xfc, 0x09, 0x52, 0xcb, 0x07, 0x62, 0x36, 0x43, 0x92,
-    0xc6, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
-    0x82
-  };
+{
+  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
+  0x5c, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0xa5, 0x93, 0x4d, 0x4f, 0x13,
+  0x71, 0x10, 0x87, 0x9f, 0xff, 0xee, 0xd6, 0xd6, 0xb6, 0xdb, 0x52, 0x5a,
+  0x40, 0x81, 0x16, 0x85, 0x5a, 0x5e, 0x04, 0xa2, 0xa9, 0x26, 0x26, 0x98,
+  0x88, 0x89, 0x07, 0xaf, 0xc6, 0x0f, 0xe8, 0x47, 0xc0, 0x98, 0x78, 0x30,
+  0x6a, 0x0c, 0x97, 0x62, 0xc4, 0x82, 0xc8, 0x6b, 0x63, 0x43, 0xaa, 0xa0,
+  0xad, 0x5d, 0xe8, 0xf2, 0x62, 0x29, 0xdd, 0x6d, 0x3b, 0x1e, 0x10, 0x22,
+  0x41, 0xf4, 0xe0, 0x9c, 0x26, 0x33, 0xf3, 0xfc, 0x0e, 0xbf, 0x99, 0x51,
+  0x99, 0x4c, 0x86, 0xff, 0x09, 0xe3, 0x6f, 0x4d, 0x9f, 0xaf, 0x2c, 0xae,
+  0xab, 0x61, 0xdb, 0x65, 0xb6, 0xb6, 0x2a, 0x78, 0xbd, 0x06, 0x3d, 0x3d,
+  0x77, 0xd4, 0x3f, 0x05, 0x4c, 0xd3, 0x96, 0x4a, 0xe5, 0x80, 0x6c, 0xb6,
+  0x40, 0xa1, 0x50, 0xc7, 0xeb, 0x15, 0x62, 0x31, 0x61, 0x60, 0x20, 0x4a,
+  0x38, 0x5c, 0x91, 0xdd, 0xdd, 0x76, 0x75, 0xae, 0x80, 0xcf, 0x57, 0x97,
+  0xf9, 0xf9, 0x0d, 0xe6, 0xe6, 0x2c, 0x82, 0x41, 0xc5, 0xc4, 0x44, 0x37,
+  0x89, 0x44, 0x02, 0x91, 0x1f, 0x18, 0x86, 0xf0, 0x3b, 0x7c, 0x46, 0xc0,
+  0xb6, 0xbf, 0xca, 0xcc, 0xcc, 0x67, 0x2c, 0xeb, 0x80, 0x64, 0xd2, 0xc3,
+  0xe8, 0x68, 0x2f, 0xe1, 0xf0, 0x80, 0x72, 0x1c, 0x00, 0x3f, 0xae, 0xfb,
+  0x17, 0x0f, 0xf2, 0xf9, 0x9c, 0x64, 0xe7, 0x4a, 0x04, 0xfc, 0x1a, 0x93,
+  0x93, 0x7d, 0xf4, 0xf5, 0x5d, 0x53, 0x67, 0xc7, 0xcf, 0x11, 0xc8, 0xe7,
+  0xd7, 0x64, 0x61, 0xe1, 0x3b, 0x83, 0xa9, 0x20, 0xe9, 0xf4, 0x75, 0x9a,
+  0x4d, 0xdf, 0x29, 0x38, 0xac, 0xd6, 0x44, 0x73, 0x04, 0x6b, 0x7d, 0x95,
+  0xda, 0x4e, 0x85, 0x50, 0x7b, 0x94, 0xee, 0xe1, 0x34, 0x5f, 0x1b, 0x09,
+  0x65, 0x94, 0x4a, 0x39, 0xc9, 0x66, 0xbf, 0x91, 0x4c, 0x06, 0x19, 0x1b,
+  0xeb, 0x3a, 0x05, 0x07, 0xdc, 0x05, 0xd9, 0x2f, 0x16, 0x59, 0x5a, 0x5a,
+  0xa2, 0xb4, 0xd1, 0xc4, 0xda, 0x0f, 0x50, 0x6f, 0x18, 0xb4, 0x7b, 0x3e,
+  0x71, 0x75, 0x3e, 0xc7, 0xed, 0xc7, 0x0f, 0xc4, 0x98, 0x9d, 0x9d, 0xc7,
+  0x34, 0x03, 0xa4, 0x52, 0x09, 0x74, 0xbd, 0xf7, 0x04, 0xbe, 0xb0, 0xf1,
+  0x42, 0x16, 0x3f, 0xac, 0x91, 0x2b, 0x18, 0x78, 0xc2, 0x31, 0xe2, 0x63,
+  0x6d, 0xdc, 0x1c, 0xe9, 0xc7, 0x17, 0x08, 0x52, 0xdb, 0xb6, 0xc9, 0x3e,
+  0x7f, 0x49, 0x7e, 0xe6, 0x15, 0x86, 0x65, 0xd9, 0x8c, 0x8f, 0xb7, 0x61,
+  0x9a, 0xc9, 0x13, 0x58, 0xcf, 0x3f, 0x93, 0x77, 0xaf, 0x57, 0xd8, 0xb9,
+  0x18, 0x65, 0xf0, 0x5e, 0x92, 0xc1, 0xf1, 0x1b, 0xb8, 0x44, 0x14, 0x40,
+  0x03, 0xd0, 0xcd, 0x4d, 0xb1, 0x1b, 0x21, 0x76, 0xec, 0x6f, 0x67, 0xd7,
+  0x98, 0x08, 0x94, 0xe5, 0xcd, 0xdb, 0x45, 0x0e, 0x82, 0x31, 0x26, 0x1f,
+  0x3d, 0x04, 0x7f, 0x5c, 0xfd, 0x6e, 0xbe, 0x6e, 0xbd, 0x97, 0xcc, 0xf4,
+  0x3a, 0x5e, 0xd1, 0xb8, 0x9c, 0x7e, 0x88, 0xd1, 0xd1, 0x11, 0xa1, 0x54,
+  0x72, 0xb0, 0xac, 0x15, 0xe9, 0xe8, 0x18, 0x51, 0xf5, 0xba, 0xcd, 0x8f,
+  0xea, 0x01, 0xa1, 0x78, 0x83, 0x20, 0x45, 0xcc, 0xe6, 0xb6, 0xb4, 0x9a,
+  0x0d, 0xaa, 0xd5, 0x2a, 0x85, 0x8f, 0xab, 0x7c, 0x59, 0x2c, 0x72, 0xa8,
+  0x5d, 0x62, 0xfc, 0xfe, 0x18, 0x46, 0xf7, 0x5d, 0xa5, 0xa6, 0xa6, 0x9e,
+  0xc8, 0xf4, 0xf4, 0x17, 0xa2, 0x51, 0x97, 0x91, 0xe1, 0x5e, 0xa2, 0xa1,
+  0x06, 0x9b, 0xb3, 0x4f, 0x29, 0xe7, 0xca, 0x38, 0xc5, 0x0b, 0x38, 0x7b,
+  0xa0, 0xeb, 0x1a, 0x8e, 0x3f, 0x42, 0x35, 0x10, 0xa3, 0x2b, 0xd5, 0xc6,
+  0xc8, 0xad, 0x21, 0x22, 0xf1, 0xb4, 0x02, 0x50, 0x99, 0x4c, 0x86, 0x5a,
+  0xad, 0x20, 0xcb, 0xcb, 0x6b, 0x2c, 0x2f, 0x7b, 0xa8, 0x1f, 0x2a, 0xdc,
+  0x9a, 0x8d, 0xb3, 0x5f, 0xa7, 0xbe, 0x27, 0xe8, 0x2d, 0xa1, 0x27, 0x2e,
+  0xa4, 0x46, 0x4d, 0xae, 0x0c, 0xc5, 0x69, 0xef, 0x8a, 0xa0, 0x79, 0xfa,
+  0x4f, 0xfc, 0x52, 0xc7, 0xdf, 0xe8, 0xf1, 0x6c, 0x8a, 0xeb, 0x7a, 0x68,
+  0xb5, 0xe4, 0xa8, 0xd3, 0x82, 0x96, 0x80, 0xae, 0x0c, 0xfc, 0xc1, 0x10,
+  0xd2, 0xda, 0xe1, 0xd0, 0xe9, 0x3c, 0x73, 0x5c, 0x27, 0x26, 0xba, 0xee,
+  0xd1, 0x0a, 0x35, 0xed, 0x57, 0x41, 0x83, 0xe3, 0xb4, 0x76, 0x08, 0xd0,
+  0xf9, 0xc7, 0x4b, 0xfc, 0x09, 0x52, 0xcb, 0x07, 0x62, 0x36, 0x43, 0x92,
+  0xc6, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
+  0x82
+};
 
 /**
  *  Constructs a SensitivitiesWidget which is a child of 'parent', with the
@@ -170,162 +130,170 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::
     mpSingleVariable(NULL),
     mpSingleVariable2(NULL)
 {
-  QSize lineEditFormat;
-  QImage img;
+  setupUi(this);
 
-  img.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+  init();
+  retranslateUi(this);
 
-  // row where the header ends:
-  const int fieldStart = 3;
+  /*
+    QSize lineEditFormat;
+    QImage img;
 
-  if (!name)
-    setName("SensitivitiesWidget");
-  setCaption(trUtf8("SensitivitiesWidget"));
+    img.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
 
-  //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  mpMethodLayout = new Q3GridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
+    // row where the header ends:
+    const int fieldStart = 3;
 
-  mpHeaderWidget->setTaskName("Sensitivities");
-  addHeaderToGrid();
+    if (!name)
+      setName("SensitivitiesWidget");
+    setCaption(trUtf8("SensitivitiesWidget"));
 
-  //addHLineToGrid(mpMethodLayout, 2, 2);
+    //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
+  //  mpMethodLayout = new Q3GridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
+    mpMethodLayout = new QGridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
 
-  //QSpacerItem* spacer1 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-  //mpMethodLayout->addItem(spacer1, 3, 3);
+    mpHeaderWidget->setTaskName("Sensitivities");
+    addHeaderToGrid();
 
-  //******** subtask ******************
+    //addHLineToGrid(mpMethodLayout, 2, 2);
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Subtask"));
-  TextLabel1->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  mpMethodLayout->addWidget(TextLabel1, fieldStart + 1, 0);
+    //QSpacerItem* spacer1 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+    //mpMethodLayout->addItem(spacer1, 3, 3);
 
-  SubTaskChooser = new QComboBox(false, this, "SubTaskChooser");
-  SubTaskChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, SubTaskChooser->sizePolicy().hasHeightForWidth()));
-  mpMethodLayout->addWidget(SubTaskChooser, fieldStart + 1, 1);
+    //******** subtask ******************
 
-  QSpacerItem* spacer2 = new QSpacerItem(4, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
-  mpMethodLayout->addItem(spacer2, fieldStart + 2, 0);
+    TextLabel1 = new QLabel(this, "TextLabel1");
+    TextLabel1->setText(trUtf8("Subtask"));
+    TextLabel1->setAlignment(int(Qt::AlignVCenter
+                                 | Qt::AlignRight));
+    mpMethodLayout->addWidget(TextLabel1, fieldStart + 1, 0);
 
-  addHLineToGrid(mpMethodLayout, fieldStart + 3, 2);
+    SubTaskChooser = new QComboBox(false, this, "SubTaskChooser");
+    SubTaskChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, SubTaskChooser->sizePolicy().hasHeightForWidth()));
+    mpMethodLayout->addWidget(SubTaskChooser, fieldStart + 1, 1);
 
-  //*********** function *******************
+    QSpacerItem* spacer2 = new QSpacerItem(4, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
+    mpMethodLayout->addItem(spacer2, fieldStart + 2, 0);
 
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Function"));
-  TextLabel2->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  mpMethodLayout->addWidget(TextLabel2, fieldStart + 4, 0);
+    addHLineToGrid(mpMethodLayout, fieldStart + 3, 2);
 
-  FunctionChooser = new SensWidgetComboBox(this, "TargetFunctionChooser");
-  //  FunctionChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, FunctionChooser->sizePolicy().hasHeightForWidth()));
-  mpMethodLayout->addMultiCellWidget(FunctionChooser, fieldStart + 4, fieldStart + 4, 1, 1);
-  QToolTip::add(FunctionChooser, "This specifies the set of target values for which<br>the sensitivities are to be calculated.");
+    //*********** function *******************
 
-  FunctionLineEdit = new QLineEdit(this, "FunctionLineEdit");
-  lineEditFormat = FunctionLineEdit->sizeHint();
-  FunctionLineEdit->resize(lineEditFormat);
-  mpMethodLayout->addMultiCellWidget(FunctionLineEdit, fieldStart + 5, fieldStart + 5, 1, 1);
-  FunctionLineEdit->setText("[Please Choose Object.] --->");
-  FunctionLineEdit->setReadOnly(true);
-  FunctionLineEdit->setEnabled(false); //hide();
+    TextLabel2 = new QLabel(this, "TextLabel2");
+    TextLabel2->setText(trUtf8("Function"));
+    TextLabel2->setAlignment(int(Qt::AlignVCenter
+                                 | Qt::AlignRight));
+    mpMethodLayout->addWidget(TextLabel2, fieldStart + 4, 0);
 
-  SingleFunctionChooser = new QToolButton(this, "SingleFunctionChooser");
-  mpMethodLayout->addWidget(SingleFunctionChooser, fieldStart + 5, 2);
-  SingleFunctionChooser->setMaximumSize(lineEditFormat.height(),
-                                        lineEditFormat.height());
-  SingleFunctionChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
-  SingleFunctionChooser->setEnabled(false); //hide();
-  QToolTip::add(SingleFunctionChooser, "If the target value of the sensitivities calculation is a single object <br>the object can be selected by clicking this button.");
+    FunctionChooser = new SensWidgetComboBox(this, "TargetFunctionChooser");
+    //  FunctionChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, FunctionChooser->sizePolicy().hasHeightForWidth()));
+    mpMethodLayout->addMultiCellWidget(FunctionChooser, fieldStart + 4, fieldStart + 4, 1, 1);
+    QToolTip::add(FunctionChooser, "This specifies the set of target values for which<br>the sensitivities are to be calculated.");
 
-  //*********** variable 1 **********************
+    FunctionLineEdit = new QLineEdit(this, "FunctionLineEdit");
+    lineEditFormat = FunctionLineEdit->sizeHint();
+    FunctionLineEdit->resize(lineEditFormat);
+    mpMethodLayout->addMultiCellWidget(FunctionLineEdit, fieldStart + 5, fieldStart + 5, 1, 1);
+    FunctionLineEdit->setText("[Please Choose Object.] --->");
+    FunctionLineEdit->setReadOnly(true);
+    FunctionLineEdit->setEnabled(false); //hide();
 
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Variable"));
-  TextLabel3->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  mpMethodLayout->addWidget(TextLabel3, fieldStart + 6, 0);
+    SingleFunctionChooser = new QToolButton(this, "SingleFunctionChooser");
+    mpMethodLayout->addWidget(SingleFunctionChooser, fieldStart + 5, 2);
+    SingleFunctionChooser->setMaximumSize(lineEditFormat.height(),
+                                          lineEditFormat.height());
+    SingleFunctionChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
+    SingleFunctionChooser->setEnabled(false); //hide();
+    QToolTip::add(SingleFunctionChooser, "If the target value of the sensitivities calculation is a single object <br>the object can be selected by clicking this button.");
 
-  VariableChooser = new SensWidgetComboBox(this, "VariableChooser");
+    //*********** variable 1 **********************
 
-  mpMethodLayout->addMultiCellWidget(VariableChooser, fieldStart + 6, fieldStart + 6, 1, 1);
-  QToolTip::add(VariableChooser, "This specifies a set of parameters. The sensitivities are calculated with respect to these parameters.");
+    TextLabel3 = new QLabel(this, "TextLabel3");
+    TextLabel3->setText(trUtf8("Variable"));
+    TextLabel3->setAlignment(int(Qt::AlignVCenter
+                                 | Qt::AlignRight));
+    mpMethodLayout->addWidget(TextLabel3, fieldStart + 6, 0);
 
-  VariableLineEdit = new QLineEdit(this, "VariableLineEdit");
-  VariableLineEdit->resize(lineEditFormat);
-  mpMethodLayout->addMultiCellWidget(VariableLineEdit, fieldStart + 7, fieldStart + 7, 1, 1);
-  VariableLineEdit->setText("[Please Choose Object.] --->");
-  VariableLineEdit->setReadOnly(true);
-  VariableLineEdit->setEnabled(false); //hide();
+    VariableChooser = new SensWidgetComboBox(this, "VariableChooser");
 
-  SingleVariableChooser = new QToolButton(this, "SingleVariableChooser");
-  mpMethodLayout->addWidget(SingleVariableChooser, fieldStart + 7, 2);
-  SingleVariableChooser->setMaximumSize(lineEditFormat.height(),
-                                        lineEditFormat.height());
-  SingleVariableChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
-  SingleVariableChooser->setEnabled(false); //hide();
+    mpMethodLayout->addMultiCellWidget(VariableChooser, fieldStart + 6, fieldStart + 6, 1, 1);
+    QToolTip::add(VariableChooser, "This specifies a set of parameters. The sensitivities are calculated with respect to these parameters.");
 
-  //********** variable 2 **********************
+    VariableLineEdit = new QLineEdit(this, "VariableLineEdit");
+    VariableLineEdit->resize(lineEditFormat);
+    mpMethodLayout->addMultiCellWidget(VariableLineEdit, fieldStart + 7, fieldStart + 7, 1, 1);
+    VariableLineEdit->setText("[Please Choose Object.] --->");
+    VariableLineEdit->setReadOnly(true);
+    VariableLineEdit->setEnabled(false); //hide();
 
-  TextLabel4 = new QLabel(this, "TextLabel4");
-  TextLabel4->setText(trUtf8("Second Variable"));
-  TextLabel4->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  mpMethodLayout->addWidget(TextLabel4, fieldStart + 8, 0);
+    SingleVariableChooser = new QToolButton(this, "SingleVariableChooser");
+    mpMethodLayout->addWidget(SingleVariableChooser, fieldStart + 7, 2);
+    SingleVariableChooser->setMaximumSize(lineEditFormat.height(),
+                                          lineEditFormat.height());
+    SingleVariableChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
+    SingleVariableChooser->setEnabled(false); //hide();
 
-  Variable2Chooser = new SensWidgetComboBox(this, "Variable2Chooser");
-  //  Variable2Chooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, Variable2Chooser->sizePolicy().hasHeightForWidth()));
-  mpMethodLayout->addMultiCellWidget(Variable2Chooser, fieldStart + 8, fieldStart + 8, 1, 1);
-  QToolTip::add(Variable2Chooser, "This specifies a second set of parameters. If this is set, second order sensitivities will be calculated.");
+    //********** variable 2 **********************
 
-  Variable2LineEdit = new QLineEdit(this, "Variable2LineEdit");
-  Variable2LineEdit->resize(lineEditFormat);
-  mpMethodLayout->addMultiCellWidget(Variable2LineEdit, fieldStart + 9, fieldStart + 9, 1, 1);
-  Variable2LineEdit->setText("[Please Choose Object.] --->");
-  Variable2LineEdit->setReadOnly(true);
-  Variable2LineEdit->setEnabled(false); //hide();
+    TextLabel4 = new QLabel(this, "TextLabel4");
+    TextLabel4->setText(trUtf8("Second Variable"));
+    TextLabel4->setAlignment(int(Qt::AlignVCenter
+                                 | Qt::AlignRight));
+    mpMethodLayout->addWidget(TextLabel4, fieldStart + 8, 0);
 
-  SingleVariable2Chooser = new QToolButton(this, "SingleVariable2Chooser");
-  mpMethodLayout->addWidget(SingleVariable2Chooser, fieldStart + 9, 2);
-  SingleVariable2Chooser->setMaximumSize(lineEditFormat.height(),
-                                         lineEditFormat.height());
-  SingleVariable2Chooser->setIconSet(QIcon(QPixmap::fromImage(img)));
-  SingleVariable2Chooser->setEnabled(false); //hide();
+    Variable2Chooser = new SensWidgetComboBox(this, "Variable2Chooser");
+    //  Variable2Chooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, Variable2Chooser->sizePolicy().hasHeightForWidth()));
+    mpMethodLayout->addMultiCellWidget(Variable2Chooser, fieldStart + 8, fieldStart + 8, 1, 1);
+    QToolTip::add(Variable2Chooser, "This specifies a second set of parameters. If this is set, second order sensitivities will be calculated.");
 
-  //**********************************************
+    Variable2LineEdit = new QLineEdit(this, "Variable2LineEdit");
+    Variable2LineEdit->resize(lineEditFormat);
+    mpMethodLayout->addMultiCellWidget(Variable2LineEdit, fieldStart + 9, fieldStart + 9, 1, 1);
+    Variable2LineEdit->setText("[Please Choose Object.] --->");
+    Variable2LineEdit->setReadOnly(true);
+    Variable2LineEdit->setEnabled(false); //hide();
 
-  QSpacerItem* spacer3 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-  mpMethodLayout->addItem(spacer3, fieldStart + 10, fieldStart + 10);
+    SingleVariable2Chooser = new QToolButton(this, "SingleVariable2Chooser");
+    mpMethodLayout->addWidget(SingleVariable2Chooser, fieldStart + 9, 2);
+    SingleVariable2Chooser->setMaximumSize(lineEditFormat.height(),
+                                           lineEditFormat.height());
+    SingleVariable2Chooser->setIconSet(QIcon(QPixmap::fromImage(img)));
+    SingleVariable2Chooser->setEnabled(false); //hide();
 
-  initCombos();
+    //**********************************************
 
-  addHLineToGrid(mpMethodLayout, fieldStart + 11, 2);
+    QSpacerItem* spacer3 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+    mpMethodLayout->addItem(spacer3, fieldStart + 10, fieldStart + 10);
 
-  addMethodParameterTable(4, fieldStart + 12);
+    initCombos();
 
-  mpMethodLayout->addMultiCellWidget(mpBtnWidget,
-                                     fieldStart + 13, fieldStart + 13,
-                                     0, 2);
-  mpBtnWidget->mpBtnRun->setEnabled(false);
+    addHLineToGrid(mpMethodLayout, fieldStart + 11, 2);
 
-  connect(SubTaskChooser, SIGNAL(activated(int)),
-          this, SLOT(on_SubTaskChooser_activated(int)));
-  connect(FunctionChooser, SIGNAL(activated(int)),
-          this, SLOT(on_FunctionChooser_activated(int)));
-  connect(VariableChooser, SIGNAL(activated(int)),
-          this, SLOT(on_VariableChooser_activated(int)));
-  connect(Variable2Chooser, SIGNAL(activated(int)),
-          this, SLOT(on_Variable2Chooser_activated(int)));
+    addMethodParameterTable(4, fieldStart + 12);
 
-  connect(SingleFunctionChooser, SIGNAL(clicked()),
-          this, SLOT(on_SingleFunctionChooser_clicked()));
-  connect(SingleVariableChooser, SIGNAL(clicked()),
-          this, SLOT(on_SingleVariableChooser_clicked()));
-  connect(SingleVariable2Chooser, SIGNAL(clicked()),
-          this, SLOT(on_SingleVariable2Chooser_clicked()));
+    mpMethodLayout->addMultiCellWidget(mpBtnWidget,
+                                       fieldStart + 13, fieldStart + 13,
+                                       0, 2);
+    mpBtnWidget->mpBtnRun->setEnabled(false);
 
-  //mChoicesDone = 0;
+    connect(SubTaskChooser, SIGNAL(activated(int)),
+            this, SLOT(on_SubTaskChooser_activated(int)));
+    connect(FunctionChooser, SIGNAL(activated(int)),
+            this, SLOT(on_FunctionChooser_activated(int)));
+    connect(VariableChooser, SIGNAL(activated(int)),
+            this, SLOT(on_VariableChooser_activated(int)));
+    connect(Variable2Chooser, SIGNAL(activated(int)),
+            this, SLOT(on_Variable2Chooser_activated(int)));
+
+    connect(SingleFunctionChooser, SIGNAL(clicked()),
+            this, SLOT(on_SingleFunctionChooser_clicked()));
+    connect(SingleVariableChooser, SIGNAL(clicked()),
+            this, SLOT(on_SingleVariableChooser_clicked()));
+    connect(SingleVariable2Chooser, SIGNAL(clicked()),
+            this, SLOT(on_SingleVariable2Chooser_clicked()));
+
+    //mChoicesDone = 0;
+  */
 }
 
 /*
@@ -334,6 +302,38 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::
 SensitivitiesWidget::~SensitivitiesWidget()
 {}
 
+void SensitivitiesWidget::languageChange()
+{
+  retranslateUi(this);
+}
+
+void SensitivitiesWidget::init()
+{
+  mpHeaderWidget->setTaskName("Sensitivities");
+
+  vboxLayout->insertWidget(0, mpHeaderWidget);  // header
+  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+
+  addMethodParameterTable(0);
+
+  // icons
+
+  QImage img0;
+  img0.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+  SingleFunctionChooser->setIcon(QPixmap::fromImage(img0));
+
+  QImage img1;
+  img1.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+  SingleVariableChooser->setIcon(QPixmap::fromImage(img1));
+
+  QImage img2;
+  img2.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+  SingleVariable2Chooser->setIcon(QPixmap::fromImage(img2));
+
+  // initialization
+  initCombos();
+}
+
 bool SensitivitiesWidget::saveTask()
 {
   saveCommon();
@@ -341,16 +341,19 @@ bool SensitivitiesWidget::saveTask()
 
   CSensTask* sensTask =
     dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+
   if (sensTask == NULL)
     return false;
 
   CSensProblem* problem =
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
+
   if (problem == NULL)
     return false;
 
   CSensMethod* method =
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
+
   if (method == NULL)
     return false;
 
@@ -388,6 +391,7 @@ bool SensitivitiesWidget::saveTask()
 
   //variables 2
   CSensItem tmp2;
+
   if (Variable2Chooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable2)
@@ -425,6 +429,7 @@ bool SensitivitiesWidget::runTask()
   if (!commonBeforeRunTask()) return false;
 
   bool success = true;
+
   if (!commonRunTask()) success = false;
 
   if (!commonAfterRunTask()) success = false;
@@ -432,6 +437,7 @@ bool SensitivitiesWidget::runTask()
   //setup the result widget
   CQSensResultWidget *pResult =
     dynamic_cast<CQSensResultWidget*>(mpListView->findWidgetFromId(341));
+
   if (pResult) pResult->newResult();
 
   if (success && isShown()) mpListView->switchToOtherWidget(341, ""); //change to the results window
@@ -466,10 +472,12 @@ bool SensitivitiesWidget::loadTask()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   if (tmp.isSingleObject())
     {
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
       mpSingleFunction = pDataModel->getObject(tmp.getSingleObjectCN());
+
       if (mpSingleFunction)
         FunctionLineEdit->setText(FROM_UTF8(mpSingleFunction->getObjectDisplayName()));
     }
@@ -483,10 +491,12 @@ bool SensitivitiesWidget::loadTask()
   if (problem->getNumberOfVariables() > 0)
     {
       tmp = problem->getVariables(0);
+
       if (tmp.isSingleObject())
         {
           VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
           mpSingleVariable = pDataModel->getObject(tmp.getSingleObjectCN());
+
           if (mpSingleVariable)
             VariableLineEdit->setText(FROM_UTF8(mpSingleVariable->getObjectDisplayName()));
         }
@@ -503,10 +513,12 @@ bool SensitivitiesWidget::loadTask()
   if (problem->getNumberOfVariables() > 1)
     {
       tmp = problem->getVariables(1);
+
       if (tmp.isSingleObject())
         {
           Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
           mpSingleVariable2 = pDataModel->getObject(tmp.getSingleObjectCN());
+
           if (mpSingleVariable2)
             Variable2LineEdit->setText(FROM_UTF8(mpSingleVariable2->getObjectDisplayName()));
         }
@@ -533,12 +545,14 @@ bool SensitivitiesWidget::loadTask()
 void SensitivitiesWidget::updateLineeditEnable(const SensWidgetComboBox* box, QWidget* w1, QWidget* w2)
 {
   if (!box) return;
+
   bool enable = false;
 
   if (box->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     enable = true;
 
   if (w1) w1->setEnabled(enable);
+
   if (w2) w2->setEnabled(enable);
 }
 
@@ -569,8 +583,10 @@ void SensitivitiesWidget::updateRunButton()
   //single object case
   if (!checkSingleObject(FunctionChooser, mpSingleFunction))
     enable = false;
+
   if (!checkSingleObject(VariableChooser, mpSingleVariable))
     enable = false;
+
   if (!checkSingleObject(Variable2Chooser, mpSingleVariable2))
     enable = false;
 
@@ -587,8 +603,10 @@ SensitivitiesWidget::initCombos()
 
   // SubTaskChooser combo
   int i = 0;
+
   while (CSensProblem::SubTaskName[i].length() > 0)
     {
+      std::cout << i << ": SubTaskName = " << CSensProblem::SubTaskName[i] << std::endl;
       StringList.append(FROM_UTF8(CSensProblem::SubTaskName[i]));
       ++i;
     }
