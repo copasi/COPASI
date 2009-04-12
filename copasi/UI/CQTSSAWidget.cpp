@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Author: pwilly $
+//   $Date: 2009/04/12 19:53:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,9 +13,34 @@
 
 #include "CQTSSAWidget.h"
 
-#include <qvariant.h>
-#include "TaskWidget.h"
-#include "CQTSSAWidget.ui.h"
+#include "copasi.h"
+
+//#include <q3table.h>
+#include <qcombobox.h>
+//#include <q3header.h>
+#include <qtabwidget.h>
+
+#include "UI/CQTSSAResultSubWidget.h"
+#include "UI/CQTSSAResultWidget.h"
+#include "UI/CQTaskBtnWidget.h"
+#include "UI/CQTaskHeaderWidget.h"
+#include "UI/CProgressBar.h"
+#include "UI/CQValidator.h"
+#include "UI/CQMessageBox.h"
+#include "UI/qtUtilities.h"
+
+#include "tssanalysis/CTSSATask.h"
+#include "tssanalysis/CTSSAProblem.h"
+#include "model/CModel.h"
+#include "report/CKeyFactory.h"
+#include "utilities/CCopasiException.h"
+#include "tssanalysis/CCSPMethod.h"
+#include "tssanalysis/CILDMMethod.h"
+#include "tssanalysis/CILDMModifiedMethod.h"
+#include "CQTSSAResultSubWidget.h"
+#include "CQTSSAResultWidget.h"
+#include "report/CCopasiRootContainer.h"
+
 /*
  *  Constructs a CQTSSAWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -44,4 +69,294 @@ CQTSSAWidget::~CQTSSAWidget()
 void CQTSSAWidget::languageChange()
 {
   retranslateUi(this);
+}
+
+CTSSAMethod* pTSSMethod;
+
+CILDMMethod *pILDM_Method;
+CILDMModifiedMethod *pILDMModiMethod;
+
+CQTSSAResultSubWidget* pTSSResultSubWidget;
+CTSSATask * pCTSSATask;
+
+class mpTSSResultSubWidget;
+class QTabWidget;
+
+void CQTSSAWidget::init()
+{
+  mpTSSAProblem = NULL;
+
+  mpHeaderWidget->setTaskName("Time Scale Separation Analysis");
+
+  vboxLayout->insertWidget(0, mpHeaderWidget);  // header
+  vboxLayout->insertSpacing(1, 14);       // space between header and body
+  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+
+  addMethodSelectionBox(CTSSATask::ValidMethods);
+  addMethodParameterTable(0);
+
+  mpValidatorDuration = new CQValidatorDouble(mpEditDuration);
+  mpEditDuration->setValidator(mpValidatorDuration);
+
+  mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
+  mpValidatorIntervalSize->setRange(0, DBL_MAX);
+  mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
+
+  //mpLbDeuflTol->setText("Deuflhard Tolerance");
+
+  connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(disableDeuflhard(int)));
+}
+
+void CQTSSAWidget::destroy()
+{
+  pdelete(mpTSSAProblem);
+}
+
+void CQTSSAWidget::slotDuration()
+{
+  try
+    {
+      mpTSSAProblem->setDuration(mpEditDuration->text().toDouble());
+    }
+  catch (...)
+    {
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+  mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
+  mpValidatorIntervalSize->revalidate();
+  mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
+
+  checkTimeSeries();
+}
+
+void CQTSSAWidget::slotIntervalSize()
+{
+  try
+    {
+      mpTSSAProblem->setStepSize(mpEditIntervalSize->text().toDouble());
+    }
+
+  catch (...)
+    {
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+  mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
+  mpValidatorIntervalSize->revalidate();
+  mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
+
+  checkTimeSeries();
+}
+
+void CQTSSAWidget::slotIntervals()
+{
+  try
+    {
+      mpTSSAProblem->setStepNumber(mpEditIntervals->text().toULong());
+    }
+  catch (...)
+    {
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+  mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
+  mpValidatorIntervalSize->revalidate();
+
+  checkTimeSeries();
+}
+
+bool CQTSSAWidget::saveTask()
+{
+  CTSSATask * pTask =
+    dynamic_cast< CTSSATask * >(mpTask);
+
+  if (!pTask) return false;
+
+  saveCommon();
+  saveMethod();
+
+  CTSSAProblem* tssaproblem =
+    dynamic_cast<CTSSAProblem *>(pTask->getProblem());
+  assert(tssaproblem);
+
+  //set the Deufelhard Tolerance
+  tssaproblem->setDeufelhardTol(mpEditDeufelTol->text().toDouble());
+
+  //numbers
+  if (tssaproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
+    {
+      tssaproblem->setStepSize(mpEditIntervalSize->text().toDouble());
+      mChanged = true;
+    }
+  else if (tssaproblem->getStepNumber() != mpEditIntervals->text().toULong())
+    {
+      tssaproblem->setStepNumber(mpEditIntervals->text().toLong());
+      mChanged = true;
+    }
+
+  if (tssaproblem->getDuration() != mpEditDuration->text().toDouble())
+    {
+      tssaproblem->setDuration(mpEditDuration->text().toDouble());
+      mChanged = true;
+    }
+
+  if (tssaproblem->timeSeriesRequested() != mpCheckSave->isChecked())
+    {
+      tssaproblem->setTimeSeriesRequested(mpCheckSave->isChecked());
+      mChanged = true;
+    }
+
+  mpValidatorDuration->saved();
+  mpValidatorIntervalSize->saved();
+
+  return true;
+}
+
+bool CQTSSAWidget::loadTask()
+{
+  CTSSATask * pTask =
+    dynamic_cast< CTSSATask * >(mpTask);
+
+  if (!pTask) return false;
+
+  loadCommon();
+  loadMethod();
+
+  disableDeuflhard(mpBoxMethod->currentItem());
+
+  CTSSAProblem* tssaproblem =
+    dynamic_cast<CTSSAProblem *>(pTask->getProblem());
+  assert(tssaproblem);
+
+  pdelete(mpTSSAProblem);
+  mpTSSAProblem = new CTSSAProblem(*tssaproblem);
+
+  //numbers
+  mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));
+  mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
+  mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
+
+  //get the Deufelhard Tolerance
+  mpEditDeufelTol->setText(QString::number(tssaproblem->getDeufelhardTol()));
+
+  //store time series checkbox
+  mpCheckSave->setChecked(tssaproblem->timeSeriesRequested());
+  checkTimeSeries();
+
+  mpValidatorDuration->saved();
+  mpValidatorIntervalSize->saved();
+
+  return true;
+}
+
+CCopasiMethod * CQTSSAWidget::createMethod(const CCopasiMethod::SubType & type)
+{
+  return CTSSAMethod::createTSSAMethod(type);
+}
+
+bool CQTSSAWidget::runTask()
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  pCTSSATask =
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+
+  if (!pCTSSATask) return false;
+
+  pTSSMethod = dynamic_cast<CTSSAMethod*>(pCTSSATask->getMethod());
+
+  if (!pTSSMethod)
+    pTSSMethod->emptyVectors();
+
+  checkTimeSeries();
+
+  if (!commonBeforeRunTask()) return false;
+
+  bool success = true;
+
+  if (!commonRunTask()) success = false;
+
+  if (!commonAfterRunTask()) success = false;
+
+  // We need to load the result here as this is the only place where
+  // we know that it is correct.
+  CQTSSAResultWidget * pResult =
+    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(271));
+
+  if (pResult == NULL)
+    return false;
+
+  success &= pResult->loadFromBackend();
+
+  pTSSResultSubWidget = pResult->getSubWidget();
+
+  if (!pTSSResultSubWidget)
+    return false;
+
+  pTSSResultSubWidget->discardOldResults();
+
+  pILDM_Method = dynamic_cast<CILDMMethod*>(pCTSSATask->getMethod());
+
+  if (pILDM_Method)
+    {
+      pTSSResultSubWidget->changeToILDM();
+    }
+  else
+    {
+      pILDMModiMethod = dynamic_cast<CILDMModifiedMethod*>(pCTSSATask->getMethod());
+
+      if (pILDMModiMethod)
+        {
+          pTSSResultSubWidget->changeToILDMModified();
+        }
+      else
+        {
+          pTSSResultSubWidget->changeToCSP();
+        }
+    }
+
+  if (success)
+    {
+
+      pTSSResultSubWidget->setStepNumber();
+
+      mpListView->switchToOtherWidget(271, ""); //change to the results window
+    }
+
+  return success;
+}
+
+void CQTSSAWidget::checkTimeSeries()
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+  if (mpEditIntervals->text().toLong() *(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
+    {
+      mpCheckSave->setChecked(false);
+      mpCheckSave->setEnabled(false);
+    }
+  else
+    {
+      mpCheckSave->setEnabled(true);
+    }
+}
+
+void CQTSSAWidget::disableDeuflhard(int i)
+{
+  if ((i == 2) || (i == 1))
+    {
+      mpEditDeufelTol->setDisabled(true);
+      mpLbDeuflTol->setDisabled(true);
+    }
+  else
+    {
+      mpEditDeufelTol->setDisabled(false);
+      mpLbDeuflTol->setDisabled(false);
+    }
 }
