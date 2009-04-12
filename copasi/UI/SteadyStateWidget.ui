@@ -1,0 +1,94 @@
+<ui version="4.0" >
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.ui,v $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2009/04/12 19:59:23 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>SteadyStateWidget</class>
+ <widget class="TaskWidget" name="SteadyStateWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>366</width>
+    <height>74</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="SteadyStateWidgetLayout" >
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="taskJacobian" >
+       <property name="text" >
+        <string>calculate Jacobian</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="taskStability" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>perform Stability Analysis</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line1" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>taskJacobian</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SteadyStateWidget</receiver>
+   <slot>taskJacobianToggled()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>102</x>
+     <y>34</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>10</x>
+     <y>13</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>taskJacobianToggled()</slot>
+ </slots>
+</ui>
