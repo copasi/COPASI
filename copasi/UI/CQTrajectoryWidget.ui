@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/04/12 19:55:15 $ </comment>
+<comment>   $Date: 2009/04/12 22:27:44 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -187,7 +187,8 @@
   <customwidget>
    <class>TaskWidget</class>
    <extends>QWidget</extends>
-   <header>taskwidget.h</header>
+   <header>TaskWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
