@@ -1,145 +1,124 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.ui,v $ </comment>
-<comment>   $Revision: 1.2 $ </comment>
+<comment>   $Revision: 1.3 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2007/02/12 14:29:14 $ </comment>
+<comment>   $Author: pwilly $ </comment>
+<comment>   $Date: 2009/04/12 19:49:56 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CQLyapWidget</class>
-<widget class="TaskWidget">
-    <property name="name">
-        <cstring>CQLyapWidget</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>292</width>
-            <height>106</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>CQLyapWidget</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>mpGridLayout</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="Line" row="3" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>mpLine</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="1" column="1">
-                    <property name="name">
-                        <cstring>mpLayoutDelay</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="spacing">
-                            <number>0</number>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>mpCheckDelay</cstring>
-                            </property>
-                            <property name="text">
-                                <string>start averaging after t =</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>mpEditDelay</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLineEdit" row="0" column="1">
-                    <property name="name">
-                        <cstring>mpEditExponent</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>LineEditPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                </widget>
-                <widget class="QCheckBox" row="2" column="1">
-                    <property name="name">
-                        <cstring>mpCheckDivergence</cstring>
-                    </property>
-                    <property name="text">
-                        <string>calculate Divergence</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>mpLblExponents</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Number of Exponents</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                </widget>
-            </grid>
+ <comment> All rights reserved. </comment>
+ <class>CQLyapWidget</class>
+ <widget class="TaskWidget" name="CQLyapWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>374</width>
+    <height>127</height>
+   </rect>
+  </property>
+  <property name="caption" stdset="0" >
+   <string>CQLyapWidget</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <layout class="QGridLayout" >
+     <item row="1" column="1" >
+      <layout class="QHBoxLayout" >
+       <property name="spacing" >
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QCheckBox" name="mpCheckDelay" >
+         <property name="text" >
+          <string>start averaging after t =</string>
+         </property>
         </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>mpCheckDelay</sender>
-        <signal>clicked()</signal>
-        <receiver>CQLyapWidget</receiver>
-        <slot>slotDelayChecked()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>mpEditExponent</tabstop>
-    <tabstop>mpCheckDelay</tabstop>
-    <tabstop>mpEditDelay</tabstop>
-    <tabstop>mpCheckDivergence</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in declaration">TaskWidget.h</include>
-    <include location="local" impldecl="in implementation">CQLyapWidget.ui.h</include>
-</includes>
-<slots>
-    <slot access="protected" specifier="non virtual">slotDelayChecked()</slot>
-</slots>
-<functions>
-    <function returnType="bool">runTask()</function>
-    <function access="protected" returnType="CCopasiMethod *">createMethod( const CCopasiMethod::SubType &amp; type )</function>
-    <function access="protected" returnType="bool">loadTask()</function>
-    <function access="protected" returnType="bool">saveTask()</function>
-    <function access="private" specifier="non virtual">init()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="mpEditDelay" />
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QLineEdit" name="mpEditExponent" />
+     </item>
+     <item row="2" column="1" >
+      <widget class="QCheckBox" name="mpCheckDivergence" >
+       <property name="text" >
+        <string>calculate Divergence</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" >
+      <widget class="QLabel" name="mpLblExponents" >
+       <property name="text" >
+        <string>Number of Exponents</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="mpLine" >
+     <property name="frameShape" >
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>TaskWidget</class>
+   <extends>QWidget</extends>
+   <header>TaskWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mpEditExponent</tabstop>
+  <tabstop>mpCheckDelay</tabstop>
+  <tabstop>mpEditDelay</tabstop>
+  <tabstop>mpCheckDivergence</tabstop>
+ </tabstops>
+ <includes>
+  <include location="local" >TaskWidget.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpCheckDelay</sender>
+   <signal>clicked()</signal>
+   <receiver>CQLyapWidget</receiver>
+   <slot>slotDelayChecked()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
