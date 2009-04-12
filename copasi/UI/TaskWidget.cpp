@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: pwilly $
+//   $Date: 2009/04/12 19:56:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,13 @@
 #include <qapplication.h>
 #include <qcombobox.h>
 //Added by qt3to4:
+/*
 #include <Q3GridLayout>
 #include <Q3VBoxLayout>
+ */
+#include <QFrame>
+#include <QVBoxLayout>
+#include <QHeaderView>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
@@ -62,6 +67,7 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   if (!name)
     setName("TaskWidget");
+
   setCaption(trUtf8("TaskWidget"));
 
   mpHeaderWidget = new CQTaskHeaderWidget(this);
@@ -93,18 +99,18 @@ void TaskWidget::addHeaderToGrid(unsigned int row)
 {
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new Q3GridLayout(0, 2, 2, 0, 6, "mpMethodLayout");
-      static_cast<Q3VBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      mpMethodLayout = new QGridLayout(0, 2, 2, 0, 6, "mpMethodLayout");
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
   mpMethodLayout->addMultiCellWidget(mpHeaderWidget, row, row, 1, 2);
 }
 
-bool TaskWidget::addHLineToGrid(Q3GridLayout* grid, unsigned int row, unsigned int maxcol)
+bool TaskWidget::addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol)
 {
-  Q3Frame * line = new Q3Frame(this, "line");
-  line->setFrameShape(Q3Frame::HLine);
-  line->setFrameShadow(Q3Frame::Sunken);
+  QFrame * line = new QFrame(this, "line");
+  line->setFrameShape(QFrame::HLine);
+  line->setFrameShadow(QFrame::Sunken);
   grid->addMultiCellWidget(line, row, row, 0, maxcol);
 
   return true;
@@ -116,40 +122,61 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned
 
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new Q3GridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
-      static_cast<Q3VBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
       //Row = 0;
     }
 
-  QWidget* pParent = mpMethodLayout->mainWidget();
+//  QWidget* pParent = mpMethodLayout->mainWidget();
 
-  mpLblParameter = new QLabel(pParent, "mpLblParameter");
+//  mpLblParameter = new QLabel(pParent, "mpLblParameter");
+  mpLblParameter = new QLabel(0, "mpLblParameter");
   mpLblParameter->setText(tr("Method Parameter"));
   mpLblParameter->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-  mpTblParameter = new Q3Table(pParent, "mpTblParameter");
-  mpTblParameter->setFocusPolicy(Qt::WheelFocus);
-  mpTblParameter->setFocusStyle(Q3Table::SpreadSheet);
-  mpTblParameter->setSelectionMode(Q3Table::Single);
-  mpTblParameter->setNumRows(std::max<unsigned C_INT32>(0, rows));
-  mpTblParameter->setNumCols(1);
+//  mpTblParameter = new QTableWidget(pParent);
+  mpTblParameter = new QTableWidget();
+  /*
+    mpTblParameter->setFocusPolicy(Qt::WheelFocus);
+    mpTblParameter->setFocusStyle(Q3Table::SpreadSheet);
+  */
+  mpTblParameter->setSelectionMode(QAbstractItemView::SingleSelection);
 
-  mpTblParameter->horizontalHeader()->setLabel(0, tr("Value"));
-  mpTblParameter->verticalHeader()->setMovingEnabled(false);
+  // initial number of rows as well as columns
+  mpTblParameter->setRowCount(std::max<unsigned C_INT32>(0, rows));
+  mpTblParameter->setColumnCount(1);
 
-  if (rows)
-    {
-      mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
-      mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-    }
-  else
-    mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  mpTblParameter->setHorizontalHeaderItem(0, new QTableWidgetItem());
+  mpTblParameter->horizontalHeaderItem(0)->setText("Value");
+  /*
+    if (rows)
+      {
+        mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
+        mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  //      mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+      }
+    else
+      mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  //    mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  */
+//  mpTblParameter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  mpTblParameter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-  mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+//  mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpSpacer1 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+//  mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  QSpacerItem *mpSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
+  /*
+    mpMethodLayout->addWidget(mpLblParameter, 0, 0);
+    mpMethodLayout->addWidget(mpTblParameter, 0, 1);
+    mpMethodLayout->addItem(mpSpacer1, 0, 2);
+    mpMethodLayout->addItem(mpSpacer2, 1, 1);
+  */
   mpMethodLayout->addWidget(mpLblParameter, row, 0);
   mpMethodLayout->addWidget(mpTblParameter, row, 1);
   mpMethodLayout->addItem(mpSpacer1, row, 2);
+  mpMethodLayout->addItem(mpSpacer2, row + 1, 1);
 
   return;
 }
@@ -158,19 +185,22 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
 {
   if (!mpMethodLayout)
     {
-      mpMethodLayout = new Q3GridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
-      static_cast<Q3VBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+      mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
-  QWidget* pParent = mpMethodLayout->mainWidget();
+//  QWidget* pParent = mpMethodLayout->mainWidget();
 
-  mpLblMethod = new QLabel(pParent, "mpLblMethod");
+//  mpLblMethod = new QLabel(pParent, "mpLblMethod");
+  mpLblMethod = new QLabel(0, "mpLblMethod");
   mpLblMethod->setText(tr("Method"));
   mpLblMethod->setAlignment(int(Qt::AlignTop | Qt::AlignRight));
 
-  mpBoxMethod = new QComboBox(false, pParent, "mpBoxMethod");
+//  mpBoxMethod = new QComboBox(false, pParent, "mpBoxMethod");
+  mpBoxMethod = new QComboBox();
 
   unsigned C_INT32 i;
+
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
     mpBoxMethod->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
@@ -190,6 +220,7 @@ void TaskWidget::revertBtnClicked()
   if (!mpTask) return;
 
   CCopasiMethod* method = mpTask->getMethod();
+
   if (method != mpMethod)
     {
       pdelete(mpMethod);
@@ -225,6 +256,7 @@ void TaskWidget::assistantBtnClicked()
 
   DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
   pDlg->setTask(mpTask);
+
   if (pDlg->exec() == QDialog::Accepted)
     {
       protectedNotify(ListViews::PLOT, ListViews::ADD, "");
@@ -300,21 +332,147 @@ bool TaskWidget::loadMethod()
     {
       QString value;
       QString strname;
+      /*
+            mpTblParameter->setNumRows(mpMethod->size());
+            Q3Header *rowHeader = mpTblParameter->verticalHeader();
 
-      mpTblParameter->setNumRows(mpMethod->size());
-      Q3Header *rowHeader = mpTblParameter->verticalHeader();
+            unsigned C_INT32 i;
+            CCopasiParameter::Type Type;
+            for (i = 0; i < mpMethod->size(); i++)
+              {
+                strname = FROM_UTF8(mpMethod->getName(i));
+                rowHeader->setLabel(i, strname);
+
+                value = getParameterValue(mpMethod, i, &Type);
+                mpTblParameter->setText(i, 0, value);
+              }
+            mpTblParameter->setFixedWidth(mpTblParameter->sizeHint().width() + 20);
+      */
+
+      mpTblParameter->setRowCount(mpMethod->size());
+
+      QAbstractItemModel* m = mpTblParameter->model();
+
+      QHeaderView* vHeader = mpTblParameter->verticalHeader();
+      QHeaderView* hHeader = mpTblParameter->horizontalHeader();
+
+      std::cout << hHeader->length() << " A1 " << vHeader->width() << std::endl;
+      std::cout << vHeader->length() << " B1 " << hHeader->height() << std::endl;
+
+      std::cout << "hHeader->sizeHint().height() = " << hHeader->sizeHint().height() << std::endl;
+      std::cout << "hHeader->sizeHint().width() = " << hHeader->sizeHint().width() << std::endl;
+      std::cout << "hHeader->count() = " << hHeader->count() << std::endl;
+      std::cout << "vHeader->sizeHint().height() = " << vHeader->sizeHint().height() << std::endl;
+      std::cout << "vHeader->sizeHint().width() = " << vHeader->sizeHint().width() << std::endl;
+      std::cout << "vHeader->count() = " << vHeader->count() << std::endl;
 
       unsigned C_INT32 i;
       CCopasiParameter::Type Type;
+
       for (i = 0; i < mpMethod->size(); i++)
         {
           strname = FROM_UTF8(mpMethod->getName(i));
-          rowHeader->setLabel(i, strname);
+
+          // create item of the current row and give it a name
+          mpTblParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
+          mpTblParameter->verticalHeaderItem(i)->setText(strname);
+
+          std::cout << "mpTblParameter->verticalHeaderItem(i)->sizeHint().height() = " << mpTblParameter->verticalHeaderItem(i)->sizeHint().height()
+                    << "mpTblParameter->verticalHeaderItem(i)->sizeHint().width() = " << mpTblParameter->verticalHeaderItem(i)->sizeHint().width() << std::endl;
+
+          std::cout << "rowCount at iteration " << i << " = " << mpTblParameter->rowCount() << std::endl;
 
           value = getParameterValue(mpMethod, i, &Type);
-          mpTblParameter->setText(i, 0, value);
+
+          QTableWidgetItem *itemValue = new QTableWidgetItem(value);
+          itemValue->setTextAlignment(Qt::AlignRight);
+          mpTblParameter->setItem(i, 0, itemValue);
+
+          std::cout << "rowHeight(" << i << ") = " << mpTblParameter->rowHeight(i) << std::endl;
         }
-      mpTblParameter->setFixedWidth(mpTblParameter->sizeHint().width() + 20);
+
+      mpTblParameter->resizeColumnsToContents();
+      mpTblParameter->resizeRowsToContents();
+
+      std::cout << "columnWidth(0) = " << mpTblParameter->columnWidth(0) << "columnWidth(1) = " << mpTblParameter->columnWidth(1) << std::endl;
+
+      unsigned C_INT32 singleFrame = mpTblParameter->frameWidth();
+//  int doubleFrame = 2 * mpTblParameter->frameWidth();
+      unsigned C_INT32 doubleFrame = 2 * singleFrame;
+      std::cout << "doubleFrame = " << doubleFrame << std::endl;
+
+      /*
+        int doubleFrame = 2 * mpTblParameter->frameWidth();
+        std::cout << "doubleFrame = " << doubleFrame << std::endl;
+
+        int w = hHeader->length() + vHeader->width() + doubleFrame;
+        int h = vHeader->length() + hHeader->height() + doubleFrame;
+      */
+      std::cout << hHeader->length() << " A2 " << vHeader->width() << std::endl;
+      std::cout << vHeader->length() << " B2 " << hHeader->height() << std::endl;
+
+      std::cout << "hHeader->sizeHint().height() = " << hHeader->sizeHint().height() << std::endl;
+      std::cout << "hHeader->sizeHint().width() = " << hHeader->sizeHint().width() << std::endl;
+      std::cout << "hHeader->count() = " << hHeader->count() << std::endl;
+      std::cout << "vHeader->sizeHint().height() = " << vHeader->sizeHint().height() << std::endl;
+      std::cout << "vHeader->sizeHint().width() = " << vHeader->sizeHint().width() << std::endl;
+      std::cout << "vHeader->count() = " << vHeader->count() << std::endl;
+
+      unsigned C_INT32 index;
+
+      unsigned C_INT32 colCount = m->columnCount();
+      unsigned C_INT32 w = 0;
+
+      for (index = 0; index < colCount; index++)
+        {
+          w += mpTblParameter->columnWidth(index) + doubleFrame;
+          std::cout << "i=" << index << ": w = " << w << std::endl;
+//    std::cout << "sizeHintForColumn = " << mpTblParameter->sizeHintForColumn(i) << std::endl;
+        }
+
+      unsigned C_INT32 rowCount = m->rowCount();
+      unsigned C_INT32 h = 0;
+
+      for (index = 0; index < rowCount; index++)
+        {
+          h += mpTblParameter->rowHeight(index) + singleFrame;
+          std::cout << "i=" << index << ": h = " << h << std::endl;
+//    std::cout << "sizeHintForRow = " << mpTblParameter->sizeHintForRow(i) << std::endl;
+        }
+
+      /*
+        w += mpTblParameter->verticalHeader()->width() + doubleFrame;
+        h += mpTblParameter->horizontalHeader()->height() + doubleFrame;
+      */
+
+//  w += vHeader->sizeHint().width() + vHeader->width();
+//  h += hHeader->sizeHint().height() + hHeader->height();
+      w += vHeader->sizeHint().width();
+      h += hHeader->sizeHint().height();
+
+      std::cout << "colCount = " << colCount << " - rowCount = " << rowCount << std::endl;
+      std::cout << "w = " << w << " - h = " << h << std::endl;
+
+      /*
+        std::cout << "mpTblParameter->sizeHint().height() = " << mpTblParameter->sizeHint().height() << std::endl;
+        std::cout << "mpTblParameter->sizeHint().width() = " << mpTblParameter->sizeHint().width() << std::endl;
+      */
+      std::cout << "mpTblParameter->sizeHint().height() = " << mpTblParameter->sizeHint().height() << std::endl;
+      std::cout << "mpTblParameter->sizeHint().width() = " << mpTblParameter->sizeHint().width() << std::endl;
+
+      /*
+        mpTblParameter->setFixedHeight(hHeader->length());
+        mpTblParameter->setFixedWidth(vHeader->length());
+      */
+      /*
+        mpTblParameter->setFixedHeight(230 );
+        mpTblParameter->setFixedWidth(320);
+
+        mpTblParameter->setFixedHeight(242);
+        mpTblParameter->setFixedWidth(319);
+      */
+      mpTblParameter->setFixedHeight(h);
+      mpTblParameter->setFixedWidth(w);
     }
 
   return true;
@@ -325,6 +483,7 @@ bool TaskWidget::saveMethod()
   if (!mpTask) return false;
 
   CCopasiMethod* method = mpTask->getMethod();
+
   if (!method) return false;
 
   if (method->getSubType() != mpMethod->getSubType())
@@ -341,7 +500,15 @@ bool TaskWidget::saveMethod()
 
   for (i = 0; i < mpMethod->size(); i++)
     {
-      value = mpTblParameter->text(i, 0);
+      if (!mpTblParameter)
+        break;
+
+      if (!mpTblParameter->item(i, 0))
+        continue;
+
+      value = mpTblParameter->item(i, 0)->text();
+      std::cout << "value = " << value.toFloat() << std::endl;
+
       if (value != getParameterValue(mpMethod, i, &Type))
         {
           setParameterValue(mpMethod, i, value);
@@ -389,6 +556,7 @@ bool TaskWidget::commonAfterRunTask()
       mProgressBar->finish();
       pdelete(mProgressBar);
     }
+
   mpTask->setCallBack(NULL);
 
   CCopasiMessage::clearDeque();
@@ -416,6 +584,7 @@ bool TaskWidget::commonRunTask()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
       if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, (*CCopasiRootContainer::getDatamodelList())[0], NULL))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
@@ -527,11 +696,12 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UN
 
   switch (objectType)
     {
-    case ListViews::MODEL:
-      break;
-    default:
-      break;
+      case ListViews::MODEL:
+        break;
+      default:
+        break;
     }
+
   return true;
 }
 
