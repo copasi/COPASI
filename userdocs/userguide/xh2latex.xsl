@@ -4,7 +4,7 @@
   version="1.0">
 
   <!--
-$Id: xh2latex.xsl,v 1.1.2.1 2009/04/13 17:18:17 shoops Exp $
+$Id: xh2latex.xsl,v 1.1.2.2 2009/04/13 18:26:49 shoops Exp $
 
 cribbed heavily from
 XSLT from XHTML+MathML to LATEX
@@ -469,6 +469,16 @@ http://www.csclub.uwaterloo.ca/u/sjbmann/tutorial.html
   <xsl:template match="xhtml:div[@class='caution']">
     <xsl:text>
       \begin{DBKadmonition}{warning}{Caution}
+    </xsl:text>
+    <xsl:apply-templates />
+    <xsl:text>
+      \end{DBKadmonition}
+    </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xhtml:div[@class='errorbox']">
+    <xsl:text>
+      \begin{DBKadmonition}{\empty}{Message}
     </xsl:text>
     <xsl:apply-templates />
     <xsl:text>
