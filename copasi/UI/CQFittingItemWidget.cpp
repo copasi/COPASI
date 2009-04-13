@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2009/04/13 19:19:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -467,9 +467,7 @@ void CQFittingItemWidget::slotExperiments()
               setTableText(*it, (*mpItemsCopy)[*it]);
             }
 
-          /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-                    mpTable->adjustColumn(0);
-          */
+          mpTable->resizeColumnToContents(0);
         }
 
       loadSelection();
@@ -819,7 +817,7 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
 
 void CQFittingItemWidget::slotExperimentChanged()
 {
-  // This slot is trigered when an experiment is deleted or changed,
+  // This slot is triggered when an experiment is deleted or changed,
   // but before new experiments are created.
 
   if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
@@ -840,9 +838,8 @@ void CQFittingItemWidget::slotExperimentChanged()
       setTableText(Row, *it);
     }
 
-  /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-    mpTable->adjustColumn(0);
-  */
+  mpTable->resizeColumnToContents(0);
+
   // Reload the current item.
   loadSelection();
 
@@ -1215,17 +1212,10 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   else
     Item += "Not found: " + FROM_UTF8(pItem->getUpperBound());
 
-  /* TODO: 11.04.09
-    if (mItemType == OPT_ITEM || mItemType == FIT_ITEM)
+  if (mItemType == OPT_ITEM || mItemType == FIT_ITEM)
     {
-      std::cout << "AAA" << std::endl;
-    std::cout << pItem->getStartValue() << std::endl;
       Item += "; Start Value = " + QString::number(pItem->getStartValue());
-    std::cout << "Item = " << Item.latin1() << std::endl;
     }
-  */
-// TODO: in progressing since 08.04.09 - setText
-//  mpTable->setText(row, 0, Item);
 
   QTableWidgetItem *itemValue = new QTableWidgetItem(Item);
   itemValue->setTextAlignment(Qt::AlignRight);
@@ -1742,7 +1732,7 @@ void CQFittingItemWidget::slotCrossValidations()
               setTableText(*it, (*mpItemsCopy)[*it]);
             }
 
-          mpTable->adjustColumn(0);
+          mpTable->resizeColumnToContents(0);
         }
 
       loadSelection();
@@ -1756,7 +1746,7 @@ void CQFittingItemWidget::slotCrossValidations()
 void CQFittingItemWidget::slotCrossValidationChanged()
 {
 #ifdef COPASI_CROSSVALIDATION
-  // This slot is trigered when an experiment is deleted or changed,
+  // This slot is triggered when an experiment is deleted or changed,
   // but before new experiments are created.
 
   if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
@@ -1777,7 +1767,7 @@ void CQFittingItemWidget::slotCrossValidationChanged()
       setTableText(Row, *it);
     }
 
-  mpTable->adjustColumn(0);
+  mpTable->resizeColumnToContents(0);
 
   // Reload the current item.
   loadSelection();
