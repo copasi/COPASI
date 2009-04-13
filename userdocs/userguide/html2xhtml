@@ -1,0 +1,17 @@
+#!/bin/bash
+
+base_name=`basename $1 .html`
+
+sed -e 's/<h0/<h1/g' \
+    -e 's/<\\h0/<\\h1/g' \
+    -e 's/<!--.*-->//g' \
+    -e 's?</*x>??g' \
+    $1 > $$.html
+
+tidy -asxml -utf8 -o $$.xhtml $$.html
+
+sed -e 's?<html.*>?<html xmlns=\"http://www.w3.org/1999/xhtml\" >?' \
+    -e 's/&nbsp;/ /g' \
+    $$.xhtml > ${base_name}.xhtml
+
+rm $$.xhtml $$.html
