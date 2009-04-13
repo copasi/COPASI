@@ -4,7 +4,7 @@
   version="1.0">
 
   <!--
-$Id: xh2latex.xsl,v 1.1.2.2 2009/04/13 18:26:49 shoops Exp $
+$Id: xh2latex.xsl,v 1.1.2.3 2009/04/13 21:09:13 shoops Exp $
 
 cribbed heavily from
 XSLT from XHTML+MathML to LATEX
@@ -1421,4 +1421,12 @@ http://www.csclub.uwaterloo.ca/u/sjbmann/tutorial.html
     <xsl:text></xsl:text>
   </xsl:template>
 
+  <xsl:template match="xhtml:script">
+    <!-- ignored -->
+  </xsl:template>
+  
+  <xsl:template match="xhtml:noscript">
+    <!-- ignored -->
+  </xsl:template>
+  
 </xsl:stylesheet>
