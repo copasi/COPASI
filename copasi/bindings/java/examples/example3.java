@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example3.java,v $ 
-//   $Revision: 1.5.2.3 $ 
+//   $Revision: 1.5.2.4 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
-//   $Date: 2009/03/29 09:17:32 $ 
+//   $Date: 2009/04/14 14:22:12 $ 
 // End CVS Header 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -136,7 +136,7 @@ public class example3
 
           CCopasiParameter parameter = method.getParameter("Absolute Tolerance");
           assert parameter != null;
-          assert parameter.getType() == CCopasiParameter.DOUBLE;
+          assert parameter.getType() == CCopasiParameter.UDOUBLE;
           parameter.setDblValue(1.0e-12);
 
           boolean result=true;
