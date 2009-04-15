@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.31.6.2.4.2 $ 
+#   $Revision: 1.31.6.2.4.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/04/01 06:28:03 $ 
+#   $Date: 2009/04/15 08:24:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -83,6 +83,7 @@ contains(BUILD_OS, WIN32) {
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
+  LIBS += delayimp.lib
 
   QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2
 

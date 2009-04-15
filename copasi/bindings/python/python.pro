@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.23.6.2.4.2 $ 
+#   $Revision: 1.23.6.2.4.3 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/04/01 06:27:19 $ 
+#   $Date: 2009/04/15 08:24:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,7 @@ contains(BUILD_OS, WIN32) {
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
+  LIBS += delayimp.lib
   
   release {
     QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 && ren _COPASI.dll _COPASI.pyd

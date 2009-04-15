@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.pro,v $ 
-#   $Revision: 1.1.2.1 $ 
+#   $Revision: 1.1.2.2 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/03/28 22:51:40 $ 
+#   $Date: 2009/04/15 08:24:56 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -24,6 +24,7 @@ INCLUDEPATH += ../../..
 COPASI_LIBS += COPASISE
 
 contains(BUILD_OS, WIN32) {
+  LIBS += delayimp.lib
   LIBS += $$join(COPASI_LIBS, ".lib  ../../../lib/", ../../../lib/, .lib)
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../../lib/", ../../../lib/, .lib)
