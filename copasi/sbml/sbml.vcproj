@@ -73,11 +73,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CSBMLExporter.cpp"
+				>
+			</File>
+			<File
 				RelativePath="SBMLExporter.cpp"
 				>
 			</File>
 			<File
 				RelativePath="SBMLImporter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SBMLIncompatibility.cpp"
 				>
 			</File>
 			<File
@@ -106,11 +114,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CSBMLExporter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\incompatibilities.h"
+				>
+			</File>
+			<File
 				RelativePath="SBMLExporter.h"
 				>
 			</File>
 			<File
 				RelativePath="SBMLImporter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SBMLIncompatibility.h"
 				>
 			</File>
 			<File
@@ -123,6 +143,10 @@
 			</File>
 			<File
 				RelativePath="StdException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UnitConversionFactory.hpp"
 				>
 			</File>
 		</Filter>
