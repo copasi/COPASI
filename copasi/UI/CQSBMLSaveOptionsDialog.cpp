@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLSaveOptionsDialog.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:10 $
+//   $Author: gauges $
+//   $Date: 2009/04/17 06:27:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char 
   levelsAndVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 1));
   levelsAndVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 2));
   levelsAndVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 3));
+  levelsAndVersions.push_back(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 4));
   this->setLevelsAndVersions(levelsAndVersions);
   this->setLevelAndVersion(std::pair<unsigned C_INT32, unsigned C_INT32>(2, 3));
   // that the widget has a fixed size determined by it's elements
@@ -105,12 +106,12 @@ CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char 
  * CQSBMLVersionFrame.
  */
 unsigned C_INT32 CQSBMLSaveOptionsDialog::getLevel() const
-  {
-    unsigned int selectedIndex = this->mpVersionBox->currentItem();
-    assert(selectedIndex < this->mLevelsAndVersions.size());
-    std::pair<unsigned C_INT32, unsigned C_INT32> pair = this->mLevelsAndVersions[this->mLevelsAndVersions.size() - 1 - selectedIndex];
-    return pair.first;
-  }
+{
+  unsigned int selectedIndex = this->mpVersionBox->currentItem();
+  assert(selectedIndex < this->mLevelsAndVersions.size());
+  std::pair<unsigned C_INT32, unsigned C_INT32> pair = this->mLevelsAndVersions[this->mLevelsAndVersions.size() - 1 - selectedIndex];
+  return pair.first;
+}
 
 /**
  * Returns the selected SBML versions.
@@ -118,21 +119,21 @@ unsigned C_INT32 CQSBMLSaveOptionsDialog::getLevel() const
  * CQSBMLVersionFrame.
  */
 unsigned C_INT32 CQSBMLSaveOptionsDialog::getVersion() const
-  {
-    unsigned int selectedIndex = this->mpVersionBox->currentItem();
-    assert(selectedIndex < this->mLevelsAndVersions.size());
-    std::pair<unsigned C_INT32, unsigned C_INT32> pair = this->mLevelsAndVersions[this->mLevelsAndVersions.size() - 1 - selectedIndex];
-    return pair.second;
-  }
+{
+  unsigned int selectedIndex = this->mpVersionBox->currentItem();
+  assert(selectedIndex < this->mLevelsAndVersions.size());
+  std::pair<unsigned C_INT32, unsigned C_INT32> pair = this->mLevelsAndVersions[this->mLevelsAndVersions.size() - 1 - selectedIndex];
+  return pair.second;
+}
 
 /**
  * Returns which kind of compression should be used when saving the
  * SBML file.
  */
 CQSBMLSaveOptionsDialog::COMPRESSION_TYPE CQSBMLSaveOptionsDialog::getCompressionType() const
-  {
-    return this->mCompressionType;
-  }
+{
+  return this->mCompressionType;
+}
 
 /**
  * Sets the compression type for the SBML file.
@@ -149,9 +150,9 @@ void CQSBMLSaveOptionsDialog::setCompressionType(CQSBMLSaveOptionsDialog::COMPRE
  * Returns whether the COPASI MIRIAM annotation should be saved.
  */
 bool CQSBMLSaveOptionsDialog::isSetSaveCOPASIMIRIAM() const
-  {
-    return this->mSaveCOPASIMIRIAM;
-  }
+{
+  return this->mSaveCOPASIMIRIAM;
+}
 
 /**
  * Sets whether the COPASI MIRIAM annotation should be saved.
@@ -196,12 +197,14 @@ void CQSBMLSaveOptionsDialog::setLevelsAndVersions(const std::vector<std::pair<u
   // insert the items in reverse order
   std::vector<std::pair<unsigned C_INT32, unsigned C_INT32> >::reverse_iterator it = this->mLevelsAndVersions.rbegin(), endit = this->mLevelsAndVersions.rend();
   QString s;
+
   while (it != endit)
     {
       s = QString("Level %1 Version %2").arg(it->first).arg(it->second);
       this->mpVersionBox->insertItem(s);
       ++it;
     }
+
   // make the first item the current item
   if (!this->mLevelsAndVersions.empty())
     {
@@ -212,14 +215,17 @@ void CQSBMLSaveOptionsDialog::setLevelsAndVersions(const std::vector<std::pair<u
 void CQSBMLSaveOptionsDialog::setLevelAndVersion(const std::pair<unsigned C_INT32, unsigned C_INT32>& levelAndVersion)
 {
   unsigned int i, iMax = this->mLevelsAndVersions.size();
+
   while (i < iMax)
     {
       if (this->mLevelsAndVersions[i] == levelAndVersion)
         {
           break;
         }
+
       ++i;
     }
+
   if (i != iMax)
     {
       this->mpVersionBox->setCurrentItem(i);
