@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/16 18:58:33 $
+//   $Author: gauges $
+//   $Date: 2009/04/17 06:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4805,16 +4805,15 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
-            // TODO There is no OCCURS IN in libsbml !!!
-            // TODO I also couldn't find one in the spec !!!
-            //case CRDFPredicate::bqbiol_occursIn:
-            //case CRDFPredicate::copasi_occursIn:
-            //    cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
-            //    // libsbml does not reset the model qualifier type and the
-            //    // biological qualifier type if the qualifier type is set
-            //    cvTerm.setModelQualifierType(BQM_UNKNOWN);
-            //    cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
-            //    break;
+            // Predicates added with libsbml 3.3.x
+          case CRDFPredicate::bqbiol_occursIn:
+          case CRDFPredicate::copasi_occursIn:
+            cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setModelQualifierType(BQM_UNKNOWN);
+            cvTerm.setBiologicalQualifierType(BQB_OCCURS_IN);
+            break;
           case CRDFPredicate::bqmodel_is:
             cvTerm.setQualifierType(MODEL_QUALIFIER);
             // libsbml does not reset the model qualifier type and the
