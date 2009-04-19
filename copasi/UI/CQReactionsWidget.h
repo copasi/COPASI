@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/07 23:14:25 $
+//   $Date: 2009/04/19 19:04:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ protected slots:
   virtual void slotDoubleClicked(const QModelIndex index);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
+  virtual void slotFilterChanged();
 };
 
 #endif // CQReactionsWidget_h

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/07 23:14:25 $
+//   $Date: 2009/04/19 19:04:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,11 +38,15 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+  mpProxyModel->setFilterKeyColumn(COL_NAME);
 
   mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
   // Connect the table widget
-  connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotFilterChanged()));
 }
 
 /*
@@ -238,7 +242,11 @@ void CQReactionsWidget::slotBtnClearClicked()
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
-    {mpReactionDM->clear();}
+    {
+      mpReactionDM->clear();
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
+      mpReactionDM->insertRow();
+    }
 }
 
 bool CQReactionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -301,4 +309,10 @@ void CQReactionsWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
+}
+
+void CQReactionsWidget::slotFilterChanged()
+{
+  QRegExp regExp(mpLEFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  mpProxyModel->setFilterRegExp(regExp);
 }

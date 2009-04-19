@@ -1,10 +1,10 @@
-<ui version="4.0">
+<?xml version="1.0" encoding="UTF-8"?>
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2009/04/07 23:36:06 $ </comment>
+<comment>   $Date: 2009/04/19 19:04:43 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,7 +12,19 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
- <comment> All rights reserved. </comment>
+<ui version="4.0">
+  <comment> Begin CVS Header </comment>
+  <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.ui,v $ </comment>
+  <comment>   $Revision: 1.5 $ </comment>
+  <comment>   $Name:  $ </comment>
+  <comment>   $Author: aekamal $ </comment>
+  <comment>   $Date: 2009/04/19 19:04:43 $ </comment>
+  <comment> End CVS Header </comment>
+
+  <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+  <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+  <comment> and The University of Manchester. </comment>
+  <comment> All rights reserved. </comment>
  <class>CQReactionsWidget</class>
  <widget class="CopasiWidget" name="CQReactionsWidget">
   <property name="geometry">
@@ -27,7 +39,7 @@
    <string>Reactions</string>
   </property>
   <layout class="QGridLayout">
-   <item row="2" column="0" colspan="3">
+   <item row="8" column="0" colspan="2">
     <layout class="QHBoxLayout">
      <item>
       <spacer name="horizontalSpacerLeft">
@@ -41,16 +53,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mpBtnNew">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>New</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="mpBtnDelete">
@@ -68,7 +70,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>Clear</string>
+        <string>Delete All</string>
        </property>
       </widget>
      </item>
@@ -87,7 +89,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0" colspan="3">
+   <item row="6" column="0" colspan="2">
     <widget class="QTableView" name="mpTblReactions">
      <property name="editTriggers">
       <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
@@ -106,13 +108,34 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0" rowspan="3" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Filter Expression:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mpLEFilter"/>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>CopasiWidget</class>
+   <extends>QWidget</extends>
+   <header>copasiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mpTblReactions</tabstop>
-  <tabstop>mpBtnNew</tabstop>
   <tabstop>mpBtnDelete</tabstop>
   <tabstop>mpBtnClear</tabstop>
  </tabstops>
@@ -146,22 +169,6 @@
    <hints>
     <hint type="sourcelabel">
      <x>253</x>
-     <y>443</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mpBtnNew</sender>
-   <signal>pressed()</signal>
-   <receiver>CQReactionsWidget</receiver>
-   <slot>slotBtnNewClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>172</x>
      <y>443</y>
     </hint>
     <hint type="destinationlabel">

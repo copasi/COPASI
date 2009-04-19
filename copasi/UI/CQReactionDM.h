@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/07 23:14:25 $
+//   $Date: 2009/04/19 19:04:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,12 @@
 
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
+
+#define COL_NAME             0
+#define COL_EQUATION         1
+#define COL_RATE_LAW         2
+#define COL_FLUX             3
+#define TOTAL_COLS_REACTIONS 4
 
 class CQReactionDM : public CQBaseDataModel
 {
