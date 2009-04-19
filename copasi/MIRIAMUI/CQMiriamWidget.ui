@@ -1,10 +1,10 @@
-<ui version="4.0">
+<?xml version="1.0" encoding="UTF-8"?>
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
-<comment>   $Revision: 1.10 $ </comment>
+<comment>   $Revision: 1.11 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: pwilly $ </comment>
-<comment>   $Date: 2009/04/12 13:00:37 $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2009/04/19 19:05:11 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,6 +12,7 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+<ui version="4.0">
  <comment> All rights reserved. </comment>
  <class>CQMiriamWidget</class>
  <widget class="CopasiWidget" name="CQMiriamWidget">
@@ -69,16 +70,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnNew">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>New</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="mpBtnDelete">
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
@@ -94,7 +85,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>Clear</string>
+        <string>Delete All</string>
        </property>
       </widget>
      </item>
@@ -254,7 +245,6 @@
   <tabstop>mpTblReferences</tabstop>
   <tabstop>mpTblDescription</tabstop>
   <tabstop>mpTblModified</tabstop>
-  <tabstop>mpBtnNew</tabstop>
   <tabstop>mpBtnDelete</tabstop>
   <tabstop>mpBtnClear</tabstop>
  </tabstops>
@@ -288,22 +278,6 @@
    <hints>
     <hint type="sourcelabel">
      <x>253</x>
-     <y>443</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mpBtnNew</sender>
-   <signal>pressed()</signal>
-   <receiver>CQMiriamWidget</receiver>
-   <slot>slotBtnNewClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>172</x>
      <y>443</y>
     </hint>
     <hint type="destinationlabel">

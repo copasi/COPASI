@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/07 23:37:16 $
+//   $Date: 2009/04/19 19:05:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,7 +285,10 @@ void CQMiriamWidget::slotBtnClearClicked()
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
-        {mpCreatorDM->clear();}
+        {
+          mpCreatorDM->clear();
+          mpCreatorDM->insertRow();
+        }
     }
   else if (mpTblReferences->hasFocus())
     {
@@ -293,7 +296,10 @@ void CQMiriamWidget::slotBtnClearClicked()
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
-        {mpReferenceDM->clear();}
+        {
+          mpReferenceDM->clear();
+          mpReferenceDM->insertRow();
+        }
     }
   else if (mpTblDescription->hasFocus())
     {
@@ -301,7 +307,10 @@ void CQMiriamWidget::slotBtnClearClicked()
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
-        {mpBiologicalDescriptionDM->clear();}
+        {
+          mpBiologicalDescriptionDM->clear();
+          mpBiologicalDescriptionDM->insertRow();
+        }
     }
   else if (mpTblModified->hasFocus())
     {
@@ -309,7 +318,10 @@ void CQMiriamWidget::slotBtnClearClicked()
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
-        {mpModifiedDM->clear();}
+        {
+          mpModifiedDM->clear();
+          mpModifiedDM->insertRow();
+        }
     }
 }
 
