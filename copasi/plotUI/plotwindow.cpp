@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:16 $
+//   $Author: aekamal $
+//   $Date: 2009/04/19 19:05:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,17 +37,17 @@
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
-  {
-  public:
-    PrintFilter() {};
+{
+public:
+  PrintFilter() {};
 
-    virtual QFont font(const QFont &f, Item, int) const
-      {
-        QFont f2 = f;
-        f2.setPointSize((int)(f.pointSize() * 0.75));
-        return f2;
-      }
-  };
+  virtual QFont font(const QFont &f, Item, int) const
+  {
+    QFont f2 = f;
+    f2.setPointSize((int)(f.pointSize() * 0.75));
+    return f2;
+  }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -91,6 +91,11 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpDeselectAll->setTextLabel("Hide all curves");
   connect(mpDeselectAll, SIGNAL(clicked()), this, SLOT(slotDeselectAll()));
 
+  QAction* closeAct = new QAction(this);
+  closeAct->setShortcut(tr("Ctrl+W"));
+  addAction(closeAct);
+  connect(closeAct, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
+
   //TODO button icons...
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
@@ -124,7 +129,7 @@ bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 /*void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
   //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
- 
+
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);
 }*/
@@ -191,11 +196,12 @@ void PlotWindow::printPlot()
   QPrinter printer;
 
   QString docName = mpPlot->title().text();
+
   if (docName.isEmpty())
     {
       //docName.replace (QRegExp (QString::fromLatin1 ("\n")), tr (" -- "));
       docName = QString::fromLatin1("A plot of selected Copasi output");
-      printer.setDocName (docName);
+      printer.setDocName(docName);
     }
 
   printer.setCreator("Copasi");
@@ -228,6 +234,7 @@ void PlotWindow::slotSaveData()
     }
 
   bool success = false;
+
   if (mpPlot)
     {
       QCursor oldCursor = cursor();
@@ -235,6 +242,7 @@ void PlotWindow::slotSaveData()
       success = mpPlot->saveData(TO_UTF8(fileName));
       setCursor(oldCursor);
     }
+
   if (!success)
     {
       std::string s = "Could not save data to ";
@@ -278,12 +286,12 @@ void PlotWindow::finish()
 {if (mpPlot) mpPlot->finish();};
 
 const std::set< const CCopasiObject * > & PlotWindow::getObjects() const
-  {
-    if (mpPlot)
-      return mpPlot->getObjects();
+{
+  if (mpPlot)
+    return mpPlot->getObjects();
 
-    return mObjects;
-  }
+  return mObjects;
+}
 
 void PlotWindow::slotSelectAll()
 {
@@ -295,4 +303,9 @@ void PlotWindow::slotDeselectAll()
 {
   // We hide all curves in mpPlot
   mpPlot->setCurvesVisibility(false);
+}
+
+void PlotWindow::slotCloseWindow()
+{
+  close();
 }
