@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/17 20:55:50 $
+//   $Date: 2009/04/20 13:30:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ CProcessQueue::CProcessQueueKey::CProcessQueueKey(const C_FLOAT64 & executionTim
     const unsigned C_INT32 & eventId,
     const unsigned C_INT32 & cascadingLevel) :
     mExecutionTime(executionTime),
-    mEquality(mEquality),
+    mEquality(equality),
     mEventId(eventId),
     mCascadingLevel(cascadingLevel)
 {}
