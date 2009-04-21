@@ -1,9 +1,11 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.35 $ 
+#   $Revision: 1.36 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/03/04 19:22:39 $ 
+#   $Revision: 1.36 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2009/04/21 15:45:05 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -83,6 +85,7 @@ contains(BUILD_OS, WIN32) {
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
+  LIBS += delayimp.lib
 
   QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2
 
@@ -124,6 +127,7 @@ SWIG_INTERFACE_FILES=../swig/CChemEq.i \
                      ../swig/CFunctionDB.i \
                      ../swig/CFunctionParameter.i \
                      ../swig/CFunctionParameters.i \
+                     ../swig/CKeyFactory.i \
                      ../swig/CMatrix.i \
                      ../swig/CMetab.i \
                      ../swig/CModel.i \

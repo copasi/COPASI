@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/cpp_examples.pro,v $ 
-#   $Revision: 1.1 $ 
+#   $Revision: 1.2 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/03/04 08:16:14 $ 
+#   $Author: shoops $ 
+#   $Date: 2009/04/21 15:44:34 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -13,10 +13,13 @@
 
 TEMPLATE = subdirs
 
+include(../../common.pri)
+
+QMAKE = $(QTDIR)/bin/qmake
+
 SUBDIRS += example1
 SUBDIRS += example2
 SUBDIRS += example3
 SUBDIRS += example4
-#SUBDIRS += example5
-#SUBDIRS += example6
-
+SUBDIRS += example5
+SUBDIRS += example6

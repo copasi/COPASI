@@ -4,6 +4,22 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 SCP=${COPASI_SCP:-scp}
 
+if [ x"$COPASI_UPLOAD" != x ]; then
+  function UPLOAD () {
+    SRC=""
+    while [ x"$2" != x ]; do
+      SRC="$SRC $1"
+      shift
+    done
+    echo ${SCP} ${SRC} ${COPASI_UPLOAD}/$1
+    ${SCP} ${SRC} ${COPASI_UPLOAD}/$1
+  }
+else
+  function UPLOAD () {
+    echo "Skipping upload (environment variable COPASI_UPLOAD not set)."
+  }
+fi
+
 pushd ../..
 
 AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
@@ -48,26 +64,23 @@ if [ x"$#" = x1 ]; then
     chmod 644 copasi/LICENSE.txt
 
     cp ../copasi/CopasiUI/CopasiUI.exe*  copasi/bin
-    "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
-      -manifest copasi\\bin\\CopasiUI.exe.manifest \
-      -outputresource:copasi\\bin\\CopasiUI.exe\;1
+    # "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+    #   -manifest copasi\\bin\\CopasiUI.exe.manifest \
+    #   -outputresource:copasi\\bin\\CopasiUI.exe\;1
 
     cp ../copasi/CopasiSE/CopasiSE.exe*  copasi/bin
-    "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
-      -manifest copasi\\bin\\CopasiSE.exe.manifest \
-      -outputresource:copasi\\bin\\CopasiSE.exe\;1
+    # "$VisualStudioPath/VC/bin/mt.exe" -nologo -hashupdate -makecdfs \
+    #   -manifest copasi\\bin\\CopasiSE.exe.manifest \
+    #   -outputresource:copasi\\bin\\CopasiSE.exe\;1
 
     cp ~/environment/distribution/* copasi/bin
 
     if [ x"$license" = xUS ]; then
-      ${SCP} copasi/bin/CopasiSE.exe \
-        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build.exe
-      ${SCP} ~/environment/distribution/libexpat.dll \
-          ~/environment/distribution/libsbml.dll \
-          ~/environment/distribution/msvcp80.dll \
-          ~/environment/distribution/msvcr80.dll \
-          ~/environment/distribution/raptor.dll \
-        copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/
+      UPLOAD copasi/bin/CopasiSE.exe \
+        $license/Copasi-AllSE/$1/CopasiSE-$build.exe
+
+      # This is a hack to circumvent a time out in ssh
+      sleep 10
     fi
     
     cp ../copasi/MIRIAM/MIRIAMResources.xml copasi/share/copasi/config
@@ -104,11 +117,12 @@ if [ x"$#" = x1 ]; then
     sed -e '/ProductCode/s/[0-9A-F]*}/'$productcode'}/' \
         -e '/ProductVersion/s/Value=".*"/Value="'$productversion'"/' \
         -e '/PackageName/s/Copasi-.*-WIN32/Copasi-'$build'-'$1'/' \
+        -e '/ProductName/s/COPASI/COPASI '$productversion'/' \
         copasi.aip > tmp.aip
 
 #   run Advanced Installer to create msi package
     "$AdvancedInstallerPath/AdvancedInstaller" /build tmp.aip
-#    rm tmp.aip
+    rm tmp.aip
 
 #   restore defaults
     mv -- \
@@ -154,8 +168,8 @@ if [ x"$#" = x1 ]; then
       strip ${TMPDIR}/copasi/CopasiSE
       
       if [ x"$license" = xUS ]; then
-        ${SCP} ${TMPDIR}/copasi/CopasiSE \
-          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
+        UPLOAD ${TMPDIR}/copasi/CopasiSE \
+          $license/Copasi-AllSE/$1/CopasiSE-$build
        fi
     fi  
     
@@ -257,11 +271,11 @@ echo "Set the icon in the Info.plist file."
 
     if [ x"$license" = xUS ]; then
       if [ x"$DYNAMIC" == "xTRUE" ]; then
-        ${SCP} copasi/bin/CopasiSE \
-          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
+        UPLOAD copasi/bin/CopasiSE \
+          $license/Copasi-AllSE/$1-Dynamic/CopasiSE-$build
       else
-        ${SCP} copasi/bin/CopasiSE \
-          copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license/Copasi-AllSE/$1/CopasiSE-$build
+        UPLOAD copasi/bin/CopasiSE \
+          $license/Copasi-AllSE/$1/CopasiSE-$build
       fi
     fi
     
@@ -292,8 +306,8 @@ echo "Set the icon in the Info.plist file."
     ;;
   esac
 
-  ${SCP} Copasi-$build-$1*.* \
-    copasi@gorbag.bioinformatics.vt.edu:www/integrator/snapshots/$license
+  UPLOAD Copasi-$build-$1*.* \
+    $license
 
 else
   echo usage: mkbuild.sh BUILD_OS

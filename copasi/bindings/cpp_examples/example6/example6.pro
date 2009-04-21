@@ -1,9 +1,9 @@
 # Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example4/example4.pro,v $ 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.pro,v $ 
 #   $Revision: 1.2 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2009/04/21 15:44:33 $ 
+#   $Date: 2009/04/21 15:44:34 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -61,4 +61,4 @@ contains(BUILD_OS, Darwin){
 # Input
 HEADERS += 
 
-SOURCES += example4.cpp
+SOURCES += example6.cpp
