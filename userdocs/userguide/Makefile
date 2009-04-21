@@ -108,7 +108,7 @@ COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
 .PHONY: clean all
 
-all: copasi.pdf copasi.xhtml
+all: UserManual.pdf
 
 copasi.tex: $(SOURCES) copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_bindings_python.xml
 	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi.xml
@@ -142,29 +142,42 @@ copasi.html: copasi.tex $(IMAGES) copasi_bindings_cpp.xml copasi_bindings_java.x
 		   -mkdir -dir $@ $<
 
 copasi_bindings_cpp.xml: copasi_bindings.xml $(CPP_EXAMPLES)
-	xsltproc --output tmp.out --stringparam profile.condition "CPP" $(PROFILE_DIR)/profiling/profile.xsl $< 
+	xsltproc --output tmp.out --stringparam profile.condition "CPP" $(PROFILE_XSL) $< 
 	sed -e '1d' tmp.out > $@
 
 copasi_bindings_java.xml: copasi_bindings.xml $(JAVA_EXAMPLES)
-	xsltproc --output tmp.out --stringparam profile.condition "JAVA" $(PROFILE_DIR)/profiling/profile.xsl $< 
+	xsltproc --output tmp.out --stringparam profile.condition "JAVA" $(PROFILE_XSL) $< 
 	sed -e '1d' tmp.out > $@
 
 copasi_bindings_python.xml: copasi_bindings.xml $(PYTHON_EXAMPLES)
-	xsltproc --output tmp.out --stringparam profile.condition "PYTHON" $(PROFILE_DIR)/profiling/profile.xsl $< 
+	xsltproc --output tmp.out --stringparam profile.condition "PYTHON" $(PROFILE_XSL) $< 
 	sed -e '1d' tmp.out > $@
 
+UserManual.xhtml: UserManual.html
+	./html2xhtml $<
 
+UserManual.tex: UserManual.xhtml
+	xsltproc --novalid $(HLPARAMS) \
+		-o $@ xh2latex.xsl $< 
+
+UserManual.bib: UserManual.xhtml
+	xsltproc --novalid -o $@ xh2bib.xsl $<
+
+UserManual.pdf: UserManual.tex
+	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $< 
+	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) pdflatex $<
 
 clean:
-	-rm -f copasi.tex
-	-rm -f copasi.pdf
-	-rm -f copasi.out
-	-rm -f copasi.idx
-	-rm -f copasi.log
-	-rm -f copasi.aux
-	-rm -f copasi.glo
+	-rm -f copasi.tex UserManual.tex
+	-rm -f copasi.pdf UserManual.pdf
+	-rm -f copasi.out UserManual.out
+	-rm -f copasi.idx UserManual.idx
+	-rm -f copasi.log UserManual.log
+	-rm -f copasi.aux UserManual.aux
+	-rm -f copasi.glo UserManual.glo
 	-rm -f fotex.log
 	-rm -rf copasi.html
-	-rm -rf copasi.xhtml
+	-rm -rf copasi.xhtml UserManual.xhtml
 	-rm -f copasi_bindings_*.xml
 

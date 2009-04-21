@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Date: 2009/04/21 16:20:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,14 +66,15 @@ void CArrayAnnotation::setMode(Mode m)
   mDefaultMode = m;
 
   unsigned int i;
+
   for (i = 0; i < mModes.size(); ++i)
     setMode(i, m);
 }
 
 unsigned int CArrayAnnotation::dimensionality() const
-  {
-    return mModes.size();
-  }
+{
+  return mModes.size();
+}
 
 void CArrayAnnotation::setCopasiVector(unsigned int d, const CCopasiContainer* v)
 {
@@ -81,6 +82,7 @@ void CArrayAnnotation::setCopasiVector(unsigned int d, const CCopasiContainer* v
   assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
 
   mCopasiVectors[d] = v;
+
   if (mModes[d] == VECTOR)
     createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
 }
@@ -108,58 +110,60 @@ void CArrayAnnotation::setAnnotationString(unsigned int d, unsigned int i, const
 }
 
 const std::vector<CRegisteredObjectName> & CArrayAnnotation::getAnnotationsCN(unsigned int d) const
-  {
-    assert(d < mModes.size());
-    assert(mModes[d] != STRINGS);
-    assert(mModes[d] != NUMBERS);
+{
+  assert(d < mModes.size());
+  assert(mModes[d] != STRINGS);
+  assert(mModes[d] != NUMBERS);
 
-    if (mModes[d] == VECTOR_ON_THE_FLY)
-      createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
+  if (mModes[d] == VECTOR_ON_THE_FLY)
+    createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
 
-    return mAnnotationsCN[d];
-  }
+  return mAnnotationsCN[d];
+}
 
 const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(unsigned int d, bool display) const
-  {
-    assert(d < mModes.size());
+{
+  assert(d < mModes.size());
 
-    //generate CNs (if necessary)
-    if (mModes[d] == VECTOR_ON_THE_FLY)
-      createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
+  //generate CNs (if necessary)
+  if (mModes[d] == VECTOR_ON_THE_FLY)
+    createAnnotationsCNFromCopasiVector(d, mCopasiVectors[d]);
 
-    //generate DisplayNames
-    if ((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY) || (mModes[d] == OBJECTS))
-      {
-        unsigned int i, imax = mAnnotationsCN[d].size();
-        mAnnotationsString[d].resize(imax);
-        const CCopasiDataModel* pDataModel = getObjectDataModel();
-        assert(pDataModel != NULL);
-        for (i = 0; i < imax; ++i)
-          {
-            const CCopasiObject * obj = pDataModel->getObject(mAnnotationsCN[d][i]);
-            if (obj)
-              mAnnotationsString[d][i] =
-                display ? obj->getObjectDisplayName() : obj->getObjectName();
-            else
-              mAnnotationsString[d][i] = "???";
-          }
-      }
+  //generate DisplayNames
+  if ((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY) || (mModes[d] == OBJECTS))
+    {
+      unsigned int i, imax = mAnnotationsCN[d].size();
+      mAnnotationsString[d].resize(imax);
+      const CCopasiDataModel* pDataModel = getObjectDataModel();
+      assert(pDataModel != NULL);
 
-    //generate Numbers
-    if (mModes[d] == NUMBERS)
-      createNumbers(d);
+      for (i = 0; i < imax; ++i)
+        {
+          const CCopasiObject * obj = pDataModel->getObject(mAnnotationsCN[d][i]);
 
-    // if the mode is STRINGS do nothing, mAnnotationsString is supposed to contain
-    // the correct strings
+          if (obj)
+            mAnnotationsString[d][i] =
+              display ? obj->getObjectDisplayName() : obj->getObjectName();
+          else
+            mAnnotationsString[d][i] = "???";
+        }
+    }
 
-    return mAnnotationsString[d];
-  }
+  //generate Numbers
+  if (mModes[d] == NUMBERS)
+    createNumbers(d);
+
+  // if the mode is STRINGS do nothing, mAnnotationsString is supposed to contain
+  // the correct strings
+
+  return mAnnotationsString[d];
+}
 
 const std::string & CArrayAnnotation::getDimensionDescription(unsigned int d) const
-  {
-    assert(d < mDimensionDescriptions.size());
-    return mDimensionDescriptions[d];
-  }
+{
+  assert(d < mDimensionDescriptions.size());
+  return mDimensionDescriptions[d];
+}
 
 void CArrayAnnotation::setDimensionDescription(unsigned int d, const std::string & s)
 {
@@ -168,41 +172,45 @@ void CArrayAnnotation::setDimensionDescription(unsigned int d, const std::string
 }
 
 const std::string & CArrayAnnotation::getDescription() const
-  {return mDescription;}
+{return mDescription;}
 
 void CArrayAnnotation::setDescription(const std::string & s)
 {mDescription = s;}
 
 bool CArrayAnnotation::createAnnotationsCNFromCopasiVector(unsigned int d,
     const CCopasiContainer* v) const
-  {
-    if (!v) return false;
-    if (! (v->isVector() || v->isNameVector())) return false;
-    if (d >= mpArray->dimensionality()) return false;
+{
+  if (!v) return false;
 
-    //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
-    const CCopasiVector< CCopasiObject > * pVector =
-      reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
+  if (!(v->isVector() || v->isNameVector())) return false;
 
-    mAnnotationsCN[d].resize(pVector->size());
-    //if (pVector->size() < mAnnotations[d].size()) return false;
+  if (d >= mpArray->dimensionality()) return false;
 
-    unsigned int i;
-    for (i = 0; i < mAnnotationsCN[d].size(); ++i)
-      {
-        if (!(*pVector)[i])
-          return false;
-        else
-          mAnnotationsCN[d][i] = (*pVector)[i]->getCN();
-      }
-    return true;
-  }
+  //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
+  const CCopasiVector< CCopasiObject > * pVector =
+    reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
+
+  mAnnotationsCN[d].resize(pVector->size());
+  //if (pVector->size() < mAnnotations[d].size()) return false;
+
+  unsigned int i;
+
+  for (i = 0; i < mAnnotationsCN[d].size(); ++i)
+    {
+      if (!(*pVector)[i])
+        return false;
+      else
+        mAnnotationsCN[d][i] = (*pVector)[i]->getCN();
+    }
+
+  return true;
+}
 
 //private
 void CArrayAnnotation::createNumbers(unsigned int /*d*/) const
-  {
-    //TODO
-  }
+{
+  //TODO
+}
 
 //private
 void CArrayAnnotation::reDimensionalize(unsigned int d)
@@ -230,111 +238,128 @@ void CArrayAnnotation::resize()
   reDimensionalize(mpArray->dimensionality());
 
   unsigned int i, imax = mpArray->dimensionality();
+
   for (i = 0; i < imax; ++i)
     resizeOneDimension(i);
 }
 
 const CCopasiObject* CArrayAnnotation::addElementReference(CCopasiAbstractArray::index_type index) const
-  {
-    //generate the index string
-    std::string tmp;
-    std::ostringstream indexString;
-    unsigned C_INT32 ii = 0;
-    for (ii = 0; ii < index.size(); ++ii)
-      {
-        indexString << "[" << index[ii] << "]";
-      }
+{
+  //generate the index string
+  std::string tmp;
+  std::ostringstream indexString;
+  unsigned C_INT32 ii = 0;
 
-    //handle zero-dimensional arrays
-    if (index.size() == 0)
-      indexString << "[.]";
+  for (ii = 0; ii < index.size(); ++ii)
+    {
+      indexString << "[" << index[ii] << "]";
+    }
 
-    return this->getObject(indexString.str());
-  }
+  //handle zero-dimensional arrays
+  if (index.size() == 0)
+    indexString << "[.]";
+
+  return this->getObject(indexString.str());
+}
 
 const CCopasiObject* CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
-  {
-    CCopasiAbstractArray::index_type index;
-    index.push_back(u);
-    index.push_back(v);
-    return addElementReference(index);
-  }
+{
+  CCopasiAbstractArray::index_type index;
+  index.push_back(u);
+  index.push_back(v);
+  return addElementReference(index);
+}
+
+void CArrayAnnotation::appendElementReferences(std::set< const CCopasiObject * > & objects) const
+{
+  objectMap::const_iterator it = mObjects.begin();
+  objectMap::const_iterator end = mObjects.end();
+
+  for (; it != end; ++it)
+    if (dynamic_cast<const CArrayElementReference *>(it->second) != NULL)
+      objects.insert(it->second);
+
+  return;
+}
 
 const CCopasiObject * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
-  {
-    //std::cout << "CArrayAnnotation::getObject() " << cn << std::endl;
+{
+  //std::cout << "CArrayAnnotation::getObject() " << cn << std::endl;
 
-    if (cn == "")
-      {
-        return this;
-      }
+  if (cn == "")
+    {
+      return this;
+    }
 
-    //if there are no indices there could still be other children. This can be handled
-    //by the container base class
-    if (cn.getElementName(0, false) == "") //no indices
-      return this->CCopasiContainer::getObject(cn);
+  //if there are no indices there could still be other children. This can be handled
+  //by the container base class
+  if (cn.getElementName(0, false) == "") //no indices
+    return this->CCopasiContainer::getObject(cn);
 
-    //so now we know we have indices. So we check if the array element reference
-    //exists, if not we create it. Then getObject() of the element reference is called
-    //with the remainder TODO
+  //so now we know we have indices. So we check if the array element reference
+  //exists, if not we create it. Then getObject() of the element reference is called
+  //with the remainder TODO
 
-    /*
-        //first get the array indices. At the moment only numerical indices...
-        C_INT32 ii = 0;
-        CCopasiArray::index_type index;
-        while (cn.getElementName(ii, false) != "")
-          {
-            index.push_back(cn.getElementIndex(ii));
-            ++ii;
-          }
-    */
+  /*
+      //first get the array indices. At the moment only numerical indices...
+      C_INT32 ii = 0;
+      CCopasiArray::index_type index;
+      while (cn.getElementName(ii, false) != "")
+        {
+          index.push_back(cn.getElementIndex(ii));
+          ++ii;
+        }
+  */
 
-    //first get the index string
-    std::string tmp;
-    std::string indexString;
-    C_INT32 ii = 0;
-    while ((tmp = cn.getElementName(ii, false)) != "")
-      {
-        indexString += "[" + tmp + "]";
-        ++ii;
-      }
+  //first get the index string
+  std::string tmp;
+  std::string indexString;
+  C_INT32 ii = 0;
 
-    const CCopasiObject* pObject = NULL; //this will contain the element reference
+  while ((tmp = cn.getElementName(ii, false)) != "")
+    {
+      indexString += "[" + tmp + "]";
+      ++ii;
+    }
 
-    //if the reference object already exists, its name will be identical to the index
-    std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
-      mObjects.equal_range(indexString);
-    objectMap::const_iterator it = range.first;
-    while (it != range.second && it->second->getObjectType() != "ElementReference") ++it;
+  const CCopasiObject* pObject = NULL; //this will contain the element reference
 
-    if (it == range.second) //not found
-      {
-        //create new element reference
-        pObject = new CArrayElementReference(cn, this);
-      }
-    else
-      {
-        pObject = it->second;
-      }
+  //if the reference object already exists, its name will be identical to the index
+  std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
+    mObjects.equal_range(indexString);
 
-    if (pObject)
-      return pObject->getObject(cn.getRemainder());
-    else
+  objectMap::const_iterator it = range.first;
+
+  while (it != range.second && it->second->getObjectType() != "ElementReference") ++it;
+
+  if (it == range.second) //not found
+    {
+      //create new element reference
+      pObject = new CArrayElementReference(cn, this);
+    }
+  else
+    {
+      pObject = it->second;
+    }
+
+  if (pObject)
+    return pObject->getObject(cn.getRemainder());
+  else
+    return NULL;
+
+  /*
+  if (index.size() != dimensionality())  //wrong number of indices for this array
+    return NULL;
+
+  unsigned C_INT32 i;
+  for (i = 0; i < dimensionality(); ++i)
+    if (index[i] >= size()[i]) //out of range
       return NULL;
+  */
 
-    /*
-    if (index.size() != dimensionality())  //wrong number of indices for this array
-      return NULL;
-
-    unsigned C_INT32 i;
-    for (i = 0; i < dimensionality(); ++i)
-      if (index[i] >= size()[i]) //out of range
-        return NULL;
-    */
-
-    //TODO remove element children after resize
-    //TODO check optimization expression widget...
-  }
+  //TODO remove element children after resize
+  //TODO check optimization expression widget...
+}
 
 void CArrayAnnotation::print(std::ostream * ostream) const
 {*ostream << *this;}
@@ -344,47 +369,54 @@ void CArrayAnnotation::print(std::ostream * ostream) const
 void CArrayAnnotation::printRecursively(std::ostream & ostream, C_INT32 level,
                                         CCopasiAbstractArray::index_type & index,
                                         const std::vector<std::vector<std::string> > & display) const
-  {
-    unsigned C_INT32 indent = 2 * (dimensionality() - 1 - level);
+{
+  unsigned C_INT32 indent = 2 * (dimensionality() - 1 - level);
 
-    if (level == 0) //only vector
-      {
-        ostream << SPC(indent) << "Rows: " << getDimensionDescription(level) << "\n";
+  if (level == 0) //only vector
+    {
+      ostream << SPC(indent) << "Rows: " << getDimensionDescription(level) << "\n";
 
-        unsigned C_INT32 imax = size()[0];
-        for (index[0] = 0; index[0] < imax; ++index[0])
-          ostream << SPC(indent) << display[0][index[0]] << "\t" << (*array())[index] << "\n";
-      }
-    else if (level == 1) //matrix
-      {
-        ostream << SPC(indent) << "Rows:    " << getDimensionDescription(level - 1) << "\n";
-        ostream << SPC(indent) << "Columns: " << getDimensionDescription(level) << "\n";
+      unsigned C_INT32 imax = size()[0];
 
-        unsigned C_INT32 imax = size()[0];
-        unsigned C_INT32 jmax = size()[1];
-        ostream << SPC(indent);
-        for (index[1] = 0; index[1] < jmax; ++index[1])
-          ostream << "\t" << display[1][index[1]];
-        ostream << "\n";
-        for (index[0] = 0; index[0] < imax; ++index[0])
-          {
-            ostream << SPC(indent) << display[0][index[0]];
-            for (index[1] = 0; index[1] < jmax; ++index[1])
-              ostream << "\t" << (*array())[index];
-            ostream << "\n";
-          }
-      }
-    else //dimensionality > 2
-      {
-        unsigned C_INT32 i, imax = size()[level];
-        for (i = 0; i < imax; ++i)
-          {
-            ostream << SPC(indent) << getDimensionDescription(level) << ": " << display[level][i] << "\n";
-            index[level] = i;
-            printRecursively(ostream, level - 1, index, display);
-          }
-      }
-  }
+      for (index[0] = 0; index[0] < imax; ++index[0])
+        ostream << SPC(indent) << display[0][index[0]] << "\t" << (*array())[index] << "\n";
+    }
+  else if (level == 1) //matrix
+    {
+      ostream << SPC(indent) << "Rows:    " << getDimensionDescription(level - 1) << "\n";
+      ostream << SPC(indent) << "Columns: " << getDimensionDescription(level) << "\n";
+
+      unsigned C_INT32 imax = size()[0];
+      unsigned C_INT32 jmax = size()[1];
+      ostream << SPC(indent);
+
+      for (index[1] = 0; index[1] < jmax; ++index[1])
+        ostream << "\t" << display[1][index[1]];
+
+      ostream << "\n";
+
+      for (index[0] = 0; index[0] < imax; ++index[0])
+        {
+          ostream << SPC(indent) << display[0][index[0]];
+
+          for (index[1] = 0; index[1] < jmax; ++index[1])
+            ostream << "\t" << (*array())[index];
+
+          ostream << "\n";
+        }
+    }
+  else //dimensionality > 2
+    {
+      unsigned C_INT32 i, imax = size()[level];
+
+      for (i = 0; i < imax; ++i)
+        {
+          ostream << SPC(indent) << getDimensionDescription(level) << ": " << display[level][i] << "\n";
+          index[level] = i;
+          printRecursively(ostream, level - 1, index, display);
+        }
+    }
+}
 
 #undef SPC
 
@@ -395,6 +427,7 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
   //cache the display names
   std::vector<std::vector<std::string> > displaynames;
   unsigned C_INT32 i;
+
   for (i = 0; i < o.dimensionality(); ++i)
     displaynames.push_back(o.getAnnotationsString(i));
 
@@ -402,6 +435,7 @@ std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
   os << o.getDescription() << std::endl;
 
   CCopasiAbstractArray::index_type arraysize = o.array()->size();
+
   if (o.dimensionality() == 0)
     {
       //only one scalar value
@@ -419,11 +453,13 @@ bool CArrayAnnotation::isEmpty()
 {
   // either the dimension itself ...
   int dim = dimensionality();
+
   //  std::cout << "Dimensionality = " << dim << std::endl;
   if (dim == 0) return false;
 
   // ... or the size of each dimension should be greater than zero.
   int idx = 0;
+
   for (idx = 0; idx < dim; idx++)
     {
       // std::cout << "size of dim " << idx << " = " << getAnnotationsString(idx, true).size()
@@ -437,13 +473,14 @@ bool CArrayAnnotation::isEmpty()
 }
 
 std::string CArrayAnnotation::getObjectDisplayName(bool regular, bool richtext) const
-  {
-    std::string part;
-    if (getObjectParent() && getObjectParent()->getObjectType() != "Model")
-      part = getObjectParent()->getObjectDisplayName(regular, richtext) + ".";
+{
+  std::string part;
 
-    return part + getObjectName() + "[[]]";
-  }
+  if (getObjectParent() && getObjectParent()->getObjectType() != "Model")
+    part = getObjectParent()->getObjectDisplayName(regular, richtext) + ".";
+
+  return part + getObjectName() + "[[]]";
+}
 
 // void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const
 //   {

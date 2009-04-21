@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@ void CQFittingItemWidget::init()
   mSavedColor.getHsv(&h, &s, &v);
 
   if (s < 20) s = 20;
+
   mChangedColor.setHsv(240, s, v);
 
   mpObjectValidator = new CQValidatorNotEmpty(mpEditObject);
@@ -108,6 +109,7 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
   if (mLowerInfChanged)
     {
       mpCheckLowerInf->setPaletteBackgroundColor(mChangedColor);
+
       if (mpEditLower->isEnabled()) mpLowerValidator->revalidate();
     }
   else
@@ -145,6 +147,7 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
   if (mUpperInfChanged)
     {
       mpCheckUpperInf->setPaletteBackgroundColor(mChangedColor);
+
       if (mpEditUpper->isEnabled()) mpUpperValidator->revalidate();
     }
   else
@@ -175,8 +178,32 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
 void CQFittingItemWidget::slotLowerEdit()
 {
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+
+  switch (mItemType)
+    {
+      case OPT_ITEM:
+      case FIT_ITEM:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants;
+        break;
+
+      case OPT_CONSTRAINT:
+      case FIT_CONSTRAINT:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants |
+          CCopasiSimpleSelectionTree::Time |
+          CCopasiSimpleSelectionTree::Variables |
+          CCopasiSimpleSelectionTree::ObservedValues;
+        break;
+    }
+
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -211,8 +238,32 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+
+  switch (mItemType)
+    {
+      case OPT_ITEM:
+      case FIT_ITEM:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants;
+        break;
+
+      case OPT_CONSTRAINT:
+      case FIT_CONSTRAINT:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants |
+          CCopasiSimpleSelectionTree::Time |
+          CCopasiSimpleSelectionTree::Variables |
+          CCopasiSimpleSelectionTree::ObservedValues;
+        break;
+    }
+
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -249,30 +300,38 @@ void CQFittingItemWidget::slotParamEdit()
 {
   std::vector< const CCopasiObject * > Selection;
 
-  CCopasiSimpleSelectionTree::SelectionFlag SelectionFlag;
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+
   switch (mItemType)
     {
-    case OPT_ITEM:
-    case FIT_ITEM:
-      SelectionFlag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
-      break;
+      case OPT_ITEM:
+      case FIT_ITEM:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters;
+        break;
 
-    case OPT_CONSTRAINT:
-    case FIT_CONSTRAINT:
-      SelectionFlag = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
-      break;
+      case OPT_CONSTRAINT:
+      case FIT_CONSTRAINT:
+        Classes =
+          CCopasiSimpleSelectionTree::Time |
+          CCopasiSimpleSelectionTree::Variables |
+          CCopasiSimpleSelectionTree::ObservedValues |
+          CCopasiSimpleSelectionTree::ObservedConstants;
+        break;
     }
 
   if (mSelection.size() > 1)
     {
       const CCopasiObject * pObject =
-        CCopasiSelectionDialog::getObjectSingle(this, SelectionFlag);
+        CCopasiSelectionDialog::getObjectSingle(this, Classes);
+
       if (pObject)
         Selection.push_back(pObject);
     }
   else
     Selection =
-      CCopasiSelectionDialog::getObjectVector(this, SelectionFlag);
+      CCopasiSelectionDialog::getObjectVector(this, Classes);
 
   if (Selection.size() != 0)
     {
@@ -289,18 +348,18 @@ void CQFittingItemWidget::slotParamEdit()
 
           switch (mItemType)
             {
-            case OPT_ITEM:
-            case OPT_CONSTRAINT:
-              pItem = new COptItem();
-              break;
+              case OPT_ITEM:
+              case OPT_CONSTRAINT:
+                pItem = new COptItem();
+                break;
 
-            case FIT_ITEM:
-              pItem = new CFitItem();
-              break;
+              case FIT_ITEM:
+                pItem = new CFitItem();
+                break;
 
-            case FIT_CONSTRAINT:
-              pItem = new CFitConstraint();
-              break;
+              case FIT_CONSTRAINT:
+                pItem = new CFitConstraint();
+                break;
             }
 
           mpItemsCopy->push_back(pItem);
@@ -337,18 +396,18 @@ void CQFittingItemWidget::slotParamEdit()
 
           switch (mItemType)
             {
-            case OPT_ITEM:
-            case OPT_CONSTRAINT:
-              pItem = new COptItem(*pSrc);
-              break;
+              case OPT_ITEM:
+              case OPT_CONSTRAINT:
+                pItem = new COptItem(*pSrc);
+                break;
 
-            case FIT_ITEM:
-              pItem = new CFitItem(*pSrc);
-              break;
+              case FIT_ITEM:
+                pItem = new CFitItem(*pSrc);
+                break;
 
-            case FIT_CONSTRAINT:
-              pItem = new CFitConstraint(*pSrc);
-              break;
+              case FIT_CONSTRAINT:
+                pItem = new CFitConstraint(*pSrc);
+                break;
             }
 
           pItem->setObjectCN(Selection[i]->getCN(), pDataModel);
@@ -443,18 +502,18 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
     {
       switch (mItemType)
         {
-        case OPT_ITEM:
-        case OPT_CONSTRAINT:
-          *it = new COptItem(**src);
-          break;
+          case OPT_ITEM:
+          case OPT_CONSTRAINT:
+            *it = new COptItem(**src);
+            break;
 
-        case FIT_ITEM:
-          *it = new CFitItem(**src);
-          break;
+          case FIT_ITEM:
+            *it = new CFitItem(**src);
+            break;
 
-        case FIT_CONSTRAINT:
-          *it = new CFitConstraint(**src);
-          break;
+          case FIT_CONSTRAINT:
+            *it = new CFitConstraint(**src);
+            break;
         }
 
       if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
@@ -472,6 +531,7 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
             }
 
 #ifdef COPASI_CROSSVALIDATION
+
           if (!pCrossValidationMap) return false;
 
           // Change the key to reflect the local copy *mppCrossValidationSet
@@ -483,6 +543,7 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getCrossValidation(j));
               Key = pCrossValidationMap->find(Key)->second;
             }
+
 #endif // COPASI_CROSSVALIDATION
         }
 
@@ -527,6 +588,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
       if ((*target)->getObjectCN() != (*it)->getObjectCN())
         {
           changed = true;
+
           if (!(*target)->setObjectCN((*it)->getObjectCN(), pDataModel))
             (*target)->setValue("ObjectCN", (*it)->getObjectCN());
         }
@@ -592,6 +654,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             }
 
 #ifdef COPASI_CROSSVALIDATION
+
           if (pCrossValidationMap == NULL) return false;
 
           jmax =
@@ -631,6 +694,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
               static_cast<CFitItem *>(*target)->addCrossValidation(Source);
             }
+
 #endif // COPASI_CROSSVALIDATION
         }
     }
@@ -651,18 +715,18 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
       switch (mItemType)
         {
-        case OPT_ITEM:
-        case OPT_CONSTRAINT:
-          pItem = new COptItem(**it);
-          break;
+          case OPT_ITEM:
+          case OPT_CONSTRAINT:
+            pItem = new COptItem(**it);
+            break;
 
-        case FIT_ITEM:
-          pItem = new CFitItem(**it);
-          break;
+          case FIT_ITEM:
+            pItem = new CFitItem(**it);
+            break;
 
-        case FIT_CONSTRAINT:
-          pItem = new CFitConstraint(**it);
-          break;
+          case FIT_CONSTRAINT:
+            pItem = new CFitConstraint(**it);
+            break;
         }
 
       if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
@@ -788,6 +852,7 @@ void CQFittingItemWidget::slotDelete()
   disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
   unsigned int Deleted = 0;
+
   for (; it != end; ++it, ++Deleted)
     {
       row = *it - Deleted;
@@ -833,16 +898,16 @@ void CQFittingItemWidget::slotCopy()
 
   switch (mItemType)
     {
-    case OPT_ITEM:
-    case OPT_CONSTRAINT:
-      pItem = new COptItem(*pSrc);
-      break;
-    case FIT_ITEM:
-      pItem = new CFitItem(*pSrc);
-      break;
-    case FIT_CONSTRAINT:
-      pItem = new CFitConstraint(*pSrc);
-      break;
+      case OPT_ITEM:
+      case OPT_CONSTRAINT:
+        pItem = new COptItem(*pSrc);
+        break;
+      case FIT_ITEM:
+        pItem = new CFitItem(*pSrc);
+        break;
+      case FIT_CONSTRAINT:
+        pItem = new CFitConstraint(*pSrc);
+        break;
     }
 
   unsigned C_INT32 row = mCurrentRow + 1;
@@ -906,7 +971,7 @@ void CQFittingItemWidget::slotDown()
   std::set< unsigned int >::reverse_iterator end = mSelection.rend();
   COptItem * pItem;
 
-  if (*it == (unsigned int) (mpTable->numRows() - 1))
+  if (*it == (unsigned int)(mpTable->numRows() - 1))
     ++it; // The last row can not be moved down.
 
   for (; it != end; ++it)
@@ -952,14 +1017,14 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
       // We have a list of experiments
       switch (mItemType)
         {
-        case FIT_ITEM:
-          pTemplate = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
-          break;
-        case FIT_CONSTRAINT:
-          pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()]);
-          break;
-        default:
-          break;
+          case FIT_ITEM:
+            pTemplate = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
+            break;
+          case FIT_CONSTRAINT:
+            pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()]);
+            break;
+          default:
+            break;
         }
 
       // Remove all experiments from the template
@@ -971,14 +1036,14 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
         {
           switch (mItemType)
             {
-            case FIT_ITEM:
-              pItem = new CFitItem(*pTemplate);
-              break;
-            case FIT_CONSTRAINT:
-              pItem = new CFitConstraint(*pTemplate);
-              break;
-            default:
-              break;
+              case FIT_ITEM:
+                pItem = new CFitItem(*pTemplate);
+                break;
+              case FIT_CONSTRAINT:
+                pItem = new CFitConstraint(*pTemplate);
+                break;
+              default:
+                break;
             }
 
           pItem->addExperiment(static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->getExperiment(i));
@@ -1041,18 +1106,18 @@ void CQFittingItemWidget::slotNew()
 
   switch (mItemType)
     {
-    case OPT_ITEM:
-    case OPT_CONSTRAINT:
-      pItem = new COptItem();
-      break;
+      case OPT_ITEM:
+      case OPT_CONSTRAINT:
+        pItem = new COptItem();
+        break;
 
-    case FIT_ITEM:
-      pItem = new CFitItem();
-      break;
+      case FIT_ITEM:
+        pItem = new CFitItem();
+        break;
 
-    case FIT_CONSTRAINT:
-      pItem = new CFitConstraint();
-      break;
+      case FIT_CONSTRAINT:
+        pItem = new CFitConstraint();
+        break;
     }
 
   mpItemsCopy->push_back(pItem);
@@ -1081,6 +1146,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   if (pItem->getLowerBound() == "-inf" ||
       isNumber(pItem->getLowerBound()))
     Item += FROM_UTF8(pItem->getLowerBound());
@@ -1093,6 +1159,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   Item += FROM_UTF8(std::string(" \xe2\x89\xa4 "));
 
   pObject = pDataModel->getObject(pItem->getObjectCN());
+
   if (pObject)
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
@@ -1102,6 +1169,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
     {
       QString Experiments =
         FROM_UTF8(static_cast<const CFitItem *>(pItem)->getExperiments());
+
       if (Experiments != "")
         Item += "; {" + Experiments + "}";
     }
@@ -1195,6 +1263,7 @@ void CQFittingItemWidget::loadSelection()
       CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
       const CCopasiObject *pObject = pDataModel->getObject(pItem->getObjectCN());
+
       if (pObject)
         {
           Value = FROM_UTF8(pObject->getObjectDisplayName());
@@ -1215,6 +1284,7 @@ void CQFittingItemWidget::loadSelection()
         }
 
       mpLowerObject = NULL;
+
       if (pItem->getLowerBound() == "-inf" ||
           isNumber(pItem->getLowerBound()))
         Value = FROM_UTF8(pItem->getLowerBound());
@@ -1227,6 +1297,7 @@ void CQFittingItemWidget::loadSelection()
       mpCheckLowerInf->setChecked(Value == "-inf");
 
       mpUpperObject = NULL;
+
       if (pItem->getUpperBound() == "inf" ||
           isNumber(pItem->getUpperBound()))
         Value = FROM_UTF8(pItem->getUpperBound());
@@ -1242,6 +1313,7 @@ void CQFittingItemWidget::loadSelection()
 
       std::string Experiments;
       std::string CrossValidations;
+
       if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
         {
           Experiments = static_cast<CFitItem *>(pItem)->getExperiments();
@@ -1249,6 +1321,7 @@ void CQFittingItemWidget::loadSelection()
           mpBoxExperiments->clear();
 
           unsigned C_INT32 i, imax = static_cast<CFitItem *>(pItem)->getExperimentCount();
+
           for (i = 0; i < imax; i++)
             {
               const CCopasiObject * pObject =
@@ -1267,6 +1340,7 @@ void CQFittingItemWidget::loadSelection()
           mpBoxCrossValidations->clear();
 
           imax = static_cast<CFitItem *>(pItem)->getCrossValidationCount();
+
           for (i = 0; i < imax; i++)
             {
               const CCopasiObject * pObject =
@@ -1286,6 +1360,7 @@ void CQFittingItemWidget::loadSelection()
           pItem = (*mpItemsCopy)[*it];
 
           const CCopasiObject *pObject = pDataModel->getObject(pItem->getObjectCN());
+
           if (pObject)
             Value = FROM_UTF8(pObject->getObjectDisplayName());
           else
@@ -1341,12 +1416,14 @@ void CQFittingItemWidget::loadSelection()
             }
 
 #ifdef COPASI_CROSSVALIDATION
+
           if ((mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT) &&
               CrossValidations != static_cast<CFitItem *>(pItem)->getCrossValidations())
             {
               mpCheckCrossValidationsAll->setChecked(false);
               mpBoxCrossValidations->setEnabled(false);
             }
+
 #endif // COPASI_CROSSVALIDATION
         }
 
@@ -1371,6 +1448,7 @@ void CQFittingItemWidget::saveSelection()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   for (; it != end; ++it)
     {
       pItem = (*mpItemsCopy)[*it];
@@ -1433,6 +1511,7 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
 
   // Update selection
   mpTable->clearSelection();
+
   for (; it != end; ++it)
     mpTable->addSelection(Q3TableSelection(*it, 0, *it, 0));
 
@@ -1462,6 +1541,7 @@ void CQFittingItemWidget::slotLowerLostFocus()
   for (; it != end; ++it)
     {
       (*mpItemsCopy)[*it]->setLowerBound(Number, pDataModel);
+
       if (first)
         {
           NewValue = (*mpItemsCopy)[*it]->getLowerBound();
@@ -1499,6 +1579,7 @@ void CQFittingItemWidget::slotUpperLostFocus()
   for (; it != end; ++it)
     {
       (*mpItemsCopy)[*it]->setUpperBound(Number, pDataModel);
+
       if (first)
         {
           NewValue = (*mpItemsCopy)[*it]->getUpperBound();
@@ -1523,31 +1604,36 @@ void CQFittingItemWidget::slotReset()
 
   switch (pDialog->result())
     {
-    case QDialog::Rejected:
-      break;
+      case QDialog::Rejected:
+        break;
 
-    case CQStartValueReset::MODEL:
-      for (; it != end; ++it)
-        {
-          (*mpItemsCopy)[*it]->setStartValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
-          mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
-          setTableText(*it, (*mpItemsCopy)[*it]);
-        }
-      break;
+      case CQStartValueReset::MODEL:
 
-    case CQStartValueReset::RANDOM:
-      for (; it != end; ++it)
-        {
-          (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue());
-          mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
-          setTableText(*it, (*mpItemsCopy)[*it]);
-        }
-      break;
+        for (; it != end; ++it)
+          {
+            (*mpItemsCopy)[*it]->setStartValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
+            mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
+            setTableText(*it, (*mpItemsCopy)[*it]);
+          }
 
-    case CQStartValueReset::SOLUTION:
+        break;
+
+      case CQStartValueReset::RANDOM:
+
+        for (; it != end; ++it)
+          {
+            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue());
+            mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
+            setTableText(*it, (*mpItemsCopy)[*it]);
+          }
+
+        break;
+
+      case CQStartValueReset::SOLUTION:
       {
         COptProblem * pProblem = dynamic_cast< COptProblem * >(mpItems->getObjectParent());
         const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
+
         if (Solution.size() == mpItems->size())
           for (; it != end; ++it)
             {
@@ -1583,6 +1669,7 @@ void CQFittingItemWidget::slotStartLostFocus()
 void CQFittingItemWidget::slotCrossValidations()
 {
 #ifdef COPASI_CROSSVALIDATION
+
   if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
@@ -1614,6 +1701,7 @@ void CQFittingItemWidget::slotCrossValidations()
 
       delete pDialog;
     }
+
 #endif // COPASI_CROSSVALIDATION
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:07 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,10 +55,10 @@ void CQCompartment::init()
   mpMetaboliteTable->header()->hide();
 
   mExpressionValid = false;
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mInitialExpressionValid = false;
-  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
+  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
 }
 
 /*!
@@ -83,6 +83,7 @@ void CQCompartment::slotBtnNew()
   int i = 0;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
     {
       i++;
@@ -100,6 +101,7 @@ void CQCompartment::slotBtnDelete()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL) return;
 
   if (mpCompartment == NULL) return;
@@ -130,6 +132,7 @@ void CQCompartment::slotBtnDelete()
     {
       reacFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
           effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -146,6 +149,7 @@ void CQCompartment::slotBtnDelete()
     {
       metabFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
           effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -162,6 +166,7 @@ void CQCompartment::slotBtnDelete()
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
           effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -178,6 +183,7 @@ void CQCompartment::slotBtnDelete()
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
           effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -219,7 +225,8 @@ void CQCompartment::slotBtnDelete()
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -227,7 +234,7 @@ void CQCompartment::slotBtnDelete()
 
   switch (choice)
     {
-    case QMessageBox::Ok:                                 // Yes or Enter
+      case QMessageBox::Ok:                                 // Yes or Enter
       {
         unsigned C_INT32 Index =
           pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
@@ -246,8 +253,8 @@ void CQCompartment::slotBtnDelete()
         //TODO notify about metabs and reactions
         break;
       }
-    default:                                 // No or Escape
-      break;
+      default:                                 // No or Escape
+        break;
     }
 }
 
@@ -257,45 +264,64 @@ void CQCompartment::slotBtnDelete()
  */
 void CQCompartment::slotTypeChanged(int type)
 {
+  QString Units;
+
+  const CModel * pModel = NULL;
+
+  if (mpCompartment != NULL)
+    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
+
   switch ((CModelEntity::Status) mItemToType[type])
     {
-    case CModelEntity::FIXED:
-      gridLayout->remove(mpLblExpression);
+      case CModelEntity::FIXED:
+        mpLblExpression->hide();
+        mpExpressionEMW->hide();
 
-      mpLblExpression->hide();
-      mpExpressionEMW->hide();
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        break;
 
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-      break;
+      case CModelEntity::ASSIGNMENT:
 
-    case CModelEntity::ASSIGNMENT:
-      gridLayout->addWidget(mpLblExpression, 2, 0);
+        if (pModel)
+          Units = FROM_UTF8(pModel->getVolumeUnits());
 
-      mpLblExpression->show();
-      mpExpressionEMW->show();
+        if (!Units.isEmpty())
+          Units = " (" + Units + ")";
 
-      mpBoxUseInitialExpression->setEnabled(false);
-      slotInitialTypeChanged(false);
+        mpLblExpression->setText("Expression" + Units);
 
-      mpExpressionEMW->updateWidget();
-      break;
+        mpLblExpression->show();
+        mpExpressionEMW->show();
 
-    case CModelEntity::ODE:
-      gridLayout->addWidget(mpLblExpression, 2, 0);
+        mpBoxUseInitialExpression->setEnabled(false);
+        slotInitialTypeChanged(false);
 
-      mpLblExpression->show();
-      mpExpressionEMW->show();
+        mpExpressionEMW->updateWidget();
+        break;
 
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+      case CModelEntity::ODE:
 
-      mpExpressionEMW->updateWidget();
+        if (pModel)
+          Units = FROM_UTF8(pModel->getVolumeRateUnits());
 
-      break;
+        if (!Units.isEmpty())
+          Units = " (" + Units + ")";
 
-    default:
-      break;
+        mpLblExpression->setText("Expression" + Units);
+
+        mpLblExpression->show();
+        mpExpressionEMW->show();
+
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+
+        mpExpressionEMW->updateWidget();
+
+        break;
+
+      default:
+        break;
     }
 }
 
@@ -389,40 +415,53 @@ bool CQCompartment::update(ListViews::ObjectType objectType,
 
   switch (objectType)
     {
-    case ListViews::STATE:
-    case ListViews::MODEL:
-    case ListViews::METABOLITE:
-    case ListViews::COMPARTMENT:
-      load();
-      break;
+      case ListViews::STATE:
+      case ListViews::MODEL:
+      case ListViews::METABOLITE:
+      case ListViews::COMPARTMENT:
+        load();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return true;
 }
 
 void CQCompartment::load()
 {
   if (mpCompartment == NULL) return;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 
+  const CModel * pModel = NULL;
+
+  if (mpCompartment != NULL)
+    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
+
   // Update the labels to reflect the model units
-  mpLblInitialValue->setText("Initial Volume ("
-                             + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
-  mpLblInitialExpression->setText("Initial Expression ("
-                                  + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
+  QString ValueUnits;
 
-  mpLblExpression->setText("Expression ("
-                           + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getVolumeUnits());
 
-  mpLblVolume->setText("Volume ("
-                       + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName()) + ")");
+  if (!ValueUnits.isEmpty())
+    ValueUnits = " (" + ValueUnits + ")";
 
-  mpLblRate->setText("Rate ("
-                     + FROM_UTF8(pDataModel->getModel()->getVolumeUnitName())
-                     + "/" + FROM_UTF8(pDataModel->getModel()->getTimeUnitName()) + ")");
+  QString RateUnits;
+
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getVolumeRateUnits());
+
+  if (!RateUnits.isEmpty())
+    RateUnits = " (" + RateUnits + ")";
+
+  mpLblInitialValue->setText("Initial Volume" + ValueUnits);
+  mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+  mpLblVolume->setText("Volume" + ValueUnits);
+  mpLblRate->setText("Rate" + RateUnits);
 
   // Name
   mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));

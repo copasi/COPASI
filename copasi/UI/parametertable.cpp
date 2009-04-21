@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,6 +90,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   //first all the metabs in the model
   unsigned C_INT32 i, imax = model.getMetabolites().size();
+
   for (i = 0; i < imax; ++i)
     ret.push_back(CMetabNameInterface::getDisplayName(&model, *model.getMetabolites()[i]));
 
@@ -100,36 +101,45 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   lll = ri.getListOfMetabs(CFunctionParameter::SUBSTRATE);
   sourceItEnd = lll.end();
+
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
       searchItEnd = ret.end();
+
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
         if (*searchIt == *sourceIt)
           break;
+
       if (searchIt == searchItEnd) //that means new metab name is not in model yet
         ret.push_back(*sourceIt);
     }
 
   lll = ri.getListOfMetabs(CFunctionParameter::PRODUCT);
   sourceItEnd = lll.end();
+
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
       searchItEnd = ret.end();
+
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
         if (*searchIt == *sourceIt)
           break;
+
       if (searchIt == searchItEnd) //that means new metab name is not in model yet
         ret.push_back(*sourceIt);
     }
 
   lll = ri.getListOfMetabs(CFunctionParameter::MODIFIER);
   sourceItEnd = lll.end();
+
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
       searchItEnd = ret.end();
+
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
         if (*searchIt == *sourceIt)
           break;
+
       if (searchIt == searchItEnd) //that means new metab name is not in model yet
         ret.push_back(*sourceIt);
     }
@@ -146,6 +156,7 @@ QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & mode
 
   //all the global paramters  in the model
   unsigned C_INT32 i, imax = model.getNumModelValues();
+
   for (i = 0; i < imax; ++i)
     ret += FROM_UTF8(model.getModelValues()[i]->getObjectName());
 
@@ -161,6 +172,7 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
 
   //all the global paramters  in the model
   unsigned C_INT32 i, imax = model.getCompartments().size();
+
   for (i = 0; i < imax; ++i)
     ret += FROM_UTF8(model.getCompartments()[i]->getObjectName());
 
@@ -170,7 +182,9 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
 void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & model)
 {
   //first get the units strings
-  CFindDimensions units(ri.getFunction());
+  CFindDimensions units(ri.getFunction(), model.getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                        model.getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                        model.getTimeUnitEnum() == CModel::dimensionlessTime);
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
@@ -227,47 +241,53 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       switch (usage)
         {
-        case CFunctionParameter::SUBSTRATE:
-          color = subsColor;
-          break;
-        case CFunctionParameter::PRODUCT:
-          color = prodColor;
-          break;
-        case CFunctionParameter::MODIFIER:
-          color = modiColor;
-          break;
-        case CFunctionParameter::PARAMETER:
-          color = paraColor;
-          break;
-        case CFunctionParameter::VOLUME:
-          color = volColor;
-          break;
-        case CFunctionParameter::TIME:
-          color = timeColor;
-          break;
-        case CFunctionParameter::VARIABLE:
-          color = QColor(255, 20, 20);
-          break;
-        default :
-          qUsage = "unknown";
-          color = QColor(255, 20, 20);
+          case CFunctionParameter::SUBSTRATE:
+            color = subsColor;
+            break;
+          case CFunctionParameter::PRODUCT:
+            color = prodColor;
+            break;
+          case CFunctionParameter::MODIFIER:
+            color = modiColor;
+            break;
+          case CFunctionParameter::PARAMETER:
+            color = paraColor;
+            break;
+          case CFunctionParameter::VOLUME:
+            color = volColor;
+            break;
+          case CFunctionParameter::TIME:
+            color = timeColor;
+            break;
+          case CFunctionParameter::VARIABLE:
+            color = QColor(255, 20, 20);
+            break;
+          default :
+            qUsage = "unknown";
+            color = QColor(255, 20, 20);
         }
 
       // add first column
       item = new ColorTableItem(this, Q3TableItem::Never, color, qUsage);
+
       if (usage == CFunctionParameter::SUBSTRATE) item->setPixmap(*pSubstrate);
+
       if (usage == CFunctionParameter::PRODUCT) item->setPixmap(*pProduct);
+
       if (usage == CFunctionParameter::MODIFIER) item->setPixmap(*pModifier);
+
       setItem(rowCounter, 0, item);
 
       // add second column
       item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
+
       if ((usage != CFunctionParameter::PARAMETER)
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
         {
           if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
+
       setItem(rowCounter, 1, item);
 
       // add third column
@@ -280,6 +300,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         {
           item = new ColorTableItem(this, Q3TableItem::Never, color, "");
         }
+
       setItem(rowCounter, 2, item);
 
       // add units column
@@ -337,9 +358,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   combo->setCurrentItem("add species");
                   setItem(rowCounter, 3, combo);
                 }
+
               // add lines for vector parameters
               jmax = metabNames->size();
               setNumRows(numRows() + jmax);
+
               for (j = 0; j < jmax; ++j)
                 {
                   ++rowCounter;
@@ -389,6 +412,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       ++rowCounter;
     }
+
   adjustColumn(0);
   adjustColumn(2);
   adjustColumn(4);
@@ -399,6 +423,7 @@ void ParameterTable::handleCurrentCell(int row, int col)
   bool changed = false;
 
   int i, imax = mIndex2Line.size();
+
   for (i = 0; i < imax; ++i)
     if (mIndex2Line[i] - 1 == row)
       {
@@ -408,10 +433,12 @@ void ParameterTable::handleCurrentCell(int row, int col)
         break;
       }
 
-if (col > 3) {changed = true; col = 3;}
+  if (col > 3) {changed = true; col = 3;}
+
   if (col < 2) {changed = true; col = 2;}
 
   mOldRow = row;
+
   if (changed) setCurrentCell(row, col);
 
   //TODO: allow keyboard editing of col 2
@@ -421,6 +448,7 @@ void ParameterTable::slotCellChanged(int row, int col)
 {
   // find the index of the parameter
   C_INT32 i, imax = mIndex2Line.size();
+
   for (i = imax - 1; i >= 0; --i)
     if (mIndex2Line[i] <= row) break;
 
@@ -428,7 +456,9 @@ void ParameterTable::slotCellChanged(int row, int col)
   if (col == 2) //only checkboxes is this column
     {
       Q3CheckTableItem *tmp = dynamic_cast<Q3CheckTableItem*>(this->item(row, col));
+
       if (!tmp) return;
+
       /*if (tmp->isChecked())
         {
         }
@@ -454,14 +484,14 @@ ComboItem::ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl)
 }
 
 QWidget *ComboItem::createEditor() const
-  {
-    // create an editor - a combobox in our case
-    ((ComboItem*)this)->cb = new QComboBox(false, table()->viewport());
-    QObject::connect(cb, SIGNAL(activated(int)), table(), SLOT(doValueChanged()));
-    cb->insertStringList(mSL);
-    cb->setCurrentText(text());
-    return cb;
-  }
+{
+  // create an editor - a combobox in our case
+  ((ComboItem*)this)->cb = new QComboBox(false, table()->viewport());
+  QObject::connect(cb, SIGNAL(activated(int)), table(), SLOT(doValueChanged()));
+  cb->insertStringList(mSL);
+  cb->setCurrentText(text());
+  return cb;
+}
 
 void ComboItem::setContentFromEditor(QWidget *w)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:14 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,202 +49,206 @@
 #define COL_WEIGHT 6
 
 static const unsigned char copasi_data[] =
-  {
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
-    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
-    0x5c, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0xa5, 0x93, 0x4d, 0x4f, 0x13,
-    0x71, 0x10, 0x87, 0x9f, 0xff, 0xee, 0xd6, 0xd6, 0xb6, 0xdb, 0x52, 0x5a,
-    0x40, 0x81, 0x16, 0x85, 0x5a, 0x5e, 0x04, 0xa2, 0xa9, 0x26, 0x26, 0x98,
-    0x88, 0x89, 0x07, 0xaf, 0xc6, 0x0f, 0xe8, 0x47, 0xc0, 0x98, 0x78, 0x30,
-    0x6a, 0x0c, 0x97, 0x62, 0xc4, 0x82, 0xc8, 0x6b, 0x63, 0x43, 0xaa, 0xa0,
-    0xad, 0x5d, 0xe8, 0xf2, 0x62, 0x29, 0xdd, 0x6d, 0x3b, 0x1e, 0x10, 0x22,
-    0x41, 0xf4, 0xe0, 0x9c, 0x26, 0x33, 0xf3, 0xfc, 0x0e, 0xbf, 0x99, 0x51,
-    0x99, 0x4c, 0x86, 0xff, 0x09, 0xe3, 0x6f, 0x4d, 0x9f, 0xaf, 0x2c, 0xae,
-    0xab, 0x61, 0xdb, 0x65, 0xb6, 0xb6, 0x2a, 0x78, 0xbd, 0x06, 0x3d, 0x3d,
-    0x77, 0xd4, 0x3f, 0x05, 0x4c, 0xd3, 0x96, 0x4a, 0xe5, 0x80, 0x6c, 0xb6,
-    0x40, 0xa1, 0x50, 0xc7, 0xeb, 0x15, 0x62, 0x31, 0x61, 0x60, 0x20, 0x4a,
-    0x38, 0x5c, 0x91, 0xdd, 0xdd, 0x76, 0x75, 0xae, 0x80, 0xcf, 0x57, 0x97,
-    0xf9, 0xf9, 0x0d, 0xe6, 0xe6, 0x2c, 0x82, 0x41, 0xc5, 0xc4, 0x44, 0x37,
-    0x89, 0x44, 0x02, 0x91, 0x1f, 0x18, 0x86, 0xf0, 0x3b, 0x7c, 0x46, 0xc0,
-    0xb6, 0xbf, 0xca, 0xcc, 0xcc, 0x67, 0x2c, 0xeb, 0x80, 0x64, 0xd2, 0xc3,
-    0xe8, 0x68, 0x2f, 0xe1, 0xf0, 0x80, 0x72, 0x1c, 0x00, 0x3f, 0xae, 0xfb,
-    0x17, 0x0f, 0xf2, 0xf9, 0x9c, 0x64, 0xe7, 0x4a, 0x04, 0xfc, 0x1a, 0x93,
-    0x93, 0x7d, 0xf4, 0xf5, 0x5d, 0x53, 0x67, 0xc7, 0xcf, 0x11, 0xc8, 0xe7,
-    0xd7, 0x64, 0x61, 0xe1, 0x3b, 0x83, 0xa9, 0x20, 0xe9, 0xf4, 0x75, 0x9a,
-    0x4d, 0xdf, 0x29, 0x38, 0xac, 0xd6, 0x44, 0x73, 0x04, 0x6b, 0x7d, 0x95,
-    0xda, 0x4e, 0x85, 0x50, 0x7b, 0x94, 0xee, 0xe1, 0x34, 0x5f, 0x1b, 0x09,
-    0x65, 0x94, 0x4a, 0x39, 0xc9, 0x66, 0xbf, 0x91, 0x4c, 0x06, 0x19, 0x1b,
-    0xeb, 0x3a, 0x05, 0x07, 0xdc, 0x05, 0xd9, 0x2f, 0x16, 0x59, 0x5a, 0x5a,
-    0xa2, 0xb4, 0xd1, 0xc4, 0xda, 0x0f, 0x50, 0x6f, 0x18, 0xb4, 0x7b, 0x3e,
-    0x71, 0x75, 0x3e, 0xc7, 0xed, 0xc7, 0x0f, 0xc4, 0x98, 0x9d, 0x9d, 0xc7,
-    0x34, 0x03, 0xa4, 0x52, 0x09, 0x74, 0xbd, 0xf7, 0x04, 0xbe, 0xb0, 0xf1,
-    0x42, 0x16, 0x3f, 0xac, 0x91, 0x2b, 0x18, 0x78, 0xc2, 0x31, 0xe2, 0x63,
-    0x6d, 0xdc, 0x1c, 0xe9, 0xc7, 0x17, 0x08, 0x52, 0xdb, 0xb6, 0xc9, 0x3e,
-    0x7f, 0x49, 0x7e, 0xe6, 0x15, 0x86, 0x65, 0xd9, 0x8c, 0x8f, 0xb7, 0x61,
-    0x9a, 0xc9, 0x13, 0x58, 0xcf, 0x3f, 0x93, 0x77, 0xaf, 0x57, 0xd8, 0xb9,
-    0x18, 0x65, 0xf0, 0x5e, 0x92, 0xc1, 0xf1, 0x1b, 0xb8, 0x44, 0x14, 0x40,
-    0x03, 0xd0, 0xcd, 0x4d, 0xb1, 0x1b, 0x21, 0x76, 0xec, 0x6f, 0x67, 0xd7,
-    0x98, 0x08, 0x94, 0xe5, 0xcd, 0xdb, 0x45, 0x0e, 0x82, 0x31, 0x26, 0x1f,
-    0x3d, 0x04, 0x7f, 0x5c, 0xfd, 0x6e, 0xbe, 0x6e, 0xbd, 0x97, 0xcc, 0xf4,
-    0x3a, 0x5e, 0xd1, 0xb8, 0x9c, 0x7e, 0x88, 0xd1, 0xd1, 0x11, 0xa1, 0x54,
-    0x72, 0xb0, 0xac, 0x15, 0xe9, 0xe8, 0x18, 0x51, 0xf5, 0xba, 0xcd, 0x8f,
-    0xea, 0x01, 0xa1, 0x78, 0x83, 0x20, 0x45, 0xcc, 0xe6, 0xb6, 0xb4, 0x9a,
-    0x0d, 0xaa, 0xd5, 0x2a, 0x85, 0x8f, 0xab, 0x7c, 0x59, 0x2c, 0x72, 0xa8,
-    0x5d, 0x62, 0xfc, 0xfe, 0x18, 0x46, 0xf7, 0x5d, 0xa5, 0xa6, 0xa6, 0x9e,
-    0xc8, 0xf4, 0xf4, 0x17, 0xa2, 0x51, 0x97, 0x91, 0xe1, 0x5e, 0xa2, 0xa1,
-    0x06, 0x9b, 0xb3, 0x4f, 0x29, 0xe7, 0xca, 0x38, 0xc5, 0x0b, 0x38, 0x7b,
-    0xa0, 0xeb, 0x1a, 0x8e, 0x3f, 0x42, 0x35, 0x10, 0xa3, 0x2b, 0xd5, 0xc6,
-    0xc8, 0xad, 0x21, 0x22, 0xf1, 0xb4, 0x02, 0x50, 0x99, 0x4c, 0x86, 0x5a,
-    0xad, 0x20, 0xcb, 0xcb, 0x6b, 0x2c, 0x2f, 0x7b, 0xa8, 0x1f, 0x2a, 0xdc,
-    0x9a, 0x8d, 0xb3, 0x5f, 0xa7, 0xbe, 0x27, 0xe8, 0x2d, 0xa1, 0x27, 0x2e,
-    0xa4, 0x46, 0x4d, 0xae, 0x0c, 0xc5, 0x69, 0xef, 0x8a, 0xa0, 0x79, 0xfa,
-    0x4f, 0xfc, 0x52, 0xc7, 0xdf, 0xe8, 0xf1, 0x6c, 0x8a, 0xeb, 0x7a, 0x68,
-    0xb5, 0xe4, 0xa8, 0xd3, 0x82, 0x96, 0x80, 0xae, 0x0c, 0xfc, 0xc1, 0x10,
-    0xd2, 0xda, 0xe1, 0xd0, 0xe9, 0x3c, 0x73, 0x5c, 0x27, 0x26, 0xba, 0xee,
-    0xd1, 0x0a, 0x35, 0xed, 0x57, 0x41, 0x83, 0xe3, 0xb4, 0x76, 0x08, 0xd0,
-    0xf9, 0xc7, 0x4b, 0xfc, 0x09, 0x52, 0xcb, 0x07, 0x62, 0x36, 0x43, 0x92,
-    0xc6, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
-    0x82
-  };
+{
+  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
+  0x5c, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0xa5, 0x93, 0x4d, 0x4f, 0x13,
+  0x71, 0x10, 0x87, 0x9f, 0xff, 0xee, 0xd6, 0xd6, 0xb6, 0xdb, 0x52, 0x5a,
+  0x40, 0x81, 0x16, 0x85, 0x5a, 0x5e, 0x04, 0xa2, 0xa9, 0x26, 0x26, 0x98,
+  0x88, 0x89, 0x07, 0xaf, 0xc6, 0x0f, 0xe8, 0x47, 0xc0, 0x98, 0x78, 0x30,
+  0x6a, 0x0c, 0x97, 0x62, 0xc4, 0x82, 0xc8, 0x6b, 0x63, 0x43, 0xaa, 0xa0,
+  0xad, 0x5d, 0xe8, 0xf2, 0x62, 0x29, 0xdd, 0x6d, 0x3b, 0x1e, 0x10, 0x22,
+  0x41, 0xf4, 0xe0, 0x9c, 0x26, 0x33, 0xf3, 0xfc, 0x0e, 0xbf, 0x99, 0x51,
+  0x99, 0x4c, 0x86, 0xff, 0x09, 0xe3, 0x6f, 0x4d, 0x9f, 0xaf, 0x2c, 0xae,
+  0xab, 0x61, 0xdb, 0x65, 0xb6, 0xb6, 0x2a, 0x78, 0xbd, 0x06, 0x3d, 0x3d,
+  0x77, 0xd4, 0x3f, 0x05, 0x4c, 0xd3, 0x96, 0x4a, 0xe5, 0x80, 0x6c, 0xb6,
+  0x40, 0xa1, 0x50, 0xc7, 0xeb, 0x15, 0x62, 0x31, 0x61, 0x60, 0x20, 0x4a,
+  0x38, 0x5c, 0x91, 0xdd, 0xdd, 0x76, 0x75, 0xae, 0x80, 0xcf, 0x57, 0x97,
+  0xf9, 0xf9, 0x0d, 0xe6, 0xe6, 0x2c, 0x82, 0x41, 0xc5, 0xc4, 0x44, 0x37,
+  0x89, 0x44, 0x02, 0x91, 0x1f, 0x18, 0x86, 0xf0, 0x3b, 0x7c, 0x46, 0xc0,
+  0xb6, 0xbf, 0xca, 0xcc, 0xcc, 0x67, 0x2c, 0xeb, 0x80, 0x64, 0xd2, 0xc3,
+  0xe8, 0x68, 0x2f, 0xe1, 0xf0, 0x80, 0x72, 0x1c, 0x00, 0x3f, 0xae, 0xfb,
+  0x17, 0x0f, 0xf2, 0xf9, 0x9c, 0x64, 0xe7, 0x4a, 0x04, 0xfc, 0x1a, 0x93,
+  0x93, 0x7d, 0xf4, 0xf5, 0x5d, 0x53, 0x67, 0xc7, 0xcf, 0x11, 0xc8, 0xe7,
+  0xd7, 0x64, 0x61, 0xe1, 0x3b, 0x83, 0xa9, 0x20, 0xe9, 0xf4, 0x75, 0x9a,
+  0x4d, 0xdf, 0x29, 0x38, 0xac, 0xd6, 0x44, 0x73, 0x04, 0x6b, 0x7d, 0x95,
+  0xda, 0x4e, 0x85, 0x50, 0x7b, 0x94, 0xee, 0xe1, 0x34, 0x5f, 0x1b, 0x09,
+  0x65, 0x94, 0x4a, 0x39, 0xc9, 0x66, 0xbf, 0x91, 0x4c, 0x06, 0x19, 0x1b,
+  0xeb, 0x3a, 0x05, 0x07, 0xdc, 0x05, 0xd9, 0x2f, 0x16, 0x59, 0x5a, 0x5a,
+  0xa2, 0xb4, 0xd1, 0xc4, 0xda, 0x0f, 0x50, 0x6f, 0x18, 0xb4, 0x7b, 0x3e,
+  0x71, 0x75, 0x3e, 0xc7, 0xed, 0xc7, 0x0f, 0xc4, 0x98, 0x9d, 0x9d, 0xc7,
+  0x34, 0x03, 0xa4, 0x52, 0x09, 0x74, 0xbd, 0xf7, 0x04, 0xbe, 0xb0, 0xf1,
+  0x42, 0x16, 0x3f, 0xac, 0x91, 0x2b, 0x18, 0x78, 0xc2, 0x31, 0xe2, 0x63,
+  0x6d, 0xdc, 0x1c, 0xe9, 0xc7, 0x17, 0x08, 0x52, 0xdb, 0xb6, 0xc9, 0x3e,
+  0x7f, 0x49, 0x7e, 0xe6, 0x15, 0x86, 0x65, 0xd9, 0x8c, 0x8f, 0xb7, 0x61,
+  0x9a, 0xc9, 0x13, 0x58, 0xcf, 0x3f, 0x93, 0x77, 0xaf, 0x57, 0xd8, 0xb9,
+  0x18, 0x65, 0xf0, 0x5e, 0x92, 0xc1, 0xf1, 0x1b, 0xb8, 0x44, 0x14, 0x40,
+  0x03, 0xd0, 0xcd, 0x4d, 0xb1, 0x1b, 0x21, 0x76, 0xec, 0x6f, 0x67, 0xd7,
+  0x98, 0x08, 0x94, 0xe5, 0xcd, 0xdb, 0x45, 0x0e, 0x82, 0x31, 0x26, 0x1f,
+  0x3d, 0x04, 0x7f, 0x5c, 0xfd, 0x6e, 0xbe, 0x6e, 0xbd, 0x97, 0xcc, 0xf4,
+  0x3a, 0x5e, 0xd1, 0xb8, 0x9c, 0x7e, 0x88, 0xd1, 0xd1, 0x11, 0xa1, 0x54,
+  0x72, 0xb0, 0xac, 0x15, 0xe9, 0xe8, 0x18, 0x51, 0xf5, 0xba, 0xcd, 0x8f,
+  0xea, 0x01, 0xa1, 0x78, 0x83, 0x20, 0x45, 0xcc, 0xe6, 0xb6, 0xb4, 0x9a,
+  0x0d, 0xaa, 0xd5, 0x2a, 0x85, 0x8f, 0xab, 0x7c, 0x59, 0x2c, 0x72, 0xa8,
+  0x5d, 0x62, 0xfc, 0xfe, 0x18, 0x46, 0xf7, 0x5d, 0xa5, 0xa6, 0xa6, 0x9e,
+  0xc8, 0xf4, 0xf4, 0x17, 0xa2, 0x51, 0x97, 0x91, 0xe1, 0x5e, 0xa2, 0xa1,
+  0x06, 0x9b, 0xb3, 0x4f, 0x29, 0xe7, 0xca, 0x38, 0xc5, 0x0b, 0x38, 0x7b,
+  0xa0, 0xeb, 0x1a, 0x8e, 0x3f, 0x42, 0x35, 0x10, 0xa3, 0x2b, 0xd5, 0xc6,
+  0xc8, 0xad, 0x21, 0x22, 0xf1, 0xb4, 0x02, 0x50, 0x99, 0x4c, 0x86, 0x5a,
+  0xad, 0x20, 0xcb, 0xcb, 0x6b, 0x2c, 0x2f, 0x7b, 0xa8, 0x1f, 0x2a, 0xdc,
+  0x9a, 0x8d, 0xb3, 0x5f, 0xa7, 0xbe, 0x27, 0xe8, 0x2d, 0xa1, 0x27, 0x2e,
+  0xa4, 0x46, 0x4d, 0xae, 0x0c, 0xc5, 0x69, 0xef, 0x8a, 0xa0, 0x79, 0xfa,
+  0x4f, 0xfc, 0x52, 0xc7, 0xdf, 0xe8, 0xf1, 0x6c, 0x8a, 0xeb, 0x7a, 0x68,
+  0xb5, 0xe4, 0xa8, 0xd3, 0x82, 0x96, 0x80, 0xae, 0x0c, 0xfc, 0xc1, 0x10,
+  0xd2, 0xda, 0xe1, 0xd0, 0xe9, 0x3c, 0x73, 0x5c, 0x27, 0x26, 0xba, 0xee,
+  0xd1, 0x0a, 0x35, 0xed, 0x57, 0x41, 0x83, 0xe3, 0xb4, 0x76, 0x08, 0xd0,
+  0xf9, 0xc7, 0x4b, 0xfc, 0x09, 0x52, 0xcb, 0x07, 0x62, 0x36, 0x43, 0x92,
+  0xc6, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
+  0x82
+};
 
 class CQExperimentDataValidator: public CQValidatorNotEmpty
+{
+public:
+  enum Type
   {
-  public:
-    enum Type
-    {
-      Name = 0,
-      FirstRow,
-      LastRow,
-      HeaderRow
-    };
+    Name = 0,
+    FirstRow,
+    LastRow,
+    HeaderRow
+  };
 
-    // Operations
-  public:
-    CQExperimentDataValidator(QLineEdit * parent,
-                              const char * name,
-                              CQExperimentData * pContext,
-                              const Type & type):
-        CQValidatorNotEmpty(parent, name),
-        mpIntValidator(new QIntValidator(1, LONG_MAX, parent)),
-        mpContext(pContext),
-        mType(type)
-    {}
+  // Operations
+public:
+  CQExperimentDataValidator(QLineEdit * parent,
+                            const char * name,
+                            CQExperimentData * pContext,
+                            const Type & type):
+      CQValidatorNotEmpty(parent, name),
+      mpIntValidator(new QIntValidator(1, LONG_MAX, parent)),
+      mpContext(pContext),
+      mType(type)
+  {}
 
-    virtual State validate(QString & input, int & pos) const
+  virtual State validate(QString & input, int & pos) const
+  {
+    if (mpContext->mShown == C_INVALID_INDEX) return Acceptable;
+
+    if (mType == Name)
       {
-        if (mpContext->mShown == C_INVALID_INDEX) return Acceptable;
-
-        if (mType == Name)
+        if (input == "All")
           {
-            if (input == "All")
-              {
-                setColor(Invalid);
-                return Intermediate;
-              }
-            if (mpContext->mpExperimentSetCopy->getParameter(TO_UTF8(input)))
-              {
-                setColor(Invalid);
-                return Intermediate;
-              }
-          }
-        else
-          {
-            if (mpIntValidator->validate(input, pos) != Acceptable)
-              {
-                setColor(Invalid);
-                return Intermediate;
-              }
-
-            unsigned C_INT32 First, Last;
-
-            switch (mType)
-              {
-              case FirstRow:
-                if (!mpContext->mpFileInfo->validateFirst(mpContext->mShown, input.toULong()))
-                  {
-                    unsigned C_INT32 NewFirst = input.toULong();
-
-                    mpContext->mpFileInfo->getFirstUnusedSection(First, Last);
-
-                    while (NewFirst > Last)
-                      mpContext->mpFileInfo->getNextUnusedSection(First, Last);
-
-                    if (First <= NewFirst && NewFirst <= Last)
-                      {
-                        if (First > mpContext->mpExperiment->getLastRow())
-                          {
-                            mpContext->mpExperiment->setLastRow(Last);
-                            mpContext->mpExperiment->setFirstRow(First);
-                          }
-                        else
-                          {
-                            mpContext->mpExperiment->setFirstRow(First);
-                            mpContext->mpExperiment->setLastRow(Last);
-                          }
-
-                        mpContext->syncExperiments();
-
-                        mpContext->mpEditFirst->setText(QString::number(First));
-                        mpContext->mpEditLast->setText(QString::number(Last));
-                        mpContext->mpValidatorLast->revalidate();
-
-                        return validate(input, pos);
-                      }
-
-                    setColor(Invalid);
-                    return Intermediate;
-                  }
-
-                mpContext->mpExperiment->setFirstRow(input.toULong());
-                mpContext->mpFileInfo->sync();
-                mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
-                break;
-
-              case LastRow:
-                if (!mpContext->mpFileInfo->validateLast(mpContext->mShown, input.toULong()))
-                  {
-                    setColor(Invalid);
-                    return Intermediate;
-                  }
-
-                mpContext->mpExperiment->setLastRow(input.toULong());
-                mpContext->mpFileInfo->sync();
-                mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
-                break;
-
-              case HeaderRow:
-                if (!mpContext->mpFileInfo->validateHeader(mpContext->mShown, input.toULong()))
-                  {
-                    setColor(Invalid);
-                    return Intermediate;
-                  }
-
-                mpContext->mpExperiment->setHeaderRow(input.toULong());
-                break;
-
-              default:
-                break;
-              }
+            setColor(Invalid);
+            return Intermediate;
           }
 
-        return CQValidatorNotEmpty::validate(input, pos);
+        if (mpContext->mpExperimentSetCopy->getParameter(TO_UTF8(input)))
+          {
+            setColor(Invalid);
+            return Intermediate;
+          }
+      }
+    else
+      {
+        if (mpIntValidator->validate(input, pos) != Acceptable)
+          {
+            setColor(Invalid);
+            return Intermediate;
+          }
+
+        unsigned C_INT32 First, Last;
+
+        switch (mType)
+          {
+            case FirstRow:
+
+              if (!mpContext->mpFileInfo->validateFirst(mpContext->mShown, input.toULong()))
+                {
+                  unsigned C_INT32 NewFirst = input.toULong();
+
+                  mpContext->mpFileInfo->getFirstUnusedSection(First, Last);
+
+                  while (NewFirst > Last)
+                    mpContext->mpFileInfo->getNextUnusedSection(First, Last);
+
+                  if (First <= NewFirst && NewFirst <= Last)
+                    {
+                      if (First > mpContext->mpExperiment->getLastRow())
+                        {
+                          mpContext->mpExperiment->setLastRow(Last);
+                          mpContext->mpExperiment->setFirstRow(First);
+                        }
+                      else
+                        {
+                          mpContext->mpExperiment->setFirstRow(First);
+                          mpContext->mpExperiment->setLastRow(Last);
+                        }
+
+                      mpContext->syncExperiments();
+
+                      mpContext->mpEditFirst->setText(QString::number(First));
+                      mpContext->mpEditLast->setText(QString::number(Last));
+                      mpContext->mpValidatorLast->revalidate();
+
+                      return validate(input, pos);
+                    }
+
+                  setColor(Invalid);
+                  return Intermediate;
+                }
+
+              mpContext->mpExperiment->setFirstRow(input.toULong());
+              mpContext->mpFileInfo->sync();
+              mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
+              break;
+
+            case LastRow:
+
+              if (!mpContext->mpFileInfo->validateLast(mpContext->mShown, input.toULong()))
+                {
+                  setColor(Invalid);
+                  return Intermediate;
+                }
+
+              mpContext->mpExperiment->setLastRow(input.toULong());
+              mpContext->mpFileInfo->sync();
+              mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
+              break;
+
+            case HeaderRow:
+
+              if (!mpContext->mpFileInfo->validateHeader(mpContext->mShown, input.toULong()))
+                {
+                  setColor(Invalid);
+                  return Intermediate;
+                }
+
+              mpContext->mpExperiment->setHeaderRow(input.toULong());
+              break;
+
+            default:
+              break;
+          }
       }
 
-    // virtual State revalidate();
+    return CQValidatorNotEmpty::validate(input, pos);
+  }
 
-    // virtual void forceAcceptance(const QString & input) const;
+  // virtual State revalidate();
 
-    // virtual void saved() const;
+  // virtual void forceAcceptance(const QString & input) const;
 
-    // Attributes
-  private:
-    QIntValidator * mpIntValidator;
+  // virtual void saved() const;
 
-    CQExperimentData * mpContext;
+  // Attributes
+private:
+  QIntValidator * mpIntValidator;
 
-    Type mType;
-  };
+  CQExperimentData * mpContext;
+
+  Type mType;
+};
 
 void CQExperimentData::slotRevert()
 {
@@ -328,6 +332,7 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
   saveTable(mpExperiment);
 
   unsigned C_INT32 i, imax = mpTable->numRows();
+
   if (isSteadyState)
     for (i = 0; i < imax; i++)
       {
@@ -386,6 +391,7 @@ void CQExperimentData::slotExperimentAdd()
 void CQExperimentData::slotExperimentChanged(Q3ListBoxItem * pItem)
 {
   std::string Name;
+
   if (pItem)
     Name = TO_UTF8(pItem->text());
 
@@ -418,6 +424,7 @@ void CQExperimentData::slotExperimentDelete()
 {
   // Get info from current selection
   unsigned C_INT32 index = mpBoxExperiment->currentItem();
+
   if (index == C_INVALID_INDEX) return;
 
   std::string key =
@@ -485,12 +492,14 @@ void CQExperimentData::slotFileAdd()
               mpBoxFile->setSelected(i, true);
               break;
             }
+
         return;
       }
 
   std::string FileName = CDirEntry::fileName(TO_UTF8(File));
 
   i = 0;
+
   while (mFileMap.find(FileName) != mFileMap.end())
     FileName = StringPrint("%s_%d", CDirEntry::fileName(TO_UTF8(File)).c_str(), i++);
 
@@ -500,6 +509,7 @@ void CQExperimentData::slotFileAdd()
   mpBoxFile->setSelected(mpBoxFile->count() - 1, true);
 
   unsigned C_INT32 First, Last;
+
   if (mpFileInfo->getFirstUnusedSection(First, Last))
     {
       do
@@ -550,6 +560,7 @@ void CQExperimentData::slotFileDelete()
 {
   // Get info from current selection
   unsigned C_INT32 index = mpBoxFile->currentItem();
+
   if (index == C_INVALID_INDEX) return;
 
   std::string FileName = mFileMap[TO_UTF8(mpBoxFile->item(index)->text())];
@@ -571,6 +582,7 @@ void CQExperimentData::slotFileDelete()
 
   // delete all experiments in current file.
   unsigned C_INT32 i = mpExperimentSetCopy->getExperimentCount() - 1;
+
   for (; i < C_INVALID_INDEX; i--)
     if (mpExperimentSetCopy->getExperiment(i)->getFileName() == FileName)
       mpExperimentSetCopy->removeExperiment(i);
@@ -590,10 +602,12 @@ void CQExperimentData::slotOK()
   CExperiment * pExperiment;
 
   unsigned C_INT32 i = mpExperimentSet->getExperimentCount() - 1;
+
   for (; i < C_INVALID_INDEX; i--)
     {
       pExperiment =
         dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+
       if (pExperiment)
         {
           *mpExperimentSet->getExperiment(i) = *pExperiment;
@@ -609,6 +623,7 @@ void CQExperimentData::slotOK()
     mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
 
 #ifdef COPASI_CROSSVALIDATION
+
   if (mCrossValidation)
     {
       CCrossValidationSet * pSet = static_cast< CCrossValidationSet * >(mpExperimentSet);
@@ -623,6 +638,7 @@ void CQExperimentData::slotOK()
           pSet->setThreshold(mpEditThreshold->text().toUInt());
         }
     }
+
 #endif // COPASI_CROSSVALIDATION
 
   pdelete(mpExperimentSetCopy);
@@ -648,7 +664,6 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
       mpEditWeight->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
       mpEditThreshold->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
 #endif // COPASI_CROSSVALIDATION
-
     }
   else
     {
@@ -671,8 +686,10 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
   mpExperimentSetCopy = new CExperimentSet(*pExperimentSet);
 
 #ifdef COPASI_CROSSVALIDATION
+
   if (mCrossValidation)
     mpExperimentSetCopy = elevate< CCrossValidationSet, CExperimentSet >(mpExperimentSetCopy);
+
 #endif // COPASI_CROSSVALIDATION
 
   pdelete(mpFileInfo);
@@ -698,6 +715,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
   i = 0;
 
   mFileMap.clear();
+
   for (; it != end; ++it)
     {
       FileName = CDirEntry::fileName(*it);
@@ -735,6 +753,7 @@ void CQExperimentData::init()
   mpTable->hideColumn(COL_OBJECT_HIDDEN);
 
   const std::string * pWeightMethod = CExperiment::WeightMethodName;
+
   while (*pWeightMethod != "")
     mpBoxWeightMethod->insertItem(FROM_UTF8(*pWeightMethod++));
 
@@ -788,6 +807,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   else
     {
       mpEditName->setText(FROM_UTF8(pExperiment->getObjectName()));
+
       if (pExperiment->getSeparator() == "\t")
         {
           mpEditSeparator->setText("");
@@ -854,6 +874,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
 bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & full)
 {
   if (!pExperiment) return false;
+
   bool success = true;
 
   unsigned C_INT32 Next =
@@ -891,18 +912,21 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
 
   value = mpEditFirst->text();
   pos = value.length();
+
   if (full &&
       mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
     pExperiment->setFirstRow(value.toULong());
 
   value = mpEditLast->text();
   pos = value.length();
+
   if (full &&
       mpValidatorLast->validate(value, pos) == QValidator::Acceptable)
     pExperiment->setLastRow(value.toULong());
 
   value = mpEditHeader->text();
   pos = value.length();
+
   if (mpCheckHeader->isChecked() &&
       mpValidatorHeader->validate(value, pos) == QValidator::Acceptable)
     pExperiment->setHeaderRow(value.toULong());
@@ -938,6 +962,7 @@ void CQExperimentData::syncExperiments()
 {
   std::string Current = TO_UTF8(mpBoxExperiment->currentText());
   std::string Shown;
+
   if (mShown != C_INVALID_INDEX)
     Shown = TO_UTF8(mpBoxExperiment->item(mShown)->text());
 
@@ -950,9 +975,11 @@ void CQExperimentData::syncExperiments()
   std::vector< std::string >::const_iterator end = ExperimentNames.end();
 
   unsigned C_INT32 i;
+
   for (i = 0; it != end; ++it, i++)
     {
       mpBoxExperiment->insertItem(FROM_UTF8((*it)));
+
       if (*it == Current)
         {
           disconnect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
@@ -961,6 +988,7 @@ void CQExperimentData::syncExperiments()
           connect(mpBoxExperiment, SIGNAL(currentChanged(Q3ListBoxItem*)),
                   this, SLOT(slotExperimentChanged(Q3ListBoxItem*)));
         }
+
       if (*it == Shown) mShown = i;
     }
 
@@ -974,17 +1002,22 @@ void CQExperimentData::slotModelObject(int row)
 {
   // :TODO: Implement object browser and update of column 'Model Object'.
 
-  CCopasiSimpleSelectionTree::SelectionFlag Flag;
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
   CExperiment::Type Type =
     static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(row, COL_TYPE))->currentItem());
 
   if (Type == CExperiment::independent)
-    Flag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
+    Classes =
+      CCopasiSimpleSelectionTree::InitialTime |
+      CCopasiSimpleSelectionTree::Parameters;
   else
-    Flag = CCopasiSimpleSelectionTree::TRANSIENT_VALUE;
+    Classes =
+      CCopasiSimpleSelectionTree::Variables |
+      CCopasiSimpleSelectionTree::ObservedValues |
+      CCopasiSimpleSelectionTree::ObservedConstants;
 
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, Flag);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -1021,6 +1054,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
   QStringList ColumnTypes;
   const std::string * pTmp = CExperiment::TypeName;
+
   while (*pTmp != "")
     {
       ColumnTypes.push_back(FROM_UTF8(*pTmp));
@@ -1050,13 +1084,16 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       pComboBox = new QComboBox(mpTable);
       pComboBox->insertStringList(ColumnTypes);
       pComboBox->setEditable(false);
+
       if (guess && TimeRow == C_INVALID_INDEX &&
           mpBtnTimeCourse->isChecked() &&
           mpTable->text(i, COL_NAME).contains("time", false))
         ObjectMap.setRole(i, CExperiment::time);
 
       Type = ObjectMap.getRole(i);
+
       if (Type == CExperiment::time) TimeRow = i;
+
       pComboBox->setCurrentItem(Type);
 
       mpComboMap->setMapping(pComboBox, i);
@@ -1085,9 +1122,11 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
+
       if (ObjectMap.getObjectCN(i) != "")
         {
           pObject = pDataModel->getObject(ObjectMap.getObjectCN(i));
+
           if (pObject)
             mpTable->setText(i, COL_OBJECT, FROM_UTF8(pObject->getObjectDisplayName()));
           else
@@ -1145,50 +1184,58 @@ void CQExperimentData::slotTypeChanged(int row)
 
   switch (NewType)
     {
-    case CExperiment::ignore:
-      BtnEnabled = false;
-      break;
+      case CExperiment::ignore:
+        BtnEnabled = false;
+        break;
 
-    case CExperiment::independent:
-      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::INITIAL_VALUE,
-                                              pDataModel->getObject(CN)))
-        slotModelObject(row);
-      BtnEnabled = true;
-      break;
+      case CExperiment::independent:
 
-    case CExperiment::dependent:
-      if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::TRANSIENT_VALUE,
-                                              pDataModel->getObject(CN)))
-        slotModelObject(row);
-      BtnEnabled = true;
-      break;
+        if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::InitialTime |
+                                                CCopasiSimpleSelectionTree::Parameters,
+                                                pDataModel->getObject(CN)))
+          slotModelObject(row);
 
-    case CExperiment::time:
-      BtnEnabled = false;
-      // Remove Time from combo items
-      for (i = 0; i < imax; i++)
-        if (i != row)
-          static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->removeItem(CExperiment::time);
+        BtnEnabled = true;
+        break;
 
-      break;
+      case CExperiment::dependent:
+
+        if (!CCopasiSimpleSelectionTree::filter(CCopasiSimpleSelectionTree::Variables |
+                                                CCopasiSimpleSelectionTree::ObservedValues,
+                                                pDataModel->getObject(CN)))
+          slotModelObject(row);
+
+        BtnEnabled = true;
+        break;
+
+      case CExperiment::time:
+        BtnEnabled = false;
+
+        // Remove Time from combo items
+        for (i = 0; i < imax; i++)
+          if (i != row)
+            static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->removeItem(CExperiment::time);
+
+        break;
     }
 
   static_cast<QToolButton *>(mpTable->cellWidget(row, COL_BTN))->setEnabled(BtnEnabled);
 
   switch (OldType)
     {
-    case CExperiment::ignore:
-    case CExperiment::independent:
-    case CExperiment::dependent:
-      break;
+      case CExperiment::ignore:
+      case CExperiment::independent:
+      case CExperiment::dependent:
+        break;
 
-    case CExperiment::time:
-      // Add time to combo items
-      for (i = 0; i < imax; i++)
-        if (i != row)
-          static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->insertItem(FROM_UTF8(CExperiment::TypeName[CExperiment::time]));
+      case CExperiment::time:
 
-      break;
+        // Add time to combo items
+        for (i = 0; i < imax; i++)
+          if (i != row)
+            static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->insertItem(FROM_UTF8(CExperiment::TypeName[CExperiment::time]));
+
+        break;
     }
 
   mpTable->setText(row, COL_TYPE_HIDDEN, QString::number(NewType));
@@ -1211,6 +1258,7 @@ void CQExperimentData::slotTypeChanged(int row)
       // We can not simply use loadTable as this would destroy the two signal maps
       // for the buttons and comboboxes leading to crashes in Qt.
       CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+
       for (i = 0; i < imax; i++)
         {
           // COL_WEIGHT
@@ -1267,6 +1315,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
     {
       CExperiment::Type Type =
         static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+
       if (Type == CExperiment::time)
         FoundTime = true;
 
@@ -1367,8 +1416,11 @@ bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
   CExperiment * pPrevious = mpExperimentSetCopy->getExperiment(Previous);
 
   if (pExperiment->getSeparator() != pPrevious->getSeparator()) return false;
+
   if (pExperiment->getHeaderRow() != pPrevious->getHeaderRow()) return false;
+
   if (pExperiment->getExperimentType() != pPrevious->getExperimentType()) return false;
+
   if (mpExperiment != pExperiment)
     {
       if (pExperiment->getWeightMethod() != (CExperiment::WeightMethod) mOldWeightMethod) return false;
@@ -1408,9 +1460,13 @@ void CQExperimentData::enableEdit(const bool & enable)
     {
       mpBtnSteadystate->setEnabled(true);
       mpBtnTimeCourse->setEnabled(true);
+
       if (mpCheckHeader->isChecked()) mpEditHeader->setEnabled(true);
+
       mpCheckHeader->setEnabled(true);
+
       if (!mpCheckTab->isChecked()) mpEditSeparator->setEnabled(true);
+
       mpCheckTab->setEnabled(true);
       mpTable->setEnabled(true);
       mpBoxWeightMethod->setEnabled(true);
@@ -1420,6 +1476,7 @@ void CQExperimentData::enableEdit(const bool & enable)
       if (mpExperiment)
         {
           unsigned C_INT32 i, imax = mpTable->numRows();
+
           for (i = 0; i < imax; i++)
             {
               mpTable->cellWidget(i, COL_TYPE)->setEnabled(true);

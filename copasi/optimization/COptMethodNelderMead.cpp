@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2009/04/21 16:18:08 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -215,17 +220,17 @@ bool COptMethodNelderMead::optimise()
 
       switch (OptItem.checkConstraint())
         {
-        case - 1:
-          mCurrent[i] = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mCurrent[i] = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mCurrent[i] = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mCurrent[i] = *OptItem.getUpperBoundValue();
+            break;
 
-        case 0:
-          mCurrent[i] = OptItem.getStartValue();
-          break;
+          case 0:
+            mCurrent[i] = OptItem.getStartValue();
+            break;
         }
 
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
@@ -257,6 +262,7 @@ First:
   /* ---- Construct the initial simplex. ---- */
   for (i = 0; i < mVariableSize; ++i)
     mSimplex[i][mVariableSize] = mCurrent[i];
+
   mValue[mVariableSize] = mEvaluationValue;
 
   for (j = 0; j < mVariableSize && mContinue; ++j)
@@ -310,6 +316,7 @@ First:
           yhi = ylo;
           iBest = 0;
           iWorst = 0;
+
           for (i = 1; i < np1; ++i)
             {
               if (mValue[i] < ylo)     /* -- find the lowest value of the objective  */
@@ -317,6 +324,7 @@ First:
                   ylo = mValue[i];
                   iBest = i;
                 }
+
               if (mValue[i] > yhi)    /* -- find the highest value of the objective -- */
                 {
                   yhi = mValue[i];
@@ -330,6 +338,7 @@ First:
           for (i = 0; i < mVariableSize; ++i)
             {/* -- calculate the average in each dimension -- */
               z = 0.0;
+
               for (j = 0; j < np1; ++j)
                 z += mSimplex[i][j];
 
@@ -356,6 +365,7 @@ First:
 
               for (i = 0; i < mVariableSize; ++i)
                 mSimplex[i][iWorst] = mCurrent[i];
+
               mValue[iWorst] = ylo;
 
               // and store that value
@@ -386,6 +396,7 @@ First:
 
                   for (i = 0; i < mVariableSize; ++i)
                     mSimplex[i][iWorst] = mCurrent[i];
+
                   mValue[iWorst] = ylo;
 
                   // and store that value
@@ -409,6 +420,7 @@ First:
                  if there are many > ystar then retain the reflection as is.  */
 
               unsigned C_INT32 L = 0;
+
               for (i = 0; i < np1; ++i)
                 if (mValue[i] > mEvaluationValue)
                   L++;
@@ -448,6 +460,7 @@ First:
                     {/* ---- retain contraction ---- */
                       for (i = 0; i < mVariableSize; ++i)
                         mSimplex[i][iWorst] = mCurrent[i];
+
                       mValue[iWorst] = mEvaluationValue;
                     }
                   else
@@ -464,6 +477,7 @@ First:
 
                               //enforce_bounds(&xmin[i], i);  /* make sure it is inside */
                             }
+
                           mValue[j] = evaluate();
 
                           if (mEvaluationValue < mBestValue)
@@ -485,6 +499,7 @@ First:
                      this new point.  A change is better than nothing. ---- */
                   for (i = 0; i < mVariableSize; ++i)
                     mSimplex[i][iWorst] = mCurrent[i];
+
                   mValue[iWorst] = mEvaluationValue;
                 }
             }   /* if Reflok then else .. */
@@ -494,6 +509,7 @@ First:
       //  quit = (icount > kcount);
       // are we above the iteration limit?
       ++mIteration;
+
       // signal another iteration
       if (mpCallBack)
         mContinue &= mpCallBack->progress(mhIteration);
@@ -532,6 +548,7 @@ First:
   /* ---- Check around the currently selected point to see if it is a local minimum.  */
   small = fabs(mBestValue) * reltol + abstol;
   mCurrent = mpOptProblem->getSolutionVariables();
+
   for (i = 0; i < mVariableSize; ++i)
     (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
 
@@ -542,12 +559,14 @@ First:
       /* -- check along one direction -- */
       (*(*mpSetCalculateVariable)[i])(mCurrent[i] + delta);
       evaluate();
+
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- now check the other way -- */
       (*(*mpSetCalculateVariable)[i])(mCurrent[i] - delta);
       evaluate();
+
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
@@ -611,6 +630,7 @@ bool COptMethodNelderMead::initialize()
   mScale = * getValue("Scale").pUDOUBLE;
 
   mIteration = 0;
+
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Current Iteration",
@@ -627,7 +647,7 @@ bool COptMethodNelderMead::initialize()
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);
 
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
 
   mContinue = true;
 

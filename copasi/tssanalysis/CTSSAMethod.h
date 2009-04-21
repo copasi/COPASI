@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: isurovts $
-//   $Date: 2008/09/25 12:12:01 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,445 +41,445 @@ class CModel;
 class CState;
 
 class CTSSAMethod : public CCopasiMethod
+{
+protected:
+  /**
+   *  A pointer to the current state. This is set from outside
+   *  with the setState() method and never changed anywhere else.
+   *  It´s used to report the results
+   *  to the calling TSSATask
+   */
+  CState * mpCurrentState;
+
+  /**
+   *  A pointer to the time scale separation analysis problem.
+   */
+  CTSSAProblem * mpProblem;
+
+  // Operations
+private:
+  /**
+   * Default constructor.
+   */
+  CTSSAMethod();
+
+protected:
+  /**
+   * Default constructor.
+   * @param const CCopasiMethod::SubType & subType
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CTSSAMethod(const CCopasiMethod::SubType & subType,
+              const CCopasiContainer * pParent = NULL);
+
+public:
+
+  /**
+   * Create a time scale separation analysis method for a special problem.
+   * Note: the returned object has to be released after use with delete
+   * a problem is also passed so that the method has a chance to choose an
+   * appropriate simulation method.
+   */
+  static CTSSAMethod *
+  createTSSAMethod(CCopasiMethod::SubType subType
+                   = CCopasiMethod::unset,
+                   CTSSAProblem * pProblem = NULL);
+
+  /**
+   * Copy constructor.
+   * @param "const CTSSAMethod &" src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CTSSAMethod(const CTSSAMethod & src,
+              const CCopasiContainer * pParent = NULL);
+
+  /**
+   *  Destructor.
+   */
+  ~CTSSAMethod();
+
+  /**
+   *  Set a pointer to the current state.
+   *  This method is used by CTSSATask::process()
+   *  The results of the simulation are passed via this CState variable
+   *  @param "CState *" currentState
+   */
+  void setCurrentState(CState * currentState);
+
+  /**
+   *  Set a pointer to the problem.
+   *  This method is used by CTSSA
+   *  @param "CTSSAProblem *" problem
+   */
+  void setProblem(CTSSAProblem * problem);
+
+  /**
+   *  This instructs the method to calculate a time step of deltaT
+   *  starting with the current state, i.e., the result of the previous
+   *  step.
+   *  The new state (after deltaT) is expected in the current state.
+   *  The return value is the actual timestep taken.
+   *  @param "const double &" deltaT
+   */
+  virtual void step(const double & deltaT);
+
+  /**
+   *  This instructs the method to prepare for integration
+   *  starting with the initialState given.
+   *  @param "const CState *" initialState
+   */
+  virtual void start(const CState * initialState);
+
+  /**
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
+  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  /**
+   *  Intialize the method parameter
+   */
+  virtual void initializeParameter();
+
+  /************ The following concerns the both ILDM Methods *******************************/
+
+protected:
+
+  struct Data
   {
-  protected:
-    /**
-     *  A pointer to the current state. This is set from outside
-     *  with the setState() method and never changed anywhere else.
-     *  It´s used to report the results
-     *  to the calling TSSATask
-     */
-    CState * mpCurrentState;
+    C_INT dim;
+    CTSSAMethod * pMethod;
+  };
 
-    /**
-     *  A pointer to the time scale separation analysis problem.
-     */
-    CTSSAProblem * mpProblem;
+  /**
+   *  A pointer to the current state in complete model view.
+   */
+  CState * mpState;
 
-    // Operations
-  private:
-    /**
-     * Default constructor.
-     */
-    CTSSAMethod();
+  /**
+   * mData.dim is the dimension of the ODE system.
+   */
+  Data mData;
 
-  protected:
-    /**
-     * Default constructor.
-     * @param const CCopasiMethod::SubType & subType
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTSSAMethod(const CCopasiMethod::SubType & subType,
-                const CCopasiContainer * pParent = NULL);
+  /**
+   *  Pointer to the array with left hand side values.
+   */
+  C_FLOAT64 * mY;
 
-  public:
+  /**
+   * Vector containig the derivatives after calling eval
+   */
+  CVector< C_FLOAT64 > mYdot;
 
-    /**
-     * Create a time scale separation analysis method for a special problem.
-     * Note: the returned object has to be released after use with delete
-     * a problem is also passed so that the method has a chance to choose an
-     * appropriate simulation method.
-     */
-    static CTSSAMethod *
-    createTSSAMethod(CCopasiMethod::SubType subType
-                     = CCopasiMethod::unset,
-                     CTSSAProblem * pProblem = NULL);
+  /**
+   *
+  */
+  CVector< C_FLOAT64 > mY_initial;
 
-    /**
-     * Copy constructor.
-     * @param "const CTSSAMethod &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTSSAMethod(const CTSSAMethod & src,
-                const CCopasiContainer * pParent = NULL);
+  /**
+   *  Current time.
+   */
+  C_FLOAT64 mTime;
 
-    /**
-     *  Destructor.
-     */
-    ~CTSSAMethod();
+  /**
+   *  Jacobian matrix
+   */
+  CMatrix <C_FLOAT64> mJacobian;
 
-    /**
-     *  Set a pointer to the current state.
-     *  This method is used by CTSSATask::process()
-     *  The results of the simulation are passed via this CState variable
-     *  @param "CState *" currentState
-     */
-    void setCurrentState(CState * currentState);
+  /**
+   *  Jacobian matrix at initial point
+   */
+  CMatrix <C_FLOAT64> mJacobian_initial;
 
-    /**
-     *  Set a pointer to the problem.
-     *  This method is used by CTSSA
-     *  @param "CTSSAProblem *" problem
-     */
-    void setProblem(CTSSAProblem * problem);
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mQ;
+  CMatrix <C_FLOAT64> mQ_desc;
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mR;
+  CMatrix <C_FLOAT64> mR_desc;
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTd;
 
-    /**
-     *  This instructs the method to calculate a time step of deltaT
-     *  starting with the current state, i.e., the result of the previous
-     *  step.
-     *  The new state (after deltaT) is expected in the current state.
-     *  The return value is the actual timestep taken.
-     *  @param "const double &" deltaT
-     */
-    virtual void step(const double & deltaT);
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTdInverse;
 
-    /**
-     *  This instructs the method to prepare for integration
-     *  starting with the initialState given.
-     *  @param "const CState *" initialState
-     */
-    virtual void start(const CState * initialState);
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mQz;
 
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
-
-    /**
-     *  Intialize the method parameter
-     */
-    virtual void initializeParameter();
-
-    /************ The following concerns the both ILDM Methods *******************************/
-
-  protected:
-
-    struct Data
-      {
-        C_INT dim;
-        CTSSAMethod * pMethod;
-      };
-
-    /**
-     *  A pointer to the current state in complete model view.
-     */
-    CState * mpState;
-
-    /**
-     * mData.dim is the dimension of the ODE system.
-     */
-    Data mData;
-
-    /**
-     *  Pointer to the array with left hand side values.
-     */
-    C_FLOAT64 * mY;
-
-    /**
-     * Vector containig the derivatives after calling eval
-     */
-    CVector< C_FLOAT64 > mYdot;
-
-    /**
-     *
-    */
-    CVector< C_FLOAT64 > mY_initial;
-
-    /**
-     *  Current time.
-     */
-    C_FLOAT64 mTime;
-
-    /**
-     *  Jacobian matrix
-     */
-    CMatrix <C_FLOAT64> mJacobian;
-
-    /**
-     *  Jacobian matrix at initial point
-     */
-    CMatrix <C_FLOAT64> mJacobian_initial;
-
-    /**
-     *
-     */
-    CMatrix <C_FLOAT64> mQ;
-    CMatrix <C_FLOAT64> mQ_desc;
-    /**
-     *
-     */
-    CMatrix <C_FLOAT64> mR;
-    CMatrix <C_FLOAT64> mR_desc;
-    /**
-     *
-     */
-    CMatrix <C_FLOAT64> mTd;
-
-    /**
-     *
-     */
-    CMatrix <C_FLOAT64> mTdInverse;
-
-    /**
-     *
-     */
-    CMatrix <C_FLOAT64> mQz;
-
-    /**
-     *
-     */
-    CMatrix <C_FLOAT64> mTd_save;
-    /**
-         *
-         */
-    CMatrix <C_FLOAT64> mTdInverse_save;
-
-    /**
-     *
-     */
-
-    CVector<C_FLOAT64> mCfast;
-
-    /**
-      *
-      */
-
-    CVector<C_FLOAT64> mY_cons;
-
-    /**
-     *
-     */
-    CMatrix<C_FLOAT64> mVslow;
-
-    /**
-     *
-     */
-    CMatrix<C_FLOAT64> mVslow_metab;
-
-    /**
-     *
-     */
-    CVector<C_FLOAT64> mVslow_space;
-
-    /**
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTd_save;
+  /**
        *
        */
-    CVector<C_FLOAT64> mVfast_space;
+  CMatrix <C_FLOAT64> mTdInverse_save;
 
-    /**
+  /**
+   *
+   */
+
+  CVector<C_FLOAT64> mCfast;
+
+  /**
+    *
+    */
+
+  CVector<C_FLOAT64> mY_cons;
+
+  /**
+   *
+   */
+  CMatrix<C_FLOAT64> mVslow;
+
+  /**
+   *
+   */
+  CMatrix<C_FLOAT64> mVslow_metab;
+
+  /**
+   *
+   */
+  CVector<C_FLOAT64> mVslow_space;
+
+  /**
      *
      */
-    C_INT mSlow;
+  CVector<C_FLOAT64> mVfast_space;
 
-    /**
-     *  LSODA state.
-     */
-    C_INT mLsodaStatus;
+  /**
+   *
+   */
+  C_INT mSlow;
 
-    /**
-     * Whether to use the reduced model
-     */
-    bool mReducedModel;
+  /**
+   *  LSODA state.
+   */
+  C_INT mLsodaStatus;
 
-    /**
-     * Relative tolerance.
-     */
-    C_FLOAT64 mRtol;
+  /**
+   * Whether to use the reduced model
+   */
+  bool mReducedModel;
 
-    /**
-     * A vector of absolute tolerances.
-     */
-    CVector< C_FLOAT64 > mAtol;
+  /**
+   * Relative tolerance.
+   */
+  C_FLOAT64 mRtol;
 
-    /**
-     * Stream to capture LSODA error messages
-     */
-    std::ostringstream mErrorMsg;
+  /**
+   * A vector of absolute tolerances.
+   */
+  CVector< C_FLOAT64 > mAtol;
 
-    /**
-     * The LSODA integrator
-     */
-    CLSODA mLSODA;
+  /**
+   * Stream to capture LSODA error messages
+   */
+  std::ostringstream mErrorMsg;
 
-    /**
-     * The state of the integrator
-     */
-    C_INT mState;
+  /**
+   * The LSODA integrator
+   */
+  CLSODA mLSODA;
 
-    /**
-     * LSODA C_FLOAT64 work area
-     */
-    CVector< C_FLOAT64 > mDWork;
+  /**
+   * The state of the integrator
+   */
+  C_INT mState;
 
-    /**
-     * LSODA C_INT work area
-     */
-    CVector< C_INT > mIWork;
+  /**
+   * LSODA C_FLOAT64 work area
+   */
+  CVector< C_FLOAT64 > mDWork;
 
-    /**
-     * The way LSODA calculates the jacobian
-     */
-    C_INT mJType;
+  /**
+   * LSODA C_INT work area
+   */
+  CVector< C_INT > mIWork;
 
-    /**
-     * A pointer to the model
-     */
-    CModel * mpModel;
+  /**
+   * The way LSODA calculates the jacobian
+   */
+  C_INT mJType;
 
-    /**
-     *  Tolerance for Deuflhard criterium
-     */
-    C_FLOAT64 mDtol;
+  /**
+   * A pointer to the model
+   */
+  CModel * mpModel;
 
-    /**
-     *
-     */
-    C_FLOAT64 mEPS;
+  /**
+   *  Tolerance for Deuflhard criterium
+   */
+  C_FLOAT64 mDtol;
 
-    // Operations
+  /**
+   *
+   */
+  C_FLOAT64 mEPS;
 
-    /**
-     * Intialize integration method parameters
-     */
+  // Operations
 
-    void initializeIntegrationsParameter();
+  /**
+   * Intialize integration method parameters
+   */
 
-    /**
-     * This methods must be called to elevate subgroups to
-     * derived objects. The default implementation does nothing.
-     * @return bool success
-     */
-    bool elevateChildren();
+  void initializeIntegrationsParameter();
 
-    /**
-     *  This instructs the method to calculate a time step of deltaT
-     *  starting with the current state, i.e., the result of the previous
-     *  step.
-     *  The new state (after deltaT) is expected in the current state.
-     *  The return value is the actual timestep taken.
-     *  @param "const double &" deltaT
+  /**
+   * This methods must be called to elevate subgroups to
+   * derived objects. The default implementation does nothing.
+   * @return bool success
+   */
+  bool elevateChildren();
+
+  /**
+   *  This instructs the method to calculate a time step of deltaT
+   *  starting with the current state, i.e., the result of the previous
+   *  step.
+   *  The new state (after deltaT) is expected in the current state.
+   *  The return value is the actual timestep taken.
+   *  @param "const double &" deltaT
+   **/
+
+  /**
+   **/
+  void integrationStep(const double & deltaT);
+
+  /**
+   *  This instructs the method to prepare for integration
+   *  starting with the initialState given.
+   *  @param "const CState *" initialState
+   */
+  void integrationMethodStart(const CState * initialState);
+
+  /**
+   * Calculate the individual absolute tolerance
+   */
+  void initializeAtol();
+
+  static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+  /**
+   *  This evaluates the derivatives
+   */
+  void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+  /**
+   *
+   */
+  void schur(C_INT &info);
+  void schur_desc(C_INT &info);
+
+  /**
+   *
+   */
+  void sylvester(C_INT slow, C_INT & info);
+
+  /**
+   *
+   **/
+  void map_index(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim);
+
+  void map_index_desc(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim);
+  /**
+   *
+   **/
+  void update_nid(C_INT *index, C_INT *nid, const C_INT & dim);
+
+  /**
+   *
+   **/
+  void update_pid(C_INT *index, C_INT *pid, const C_INT & dim);
+
+  /**
+   *
+   **/
+  void calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1);
+
+  /**
+    * This is not very elegant solution. But I don't know the better one.
+   **/
+
+  //    void calculateNextJacobian(const double & deltaT);
+
+  /**
+   *
+   **/
+  void mat_anal_mod(C_INT & slow);
+
+  /**
+   *
+   **/
+  void mat_anal_metab(C_INT & slow);
+
+  /**
+   *
+   **/
+  void mat_anal_mod_space(C_INT & slow);
+  void mat_anal_fast_space(C_INT & slow);
+  void mat_anal_fast_space_thomas(C_INT & slow);
+  /**
+       *
      **/
+  double orthog(C_INT & number1, C_INT & number2);
 
-    /**
-     **/
-    void integrationStep(const double & deltaT);
+public:
 
-    /**
-     *  This instructs the method to prepare for integration
-     *  starting with the initialState given.
-     *  @param "const CState *" initialState
-     */
-    void integrationMethodStart(const CState * initialState);
-
-    /**
-     * Calculate the individual absolute tolerance
-     */
-    void initializeAtol();
-
-    static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
-    /**
-     *  This evaluates the derivatives
-     */
-    void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
-    /**
-     *
-     */
-    void schur(C_INT &info);
-    void schur_desc(C_INT &info);
-
-    /**
-     *
-     */
-    void sylvester (C_INT slow, C_INT & info);
-
-    /**
-     *
-     **/
-    void map_index(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim);
-
-    void map_index_desc(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim);
-    /**
-     *
-     **/
-    void update_nid(C_INT *index, C_INT *nid, const C_INT & dim);
-
-    /**
-     *
-     **/
-    void update_pid(C_INT *index, C_INT *pid, const C_INT & dim);
-
-    /**
-     *
-     **/
-    void calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1);
-
-    /**
-      * This is not very elegant solution. But I don't know the better one.
-     **/
-
-    //    void calculateNextJacobian(const double & deltaT);
-
-    /**
-     *
-     **/
-    void mat_anal_mod(C_INT & slow);
-
-    /**
-     *
-     **/
-    void mat_anal_metab(C_INT & slow);
-
-    /**
-     *
-     **/
-    void mat_anal_mod_space(C_INT & slow);
-    void mat_anal_fast_space(C_INT & slow);
-    void mat_anal_fast_space_thomas(C_INT & slow);
-    /**
-         *
-       **/
-    double orthog(C_INT & number1, C_INT & number2);
-
-  public:
-
-    /**
-      *vectors contain whole data for all calculationsteps
-      **/
-    std::vector< int > mVec_SlowModes;
-    std::vector< C_FLOAT64 > mCurrentTime;
-    std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
-
-    /**
-    * stepcounter
+  /**
+    *vectors contain whole data for all calculationsteps
     **/
-    int mCurrentStep;
+  std::vector< int > mVec_SlowModes;
+  std::vector< C_FLOAT64 > mCurrentTime;
+  std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
 
-    /**
-    * return mVec_TimeScale for visualization in ILDM-tab
-    * in the CQTSSAResultSubWidget
-    **/
-    CVector< C_FLOAT64> getVec_TimeScale(int step);
+  /**
+  * stepcounter
+  **/
+  int mCurrentStep;
 
-    /**
-    *return required time-value from timevector
-    **/
-    C_FLOAT64 returnCurrentTime(int step){return mCurrentTime[step];};
+  /**
+  * return mVec_TimeScale for visualization in ILDM-tab
+  * in the CQTSSAResultSubWidget
+  **/
+  CVector< C_FLOAT64> getVec_TimeScale(int step);
 
-    /**
-    * upgrade all vectors with values from actually calculalion for current step
-    **/
-    void setVectors(int slowMode);
+  /**
+  *return required time-value from timevector
+  **/
+  C_FLOAT64 returnCurrentTime(int step) {return mCurrentTime[step];};
 
-    /**
-    * empty every vector to be able to fill them with new values for a
-    * new calculation also nullify the step counter
-    **/
-    void emptyVectors();
+  /**
+  * upgrade all vectors with values from actually calculalion for current step
+  **/
+  void setVectors(int slowMode);
 
-    /**
-     * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
-     * input for each CArraAnnotations is a seperate CMatrix
-     **/
-    void createAnnotationsM();
+  /**
+  * empty every vector to be able to fill them with new values for a
+  * new calculation also nullify the step counter
+  **/
+  void emptyVectors();
 
-    /**
-    * set the every CArrayAnnotation for the requested step
-    * set the desription of CArayAnnotation for both dimensions
-    **/
-    void setAnnotationM(int step);
-  };
+  /**
+   * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+   * input for each CArraAnnotations is a seperate CMatrix
+   **/
+  void createAnnotationsM();
+
+  /**
+  * set the every CArrayAnnotation for the requested step
+  * set the desription of CArayAnnotation for both dimensions
+  **/
+  void setAnnotationM(int step);
+};
 
 #endif // COPASI_CTSSAMethod

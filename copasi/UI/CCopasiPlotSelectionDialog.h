@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:54:59 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,40 +41,40 @@ class CModel;
 class CCopasiSelectionWidget;
 
 class CCopasiPlotSelectionDialog: public QDialog
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WFlags f = 0);
-    ~CCopasiPlotSelectionDialog();
-    void setOutputVectors(std::vector< const CCopasiObject * > * outputVector1,
-                          std::vector< const CCopasiObject * > * outputVector2);
-    void setModel(CModel* model,
-                  const CCopasiSimpleSelectionTree::SelectionFlag & flag);
+public:
+  CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WFlags f = 0);
+  ~CCopasiPlotSelectionDialog();
+  void setOutputVectors(std::vector< const CCopasiObject * > * outputVector1,
+                        std::vector< const CCopasiObject * > * outputVector2);
+  void setModel(CModel* model,
+                const CCopasiSimpleSelectionTree::ObjectClasses & classes);
 
-  protected slots:
-    void slotOKButtonClicked();
-    void slotCancelButtonClicked();
-    void slotExpertCheckBoxToggled(bool checked);
+protected slots:
+  void slotOKButtonClicked();
+  void slotCancelButtonClicked();
+  void slotExpertCheckBoxToggled(bool checked);
 
-  protected:
-    void setTabOrder();
+protected:
+  void setTabOrder();
 
-  protected:
-    QPushButton* mpOKButton;
-    QPushButton* mpCancelButton;
-    QCheckBox* mpExpertCheckBox;
-    CCopasiSelectionWidget* mpXAxisSelectionWidget;
-    CCopasiSelectionWidget* mpYAxisSelectionWidget;
-    QSplitter* mpSplitter;
-    Q3HBoxLayout* mpButtonBox;
-    Q3VBoxLayout* mpMainLayout;
-    QLabel* mpXAxisLabel;
-    QLabel* mpYAxisLabel;
-    Q3VBox* mpXAxisSelectionBox;
-    Q3VBox* mpYAxisSelectionBox;
-    std::vector< const CCopasiObject * > * mpXAxisOutputVector;
-    std::vector< const CCopasiObject * > * mpYAxisOutputVector;
-  };
+protected:
+  QPushButton* mpOKButton;
+  QPushButton* mpCancelButton;
+  QCheckBox* mpExpertCheckBox;
+  CCopasiSelectionWidget* mpXAxisSelectionWidget;
+  CCopasiSelectionWidget* mpYAxisSelectionWidget;
+  QSplitter* mpSplitter;
+  Q3HBoxLayout* mpButtonBox;
+  Q3VBoxLayout* mpMainLayout;
+  QLabel* mpXAxisLabel;
+  QLabel* mpYAxisLabel;
+  Q3VBox* mpXAxisSelectionBox;
+  Q3VBox* mpYAxisSelectionBox;
+  std::vector< const CCopasiObject * > * mpXAxisOutputVector;
+  std::vector< const CCopasiObject * > * mpYAxisOutputVector;
+};
 
 #endif // CPlotSelectionDialog_H__

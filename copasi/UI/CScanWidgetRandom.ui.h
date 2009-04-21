@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:14 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,9 @@ void CScanWidgetRandom::init()
 void CScanWidgetRandom::slotChooseObject()
 {
   const CCopasiObject * pObject =
-    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE,
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_PARAMETER,
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters,
                                             mpObject);
 
   if (mpObject != pObject) // Object selection changed.
@@ -90,16 +91,20 @@ void CScanWidgetRandom::slotChooseObject()
 bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)
 {
   if (!model) return false;
+
   mpModel = model;
 
   unsigned C_INT32 * tmp;
 
   if (!(tmp = pg->getValue("Type").pUINT)) return false;
-  if (* (CScanProblem::Type *) tmp != CScanProblem::SCAN_RANDOM)
+
+  if (*(CScanProblem::Type *) tmp != CScanProblem::SCAN_RANDOM)
     return false;
 
   std::string *pString;
+
   if (!(pString = pg->getValue("Object").pSTRING)) return false;
+
   if (*pString == "")
     mpObject = NULL;
   else
@@ -109,6 +114,7 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
       assert(pDataModel != NULL);
       mpObject = pDataModel->getObject(*pString);
     }
+
   if (mpObject)
     lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
   else
@@ -123,28 +129,30 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
   lineEditMax->setText(getParameterValue(pg, "Maximum"));
 
   bool * pBool;
+
   if (!(pBool = pg->getValue("log").pBOOL)) return false;
+
   checkBoxLog->setChecked(* pBool);
 
   return true;
 }
 
 bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
-  {
-    CScanProblem::Type type = CScanProblem::SCAN_RANDOM;
+{
+  CScanProblem::Type type = CScanProblem::SCAN_RANDOM;
 
-    unsigned C_INT32 steps = 1;
+  unsigned C_INT32 steps = 1;
 
-    CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
-    assert(tmp);
+  CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
+  assert(tmp);
 
-    tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentItem());
-    tmp->setValue("Minimum", lineEditMin->text().toDouble());
-    tmp->setValue("Maximum", lineEditMax->text().toDouble());
-    tmp->setValue("log", checkBoxLog->isChecked());
+  tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentItem());
+  tmp->setValue("Minimum", lineEditMin->text().toDouble());
+  tmp->setValue("Maximum", lineEditMax->text().toDouble());
+  tmp->setValue("log", checkBoxLog->isChecked());
 
-    return true;
-  }
+  return true;
+}
 
 void CScanWidgetRandom::changeType()
 {

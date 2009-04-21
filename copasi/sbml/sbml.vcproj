@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="sbml"
 	ProjectGUID="{D6EA7B13-FBB9-4232-9801-A859451D45E9}"
+	RootNamespace="sbml"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>

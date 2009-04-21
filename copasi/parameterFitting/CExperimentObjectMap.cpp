@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-$Revision: 1.18 $
+$Revision: 1.19 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/03/02 21:02:17 $
+$Date: 2009/04/21 16:18:20 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@ bool CExperimentObjectMap::elevateChildren()
       dynamic_cast< CCopasiParameterGroup * >(*itColumn) == NULL) // We have an old data format.
     {
       CCopasiParameterGroup New(getObjectName());
+
       for (; itColumn != endColumn; ++itColumn)
         {
           CCopasiParameterGroup * pGroup = New.assertGroup((*itColumn)->getObjectName());
@@ -88,47 +89,58 @@ bool CExperimentObjectMap::setNumCols(const unsigned C_INT32 & numCols)
   if (numCols == mValue.pGROUP->size())
     return true;
 
+  // We only clear the vector of parameter. We do not destroy the parameter they are still
+  // accessible through CCopasiContainer::mObjects and thus will be automatically destroyed.
   mValue.pGROUP->clear();
 
   bool success = true;
 
   for (unsigned C_INT32 col = 0; col < numCols; col++)
-    success &= (elevate<CDataColumn, CCopasiParameterGroup>(assertGroup(StringPrint("%d", col))) != NULL);
+    {
+      CCopasiParameterGroup * pGrp = assertGroup(StringPrint("%d", col));
+
+      // assertGroup() adds only newly created groups to mValue.pGROUP. We need to add the existing
+      // ones.
+      if (mValue.pGROUP->size() < col + 1)
+        mValue.pGROUP->push_back(pGrp);
+
+      success &= (elevate<CDataColumn, CCopasiParameterGroup>(pGrp) != NULL);
+    }
 
   return success;
 }
 
 unsigned C_INT32 CExperimentObjectMap::getLastNotIgnoredColumn() const
-  {
-    std::vector<CCopasiParameter *>::iterator itColumn = mValue.pGROUP->begin();
-    std::vector<CCopasiParameter *>::iterator endColumn = mValue.pGROUP->end();
+{
+  std::vector<CCopasiParameter *>::iterator itColumn = mValue.pGROUP->begin();
+  std::vector<CCopasiParameter *>::iterator endColumn = mValue.pGROUP->end();
 
-    C_INT32 LastNotIgnored = -1;
+  C_INT32 LastNotIgnored = -1;
 
-    for (; itColumn != endColumn; ++itColumn)
-      if (static_cast< CDataColumn * >(*itColumn)->getRole() != CExperiment::ignore)
-        {
-          C_INT32 index = strtol(static_cast< CDataColumn * >(*itColumn)->getObjectName().c_str(), NULL, 10);
+  for (; itColumn != endColumn; ++itColumn)
+    if (static_cast< CDataColumn * >(*itColumn)->getRole() != CExperiment::ignore)
+      {
+        C_INT32 index = strtol(static_cast< CDataColumn * >(*itColumn)->getObjectName().c_str(), NULL, 10);
 
-          if (index > LastNotIgnored) LastNotIgnored = index;
-        }
+        if (index > LastNotIgnored) LastNotIgnored = index;
+      }
 
-    return LastNotIgnored;
-  }
+  return LastNotIgnored;
+}
 
 // virtual
 const std::string & CExperimentObjectMap::getName(const unsigned C_INT32 & index) const
-  {
-    static const std::string NoName("");
+{
+  static const std::string NoName("");
 
-    const CDataColumn * pColumn =
-      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+  const CDataColumn * pColumn =
+    dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
-    if (pColumn)
-      return pColumn->getObjectName();
-    else
-      return NoName;
-  }
+  if (pColumn)
+    return pColumn->getObjectName();
+  else
+    return NoName;
+}
 
 bool CExperimentObjectMap::setRole(const unsigned C_INT32 & index,
                                    const CExperiment::Type & role)
@@ -143,15 +155,15 @@ bool CExperimentObjectMap::setRole(const unsigned C_INT32 & index,
 }
 
 CExperiment::Type CExperimentObjectMap::getRole(const unsigned C_INT32 & index) const
-  {
-    const CDataColumn * pColumn =
-      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+{
+  const CDataColumn * pColumn =
+    dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
-    if (pColumn)
-      return pColumn->getRole();
-    else
-      return CExperiment::ignore;
-  }
+  if (pColumn)
+    return pColumn->getRole();
+  else
+    return CExperiment::ignore;
+}
 
 bool CExperimentObjectMap::setObjectCN(const unsigned C_INT32 & index,
                                        const std::string & CN)
@@ -166,15 +178,15 @@ bool CExperimentObjectMap::setObjectCN(const unsigned C_INT32 & index,
 }
 
 std::string CExperimentObjectMap::getObjectCN(const unsigned C_INT32 & index) const
-  {
-    const CDataColumn * pColumn =
-      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+{
+  const CDataColumn * pColumn =
+    dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
-    if (pColumn)
-      return pColumn->getObjectCN();
-    else
-      return "";
-  }
+  if (pColumn)
+    return pColumn->getObjectCN();
+  else
+    return "";
+}
 
 bool CExperimentObjectMap::setWeight(const unsigned C_INT32 & index,
                                      const C_FLOAT64 & weight)
@@ -189,26 +201,26 @@ bool CExperimentObjectMap::setWeight(const unsigned C_INT32 & index,
 }
 
 C_FLOAT64 CExperimentObjectMap::getWeight(const unsigned C_INT32 & index) const
-  {
-    const CDataColumn * pColumn =
-      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+{
+  const CDataColumn * pColumn =
+    dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
-    if (pColumn)
-      return pColumn->getWeight();
-    else
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  }
+  if (pColumn)
+    return pColumn->getWeight();
+  else
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+}
 
 C_FLOAT64 CExperimentObjectMap::getDefaultWeight(const unsigned C_INT32 & index) const
-  {
-    const CDataColumn * pColumn =
-      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+{
+  const CDataColumn * pColumn =
+    dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
-    if (pColumn)
-      return pColumn->getDefaultWeight();
-    else
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  }
+  if (pColumn)
+    return pColumn->getDefaultWeight();
+  else
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+}
 
 bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
@@ -225,6 +237,7 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
       for (i = 1; i < imax; i++)
         {
           Column = strtoul(getName(i).c_str(), NULL, 0);
+
           if (mLastColumn < Column)
             mLastColumn = Column;
         }
@@ -235,6 +248,7 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
 
   CCopasiObject * pObject = NULL;
   std::string CN;
+
   for (i = 0; i < imax; i++)
     {
       if ((CN = getObjectCN(i)) == "") continue;
@@ -257,7 +271,7 @@ const CVector< CCopasiObject * > & CExperimentObjectMap::getMappedObjects() cons
 {return mObjects;}
 
 const unsigned C_INT32 & CExperimentObjectMap::getLastColumn() const
-  {return mLastColumn;}
+{return mLastColumn;}
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
     const CCopasiContainer * pParent) :
@@ -298,10 +312,12 @@ void CExperimentObjectMap::CDataColumn::initializeParameter()
            assertParameter("Role", CCopasiParameter::UINT, (unsigned C_INT32) CExperiment::ignore)->getValue().pUINT;
 
   CCopasiParameter * pParm = getParameter("Object CN");
+
   if (pParm != NULL)
     mpObjectCN = pParm->getValue().pCN;
 
   pParm = getParameter("Weight");
+
   if (pParm != NULL)
     mpWeight = pParm->getValue().pUDOUBLE;
 
@@ -327,7 +343,7 @@ bool CExperimentObjectMap::CDataColumn::setRole(const CExperiment::Type & role)
 }
 
 const CExperiment::Type & CExperimentObjectMap::CDataColumn::getRole() const
-  {return *mpRole;}
+{return *mpRole;}
 
 bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN)
 {
@@ -352,12 +368,12 @@ bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN
 }
 
 std::string CExperimentObjectMap::CDataColumn::getObjectCN() const
-  {
-    if (mpObjectCN != NULL)
-      return *mpObjectCN;
-    else
-      return "";
-  }
+{
+  if (mpObjectCN != NULL)
+    return *mpObjectCN;
+  else
+    return "";
+}
 
 bool CExperimentObjectMap::CDataColumn::setWeight(const C_FLOAT64 & weight)
 {
@@ -368,10 +384,12 @@ bool CExperimentObjectMap::CDataColumn::setWeight(const C_FLOAT64 & weight)
           removeParameter("Weight");
           mpWeight = NULL;
         }
+
       return true;
     }
 
   C_FLOAT64 DefaultWeight = getDefaultWeight();
+
   if (weight != DefaultWeight || isnan(DefaultWeight))
     {
       if (mpWeight != NULL)
@@ -389,32 +407,36 @@ bool CExperimentObjectMap::CDataColumn::setWeight(const C_FLOAT64 & weight)
 }
 
 C_FLOAT64 CExperimentObjectMap::CDataColumn::getWeight() const
-  {
-    if (mpWeight == NULL)
-      return getDefaultWeight();
-    else
-      return *mpWeight;
-  }
+{
+  if (mpWeight == NULL)
+    return getDefaultWeight();
+  else
+    return *mpWeight;
+}
 
 C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
-  {
-    if (mpObjectCN == NULL)
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+{
+  if (mpObjectCN == NULL)
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    CCopasiParameterGroup *pGroup =
-      dynamic_cast< CCopasiParameterGroup * >(getObjectParent());
-    if (pGroup == NULL)
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  CCopasiParameterGroup *pGroup =
+    dynamic_cast< CCopasiParameterGroup * >(getObjectParent());
 
-    const CExperiment *pExperiment =
-      dynamic_cast<const CExperiment * >(pGroup->getObjectParent());
-    if (pExperiment == NULL)
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
-    const CCopasiObject * pObject = pDataModel->getObject(*mpObjectCN);
-    if (pObject == NULL)
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  if (pGroup == NULL)
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    return pExperiment->getDefaultWeight(pObject);
-  }
+  const CExperiment *pExperiment =
+    dynamic_cast<const CExperiment * >(pGroup->getObjectParent());
+
+  if (pExperiment == NULL)
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  const CCopasiDataModel* pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+  const CCopasiObject * pObject = pDataModel->getObject(*mpObjectCN);
+
+  if (pObject == NULL)
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  return pExperiment->getDefaultWeight(pObject);
+}

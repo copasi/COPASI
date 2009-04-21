@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:02 $
+//   $Date: 2009/04/21 16:21:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,18 +112,25 @@ bool CCopasiXML::save(std::ostream & os,
   if (haveModel() && !haveFunctionList())
     {
       if (!buildFunctionList()) success = false;
+
       if (!saveFunctionList()) success = false;
+
       if (!freeFunctionList()) success = false;
     }
-  else
-    if (!saveFunctionList()) success = false;
+  else if (!saveFunctionList()) success = false;
 
   if (!saveModel()) success = false;
+
   if (!saveTaskList()) success = false;
+
   if (!saveReportList()) success = false;
+
   if (!savePlotList()) success = false;
+
   if (!saveGUI()) success = false;
+
   if (!saveLayoutList()) success = false;
+
   if (!saveSBMLReference()) success = false;
 
   endSaveElement("COPASI");
@@ -147,10 +154,6 @@ bool CCopasiXML::load(std::istream & is,
   CCopasiXMLParser Parser(FileVersion);
 
   Parser.setFunctionList(mpFunctionList);
-  Parser.setModel(mpModel);
-  Parser.setReportList(mpReportList);
-  Parser.setTaskList(mpTaskList);
-  Parser.setPlotList(mpPlotList);
   Parser.setGUI(mpGUI);
   Parser.setLayoutList(mpLayoutList);
   Parser.setDatamodel(this->mpDataModel);
@@ -158,37 +161,49 @@ bool CCopasiXML::load(std::istream & is,
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
 
-  while (!done)
+  try
     {
-      mpIstream->get(pBuffer, BUFFER_SIZE, 0);
-
-      if (mpIstream->eof()) done = true;
-      if (mpIstream->fail() && !done) fatalError();
-
-      if (!Parser.parse(pBuffer, -1, done))
+      while (!done)
         {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                 Parser.getCurrentLineNumber(),
-                                 Parser.getCurrentColumnNumber(),
-                                 Parser.getErrorString());
-          done = true;
-          success = false;
+          mpIstream->get(pBuffer, BUFFER_SIZE, 0);
+
+          if (mpIstream->eof()) done = true;
+
+          if (mpIstream->fail() && !done) fatalError();
+
+          if (!Parser.parse(pBuffer, -1, done))
+            {
+              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+                                     Parser.getCurrentLineNumber(),
+                                     Parser.getCurrentColumnNumber(),
+                                     Parser.getErrorString());
+              done = true;
+              success = false;
+            }
         }
     }
+
+  catch (...)
+    {
+      success = false;
+    }
+
   delete [] pBuffer;
 #undef BUFFER_SIZE
 
-  if (success)
-    {
-      mpFunctionList = Parser.getFunctionList();
-      mpModel = Parser.getModel();
-      mpReportList = Parser.getReportList();
-      mpTaskList = Parser.getTaskList();
-      mpPlotList = Parser.getPlotList();
-      mpLayoutList = Parser.getLayoutList();
+  mpModel = Parser.getModel();
+  mpReportList = Parser.getReportList();
+  mpTaskList = Parser.getTaskList();
+  mpPlotList = Parser.getPlotList();
+  mpLayoutList = Parser.getLayoutList();
 
-      CFixLocalReactionParameters FixLocalReactionParameters;
-      FixLocalReactionParameters.fixModel(mpModel);
+  if (!success)
+    {
+      pdelete(mpModel);
+      pdelete(mpReportList);
+      pdelete(mpTaskList);
+      pdelete(mpPlotList);
+      pdelete(mpLayoutList);
     }
 
   if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())
@@ -224,10 +239,10 @@ bool CCopasiXML::setFunctionList(CCopasiVectorN< CEvaluationTree > *pFunctionLis
 }
 
 CCopasiVectorN< CEvaluationTree > * CCopasiXML::getFunctionList() const
-  {return mpFunctionList;}
+{return mpFunctionList;}
 
 bool CCopasiXML::haveFunctionList() const
-  {return mpFunctionList != NULL;}
+{return mpFunctionList != NULL;}
 
 bool CCopasiXML::freeFunctionList()
 {
@@ -253,10 +268,10 @@ bool CCopasiXML::setDatamodel(CCopasiDataModel* pDataModel)
 }
 
 CCopasiVectorN< CCopasiTask > * CCopasiXML::getTaskList() const
-  {return mpTaskList;}
+{return mpTaskList;}
 
 bool CCopasiXML::haveTaskList() const
-  {return mpTaskList != NULL;}
+{return mpTaskList != NULL;}
 
 bool CCopasiXML::freeTaskList()
 {
@@ -273,10 +288,10 @@ bool CCopasiXML::setPlotList(COutputDefinitionVector * pPlotList)
 }
 
 COutputDefinitionVector * CCopasiXML::getPlotList() const
-  {return mpPlotList;}
+{return mpPlotList;}
 
 bool CCopasiXML::havePlotList() const
-  {return mpPlotList != NULL;}
+{return mpPlotList != NULL;}
 
 bool CCopasiXML::freePlotList()
 {
@@ -293,10 +308,10 @@ bool CCopasiXML::setReportList(CReportDefinitionVector * pReportList)
 }
 
 CReportDefinitionVector * CCopasiXML::getReportList() const
-  {return mpReportList;}
+{return mpReportList;}
 
 bool CCopasiXML::haveReportList() const
-  {return mpReportList != NULL;}
+{return mpReportList != NULL;}
 
 bool CCopasiXML::freeReportList()
 {
@@ -331,10 +346,10 @@ bool CCopasiXML::setLayoutList(const CListOfLayouts & layoutList)
 }
 
 CListOfLayouts * CCopasiXML::getLayoutList() const
-  {return mpLayoutList;}
+{return mpLayoutList;}
 
 bool CCopasiXML::haveLayoutList() const
-  {return mpLayoutList != NULL;}
+{return mpLayoutList != NULL;}
 
 bool CCopasiXML::freeLayoutList()
 {
@@ -345,6 +360,7 @@ bool CCopasiXML::freeLayoutList()
 bool CCopasiXML::saveModel()
 {
   bool success = true;
+
   if (!haveModel()) return success;
 
   CXMLAttributeList Attributes;
@@ -392,6 +408,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("simulationType", "");
 
       unsigned C_INT32 i, imax = mpModel->getCompartments().size();
+
       for (i = 0; i < imax; i++)
         {
           CCompartment * pComp = mpModel->getCompartments()[i];
@@ -426,6 +443,7 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("Compartment");
+
           if (pComp->getSBMLId() != "")
             mSBMLReference[pComp->getSBMLId()] = pComp->getKey();
         }
@@ -480,6 +498,7 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("Metabolite");
+
           if (pMetab->getSBMLId() != "")
             mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
         }
@@ -531,6 +550,7 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("ModelValue");
+
           if (pMV->getSBMLId() != "")
             mSBMLReference[pMV->getSBMLId()] = pMV->getKey();
         }
@@ -567,6 +587,7 @@ bool CCopasiXML::saveModel()
           //else
           Attributes.skip(2);
           Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
+
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
 
@@ -584,6 +605,7 @@ bool CCopasiXML::saveModel()
           Attr.add("stoichiometry", "");
 
           pReactantList = & pReaction->getChemEq().getSubstrates();
+
           if ((jmax = pReactantList->size()) > 0)
             {
               startSaveElement("ListOfSubstrates");
@@ -598,9 +620,11 @@ bool CCopasiXML::saveModel()
 
               endSaveElement("ListOfSubstrates");
             }
+
           //startSaveElement("ListOfProducts"); // this seems to belong further down
 
           pReactantList = & pReaction->getChemEq().getProducts();
+
           if ((jmax = pReactantList->size()) > 0)
             {
               startSaveElement("ListOfProducts"); //this seems to belong here
@@ -617,6 +641,7 @@ bool CCopasiXML::saveModel()
             }
 
           pReactantList = & pReaction->getChemEq().getModifiers();
+
           if ((jmax = pReactantList->size()) > 0)
             {
               startSaveElement("ListOfModifiers");
@@ -633,7 +658,9 @@ bool CCopasiXML::saveModel()
             }
 
           const CCopasiParameterGroup * pParamList;
+
           pParamList = & pReaction->getParameters();
+
           if ((jmax = pParamList->size()) > 0)
             {
               startSaveElement("ListOfConstants");
@@ -661,6 +688,7 @@ bool CCopasiXML::saveModel()
               Attr.erase();
               Attr.add("function", pReaction->getFunction()->getKey());
               startSaveElement("KineticLaw", Attr);
+
               if ((jmax = pReaction->getFunctionParameters().size()))
                 {
                   startSaveElement("ListOfCallParameters");
@@ -687,12 +715,16 @@ bool CCopasiXML::saveModel()
 
                       endSaveElement("CallParameter");
                     }
+
                   endSaveElement("ListOfCallParameters");
                 }
+
               endSaveElement("KineticLaw");
             }
+
           endSaveElement("Reaction");
         }
+
       endSaveElement("ListOfReactions");
     }
 
@@ -714,6 +746,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pEvent->getObjectName());
 
           startSaveElement("Event", Attributes);
+
           /*
                     if (pEvent->getMiriamAnnotation() != "")
                       {
@@ -737,12 +770,14 @@ bool CCopasiXML::saveModel()
             }
 
           CXMLAttributeList Attr;
+
           if (pEvent->getNumAssignments())
             //          if (pEvent->getExpressionEA() != "")
             {
               startSaveElement("ListOfAssignments");
 
               unsigned C_INT32 idxAct = 0;
+
               for (; idxAct < pEvent->getNumAssignments(); idxAct++)
                 {
                   Attr.erase();
@@ -761,6 +796,7 @@ bool CCopasiXML::saveModel()
             }
 
           endSaveElement("Event");
+
           if (pEvent->getSBMLId() != "")
             mSBMLReference[pEvent->getSBMLId()] = pEvent->getKey();
         }
@@ -777,6 +813,7 @@ bool CCopasiXML::saveModel()
   std::pair< std::string, std::string > Variable;
 
   CModelEntity *const* Entity = mpModel->getStateTemplate().getEntities();
+
   for (i = 0, imax = mpModel->getStateTemplate().size(); i < imax; i++, ++Entity)
     {
       Attributes.setValue(0, (*Entity)->getKey());
@@ -797,7 +834,7 @@ bool CCopasiXML::saveModel()
   C_FLOAT64 * it = InitialState.beginIndependent();
   C_FLOAT64 * end = InitialState.endFixed();
 
-  for (;it != end; ++it)
+  for (; it != end; ++it)
     *mpOstream << " " << (DBL) *it;
 
   *mpOstream << std::endl;
@@ -814,6 +851,7 @@ bool CCopasiXML::saveFunctionList()
   bool success = true;
 
   if (!haveFunctionList()) return success;
+
   unsigned C_INT32 i, imax = mpFunctionList->size();
 
   if (!imax) return success;
@@ -833,21 +871,22 @@ bool CCopasiXML::saveFunctionList()
       Attributes.add("key", pEvaluationTree->getKey());
       Attributes.add("name", pEvaluationTree->getObjectName());
       Attributes.add("type", CEvaluationTree::XMLType[pEvaluationTree->getType()]);
+
       if (pFunction)
         {
           switch (pFunction->isReversible())
             {
-            case TriUnspecified:
-              Attributes.add("reversible", "unspecified");
-              break;
+              case TriUnspecified:
+                Attributes.add("reversible", "unspecified");
+                break;
 
-            case TriFalse:
-              Attributes.add("reversible", "false");
-              break;
+              case TriFalse:
+                Attributes.add("reversible", "false");
+                break;
 
-            case TriTrue:
-              Attributes.add("reversible", "true");
-              break;
+              case TriTrue:
+                Attributes.add("reversible", "true");
+                break;
             }
 
           if (pFunction->getSBMLId() != "")
@@ -926,6 +965,7 @@ bool CCopasiXML::savePlotList()
 {
   //std::cerr << "Saving plot list. " << std::endl;
   bool success = true;
+
   if (!havePlotList())
     {
       //std::cerr << "No plot list defined." << std::endl;
@@ -933,6 +973,7 @@ bool CCopasiXML::savePlotList()
     }
 
   unsigned C_INT32 i, imax = mpPlotList->size();
+
   //std::cerr << "Saving " << imax << " plots." << std::endl;
   if (!imax) return success;
 
@@ -952,6 +993,7 @@ bool CCopasiXML::savePlotList()
       saveParameterGroup(* pPlot->CCopasiParameter::getValue().pGROUP);
       startSaveElement("ListOfPlotItems");
       unsigned C_INT32 j, jmax = pPlot->getItems().size();
+
       //std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
       for (j = 0; j < jmax; j++)
         {
@@ -963,28 +1005,35 @@ bool CCopasiXML::savePlotList()
           saveParameterGroup(* pPlotItem->CCopasiParameter::getValue().pGROUP);
           startSaveElement("ListOfChannels");
           unsigned C_INT32 k, kmax = pPlotItem->getNumChannels();
+
           //std::cerr << "Saving " << kmax << " Channels." << std::endl;
           for (k = 0; k < kmax; k++)
             {
               const CPlotDataChannelSpec pDataChannelSpec = pPlotItem->getChannels()[k];
               Attributes.erase();
               Attributes.add("cn", pDataChannelSpec);
+
               if (!pDataChannelSpec.minAutoscale)
                 {
                   Attributes.add("min", pDataChannelSpec.min);
                 }
+
               if (!pDataChannelSpec.maxAutoscale)
                 {
                   Attributes.add("max", pDataChannelSpec.max);
                 }
+
               saveElement("ChannelSpec", Attributes);
             }
+
           endSaveElement("ListOfChannels");
           endSaveElement("PlotItem");
         }
+
       endSaveElement("ListOfPlotItems");
       endSaveElement("PlotSpecification");
     }
+
   endSaveElement("ListOfPlots");
   return success;
 }
@@ -993,6 +1042,7 @@ bool CCopasiXML::savePlotList()
 bool CCopasiXML::saveTaskList()
 {
   bool success = true;
+
   if (!haveTaskList()) return success;
 
   unsigned C_INT32 i, imax = mpTaskList->size();
@@ -1019,12 +1069,14 @@ bool CCopasiXML::saveTaskList()
 
       // Report Element
       CReport & tReport = pTask->getReport();
+
       if (tReport.getReportDefinition())
         {
           Attributes.erase();
           Attributes.add("reference", tReport.getReportDefinition()->getKey());
 
           std::string Target = tReport.getTarget();
+
           if (!CDirEntry::isRelativePath(Target) &&
               !CDirEntry::makePathRelative(Target, mFilename))
             Target = CDirEntry::fileName(Target);
@@ -1072,6 +1124,7 @@ bool CCopasiXML::saveReportSection(const std::string & name,
   if (jmax)
     {
       startSaveElement(name);
+
       for (j = 0; j < jmax; j++)
         {
           if (section[j].getObjectType() == "html")
@@ -1091,6 +1144,7 @@ bool CCopasiXML::saveReportSection(const std::string & name,
               saveElement("Object", Attributes);
             }
         }
+
       endSaveElement(name);
     }
 
@@ -1100,9 +1154,11 @@ bool CCopasiXML::saveReportSection(const std::string & name,
 bool CCopasiXML::saveReportList()
 {
   bool success = true;
+
   if (!haveReportList()) return success;
 
   unsigned C_INT32 i, imax = mpReportList->size();
+
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
@@ -1192,19 +1248,23 @@ void CCopasiXML::saveCurve(const CLCurve& c)
 {
   CXMLAttributeList Attributes;
   startSaveElement("Curve");
+
   if (c.getNumCurveSegments() > 0)
     {
       startSaveElement("ListOfCurveSegments");
       unsigned C_INT32 i, imax = c.getNumCurveSegments();
+
       for (i = 0; i < imax; ++i)
         {
           const CLLineSegment & cs = c.getCurveSegments()[i];
 
           Attributes.erase();
+
           if (cs.isBezier())
             Attributes.add("xsi:type", "CubicBezier");
           else
             Attributes.add("xsi:type", "LineSegment");
+
           startSaveElement("CurveSegment", Attributes);
 
           savePosition(cs.getStart(), "Start");
@@ -1215,19 +1275,24 @@ void CCopasiXML::saveCurve(const CLCurve& c)
               savePosition(cs.getBase1(), "BasePoint1");
               savePosition(cs.getBase2(), "BasePoint2");
             }
+
           endSaveElement("CurveSegment");
         }
+
       endSaveElement("ListOfCurveSegments");
     }
+
   endSaveElement("Curve");
 }
 
 bool CCopasiXML::saveLayoutList()
 {
   bool success = true;
+
   if (!haveLayoutList()) return success;
 
   unsigned C_INT32 i, imax = mpLayoutList->size();
+
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
@@ -1257,6 +1322,7 @@ bool CCopasiXML::saveLayoutList()
           startSaveElement("ListOfCompartmentGlyphs");
 
           jmax = pLayout->getListOfCompartmentGlyphs().size();
+
           for (j = 0; j < jmax; ++j)
             {
               CLCompartmentGlyph* cg = pLayout->getListOfCompartmentGlyphs()[j];
@@ -1270,6 +1336,7 @@ bool CCopasiXML::saveLayoutList()
 
               endSaveElement("CompartmentGlyph");
             }
+
           endSaveElement("ListOfCompartmentGlyphs");
         }
 
@@ -1279,6 +1346,7 @@ bool CCopasiXML::saveLayoutList()
           startSaveElement("ListOfMetabGlyphs");
 
           jmax = pLayout->getListOfMetaboliteGlyphs().size();
+
           for (j = 0; j < jmax; ++j)
             {
               CLMetabGlyph* cg = pLayout->getListOfMetaboliteGlyphs()[j];
@@ -1292,6 +1360,7 @@ bool CCopasiXML::saveLayoutList()
 
               endSaveElement("MetaboliteGlyph");
             }
+
           endSaveElement("ListOfMetabGlyphs");
         }
 
@@ -1301,6 +1370,7 @@ bool CCopasiXML::saveLayoutList()
           startSaveElement("ListOfReactionGlyphs");
 
           jmax = pLayout->getListOfReactionGlyphs().size();
+
           for (j = 0; j < jmax; ++j)
             {
               CLReactionGlyph* cg = pLayout->getListOfReactionGlyphs()[j];
@@ -1318,6 +1388,7 @@ bool CCopasiXML::saveLayoutList()
               // metab reference glyphs
               startSaveElement("ListOfMetaboliteReferenceGlyphs");
               unsigned C_INT32 k, kmax = cg->getListOfMetabReferenceGlyphs().size();
+
               for (k = 0; k < kmax; ++k)
                 {
                   CLMetabReferenceGlyph * mrg = cg->getListOfMetabReferenceGlyphs()[k];
@@ -1336,10 +1407,12 @@ bool CCopasiXML::saveLayoutList()
 
                   endSaveElement("MetaboliteReferenceGlyph");
                 }
+
               endSaveElement("ListOfMetaboliteReferenceGlyphs");
 
               endSaveElement("ReactionGlyph");
             }
+
           endSaveElement("ListOfReactionGlyphs");
         }
 
@@ -1349,6 +1422,7 @@ bool CCopasiXML::saveLayoutList()
           startSaveElement("ListOfTextGlyphs");
 
           jmax = pLayout->getListOfTextGlyphs().size();
+
           for (j = 0; j < jmax; ++j)
             {
               CLTextGlyph* cg = pLayout->getListOfTextGlyphs()[j];
@@ -1356,6 +1430,7 @@ bool CCopasiXML::saveLayoutList()
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
               Attributes.add("graphicalObject", cg->getGraphicalObjectKey());
+
               if (cg->isTextSet())
                 Attributes.add("text", cg->getText());
               else
@@ -1367,6 +1442,7 @@ bool CCopasiXML::saveLayoutList()
 
               endSaveElement("TextGlyph");
             }
+
           endSaveElement("ListOfTextGlyphs");
         }
 
@@ -1376,6 +1452,7 @@ bool CCopasiXML::saveLayoutList()
           startSaveElement("ListOfAdditionalGraphicalObjects");
 
           jmax = pLayout->getListOfGraphicalObjects().size();
+
           for (j = 0; j < jmax; ++j)
             {
               CLGraphicalObject* cg = pLayout->getListOfGraphicalObjects()[j];
@@ -1388,6 +1465,7 @@ bool CCopasiXML::saveLayoutList()
 
               endSaveElement("AdditionalGraphicalObject");
             }
+
           endSaveElement("ListOfAdditionalGraphicalObjects");
         }
 
@@ -1402,6 +1480,7 @@ bool CCopasiXML::saveLayoutList()
 bool CCopasiXML::saveGUI()
 {
   bool success = true;
+
   if (!haveGUI()) return success;
 
   startSaveElement("GUI");
@@ -1425,6 +1504,7 @@ bool CCopasiXML::saveGUI()
       Attributes.add("scaling", "");
 
       unsigned C_INT32 i, imax = mpGUI->pSliderList->size();
+
       for (i = 0; i < imax; i++)
         {
           pSlider = (*mpGUI->pSliderList)[i];
@@ -1452,6 +1532,7 @@ bool CCopasiXML::saveGUI()
 bool CCopasiXML::saveSBMLReference()
 {
   assert(this->mpDataModel != NULL);
+
   if (!this->mpDataModel) return false;
 
   if (this->mpDataModel->getSBMLFileName() == "" ||
@@ -1461,6 +1542,7 @@ bool CCopasiXML::saveSBMLReference()
   CXMLAttributeList Attributes;
 
   std::string SBMLFile = this->mpDataModel->getSBMLFileName();
+
   if (!CDirEntry::isRelativePath(SBMLFile) &&
       !CDirEntry::makePathRelative(SBMLFile, mFilename))
     SBMLFile = CDirEntry::fileName(SBMLFile);

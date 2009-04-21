@@ -1,15 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include <stdlib.h>
 
 #include "copasi.h"
 
@@ -27,6 +29,23 @@ unsigned C_INT32 CMIRIAMResourceObject::getResource(const std::string & URI)
 //static
 const CMIRIAMResources & CMIRIAMResourceObject::getResourceList()
 {return *mpResources;}
+
+// static
+void CMIRIAMResourceObject::unescapeId(std::string & id)
+{
+  // We have to convert all %[0-9a-fA-F][0-9a-fA-F] character sequences to utf8 characters.
+  std::string::size_type pos;
+
+  for (pos = 0; pos < id.length(); pos++)
+    if (id[pos] == '%' &&
+        id.find_first_not_of("0123456789abcdefABCDEF", pos + 1) > pos + 2)
+      {
+        char ascii[2];
+        ascii[0] = (unsigned char) strtol(id.substr(pos + 1 , 2).c_str(), NULL, 16);
+        ascii[1] = NULL;
+        id.replace(pos, 3, CCopasiXMLInterface::utf8(ascii));
+      }
+}
 
 CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode):
     mId(),
@@ -83,9 +102,9 @@ bool CMIRIAMResourceObject::setURI(const std::string & URI)
 }
 
 std::string CMIRIAMResourceObject::getURI() const
-  {
-    return (mpResources->getMIRIAMResource(mResource)).getMIRIAMURI() + ":" + mId;
-  }
+{
+  return (mpResources->getMIRIAMResource(mResource)).getMIRIAMURI() + ":" + mId;
+}
 
 bool CMIRIAMResourceObject::setNode(CRDFNode * pNode)
 {
@@ -111,36 +130,36 @@ bool CMIRIAMResourceObject::setDisplayName(const std::string & displayName)
 }
 
 std::string CMIRIAMResourceObject::getDisplayName() const
-  {
-    // Check whether the resource is known.
-    if (mResource == C_INVALID_INDEX)
-      return "";
+{
+  // Check whether the resource is known.
+  if (mResource == C_INVALID_INDEX)
+    return "";
 
-    return (mpResources->getMIRIAMResource(mResource)).getMIRIAMDisplayName();
-  }
+  return (mpResources->getMIRIAMResource(mResource)).getMIRIAMDisplayName();
+}
 
 bool CMIRIAMResourceObject::isValid() const
-  {
-    // Check whether the resource is known.
-    if (mResource == C_INVALID_INDEX)
-      return false;
+{
+  // Check whether the resource is known.
+  if (mResource == C_INVALID_INDEX)
+    return false;
 
-    // Empty IDs are not allowed.
-    if (mId == "")
-      return false;
+  // Empty IDs are not allowed.
+  if (mId == "")
+    return false;
 
-    // TODO Check whether the Id matches the regular expression.
-    return true;
-  }
+  // TODO Check whether the Id matches the regular expression.
+  return true;
+}
 
 bool CMIRIAMResourceObject::isValid(const std::string & URI) const
-  {
-    if (mpResources->getMIRIAMResourceIndex(URI) != mResource ||
-        mResource == C_INVALID_INDEX)
-      return false;
+{
+  if (mpResources->getMIRIAMResourceIndex(URI) != mResource ||
+      mResource == C_INVALID_INDEX)
+    return false;
 
-    return true;
-  }
+  return true;
+}
 
 void CMIRIAMResourceObject::extractId(const std::string & URI)
 {
@@ -152,25 +171,29 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
     return;
 
   const std::string & tmp = (mpResources->getMIRIAMResource(mResource)).getMIRIAMURI();
+
   if (URI.substr(0, tmp.length()) == tmp &&
       URI.length() > tmp.length())
     mId = URI.substr(tmp.length() + 1);
 
-  if (mId != "")
-    return;
+  if (mId == "")
+    {
+      // We need to check for deprecated URIs
+      const CCopasiParameterGroup * pDeprecated = &(mpResources->getMIRIAMResource(mResource)).getMIRIAMDeprecated();
+      CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
+      CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
 
-  // We need to check for deprecated URIs
-  const CCopasiParameterGroup * pDeprecated = &(mpResources->getMIRIAMResource(mResource)).getMIRIAMDeprecated();
-  CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
-  CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
+      for (; itDeprecated != endDeprecated; ++itDeprecated)
+        if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING &&
+            URI.length() > (*itDeprecated)->getValue().pSTRING->length())
+          {
+            mId = URI.substr((*itDeprecated)->getValue().pSTRING->length() + 1);
+            break;
+          }
+    }
 
-  for (; itDeprecated != endDeprecated; ++itDeprecated)
-    if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING &&
-        URI.length() > (*itDeprecated)->getValue().pSTRING->length())
-      {
-        mId = URI.substr((*itDeprecated)->getValue().pSTRING->length() + 1);
-        break;
-      }
+  unescapeId(mId);
+
   return;
 }
 

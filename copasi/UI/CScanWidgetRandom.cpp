@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/04/07 23:36:06 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,7 @@
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/icons/Copasi16-Alpha.xpm"
 
-//#include <qvariant.h>
-//#include "CScanWidgetRandom.ui.h"
+#include "report/CCopasiRootContainer.h"
 
 /*
  *  Constructs a CScanWidgetRandom as a child of 'parent', with the
@@ -83,194 +82,194 @@ void CScanWidgetRandom::languageChange()
 
 void CScanWidgetRandom::init()
 {
-  /*  std::cout << "init: A" << std::endl;
-    lineEditObject->setReadOnly(true);
+  lineEditObject->setReadOnly(true);
 
-    lineEditMin->setValidator(new QDoubleValidator(lineEditMin));
-    lineEditMax->setValidator(new QDoubleValidator(lineEditMax));
+  lineEditMin->setValidator(new QDoubleValidator(lineEditMin));
+  lineEditMax->setValidator(new QDoubleValidator(lineEditMax));
 
-    mpObject = NULL;
-    std::cout << "init: B" << std::endl;
-  */}
+  mpObject = NULL;
+}
 
 void CScanWidgetRandom::slotChooseObject()
 {
-  /*  std::cout << "sCO: A" << std::endl;
-    const CCopasiObject * pObject =
-      //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE,
-      CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_PARAMETER,
-                                              mpObject);
+  const CCopasiObject * pObject =
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters,
+                                            mpObject);
 
-    if (mpObject != pObject) // Object selection changed.
-      {
-        mpObject = pObject;
+  if (mpObject != pObject) // Object selection changed.
+    {
+      mpObject = pObject;
 
-        if (mpObject)
-          {
-            lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
+      if (mpObject)
+        {
+          lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
 
-            if (mpObject->isValueDbl())
-              {
-                C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
-                C_INT32 type = comboBoxType->currentItem();
+          if (mpObject->isValueDbl())
+            {
+              C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
+              C_INT32 type = comboBoxType->currentItem();
 
-                if (type == 0) //uniform
-                  {
-                    lineEditMin->setText(QString::number(value*0.5));
-                    lineEditMax->setText(QString::number(value*2));
-                  }
+              if (type == 0) //uniform
+                {
+                  lineEditMin->setText(QString::number(value*0.5));
+                  lineEditMax->setText(QString::number(value*2));
+                }
 
-                if (type == 1) //normal
-                  {
-                    lineEditMin->setText(QString::number(value));
-                    lineEditMax->setText(QString::number(value*0.1));
-                  }
+              if (type == 1) //normal
+                {
+                  lineEditMin->setText(QString::number(value));
+                  lineEditMax->setText(QString::number(value*0.1));
+                }
 
-                if (type == 2) //poisson
-                  {
-                    lineEditMin->setText(QString::number(value));
-                    lineEditMax->setText("");
-                  }
-              }
-          }
-        else
-          {
-            lineEditObject->setText("");
-            lineEditMin->setText("");
-            lineEditMax->setText("");
-          }
-      }
-    std::cout << "sCO: B" << std::endl;
-  */}
+              if (type == 2) //poisson
+                {
+                  lineEditMin->setText(QString::number(value));
+                  lineEditMax->setText("");
+                }
+            }
+        }
+      else
+        {
+          lineEditObject->setText("");
+          lineEditMin->setText("");
+          lineEditMax->setText("");
+        }
+    }
+}
 
 #include "report/CCopasiObjectName.h"
 bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)
 {
-  /*  std::cout << "iFSI: A" << std::endl;
-    if (!model) return false;
-    mpModel = model;
+  if (!model) return false;
 
-    unsigned C_INT32 * tmp;
+  mpModel = model;
 
-    if (!(tmp = pg->getValue("Type").pUINT)) return false;
-    if (* (CScanProblem::Type *) tmp != CScanProblem::SCAN_RANDOM)
-      return false;
+  unsigned C_INT32 * tmp;
 
-    std::string *pString;
-    if (!(pString = pg->getValue("Object").pSTRING)) return false;
-    if (*pString == "")
-      mpObject = NULL;
-    else
-      mpObject = CCopasiContainer::ObjectFromName(*pString);
+  if (!(tmp = pg->getValue("Type").pUINT)) return false;
 
-    if (mpObject)
-      lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
-    else
-      lineEditObject->setText("");
+  if (*(CScanProblem::Type *) tmp != CScanProblem::SCAN_RANDOM)
+    return false;
 
-    if (!(tmp = pg->getValue("Distribution type").pUINT)) return false;
+  std::string *pString;
 
-    std::cout << "iFSI: B" << std::endl;
+  if (!(pString = pg->getValue("Object").pSTRING)) return false;
 
-    comboBoxType->setCurrentItem(*tmp);
-    changeType();
+  if (*pString == "")
+    mpObject = NULL;
+  else
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+      assert(pDataModel != NULL);
+      mpObject = pDataModel->getObject(*pString);
+    }
 
-    lineEditMin->setText(getParameterValue(pg, "Minimum"));
-    lineEditMax->setText(getParameterValue(pg, "Maximum"));
+  if (mpObject)
+    lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
+  else
+    lineEditObject->setText("");
 
-    bool * pBool;
-    if (!(pBool = pg->getValue("log").pBOOL)) return false;
-    checkBoxLog->setChecked(* pBool);
+  if (!(tmp = pg->getValue("Distribution type").pUINT)) return false;
 
-    std::cout << "iFSI: C" << std::endl;
-   */
+  comboBoxType->setCurrentItem(*tmp);
+  changeType();
+
+  lineEditMin->setText(getParameterValue(pg, "Minimum"));
+  lineEditMax->setText(getParameterValue(pg, "Maximum"));
+
+  bool * pBool;
+
+  if (!(pBool = pg->getValue("log").pBOOL)) return false;
+
+  checkBoxLog->setChecked(* pBool);
+
   return true;
 }
 
 bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
 {
-  /*  std::cout << "sTSI: A" << std::endl;
-      CScanProblem::Type type = CScanProblem::SCAN_RANDOM;
+  CScanProblem::Type type = CScanProblem::SCAN_RANDOM;
 
-      unsigned C_INT32 steps = 1;
+  unsigned C_INT32 steps = 1;
 
-      CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
-      assert(tmp);
+  CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
+  assert(tmp);
 
-      tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentItem());
-      tmp->setValue("Minimum", lineEditMin->text().toDouble());
-      tmp->setValue("Maximum", lineEditMax->text().toDouble());
-      tmp->setValue("log", checkBoxLog->isChecked());
+  tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentItem());
+  tmp->setValue("Minimum", lineEditMin->text().toDouble());
+  tmp->setValue("Maximum", lineEditMax->text().toDouble());
+  tmp->setValue("log", checkBoxLog->isChecked());
 
-    std::cout << "sTSI: B" << std::endl;
-   */
   return true;
 }
 
 void CScanWidgetRandom::changeType()
 {
-  /*  C_INT32 type = comboBoxType->currentItem();
-    C_FLOAT64 value = 0.0;
+  C_INT32 type = comboBoxType->currentItem();
+  C_FLOAT64 value = 0.0;
 
-    if (mpObject != NULL)
-      value = *(C_FLOAT64*)mpObject->getValuePointer();
+  if (mpObject != NULL)
+    value = *(C_FLOAT64*)mpObject->getValuePointer();
 
-    if (type == 0) //uniform
-      {
-        lineEditMin->setEnabled(true);
-        lineEditMax->setEnabled(true);
+  if (type == 0) //uniform
+    {
+      lineEditMin->setEnabled(true);
+      lineEditMax->setEnabled(true);
 
-        labelMin->setText("min");
-        labelMax->setText("max");
+      labelMin->setText("min");
+      labelMax->setText("max");
 
-        if (mpObject != NULL)
-          {
-            lineEditMin->setText(QString::number(value*0.5));
-            lineEditMax->setText(QString::number(value*2));
-          }
-        else
-          {
-            lineEditMin->setText("");
-            lineEditMax->setText("");
-          }
-      }
-
-    if (type == 1) //normal
-      {
-        lineEditMin->setEnabled(true);
-        lineEditMax->setEnabled(true);
-
-        labelMin->setText("mean");
-        labelMax->setText("standard deviation");
-
-        if (mpObject != NULL)
-          {
-            lineEditMin->setText(QString::number(value));
-            lineEditMax->setText(QString::number(value*0.1));
-          }
-        else
-          {
-            lineEditMin->setText("");
-            lineEditMax->setText("");
-          }
-      }
-
-    if (type == 2) //poisson
-      {
-        lineEditMin->setEnabled(true);
-        lineEditMax->setEnabled(false);
-
-        labelMin->setText("mean");
-        labelMax->setText("");
-
-        if (mpObject != NULL)
-          lineEditMin->setText(QString::number(value));
-        else
+      if (mpObject != NULL)
+        {
+          lineEditMin->setText(QString::number(value*0.5));
+          lineEditMax->setText(QString::number(value*2));
+        }
+      else
+        {
           lineEditMin->setText("");
+          lineEditMax->setText("");
+        }
+    }
 
-        lineEditMax->setText("");
-      }
+  if (type == 1) //normal
+    {
+      lineEditMin->setEnabled(true);
+      lineEditMax->setEnabled(true);
 
-    //TODO: handle log: rename standard deviation -> sd factor,
-    //                  disable poisson?
-  */}
+      labelMin->setText("mean");
+      labelMax->setText("standard deviation");
+
+      if (mpObject != NULL)
+        {
+          lineEditMin->setText(QString::number(value));
+          lineEditMax->setText(QString::number(value*0.1));
+        }
+      else
+        {
+          lineEditMin->setText("");
+          lineEditMax->setText("");
+        }
+    }
+
+  if (type == 2) //Poisson
+    {
+      lineEditMin->setEnabled(true);
+      lineEditMax->setEnabled(false);
+
+      labelMin->setText("mean");
+      labelMax->setText("");
+
+      if (mpObject != NULL)
+        lineEditMin->setText(QString::number(value));
+      else
+        lineEditMin->setText("");
+
+      lineEditMax->setText("");
+    }
+
+  //TODO: handle log: rename standard deviation -> sd factor,
+  //                  disable Poisson?
+}

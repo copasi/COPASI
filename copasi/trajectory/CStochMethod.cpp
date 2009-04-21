@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:36:24 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,6 +53,7 @@ CStochMethod *
 CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
 {
   C_INT32 result = 2; // next reaction method as default
+
   if (pProblem && pProblem->getModel())
     {
       result = checkModel(pProblem->getModel());
@@ -169,6 +170,7 @@ void CStochMethod::step(const double & deltaT)
     {
       time = doSingleStep(time, endtime);
     }
+
   mpCurrentState->setTime(time);
 
   if ((i >= (unsigned C_INT32) mMaxSteps) && (!mMaxStepsReached))
@@ -181,6 +183,7 @@ void CStochMethod::step(const double & deltaT)
 
   /* Set the variable Metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
+
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
@@ -194,6 +197,7 @@ void CStochMethod::start(const CState * initialState)
 
   bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
   unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
+
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
   //mpCurrentState is initialized. This state is not used internally in the
@@ -215,6 +219,7 @@ void CStochMethod::start(const CState * initialState)
   //initialize the vector of ints that contains the particle numbers
   //for the discrete simulation. This also floors all particle numbers in the model.
   mNumbers.resize(mpModel->getMetabolitesX().size());
+
   for (i = 0; i < mNumbers.size(); ++i)
     {
       mNumbers[i] = (C_INT64) mpModel->getMetabolitesX()[i]->getValue();
@@ -232,6 +237,7 @@ void CStochMethod::start(const CState * initialState)
   mNumReactions = mpModel->getReactions().size();
 
   mAmu.clear(); mAmuOld.clear();
+
   for (i = 0; i < mNumReactions; i++)
     {
       mAmu.push_back(0);
@@ -310,10 +316,11 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
           number = mNumbers[substrates[i].mIndex];
           lower_bound = number - num_ident;
           //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
-          substrate_factor = substrate_factor * pow((double) number, (int) (num_ident - 1)); //optimization
+          substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
           //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
           number--; //optimization
+
           while (number > lower_bound)
             {
               amu *= number;
@@ -368,6 +375,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
   std::vector<CStochBalance>::const_iterator bi;
   CMetab* pTmpMetab;
+
   for (bi = bals.begin(); bi != bals.end(); bi++)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
@@ -392,6 +400,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       //(the integer values may be used to calculate the propensities for
       //higher order kinetics).
       unsigned C_INT32 i, imax = mNumbers.size();
+
       for (i = 0; i < imax; ++i)
         {
           if (mpModel->getMetabolitesX()[i]->getStatus() == CModelEntity::ASSIGNMENT)
@@ -411,6 +420,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
       std::set<unsigned C_INT32>::const_iterator it;
       unsigned int ii;
+
       for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
         {
           ii = *it;
@@ -436,8 +446,10 @@ C_INT32 CStochMethod::generateReactionIndex()
   while (index < (mpModel->getReactions().size() - 1))
     {
       sum += mAmu[index] /* /mA0 */;
+
       if (rand1 <= sum)
-      {return index;}
+        {return index;}
+
       index++;
     }
 
@@ -447,6 +459,7 @@ C_INT32 CStochMethod::generateReactionIndex()
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
   if (mA0 == 0) return 2.0 * DBL_MAX;
+
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mA0;
 }
@@ -454,6 +467,7 @@ C_FLOAT64 CStochMethod::generateReactionTime()
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
   if (mAmu[reaction_index] == 0) return 2.0 * DBL_MAX;
+
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[reaction_index];
 }
@@ -481,6 +495,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
   mDG.resize(mNumReactions);
+
   for (i = 0; i < mNumReactions; i++)
     {
       for (j = 0; j < mNumReactions; j++)
@@ -520,6 +535,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
       const CCopasiVector<CChemEqElement> * bbb;
 
       bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
+
       //std::cout << std::endl << i << " : ";
       //TODO clear old local balances and substrates
       for (j = 0; j < bbb->size(); j++)
@@ -533,12 +549,14 @@ void CStochMethod::setupDependencyGraphAndBalances()
           if (((*bbb)[j]->getMetabolite()->getStatus()) != CModelEntity::FIXED)
             {
               if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
+
               mLocalBalances[i].push_back(bb);
               //std::cout << bb.mMetabAddr->getObjectName(() << "  ";
             }
         }
 
       bbb = &mpModel->getReactions()[i]->getChemEq().getSubstrates();
+
       //std::cout << std::endl << i << " : ";
       for (j = 0; j < bbb->size(); j++)
         {
@@ -555,6 +573,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
             }
         }
     }
+
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
@@ -583,16 +602,19 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
     {
       if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == CFunctionParameter::PARAMETER)
         continue;
+
       //metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
       const std::vector <std::string> & metabKeylist =
         mpModel->getReactions()[reaction_index]->getParameterMappings()[i];
       jmax = metabKeylist.size();
+
       for (j = 0; j < jmax; ++j)
         {
           retset->insert(metabKeylist[j]);
           //std::cout << "  " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
+
   //std::cout << std::endl;
   return retset;
 }
@@ -610,6 +632,7 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
       if (!balances[i]->getMetabolite()) continue;
+
       if (fabs(balances[i]->getMultiplicity()) >= 0.1)
         if (balances[i]->getMetabolite()->getStatus() != CModelEntity::FIXED)
           {
@@ -645,6 +668,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   //check for rules
   C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+
   for (i = 0; i < imax; ++i)
     {
       if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
@@ -654,7 +678,9 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
     }
+
   imax = pTP->getModel()->getNumMetabs();
+
   for (i = 0; i < imax; ++i)
     {
       if (pTP->getModel()->getMetabolites()[i]->getStatus() == CModelEntity::ODE)
@@ -664,7 +690,9 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
     }
+
   imax = pTP->getModel()->getCompartments().size();
+
   for (i = 0; i < imax; ++i)
     {
       if (pTP->getModel()->getCompartments()[i]->getStatus() == CModelEntity::ODE)
@@ -685,6 +713,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
+
   if (message != "")
     {
       //model not suitable, message describes the problem
@@ -699,6 +728,12 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  if (pTP->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 22);
+      return false;
+    }
+
   return true;
 }
 
@@ -706,6 +741,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
 bool CStochMethod::modelHasAssignments(const CModel* pModel)
 {
   C_INT32 i, imax = pModel->getNumModelValues();
+
   for (i = 0; i < imax; ++i)
     {
       if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
@@ -717,6 +753,7 @@ bool CStochMethod::modelHasAssignments(const CModel* pModel)
     }
 
   imax = pModel->getNumMetabs();
+
   for (i = 0; i < imax; ++i)
     {
       if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
@@ -728,6 +765,7 @@ bool CStochMethod::modelHasAssignments(const CModel* pModel)
     }
 
   imax = pModel->getCompartments().size();
+
   for (i = 0; i < imax; ++i)
     {
       if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)

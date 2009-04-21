@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodStatistics.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2009/04/21 16:18:08 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -51,7 +56,7 @@ bool COptMethodStatistics::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
 
   mVariableSize = mpOptItem->size();
   mIndividual.resize(mVariableSize);
@@ -73,7 +78,7 @@ bool COptMethodStatistics::optimise()
 
   unsigned C_INT32 j;
 
-  // initialise the population
+  // Initialize the population
   // first individual is the initial guess
   for (j = 0; j < mVariableSize; j++)
     {
@@ -85,13 +90,13 @@ bool COptMethodStatistics::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -122,7 +127,7 @@ bool COptMethodStatistics::evaluate(const CVector< C_FLOAT64 > & /* individual *
   // evaluate the fitness
   Continue = mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
+  // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
     mValue = DBL_MAX;
   else

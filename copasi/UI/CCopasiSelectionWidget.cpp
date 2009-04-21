@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:54:59 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,14 +39,15 @@ CCopasiSelectionWidget::~CCopasiSelectionWidget()
 }
 
 void CCopasiSelectionWidget::populateTree(const CModel * model,
-    const CCopasiSimpleSelectionTree::SelectionFlag & flag)
+    const CCopasiSimpleSelectionTree::ObjectClasses & classes)
 {
-  this->mpSimpleTree->populateTree(model, flag);
+  this->mpSimpleTree->populateTree(model, classes);
 }
 
 void CCopasiSelectionWidget::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
 {
   this->mpOutputVector = outputVector;
+
   if (this->mExpertMode)
     {
       this->mpObjectBrowser->setOutputVector(this->mpOutputVector);
@@ -60,11 +61,14 @@ void CCopasiSelectionWidget::setOutputVector(std::vector< const CCopasiObject * 
 void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
 {
   if (this->mSingleSelect == singleSelection) return;
+
   this->mSingleSelect = singleSelection;
   this->mpSimpleTree->clearSelection();
+
   if (this->mSingleSelect)
     {
       this->mpSimpleTree->setSelectionMode(Q3ListView::Single);
+
       if (this->mpObjectBrowser)
         {
           /* this needs to be implemented first !
@@ -77,6 +81,7 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
   else
     {
       this->mpSimpleTree->setSelectionMode(Q3ListView::Extended);
+
       if (this->mpObjectBrowser)
         {
           /* this needs to be implemented first !
@@ -89,14 +94,16 @@ void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
 }
 
 bool CCopasiSelectionWidget::isSingleSelection() const
-  {
-    return this->mSingleSelect;
-  }
+{
+  return this->mSingleSelect;
+}
 
 void CCopasiSelectionWidget::setExpertMode(bool expertMode)
 {
   if (this->mExpertMode == expertMode) return;
+
   this->mExpertMode = expertMode;
+
   if (this->mExpertMode)
     {
       if (!this->mpObjectBrowser)
@@ -106,6 +113,7 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
           this->mpObjectBrowser = new ObjectBrowserWidget(this);
           this->addWidget(this->mpObjectBrowser);
         }
+
       this->mpSimpleTree->commitClicked();
       this->mpSimpleTree->setOutputVector(NULL);
       this->mpObjectBrowser->setOutputVector(this->mpOutputVector);
@@ -119,15 +127,16 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
           this->mpObjectBrowser->commitClicked();
           this->mpObjectBrowser->setOutputVector(NULL);
         }
+
       this->mpSimpleTree->setOutputVector(this->mpOutputVector);
       this->raiseWidget(this->mpSimpleTree);
     }
 }
 
 bool CCopasiSelectionWidget::expertMode() const
-  {
-    return this->mExpertMode;
-  }
+{
+  return this->mExpertMode;
+}
 
 void CCopasiSelectionWidget::commit()
 {
@@ -136,6 +145,7 @@ void CCopasiSelectionWidget::commit()
       if (this->mExpertMode)
         {
           this->mpObjectBrowser->commitClicked();
+
           if (this->mSingleSelect && this->mpOutputVector->size() > 1)
             {
               const CCopasiObject * object = this->mpOutputVector->at(0);

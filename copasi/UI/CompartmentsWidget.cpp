@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,17 +53,18 @@
 #define COL_EXPRESSION   7
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
-  {
-    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    CCopasiVectorN<CCompartment>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
-    std::vector<const CCopasiObject*> ret;
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiVectorN<CCompartment>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
+  std::vector<const CCopasiObject*> ret;
 
-    C_INT32 i, imax = tmp.size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(tmp[i]);
+  C_INT32 i, imax = tmp.size();
 
-    return ret;
-  }
+  for (i = 0; i < imax; ++i)
+    ret.push_back(tmp[i]);
+
+  return ret;
+}
 
 void CompartmentsWidget::init()
 {
@@ -79,14 +80,14 @@ void CompartmentsWidget::init()
   // tableHeader->setLabel(COL_IVOLUME, "Initial Volume");
   // tableHeader->setLabel(COL_VOLUME, "Volume");
   // tableHeader->setLabel(COL_RATE, "Rate");
-  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
-  tableHeader->setLabel(COL_EXPRESSION, "Expression");
+  // tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression");
+  // tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   // Set readonly
-  table->setColumnReadOnly (COL_VOLUME, true);
-  table->setColumnReadOnly (COL_RATE, true);
-  table->setColumnReadOnly (COL_IEXPRESSION, true);
-  table->setColumnReadOnly (COL_EXPRESSION, true);
+  table->setColumnReadOnly(COL_VOLUME, true);
+  table->setColumnReadOnly(COL_RATE, true);
+  table->setColumnReadOnly(COL_IEXPRESSION, true);
+  table->setColumnReadOnly(COL_EXPRESSION, true);
 
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
@@ -99,22 +100,57 @@ void CompartmentsWidget::init()
 
 void CompartmentsWidget::updateHeaderUnits()
 {
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  if (pModel == NULL)
+    return;
+
   Q3Header *tableHeader = table->horizontalHeader();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
+  // Update the labels to reflect the model units
+  QString ValueUnits;
+
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getVolumeUnits());
+
+  if (!ValueUnits.isEmpty())
+    ValueUnits = "\n(" + ValueUnits + ")";
+
+  QString RateUnits;
+
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getVolumeRateUnits());
+
+  if (!RateUnits.isEmpty())
+    RateUnits = "\n(" + RateUnits + ")";
+
+  tableHeader->setLabel(COL_IVOLUME, "Initial Volume" + ValueUnits);
+  tableHeader->setLabel(COL_VOLUME, "Volume" + ValueUnits);
+  tableHeader->setLabel(COL_RATE, "Rate" + RateUnits);
+  tableHeader->setLabel(COL_IEXPRESSION, "Initial Expression" + ValueUnits);
+
+  QString ExpressionUnits;
+
+  if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())
     {
-      std::string str = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getVolumeUnitName();
-      tableHeader->setLabel(COL_IVOLUME, "Initial Volume\n(" + FROM_UTF8(str) + ")");
-      tableHeader->setLabel(COL_VOLUME, "Volume\n(" + FROM_UTF8(str) + ")");
-      tableHeader->setLabel(COL_RATE,
-                            "Rate\n(" + FROM_UTF8(str) + "/" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
+      if (ValueUnits == RateUnits)
+        ExpressionUnits = ValueUnits;
+      else
+        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnits()) + " or " + FROM_UTF8(pModel->getVolumeRateUnits()) + ")";
     }
+  else if (!ValueUnits.isEmpty())
+    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnits()) + " or 1)";
+  else if (!RateUnits.isEmpty())
+    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getVolumeRateUnits()) + ")";
+
+  tableHeader->setLabel(COL_EXPRESSION, "Expression" + ExpressionUnits);
 }
 
 void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
+
   const CCompartment * pComp = static_cast< const CCompartment * >(obj);
 
   // Name
@@ -127,6 +163,7 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
 
   // Initial Volume
   table->setText(row, COL_IVOLUME, QString::number(pComp->getInitialValue()));
+
   if (pComp->getStatus() == CModelEntity::ASSIGNMENT ||
       pComp->getInitialExpression() != "")
     table->item(row, COL_IVOLUME)->setEnabled(false);
@@ -140,10 +177,12 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
   table->setText(row, COL_RATE, QString::number(pComp->getRate()));
 
   const CExpression * pExpression = NULL;
+
   // Initial Expression
   if (pComp->getInitialExpression() != "")
     {
       pExpression = pComp->getInitialExpressionPtr();
+
       if (pExpression != NULL)
         table->setText(row, COL_IEXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
       else
@@ -152,6 +191,7 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
 
   // Expression
   pExpression = pComp->getExpressionPtr();
+
   if (pExpression != NULL)
     table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
   else
@@ -161,6 +201,7 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
 void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+
   CCompartment * pComp = static_cast< CCompartment * >(obj);
 
   // Type
@@ -203,9 +244,9 @@ void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned 
 }
 
 QString CompartmentsWidget::defaultObjectName() const
-  {
-    return "compartment";
-  }
+{
+  return "compartment";
+}
 
 CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
 {
@@ -213,6 +254,7 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
   int i = 0;
   CCompartment* pCom;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   while (!(pCom = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(nname)))
     {
       i++;
@@ -229,6 +271,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL)
     return;
 
@@ -247,6 +290,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
   bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
+
   for (i = 0; i < imax; i++) //all compartments
     {
       CCompartment* comp =
@@ -267,6 +311,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           reacFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
           for (it = Reactions.begin(); it != itEnd; ++it)
             {
               effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -283,6 +328,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           metabFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
           for (it = Metabolites.begin(); it != itEnd; ++it)
             {
               effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -299,6 +345,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           valueFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
           for (it = Values.begin(); it != itEnd; ++it)
             {
               effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -315,6 +362,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         {
           compartmentFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
           for (it = Compartments.begin(); it != itEnd; ++it)
             {
               effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -357,6 +405,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
     }
 
   C_INT32 choice = 0;
+
   if (metabFound || reacFound || compartmentFound || valueFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
@@ -365,7 +414,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                    // Yes or Enter
+      case 0:                    // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -374,14 +423,15 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
         for (i = 0; i < imax; i++)
           protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, keys[i]);
+
         //TODO notify about metabs and reactions
 
         mChanged = true;
         break;
       }
 
-    default:                    // No or Escape
-      break;
+      default:                    // No or Escape
+        break;
     }
 }
 
@@ -389,15 +439,18 @@ void CompartmentsWidget::valueChanged(unsigned C_INT32 row, unsigned C_INT32 col
 {
   switch (col)
     {
-    case COL_TYPE:
-      if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
-        table->item(row, COL_IVOLUME)->setEnabled(false);
-      else
-        table->item(row, COL_IVOLUME)->setEnabled(true);
-      break;
+      case COL_TYPE:
 
-    default:
-      break;
+        if (CModelEntity::ASSIGNMENT == (CModelEntity::Status) mItemToType[static_cast<Q3ComboTableItem *>(table->item(row, COL_TYPE))->currentItem()])
+          table->item(row, COL_IVOLUME)->setEnabled(false);
+        else
+          table->item(row, COL_IVOLUME)->setEnabled(true);
+
+        break;
+
+      default:
+        break;
     }
+
   return;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,60 +17,63 @@
 
 // static
 const std::string CRDFPredicate::PredicateURI[] =
-  {
-    /* These are proposed to replace:
-     * http://biomodels.net/biology-qualifiers/...
-     * http://biomodels.net/model-qualifiers/...
-     */
-    "http://www.copasi.org/RDF/MiriamTerms#encodes", // copasi_encodes
-    "http://www.copasi.org/RDF/MiriamTerms#hasPart", // copasi_hasPart
-    "http://www.copasi.org/RDF/MiriamTerms#hasVersion", // copasi_hasVersion
-    "http://www.copasi.org/RDF/MiriamTerms#is", // copasi_is
-    "http://www.copasi.org/RDF/MiriamTerms#isDescribedBy", // copasi_isDescribedBy
-    "http://www.copasi.org/RDF/MiriamTerms#isEncodedBy", // copasi_isEncodedBy
-    "http://www.copasi.org/RDF/MiriamTerms#isHomologTo", // copasi_isHomologTo
-    "http://www.copasi.org/RDF/MiriamTerms#isPartOf", // copasi_isPartOf
-    "http://www.copasi.org/RDF/MiriamTerms#isVersionOf", // copasi_isVersionOf
-    "http://www.copasi.org/RDF/MiriamTerms#occursIn", // copasi_occursIn
-    // "http://www.copasi.org/RDF/MiriamTerms#modification", // copasi_modification
-    "http://biomodels.net/biology-qualifiers/encodes", // bqbiol_encodes
-    "http://biomodels.net/biology-qualifiers/hasPart", // bqbiol_hasPart
-    "http://biomodels.net/biology-qualifiers/hasVersion", // bqbiol_hasVersion
-    "http://biomodels.net/biology-qualifiers/is", // bqbiol_is
-    "http://biomodels.net/biology-qualifiers/isDescribedBy", // bqbiol_isDescribedBy
-    "http://biomodels.net/biology-qualifiers/isEncodedBy", // bqbiol_isEncodedBy
-    "http://biomodels.net/biology-qualifiers/isHomologTo", // bqbiol_isHomologTo
-    "http://biomodels.net/biology-qualifiers/isPartOf", // bqbiol_isPartOf
-    "http://biomodels.net/biology-qualifiers/isVersionOf", // bqbiol_isVersionOf
-    "http://biomodels.net/biology-qualifiers/occursIn", // copasi_occursIn
-    "http://biomodels.net/model-qualifiers/is", // bqmodel_is
-    "http://biomodels.net/model-qualifiers/isDescribedBy", // bqmodel_isDescribedBy
-    "http://purl.org/dc/elements/1.1/creator", // dc_creator
-    "http://purl.org/dc/terms/creator", // dcterms_creator
-    "http://purl.org/dc/terms/bibliographicCitation", // dcterms_bibliographicCitation
-    // "http://purl.org/dc/terms/contributor", // dcterms_contributor
-    "http://purl.org/dc/terms/created", // dcterms_created
-    "http://purl.org/dc/terms/description", // dcterms_description,
-    // "http://purl.org/dc/terms/license", // dcterms_license
-    "http://purl.org/dc/terms/modified", // dcterms_modified
-    // "http://purl.org/dc/terms/rights", // dcterms_rights
-    // "http://purl.org/dc/terms/rightsHolder", // dcterms_rightsHolder
-    "http://purl.org/dc/terms/W3CDTF", // dcterms_W3CDTF
-    "http://www.w3.org/2001/vcard-rdf/3.0#EMAIL", // vcard_EMAIL
-    "http://www.w3.org/2001/vcard-rdf/3.0#Family", // vcard_Family
-    "http://www.w3.org/2001/vcard-rdf/3.0#Given", // vcard_Given
-    "http://www.w3.org/2001/vcard-rdf/3.0#N", // vcard_N
-    "http://www.w3.org/2001/vcard-rdf/3.0#ORG", // vcard_ORG
-    "http://www.w3.org/2001/vcard-rdf/3.0#Orgname", // vcard_Orgname
-    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", // rdf_type,
-    "http://www.w3.org/1999/02/22-rdf-syntax-ns#li", // rdf_li
-    "http://www.w3.org/1999/02/22-rdf-syntax-ns#_", // rdf__n
-    "", // unknown
-    // For internal use
-    "about", // about
-    "any", // any
-    "end" // end
-  };
+{
+  /* These are proposed to replace:
+   * http://biomodels.net/biology-qualifiers/...
+   * http://biomodels.net/model-qualifiers/...
+   */
+  "http://www.copasi.org/RDF/MiriamTerms#encodes", // copasi_encodes
+  "http://www.copasi.org/RDF/MiriamTerms#hasPart", // copasi_hasPart
+  "http://www.copasi.org/RDF/MiriamTerms#hasVersion", // copasi_hasVersion
+  "http://www.copasi.org/RDF/MiriamTerms#is", // copasi_is
+  "http://www.copasi.org/RDF/MiriamTerms#isDescribedBy", // copasi_isDescribedBy
+  "http://www.copasi.org/RDF/MiriamTerms#isEncodedBy", // copasi_isEncodedBy
+  "http://www.copasi.org/RDF/MiriamTerms#isHomologTo", // copasi_isHomologTo
+  "http://www.copasi.org/RDF/MiriamTerms#isPartOf", // copasi_isPartOf
+  "http://www.copasi.org/RDF/MiriamTerms#isVersionOf", // copasi_isVersionOf
+  "http://www.copasi.org/RDF/MiriamTerms#occursIn", // copasi_occursIn
+  // "http://www.copasi.org/RDF/MiriamTerms#modification", // copasi_modification
+  "http://biomodels.net/biology-qualifiers/encodes", // bqbiol_encodes
+  "http://biomodels.net/biology-qualifiers/hasPart", // bqbiol_hasPart
+  "http://biomodels.net/biology-qualifiers/hasVersion", // bqbiol_hasVersion
+  "http://biomodels.net/biology-qualifiers/is", // bqbiol_is
+  "http://biomodels.net/biology-qualifiers/isDescribedBy", // bqbiol_isDescribedBy
+  "http://biomodels.net/biology-qualifiers/isEncodedBy", // bqbiol_isEncodedBy
+  "http://biomodels.net/biology-qualifiers/isHomologTo", // bqbiol_isHomologTo
+  "http://biomodels.net/biology-qualifiers/isPartOf", // bqbiol_isPartOf
+  "http://biomodels.net/biology-qualifiers/isVersionOf", // bqbiol_isVersionOf
+  "http://biomodels.net/biology-qualifiers/occursIn", // copasi_occursIn
+  "http://biomodels.net/model-qualifiers/is", // bqmodel_is
+  "http://biomodels.net/model-qualifiers/isDescribedBy", // bqmodel_isDescribedBy
+  "http://purl.org/dc/elements/1.1/creator", // dc_creator
+  "http://purl.org/dc/terms/creator", // dcterms_creator
+  "http://purl.org/dc/terms/bibliographicCitation", // dcterms_bibliographicCitation
+  // "http://purl.org/dc/terms/contributor", // dcterms_contributor
+  "http://purl.org/dc/terms/created", // dcterms_created
+  "http://purl.org/dc/terms/description", // dcterms_description,
+  // "http://purl.org/dc/terms/license", // dcterms_license
+  "http://purl.org/dc/terms/modified", // dcterms_modified
+  // "http://purl.org/dc/terms/rights", // dcterms_rights
+  // "http://purl.org/dc/terms/rightsHolder", // dcterms_rightsHolder
+  "http://purl.org/dc/terms/W3CDTF", // dcterms_W3CDTF
+  "http://www.w3.org/2001/vcard-rdf/3.0#EMAIL", // vcard_EMAIL
+  "http://www.w3.org/2001/vcard-rdf/3.0#Family", // vcard_Family
+  "http://www.w3.org/2001/vcard-rdf/3.0#Given", // vcard_Given
+  "http://www.w3.org/2001/vcard-rdf/3.0#N", // vcard_N
+  "http://www.w3.org/2001/vcard-rdf/3.0#ORG", // vcard_ORG
+  "http://www.w3.org/2001/vcard-rdf/3.0#Orgname", // vcard_Orgname
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", // rdf_type,
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#li", // rdf_li
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#_", // rdf__n
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject", //rdf_subject
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate", //rdf_predicate
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#object", //rdf_object
+  "", // unknown
+  // For internal use
+  "about", // about
+  "any", // any
+  "end" // end
+};
 
 // static
 std::map< std::string, CRDFPredicate::ePredicateType > CRDFPredicate::URI2Predicate;
@@ -92,60 +95,63 @@ void CRDFPredicate::createURI2Predicate()
 
 // static
 const std::string CRDFPredicate::PredicateDisplayName[] =
-  {
-    /* These are proposed to replace:
-     * http://biomodels.net/biology-qualifiers/...
-     * http://biomodels.net/model-qualifiers/...
-     */
-    "encodes", // copasi_encodes
-    "has part", // copasi_hasPart
-    "has version", // copasi_hasVersion
-    "is", // copasi_is
-    "is described by", // copasi_isDescribedBy
-    "is encoded by", // copasi_isEncodedBy
-    "is homolog to", // copasi_isHomologTo
-    "is part of", // copasi_isPartOf
-    "is version of", // copasi_isVersionOf
-    "occurs in", // copasi_occursIn
-    // "modification", // copasi_modification
-    "encodes", // bqbiol_encodes
-    "has part", // bqbiol_hasPart
-    "has version", // bqbiol_hasVersion
-    "is", // bqbiol_is
-    "is described by", // bqbiol_isDescribedBy
-    "is encoded by", // bqbiol_isEncodedBy
-    "is homolog to", // bqbiol_isHomologTo
-    "is part of", // bqbiol_isPartOf
-    "is version of", // bqbiol_isVersionOf
-    "occurs in", // bqbiol_occursIn
-    "is", // bqmodel_is
-    "is described by", // bqmodel_isDescribedBy
-    "creator", // dc_creator
-    "creator", // dcterms_creator
-    "bibliographic citation", // dcterms_bibliographicCitation
-    // "contributor", // dcterms_contributor
-    "created at", // dcterms_created
-    "description", // dcterms_description
-    // "license", // dcterms_license
-    "modified at", // dcterms_modified
-    // "rights", // dcterms_rights
-    // "rights holder", // dcterms_rightsHolder
-    "date", // dcterms_W3CDTF
-    "EMAIL", // vcard_EMAIL
-    "family name", // vcard_Family
-    "given name", // vcard_Given
-    "name", // vcard_N
-    "organization", // vcard_ORG
-    "name", // vcard_Orgname
-    "type", // rdf_type,
-    "*", // rdf_li
-    "*", // rdf__n
-    "", // unknown
-    // For internal use
-    "about", // about
-    "any", // any
-    "end" // end
-  };
+{
+  /* These are proposed to replace:
+   * http://biomodels.net/biology-qualifiers/...
+   * http://biomodels.net/model-qualifiers/...
+   */
+  "encodes", // copasi_encodes
+  "has part", // copasi_hasPart
+  "has version", // copasi_hasVersion
+  "is", // copasi_is
+  "is described by", // copasi_isDescribedBy
+  "is encoded by", // copasi_isEncodedBy
+  "is homolog to", // copasi_isHomologTo
+  "is part of", // copasi_isPartOf
+  "is version of", // copasi_isVersionOf
+  "occurs in", // copasi_occursIn
+  // "modification", // copasi_modification
+  "encodes", // bqbiol_encodes
+  "has part", // bqbiol_hasPart
+  "has version", // bqbiol_hasVersion
+  "is", // bqbiol_is
+  "is described by", // bqbiol_isDescribedBy
+  "is encoded by", // bqbiol_isEncodedBy
+  "is homolog to", // bqbiol_isHomologTo
+  "is part of", // bqbiol_isPartOf
+  "is version of", // bqbiol_isVersionOf
+  "occurs in", // bqbiol_occursIn
+  "is", // bqmodel_is
+  "is described by", // bqmodel_isDescribedBy
+  "creator", // dc_creator
+  "creator", // dcterms_creator
+  "bibliographic citation", // dcterms_bibliographicCitation
+  // "contributor", // dcterms_contributor
+  "created at", // dcterms_created
+  "description", // dcterms_description
+  // "license", // dcterms_license
+  "modified at", // dcterms_modified
+  // "rights", // dcterms_rights
+  // "rights holder", // dcterms_rightsHolder
+  "date", // dcterms_W3CDTF
+  "EMAIL", // vcard_EMAIL
+  "family name", // vcard_Family
+  "given name", // vcard_Given
+  "name", // vcard_N
+  "organization", // vcard_ORG
+  "name", // vcard_Orgname
+  "type", // rdf_type,
+  "*", // rdf_li
+  "*", // rdf__n
+  "subject", // rdf_subject,
+  "predicate", // rdf_predicate,
+  "object", // rdf_object
+  "", // unknown
+  // For internal use
+  "about", // about
+  "any", // any
+  "end" // end
+};
 
 // static
 std::map< std::string, CRDFPredicate::ePredicateType > CRDFPredicate::DisplayName2Predicate;
@@ -441,6 +447,7 @@ std::vector< CRDFPredicate::AllowedLocationList > CRDFPredicate::Predicate2Allow
 void CRDFPredicate::createAllowedLocationsAbsolute()
 {
   unsigned C_INT32 Predicate, PredicateMax = Predicate2AllowedLocationsRelative.size();
+
   for (Predicate = 0; Predicate < PredicateMax; Predicate++)
     createAllowedLocationsAbsolute((ePredicateType) Predicate);
 }
@@ -457,6 +464,7 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
   sAllowedLocation Relative;
 
   unsigned C_INT32 i, imax = RelativeList.size();
+
   for (i = 0; i < imax; i++)
     {
       sAllowedLocation & Relative = RelativeList[i];
@@ -492,18 +500,20 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
           StartIndex = 1;
         }
 
-      // Make sure that the absolute path of the parrent is known
+      // Make sure that the absolute path of the parent is known
       createAllowedLocationsAbsolute(Parent);
       AllowedLocationList & ParentList = Predicate2AllowedLocationsAbsolute[Parent];
 
       // For each parent path append the relative path
       unsigned C_INT32 j, jmax = ParentList.size();
+
       for (j = 0; j < jmax; j++)
         {
           Absolute.ReadOnly = ParentList[j].ReadOnly || Relative.ReadOnly;
           Absolute.Location = ParentList[j].Location;
 
           unsigned C_INT32 k, kmax = Relative.Location.size();
+
           for (k = StartIndex + 1; k < kmax; k++)
             Absolute.Location.push_back(Relative.Location[k]);
 
@@ -568,7 +578,7 @@ CRDFPredicate CRDFPredicate::operator = (const ePredicateType & type)
 {return CRDFPredicate(type);}
 
 const CRDFPredicate::ePredicateType & CRDFPredicate::getType() const
-  {return mType;}
+{return mType;}
 
 void CRDFPredicate::setURI(const std::string & uri)
 {
@@ -584,13 +594,13 @@ const std::string & CRDFPredicate::getURI() const
 {return mURI;}
 
 bool CRDFPredicate::operator == (const CRDFPredicate & rhs) const
-  {return mURI == rhs.mURI;}
+{return mURI == rhs.mURI;}
 
 bool CRDFPredicate::operator != (const CRDFPredicate & rhs) const
-  {return mURI != rhs.mURI;}
+{return mURI != rhs.mURI;}
 
 bool CRDFPredicate::operator < (const CRDFPredicate & rhs) const
-  {return mURI < rhs.mURI;}
+{return mURI < rhs.mURI;}
 
 // friend
 std::ostream & operator << (std::ostream & os, const CRDFPredicate & p)

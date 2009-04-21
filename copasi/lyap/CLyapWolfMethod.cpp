@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:50:01 $
+//   $Date: 2009/04/21 16:16:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,6 @@
 CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
     CLyapMethod(CCopasiMethod::lyapWolf, pParent),
     mpState(NULL)
-    //mY(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -42,7 +41,6 @@ CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
                                  const CCopasiContainer * pParent):
     CLyapMethod(src, pParent),
     mpState(NULL)
-    //mY(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -60,24 +58,50 @@ void CLyapWolfMethod::initializeParameter()
   assertParameter("Orthonormalization Interval", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   assertParameter("Overall time", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
   assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  assertParameter("Use Default Absolute Tolerance", CCopasiParameter::BOOL, (bool) true);
   assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
   assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
   assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
   assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+
+  // Check whether we have an (obsolete) parameter "Use Default Absolute Tolerance"
+  CCopasiParameter *pParm;
+
+  if ((pParm = getParameter("Use Default Absolute Tolerance")) != NULL)
+    {
+      C_FLOAT64 NewValue;
+
+      if (*pParm->getValue().pBOOL)
+        {
+          // The default
+          NewValue = 1.e-12;
+        }
+      else
+        {
+          NewValue = *getValue("Absolute Tolerance").pUDOUBLE;
+        }
+
+      setValue("Absolute Tolerance", NewValue);
+      removeParameter("Use Default Absolute Tolerance");
+    }
 }
 
-void CLyapWolfMethod::step(const double & deltaT)
+bool CLyapWolfMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
+}
+
+double CLyapWolfMethod::step(const double & deltaT)
 {
   if (!mData.dim) //just do nothing if there are no variables
     {
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
-      //*mpCurrentState = *mpState;
 
-      return;
+      return deltaT;
     }
 
+  C_FLOAT64 startTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
   C_INT one = 1;
   C_INT two = 2;
@@ -109,10 +133,8 @@ void CLyapWolfMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
 
-  //mpState->setTime(mTime); //TODO: really???
-  //*mpCurrentState = *mpState;
-
-  return;
+  //std::cout << mTime - startTime << std::endl;
+  return mTime - startTime;
 }
 
 void CLyapWolfMethod::start(/*const CState * initialState*/)
@@ -132,10 +154,11 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mTime = mpState->getTime();
 
   mReducedModel = true; /* *getValue("Integrate Reduced Model").pBOOL;*/
+
   if (mReducedModel)
     mSystemSize = mpState->getNumIndependent();
   else
-    mSystemSize = mpState->getNumVariable();
+    mSystemSize = mpState->getNumIndependent() + mpProblem->getModel()->getNumDependentReactionMetabs();
 
   mNumExp = mpProblem->getExponentNumber();
   mDoDivergence = mpProblem->divergenceRequested();
@@ -148,33 +171,43 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mData.dim << std::endl;
 
-  //initialize the vector on which lsoda will work
-  mVariables.resize(mData.dim);
-  memcpy(mVariables.array(), mpState->beginIndependent(), mSystemSize * sizeof(C_FLOAT64));
-
-  //generate base vectors; first fill the array with 0
-  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + mData.dim;
-  for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
-    *dbl = 0.0;
-  //now add 1.0
-  for (dbl = mVariables.array() + mSystemSize; dbl < dblEnd; dbl += (mSystemSize + 1))
-    * dbl = 1.0;
-
-  //reserve space for jacobian
-  mJacobian.resize(mSystemSize, mSystemSize);
-
-  //reserve space for exponents
+  //reserve space for exponents. The vectors in the task are resized by the task because they
+  //need to have a minimum size defined in the task
   //pTask->mLocalExponents.resize(mNumExp);
   mSumExponents.resize(mNumExp);
   mNorms.resize(mNumExp);
   //pTask->mExponents.resize(mNumExp);
+
+  //initialize the vector on which lsoda will work
+  mVariables.resize(mData.dim);
+  memcpy(mVariables.array(), mpState->beginIndependent(), mSystemSize * sizeof(C_FLOAT64));
+
+  //generate base vectors. Just define some arbitrary starting vectors that are not too specific and orthonormalize
+  // first fill the array with 0.1
+  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + mData.dim;
+
+  for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
+    *dbl = 0.01;
+
+  //now add 1.0
+  if (mNumExp > 0)
+    for (dbl = mVariables.array() + mSystemSize; dbl < dblEnd; dbl += (mSystemSize + 1))
+      * dbl = 1.0;
+
+  orthonormalize();
+
+  //reserve space for jacobian
+  mJacobian.resize(mSystemSize, mSystemSize);
+
   unsigned C_INT32 i, imax = mNumExp;
+
   for (i = 0; i < imax; ++i)
     {
       mpTask->mLocalExponents[i] = 0;
       mSumExponents[i] = 0;
       mpTask->mExponents[i] = 0;
     }
+
   mpTask->mIntervalDivergence = 0;
   mSumDivergence = 0;
   mpTask->mAverageDivergence = 0;
@@ -182,21 +215,16 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
 
-  mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
-  C_FLOAT64 tmpATol;
-  if (mDefaultAtol)
-    {
-      tmpATol = getDefaultAtol(mpProblem->getModel());
-      setValue("Absolute Tolerance", tmpATol);
-    }
-  else
-    tmpATol = * getValue("Absolute Tolerance").pUDOUBLE;
+  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
+  CVector< C_FLOAT64 > tmpAtol = mpProblem->getModel()->initializeAtolVector(*pTolerance, mReducedModel);
 
   mAtol.resize(mData.dim);
+
   for (i = 0; i < mSystemSize; ++i)
-    mAtol[i] = tmpATol;
-  for (; (int)i < mData.dim; ++i)
-    mAtol[i] = 1e-25;
+    mAtol[i] = tmpAtol[i];
+
+  for (i = mSystemSize; (int)i < mData.dim; ++i)
+    mAtol[i] = 1e-20;
 
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
@@ -210,27 +238,12 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   return;
 }
 
-C_FLOAT64 CLyapWolfMethod::getDefaultAtol(const CModel * pModel) const
-  {
-    if (!pModel) return 1.0e009;
-
-    const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-    unsigned C_INT32 i, imax;
-    C_FLOAT64 Volume = DBL_MAX;
-    for (i = 0, imax = Compartment.size(); i < imax; i++)
-      if (Compartment[i]->getValue() < Volume) Volume = Compartment[i]->getValue();
-
-    if (Volume == DBL_MAX) return 1.0e009;
-
-    return Volume * pModel->getQuantity2NumberFactor() * 1.e-12;
-  }
-
 void CLyapWolfMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
 void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  assert (y == mVariables.array());
+  assert(y == mVariables.array());
 
   //set time in model
   mpState->setTime(*t);
@@ -280,17 +293,20 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   dbl1 = ydot + mSystemSize;
 
   unsigned C_INT32 i;
+
   for (i = 1; i <= mNumExp; ++i)
     {
       //dbl1 += mSystemSize;
       dbl1end = dbl1 + mSystemSize;
       dbl2 = mJacobian.array();
+
       for (; dbl1 != dbl1end; ++dbl1)
         {
           *dbl1 = 0.0;
 
           dbl3 = y + i * mSystemSize;
           dbl3end = dbl3 + mSystemSize;
+
           for (; dbl3 != dbl3end; ++dbl3, ++dbl2)
             *dbl1 += *dbl2 * *dbl3;
         }
@@ -301,6 +317,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   //divergence; trace of jacobian
   *dbl1 = 0;
   dbl2 = mJacobian.array();
+
   for (i = 0; i < mSystemSize; ++i, dbl2 += (mSystemSize + 1))
     * dbl1 += *dbl2;
 
@@ -334,14 +351,10 @@ bool CLyapWolfMethod::calculate()
   C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
   C_FLOAT64 transientTime = mpProblem->getTransientTime() + mTime;
   C_FLOAT64 endTime = mTime + *getValue("Overall time").pUDOUBLE;
-  //C_FLOAT64 startTime = mTime;
-
-  //unsigned C_INT32 StepCounter = 1;
+  C_FLOAT64 startTime = mTime;
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / (endTime - transientTime);
-
-  //C_FLOAT64 Percentage = 0;
+  C_FLOAT64 handlerFactor = 100.0 / (endTime - startTime);
 
   //** do the transient **
   C_FLOAT64 CompareTime = transientTime - 100 * fabs(transientTime) * DBL_EPSILON;
@@ -359,6 +372,8 @@ bool CLyapWolfMethod::calculate()
           /* Currently this is correct since no events are processed. */
           //CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
           // std::cout << "needed several steps for transient" << std::endl;
+
+          mpTask->methodCallback((mTime - startTime) * handlerFactor, true);
         }
       while (true);
 
@@ -373,22 +388,27 @@ bool CLyapWolfMethod::calculate()
   //copy working array to state
   memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
   mpState->setTime(mTime);
-  //copy state to model
+
+  //copy state to model and do output
   mpProblem->getModel()->setState(*mpState);
   mpProblem->getModel()->updateSimulatedValues(mReducedModel);
-  mpTask->methodCallback((mTime - transientTime) * handlerFactor);
+  mpTask->methodCallback((mTime - startTime) * handlerFactor, false);
   //********
 
   orthonormalize();
+
   if (mDoDivergence)
     *(mVariables.array() + mVariables.size() - 1) = 0; //divergence
+
   mLsodaStatus = 1; //the state has changed, we need to restart lsoda
 
   unsigned C_INT32 i;
 
+  C_FLOAT64 realStepSize;
+
   do
     {
-      step(stepSize);
+      realStepSize = step(stepSize);
 
       orthonormalize();
       mLsodaStatus = 1; //the state has changed, we need to restart lsoda
@@ -398,7 +418,7 @@ bool CLyapWolfMethod::calculate()
         {
           mpTask->mLocalExponents[i] = log(mNorms[i]);
           mSumExponents[i] += mpTask->mLocalExponents[i];
-          mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / stepSize;
+          mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / realStepSize;
           mpTask->mExponents[i] = mSumExponents[i] / (mTime - transientTime);
         }
 
@@ -406,7 +426,7 @@ bool CLyapWolfMethod::calculate()
       if (mDoDivergence)
         {
           mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
-          mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / stepSize;
+          mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / realStepSize;
           *(mVariables.array() + mVariables.size() - 1) = 0;
           mpTask->mAverageDivergence = mSumDivergence / (mTime - transientTime);
         }
@@ -418,10 +438,10 @@ bool CLyapWolfMethod::calculate()
       //copy working array to state
       memcpy(mpState->beginIndependent(), mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
       mpState->setTime(mTime);
-      //copy state to model
+      //copy state to model and do output
       mpProblem->getModel()->setState(*mpState);
       mpProblem->getModel()->updateSimulatedValues(mReducedModel);
-      flagProceed &= mpTask->methodCallback((mTime - transientTime) * handlerFactor);
+      flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor, false);
     }
   while ((mTime < endTime) && flagProceed);
 
@@ -430,6 +450,8 @@ bool CLyapWolfMethod::calculate()
 
 void CLyapWolfMethod::orthonormalize()
 {
+  if (mNumExp < 1) return;
+
   //TODO generalize
   C_FLOAT64 *dbl, *dblEnd;
 
@@ -439,6 +461,7 @@ void CLyapWolfMethod::orthonormalize()
   scalarmult(dbl, dblEnd, 1 / mNorms[0]);
 
   unsigned C_INT32 i, j;
+
   for (i = 1; i < mNumExp; ++i)
     {
       /*      C_FLOAT64 norm = 0;
@@ -470,8 +493,10 @@ void CLyapWolfMethod::orthonormalize()
 C_FLOAT64 CLyapWolfMethod::norm(const C_FLOAT64* dbl1, const C_FLOAT64 * dbl2)
 {
   C_FLOAT64 sum = 0;
+
   for (; dbl1 != dbl2; ++dbl1)
     sum += *dbl1 * *dbl1;
+
   return sqrt(sum);
 }
 
@@ -488,8 +513,10 @@ C_FLOAT64 CLyapWolfMethod::product(const C_FLOAT64* dbl1, const C_FLOAT64* dbl1E
                                    const C_FLOAT64* dbl2)
 {
   C_FLOAT64 sum = 0;
+
   for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
     sum += *dbl1 * *dbl2;
+
   return sum;
 }
 
@@ -508,7 +535,7 @@ bool CLyapWolfMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CLyapMethod::isValidProblem(pProblem)) return false;
 
   const CLyapProblem * pLP = dynamic_cast<const CLyapProblem *>(pProblem);
-  assert (pLP);
+  assert(pLP);
 
   C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
   C_FLOAT64 transientTime = pLP->getTransientTime();

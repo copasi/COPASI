@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: aruff $
-//   $Date: 2008/09/17 17:27:36 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,58 +24,60 @@ class CRDFNode;
 class CMIRIAMResources;
 
 class CMIRIAMResourceObject
-  {
+{
 
-  private:
-    CMIRIAMResourceObject();
+private:
+  CMIRIAMResourceObject();
 
-    void extractId(const std::string & URI);
+  void extractId(const std::string & URI);
 
-  public:
+public:
 
-    unsigned C_INT32 getResource(const std::string & URI);
+  unsigned C_INT32 getResource(const std::string & URI);
 
-    static const CMIRIAMResources & getResourceList();
+  static const CMIRIAMResources & getResourceList();
 
-    CMIRIAMResourceObject(CRDFNode * pNode);
+  CMIRIAMResourceObject(CRDFNode * pNode);
 
-    CMIRIAMResourceObject(const std::string & displayName, const std::string & id);
+  CMIRIAMResourceObject(const std::string & displayName, const std::string & id);
 
-    CMIRIAMResourceObject(const CMIRIAMResourceObject & src);
+  CMIRIAMResourceObject(const CMIRIAMResourceObject & src);
 
-    bool setId(const std::string & id);
+  bool setId(const std::string & id);
 
-    const std::string & getId() const;
+  const std::string & getId() const;
 
-    bool setURI(const std::string & URI);
+  bool setURI(const std::string & URI);
 
-    std::string getURI() const;
+  std::string getURI() const;
 
-    bool setNode(CRDFNode * pNode);
+  bool setNode(CRDFNode * pNode);
 
-    CRDFNode * getNode() const;
+  CRDFNode * getNode() const;
 
-    bool setDisplayName(const std::string & displayName);
+  bool setDisplayName(const std::string & displayName);
 
-    std::string getDisplayName() const;
+  std::string getDisplayName() const;
 
-    bool isValid() const;
+  bool isValid() const;
 
-    bool isValid(const std::string & URI) const;
+  bool isValid(const std::string & URI) const;
 
-    static void setMIRIAMResources(const CMIRIAMResources * pResources);
+  static void setMIRIAMResources(const CMIRIAMResources * pResources);
 
-    /**
-     * Destructor
-     */
-    virtual ~CMIRIAMResourceObject();
+  /**
+   * Destructor
+   */
+  virtual ~CMIRIAMResourceObject();
 
-  private:
-    static const CMIRIAMResources * mpResources;
+private:
+  static const CMIRIAMResources * mpResources;
 
-    unsigned C_INT32 mResource;
-    std::string mId;
-    CRDFNode * mpNode;
-  };
+  static void unescapeId(std::string & id);
+
+  unsigned C_INT32 mResource;
+  std::string mId;
+  CRDFNode * mpNode;
+};
 
 #endif

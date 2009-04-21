@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.102 $ 
+#   $Revision: 1.103 $ 
 #   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2009/03/19 10:49:42 $ 
+#   $Author: shoops $ 
+#   $Date: 2009/04/21 16:12:03 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.102 $ $Author: pwilly $ $Date: 2009/03/19 10:49:42 $  
+# $Revision: 1.103 $ $Author: shoops $ $Date: 2009/04/21 16:12:03 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -160,10 +160,10 @@ contains(BUILD_OS, Darwin) {
     }
     
     !isEmpty(QWT3D_PATH){
-      LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3dD.a
+      LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
       INCLUDEPATH += $${QWT3D_PATH}/include
     } else {
-      LIBS += -lqwtplot3dD
+      LIBS += -lqwtplot3d
     }
   }
 
@@ -179,18 +179,65 @@ contains(BUILD_OS, WIN32) {
 
   DEFINES -= UNICODE
    
-  debug {
-    QMAKE_LFLAGS += /NODEFAULTLIB:\"msvcrt.lib\"
-  }
-
-  QMAKE_LFLAGS += /NODEFAULTLIB:\"libcmt.lib\"
-  
   #Release code optimization
   QMAKE_CFLAGS_RELEASE -= -O1
-  QMAKE_CFLAGS_RELEASE += -O2
+  QMAKE_CFLAGS_RELEASE *= -O2
 
   QMAKE_CXXFLAGS_RELEASE -= -O1
-  QMAKE_CXXFLAGS_RELEASE += -O2
+  QMAKE_CXXFLAGS_RELEASE *= -O2
+  
+  !contains(STATIC_LINKAGE, yes) {
+    RUNTIME = 
+  }
+  
+  contains(RUNTIME, MT) {
+    debug: RUNTIME = MTd
+    
+	QMAKE_CFLAGS_MT -= -MD
+	QMAKE_CFLAGS_MT *= -MT
+	QMAKE_CFLAGS_MT_DBG -= -MDd
+	QMAKE_CFLAGS_MT_DBG *= -MTd
+	
+	QMAKE_CXXFLAGS_MT -= -MD
+	QMAKE_CXXFLAGS_MT *= -MT
+	QMAKE_CXXFLAGS_MT_DBG -= -MDd
+	QMAKE_CXXFLAGS_MT_DBG *= -MTd
+	
+    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrt.lib"
+    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrtd.lib"
+    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprt.lib"
+    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprtd.lib"
+    
+    release: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
+    
+    debug: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
+  } else {
+    release: RUNTIME = MD
+    debug: RUNTIME = MDd
+    
+	QMAKE_CFLAGS_MT -= -MT
+	QMAKE_CFLAGS_MT *= -MD
+	QMAKE_CFLAGS_MT_DBG -= -MTd
+	QMAKE_CFLAGS_MT_DBG *= -MDd
+	
+	QMAKE_CXXFLAGS_MT -= -MT
+	QMAKE_CXXFLAGS_MT *= -MD
+	QMAKE_CXXFLAGS_MT_DBG -= -MTd
+	QMAKE_CXXFLAGS_MT_DBG *= -MDd
+	
+    QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
+    QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
+    
+    release {
+      QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrtd.lib"
+      QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprtd.lib"
+    }
+    
+    debug {
+      QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrt.lib"
+      QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprt.lib"
+    }
+  }    
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
@@ -224,11 +271,9 @@ contains(BUILD_OS, WIN32) {
     error( "EXPAT_PATH must be specified" )
   }
 
-  # Add libsbml
   win32-msvc2005 {
     contains(STATIC_LINKAGE, yes) {
-      release: LIBS += libsbmlStatic.lib
-      debug:   LIBS += libsbmlStaticD.lib
+      LIBS += libsbml$${RUNTIME}.lib
     } else {
       release: LIBS += libsbml.lib
       debug:   LIBS += libsbmlD.lib
@@ -247,8 +292,7 @@ contains(BUILD_OS, WIN32) {
 
 # The raptor library
   contains(STATIC_LINKAGE, yes) {
-    release: LIBS += raptorStatic.lib
-    debug:   LIBS += raptorStaticD.lib
+    LIBS += raptor$${RUNTIME}.lib
   } else {
     release: LIBS += raptor.lib
     debug:   LIBS += raptorD.lib
@@ -262,25 +306,23 @@ contains(BUILD_OS, WIN32) {
   }
   
   contains(CONFIG, qt) {
+    contains(STATIC_LINKAGE, yes) {
+      DEFINES += SBW_STATIC
+      LIBS += SBW$${RUNTIME}.lib ws2_32.lib
+    } else {
+      release: LIBS += SBW.lib
+      debug:   LIBS += SBWD.lib
+    }
+
     !isEmpty(SBW_PATH){
-      contains(STATIC_LINKAGE, yes) {
-        release: LIBS += SBWStatic.lib
-        debug:   LIBS += SBWStaticD.lib
-
-        LIBS += Ws2_32.lib
-      } else {
-        release: LIBS += SBW.lib
-        debug:   LIBS += SBWD.lib
-      }
+      QMAKE_CXXFLAGS   += -I"$${SBW_PATH}\include"
+      QMAKE_LFLAGS += /LIBPATH:"$${SBW_PATH}\lib"
       
-      INCLUDEPATH += $${SBW_PATH}/include
-      QMAKE_LFLAGS += /LIBPATH:\"$${SBW_PATH}\lib\"
-
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
     }
      
-  !isEmpty(QWT_PATH){
+    !isEmpty(QWT_PATH){
        LIBS+=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
     }

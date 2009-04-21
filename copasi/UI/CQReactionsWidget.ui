@@ -1,24 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2009/04/19 19:04:43 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
 <ui version="4.0">
   <comment> Begin CVS Header </comment>
   <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.ui,v $ </comment>
-  <comment>   $Revision: 1.5 $ </comment>
+  <comment>   $Revision: 1.6 $ </comment>
   <comment>   $Name:  $ </comment>
-  <comment>   $Author: aekamal $ </comment>
-  <comment>   $Date: 2009/04/19 19:04:43 $ </comment>
+  <comment>   $Author: shoops $ </comment>
+  <comment>   $Date: 2009/04/21 16:20:31 $ </comment>
   <comment> End CVS Header </comment>
 
   <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>

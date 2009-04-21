@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:21 $
+//   $Date: 2009/04/21 16:18:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,6 +163,7 @@ bool COptProblem::elevateChildren()
   if (mpParmSubtaskCN != NULL)
     {
       CCopasiParameter * pParameter;
+
       if ((pParameter = getParameter("Steady-State")) != NULL &&
           *pParameter->getValue().pSTRING != "")
         {
@@ -184,6 +185,7 @@ bool COptProblem::elevateChildren()
 
   mpGrpItems =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);
+
   if (!mpGrpItems) return false;
 
   std::vector<CCopasiParameter *> * pValue =
@@ -200,6 +202,7 @@ bool COptProblem::elevateChildren()
 
   mpGrpConstraints =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpConstraints);
+
   if (!mpGrpConstraints) return false;
 
   pValue = mpGrpConstraints->CCopasiParameter::getValue().pGROUP;
@@ -252,7 +255,7 @@ void COptProblem::initObjects()
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
@@ -273,7 +276,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
             return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
         }
 
-    catch (...) {}
+      catch (...) {}
 
       return false;
     }
@@ -288,6 +291,7 @@ bool COptProblem::initialize()
   mInfinity = (*mpParmMaximize ? -2.0 : 2.0) * DBL_MAX;
 
   if (!mpModel) return false;
+
   mpModel->compileIfNecessary(mpCallBack);
 
   bool success = true;
@@ -304,10 +308,12 @@ bool COptProblem::initialize()
   ContainerList.push_back(mpModel);
 
   COptTask * pTask = dynamic_cast<COptTask *>(getObjectParent());
+
   if (pTask)
     {
       ContainerList.push_back(pTask);
       mpReport = &pTask->getReport();
+
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
@@ -439,6 +445,7 @@ bool COptProblem::checkFunctionalConstraints()
   // Make sure the constraint values are up to date.
   std::vector< Refresh *>::const_iterator itRefresh = mRefreshConstraints.begin();
   std::vector< Refresh *>::const_iterator endRefresh = mRefreshConstraints.end();
+
   for (; itRefresh != endRefresh; ++itRefresh)
     (**itRefresh)();
 
@@ -446,6 +453,7 @@ bool COptProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
   mConstraintCounter++;
+
   for (; it != end; ++it)
     if ((*it)->checkConstraint())
       {
@@ -486,6 +494,7 @@ bool COptProblem::calculate()
       // Update all initial values which depend on the optimization items.
       std::vector< Refresh * >::const_iterator it = mInitialRefreshMethods.begin();
       std::vector< Refresh * >::const_iterator end = mInitialRefreshMethods.end();
+
       for (; it != end; ++it)
         (**it)();
 
@@ -494,6 +503,7 @@ bool COptProblem::calculate()
       // Refresh all values needed to calculate the objective function.
       it = mRefreshMethods.begin();
       end = mRefreshMethods.end();
+
       for (; it != end; ++it)
         (**it)();
 
@@ -524,11 +534,11 @@ bool COptProblem::calculate()
     }
 
   if (!success || isnan(mCalculateValue))
-    mCalculateValue = mInfinity;
+    mCalculateValue = *mpParmMaximize ? -mInfinity : mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
-  return true;
+  return success;
 }
 
 bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
@@ -561,7 +571,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       if (fabs(Current) > resolution)
         {
-          (*mUpdateMethods[i])(Current * (1.0 + factor));
+          (*mUpdateMethods[i])(Current *(1.0 + factor));
           Delta = 1.0 / (Current * factor);
         }
       else
@@ -590,13 +600,13 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 }
 
 const C_FLOAT64 & COptProblem::getCalculateValue() const
-  {return mCalculateValue;}
+{return mCalculateValue;}
 
 const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
-  {return mSolutionVariables;}
+{return mSolutionVariables;}
 
 const CVector< C_FLOAT64 > & COptProblem::getVariableGradients() const
-  {return mGradient;}
+{return mGradient;}
 
 bool COptProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)
@@ -616,7 +626,7 @@ COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
 {return *(*mpOptItems)[index];}
 
 const unsigned C_INT32 COptProblem::getOptItemSize() const
-  {return mpGrpItems->size();}
+{return mpGrpItems->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
@@ -638,13 +648,13 @@ bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
 {return mpGrpItems->swap(iFrom, iTo);}
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
-  {return *mpOptItems;}
+{return *mpOptItems;}
 
 const std::vector< COptItem * > & COptProblem::getConstraintList() const
-  {return *mpConstraintItems;}
+{return *mpConstraintItems;}
 
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
-  {return mUpdateMethods;}
+{return mUpdateMethods;}
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
@@ -663,6 +673,7 @@ const std::string COptProblem::getObjectiveFunction()
 bool COptProblem::createObjectiveFunction()
 {
   CCopasiParameter * pParm = getParameter("ObjectiveFunction");
+
   if (!pParm) return false;
 
   mpFunction =
@@ -710,6 +721,7 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
     dynamic_cast< CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
+
   if (pTasks == NULL && pDataModel)
     pTasks = pDataModel->getTaskList();
 
@@ -730,65 +742,66 @@ bool COptProblem::setSubtaskType(const CCopasiTask::Type & subtaskType)
 }
 
 CCopasiTask::Type COptProblem::getSubtaskType() const
-  {
-    std::vector< CCopasiContainer * > ListOfContainer;
-    ListOfContainer.push_back(getObjectAncestor("Vector"));
-    mpSubtask =
-      dynamic_cast< CCopasiTask * >(const_cast< CCopasiObject *>(getObjectDataModel()->ObjectFromName(ListOfContainer, *mpParmSubtaskCN)));
+{
+  std::vector< CCopasiContainer * > ListOfContainer;
+  ListOfContainer.push_back(getObjectAncestor("Vector"));
+  mpSubtask =
+    dynamic_cast< CCopasiTask * >(const_cast< CCopasiObject *>(getObjectDataModel()->ObjectFromName(ListOfContainer, *mpParmSubtaskCN)));
 
-    if (mpSubtask == NULL)
-      return CCopasiTask::unset;
+  if (mpSubtask == NULL)
+    return CCopasiTask::unset;
 
-    return mpSubtask->getType();
-  }
+  return mpSubtask->getType();
+}
 
 void COptProblem::setMaximize(const bool & maximize)
 {*mpParmMaximize = maximize;}
 
 const bool & COptProblem::maximize() const
-  {return *mpParmMaximize;}
+{return *mpParmMaximize;}
 
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
-  {return mCounter;}
+{return mCounter;}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
-  {return * (C_FLOAT64 *) mCPUTime.getValuePointer();}
+{return *(C_FLOAT64 *) mCPUTime.getValuePointer();}
 
 void COptProblem::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 void COptProblem::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
+{
+  std::ostream & os = *ostream;
 
-    if (mSolutionVariables.size() == 0)
-      {
-        return;
-      }
-    os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+  if (mSolutionVariables.size() == 0)
+    {
+      return;
+    }
 
-    CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+  os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
 
-    os << "    Function Evaluations:\t" << mCounter << std::endl;
-    os << "    CPU Time [s]:\t"
-    << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-    << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-    os << "    Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64) (CPUTime.getMilliSeconds() / 1e3) << std::endl;
-    os << std::endl;
+  CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
 
-    std::vector< COptItem * >::const_iterator itItem =
-      mpOptItems->begin();
-    std::vector< COptItem * >::const_iterator endItem =
-      mpOptItems->end();
+  os << "    Function Evaluations:\t" << mCounter << std::endl;
+  os << "    CPU Time [s]:\t"
+  << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+  << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+  os << "    Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
+  os << std::endl;
 
-    unsigned C_INT32 i;
+  std::vector< COptItem * >::const_iterator itItem =
+    mpOptItems->begin();
+  std::vector< COptItem * >::const_iterator endItem =
+    mpOptItems->end();
 
-    for (i = 0; itItem != endItem; ++itItem, i++)
-      {
-        os << "    " << (*itItem)->getObjectDisplayName() << ": "
-        << mSolutionVariables[i] << std::endl;
-      }
-  }
+  unsigned C_INT32 i;
+
+  for (i = 0; itItem != endItem; ++itItem, i++)
+    {
+      os << "    " << (*itItem)->getObjectDisplayName() << ": "
+      << mSolutionVariables[i] << std::endl;
+    }
+}
 
 std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 {

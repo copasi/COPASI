@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/13 19:19:28 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,8 +230,32 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
 void CQFittingItemWidget::slotLowerEdit()
 {
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+
+  switch (mItemType)
+    {
+      case OPT_ITEM:
+      case FIT_ITEM:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants;
+        break;
+
+      case OPT_CONSTRAINT:
+      case FIT_CONSTRAINT:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants |
+          CCopasiSimpleSelectionTree::Time |
+          CCopasiSimpleSelectionTree::Variables |
+          CCopasiSimpleSelectionTree::ObservedValues;
+        break;
+    }
+
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -256,9 +280,8 @@ void CQFittingItemWidget::slotLowerEdit()
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
-      /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-            mpTable->adjustColumn(0);
-      */
+      mpTable->resizeColumnToContents(0);
+
       QString Value = FROM_UTF8(pObject->getObjectDisplayName());
       mpLowerValidator->force(Value);
       mpEditLower->setText(Value);
@@ -267,8 +290,32 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
+
+  switch (mItemType)
+    {
+      case OPT_ITEM:
+      case FIT_ITEM:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants;
+        break;
+
+      case OPT_CONSTRAINT:
+      case FIT_CONSTRAINT:
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters |
+          CCopasiSimpleSelectionTree::ObservedConstants |
+          CCopasiSimpleSelectionTree::Time |
+          CCopasiSimpleSelectionTree::Variables |
+          CCopasiSimpleSelectionTree::ObservedValues;
+        break;
+    }
+
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
     {
@@ -293,9 +340,8 @@ void CQFittingItemWidget::slotUpperEdit()
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
-      /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-            mpTable->adjustColumn(0);
-      */
+      mpTable->resizeColumnToContents(0);
+
       QString Value = FROM_UTF8(pObject->getObjectDisplayName());
       mpUpperValidator->force(Value);
       mpEditUpper->setText(Value);
@@ -306,32 +352,38 @@ void CQFittingItemWidget::slotParamEdit()
 {
   std::vector< const CCopasiObject * > Selection;
 
-  CCopasiSimpleSelectionTree::SelectionFlag SelectionFlag;
+  CCopasiSimpleSelectionTree::ObjectClasses Classes;
 
   switch (mItemType)
     {
       case OPT_ITEM:
       case FIT_ITEM:
-        SelectionFlag = CCopasiSimpleSelectionTree::INITIAL_VALUE;
+        Classes =
+          CCopasiSimpleSelectionTree::InitialTime |
+          CCopasiSimpleSelectionTree::Parameters;
         break;
 
       case OPT_CONSTRAINT:
       case FIT_CONSTRAINT:
-        SelectionFlag = CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION;
+        Classes =
+          CCopasiSimpleSelectionTree::Time |
+          CCopasiSimpleSelectionTree::Variables |
+          CCopasiSimpleSelectionTree::ObservedValues |
+          CCopasiSimpleSelectionTree::ObservedConstants;
         break;
     }
 
   if (mSelection.size() > 1)
     {
       const CCopasiObject * pObject =
-        CCopasiSelectionDialog::getObjectSingle(this, SelectionFlag);
+        CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
       if (pObject)
         Selection.push_back(pObject);
     }
   else
     Selection =
-      CCopasiSelectionDialog::getObjectVector(this, SelectionFlag);
+      CCopasiSelectionDialog::getObjectVector(this, Classes);
 
   if (Selection.size() != 0)
     {
@@ -363,11 +415,8 @@ void CQFittingItemWidget::slotParamEdit()
             }
 
           mpItemsCopy->push_back(pItem);
-// TODO: in progress since 08.04.09 - OK
-//          current = mpTable->numRows();
           current = mpTable->rowCount();
           mSelection.insert(current);
-//          mpTable->insertRows(current);
           mpTable->insertRow(current);
           setTableText(current, pItem);
         }
@@ -419,18 +468,14 @@ void CQFittingItemWidget::slotParamEdit()
           mpItemsCopy->insert(mpItemsCopy->begin() + current + i, pItem);
 
           // Update the table
-// TODO: in progress since 08.04.09 - OK
-//          mpTable->insertRows(current + i);
           mpTable->insertRow(current + i);
           setTableText(current + i, pItem);
         }
 
       connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-
       // Update the table
-      /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-            mpTable->adjustColumn(0);
-      */
+      mpTable->resizeColumnToContents(0);
+
       // Update the selection;
       if (current != C_INVALID_INDEX)
         selectRow(current);
@@ -564,9 +609,8 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
   else
     selectRow(C_INVALID_INDEX);
 
-  /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-    mpTable->adjustColumn(0);
-  */
+  mpTable->resizeColumnToContents(0);
+
   emit numberChanged(mpItemsCopy->size());
 
   return true;
@@ -932,7 +976,7 @@ void CQFittingItemWidget::slotCopy()
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
   setTableText(row, pItem);
-// --->  mpTable->adjustColumn(0);
+  mpTable->resizeColumnToContents(0);
 
   // Update the selection
   selectRow(row);
@@ -1114,9 +1158,8 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
   // Update the selection
   selectRow(row - 1);
 
-  /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-    mpTable->adjustColumn(0);
-  */
+  mpTable->resizeColumnToContents(0);
+
   emit numberChanged(mpItemsCopy->size());
 }
 
@@ -1158,7 +1201,7 @@ void CQFittingItemWidget::slotNew()
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
   setTableText(row, pItem);
-// --->  mpTable->adjustColumn(0);
+  mpTable->resizeColumnToContents(0);
 
   // Update the selection
   selectRow(row);
@@ -1512,9 +1555,7 @@ void CQFittingItemWidget::saveSelection()
       setTableText(*it, pItem);
     }
 
-  /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-    mpTable->adjustColumn(0);
-  */
+  mpTable->resizeColumnToContents(0);
 }
 
 void CQFittingItemWidget::selectRow(const unsigned int & row)
@@ -1811,9 +1852,8 @@ void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
         }
     }
 
-  /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-    mpTable->adjustColumn(0);
-  */
+  mpTable->resizeColumnToContents(0);
+
   loadSelection();
 }
 
@@ -1835,8 +1875,7 @@ void CQFittingItemWidget::slotCheckAllExperiments(bool checked)
         }
     }
 
-  /* TODO: temporarily ignore since 01.04.09 - adjustColumn
-    mpTable->adjustColumn(0);
-  */
+  mpTable->resizeColumnToContents(0);
+
   loadSelection();
 }

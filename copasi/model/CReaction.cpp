@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.182 $
+//   $Revision: 1.183 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:20 $
+//   $Date: 2009/04/21 16:17:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,10 +90,12 @@ CReaction::CReaction(const CReaction & src,
 {
   CONSTRUCTOR_TRACE;
   initObjects();
+
   if (mpFunction)
     {
       //compileParameters();
     }
+
   setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
 }
 
@@ -106,21 +108,21 @@ CReaction::~CReaction()
 
 // virtual
 std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
-  {
-    const CModel * pModel =
-      dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+{
+  const CModel * pModel =
+    dynamic_cast< const CModel * >(getObjectAncestor("Model"));
 
-    if (pModel == NULL) return "";
+  if (pModel == NULL) return "";
 
-    const std::string & Name = pObject->getObjectName();
+  const std::string & Name = pObject->getObjectName();
 
-    if (Name == "ParticleFlux")
-      return "1/" + pModel->getTimeUnitName();
-    else if (Name == "Flux")
-      return pModel->getConcentrationRateUnitName();
+  if (Name == "ParticleFlux")
+    return pModel->getFrequencyUnits();
+  else if (Name == "Flux")
+    return pModel->getQuantityRateUnits();
 
-    return "";
-  }
+  return "";
+}
 
 void CReaction::cleanup()
 {
@@ -152,6 +154,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Step", "string", &tmp,
                                        CReadConfig::SEARCH)))
     return Fail;
+
   setObjectName(tmp);
 
   std::string ChemEq;
@@ -172,6 +175,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
     return Fail = 1;
 
   bool revers;
+
   if ((Fail = configbuffer.getVariable("Reversible", "bool", &revers,
                                        CReadConfig::SEARCH)))
     return Fail;
@@ -186,10 +190,10 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 const std::string & CReaction::getKey() const {return mKey;}
 
 const C_FLOAT64 & CReaction::getFlux() const
-  {return mFlux;}
+{return mFlux;}
 
 const C_FLOAT64 & CReaction::getParticleFlux() const
-  {return mParticleFlux;}
+{return mParticleFlux;}
 
 CCopasiObject * CReaction::getParticleFluxReference()
 {return mpParticleFluxReference;}
@@ -197,13 +201,13 @@ CCopasiObject * CReaction::getParticleFluxReference()
 //****************************************
 
 const CChemEq & CReaction::getChemEq() const
-  {return mChemEq;}
+{return mChemEq;}
 
 CChemEq & CReaction::getChemEq()
 {return mChemEq;}
 
 bool CReaction::isReversible() const
-  {return mChemEq.getReversibility();}
+{return mChemEq.getReversibility();}
 
 bool CReaction::addSubstrate(const std::string & metabKey,
                              const C_FLOAT64 & multiplicity)
@@ -226,12 +230,13 @@ void CReaction::setReversible(bool reversible)
 //****************************************
 
 const CFunction * CReaction::getFunction() const
-  {return mpFunction;}
+{return mpFunction;}
 
 bool CReaction::setFunction(const std::string & functionName)
 {
   CFunction * pFunction =
     dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findLoadFunction(functionName));
+
   if (!pFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
@@ -265,6 +270,7 @@ void CReaction::setParameterValue(const std::string & parameterName,
                                   const bool & updateStatus)
 {
   if (!mpFunction) fatalError();
+
   mParameters.setValue(parameterName, value);
 
   if (!updateStatus) return;
@@ -285,10 +291,11 @@ void CReaction::setParameterValue(const std::string & parameterName,
 }
 
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
-  {
-    if (!mpFunction) fatalError();
-    return * mParameters.getValue(parameterName).pDOUBLE;
-  }
+{
+  if (!mpFunction) fatalError();
+
+  return * mParameters.getValue(parameterName).pDOUBLE;
+}
 
 const CCopasiParameterGroup & CReaction::getParameters() const
 {return mParameters;}
@@ -300,6 +307,7 @@ void CReaction::setParameterMapping(const C_INT32 & index, const std::string & k
 {
   //std::cout << "CReaction::setParameterMapping, index = " << index << ", key = " << key << std::endl;
   if (!mpFunction) fatalError();
+
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
 
   mMetabKeyMap[index][0] = key;
@@ -308,6 +316,7 @@ void CReaction::setParameterMapping(const C_INT32 & index, const std::string & k
 void CReaction::addParameterMapping(const C_INT32 & index, const std::string & key)
 {
   if (!mpFunction) fatalError();
+
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
 
   mMetabKeyMap[index].push_back(key);
@@ -320,8 +329,10 @@ void CReaction::setParameterMapping(const std::string & parameterName, const std
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+
   if (C_INVALID_INDEX == index)
     return;
+
   if (type != CFunctionParameter::FLOAT64) fatalError();
 
   mMetabKeyMap[index][0] = key;
@@ -334,8 +345,10 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+
   if (C_INVALID_INDEX == index)
     return;
+
   if (type != CFunctionParameter::VFLOAT64) fatalError();
 
   mMetabKeyMap[index].push_back(key);
@@ -349,8 +362,10 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+
   if (C_INVALID_INDEX == index)
     return;
+
   if ((type == CFunctionParameter::FLOAT64) && (keys.size() != 1)) fatalError();
 
   mMetabKeyMap[index] = keys;
@@ -359,63 +374,78 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
 void CReaction::clearParameterMapping(const std::string & parameterName)
 {
   if (!mpFunction) fatalError();
+
   CFunctionParameter::DataType type;
   unsigned C_INT32 index;
   index = mMap.findParameterByName(parameterName, type);
+
   if (C_INVALID_INDEX == index)
     return;
+
   if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
+
   mMetabKeyMap[index].clear();
 }
 
 void CReaction::clearParameterMapping(const C_INT32 & index)
 {
   if (!mpFunction) fatalError();
+
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError();
+
   mMetabKeyMap[index].clear();
 }
 
 const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
-  {
-    if (!mpFunction) fatalError();
-    CFunctionParameter::DataType type;
-    unsigned C_INT32 index;
-    index = mMap.findParameterByName(parameterName, type);
-    if (C_INVALID_INDEX == index)
-      return mMetabKeyMap[0]; //TODO this is kind of ugly!
-    //if (type != CFunctionParameter::FLOAT64) fatalError();
+{
+  if (!mpFunction) fatalError();
 
-    return mMetabKeyMap[index];
-  }
+  CFunctionParameter::DataType type;
+  unsigned C_INT32 index;
+  index = mMap.findParameterByName(parameterName, type);
+
+  if (C_INVALID_INDEX == index)
+    return mMetabKeyMap[0]; //TODO this is kind of ugly!
+
+  //if (type != CFunctionParameter::FLOAT64) fatalError();
+
+  return mMetabKeyMap[index];
+}
 
 bool CReaction::isLocalParameter(const C_INT32 & index) const
-  {
-    unsigned C_INT32 i, imax = mParameters.size();
-    for (i = 0; i < imax; ++i)
-      {
-        if (mParameters.getParameter(i)->getKey() == mMetabKeyMap[index][0])
-          return true;
-      }
-    return false;
-  }
+{
+  unsigned C_INT32 i, imax = mParameters.size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      if (mParameters.getParameter(i)->getKey() == mMetabKeyMap[index][0])
+        return true;
+    }
+
+  return false;
+}
 
 bool CReaction::isLocalParameter(const std::string & parameterName) const
-  {
-    if (!mpFunction) fatalError();
-    CFunctionParameter::DataType type;
-    unsigned C_INT32 index;
-    index = mMap.findParameterByName(parameterName, type);
-    if (C_INVALID_INDEX == index)
-      return false;
-    if (type != CFunctionParameter::FLOAT64) fatalError();
+{
+  if (!mpFunction) fatalError();
 
-    return isLocalParameter(index);
-  }
+  CFunctionParameter::DataType type;
+  unsigned C_INT32 index;
+  index = mMap.findParameterByName(parameterName, type);
+
+  if (C_INVALID_INDEX == index)
+    return false;
+
+  if (type != CFunctionParameter::FLOAT64) fatalError();
+
+  return isLocalParameter(index);
+}
 //***********************************************************************************************
 
 void CReaction::initializeParameters()
 {
   if (!mpFunction) fatalError();
+
   unsigned C_INT32 i;
   unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER);
   unsigned C_INT32 pos;
@@ -428,6 +458,7 @@ void CReaction::initializeParameters()
   for (i = 0, pos = 0; i < imax; ++i)
     {
       name = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos)->getObjectName();
+
       //      param.setName(name);
       if (!mParameters.getParameter(name))
         {
@@ -435,6 +466,7 @@ void CReaction::initializeParameters()
                                    CCopasiParameter::DOUBLE,
                                    (C_FLOAT64) 1.0);
         }
+
       CCopasiParameter * tmpPar = mParameters.getParameter(name);
       mMetabKeyMap[pos - 1][0] = tmpPar->getKey();
     }
@@ -444,15 +476,18 @@ void CReaction::initializeParameters()
   CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
   CFunctionParameter::DataType Type;
   std::vector< std::string > ToBeDeleted;
+
   for (; it != end; ++it)
     {
       name = (*it)->getObjectName();
+
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
         ToBeDeleted.push_back(name);
     }
 
   std::vector< std::string >::const_iterator itToBeDeleted = ToBeDeleted.begin();
   std::vector< std::string >::const_iterator endToBeDeleted = ToBeDeleted.end();
+
   for (; itToBeDeleted != endToBeDeleted; ++itToBeDeleted)
     mParameters.removeParameter(*itToBeDeleted);
 }
@@ -460,10 +495,12 @@ void CReaction::initializeParameters()
 void CReaction::initializeMetaboliteKeyMap()
 {
   if (!mpFunction) fatalError();
+
   unsigned C_INT32 i;
   unsigned C_INT32 imax = mMap.getFunctionParameters().size();
 
   mMetabKeyMap.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
@@ -474,10 +511,11 @@ void CReaction::initializeMetaboliteKeyMap()
 }
 
 const CFunctionParameters & CReaction::getFunctionParameters() const
-  {
-    if (!mpFunction) fatalError();
-    return mMap.getFunctionParameters();
-  }
+{
+  if (!mpFunction) fatalError();
+
+  return mMap.getFunctionParameters();
+}
 
 void CReaction::compile()
 {
@@ -497,10 +535,12 @@ void CReaction::compile()
       for (i = 0; i < imax; ++i)
         {
           paramName = getFunctionParameters()[i]->getObjectName();
+
           if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
             {
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
+
               for (j = 0; j < jmax; ++j)
                 if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                   {
@@ -565,6 +605,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
       pos = 0;
       pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
+
       if (!pParameter)
         {
           //std::cout << "could not find variable" << std::endl;
@@ -586,6 +627,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
   else //no vector
     {
       imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(role);
+
       if (imax > n)
         {
           //std::cout << "no. of metabs not matching function definition" << std::endl;
@@ -600,11 +642,13 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           metabName = (*pDataModel->pOldMetabolites)[index]->getObjectName();
 
           pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
+
           if (!pParameter)
             {
               //std::cout << "could not find variable" << std::endl;
               fatalError();
             }
+
           if (pParameter->getType() >= CFunctionParameter::VINT32)
             {
               //std::cout << "unexpected vector variable" << std::endl;
@@ -629,6 +673,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           configbuffer.getVariable(name, "C_INT32", &index);
         }
     }
+
   return true;
 }
 
@@ -665,17 +710,20 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   std::string name;
   const CFunctionParameter* pParameter;
   C_FLOAT64 value;
+
   for (i = 0, pos = 0; i < ParameterSize; i++)
     {
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", &value);
 
       pParameter = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos);
+
       if (!pParameter)
         {
           //std::cout << "could not find variable" << std::endl;
           fatalError();
         }
+
       if (pParameter->getType() != CFunctionParameter::FLOAT64)
         {
           //std::cout << "unexpected parameter type" << std::endl;
@@ -726,7 +774,7 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
 
       *pXi = store;
 
-      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
+      return *mScalingFactor *(f1 - f2) / (2.0 * tmp * derivationFactor);
       //this is d(flow)/d(concentration)
     }
   else
@@ -737,7 +785,7 @@ unsigned C_INT32 CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
 
 const CCompartment & CReaction::getLargestCompartment() const
-  {return mChemEq.getLargestCompartment();}
+{return mChemEq.getLargestCompartment();}
 
 void CReaction::setScalingFactor()
 {
@@ -766,6 +814,7 @@ void CReaction::setScalingFactor()
     mScalingFactor = &mDefaultScalingFactor;
 
 #ifdef XXXX
+
   if (mpFunctionCompartment)
     {
       // should propably check if the compartment appears in the chemical equation
@@ -774,20 +823,25 @@ void CReaction::setScalingFactor()
   else
     {
       try
-      {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
+        {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
       catch (CCopasiException Exc)
         {
           unsigned C_INT32 nr = Exc.getMessage().getNumber();
+
           if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
+
           if (MCChemEq + 1 == nr)
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getObjectName().c_str());
+
           throw;
         }
     }
+
 #endif // XXXX
 
   CModel * pModel = (CModel *) getObjectAncestor("Model");
+
   if (pModel)
     mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
   else
@@ -806,15 +860,15 @@ void CReaction::initObjects()
 }
 
 std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
-  {
-    std::set< const CCopasiObject * > Deleted;
+{
+  std::set< const CCopasiObject * > Deleted;
 
-    Deleted.insert(this);
-    Deleted.insert(mpFluxReference);
-    Deleted.insert(mpParticleFluxReference);
+  Deleted.insert(this);
+  Deleted.insert(mpFluxReference);
+  Deleted.insert(mpParticleFluxReference);
 
-    return Deleted;
-  }
+  return Deleted;
+}
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
@@ -847,11 +901,14 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
 
   os << "   key map:" << std::endl;
   unsigned C_INT32 i, j;
+
   for (i = 0; i < d.mMetabKeyMap.size(); ++i)
     {
       os << i << ": ";
+
       for (j = 0; j < d.mMetabKeyMap[i].size(); ++j)
         os << d.mMetabKeyMap[i][j] << ", ";
+
       os << std::endl;
     }
 
@@ -870,15 +927,18 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
   containers.push_back(pModel);
   CCopasiObject* object = getObjectDataModel()->ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
   std::string id;
+
   // if the object if of type reference
   if (object)
     {
       if (dynamic_cast<CCopasiObjectReference<C_FLOAT64>*>(object))
         {
           object = object->getObjectParent();
+
           if (object)
             {
               std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
+
               //assert(pos!=copasi2sbmlmap.end());
               // check if it is a CMetab, a CModelValue or a CCompartment
               if (dynamic_cast<CMetab*>(object))
@@ -892,6 +952,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                     };
 
                   unsigned C_INT32 j, jmax = 12;
+
                   for (j = 0; j < jmax; j++)
                     if (id == Reserved[j]) break;
 
@@ -899,6 +960,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                     id = "\"" + id + "\"";
 
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+
                   if (replacementMap.find(id) == replacementMap.end())
                     {
                       // check whether it is a substrate, a product or a modifier
@@ -907,7 +969,8 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       unsigned int i;
                       //std::string usage;
                       CFunctionParameter::Role usage;
-                      for (i = 0; i < v->size();++i)
+
+                      for (i = 0; i < v->size(); ++i)
                         {
                           if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
                             {
@@ -916,10 +979,12 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                               break;
                             }
                         }
+
                       if (!found)
                         {
                           v = &this->getChemEq().getProducts();
-                          for (i = 0; i < v->size();++i)
+
+                          for (i = 0; i < v->size(); ++i)
                             {
                               if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
                                 {
@@ -928,10 +993,12 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                   break;
                                 }
                             }
+
                           if (!found)
                             {
                               v = &this->getChemEq().getModifiers();
-                              for (i = 0; i < v->size();++i)
+
+                              for (i = 0; i < v->size(); ++i)
                                 {
                                   if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
                                     {
@@ -940,6 +1007,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                       break;
                                     }
                                 }
+
                               if (!found)
                                 {
                                   //found = true;
@@ -951,6 +1019,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                 }
                             }
                         }
+
                       if (found)
                         {
                           CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, usage);
@@ -963,10 +1032,11 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   // usage = "PARAMETER"
                   id = dynamic_cast<Parameter*>(pos->second)->getId();
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+
                   if (replacementMap.find(id) == replacementMap.end())
                     {
                       CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                                                      CFunctionParameter::PARAMETER);
+                          CFunctionParameter::PARAMETER);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -975,10 +1045,11 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   // usage = "VOLUME"
                   id = dynamic_cast<Compartment*>(pos->second)->getId();
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+
                   if (replacementMap.find(id) == replacementMap.end())
                     {
                       CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                                                      CFunctionParameter::VOLUME);
+                          CFunctionParameter::VOLUME);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -987,10 +1058,11 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   id = object->getObjectName();
                   id = this->escapeId(id);
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+
                   if (replacementMap.find(id) == replacementMap.end())
                     {
                       CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                                                      CFunctionParameter::TIME);
+                          CFunctionParameter::TIME);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -1006,10 +1078,11 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
           id = object->getObjectName();
           id = this->escapeId(id);
           pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+
           if (replacementMap.find(id) == replacementMap.end())
             {
               CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                                              CFunctionParameter::PARAMETER);
+                  CFunctionParameter::PARAMETER);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
@@ -1034,6 +1107,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
           CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
         }
     }
+
   return pVariableNode;
 }
 
@@ -1045,166 +1119,183 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
 
   switch (CEvaluationNode::type(expression->getType()))
     {
-    case CEvaluationNode::NUMBER:
-      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::CONSTANT:
-      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::OPERATOR:
-      pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
-      pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-          pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
-          if (pChildNode)
-            {
-              pTmpNode->addChild(pChildNode);
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
-            }
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::OBJECT:
-      // convert to a variable node
-      pTmpNode = this->object2variable(static_cast<CEvaluationNodeObject*>(expression), replacementMap, copasi2sbmlmap);
-      break;
-    case CEvaluationNode::FUNCTION:
-      pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the only child as well
-      pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      // delay has a second child
-      /*
-      if((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(expression->getType())==CEvaluationNodeFunction::DELAY)
-      {
-          pChildNode=dynamic_cast<CEvaluationNode*>(expression->getChild()->getSibling());
-          assert(pChildNode!=NULL);
-          pChildNode = this->objects2variables(pChildNode, replacementMap, copasi2sbmlmap);
-          if (pChildNode)
+      case CEvaluationNode::NUMBER:
+        pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::CONSTANT:
+        pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::OPERATOR:
+        pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the two children as well
+        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+
+        if (pChildNode)
           {
-              pTmpNode->addChild(pChildNode);
+            pTmpNode->addChild(pChildNode);
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
           }
-          else
+        else
           {
-              delete pTmpNode;
-              pTmpNode = NULL;
+            delete pTmpNode;
+            pTmpNode = NULL;
           }
-      }
-      */
-      break;
-    case CEvaluationNode::CALL:
-      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert all children
-      pOldChildNode = static_cast<CEvaluationNode*>(expression->getChild());
-      while (pOldChildNode)
+
+        break;
+      case CEvaluationNode::OBJECT:
+        // convert to a variable node
+        pTmpNode = this->object2variable(static_cast<CEvaluationNodeObject*>(expression), replacementMap, copasi2sbmlmap);
+        break;
+      case CEvaluationNode::FUNCTION:
+        pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the only child as well
+        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        // delay has a second child
+        /*
+        if((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(expression->getType())==CEvaluationNodeFunction::DELAY)
         {
-          pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
-          if (pChildNode)
+            pChildNode=dynamic_cast<CEvaluationNode*>(expression->getChild()->getSibling());
+            assert(pChildNode!=NULL);
+            pChildNode = this->objects2variables(pChildNode, replacementMap, copasi2sbmlmap);
+            if (pChildNode)
             {
-              pTmpNode->addChild(pChildNode);
+                pTmpNode->addChild(pChildNode);
             }
-          pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
-        }
-      break;
-    case CEvaluationNode::STRUCTURE:
-      // this should not occur here
-      fatalError();
-      break;
-    case CEvaluationNode::CHOICE:
-      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the three children as well
-      pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-          pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
-          if (pChildNode)
+            else
             {
-              pTmpNode->addChild(pChildNode);
-              pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()->getSibling()), replacementMap, copasi2sbmlmap);
-              if (pChildNode)
-                {
-                  pTmpNode->addChild(pChildNode);
-                }
-              else
-                {
-                  delete pTmpNode;
-                  pTmpNode = NULL;
-                }
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
+                delete pTmpNode;
+                pTmpNode = NULL;
             }
         }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::VARIABLE:
-      // error variables may not be in an expression
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
-      break;
-    case CEvaluationNode::WHITESPACE:
-      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::LOGICAL:
-      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
-      pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-          pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
-          if (pChildNode)
-            {
-              pTmpNode->addChild(pChildNode);
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
-            }
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::MV_FUNCTION:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
-      break;
-    case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
-      // create an error message
-      break;
-    default:
-      break;
+        */
+        break;
+      case CEvaluationNode::CALL:
+        pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert all children
+        pOldChildNode = static_cast<CEvaluationNode*>(expression->getChild());
+
+        while (pOldChildNode)
+          {
+            pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+
+            pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
+          }
+
+        break;
+      case CEvaluationNode::STRUCTURE:
+        // this should not occur here
+        fatalError();
+        break;
+      case CEvaluationNode::CHOICE:
+        pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the three children as well
+        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+                pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()->getSibling()), replacementMap, copasi2sbmlmap);
+
+                if (pChildNode)
+                  {
+                    pTmpNode->addChild(pChildNode);
+                  }
+                else
+                  {
+                    delete pTmpNode;
+                    pTmpNode = NULL;
+                  }
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        break;
+      case CEvaluationNode::VARIABLE:
+        // error variables may not be in an expression
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
+        break;
+      case CEvaluationNode::WHITESPACE:
+        pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::LOGICAL:
+        pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the two children as well
+        pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+            pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        break;
+      case CEvaluationNode::MV_FUNCTION:
+        // create an error message until there is a class for it
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
+        break;
+      case CEvaluationNode::INVALID:
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
+        // create an error message
+        break;
+      default:
+        break;
     }
+
   return pTmpNode;
 }
 
@@ -1212,6 +1303,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pFun = NULL;
+
   if (dynamic_cast<CExpression*>(tree))
     {
       CEvaluationNode* pOrigNode = tree->getRoot();
@@ -1219,6 +1311,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
       std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CCopasiObject*, CFunctionParameter*> >();
 
       CEvaluationNode* pFunctionTree = this->objects2variables(pOrigNode, replacementMap, copasi2sbmlmap);
+
       if (pFunctionTree)
         {
           // create the function object
@@ -1234,6 +1327,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           std::string appendix = "";
           unsigned int counter = 0;
           std::ostringstream numberStream;
+
           while (pFunctionDB->findFunction(functionName + appendix) != NULL)
             {
               counter++;
@@ -1252,16 +1346,19 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           // and do the mapping
           std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
           std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator endIt = replacementMap.end();
+
           while (it != endIt)
             {
               CFunctionParameter* pFunPar = it->second.second;
               pFun->addVariable(pFunPar->getObjectName(), pFunPar->getUsage(), pFunPar->getType());
               ++it;
             }
+
           pFun->compile();
 
           this->setFunction(pFun);
           it = replacementMap.begin();
+
           while (it != endIt)
             {
               CFunctionParameter* pFunPar = it->second.second;
@@ -1272,6 +1369,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
             }
         }
     }
+
   return pFun != NULL;
 }
 
@@ -1280,142 +1378,159 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
   CEvaluationNode* pTmpNode = NULL;
   CEvaluationNode* pChildNode = NULL;
   CEvaluationNode* pChildNode2 = NULL;
+
   switch (CEvaluationNode::type(expression->getType()))
     {
-    case CEvaluationNode::NUMBER:
-      pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::CONSTANT:
-      pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::OPERATOR:
-      pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
-      pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
-          if (pChildNode)
-            {
-              pTmpNode->addChild(pChildNode);
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
-            }
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::OBJECT:
-      pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::FUNCTION:
-      pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the only child as well
-      pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::CALL:
-      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert all children
-      pChildNode2 = static_cast<CEvaluationNode*>(expression->getChild());
-      while (pChildNode2)
-        {
-          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(pChildNode2));
-          if (pChildNode)
-            {
-              pTmpNode->addChild(pChildNode);
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
-            }
-          pChildNode2 = static_cast<CEvaluationNode*>(pChildNode2->getSibling());
-        }
-      break;
-    case CEvaluationNode::STRUCTURE:
-      pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::CHOICE:
-      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
-      pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
-          if (pChildNode)
-            {
-              pTmpNode->addChild(pChildNode);
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
-            }
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::VARIABLE:
-      pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
-      break;
-    case CEvaluationNode::WHITESPACE:
-      pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      break;
-    case CEvaluationNode::LOGICAL:
-      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
-      // convert the two children as well
-      pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
-      if (pChildNode)
-        {
-          pTmpNode->addChild(pChildNode);
-          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
-          if (pChildNode)
-            {
-              pTmpNode->addChild(pChildNode);
-            }
-          else
-            {
-              delete pTmpNode;
-              pTmpNode = NULL;
-            }
-        }
-      else
-        {
-          delete pTmpNode;
-          pTmpNode = NULL;
-        }
-      break;
-    case CEvaluationNode::MV_FUNCTION:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
-      break;
-    case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
-      // create an error message
-      break;
-    default:
-      break;
+      case CEvaluationNode::NUMBER:
+        pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::CONSTANT:
+        pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::OPERATOR:
+        pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the two children as well
+        pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+            pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        break;
+      case CEvaluationNode::OBJECT:
+        pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::FUNCTION:
+        pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the only child as well
+        pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        break;
+      case CEvaluationNode::CALL:
+        pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert all children
+        pChildNode2 = static_cast<CEvaluationNode*>(expression->getChild());
+
+        while (pChildNode2)
+          {
+            pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(pChildNode2));
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
+
+            pChildNode2 = static_cast<CEvaluationNode*>(pChildNode2->getSibling());
+          }
+
+        break;
+      case CEvaluationNode::STRUCTURE:
+        pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::CHOICE:
+        pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the two children as well
+        pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+            pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        break;
+      case CEvaluationNode::VARIABLE:
+        pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
+        break;
+      case CEvaluationNode::WHITESPACE:
+        pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        break;
+      case CEvaluationNode::LOGICAL:
+        pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+        // convert the two children as well
+        pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
+
+        if (pChildNode)
+          {
+            pTmpNode->addChild(pChildNode);
+            pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
+
+            if (pChildNode)
+              {
+                pTmpNode->addChild(pChildNode);
+              }
+            else
+              {
+                delete pTmpNode;
+                pTmpNode = NULL;
+              }
+          }
+        else
+          {
+            delete pTmpNode;
+            pTmpNode = NULL;
+          }
+
+        break;
+      case CEvaluationNode::MV_FUNCTION:
+        // create an error message until there is a class for it
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
+        break;
+      case CEvaluationNode::INVALID:
+        CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
+        // create an error message
+        break;
+      default:
+        break;
     }
+
   return pTmpNode;
 }
 
@@ -1430,16 +1545,21 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
+
   if (type == CFunctionParameter::VFLOAT64 || type == CFunctionParameter::VINT32)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
+
   const std::string& key = this->getParameterMappings()[index][0];
+
   CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
   if (!pObject)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
     }
+
   pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ">");
   return pObjectNode;
 }
@@ -1455,9 +1575,9 @@ void CReaction::setSBMLId(const std::string& id)
 }
 
 const std::string& CReaction::getSBMLId() const
-  {
-    return this->mSBMLId;
-  }
+{
+  return this->mSBMLId;
+}
 
 void CReaction::setMiriamAnnotation(const std::string & miriamAnnotation,
                                     const std::string & oldId)
@@ -1467,44 +1587,50 @@ void CReaction::setMiriamAnnotation(const std::string & miriamAnnotation,
 }
 
 const std::string & CReaction::getMiriamAnnotation() const
-  {return mMiriamAnnotation;}
+{return mMiriamAnnotation;}
 
 std::string CReaction::escapeId(const std::string& id)
 {
   std::string s = id;
   std::string::size_type idx = s.find('\\');
+
   while (idx != std::string::npos)
     {
       s.insert(idx, "\\");
       ++idx;
       idx = s.find('\\', ++idx);
     }
+
   idx = s.find('"');
+
   while (idx != std::string::npos)
     {
       s.insert(idx, "\\");
       ++idx;
       idx = s.find('"', ++idx);
     }
+
   if (s.find(' ') != std::string::npos || s.find('\t') != std::string::npos)
     {
       s = std::string("\"") + s + std::string("\"");
     }
+
   return s;
 }
 
 std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
-  {
-    CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
-    if (tmp)
-      {
-        return "(" + getObjectName() + ")";
-      }
+{
+  CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
 
-    return CCopasiObject::getObjectDisplayName(regular, richtext);
-  }
+  if (tmp)
+    {
+      return "(" + getObjectName() + ")";
+    }
+
+  return CCopasiObject::getObjectDisplayName(regular, richtext);
+}
 
 void CReaction::printDebug() const
-  {
-    // std::cout << *this;
-  }
+{
+  // std::cout << *this;
+}

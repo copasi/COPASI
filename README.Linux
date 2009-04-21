@@ -1,11 +1,10 @@
-This is the Linux build of a COPASI test version.
+This is the Linux build of a COPASI stable release.
 
 INSTALLATION:
 
 You can unpack the package anywhere. The binary should work immediately.
 However for the tutorial wizard to work you need to set an environment
 variable:
-
 
 If you use bash type (while replacing <copasi-path> with the directory where 
 you installed COPASI):
@@ -21,7 +20,7 @@ you installed COPASI):
 
 setenv COPASIDIR=<copasi-path>
 
-If you wish to associate an icons with COPASI you may find icons in the
+If you wish to associate an icon with COPASI you may find icons in the
 directory <copasi-path>/share/copasi/icons.
 
 KNOWN PROBLEMS
@@ -30,3 +29,7 @@ We built this as a statically linked binary. It should therefore run on most
 Linux x86 computers. However, we have reports that the static binary does not
 work under some Debian systems with a broken static c library. If you encounter
 this problem please try the dynamic build.
+
+FURTHER HELP
+
+Documentation and a user forum can be found on www.copasi.org. Bug reports can also be sent to bugs@copasi.org.

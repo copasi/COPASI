@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetScan.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:14 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,9 @@ void CScanWidgetScan::slotChooseObject()
 {
   const CCopasiObject * pObject =
     //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE,
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_PARAMETER,
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters,
                                             mpObject);
 
   if (mpObject != pObject) // Object selection changed.
@@ -84,20 +86,26 @@ void CScanWidgetScan::slotChooseObject()
 bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)
 {
   if (!model) return false;
+
   mpModel = model;
 
   void* tmp;
 
   if (!(tmp = pg->getValue("Type").pVOID)) return false;
+
   CScanProblem::Type type = *(CScanProblem::Type*)tmp;
+
   if (type != CScanProblem::SCAN_LINEAR)
     return false;
 
   if (!(tmp = pg->getValue("Number of steps").pVOID)) return false;
+
   lineEditNumber->setText(QString::number(*(C_INT32*)tmp));
 
   if (!(tmp = pg->getValue("Object").pVOID)) return false;
+
   std::string tmpString = *(std::string*)tmp;
+
   if (tmpString == "")
     mpObject = NULL;
   else
@@ -114,29 +122,32 @@ bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel*
     lineEditObject->setText("");
 
   if (!(tmp = pg->getValue("Minimum").pVOID)) return false;
+
   lineEditMin->setText(QString::number(*(C_FLOAT64*)tmp));
 
   if (!(tmp = pg->getValue("Maximum").pVOID)) return false;
+
   lineEditMax->setText(QString::number(*(C_FLOAT64*)tmp));
 
   if (!(tmp = pg->getValue("log").pVOID)) return false;
+
   checkBoxLog->setChecked(*(bool*)tmp);
 
   return true;
 }
 
 bool CScanWidgetScan::saveToScanItem(CScanProblem * pg) const
-  {
-    CScanProblem::Type type = CScanProblem::SCAN_LINEAR;
+{
+  CScanProblem::Type type = CScanProblem::SCAN_LINEAR;
 
-    unsigned C_INT32 steps = lineEditNumber->text().toUInt();
+  unsigned C_INT32 steps = lineEditNumber->text().toUInt();
 
-    CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
-    assert(tmp);
+  CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
+  assert(tmp);
 
-    tmp->setValue("Minimum", lineEditMin->text().toDouble());
-    tmp->setValue("Maximum", lineEditMax->text().toDouble());
-    tmp->setValue("log", checkBoxLog->isChecked());
+  tmp->setValue("Minimum", lineEditMin->text().toDouble());
+  tmp->setValue("Maximum", lineEditMax->text().toDouble());
+  tmp->setValue("log", checkBoxLog->isChecked());
 
-    return true;
-  }
+  return true;
+}

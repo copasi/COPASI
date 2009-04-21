@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,28 +127,34 @@ void CCopasiPlotSelectionDialog::slotOKButtonClicked()
   this->mpYAxisSelectionWidget->commit();
   std::string message = "";
   bool showWarning = false;
+
   if (this->mpXAxisOutputVector->empty())
     {
       message += "X Axis";
       showWarning = true;
     }
+
   if (this->mpYAxisOutputVector->empty())
     {
       if (showWarning)
         {
           message += " and ";
         }
+
       showWarning = true;
       message += "Y Axis";
     }
+
   if (showWarning)
     {
       message = "You did not select anything for the " + message + "!\nDo you want to proceed anyway?";
+
       if (CQMessageBox::question(this, "Empty Selection", FROM_UTF8(message), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
         {
           return;
         }
     }
+
   QDialog::done(QDialog::Accepted);
 }
 
@@ -173,8 +179,8 @@ void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObje
 }
 
 void CCopasiPlotSelectionDialog::setModel(CModel* pModel,
-    const CCopasiSimpleSelectionTree::SelectionFlag & flag)
+    const CCopasiSimpleSelectionTree::ObjectClasses & classes)
 {
-  this->mpXAxisSelectionWidget->populateTree(pModel, flag);
-  this->mpYAxisSelectionWidget->populateTree(pModel, flag);
+  this->mpXAxisSelectionWidget->populateTree(pModel, classes);
+  this->mpYAxisSelectionWidget->populateTree(pModel, classes);
 }

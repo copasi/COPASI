@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:15 $
+//   $Date: 2009/04/21 16:14:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,20 +62,16 @@ void CFunctionDB::initObjects()
 bool CFunctionDB::load()
 {
   CCopasiXML XML;
+  XML.setFunctionList(&mLoadedFunctions);
+
   std::stringstream DB;
   DB.str(FunctionDBxml);
-  //  std::ifstream DB(mFilename.c_str());
-  if (DB.fail()) return false;
-  if (!XML.load(DB, "")) return false;
 
-  CCopasiVectorN< CEvaluationTree > * pFunctionList = XML.getFunctionList();
+  if (DB.fail())
+    return false;
 
-  unsigned C_INT32 i, imax = pFunctionList->size();
-
-  for (i = 0; i < imax; i++)
-    mLoadedFunctions.add((*pFunctionList)[i], true);
-
-  XML.freeFunctionList();
+  if (!XML.load(DB, ""))
+    return false;
 
   return true;
 }
@@ -97,22 +93,22 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
       switch (Function.getType())
         {
-        case CEvaluationTree::Function:
-          pFunction = new CFunction(Function);
-          break;
+          case CEvaluationTree::Function:
+            pFunction = new CFunction(Function);
+            break;
 
-        case CEvaluationTree::MassAction:
-          pFunction = new CMassAction(Function);
-          break;
+          case CEvaluationTree::MassAction:
+            pFunction = new CMassAction(Function);
+            break;
 
-        case CEvaluationTree::PreDefined:
-        case CEvaluationTree::UserDefined:
-          pFunction = new CKinFunction(Function,
-                                       &configbuffer);
-          break;
+          case CEvaluationTree::PreDefined:
+          case CEvaluationTree::UserDefined:
+            pFunction = new CKinFunction(Function,
+                                         &configbuffer);
+            break;
 
-        default:
-          fatalError();
+          default:
+            fatalError();
         }
 
       pFunction->compile();
@@ -120,6 +116,7 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
       if (!mLoadedFunctions.add(pFunction, true))
         {
           pdelete(pFunction);
+
           // We ignore:
           // CCopasiVector (2): Object '%s' allready exists.
           if ((MCCopasiVector + 2) != CCopasiMessage::peekLastMessage().getNumber())
@@ -137,7 +134,7 @@ void CFunctionDB::setFilename(const std::string & filename)
 {mFilename = filename;}
 
 std::string CFunctionDB::getFilename() const
-  {return mFilename;}
+{return mFilename;}
 
 #ifdef FFFF
 CFunction * CFunctionDB::dBLoad(const std::string & functionName)
@@ -146,6 +143,7 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
   CFunction * pFunction = NULL;
 
   if (mFilename == "") return NULL;
+
   CReadConfig inbuf(mFilename);
 
   while (functionName != Function.getObjectName())
@@ -156,32 +154,33 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 
   switch (Function.getType())
     {
-    case CFunction::Base:
-      pFunction = new CFunction(Function);
-      break;
+      case CFunction::Base:
+        pFunction = new CFunction(Function);
+        break;
 
-    case CFunction::MassAction:
-      pFunction = new CMassAction(Function.isReversible());
-      break;
+      case CFunction::MassAction:
+        pFunction = new CMassAction(Function.isReversible());
+        break;
 
-    case CFunction::PreDefined:
+      case CFunction::PreDefined:
 
-    case CFunction::UserDefined:
-      pFunction = new CKinFunction(Function, &inbuf);
-      break;
+      case CFunction::UserDefined:
+        pFunction = new CKinFunction(Function, &inbuf);
+        break;
 
-    case CFunction::Expression:
-      fatalError(); //disabled
-      //pFunction = new CUDFunction(Function);
-      break;
+      case CFunction::Expression:
+        fatalError(); //disabled
+        //pFunction = new CUDFunction(Function);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   if (!mLoadedFunctions.add(pFunction))
     {
       pdelete(pFunction);
+
       // We ignore:
       // CCopasiVector (2): Object '%s' allready exists.
       if ((MCCopasiVector + 2) != CCopasiMessage::getLastMessage().getNumber())
@@ -202,23 +201,24 @@ CEvaluationTree * CFunctionDB::createFunction(const std::string & name, const CE
   //CFunction * pFunction = new CFunction(name);
 
   CEvaluationTree * pFunction = NULL;
+
   switch (type)
     {
-    case CEvaluationTree::Base:
-      pFunction = new CFunction(name);
-      break;
+      case CEvaluationTree::Base:
+        pFunction = new CFunction(name);
+        break;
 
-    case CEvaluationTree::MassAction:
-      pFunction = new CMassAction(name);
-      break;
+      case CEvaluationTree::MassAction:
+        pFunction = new CMassAction(name);
+        break;
 
-    case CEvaluationTree::PreDefinedKineticLaw:
-    case CEvaluationTree::UserDefinedKineticLaw:
-      pFunction = new CKinFunction(name);
-      break;
+      case CEvaluationTree::PreDefinedKineticLaw:
+      case CEvaluationTree::UserDefinedKineticLaw:
+        pFunction = new CKinFunction(name);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   if (!mLoadedFunctions.add(pFunction, true))
@@ -226,6 +226,7 @@ CEvaluationTree * CFunctionDB::createFunction(const std::string & name, const CE
       delete pFunction;
       return NULL;
     }
+
   return pFunction;
 }
 #endif // FFFF
@@ -251,6 +252,7 @@ void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
       std::ostringstream ss; ss << "_" << i;
       name = basename + ss.str();
     }
+
   pFunction->setObjectName(name);
 
   this->add(pFunction, true);
@@ -259,10 +261,12 @@ void CFunctionDB::addAndAdaptName(CEvaluationTree * pFunction)
 bool CFunctionDB::removeFunction(const std::string &key)
 {
   CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(CCopasiRootContainer::getKeyFactory()->get(key));
+
   if (!func) return false;
 
   unsigned C_INT32 index =
     mLoadedFunctions.CCopasiVector<CEvaluationTree>::getIndex(func);
+
   if (index == C_INVALID_INDEX) return false;
 
   mLoadedFunctions.CCopasiVector<CEvaluationTree>::remove(index);
@@ -303,9 +307,11 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
   CFunction *pFunction;
 
   unsigned C_INT32 i, imax = mLoadedFunctions.size();
+
   for (i = 0; i < imax; i++)
     {
       pFunction = dynamic_cast<CFunction *>(mLoadedFunctions[i]);
+
       if (!pFunction) continue;
 
       if (pFunction->isSuitable(noSubstrates, noProducts, reversibility))
@@ -318,7 +324,9 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
       if ((noSubstrates > 0) || (noProducts > 0)) //constant flux was not yet added
         {
           pFunction = dynamic_cast<CFunction*>(findFunction("Constant flux (reversible)"));
+
           if (!pFunction) fatalError();
+
           ret.push_back(pFunction);
         }
     }
@@ -327,7 +335,9 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
       if (noSubstrates > 0) //constant flux was not yet added
         {
           pFunction = dynamic_cast<CFunction*>(findFunction("Constant flux (irreversible)"));
+
           if (!pFunction) fatalError();
+
           ret.push_back(pFunction);
         }
     }
@@ -337,86 +347,86 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
 void CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > candidates,
     std::set< const CCopasiObject * > & dependentFunctions) const
-  {
-    CCopasiVectorN< CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
-    CCopasiVectorN< CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+{
+  CCopasiVectorN< CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
+  CCopasiVectorN< CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
 
-    for (; it != end; ++it)
-      if (candidates.find(*it) == candidates.end() &&
-          (*it)->dependsOn(candidates))
-        dependentFunctions.insert((*it));
+  for (; it != end; ++it)
+    if (candidates.find(*it) == candidates.end() &&
+        (*it)->dependsOn(candidates))
+      dependentFunctions.insert((*it));
 
-    return;
-  }
+  return;
+}
 
 std::set<std::string>
 CFunctionDB::listDependentTrees(const std::string & name) const
-  {
-    std::set<std::string> List;
+{
+  std::set<std::string> List;
 
-    CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
-    CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+  CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
+  CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
 
-    for (; it != end; ++it)
-      if ((*it)->dependsOnTree(name))
-        List.insert((*it)->getObjectName());
+  for (; it != end; ++it)
+    if ((*it)->dependsOnTree(name))
+      List.insert((*it)->getObjectName());
 
-    return List;
-  }
+  return List;
+}
 
 std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
-  {
-    std::vector< CEvaluationTree * > UsedFunctions;
-    CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
-    CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+{
+  std::vector< CEvaluationTree * > UsedFunctions;
+  CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
+  CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
 
-    for (; it != end; ++it)
-      {
-        // :TODO: Bug 719
-        // This will have to be modified as soon as the optimization problem stores its on expression
-        if ((*it)->getType() == CEvaluationTree::Expression)
-          {
-            UsedFunctions.push_back(*it);
-            continue;
-          }
+  for (; it != end; ++it)
+    {
+      // :TODO: Bug 719
+      // This will have to be modified as soon as the optimization problem stores its on expression
+      if ((*it)->getType() == CEvaluationTree::Expression)
+        {
+          UsedFunctions.push_back(*it);
+          continue;
+        }
 
-        std::set< const CCopasiObject * > Function;
-        Function.insert(*it);
+      std::set< const CCopasiObject * > Function;
+      Function.insert(*it);
 
-        std::set< const CCopasiObject * > Reactions;
-        std::set< const CCopasiObject * > Metabolites;
-        std::set< const CCopasiObject * > Values;
-        std::set< const CCopasiObject * > Compartments;
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
 
-        pModel->appendDependentModelObjects(Function,
-                                            Reactions, Metabolites, Compartments, Values);
+      pModel->appendDependentModelObjects(Function,
+                                          Reactions, Metabolites, Compartments, Values);
 
-        if (Reactions.size() != 0)
-          {
-            UsedFunctions.push_back(*it);
-            continue;
-          }
+      if (Reactions.size() != 0)
+        {
+          UsedFunctions.push_back(*it);
+          continue;
+        }
 
-        if (Metabolites.size() != 0)
-          {
-            UsedFunctions.push_back(*it);
-            continue;
-          }
+      if (Metabolites.size() != 0)
+        {
+          UsedFunctions.push_back(*it);
+          continue;
+        }
 
-        if (Values.size() != 0)
-          {
-            UsedFunctions.push_back(*it);
-            continue;
-          }
+      if (Values.size() != 0)
+        {
+          UsedFunctions.push_back(*it);
+          continue;
+        }
 
-        if (Compartments.size() != 0)
-          {
-            UsedFunctions.push_back(*it);
-            continue;
-          }
-      }
+      if (Compartments.size() != 0)
+        {
+          UsedFunctions.push_back(*it);
+          continue;
+        }
+    }
 
-    CEvaluationTree::completeEvaluationTreeList(UsedFunctions);
+  CEvaluationTree::completeEvaluationTreeList(UsedFunctions);
 
-    return UsedFunctions;
-  }
+  return UsedFunctions;
+}

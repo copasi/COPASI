@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,6 +101,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags f
 {
   if (!name)
     setName("FunctionWidget1");
+
   setCaption(trUtf8("FunctionWidget1"));
   FunctionWidget1Layout = new Q3GridLayout(this, 1, 1, 6, 6, "FunctionWidget1Layout");
 
@@ -237,8 +238,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags f
   Table1->horizontalHeader()->setLabel(COL_USAGE, trUtf8("Description"));
   Table1->horizontalHeader()->setLabel(COL_UNIT, trUtf8("Unit"));
   Table1->setNumRows(3);
-  Table1->setColumnReadOnly (COL_NAME, true);
-  Table1->setColumnReadOnly (COL_UNIT, true);
+  Table1->setColumnReadOnly(COL_NAME, true);
+  Table1->setColumnReadOnly(COL_UNIT, true);
   Table1->verticalHeader()->hide();
   Table1->setLeftMargin(0);
   Table1->setColumnStretchable(COL_NAME, true);
@@ -258,8 +259,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags f
   Table2->horizontalHeader()->setLabel(0, trUtf8("Description"));
   Table2->horizontalHeader()->setLabel(1, trUtf8("Min"));
   Table2->setNumRows(1);
-  Table2->setColumnReadOnly (0, true);
-  Table2->setColumnReadOnly (1, true);
+  Table2->setColumnReadOnly(0, true);
+  Table2->setColumnReadOnly(1, true);
   Table2->verticalHeader()->hide();
   Table2->setLeftMargin(0);
   Table2->horizontalHeader()->hide();
@@ -373,24 +374,33 @@ bool FunctionWidget1::loadParameterTable()
 
   // list of usages for combobox
   QStringList Usages;
+
   for (i = 0; CFunctionParameter::RoleNameDisplay[i] != ""; i++)
     {
       if (dynamic_cast<CKinFunction *>(mpFunction) &&
           CFunctionParameter::VARIABLE == (CFunctionParameter::Role) i) continue;
+
       Usages += (FROM_UTF8(CFunctionParameter::RoleNameDisplay[i]));
     }
 
   //create list of data types (for combobox)
   QStringList functionType;
+
   for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
   //find parameter units
-  CFindDimensions ddd(mpFunction);
-  ddd.setUseHeuristics(true);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
+  CFindDimensions ddd(mpFunction, pModel->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                      pModel->getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                      pModel->getTimeUnitEnum() == CModel::dimensionlessTime);
+
+  ddd.setUseHeuristics(true);
   std::vector<std::string> units = ddd.findDimensionsBoth(pDataModel);
 
   CFunctionParameter::Role usage;
@@ -402,6 +412,7 @@ bool FunctionWidget1::loadParameterTable()
   for (j = 0; j < params.size(); j++)
     {
       usage = params[j]->getUsage();
+
       if (usage == CFunctionParameter::VARIABLE &&
           dynamic_cast<CKinFunction *>(mpFunction))
         {
@@ -413,34 +424,35 @@ bool FunctionWidget1::loadParameterTable()
 
       switch (usage)
         {
-        case CFunctionParameter::SUBSTRATE:
-          color = subsColor;
-          break;
-        case CFunctionParameter::PRODUCT:
-          color = prodColor;
-          break;
-        case CFunctionParameter::MODIFIER:
-          color = modiColor;
-          break;
-        case CFunctionParameter::PARAMETER:
-          color = paraColor;
-          break;
-        case CFunctionParameter::VOLUME:
-          color = volColor;
-          break;
-        case CFunctionParameter::TIME:
-          color = timeColor;
-          break;
-        case CFunctionParameter::VARIABLE:
-          color = QColor(250, 250, 250);
-          break;
-        default :
-          qUsage = "unknown";
-          color = QColor(255, 20, 20);
+          case CFunctionParameter::SUBSTRATE:
+            color = subsColor;
+            break;
+          case CFunctionParameter::PRODUCT:
+            color = prodColor;
+            break;
+          case CFunctionParameter::MODIFIER:
+            color = modiColor;
+            break;
+          case CFunctionParameter::PARAMETER:
+            color = paraColor;
+            break;
+          case CFunctionParameter::VOLUME:
+            color = volColor;
+            break;
+          case CFunctionParameter::TIME:
+            color = timeColor;
+            break;
+          case CFunctionParameter::VARIABLE:
+            color = QColor(250, 250, 250);
+            break;
+          default :
+            qUsage = "unknown";
+            color = QColor(255, 20, 20);
         }
 
       // col. 0
       QString Name = FROM_UTF8(params[j]->getObjectName());
+
       if (!params[j]->isUsed())
         Name += " (unused)";
 
@@ -462,6 +474,7 @@ bool FunctionWidget1::loadParameterTable()
       Table1->setItem(j, COL_UNIT, new ColorTableItem(Table1, Q3TableItem::WhenCurrent, color,
                       FROM_UTF8(units[j])));
     }
+
   Table1->adjustColumn(COL_UNIT);
 
   return true;
@@ -507,9 +520,11 @@ bool FunctionWidget1::loadUsageTable()
               ss << "Exactly "
               << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
               << " substrate";
+
               if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) > 1)
                 ss << "s"; //plural
             }
+
           stringlist.push_back(ss.str());
         }
     }
@@ -524,6 +539,7 @@ bool FunctionWidget1::loadUsageTable()
       else if (mpFunction->getObjectName() != "Constant flux (reversible)")
         {
           std::stringstream ss;
+
           if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) == 0 &&
               mpFunction->getObjectName() != "Constant flux (reversible)")
             {
@@ -534,9 +550,11 @@ bool FunctionWidget1::loadUsageTable()
               ss << "Exactly "
               << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT)
               << " product";
+
               if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) > 1)
                 ss << "s"; //plural
             }
+
           stringlist.push_back(ss.str());
         }
     }
@@ -546,6 +564,7 @@ bool FunctionWidget1::loadUsageTable()
 
   Table2->setNumRows(stringlist.size());
   unsigned C_INT32 row;
+
   for (row = 0; row < stringlist.size(); ++row)
     {
       Table2->setText(row, 0, FROM_UTF8(stringlist[row]));
@@ -560,21 +579,22 @@ bool FunctionWidget1::loadReversibility(TriLogic rev)
 {
   switch (rev)
     {
-    case TriUnspecified:
-      RadioButton3->setEnabled(true);
-      RadioButton3->setChecked(true);
-      break;
+      case TriUnspecified:
+        RadioButton3->setEnabled(true);
+        RadioButton3->setChecked(true);
+        break;
 
-    case TriFalse:
-      RadioButton2->setEnabled(true);
-      RadioButton2->setChecked(true);
-      break;
+      case TriFalse:
+        RadioButton2->setEnabled(true);
+        RadioButton2->setChecked(true);
+        break;
 
-    case TriTrue:
-      RadioButton1->setEnabled(true);
-      RadioButton1->setChecked(true);
-      break;
+      case TriTrue:
+        RadioButton1->setEnabled(true);
+        RadioButton1->setChecked(true);
+        break;
     }
+
   return true;
 }
 
@@ -597,22 +617,28 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   int l = 0;
   int n = 0;
   int len = desc.length();
+
   while (len - l > 65)
     {
       n = l;
       l = l + 65;
+
       while (l > n)
         {
           char ch = desc.at(l);
+
           if ((ch == '+') || (ch == '-') || (ch == '*') || (ch == '/') || (ch == ',') || (ch == ' '))
             break;
+
           l--;
         }
+
       // We did not find a suitable place to break the line
       if (l == n) l += 65;
 
       desc.insert(l, 1, '\n');
     }
+
   disconnect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
   textBrowser->setText(FROM_UTF8(desc));
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
@@ -693,18 +719,21 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
               functParam[index]->setUsage(pfunctParam[i]->getUsage());
               //functParam[pfunctParam[i]->getObjectName()]->setUsage(functParam[i]->getUsage());
             }
+
           if (functParam[index]->getType() != pfunctParam[i]->getType())
             {
               //changed = true;
               // update type
               functParam[index]->setType(pfunctParam[i]->getType());
             }
-        } else
+        }
+      else
         {// match not found
           //changed = true;
           functParam.add(*pfunctParam[i]);
         }
     }
+
   // remove extra parameters existing in functParam, compare functParam to pfunctParam
   if (pfunctParam.size() != functParam.size())
     {
@@ -727,6 +756,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
 bool FunctionWidget1::functionParametersChanged()
 {
   CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (!func) return false;
 
   return (!(func->getVariables() == mpFunction->getVariables()));
@@ -735,15 +765,18 @@ bool FunctionWidget1::functionParametersChanged()
 bool FunctionWidget1::saveToFunction()
 {
   CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (!func) return false;
 
   //name
   QString name(LineEdit1->text());
+
   if (func->getObjectName() != TO_UTF8(name))
     {
       // We need to check whether other trees call the current one.
       std::set<std::string> dependentTrees;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
         {
           dependentTrees =
@@ -756,6 +789,7 @@ bool FunctionWidget1::saveToFunction()
           std::set<std::string>::iterator end = dependentTrees.end();
 
           QString trees;
+
           for (; it != end; it++)
             {
               trees.append(FROM_UTF8(*it));
@@ -792,6 +826,7 @@ bool FunctionWidget1::saveToFunction()
 
   //radio buttons
   TriLogic tmpl;
+
   if (RadioButton1->isChecked() == true)
     {
       tmpl = TriTrue;
@@ -804,6 +839,7 @@ bool FunctionWidget1::saveToFunction()
     {
       tmpl = TriUnspecified;
     }
+
   if (tmpl != func->isReversible())
     {
       func->setReversible(tmpl);
@@ -892,7 +928,9 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   if (col == COL_USAGE) //Usage
     {
       Q3ComboTableItem * tmpItem = dynamic_cast<Q3ComboTableItem *>(Table1->item(row, col));
+
       if (!tmpItem) fatalError();
+
       CFunctionParameter::Role usage = (CFunctionParameter::Role)tmpItem->currentItem();
 
       functParam[row]->setUsage(usage);
@@ -922,15 +960,18 @@ void FunctionWidget1::slotCommitButtonClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
   if (pModel == NULL)
     return;
 
   // :TODO: We should check what changes have been done to the function //
   CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
+
   if (pFunctionDB == NULL)
     return;
 
   CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (pFunction == NULL) return;
 
   if (functionParametersChanged())
@@ -967,6 +1008,7 @@ void FunctionWidget1::slotCommitButtonClicked()
         {
           functionFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Functions.end();
+
           for (it = Functions.begin(); it != itEnd; ++it)
             {
               effectedFunctionList.append(FROM_UTF8((*it)->getObjectName()));
@@ -986,6 +1028,7 @@ void FunctionWidget1::slotCommitButtonClicked()
         {
           reactionFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
           for (it = Reactions.begin(); it != itEnd; ++it)
             {
               effectedReactionList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1002,6 +1045,7 @@ void FunctionWidget1::slotCommitButtonClicked()
         {
           metaboliteFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
           for (it = Metabolites.begin(); it != itEnd; ++it)
             {
               effectedMetaboliteList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1018,6 +1062,7 @@ void FunctionWidget1::slotCommitButtonClicked()
         {
           compartmentFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
           for (it = Compartments.begin(); it != itEnd; ++it)
             {
               effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1034,6 +1079,7 @@ void FunctionWidget1::slotCommitButtonClicked()
         {
           valueFound = true;
           std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
           for (it = Values.begin(); it != itEnd; ++it)
             {
               effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1147,14 +1193,17 @@ void FunctionWidget1::slotDeleteButtonClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
   if (pModel == NULL)
     return;
 
   CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
+
   if (pFunctionDB == NULL)
     return;
 
   CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (pFunction == NULL)
     return;
 
@@ -1185,6 +1234,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
       functionFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Functions.end();
+
       for (it = Functions.begin(); it != itEnd; ++it)
         {
           effectedFunctionList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1209,6 +1259,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
       reactionFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
           effectedReactionList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1225,6 +1276,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
       metaboliteFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
           effectedMetaboliteList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1241,6 +1293,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
           effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1257,6 +1310,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
           effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -1323,7 +1377,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
   /* Check if user chooses to deleted Functions */
   switch (choice)
     {
-    case QMessageBox::Ok:                                                    // Yes or Enter
+      case QMessageBox::Ok:                                                    // Yes or Enter
       {
         unsigned C_INT32 index =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
@@ -1343,8 +1397,8 @@ void FunctionWidget1::slotDeleteButtonClicked()
         break;
       }
 
-    default:                                                    // No or Escape
-      break;
+      default:                                                    // No or Escape
+        break;
     }
 }
 
@@ -1411,14 +1465,15 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
 
   switch (objectType)
     {
-    case ListViews::MODEL:
-    case ListViews::FUNCTION:
-      return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
-      break;
+      case ListViews::MODEL:
+      case ListViews::FUNCTION:
+        return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return true;
 }
 

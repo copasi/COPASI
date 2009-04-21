@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,9 +94,9 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
 }
 
 void CCopasiSelectionDialog::setModel(const CModel* pModel,
-                                      const CCopasiSimpleSelectionTree::SelectionFlag & flag)
+                                      const CCopasiSimpleSelectionTree::ObjectClasses & classes)
 {
-  this->mpSelectionWidget->populateTree(pModel, flag);
+  this->mpSelectionWidget->populateTree(pModel, classes);
 }
 
 void CCopasiSelectionDialog::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
@@ -129,7 +129,9 @@ void CCopasiSelectionDialog::setSingleSelection(bool singleSelectionMode)
 void CCopasiSelectionDialog::enableExpertMode(bool enable)
 {
   if (enable == this->mExpertModeEnabled) return;
+
   this->mExpertModeEnabled = enable;
+
   if (!this->mExpertModeEnabled)
     {
       this->mpModeCheckBox->setChecked(false);
@@ -143,7 +145,7 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
 
 const CCopasiObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
-                                        const CCopasiSimpleSelectionTree::SelectionFlag & flag,
+                                        const CCopasiSimpleSelectionTree::ObjectClasses & classes,
                                         const CCopasiObject * pCurrentObject)
 {
   std::vector< const CCopasiObject * > Selection;
@@ -153,7 +155,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), flag);
+  pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
@@ -167,12 +169,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
       // if the selected object is an array then select firstly one cell of it
       if ((pArray = dynamic_cast< const CArrayAnnotation * >(pObject)))
         {
-          //std::cout << "pArray->getCN() = " << pArray->getCN() << std::endl;
-
-          if (flag == CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION ||
-              flag == CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE ||
-              flag == CCopasiSimpleSelectionTree::PLOT_OBJECT)
-            pObject = chooseCellMatrix(pArray, true, true)[0];
+          pObject = chooseCellMatrix(pArray, true, true)[0];
 
           if (!pObject) return NULL;
         }
@@ -193,16 +190,17 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 }
 
 std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
-    const CCopasiSimpleSelectionTree::SelectionFlag & flag,
+    const CCopasiSimpleSelectionTree::ObjectClasses & classes,
     const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
   std::vector< const CCopasiObject * > Selection;
+
   if (pCurrentSelection)
     Selection = *pCurrentSelection;
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), flag);
+  pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 
@@ -213,20 +211,23 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   else
     //    return Selection;
     {
-      if (flag == CCopasiSimpleSelectionTree::REPORT_ITEM)
+      if (classes == CCopasiSimpleSelectionTree::AnyObject)
         {
           std::vector<const CCopasiObject *> newSelection;
 
           std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
+
           for (; itSelection != Selection.end(); ++itSelection)
             {
               // if the current object is an array then select firstly one cell of it
               const CArrayAnnotation * pArray;
+
               if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
                 {
                   // second parameter is false in order 'ALL' options on the matrix dialog to appear
                   std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
                   std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+
                   for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
                     newSelection.push_back(*tmpit);
                 }
@@ -236,8 +237,10 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
                   newSelection.push_back(*itSelection);
                 }
             }
+
           return newSelection;
         }
+
       return Selection;
     }
 
@@ -248,8 +251,9 @@ std::vector<const CCopasiObject*>
 CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value, std::string caption)
 {
   std::vector< const CCopasiObject* > returnVector;
+
   if (single)
-  {returnVector.resize(1); returnVector[0] = NULL;}
+    {returnVector.resize(1); returnVector[0] = NULL;}
   else
     returnVector.resize(0);
 
@@ -276,6 +280,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
     {
       CCopasiAbstractArray::index_type index;
       index.resize(pArrayAnnotation->dimensionality());
+
       if (index.size() > 2)
         CQMessageBox::warning(0, "Dimensionality Problem", "Need more handle for high dimension of array",
                               QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);

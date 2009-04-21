@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 19:53:57 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,14 +20,14 @@
 //#include <q3header.h>
 #include <qtabwidget.h>
 
-#include "UI/CQTSSAResultSubWidget.h"
-#include "UI/CQTSSAResultWidget.h"
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
-#include "UI/CProgressBar.h"
-#include "UI/CQValidator.h"
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
+#include "CQTSSAResultSubWidget.h"
+#include "CQTSSAResultWidget.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
+#include "CProgressBar.h"
+#include "CQValidator.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
 
 #include "tssanalysis/CTSSATask.h"
 #include "tssanalysis/CTSSAProblem.h"
@@ -37,8 +37,6 @@
 #include "tssanalysis/CCSPMethod.h"
 #include "tssanalysis/CILDMMethod.h"
 #include "tssanalysis/CILDMModifiedMethod.h"
-#include "CQTSSAResultSubWidget.h"
-#include "CQTSSAResultWidget.h"
 #include "report/CCopasiRootContainer.h"
 
 /*

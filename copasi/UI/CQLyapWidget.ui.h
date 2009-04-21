@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQLyapWidget.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,7 @@ bool CQLyapWidget::runTask()
 {
   CLyapTask * pTask =
     dynamic_cast< CLyapTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
@@ -64,6 +65,7 @@ CCopasiMethod * CQLyapWidget::createMethod(const CCopasiMethod::SubType & type)
 bool CQLyapWidget::loadTask()
 {
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
+
   if (!pTask) return false;
 
   loadCommon();
@@ -71,9 +73,10 @@ bool CQLyapWidget::loadTask()
 
   CLyapProblem* pProblem =
     dynamic_cast< CLyapProblem * >(mpTask->getProblem());
+
   if (!pProblem) return false;
 
-  mpEditExponent->setText(QString::number(std::max<unsigned C_INT32>(1, pProblem->getExponentNumber())));
+  mpEditExponent->setText(QString::number(pProblem->getExponentNumber()));
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
@@ -93,6 +96,7 @@ bool CQLyapWidget::loadTask()
 bool CQLyapWidget::saveTask()
 {
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
+
   if (!pTask) return false;
 
   saveCommon();
@@ -100,11 +104,12 @@ bool CQLyapWidget::saveTask()
 
   CLyapProblem* pProblem =
     dynamic_cast< CLyapProblem * >(mpTask->getProblem());
+
   if (!pProblem) return false;
 
   if (QString::number(pProblem->getExponentNumber()) != mpEditExponent->text())
     {
-      pProblem->setExponentNumber(std::max(1, mpEditExponent->text().toInt()));
+      pProblem->setExponentNumber(std::max(0, mpEditExponent->text().toInt()));
       mChanged = true;
     }
 
@@ -130,7 +135,7 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  if (mChanged) (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  if (mChanged)(*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mChanged = false;
   return true;
@@ -142,6 +147,10 @@ void CQLyapWidget::init()
 
   vboxLayout->insertWidget(0, mpHeaderWidget);
   vboxLayout->addWidget(mpBtnWidget);
+
+  CQValidatorInt* tmpval = new CQValidatorInt(mpEditExponent);
+  tmpval->setRange(0, LONG_MAX);
+  mpEditExponent->setValidator(tmpval);
 
   //  addMethodSelectionBox(CLyapTask::ValidMethods);
   addMethodParameterTable(0, 2);

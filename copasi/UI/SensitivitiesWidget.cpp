@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:06:17 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -660,7 +660,10 @@ void
 SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::TRANSIENT_VALUE);
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::Variables |
+                                            CCopasiSimpleSelectionTree::ObservedValues |
+                                            CCopasiSimpleSelectionTree::ObservedConstants);
 
   if (pObject)
     {
@@ -676,8 +679,9 @@ void
 SensitivitiesWidget::on_SingleVariableChooser_clicked()
 {
   const CCopasiObject * pObject =
-    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE);
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
@@ -693,8 +697,9 @@ void
 SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
 {
   const CCopasiObject * pObject =
-    //    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::SENSITIVITY_VARIABLE);
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters);
 
   if (pObject)
     {

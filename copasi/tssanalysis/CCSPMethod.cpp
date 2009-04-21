@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,9 +89,11 @@ void CCSPMethod::smmult(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMat
     for (j = 0; j < n3; j++)
       {
         C(i, j) = 0.;
+
         for (k = 0; k < n2; k++)
           C(i, j) += A(i, k) * B(k, j);
       }
+
   return;
 }
 
@@ -132,6 +134,7 @@ void CCSPMethod::smnorm(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 
       for (i = 0; i < n ; i++)
         {
           d = fabs(A(i, j));
+
           if (d > c) c = d;
         }
 
@@ -141,6 +144,7 @@ void CCSPMethod::smnorm(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 
           B(j, i) = B(j, i) * c;
         }
     }
+
   return;
 }
 
@@ -268,12 +272,14 @@ void CCSPMethod::findTimeScaleSeparation(C_INT & n, C_INT & k, CVector< C_FLOAT6
     for (i = 0; i < n; i++)
       {
         tmp = 1. / eigen[i];
+
         if (tmp < 0 && fabs(tmp) < mTsc)
           k++;
 
         else
           {
             if (tmp > 0) info = 1;
+
             break;
           }
       }
@@ -293,12 +299,14 @@ void CCSPMethod::findTimeScaleSeparation(C_INT & n, C_INT & k, CVector< C_FLOAT6
             if (tmp > 0 && tmp < mEps)
               {
                 k++;
+
                 if (i)
                   if (eigen(i) == eigen(i - 1)) k++;
               }
             else
               {
                 if (tmp < 0) info = 1;
+
                 break;
               }
           }
@@ -348,6 +356,7 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
           else
             {
               if (tmp < 0) info = 1;
+
               break;
             }
         }
@@ -405,8 +414,10 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
 #ifdef CSPDEBUG
   std::cout << "concentration of metabolite  and  right hand side :" << std::endl;
+
   for (j = 0; j < N; j++)
     std::cout << mpModel->getMetabolitesX()[j]->getObjectName() << "  " << y[j] << "  " << g[j] << std::endl;
+
 #endif
 
 #ifdef CSPDEBUG
@@ -472,14 +483,18 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 #ifdef CSPDEBUG
   std::cout << "CSP iteration:  " << std::endl;
   std::cout << "Eigen values ordered by increasing " << std::endl;
+
   for (i = 0; i < N; i++)
     std::cout << "eigen[" << i << "]  " << eigen[i] << std::endl;
+
 #endif
 
 #ifdef CSPDEBUG
   std::cout << "time scales :  " << std::endl;
+
   for (i = 0; i < N; i++)
     std::cout << fabs(tsc[i]) << std::endl;
+
 #endif
 
   /* find the number of candidate to fast   */
@@ -573,6 +588,7 @@ analyseMmodes:
         {
           TMP(i, j) += DBDT(i, j);
         }
+
 #endif
 
   smmult(TMP, A, ALA, N, N, N);
@@ -623,6 +639,7 @@ analyseMmodes:
     {
       std::cout << mYerror[i] << " = " << mRerror << " * " << y[i] << " + " << mAerror << std::endl;
     }
+
 #endif
 
 #ifdef CSPDEBUG
@@ -640,6 +657,7 @@ analyseMmodes:
           std::cout << A(i, j) << " * " << F(j, 0) << " * " << tsc[M - 1] << " = " << tmp << "        " << mYerror[i] << std::endl;
         }
     }
+
 #endif
 
 #endif
@@ -649,7 +667,7 @@ cspiteration:
   emptyOutputData(N, M, reacs_size);
 
 #ifdef CSPDEBUG
-  // std::cout << "*********************************** CSP refinement iteration " << iter << "*******************************" << std::endl;
+  std::cout << "*********************************** CSP refinement iteration " << iter << "*******************************" << std::endl;
 #endif
 
   CMatrix<C_FLOAT64> A1;
@@ -700,123 +718,162 @@ cspiteration:
   std::cout << ALA << std::endl;
 #endif
 
-  if (isBlockDiagonal(N, M, ALA, 1.e-8))
-    {
-
-      if (modesAreExhausted(N, M, tsc[M - 1], tsc[M] , g, A1, B1, F))
-        {
-
-          //mAmplitude.resize(M);
-
-          for (j = 0; j < N; j++)
-            //for (j = 0; j < M; j++)
-            mAmplitude[j] = F(j, 0);
-
-          CSPradicalPointer(N, M, A1, B1);
-          /**
-          * compute  CSP Participation Index:
-          * a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode
-          * It is assumed that forward and reverse reactions are counted as distinct
-          *
-          **/
-
-          CSPParticipationIndex(N, tsc[M], B1);
-
-          /**
-           * compute CSP Importance Index :
-           * a measure of relative importance  of the contribution of r-th elementary reaction
-           * to the current reaction rate of the i-th species
-           *
-           **/
-
-          /*  fast subspace projection matrix */
-          smmult(A1, B1, QF, N, M, N);
-
-          /* slow subspace projection matrix */
-          smsubst(mI, QF, QSL, N, N);
-
-          CSPImportanceIndex(N, tsc[M], QSL);
-
-          //CSPOutput(N,M,reacs_size);
-
-          //mSetVectors = 1; TO REMOVE
-
-          //setVectors(M);
-
-          A = A1;
-          B = B1;
-        }
-      else
-        if (M > 1)
-          {
-            M --;
-            if (tsc[M] == tsc[M - 1]) M --;
-
-            if (M) goto analyseMmodes;
-            else
-              {
-
-                /* No any fast exhausted modes was found on this time step */
-
-                CCopasiMessage(CCopasiMessage::WARNING,
-                               MCTSSAMethod + 12, mTime);
-                return;
-              }
-          }
-        else
-          {
-
-            /* No any fast exhausted modes was found on this time step */
-
-            M = 0;
-
-            CCopasiMessage(CCopasiMessage::WARNING,
-                           MCTSSAMethod + 12, mTime);
-            return;
-          }
-    }
-  else
-    if (iter < mIter)
-      {
-
-        modesAmplitude(N, M, g, B1, F);
-#ifdef  CSPDEBUG
-        std::cout << "number2conc " << number2conc << std::endl;
-
-        std::cout << "scaled amplitudes via refined basis :  " << std::endl;
-
-        for (i = 0; i < M; i++)
-          {
-
-            std::cout << F(i, 0) << std::endl;
-          }
-
-        std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
-
-        C_FLOAT64 tmp;
-
-        for (j = 0; j < M; j++)
-          {
-            std::cout << " m " << j << std::endl;
-
-            for (i = 0; i < N; i++)
-              {
-                tmp = fabs(A1(i, j) * F(j, 0) * tsc[M - 1]);
-                std::cout << A1(i, j) << " * " << F(j, 0) << " * " << tsc[M - 1] << " = " << tmp << "        " << mYerror[i] << std::endl;
-              }
-          }
+  C_INT result;
+  result = isBlockDiagonal(N, M, ALA, 1.e-8);
+#ifdef CSPDEBUG
+  std::cout << " iteration result:   " << std::endl;
+  std::cout << " 0 - convergence is achieved, 1 - convergence is  not achieved, -1  - iterations crucially disconverged " << std::endl;
+  std::cout << result << std::endl;
 #endif
-        iter ++;
-        A = A1;
-        B = B1;
 
-        goto cspiteration;
-      }
-    else
-      {
+  switch (result)
+    {
+      case 0: // iterations converged
+
+        if (modesAreExhausted(N, M, tsc[M - 1], tsc[M] , g, A1, B1, F))
+          {
+
+#ifdef CSPDEBUG
+
+            std::cout << " the M  modes are exhausted, M = " <<  M  << std::endl;
+#endif
+
+            //mAmplitude.resize(M);
+
+            for (j = 0; j < N; j++)
+              //for (j = 0; j < M; j++)
+              mAmplitude[j] = F(j, 0);
+
+            CSPradicalPointer(N, M, A1, B1);
+            /**
+            * compute  CSP Participation Index:
+            * a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode
+            * It is assumed that forward and reverse reactions are counted as distinct
+            *
+            **/
+
+            CSPParticipationIndex(N, tsc[M], B1);
+
+            /**
+             * compute CSP Importance Index :
+             * a measure of relative importance  of the contribution of r-th elementary reaction
+             * to the current reaction rate of the i-th species
+             *
+             **/
+
+            /*  fast subspace projection matrix */
+            smmult(A1, B1, QF, N, M, N);
+
+            /* slow subspace projection matrix */
+            smsubst(mI, QF, QSL, N, N);
+
+            CSPImportanceIndex(N, tsc[M], QSL);
+
+#ifdef CSPDEBUG
+            CSPOutput(N, M, reacs_size);
+#endif
+
+            //setVectors(M);
+
+            A = A1;
+            B = B1;
+
+            return;
+          }
+        else if (M > 1)
+          {
+
+            M --;
+
+            if (tsc[M] == tsc[M - 1]) M --;
+
+#ifdef CSPDEBUG
+            std::cout << " iterations converged, but the criterion is not sutisfied for the given absolute an relative errors, the new number of candidates to fast  " << M << std::endl;
+#endif
+
+            if (M) goto analyseMmodes;
+            else
+              {
+
+                /* No any fast exhausted modes was found on this time step */
+
+                CCopasiMessage(CCopasiMessage::WARNING,
+                               MCTSSAMethod + 12, mTime);
+                return;
+              }
+          }
+
+        break;
+
+      case 1: // next iteration
+
+        if (iter < mIter)
+          {
+
+            modesAmplitude(N, M, g, B1, F);
+//#ifdef  CSPDEBUG
+#if 0
+            std::cout << "number2conc " << number2conc << std::endl;
+
+            std::cout << "scaled amplitudes via refined basis :  " << std::endl;
+
+            for (i = 0; i < M; i++)
+              {
+
+                std::cout << F(i, 0) << std::endl;
+              }
+
+            std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
+
+            C_FLOAT64 tmp;
+
+            for (j = 0; j < M; j++)
+              {
+                std::cout << " m " << j << std::endl;
+
+                for (i = 0; i < N; i++)
+                  {
+                    tmp = fabs(A1(i, j) * F(j, 0) * tsc[M - 1]);
+                    std::cout << A1(i, j) << " * " << F(j, 0) << " * " << tsc[M - 1] << " = " << tmp << "        " << mYerror[i] << std::endl;
+                  }
+              }
+
+#endif
+            iter ++;
+            A = A1;
+            B = B1;
+
+            goto cspiteration;
+          }
+        else  if (iter >= mIter)
+          {
+            if (M > 1)
+              {
+                M --;
+
+                if (tsc[M] == tsc[M - 1]) M --;
+
+                if (M) goto analyseMmodes;
+                else
+                  {
+
+                    /* No any fast exhausted modes was found on this time step */
+
+                    CCopasiMessage(CCopasiMessage::WARNING,
+                                   MCTSSAMethod + 12, mTime);
+                    return;
+                  }
+              }
+          }
+
+        break;
+
+      case -1: //  iterations crucially disconverged
+
         if (M > 1)
           {
             M --;
+
             if (tsc[M] == tsc[M - 1]) M --;
 
             if (M) goto analyseMmodes;
@@ -830,23 +887,29 @@ cspiteration:
                 return;
               }
           }
-        else
-          {
 
-            /* No any fast exhausted modes was found on this time step */
+        break;
 
-            M = 0;
+      default:
+        /* No any fast exhausted modes was found on this time step */
+        M = 0;
 
-            CCopasiMessage(CCopasiMessage::WARNING,
-                           MCTSSAMethod + 12, mTime);
-            return;
-          }
-      }
+        CCopasiMessage(CCopasiMessage::WARNING,
+                       MCTSSAMethod + 12, mTime);
+        break;
+    }
+
+  /* No any fast exhausted modes was found on this time step */
+
+  M = 0;
+
+  CCopasiMessage(CCopasiMessage::WARNING,
+                 MCTSSAMethod + 12, mTime);
 
   return;
 }
 /*  compute  the norm C  of the off-diagonal blocks   */
-bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small)
+C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small)
 {
   C_INT i, j, imax, jmax, imaxl, jmaxl;
   C_FLOAT64 max = -1., maxl = -1.;
@@ -892,6 +955,7 @@ bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
 
       std::cout << std::endl;
     }
+
 #endif
   /* step #1: upper-right block */
 
@@ -902,6 +966,7 @@ bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
           max = fabs(ALA(i, j));
           imax = i; jmax = j;
         }
+
 #if 1
   /* step #2: lower-left block */
 
@@ -925,9 +990,21 @@ bool CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
   std::cout << "the upper-right block : " << max << std::endl;
 #endif
 
-  if (max <= small) return 1;
-  else
-    return 0;
+  C_INT result;
+
+  result = 1;
+
+  if (fabs(max) >= DBL_MAX || fabs(maxl) >= DBL_MAX || max < 0 || maxl < 0)
+    {
+#ifdef CSPDEBUG
+      std::cout <<  " iterations  crucially  disconverged  " << std::endl;
+#endif
+
+      result =  -1;
+    }
+  else if (max <= small) result = 0;
+
+  return result;
 }
 void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
 {
@@ -946,13 +1023,29 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
     for (r = 0; r < R; r++)
       mFastReactionPointer(r, m) = 0;
 
+  for (m = 0; m < M; m++)
+    for (r = 0; r < R; r++)
+      mFastReactionPointerNormed(r, m) = 0;
+
   for (i = 0; i < N; i++)
     for (r = 0; r < R; r++)
       mParticipationIndex(r, i) = 0;
 
   for (i = 0; i < N; i++)
     for (r = 0; r < R; r++)
+      mParticipationIndexNormedRow(r, i) = 0;
+
+  for (i = 0; i < N; i++)
+    for (r = 0; r < R; r++)
+      mParticipationIndexNormedColumn(r, i) = 0;
+
+  for (i = 0; i < N; i++)
+    for (r = 0; r < R; r++)
       mImportanceIndex(r, i) = 0;
+
+  for (i = 0; i < N; i++)
+    for (r = 0; r < R; r++)
+      mImportanceIndexNormedRow(r, i) = 0;
 
   return;
 }
@@ -1050,7 +1143,78 @@ void CCSPMethod::start(const CState * initialState)
   mImportanceIndex.resize(reacs_size, mData.dim);
   mFastReactionPointer.resize(reacs_size, mData.dim);
 
+  mParticipationIndexNormedRow.resize(reacs_size, mData.dim);
+  mParticipationIndexNormedColumn.resize(reacs_size, mData.dim);
+  mImportanceIndexNormedRow.resize(reacs_size, mData.dim);
+  mFastReactionPointerNormed.resize(reacs_size, mData.dim);
+
   mSetVectors = 0;
+
+  return;
+}
+
+void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
+{
+
+  C_INT i, m, r;
+  const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
+
+  std::cout << "Amplitudes of reaction modes :" << std::endl;
+
+  for (m = 0; m < M; m++)
+    {
+      std::cout << "reaction mode " << m << " :" << std::endl;
+
+      for (i = 0; i < N; i++)
+        {
+          std::cout << " mode  " << i << "  : " << mAmplitude[i];
+
+          std::cout << std::endl;
+        }
+
+      std::cout << std::endl;
+      std::cout << "Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
+
+      for (i = 0; i < N; i++)
+        std::cout << mpModel->getMetabolitesX()[i]->getObjectName()
+                  << "   : " << mRadicalPointer(i, m) << std::endl;
+    }
+
+  std::cout << std::endl;
+  std::cout << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
+  std::cout << " the r-th reaction is said to be a fast reaction  " << std::endl;
+
+  for (m = 0; m < M; m++)
+    {
+      std::cout << "reaction mode " << m << " :" << std::endl;
+
+      for (r = 0; r < R; r++)
+        std::cout << reacs[r]->getObjectName() << " :" << mFastReactionPointer(r, m) << std::endl;
+    }
+
+  std::cout << std::endl;
+  std::cout << " Participation Index : is a mesure of participation of the r-th elementary reaction " << std::endl;
+  std::cout << " to the balancing act of the i-th mode " << std::endl;
+
+  for (i = 0; i < N; i++)
+    {
+      std::cout << "reaction mode " << i << " :" << std::endl;
+
+      for (r = 0; r < R; r++)
+        std::cout << reacs[r]->getObjectName() << " :" << mParticipationIndex(r, i) << std::endl;
+    }
+
+  std::cout << std::endl;
+  std::cout << " Importance Index: is a mesure of relative importance of the contribution of r-th elementary " << std::endl;
+  std::cout << " reaction to the current reaction rate of i-th spiecies   " << std::endl;
+
+  for (i = 0; i < N; i++)
+    {
+      std::cout << mpModel->getMetabolitesX()[i]->getObjectName() << " :" << std::endl;
+
+      for (r = 0; r < R; r++)
+        std::cout << reacs[r]->getObjectName() << " :" << mImportanceIndex(r, i) << std::endl;
+    }
 
   return;
 }
@@ -1142,6 +1306,7 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
           for (i = 0; i < N; i++)
             {
               TMP(i, r) = 0.;
+
               for (j = 0; j < N; j++)
                 TMP(i, r) += Qm(i, j) * A0(j, r);
             }
@@ -1152,6 +1317,20 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
           mFastReactionPointer(r, m) = Pmr;
         }
     }
+
+  /* the Fast Reaction Pointer normed by column */
+
+  for (m = 0; m < M ; m++)
+    {
+      C_FLOAT64 sum = 0.;
+
+      for (r = 0; r < reacs_size; r++)
+        sum += fabs(mFastReactionPointer(r, m));
+
+      for (r = 0; r < reacs_size; r++)
+        mFastReactionPointerNormed(r, m) = 100.*mFastReactionPointer(r, m) / sum;
+    }
+
   return;
 }
 
@@ -1217,6 +1396,32 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_
         }
     }
 
+  /* the Participation Index normed by column */
+
+  for (i = 0; i < N; ++i)
+    {
+      C_FLOAT64 sum = 0.;
+
+      for (r = 0; r < reacs_size; ++r)
+        sum +=  fabs(mParticipationIndex(r, i));
+
+      for (r = 0; r < reacs_size; ++r)
+        mParticipationIndexNormedColumn(r, i) = 100.* mParticipationIndex(r, i) / sum;
+    }
+
+  /* the Participation Index normed by row */
+
+  for (r = 0; r < reacs_size; ++r)
+    {
+      C_FLOAT64 sum = 0.;
+
+      for (i = 0; i < N; ++i)
+        sum +=  fabs(mParticipationIndex(r, i));
+
+      for (i = 0; i < N; ++i)
+        mParticipationIndexNormedRow(r, i) = 100.* mParticipationIndex(r, i) / sum;
+    }
+
   return;
 }
 
@@ -1280,6 +1485,19 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
         }
     }
 
+  /* the Importance Index normed by row */
+
+  for (r = 0; r < reacs_size; ++r)
+    {
+      C_FLOAT64 sum = 0.;
+
+      for (i = 0; i < N; ++i)
+        sum +=  fabs(mImportanceIndex(r, i));
+
+      for (i = 0; i < N; ++i)
+        mImportanceIndexNormedRow(r, i) = 100.* mImportanceIndex(r, i) / sum;
+    }
+
   return;
 }
 
@@ -1294,6 +1512,7 @@ void CCSPMethod::modesAmplitude(C_INT & N, C_INT & /* M */, CVector< C_FLOAT64 >
   for (i = 0; i < N; i++)
     {
       F(i, 0) = 0.;
+
       for (j = 0; j < N; j++)
 
         for (j = 0; j < N; j++)
@@ -1332,6 +1551,7 @@ void CCSPMethod::yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMa
     {
       y[i] -= dy[i];
     }
+
   return;
 }
 
@@ -1422,6 +1642,7 @@ void CCSPMethod::calculateJacobianX(C_INT & N, CVector<C_FLOAT64> & y, CMatrix <
   /* write new concentrations in the current state */
   for (i = 0; i < N; i++)
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
+
   //mpModel->getMetabolitesX()[i]->setConcentration(y[i]);
 
   mpModel->updateSimulatedValues(mReducedModel);
@@ -1446,12 +1667,21 @@ bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLO
 
   modesAmplitude(N, M, g, B, F);
 
+#ifdef CSPDEBUG
+  std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
+#endif
+
   for (j = 0; j < M; j++)
     {
 
       for (i = 0; i < N; i++)
         {
           tmp = fabs(A(i, j) * F(j, 0) * tauM);
+
+#ifdef CSPDEBUG
+          std::cout << A(i, j) << " * " << F(j, 0) << " * " << tauM << " = " << tmp << "        " << mYerror[i] << std::endl;
+#endif
+
           if (tmp >= mYerror[i]) exhausted = false;
         }
     }
@@ -1496,6 +1726,16 @@ void CCSPMethod::createAnnotationsM()
   pFastReactionPointerAnn = pTmp3;
 
   CArrayAnnotation *
+  pTmp3Normed = new CArrayAnnotation("Normed Fast Reaction Pointer", this,
+                                     new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerNormedTab), true);
+  pTmp3Normed->setMode(0, pTmp3Normed->VECTOR);
+  pTmp3Normed->setMode(1, pTmp3Normed->STRINGS);
+  pTmp3Normed->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
+  pTmp3Normed->setDimensionDescription(0, "Reactions");
+  pTmp3Normed->setDimensionDescription(1, "Fast Reaction Modes");
+  pFastReactionPointerNormedAnn = pTmp3Normed;
+
+  CArrayAnnotation *
   pTmp4 = new CArrayAnnotation("Participation Index", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab), true);
   pTmp4->setMode(1, pTmp4->STRINGS);
@@ -1506,6 +1746,26 @@ void CCSPMethod::createAnnotationsM()
   pParticipationIndexAnn = pTmp4;
 
   CArrayAnnotation *
+  pTmp4NormedColumn = new CArrayAnnotation("Normed Participation Index (by column)", this,
+      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedColumnTab), true);
+  pTmp4NormedColumn->setMode(1, pTmp4NormedColumn->STRINGS);
+  pTmp4NormedColumn->setMode(0, pTmp4NormedColumn->VECTOR);
+  pTmp4NormedColumn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
+  pTmp4NormedColumn->setDimensionDescription(0, "Reactions");
+  pTmp4NormedColumn->setDimensionDescription(1, "Reaction Modes");
+  pParticipationIndexNormedColumnAnn = pTmp4NormedColumn;
+
+  CArrayAnnotation *
+  pTmp4NormedRow = new CArrayAnnotation("Normed Participation Index (by row)", this,
+                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedRowTab), true);
+  pTmp4NormedRow->setMode(1, pTmp4NormedRow->STRINGS);
+  pTmp4NormedRow->setMode(0, pTmp4NormedRow->VECTOR);
+  pTmp4NormedRow->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
+  pTmp4NormedRow->setDimensionDescription(0, "Reactions");
+  pTmp4NormedRow->setDimensionDescription(1, "Reaction Modes");
+  pParticipationIndexNormedRowAnn = pTmp4NormedRow;
+
+  CArrayAnnotation *
   pTmp5 = new CArrayAnnotation("Importance Index", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexTab), true);
   pTmp5->setMode(1, pTmp5->VECTOR);
@@ -1514,6 +1774,16 @@ void CCSPMethod::createAnnotationsM()
   pTmp5->setDimensionDescription(0, "Reactions");
   pTmp5->setDimensionDescription(1, "Species");
   pImportanceIndexAnn = pTmp5;
+
+  CArrayAnnotation *
+  pTmp5NormedRow = new CArrayAnnotation("Normed Importance Index (by row)", this,
+                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexNormedRowTab), true);
+  pTmp5NormedRow->setMode(1, pTmp5NormedRow->VECTOR);
+  pTmp5NormedRow->setMode(0, pTmp5NormedRow->VECTOR);
+  pTmp5NormedRow->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
+  pTmp5NormedRow->setDimensionDescription(0, "Reactions");
+  pTmp5NormedRow->setDimensionDescription(1, "Species");
+  pImportanceIndexNormedRowAnn = pTmp5NormedRow;
 }
 /**
  * Set the every CArrayAnnotation for the requested step.
@@ -1533,28 +1803,35 @@ void CCSPMethod::setAnnotationM(int step)
   unsigned C_INT32 M;
 
   if (!step) return;
+
   step -= 1;
   M = mVec_SlowModes[step];
 
   // fill pAmplitudeAnn
 
   mAmplitudeTab.resize(mVec_mAmplitude[step].numRows(), 1);
+
   for (i = 0; i < mVec_mAmplitude[step].numRows(); i++)
     mAmplitudeTab(i, 0) = mVec_mAmplitude[step][i][0];
+
   pAmplitudeAnn->resize();
+
   for (i = 0; i < mVec_mAmplitude[step].numRows(); i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < M)
         sstr << "Fast: ";
       else
         sstr << "Slow: ";
+
       sstr << timeScale;
       str = sstr.str();
       pAmplitudeAnn->setAnnotationString(0, i, str);
       sstr.str("");
       sstr.clear();
     }
+
   sstr.str("");
   str = sstr.str();
   pAmplitudeAnn->setAnnotationString(1, 0, str);
@@ -1565,13 +1842,16 @@ void CCSPMethod::setAnnotationM(int step)
   mRadicalPointerTab = mVec_mRadicalPointer[step];
   pRadicalPointerAnn->resize();
   pRadicalPointerAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+
   for (i = 0; i < mVec_mRadicalPointer[step].numCols(); i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < M)
         sstr << "Fast: ";
       else
         sstr << "Slow: ";
+
       sstr << timeScale;
       str = sstr.str();
       pRadicalPointerAnn->setAnnotationString(1, i, str);
@@ -1584,48 +1864,136 @@ void CCSPMethod::setAnnotationM(int step)
                                  mVec_mFastReactionPointer[step].numRows());
   mFastReactionPointerTab = mVec_mFastReactionPointer[step];
   pFastReactionPointerAnn->resize();
+
   for (i = 0; i < mVec_mFastReactionPointer[step].numCols(); i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < M)
         sstr << "Fast: ";
       else
         sstr << "Slow: ";
+
       sstr << timeScale;
       str = sstr.str();
       pFastReactionPointerAnn->setAnnotationString(1, i, str);
       sstr.str("");
       sstr.clear();
     }
+
   pFastReactionPointerAnn->setCopasiVector(0, &mpModel->getReactions());
+
+  // fill pFastReactionPointerNormedAnn
+  mFastReactionPointerNormedTab.resize(mVec_mFastReactionPointerNormed[step].numCols(),
+                                       mVec_mFastReactionPointerNormed[step].numRows());
+  mFastReactionPointerNormedTab = mVec_mFastReactionPointerNormed[step];
+  pFastReactionPointerNormedAnn->resize();
+
+  for (i = 0; i < mVec_mFastReactionPointerNormed[step].numCols(); i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+
+      if (i < M)
+        sstr << "Fast: ";
+      else
+        sstr << "Slow: ";
+
+      sstr << timeScale;
+      str = sstr.str();
+      pFastReactionPointerNormedAnn->setAnnotationString(1, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  pFastReactionPointerNormedAnn->setCopasiVector(0, &mpModel->getReactions());
 
   // fill pParticipationIndexAnn
   mParticipationIndexTab.resize(mVec_mParticipationIndex[step].numCols(),
                                 mVec_mParticipationIndex[step].numRows());
   mParticipationIndexTab = mVec_mParticipationIndex[step];
   pParticipationIndexAnn->resize();
+
   for (i = 0; i < mVec_mParticipationIndex[step].numCols(); i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < M)
         sstr << "Fast: ";
       else
         sstr << "Slow: ";
+
       sstr << timeScale;
       str = sstr.str();
       pParticipationIndexAnn->setAnnotationString(1, i, str);
       sstr.str("");
       sstr.clear();
     }
+
   pParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
+
+  // fill pParticipationIndexNormedColumnAnn
+  mParticipationIndexNormedColumnTab.resize(mVec_mParticipationIndexNormedColumn[step].numCols(),
+      mVec_mParticipationIndexNormedColumn[step].numRows());
+  mParticipationIndexNormedColumnTab = mVec_mParticipationIndexNormedColumn[step];
+  pParticipationIndexNormedColumnAnn->resize();
+
+  for (i = 0; i < mVec_mParticipationIndexNormedColumn[step].numCols(); i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+
+      if (i < M)
+        sstr << "Fast: ";
+      else
+        sstr << "Slow: ";
+
+      sstr << timeScale;
+      str = sstr.str();
+      pParticipationIndexNormedColumnAnn->setAnnotationString(1, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  pParticipationIndexNormedColumnAnn->setCopasiVector(0, &mpModel->getReactions());
+
+  // fill pParticipationIndexNormedRowAnn
+  mParticipationIndexNormedRowTab.resize(mVec_mParticipationIndexNormedRow[step].numCols(),
+                                         mVec_mParticipationIndexNormedRow[step].numRows());
+  mParticipationIndexNormedRowTab = mVec_mParticipationIndexNormedRow[step];
+  pParticipationIndexNormedRowAnn->resize();
+
+  for (i = 0; i < mVec_mParticipationIndexNormedRow[step].numCols(); i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+
+      if (i < M)
+        sstr << "Fast: ";
+      else
+        sstr << "Slow: ";
+
+      sstr << timeScale;
+      str = sstr.str();
+      pParticipationIndexNormedRowAnn->setAnnotationString(1, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  pParticipationIndexNormedRowAnn->setCopasiVector(0, &mpModel->getReactions());
 
   // fill pmImportanceIndexAnn
   mImportanceIndexTab.resize(mVec_mImportanceIndex[step].numCols(),
                              mVec_mImportanceIndex[step].numRows());
   mImportanceIndexTab = mVec_mImportanceIndex[step];
-  pParticipationIndexAnn->resize();
+  pImportanceIndexAnn->resize(); // fixed
   pImportanceIndexAnn->setCopasiVector(0, &mpModel->getReactions());
   pImportanceIndexAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+
+// fill pmImportanceIndexNormedRowAnn
+  mImportanceIndexNormedRowTab.resize(mVec_mImportanceIndexNormedRow[step].numCols(),
+                                      mVec_mImportanceIndexNormedRow[step].numRows());
+  mImportanceIndexNormedRowTab = mVec_mImportanceIndexNormedRow[step];
+  pImportanceIndexNormedRowAnn->resize(); // fixed
+  pImportanceIndexNormedRowAnn->setCopasiVector(0, &mpModel->getReactions());
+  pImportanceIndexNormedRowAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
 }
 
 /**
@@ -1649,7 +2017,7 @@ void CCSPMethod::setVectors(int fast)
   //mVec_mAmplitude[mCurrentStep].resize(mAmplitude.size(), 1);
   mVec_mAmplitude[mCurrentStep].resize(fast, 1);
 
-  for (i = 0; i < fast;i++)
+  for (i = 0; i < fast; i++)
     mVec_mAmplitude[mCurrentStep][i][0] = mAmplitude[i];
 
   mVec_mRadicalPointer.push_back(mCurrentStep);
@@ -1668,17 +2036,39 @@ void CCSPMethod::setVectors(int fast)
 
   mVec_mFastReactionPointer[mCurrentStep].resize(reacs_size, fast);
 
-  for (r = 0; r < reacs_size;r++)
-    for (i = 0; i < fast;i++)
+  for (r = 0; r < reacs_size; r++)
+    for (i = 0; i < fast; i++)
       mVec_mFastReactionPointer[mCurrentStep][r][i] = mFastReactionPointer(r, i);
+
+  mVec_mFastReactionPointerNormed.push_back(mCurrentStep);
+  //mVec_mFastReactionPointerNormed[mCurrentStep].resize(mFastReactionPointerNormed.numCols(), mFastReactionPointerNormed.numRows());
+  //mVec_mFastReactionPointerNormed[mCurrentStep] = mFastReactionPointerNormed;
+
+  mVec_mFastReactionPointerNormed[mCurrentStep].resize(reacs_size, fast);
+
+  for (r = 0; r < reacs_size; r++)
+    for (i = 0; i < fast; i++)
+      mVec_mFastReactionPointerNormed[mCurrentStep][r][i] = mFastReactionPointerNormed(r, i);
 
   mVec_mParticipationIndex.push_back(mCurrentStep);
   mVec_mParticipationIndex[mCurrentStep].resize(mParticipationIndex.numCols(), mParticipationIndex.numRows());
   mVec_mParticipationIndex[mCurrentStep] = mParticipationIndex;
 
+  mVec_mParticipationIndexNormedColumn.push_back(mCurrentStep);
+  mVec_mParticipationIndexNormedColumn[mCurrentStep].resize(mParticipationIndexNormedColumn.numCols(), mParticipationIndexNormedColumn.numRows());
+  mVec_mParticipationIndexNormedColumn[mCurrentStep] = mParticipationIndexNormedColumn;
+
+  mVec_mParticipationIndexNormedRow.push_back(mCurrentStep);
+  mVec_mParticipationIndexNormedRow[mCurrentStep].resize(mParticipationIndexNormedRow.numCols(), mParticipationIndexNormedRow.numRows());
+  mVec_mParticipationIndexNormedRow[mCurrentStep] = mParticipationIndexNormedRow;
+
   mVec_mImportanceIndex.push_back(mCurrentStep);
   mVec_mImportanceIndex[mCurrentStep].resize(mImportanceIndex.numCols(), mImportanceIndex.numRows());
   mVec_mImportanceIndex[mCurrentStep] = mImportanceIndex;
+
+  mVec_mImportanceIndexNormedRow.push_back(mCurrentStep);
+  mVec_mImportanceIndexNormedRow[mCurrentStep].resize(mImportanceIndexNormedRow.numCols(), mImportanceIndexNormedRow.numRows());
+  mVec_mImportanceIndexNormedRow[mCurrentStep] = mImportanceIndexNormedRow;
 
   mCurrentTime.push_back(mCurrentStep);
   mCurrentTime[mCurrentStep] = mTime;
@@ -1696,122 +2086,135 @@ void CCSPMethod::emptyVectors()
   mVec_mAmplitude.erase(mVec_mAmplitude.begin(), mVec_mAmplitude.end());
   mVec_mRadicalPointer.erase(mVec_mRadicalPointer.begin(), mVec_mRadicalPointer.end());
   mVec_mFastReactionPointer.erase(mVec_mFastReactionPointer.begin(), mVec_mFastReactionPointer.end());
+  mVec_mFastReactionPointerNormed.erase(mVec_mFastReactionPointerNormed.begin(), mVec_mFastReactionPointerNormed.end());
+  mVec_mParticipationIndexNormedRow.erase(mVec_mParticipationIndexNormedRow.begin(), mVec_mParticipationIndexNormedRow.end());
+  mVec_mParticipationIndexNormedColumn.erase(mVec_mParticipationIndexNormedColumn.begin(), mVec_mParticipationIndexNormedColumn.end());
   mVec_mParticipationIndex.erase(mVec_mParticipationIndex.begin(), mVec_mParticipationIndex.end());
   mVec_mImportanceIndex.erase(mVec_mImportanceIndex.begin(), mVec_mImportanceIndex.end());
+  mVec_mImportanceIndexNormedRow.erase(mVec_mImportanceIndexNormedRow.begin(), mVec_mImportanceIndexNormedRow.end());
 }
-
+/* TODO : Normed vectors are not included */
 void CCSPMethod::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
-    C_INT M, i, m, r, istep = 0;
+{
+  std::ostream & os = *ostream;
+  C_INT M, i, m, r, istep = 0;
 
-    C_INT32 stepNumber;
-    double timeScale;
+  C_INT32 stepNumber;
+  double timeScale;
 
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CTSSATask* pTask =
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
 
-    const CTSSATask* pTask =
-      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
+  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
-    const CTSSAProblem* pProblem = dynamic_cast<const CTSSAProblem*>(pTask->getProblem());
+  stepNumber = pProblem->getStepNumber();
 
-    stepNumber = pProblem->getStepNumber();
+  this->print(&os);
 
-    this->print(&os);
+  const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
 
-    const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
+  os << std::endl;
+  os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
+  os << std::endl;
 
-    os << std::endl;
-    os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
-    os << std::endl;
+  os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
+  os << " the r-th reaction is said to be a fast reaction  " << std::endl;
+  os << std::endl;
 
-    os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
-    os << " the r-th reaction is said to be a fast reaction  " << std::endl;
-    os << std::endl;
+  os << " Participation Index : is a measure of participation of the r-th elementary reaction " << std::endl;
+  os << " to the balancing act of the i-th mode " << std::endl;
+  os << std::endl;
 
-    os << " Participation Index : is a measure of participation of the r-th elementary reaction " << std::endl;
-    os << " to the balancing act of the i-th mode " << std::endl;
-    os << std::endl;
+  os << " Importance Index: is a measure of relative importance of the contribution of r-th elementary " << std::endl;
+  os << " reaction to the current reaction rate of i-th species   " << std::endl;
+  os << std::endl;
 
-    os << " Importance Index: is a measure of relative importance of the contribution of r-th elementary " << std::endl;
-    os << " reaction to the current reaction rate of i-th species   " << std::endl;
-    os << std::endl;
+  for (istep = 0; istep < stepNumber; istep++)
+    {
 
-    for (istep = 0; istep < stepNumber; istep++)
-      {
+      M = mVec_SlowModes[istep];
 
-        M = mVec_SlowModes[istep];
+      os << std::endl;
+      os << "**************** Time step " << istep + 1 << " **************************  " << std::endl;
 
-        os << std::endl;
-        os << "**************** Time step " << istep + 1 << " **************************  " << std::endl;
+      os << std::endl;
 
-        os << std::endl;
+      os << "Amplitude " << std::endl;
 
-        os << "Amplitude " << std::endl;
+      //for (i = 0; i < mData.dim; i++)
+      for (i = 0; i < M; i++)
+        {
 
-        //for (i = 0; i < mData.dim; i++)
-        for (i = 0; i < M; i++)
-          {
+          os << "Fast reaction mode: " << mVec_TimeScale[istep][i]
+          << "  " << mVec_mAmplitude[istep][i][0]
+          << std::endl;
+        }
 
-            os << "Fast reaction mode: " << mVec_TimeScale[istep][i]
-            << "  " << mVec_mAmplitude[istep][i][0]
-            << std::endl;
-          }
-        os << std::endl;
+      os << std::endl;
 
-        os << "Radical Pointer:  " << std::endl;
+      os << "Radical Pointer:  " << std::endl;
 
-        for (m = 0; m < M; m++)
-          {
-            os << "Fast reaction mode: " << mVec_TimeScale[istep][m] << std::endl;
+      for (m = 0; m < M; m++)
+        {
+          os << "Fast reaction mode: " << mVec_TimeScale[istep][m] << std::endl;
 
-            for (i = 0; i < mData.dim; i++)
-              os << mpModel->getMetabolitesX()[i]->getObjectName()
-              << "   : " << mVec_mRadicalPointer[istep][i][m] << std::endl;
-            os << std::endl;
-          }
-        os << std::endl;
+          for (i = 0; i < mData.dim; i++)
+            os << mpModel->getMetabolitesX()[i]->getObjectName()
+            << "   : " << mVec_mRadicalPointer[istep][i][m] << std::endl;
 
-        os << "Fast Reaction Pointer:" << std::endl;
+          os << std::endl;
+        }
 
-        for (m = 0; m < M; m++)
-          {
-            os << "Fast reaction mode: " << mVec_TimeScale[istep][m] << std::endl;
+      os << std::endl;
 
-            for (r = 0; r < (C_INT) reacs.size(); r++)
-              os << reacs[r]->getObjectName() << " :" << mVec_mFastReactionPointer[istep][r][m] << std::endl;
-            os << std::endl;
-          }
+      os << "Fast Reaction Pointer:" << std::endl;
 
-        os << std::endl;
+      for (m = 0; m < M; m++)
+        {
+          os << "Fast reaction mode: " << mVec_TimeScale[istep][m] << std::endl;
 
-        os << "Participation Index : " << std::endl;
+          for (r = 0; r < (C_INT) reacs.size(); r++)
+            os << reacs[r]->getObjectName() << " :" << mVec_mFastReactionPointer[istep][r][m] << std::endl;
 
-        for (i = 0; i < mData.dim; i++)
-          {
-            timeScale = mVec_TimeScale[istep][i];
-            if (i < M)
-              os << "Fast reaction mode: ";
-            else
-              os << "Slow reaction mode: ";
-            os << timeScale << std::endl;
-            for (r = 0; r < (C_INT) reacs.size(); r++)
-              os << reacs[r]->getObjectName() << " :" << mVec_mParticipationIndex[istep][r][i] << std::endl;
-            os << std::endl;
-          }
+          os << std::endl;
+        }
 
-        os << std::endl;
+      os << std::endl;
 
-        os << "Importance Index" << std::endl;
+      os << "Participation Index : " << std::endl;
 
-        for (i = 0; i < mData.dim; i++)
-          {
-            os << mpModel->getMetabolitesX()[i]->getObjectName() << " :" << std::endl;
-            for (r = 0; r < (C_INT) reacs.size(); r++)
-              os << reacs[r]->getObjectName() << " :" << mVec_mImportanceIndex[istep][r][i] << std::endl;
-            os << std::endl;
-          }
-      }
-    return;
-  }
+      for (i = 0; i < mData.dim; i++)
+        {
+          timeScale = mVec_TimeScale[istep][i];
+
+          if (i < M)
+            os << "Fast reaction mode: ";
+          else
+            os << "Slow reaction mode: ";
+
+          os << timeScale << std::endl;
+
+          for (r = 0; r < (C_INT) reacs.size(); r++)
+            os << reacs[r]->getObjectName() << " :" << mVec_mParticipationIndex[istep][r][i] << std::endl;
+
+          os << std::endl;
+        }
+
+      os << std::endl;
+
+      os << "Importance Index" << std::endl;
+
+      for (i = 0; i < mData.dim; i++)
+        {
+          os << mpModel->getMetabolitesX()[i]->getObjectName() << " :" << std::endl;
+
+          for (r = 0; r < (C_INT) reacs.size(); r++)
+            os << reacs[r]->getObjectName() << " :" << mVec_mImportanceIndex[istep][r][i] << std::endl;
+
+          os << std::endl;
+        }
+    }
+
+  return;
+}

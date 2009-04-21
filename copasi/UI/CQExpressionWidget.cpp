@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:14 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include <qlabel.h>
-#include <qcombobox.h> 
+#include <qcombobox.h>
 //Added by qt3to4:
 #include <QKeyEvent>
 
@@ -42,7 +42,7 @@ CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : Q3SyntaxHighlighter(ew)
 {}
 
-int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* endStateOfLastPara */)
+int CQExpressionHighlighter::highlightParagraph(const QString & text, int /* endStateOfLastPara */)
 {
   int pos = 0;
   int oldpos = -1;
@@ -51,15 +51,20 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* en
   while (true)
     {
       pos = text.find("<", pos);
+
       if (pos == -1)
         delta = 0;
       else
         delta = pos - oldpos - 1;
+
       setFormat(oldpos + 1, delta, QColor(0, 0, 0));
+
       if (pos == -1) break;
+
       oldpos = pos;
 
       pos = text.find(">", pos);
+
       while (pos > 0 && text[pos - 1] == '\\')
         pos = text.find(">", pos + 1);
 
@@ -69,9 +74,12 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int /* en
         delta = pos - oldpos + 1;
 
       setFormat(oldpos, delta, QColor(100, 0, 200));
+
       if (pos == -1) break;
+
       oldpos = pos;
     }
+
   return 0;
 }
 
@@ -89,17 +97,17 @@ CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * n
   *  to go to further processes.
   */
 QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
-  {
-    if (const_cast< CExpression * >(&mExpression)->setInfix(TO_UTF8(input)) &&
-        const_cast< CExpression * >(&mExpression)->compile())
-      {
-        QString Input = mpLineEdit->text();
-        return CQValidator< Q3TextEdit >::validate(Input, pos);
-      }
+{
+  if (const_cast< CExpression * >(&mExpression)->setInfix(TO_UTF8(input)) &&
+      const_cast< CExpression * >(&mExpression)->compile())
+    {
+      QString Input = mpLineEdit->text();
+      return CQValidator< Q3TextEdit >::validate(Input, pos);
+    }
 
-    setColor(Invalid);
-    return Intermediate;
-  }
+  setColor(Invalid);
+  return Intermediate;
+}
 
 /**
   * Function to get CExpression object
@@ -116,7 +124,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
     : Q3TextEdit(parent, name),
     mOldPar(0),
     mOldPos(0),
-    mExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION),
+    mObjectClasses(TransientExpression),
     mpCurrentObject(NULL),
     mNewName("")
 {
@@ -131,6 +139,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
   mSavedColor.getHsv(&h, &s, &v);
 
   if (s < 20) s = 20;
+
   mChangedColor.setHsv(240, s, v);
 
   mpValidator = new CQValidatorExpression(this, "", isBoolean);
@@ -144,11 +153,12 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
           this, SLOT(slotTextChanged()));
 }
 
-void CQExpressionWidget::keyPressEvent (QKeyEvent * e)
+void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 {
   //filter "<" and ">"
   if (e->text() == "<")
     return;
+
   if (e->text() == ">")
     return;
 
@@ -200,11 +210,13 @@ void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
   if (isInObject(para, pos))
     {
       int newpos;
+
       //first decide in which direction we want to leave the object
       if (compareCursorPositions(mOldPar, mOldPos, para, pos))
         {
           //move right
           newpos = text(para).find(">", pos);
+
           if (newpos != -1)
             setCursorPosition(para, newpos + 1);
         }
@@ -212,6 +224,7 @@ void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
         {
           //move left
           newpos = text(para).findRev("<", pos);
+
           if (newpos != -1)
             setCursorPosition(para, newpos);
         }
@@ -249,6 +262,7 @@ bool CQExpressionWidget::isInObject(int par, int pos)
   int lo, lc;
   lo = tmp.findRev('<', pos - 1);
   lc = tmp.findRev('>', pos - 1);
+
   while (lc > 0 && tmp[lc - 1] == '\\')
     lc = tmp.findRev('>', lc - 1);
 
@@ -274,10 +288,12 @@ bool CQExpressionWidget::isInObject(int par, int pos)
 bool CQExpressionWidget::compareCursorPositions(int parold, int posold, int par, int pos)
 {
   if (par > parold) return true;
+
   if (par < parold) return false;
 
   //we are in the same paragraph
   if (pos > posold) return true;
+
   return false;
 }
 
@@ -289,35 +305,41 @@ void CQExpressionWidget::doKeyboardAction(Q3TextEdit::KeyboardAction action)
   //handle backspace and delete. All other actions are ignored
   switch (action)
     {
-    case Q3TextEdit::ActionBackspace:
-      if (pos == 0) return;
-      if (text(para)[pos - 1] == '>')
-        {
-          QString tmp = text(para);
-          int left = tmp.findRev('<', pos);
-          setSelection(para, left, para, pos);
-          removeSelectedText();
-        }
-      else
-        Q3TextEdit::doKeyboardAction(action);
-      break;
+      case Q3TextEdit::ActionBackspace:
 
-    case Q3TextEdit::ActionDelete:
-      if (pos == text().length()) return;
-      if (text(para)[pos] == '<')
-        {
-          QString tmp = text(para);
-          int right = tmp.find('>', pos);
-          setSelection(para, pos, para, right + 1);
-          removeSelectedText();
-        }
-      else
-        Q3TextEdit::doKeyboardAction(action);
-      break;
+        if (pos == 0) return;
 
-    default:
-      Q3TextEdit::doKeyboardAction(action);
-      break;
+        if (text(para)[pos - 1] == '>')
+          {
+            QString tmp = text(para);
+            int left = tmp.findRev('<', pos);
+            setSelection(para, left, para, pos);
+            removeSelectedText();
+          }
+        else
+          Q3TextEdit::doKeyboardAction(action);
+
+        break;
+
+      case Q3TextEdit::ActionDelete:
+
+        if (pos == text().length()) return;
+
+        if (text(para)[pos] == '<')
+          {
+            QString tmp = text(para);
+            int right = tmp.find('>', pos);
+            setSelection(para, pos, para, right + 1);
+            removeSelectedText();
+          }
+        else
+          Q3TextEdit::doKeyboardAction(action);
+
+        break;
+
+      default:
+        Q3TextEdit::doKeyboardAction(action);
+        break;
     }
 }
 
@@ -356,6 +378,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
           containers.push_back(pDataModel);
           containers.push_back(pFunDB);
           CCopasiObject* temp_object = pDataModel->ObjectFromName(containers, temp_CN);
+
           if (temp_object != NULL)
             {
               std::string DisplayName = temp_object->getObjectDisplayName();
@@ -363,6 +386,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
               // We need to escape >
               std::string::size_type pos = DisplayName.find_first_of("\\>");
+
               while (pos != std::string::npos)
                 {
                   DisplayName.insert(pos, "\\");
@@ -372,6 +396,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
               out_str += "<" + DisplayName + ">";
             }
+
           continue;
         }
 
@@ -396,41 +421,43 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 }
 
 std::string CQExpressionWidget::getExpression() const
-  {
-    std::string DisplayName = "";
-    std::string InfixCN = "";
+{
+  std::string DisplayName = "";
+  std::string InfixCN = "";
 
-    std::string InfixDispayName = TO_UTF8(text());
-    std::map< std::string, const CCopasiObject *>::const_iterator it;
+  std::string InfixDispayName = TO_UTF8(text());
+  std::map< std::string, const CCopasiObject *>::const_iterator it;
 
-    unsigned int i;
-    for (i = 0; i < InfixDispayName.length(); i++)
-      {
-        InfixCN += InfixDispayName[i];
-        DisplayName = "";
+  unsigned int i;
 
-        if (InfixDispayName[i] == '<')
-          {
-            i++;
-            while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
-              {
-                if (InfixDispayName[i] == '\\') // '\' is an escape character.
-                  i++;
+  for (i = 0; i < InfixDispayName.length(); i++)
+    {
+      InfixCN += InfixDispayName[i];
+      DisplayName = "";
 
-                DisplayName += InfixDispayName[i++];
-              }
+      if (InfixDispayName[i] == '<')
+        {
+          i++;
 
-            it = mParseList.find(DisplayName);
+          while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
+            {
+              if (InfixDispayName[i] == '\\') // '\' is an escape character.
+                i++;
 
-            if (it != mParseList.end())
-              InfixCN += it->second->getCN() + ">";
-            else
-              InfixCN = InfixCN.substr(0, InfixCN.length() - 1);
-          }
-      }
+              DisplayName += InfixDispayName[i++];
+            }
 
-    return InfixCN;
-  }
+          it = mParseList.find(DisplayName);
+
+          if (it != mParseList.end())
+            InfixCN += it->second->getCN() + ">";
+          else
+            InfixCN = InfixCN.substr(0, InfixCN.length() - 1);
+        }
+    }
+
+  return InfixCN;
+}
 /*
 CExpression *CQExpressionWidget::getExpression()
 {
@@ -438,20 +465,20 @@ CExpression *CQExpressionWidget::getExpression()
   return &(mpValidator->mExpression);
 }*/
 
-void CQExpressionWidget::setExpressionType(const CCopasiSimpleSelectionTree::SelectionFlag & expressionType)
+void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
 {
-  mExpressionType = expressionType;
+  mObjectClasses = expressionType;
 }
 
 void CQExpressionWidget::slotSelectObject()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, mExpressionType);
+    CCopasiSelectionDialog::getObjectSingle(this, mObjectClasses);
 
   if (pObject)
     {
       // Check whether the object is valid
-      if (!CCopasiSimpleSelectionTree::filter(mExpressionType, pObject))
+      if (!CCopasiSimpleSelectionTree::filter(mObjectClasses, pObject))
         {
           CQMessageBox::critical(this, "Invalid Selection",
                                  "The use of the selected object is not allowed in this type of expression.");
@@ -463,6 +490,7 @@ void CQExpressionWidget::slotSelectObject()
 
       // We need to escape >
       std::string::size_type pos = Insert.find_first_of("\\>");
+
       while (pos != std::string::npos)
         {
           Insert.insert(pos, "\\");

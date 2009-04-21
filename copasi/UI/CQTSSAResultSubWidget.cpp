@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/10 09:54:48 $
+//   $Author: shoops $
+//   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,21 +11,12 @@
 // and The University of Manchester.
 // All rights reserved.
 
-/****************************************************************************
- ** Form implementation generated from reading ui file 'CQTSSAResultSubWidget.ui'
- **
- ** Created: Fri Oct 10 11:13:33 2008
- **      by: The User Interface Compiler ($Id: CQTSSAResultSubWidget.cpp,v 1.11 2008/10/10 09:54:48 ssahle Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
-
 #include "CQTSSAResultSubWidget.h"
 
 #include <qvariant.h>
+#include <qmessagebox.h>
+#include <q3filedialog.h>
 #include <qregexp.h>
-#include "qmessagebox.h"
-#include "q3filedialog.h"
 #include "CTimeSeriesTable.h"
 #include "CQArrayAnnotationsWidget.h"
 #include "CQTSSAResultSubWidget.ui.h"

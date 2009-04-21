@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:34:58 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
     mEigenValuesX(src.mEigenValuesX, this)
 {
   mpProblem =
-    new CSteadyStateProblem(* (CSteadyStateProblem *) src.mpProblem, this);
+    new CSteadyStateProblem(*(CSteadyStateProblem *) src.mpProblem, this);
   mpMethod =
     CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
@@ -116,40 +116,41 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
 }
 
 const CState * CSteadyStateTask::getState() const
-  {return mpSteadyState;}
+{return mpSteadyState;}
 
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
-  {return mJacobian;}
+{return mJacobian;}
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobianReduced() const
-  {return mJacobianX;}
+{return mJacobianX;}
 
 const CArrayAnnotation * CSteadyStateTask::getJacobianAnnotated() const
-  {
-    return mpJacobianAnn;
-  }
+{
+  return mpJacobianAnn;
+}
 
 const CArrayAnnotation * CSteadyStateTask::getJacobianXAnnotated() const
-  {
-    return mpJacobianXAnn;
-  }
+{
+  return mpJacobianXAnn;
+}
 
 const CEigen & CSteadyStateTask::getEigenValues() const
-  {
-    return mEigenValues;
-  }
+{
+  return mEigenValues;
+}
 const CEigen & CSteadyStateTask::getEigenValuesReduced() const
-  {
-    return mEigenValuesX;
-  }
+{
+  return mEigenValuesX;
+}
 
 bool CSteadyStateTask::updateMatrices()
 {
   if (!mpMethod->isValidProblem(mpProblem)) return false;
+
   if (!mpProblem->getModel()) return false;
 
   const CStateTemplate & stateTemplate = mpProblem->getModel()->getStateTemplate();
 
-  //init Jacobians
+  // init Jacobians
   unsigned C_INT32 sizeX = stateTemplate.getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + stateTemplate.getNumDependent();
@@ -165,9 +166,11 @@ bool CSteadyStateTask::updateMatrices()
   pUserOrder++; // We skip the time which is the first.
 
   unsigned C_INT32 i, imax = size;
+
   for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
       const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
+
       if (Status == CModelEntity::ODE ||
           (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
         {
@@ -182,6 +185,7 @@ bool CSteadyStateTask::updateMatrices()
 
   ppEntities = stateTemplate.beginIndependent();
   imax = sizeX;
+
   for (i = 0; i < imax; ++i, ++ppEntities)
     {
       mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
@@ -206,16 +210,13 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
-  //init states
-  // if (!mpProblem->getModel()) return false;
-
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
 
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentReactionMetabs() != 0);
 
 #ifdef xxxx
-  //init Jacobians
+  // init Jacobians
   unsigned C_INT32 sizeX = mpSteadyState->getNumIndependent();
   mJacobianX.resize(sizeX, sizeX);
   unsigned C_INT32 size = sizeX + mpSteadyState->getNumDependent();
@@ -232,9 +233,11 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   pUserOrder++; // We skip the time which is the first.
 
   unsigned C_INT32 i, imax = size;
+
   for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
       const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
+
       if (Status == CModelEntity::ODE ||
           (Status == CModelEntity::REACTIONS && ppEntities[*pUserOrder]->isUsed()))
         {
@@ -249,11 +252,13 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   ppEntities = StateTemplate.beginIndependent();
   imax = sizeX;
+
   for (i = 0; i < imax; ++i, ++ppEntities)
     {
       mpJacobianXAnn->setAnnotationCN(0 , i, (*ppEntities)->getCN());
       mpJacobianXAnn->setAnnotationCN(1 , i, (*ppEntities)->getCN());
     }
+
 #endif
 
   CSteadyStateProblem* pProblem =
@@ -355,29 +360,32 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 {
   switch (A.getResult())
     {
-    case CSteadyStateMethod::found:
-      os << "A steady state with given resolution was found." << std::endl;
-      break;
+      case CSteadyStateMethod::found:
+        os << "A steady state with given resolution was found." << std::endl;
+        break;
 
-    case CSteadyStateMethod::notFound:
-      os << "No steady state with given resolution was found!" << std::endl;
-      os << "(below are the last unsuccessful trial values)" << std::endl;
-      break;
+      case CSteadyStateMethod::notFound:
+        os << "No steady state with given resolution was found!" << std::endl;
+        os << "(below are the last unsuccessful trial values)" << std::endl;
+        break;
 
-    case CSteadyStateMethod::foundEquilibrium:
-      os << "An equilibrium steady state (zero fluxes) was found." << std::endl;
-      break;
+      case CSteadyStateMethod::foundEquilibrium:
+        os << "An equilibrium steady state (zero fluxes) was found." << std::endl;
+        break;
 
-    case CSteadyStateMethod::foundNegative:
-      os << "An invalid steady state (negative concentrations) was found." << std::endl;
+      case CSteadyStateMethod::foundNegative:
+        os << "An invalid steady state (negative concentrations) was found." << std::endl;
     }
 
   os << std::endl;
 
   // Update all necessary values.
   CState * pState = const_cast<CState *>(A.getState());
+
   if (!pState) return os;
+
   CModel * pModel = A.mpProblem->getModel();
+
   if (!pModel) return os;
 
   pModel->setState(*pState);
@@ -391,11 +399,40 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   unsigned C_INT32 i, imax = Metabolites.size();
 
   os << "Species" << "\t";
-  os << "Concentration (" << pModel->getConcentrationUnitName() << ")" << "\t";
-  os << "Concentration Rate (" << pModel->getConcentrationRateUnitName() << ")" << "\t";
+  os << "Concentration";
+
+  std::string Units = pModel->getConcentrationUnits();
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << "\t";
+
+  os << "Concentration Rate";
+  Units = pModel->getConcentrationRateUnits();
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << "\t";
+
   os << "Particle Number" << "\t";
-  os << "Particle Number Rate (1/" << pModel->getTimeUnitName() << ")" << "\t";
-  os << "Transition Time (" << pModel->getTimeUnitName() << ")" << std::endl;
+
+  os << "Particle Number Rate";
+  Units = pModel->getFrequencyUnits();
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << "\t";
+
+  os << "Transition Time";
+  Units = pModel->getTimeUnits();
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << std::endl;
 
   for (i = 0; i < imax; ++i)
     {
@@ -407,6 +444,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       os << pMetab->getRate() << "\t";
       os << pMetab->getTransitionTime() << std::endl;
     }
+
   os << std::endl;
 
   // Reaction Info: Name, Flux, Particle Flux
@@ -416,8 +454,22 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   imax = Reactions.size();
 
   os << "Reaction" << "\t";
-  os << "Flux (" << pModel->getQuantityRateUnitName() << ")" << "\t";
-  os << "Particle Flux (1/" << pModel->getTimeUnitName() << ")" << std::endl;
+
+  os << "Flux";
+  Units = pModel->getQuantityRateUnits();
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << "\t";
+
+  os << "Particle Flux";
+  Units = pModel->getFrequencyUnits();;
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << std::endl;
 
   for (i = 0; i < imax; ++i)
     {
@@ -426,39 +478,37 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       os << pReaction->getFlux() << "\t";
       os << pReaction->getParticleFlux() << std::endl;
     }
+
   os << std::endl;
 
-  // if Jacobian Requested
-  //    Jacobian
-  //    Jacobian Reduced System
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isJacobianRequested())
     {
-      //os << "Jacobian of the Complete System" << std::endl;
-      //os << A.mJacobian << std::endl;
       os << *A.mpJacobianAnn << std::endl;
+
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
           os << "Eigenvalues\treal\timaginary" << std::endl;
           imax = A.mEigenValues.getR().size();
+
           for (i = 0; i < imax; i++)
             os << "\t" << A.mEigenValues.getR()[i] << "\t" << A.mEigenValues.getI()[i] << std::endl;
+
           os << std::endl;
         }
 
-      //os << "Jacobian of the Reduced System" << std::endl;
-      //os << A.mJacobianX << std::endl;
       os << *A.mpJacobianXAnn << std::endl;
+
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
           os << "Eigenvalues\treal\timaginary" << std::endl;
           imax = A.mEigenValuesX.getR().size();
+
           for (i = 0; i < imax; i++)
             os << "\t" << A.mEigenValuesX.getR()[i] << "\t" << A.mEigenValuesX.getI()[i] << std::endl;
+
           os << std::endl;
         }
     }
-  // if Stability Analysis Requested
-  //    Stability Analysis Reduced System
 
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
     {

@@ -1,10 +1,10 @@
 /* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-  $Revision: 1.48 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2008/07/11 16:05:18 $
-  End CVS Header */
+ $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
+ $Revision: 1.49 $
+ $Name:  $
+ $Author: shoops $
+ $Date: 2009/04/21 16:21:36 $
+ End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -63,30 +63,31 @@ void encodeSTD(const char & chr, std::ostringstream & xml)
 {
   switch (chr)
     {
-    case '&':
-      xml << "&amp;";
-      break;
+      case '&':
+        xml << "&amp;";
+        break;
 
-    case '\'':
-      xml << "&apos;";
-      break;
+      case '\'':
+        xml << "&apos;";
+        break;
 
-    case '<':
-      xml << "&lt;";
-      break;
+      case '<':
+        xml << "&lt;";
+        break;
 
-    case '>':
-      xml << "&gt;";
-      break;
+      case '>':
+        xml << "&gt;";
+        break;
 
-    case '\"':
-      xml << "&quot;";
-      break;
+      case '\"':
+        xml << "&quot;";
+        break;
 
-    default:
-      xml << chr;
-      break;
+      default:
+        xml << chr;
+        break;
     }
+
   return;
 }
 
@@ -94,30 +95,31 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
 {
   switch (chr)
     {
-    case '&':
-      xml << "&amp;";
-      break;
+      case '&':
+        xml << "&amp;";
+        break;
 
-    case '<':
-      xml << "&lt;";
-      break;
+      case '<':
+        xml << "&lt;";
+        break;
 
-    case '\"':
-      xml << "&quot;";
-      break;
+      case '\"':
+        xml << "&quot;";
+        break;
 
-    case '\t':            // Without this <tab> is converted to <space>
-      xml << "&#x09;";
-      break;
+      case '\t':            // Without this <tab> is converted to <space>
+        xml << "&#x09;";
+        break;
 
-    case '\n':            // Without this linebreak is converted to <space>
-      xml << "&#x0a;";
-      break;
+      case '\n':            // Without this linebreak is converted to <space>
+        xml << "&#x0a;";
+        break;
 
-    default:
-      xml << chr;
-      break;
+      default:
+        xml << chr;
+        break;
     }
+
   return;
 }
 
@@ -125,18 +127,19 @@ void encodeCHARACTER(const char & chr, std::ostringstream & xml)
 {
   switch (chr)
     {
-    case '&':
-      xml << "&amp;";
-      break;
+      case '&':
+        xml << "&amp;";
+        break;
 
-    case '<':
-      xml << "&lt;";
-      break;
+      case '<':
+        xml << "&lt;";
+        break;
 
-    default:
-      xml << chr;
-      break;
+      default:
+        xml << chr;
+        break;
     }
+
   return;
 }
 
@@ -153,21 +156,21 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
 
   switch (type)
     {
-    case none:
-      encode = encodeNONE;
-      break;
+      case none:
+        encode = encodeNONE;
+        break;
 
-    case std:
-      encode = encodeSTD;
-      break;
+      case std:
+        encode = encodeSTD;
+        break;
 
-    case attribute:
-      encode = encodeATTRIBUTE;
-      break;
+      case attribute:
+        encode = encodeATTRIBUTE;
+        break;
 
-    case character:
-      encode = encodeCHARACTER;
-      break;
+      case character:
+        encode = encodeCHARACTER;
+        break;
     }
 
   for (; it != end; ++it)
@@ -216,7 +219,7 @@ CCopasiXMLInterface::DBL::DBL(const char * value):
 CCopasiXMLInterface::DBL::~DBL() {}
 
 CCopasiXMLInterface::DBL::operator const C_FLOAT64 & () const
-  {return mValue;}
+{return mValue;}
 
 std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & dbl)
 {
@@ -234,24 +237,27 @@ std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & 
 
 std::string CCopasiXMLInterface::utf8(const std::string & str)
 {
-  return str;
-
   std::ostringstream utf8;
 
   /* Based on RFC 2279.
-     Since every string whithin COPASI is treated as latin1 and input
-     is only optained through QT and Expat which will provide latin1
+     Since every string within COPASI is treated as latin1 and input
+     is only obtained through QT and Expat which will provide latin1
      encoded strings the below should suffice. */
   unsigned C_INT32 i, imax;
+
   for (i = 0, imax = str.length(); i < imax; i++)
     {
-      if ((unsigned char) str[i] < 0x80) utf8 << str[i];
+      const unsigned char Char = str[i];
+
+      if (Char < 0x80)
+        utf8 << Char;
       else
         {
-          utf8 << 0xc0 + ((str[i] >> 6) & 0x03);
-          utf8 << 0x80 + (str[i] & 0x3f);
+          utf8 << (unsigned char)(0xc0 + ((Char >> 6) & 0x03));
+          utf8 << (unsigned char)(0x80 + (Char & 0x3f));
         }
     }
+
   return utf8.str();
 }
 
@@ -281,6 +287,7 @@ bool CCopasiXMLInterface::save(const std::string & fileName,
   mFilename = relativeTo;
 
   std::ofstream os(utf8ToLocale(fileName).c_str());
+
   if (os.fail()) return false;
 
   if (!save(os, relativeTo)) return false;
@@ -373,66 +380,90 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
   switch (parameter.getType())
     {
-    case CCopasiParameter::DOUBLE:
-      Attributes.add("value", * parameter.getValue().pDOUBLE);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+      case CCopasiParameter::DOUBLE:
+        Attributes.add("value", * parameter.getValue().pDOUBLE);
 
-    case CCopasiParameter::UDOUBLE:
-      Attributes.add("value", * parameter.getValue().pUDOUBLE);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+        if (!saveElement("Parameter", Attributes)) success = false;
 
-    case CCopasiParameter::INT:
-      Attributes.add("value", * parameter.getValue().pINT);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+        break;
 
-    case CCopasiParameter::UINT:
-      Attributes.add("value", * parameter.getValue().pUINT);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+      case CCopasiParameter::UDOUBLE:
+        Attributes.add("value", * parameter.getValue().pUDOUBLE);
 
-    case CCopasiParameter::BOOL:
-      Attributes.add("value", * parameter.getValue().pBOOL);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+        if (!saveElement("Parameter", Attributes)) success = false;
 
-    case CCopasiParameter::STRING:
-      Attributes.add("value", * parameter.getValue().pSTRING);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+        break;
 
-    case CCopasiParameter::KEY:
-      Attributes.add("value", * parameter.getValue().pKEY);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+      case CCopasiParameter::INT:
+        Attributes.add("value", * parameter.getValue().pINT);
 
-    case CCopasiParameter::FILE:
-      File = * parameter.getValue().pFILE;
-      if (!CDirEntry::isRelativePath(File) &&
-          !CDirEntry::makePathRelative(File, mFilename))
-        File = CDirEntry::fileName(File);
-      Attributes.add("value", File);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+        if (!saveElement("Parameter", Attributes)) success = false;
 
-    case CCopasiParameter::CN:
-      Attributes.add("value", * parameter.getValue().pCN);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
+        break;
 
-    case CCopasiParameter::GROUP:
-      Attributes.skip(1);
-      if (!startSaveElement("ParameterGroup", Attributes)) success = false;
-      if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
-      if (!endSaveElement("ParameterGroup")) success = false;
-      break;
+      case CCopasiParameter::UINT:
+        Attributes.add("value", * parameter.getValue().pUINT);
 
-    case CCopasiParameter::INVALID:
-    default:
-      success = false;
-      break;
+        if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::BOOL:
+        Attributes.add("value", * parameter.getValue().pBOOL);
+
+        if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::STRING:
+        Attributes.add("value", * parameter.getValue().pSTRING);
+
+        if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::KEY:
+        Attributes.add("value", * parameter.getValue().pKEY);
+
+        if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::FILE:
+        File = * parameter.getValue().pFILE;
+
+        if (!CDirEntry::isRelativePath(File) &&
+            !CDirEntry::makePathRelative(File, mFilename))
+          File = CDirEntry::fileName(File);
+
+        Attributes.add("value", File);
+
+        if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::CN:
+        Attributes.add("value", * parameter.getValue().pCN);
+
+        if (!saveElement("Parameter", Attributes)) success = false;
+
+        break;
+
+      case CCopasiParameter::GROUP:
+        Attributes.skip(1);
+
+        if (!startSaveElement("ParameterGroup", Attributes)) success = false;
+
+        if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
+
+        if (!endSaveElement("ParameterGroup")) success = false;
+
+        break;
+
+      case CCopasiParameter::INVALID:
+      default:
+        success = false;
+        break;
     }
 
   return success;
@@ -488,10 +519,10 @@ bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
 }
 
 const std::string & CXMLAttributeList::getName(const unsigned C_INT32 & index) const
-  {return mAttributeList[2 * index];}
+{return mAttributeList[2 * index];}
 
 const std::string & CXMLAttributeList::getValue(const unsigned C_INT32 & index) const
-  {return mAttributeList[2 * index + 1];}
+{return mAttributeList[2 * index + 1];}
 
 bool CXMLAttributeList::skip(const unsigned C_INT32 & index)
 {
@@ -500,12 +531,12 @@ bool CXMLAttributeList::skip(const unsigned C_INT32 & index)
 }
 
 std::string CXMLAttributeList::getAttribute(const unsigned C_INT32 & index) const
-  {
-    if (mSaveList[index])
-      return " " + mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";
-    else
-      return "";
-  }
+{
+  if (mSaveList[index])
+    return " " + mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";
+  else
+    return "";
+}
 
 std::ostream &operator<<(std::ostream &os, const CXMLAttributeList & attr)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/20 11:41:02 $
+//   $Date: 2009/04/21 16:12:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,7 @@ enum TriLogic
 };
 
 /* This is necessary to link with Intel MKL 721 under Visual C++ 8 */
-#if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200
+#if defined COPASI_MAIN && defined USE_MKL && defined _MSC_VER && _MSC_VER > 1200 && defined _DLL
 extern "C" {FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]};}
 #endif
 
@@ -163,21 +163,21 @@ extern std::ofstream DebugFile;
 # ifndef Darwin
 #  include <iostream>
 #  define TIME_TRACE(f, l) {\
-       ftime(&C_init_time); \
-       C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
-       DebugFile << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
-       C_last_time = C_this_time;\
-   }
+    ftime(&C_init_time); \
+    C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
+    DebugFile << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
+    C_last_time = C_this_time;\
+  }
 # endif // !Darwin
 
 # if (defined COPASI_TRACE_CONSTRUCTION)
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
-       {DebugFile << "Construct:\t" << typeid(*this).name() \
-        << "\tAddress:\t" << (void *) this << std::endl;}
+  {DebugFile << "Construct:\t" << typeid(*this).name() \
+    << "\tAddress:\t" << (void *) this << std::endl;}
 #  define DESTRUCTOR_TRACE \
-       {DebugFile << "Destruct:\t" << typeid(*this).name() \
-        << "\tAddress:\t" << (void *) this << std::endl;}
+  {DebugFile << "Destruct:\t" << typeid(*this).name() \
+    << "\tAddress:\t" << (void *) this << std::endl;}
 # endif // COPASI_TRACE_CONSTRUCTION
 
 # define DEBUG_OUT(s) {DebugFile << (s) << std::endl;}

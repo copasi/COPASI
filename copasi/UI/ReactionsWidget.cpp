@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,13 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 
+#define COL_MARK               0
+#define COL_NAME               1
+#define COL_EQUATION           2
+#define COL_RATE_LAW           3
+#define COL_FLUX               4
+#define COL_PARTICLE_FLUX      5
+
 std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -54,26 +61,30 @@ std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
 void ReactionsWidget::init()
 {
   mOT = ListViews::REACTION;
-  numCols = 5; // + 1;
+  numCols = 6; // + 1;
   table->setNumCols(numCols);
   std::vector<const CCopasiObject*> objectstemp;
   //table->QTable::setNumRows(1);
 
   //Setting table headers
   Q3Header *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Equation");
-  tableHeader->setLabel(3, "Rate Law");
-  tableHeader->setLabel(4, "Flux");
+  tableHeader->setLabel(COL_MARK, "Status");
+  tableHeader->setLabel(COL_NAME, "Name");
+  tableHeader->setLabel(COL_EQUATION, "Equation");
+  tableHeader->setLabel(COL_RATE_LAW, "Rate Law");
+  tableHeader->setLabel(COL_FLUX, "Flux");
+  tableHeader->setLabel(COL_PARTICLE_FLUX, "Particle Flux");
 
   //for sbml ids
   //tableHeader->setLabel(numCols - 1, "SBML ID");
   //table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function names
-  table->setColumnReadOnly(3, true);
-  table->setColumnReadOnly(4, true);
+  table->setColumnReadOnly(COL_RATE_LAW, true);
+  table->setColumnReadOnly(COL_FLUX, true);
+  table->setColumnReadOnly(COL_PARTICLE_FLUX, true);
+
+  setFramework(mFramework);
 }
 
 void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -82,25 +93,28 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   const CReaction* pRea = (const CReaction*)obj;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  table->horizontalHeader()->setLabel(4, "Flux\n("
-                                      + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
+  table->setText(row, COL_NAME, FROM_UTF8(pRea->getObjectName()));
 
-  table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
-
-  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *pRea, false)));
+  table->setText(row, COL_EQUATION, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pRea, false)));
 
   if (pRea->getFunction())
     {
-      table->setText(row, 3, FROM_UTF8(pRea->getFunction()->getObjectName()));
+      table->setText(row, COL_RATE_LAW, FROM_UTF8(pRea->getFunction()->getObjectName()));
     }
 
-  table->setText(row, 4, QString::number(pRea->getFlux()));
+  table->setText(row, COL_FLUX, QString::number(pRea->getFlux()));
+  table->setText(row, COL_PARTICLE_FLUX, QString::number(pRea->getParticleFlux()));
 }
 
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+
+  std::string objKey = obj->getKey();
+
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+
+  if (pModel == NULL) return;
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
@@ -108,7 +122,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   ri.initFromReaction(obj->getKey());
 
-  QString equation(table->text(row, 2));
+  QString equation(table->text(row, COL_EQUATION));
 
   if (TO_UTF8(equation) != ri.getChemEqString())
     {
@@ -122,6 +136,335 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
           //tell the reaction interface
           ri.setChemEqString(TO_UTF8(equation), "");
         }
+    }
+
+  // Before we save any changes we must check whether any local reaction parameters,
+  // which are used in any mathematical expression in the model are removed.
+  // If that is the case the user must have option to cancel the changes or remove the
+  // affected expressions.
+  std::set< const CCopasiObject * > DeletedParameters = ri.getDeletedParameters();
+
+  if (DeletedParameters.size() != 0)
+    {
+      QString parameterList = "Are you sure you want to delete listed PARAMETERS of reaction " + table->text(row, 1) + "?\n";
+      QString affectedCompartmentList = "Following COMPARTMENT(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedMetabList = "Following METABOLITE(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedReacList = "Following REACTION(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedValueList = "Following MODEL VALUE(S) reference above PARAMETERS and will be deleted -\n";
+
+      bool compartmentFound = false;
+      bool metabFound = false;
+      bool reacFound = false;
+      bool valueFound = false;
+
+      std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
+
+      for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+        {
+          parameterList.append(FROM_UTF8((*itParameter)->getObjectName()));
+          parameterList.append(", ");
+
+          std::set< const CCopasiObject * > DeletedObjects;
+          DeletedObjects.insert((*itParameter)->getObject(CCopasiObjectName("Reference=Value")));
+
+          std::set< const CCopasiObject * > Reactions;
+          std::set< const CCopasiObject * > Metabolites;
+          std::set< const CCopasiObject * > Values;
+          std::set< const CCopasiObject * > Compartments;
+
+          pModel->appendDependentModelObjects(DeletedObjects,
+                                              Reactions, Metabolites, Compartments, Values);
+
+          if (Reactions.size() > 0)
+            {
+              reacFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
+              for (it = Reactions.begin(); it != itEnd; ++it)
+                {
+                  affectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedReacList.append(", ");
+                }
+
+              affectedReacList.remove(affectedReacList.length() - 2, 2);
+              affectedReacList.append("  ---> ");
+              affectedReacList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedReacList.append("\n");
+            }
+
+          if (Metabolites.size() > 0)
+            {
+              metabFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
+              for (it = Metabolites.begin(); it != itEnd; ++it)
+                {
+                  affectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedMetabList.append(", ");
+                }
+
+              affectedMetabList.remove(affectedMetabList.length() - 2, 2);
+              affectedMetabList.append("  ---> ");
+              affectedMetabList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedMetabList.append("\n");
+            }
+
+          if (Values.size() > 0)
+            {
+              valueFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
+              for (it = Values.begin(); it != itEnd; ++it)
+                {
+                  affectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedValueList.append(", ");
+                }
+
+              affectedValueList.remove(affectedValueList.length() - 2, 2);
+              affectedValueList.append("  ---> ");
+              affectedValueList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedValueList.append("\n");
+            }
+
+          if (Compartments.size() > 0)
+            {
+              compartmentFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
+              for (it = Compartments.begin(); it != itEnd; ++it)
+                {
+                  affectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedCompartmentList.append(", ");
+                }
+
+              affectedCompartmentList.remove(affectedCompartmentList.length() - 2, 2);
+              affectedCompartmentList.append("  ---> ");
+              affectedCompartmentList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedCompartmentList.append("\n");
+            }
+        }
+
+      parameterList.remove(parameterList.length() - 2, 2);
+
+      QString msg = parameterList;
+
+      if (compartmentFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedCompartmentList);
+        }
+
+      if (metabFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedMetabList);
+        }
+
+      if (reacFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedReacList);
+        }
+
+      if (valueFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedValueList);
+        }
+
+      C_INT32 choice = 0;
+
+      if (metabFound || reacFound || valueFound || compartmentFound)
+        choice = CQMessageBox::question(this,
+                                        "CONFIRM DELETE",
+                                        msg,
+                                        "Continue", "Cancel", 0, 1, 1);
+
+      switch (choice)
+        {
+            // Yes or Enter
+          case 0:
+
+            for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+              pModel->removeLocalReactionParameter((*itParameter)->getKey());
+
+            break;
+
+            // No or Escape
+          default:
+            return;
+            break;
+        }
+    }
+
+  // Before we save any changes we must check whether any local reaction parameters,
+  // which are used in any mathematical expression in the model are removed.
+  // If that is the case the user must have option to cancel the changes or remove the
+  // affected expressions.
+  std::set< const CCopasiObject * > DeletedParameters = ri.getDeletedParameters();
+
+  if (DeletedParameters.size() != 0)
+    {
+      QString parameterList = "Are you sure you want to delete listed PARAMETERS of reaction " + table->text(row, 1) + "?\n";
+      QString affectedCompartmentList = "Following COMPARTMENT(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedMetabList = "Following METABOLITE(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedReacList = "Following REACTION(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedValueList = "Following MODEL VALUE(S) reference above PARAMETERS and will be deleted -\n";
+
+      bool compartmentFound = false;
+      bool metabFound = false;
+      bool reacFound = false;
+      bool valueFound = false;
+
+      std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
+
+      for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+        {
+          parameterList.append(FROM_UTF8((*itParameter)->getObjectName()));
+          parameterList.append(", ");
+
+          std::set< const CCopasiObject * > DeletedObjects;
+          DeletedObjects.insert((*itParameter)->getObject(CCopasiObjectName("Reference=Value")));
+
+          std::set< const CCopasiObject * > Reactions;
+          std::set< const CCopasiObject * > Metabolites;
+          std::set< const CCopasiObject * > Values;
+          std::set< const CCopasiObject * > Compartments;
+
+          pModel->appendDependentModelObjects(DeletedObjects,
+                                              Reactions, Metabolites, Compartments, Values);
+
+          if (Reactions.size() > 0)
+            {
+              reacFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
+              for (it = Reactions.begin(); it != itEnd; ++it)
+                {
+                  affectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedReacList.append(", ");
+                }
+
+              affectedReacList.remove(affectedReacList.length() - 2, 2);
+              affectedReacList.append("  ---> ");
+              affectedReacList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedReacList.append("\n");
+            }
+
+          if (Metabolites.size() > 0)
+            {
+              metabFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
+              for (it = Metabolites.begin(); it != itEnd; ++it)
+                {
+                  affectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedMetabList.append(", ");
+                }
+
+              affectedMetabList.remove(affectedMetabList.length() - 2, 2);
+              affectedMetabList.append("  ---> ");
+              affectedMetabList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedMetabList.append("\n");
+            }
+
+          if (Values.size() > 0)
+            {
+              valueFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
+              for (it = Values.begin(); it != itEnd; ++it)
+                {
+                  affectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedValueList.append(", ");
+                }
+
+              affectedValueList.remove(affectedValueList.length() - 2, 2);
+              affectedValueList.append("  ---> ");
+              affectedValueList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedValueList.append("\n");
+            }
+
+          if (Compartments.size() > 0)
+            {
+              compartmentFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
+              for (it = Compartments.begin(); it != itEnd; ++it)
+                {
+                  affectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedCompartmentList.append(", ");
+                }
+
+              affectedCompartmentList.remove(affectedCompartmentList.length() - 2, 2);
+              affectedCompartmentList.append("  ---> ");
+              affectedCompartmentList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedCompartmentList.append("\n");
+            }
+        }
+
+      parameterList.remove(parameterList.length() - 2, 2);
+
+      QString msg = parameterList;
+
+      if (compartmentFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedCompartmentList);
+        }
+
+      if (metabFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedMetabList);
+        }
+
+      if (reacFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedReacList);
+        }
+
+      if (valueFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedValueList);
+        }
+
+      C_INT32 choice = 0;
+
+      if (metabFound || reacFound || valueFound || compartmentFound)
+        choice = CQMessageBox::question(this,
+                                        "CONFIRM DELETE",
+                                        msg,
+                                        "Continue", "Cancel", 0, 1, 1);
+
+      switch (choice)
+        {
+            // Yes or Enter
+          case 0:
+
+            for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+              pModel->removeLocalReactionParameter((*itParameter)->getKey());
+
+            break;
+
+            // No or Escape
+          default:
+            return;
+            break;
+        }
+    }
+
+  // We need to check whether the current reaction still exists, since it is possible that
+  // removing a local reaction parameter triggers its deletion.
+  CReaction * reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
+  if (reac == NULL)
+    {
+      ri.setFunctionWithEmptyMapping("");
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+      return;
     }
 
   //first check if new metabolites need to be created
@@ -319,7 +662,7 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   C_INT32 choice = 0;
 
-  if (metabFound || reacFound || valueFound || valueFound)
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -342,4 +685,48 @@ void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
       default:                                           // No or Escape
         break;
     }
+}
+
+void ReactionsWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  switch (mFramework)
+    {
+      case 0:
+        table->showColumn(COL_FLUX);
+        table->hideColumn(COL_PARTICLE_FLUX);
+        break;
+
+      case 1:
+        table->hideColumn(COL_FLUX);
+        table->showColumn(COL_PARTICLE_FLUX);
+        break;
+    }
+}
+
+void ReactionsWidget::updateHeaderUnits()
+{
+  const CModel * pModel = CCopasiDataModel::Global->getModel();
+
+  if (pModel == NULL) return;
+
+  QString RateUnits;
+
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getQuantityRateUnits());
+
+  if (!RateUnits.isEmpty())
+    RateUnits = "\n(" + RateUnits + ")";
+
+  QString FrequencyUnits;
+
+  if (pModel)
+    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnits());
+
+  if (!FrequencyUnits.isEmpty())
+    FrequencyUnits = "\n(" + FrequencyUnits + ")";
+
+  table->horizontalHeader()->setLabel(COL_FLUX, "Flux" + RateUnits);
+  table->horizontalHeader()->setLabel(COL_PARTICLE_FLUX, "Flux" + FrequencyUnits);
 }

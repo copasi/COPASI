@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.192 $
+#   $Revision: 1.193 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/04/14 16:03:50 $
+#   $Date: 2009/04/21 16:20:31 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.192 $ $Author: shoops $ $Date: 2009/04/14 16:03:50 $
+# $Revision: 1.193 $ $Author: shoops $ $Date: 2009/04/21 16:20:31 $
 ######################################################################
 
 LIB = UI
@@ -353,17 +353,15 @@ contains(DEFINES, COPASI_TSSA) {
   HEADERS += CQTSSAResultWidget.h
   SOURCES += CQTSSAResultWidget.cpp
 
-# FORMS3 += CQTSSAResultSubWidget.ui
+FORMS3 += CQTSSAResultSubWidget.ui
 
 FORMS += CQTSSAWidget.ui
 
   HEADERS += CQTSSAWidget.h \
-             CQTSSAResultSubWidget.h \
              CQTSSAResultSubWidget.ui.h \
              CQTSSATimeScaleWidget.h
 
   SOURCES += CQTSSAWidget.cpp \
-             CQTSSAResultSubWidget.cpp \
              CQTSSATimeScaleWidget.cpp
 }
 

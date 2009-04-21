@@ -86,6 +86,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CMIRIAMResource.h"
+				>
+			</File>
+			<File
 				RelativePath="CModelMIRIAMInfo.cpp"
 				>
 			</File>
@@ -135,6 +139,10 @@
 			</File>
 			<File
 				RelativePath=".\CRDFTriplet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CRDFTriplet.h"
 				>
 			</File>
 			<File

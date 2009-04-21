@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,7 +98,7 @@ bool CTSSAProblem::elevateChildren()
   // If we have an old COPASI file "Duration" is not set
   // but we can fix that.
   if (*mpDuration == 1.0) // the default
-    setDuration(*mpStepSize * (C_FLOAT64) *mpStepNumber);
+    setDuration(*mpStepSize *(C_FLOAT64) *mpStepNumber);
 
   return true;
 }
@@ -137,7 +137,7 @@ void CTSSAProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
  * @return "const unsigned C_INT32 &" stepNumber
  */
 const unsigned C_INT32 & CTSSAProblem::getStepNumber() const
-  {return *mpStepNumber;}
+{return *mpStepNumber;}
 
 /**
  * Set the size a integration step the trajectory method should do.
@@ -157,7 +157,7 @@ void CTSSAProblem::setStepSize(const C_FLOAT64 & stepSize)
  * @return "const C_FLOAT64 &" stepSize
  */
 const C_FLOAT64 & CTSSAProblem::getStepSize() const
-  {return *mpStepSize;}
+{return *mpStepSize;}
 
 /**
  * Set the end time.
@@ -177,7 +177,7 @@ void CTSSAProblem::setDuration(const C_FLOAT64 & duration)
  * @return "const C_FLOAT64 &" duration
  */
 const C_FLOAT64 & CTSSAProblem::getDuration() const
-  {return *mpDuration;}
+{return *mpDuration;}
 
 void CTSSAProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 {
@@ -185,7 +185,7 @@ void CTSSAProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 }
 
 const C_FLOAT64 & CTSSAProblem::getOutputStartTime() const
-  {return *mpOutputStartTime;}
+{return *mpOutputStartTime;}
 
 void CTSSAProblem::setTimeSeriesRequested(bool flag)
 {
@@ -193,7 +193,7 @@ void CTSSAProblem::setTimeSeriesRequested(bool flag)
 }
 
 bool CTSSAProblem::timeSeriesRequested() const
-  {return *mpTimeSeriesRequested;}
+{return *mpTimeSeriesRequested;}
 
 /**
  * This function synchronizes step size and number
@@ -278,19 +278,19 @@ C_FLOAT64 CTSSAProblem::getDeufelhardTol()
 }
 
 void CTSSAProblem::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
+{
+  std::ostream & os = *ostream;
 
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
-    const CCopasiTask* mpTask =
-      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
+  const CCopasiDataModel* pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+  const CCopasiTask* mpTask =
+    dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
 
-    if (!mpTask) return;
+  if (!mpTask) return;
 
-    const CCopasiMethod* mpMethod = mpTask->getMethod();
+  const CCopasiMethod* mpMethod = mpTask->getMethod();
 
-    this->print(&os);
+  this->print(&os);
 
-    mpMethod->printResult(&os);
-  }
+  mpMethod->printResult(&os);
+}

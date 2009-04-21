@@ -1,10 +1,10 @@
-<chapter id="modelCreation" xreflabel="Model Creation">
+ <chapter id="modelCreation" xreflabel="Model Creation">
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
-<!--   $Revision: 1.56 $ -->
+<!--   $Revision: 1.57 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2009/01/07 19:41:09 $ -->
+<!--   $Date: 2009/04/21 16:22:02 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -1321,7 +1321,7 @@ Do we execute events depth first or breadth first? This might make a difference!
 </para>
 </sect1>
 -->
-<sect1 id="annotation" xrefLabel="annotation">
+<sect1 id="annotation" xreflabel="annotation">
 <title>Annotating models and model elements</title>
 <para>
 Sometimes it would be beneficial to include additional information in a model that describes the model creation process or that gives biological information about the individual model elements. Especially when you get a model from someone or load some published model from the authors webpage or some model repository, this information sometimes comes in handy.
@@ -2296,7 +2296,6 @@ time course.
 </sect1>
 </chapter>
 
-
 <chapter id="outputGeneration" xreflabel="Output">
 <title>Output</title>
 <!--<sect1 id="outputIntroduction" xreflabel="Output Introduction">-->
@@ -2822,6 +2821,7 @@ units. Curves and histograms can be combined in a single plot.
 
 <chapter id="simpleTasks" xreflabel="Simple Tasks">
 <title>Simple Tasks</title>
+ 
 <sect1 id="steadyStateAnalysis" xreflabel="Steady-State Analysis">
 <title>Steady-State Analysis</title>
 <para>
@@ -2942,6 +2942,7 @@ now run the task, COPASI will write the output to the file you
 specified.
 </para>
 </sect1>
+
 <sect1 id="stoichiometryStateAnalysis"
 xreflabel="Stoichiometric State Analysis">
 <title>Stoichiometric State Analysis</title>
@@ -3033,6 +3034,7 @@ Conservation</guibutton> branch in the object tree and click on the
 </para>
 </sect2>
 </sect1>
+
 <sect1 id="calculatingTrajectory" xreflabel="Time Course Simulation">
 <title>Time Course Simulation</title>
 <para>
@@ -3376,7 +3378,6 @@ specified.
 </para>
 </sect1>
 
-
 <sect1 id="lyapunovExponents" xreflabel="Lyapunov Exponents">
 <title>Lyapunov Exponents</title>
 <para>
@@ -3480,10 +3481,7 @@ that the divergence and the sum differ in those cases.
 </para>
 <para></para>
 </sect1>
-</chapter>
 
-<chapter id="complexTasks" xreflabel="Complex Tasks" >
-<title>Complex Tasks</title>
 <sect1 id="parameterScan" xreflabel="Parameter Scan">
 <title>Parameter Scan</title>
 <para>
@@ -4027,7 +4025,8 @@ specified.
 </para>
 
 </sect1>
-<sect1 id="parameterEstimation" xreflabel="Parameter Estimation">
+
+ <sect1 id="parameterEstimation" xreflabel="Parameter Estimation">
 <title>Parameter Estimation</title>
 <para>
 Parameter estimation is the process of trying to calculate model
@@ -4524,7 +4523,6 @@ parameters or the Fisher information matrix.
 </para>
 
 </sect1>
-
 
 </chapter>
 

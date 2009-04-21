@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.200 $
+//   $Revision: 1.201 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 {
   if (!name)
     setName("ReactionsWidget1");
+
   setCaption(trUtf8("ReactionsWidget1"));
 
   ReactionsWidget1Layout = new Q3GridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
@@ -223,10 +224,6 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
   if (!reaction) return false;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  TextLabel8->setText(tr("Flux ("
-                         + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")"));
-
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
   pdelete(mpRi);
@@ -243,12 +240,202 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 bool ReactionsWidget1::saveToReaction()
 {
   CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (reac == NULL) return true;
 
   if (!LineEdit2->isValid()) return false;
+
   LineEdit2->slotForceUpdate();
 
   if (!mpRi->isValid()) return false;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL) return false;
+
+  unsigned C_INT32 ReactionIndex = pModel->getReactions().getIndex(mpRi->getReactionName());
+
+  // Before we save any changes we must check whether any local reaction parameters,
+  // which are used in any mathematical expression in the model are removed.
+  // If that is the case the user must have option to cancel the changes or remove the
+  // affected expressions.
+  std::set< const CCopasiObject * > DeletedParameters = mpRi->getDeletedParameters();
+
+  if (DeletedParameters.size() != 0)
+    {
+      QString parameterList = "Are you sure you want to delete listed PARAMETERS ?\n";
+      QString affectedCompartmentList = "Following COMPARTMENT(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedMetabList = "Following METABOLITE(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedReacList = "Following REACTION(S) reference above PARAMETERS and will be deleted -\n";
+      QString affectedValueList = "Following MODEL VALUE(S) reference above PARAMETERS and will be deleted -\n";
+
+      bool compartmentFound = false;
+      bool metabFound = false;
+      bool reacFound = false;
+      bool valueFound = false;
+
+      std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
+
+      for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+        {
+          parameterList.append(FROM_UTF8((*itParameter)->getObjectName()));
+          parameterList.append(", ");
+
+          std::set< const CCopasiObject * > DeletedObjects;
+          DeletedObjects.insert((*itParameter)->getObject(CCopasiObjectName("Reference=Value")));
+
+          std::set< const CCopasiObject * > Reactions;
+          std::set< const CCopasiObject * > Metabolites;
+          std::set< const CCopasiObject * > Values;
+          std::set< const CCopasiObject * > Compartments;
+
+          pModel->appendDependentModelObjects(DeletedObjects,
+                                              Reactions, Metabolites, Compartments, Values);
+
+          if (Reactions.size() > 0)
+            {
+              reacFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
+              for (it = Reactions.begin(); it != itEnd; ++it)
+                {
+                  affectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedReacList.append(", ");
+                }
+
+              affectedReacList.remove(affectedReacList.length() - 2, 2);
+              affectedReacList.append("  ---> ");
+              affectedReacList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedReacList.append("\n");
+            }
+
+          if (Metabolites.size() > 0)
+            {
+              metabFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
+              for (it = Metabolites.begin(); it != itEnd; ++it)
+                {
+                  affectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedMetabList.append(", ");
+                }
+
+              affectedMetabList.remove(affectedMetabList.length() - 2, 2);
+              affectedMetabList.append("  ---> ");
+              affectedMetabList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedMetabList.append("\n");
+            }
+
+          if (Values.size() > 0)
+            {
+              valueFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
+              for (it = Values.begin(); it != itEnd; ++it)
+                {
+                  affectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedValueList.append(", ");
+                }
+
+              affectedValueList.remove(affectedValueList.length() - 2, 2);
+              affectedValueList.append("  ---> ");
+              affectedValueList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedValueList.append("\n");
+            }
+
+          if (Compartments.size() > 0)
+            {
+              compartmentFound = true;
+              std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
+              for (it = Compartments.begin(); it != itEnd; ++it)
+                {
+                  affectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+                  affectedCompartmentList.append(", ");
+                }
+
+              affectedCompartmentList.remove(affectedCompartmentList.length() - 2, 2);
+              affectedCompartmentList.append("  ---> ");
+              affectedCompartmentList.append(FROM_UTF8((*itParameter)->getObjectName()));
+              affectedCompartmentList.append("\n");
+            }
+        }
+
+      parameterList.remove(parameterList.length() - 2, 2);
+
+      QString msg = parameterList;
+
+      if (compartmentFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedCompartmentList);
+        }
+
+      if (metabFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedMetabList);
+        }
+
+      if (reacFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedReacList);
+        }
+
+      if (valueFound)
+        {
+          msg.append("\n \n");
+          msg.append(affectedValueList);
+        }
+
+      C_INT32 choice = 0;
+
+      if (metabFound || reacFound || valueFound || compartmentFound)
+        choice = CQMessageBox::question(this,
+                                        "CONFIRM DELETE",
+                                        msg,
+                                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+
+      switch (choice)
+        {
+            // Yes or Enter
+          case QMessageBox::Ok:                                 // Yes or Enter
+
+            for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+              pModel->removeLocalReactionParameter((*itParameter)->getKey());
+
+            break;
+
+            // No or Escape
+          default:
+            return true;
+            break;
+        }
+    }
+
+  // We need to check whether the current reaction still exists, since it is possible that
+  // removing a local reaction parameter triggers its deletion.
+  reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
+  if (reac == NULL)
+    {
+      unsigned C_INT32 size = pModel->getReactions().size();
+
+      mpRi->setFunctionWithEmptyMapping("");
+
+      if (size > 0)
+        enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
+      else
+        enter("");
+
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+      return true;
+    }
 
   //first check if new metabolites need to be created
   bool createdMetabs = mpRi->createMetabolites();
@@ -260,10 +447,11 @@ bool ReactionsWidget1::saveToReaction()
   if (!mpRi->writeBackToReaction(NULL))
     {
       CCopasiObject * pReaction = CCopasiRootContainer::getKeyFactory()->get(objKey);
+
       if (mpRi->getReactionName() != pReaction->getObjectName())
         {
           QString msg;
-          msg = "Unable to rename reaction '" + FROM_UTF8(pReaction->getObjectName()) + "'\n"
+          msg = "Unable to rename reaction '" + FROM_UTF8(reac->getObjectName()) + "'\n"
                 + "to '" + FROM_UTF8(mpRi->getReactionName()) + "' since a reation with that name already exists.";
 
           CQMessageBox::information(this,
@@ -271,7 +459,7 @@ bool ReactionsWidget1::saveToReaction()
                                     msg,
                                     QMessageBox::Ok, QMessageBox::Ok);
 
-          mpRi->setReactionName(pReaction->getObjectName());
+          mpRi->setReactionName(reac->getObjectName());
           LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
         }
     }
@@ -285,6 +473,7 @@ bool ReactionsWidget1::saveToReaction()
   else
     {
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+
       protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
     }
 
@@ -308,6 +497,7 @@ void ReactionsWidget1::slotBtnOKClicked()
   CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
 
   if (reac == NULL) return;
+
   loadFromReaction(reac);
 }
 
@@ -370,12 +560,14 @@ void ReactionsWidget1::slotBtnNewClicked()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   while (!pDataModel->getModel()->createReaction(name))
     {
       i++;
       name = "reaction_";
       name += TO_UTF8(QString::number(i));
     }
+
   protectedNotify(ListViews::REACTION, ListViews::ADD);
   enter(pDataModel->getModel()->getReactions()[name]->getKey());
   //pListView->switchToOtherWidget(mKeys[row]);
@@ -388,18 +580,20 @@ void ReactionsWidget1::slotBtnDeleteClicked()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL)
     return;
 
   CReaction * pReaction =
     dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (pReaction == NULL) return;
 
   QString reactionList = "Are you sure you want to delete listed REACTION(S) ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above REACTION(S) and will be deleted -\n";
-  QString effectedMetabList = "Following SPECIES reference above REACTION(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above REACTION(S) and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above REACTION(S) and will be deleted -\n";
+  QString affectedCompartmentList = "Following COMPARTMENT(S) reference above REACTION(S) and will be deleted -\n";
+  QString affectedMetabList = "Following SPECIES reference above REACTION(S) and will be deleted -\n";
+  QString affectedReacList = "Following REACTION(S) reference above REACTION(S) and will be deleted -\n";
+  QString affectedValueList = "Following MODEL VALUE(S) reference above REACTION(S) and will be deleted -\n";
 
   bool compartmentFound = false;
   bool metabFound = false;
@@ -421,64 +615,68 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     {
       reacFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
-          effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedReacList.append(", ");
+          affectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+          affectedReacList.append(", ");
         }
 
-      effectedReacList.remove(effectedReacList.length() - 2, 2);
-      effectedReacList.append("  ---> ");
-      effectedReacList.append(FROM_UTF8(pReaction->getObjectName()));
-      effectedReacList.append("\n");
+      affectedReacList.remove(affectedReacList.length() - 2, 2);
+      affectedReacList.append("  ---> ");
+      affectedReacList.append(FROM_UTF8(pReaction->getObjectName()));
+      affectedReacList.append("\n");
     }
 
   if (Metabolites.size() > 0)
     {
       metabFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
-          effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedMetabList.append(", ");
+          affectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+          affectedMetabList.append(", ");
         }
 
-      effectedMetabList.remove(effectedMetabList.length() - 2, 2);
-      effectedMetabList.append("  ---> ");
-      effectedMetabList.append(FROM_UTF8(pReaction->getObjectName()));
-      effectedMetabList.append("\n");
+      affectedMetabList.remove(affectedMetabList.length() - 2, 2);
+      affectedMetabList.append("  ---> ");
+      affectedMetabList.append(FROM_UTF8(pReaction->getObjectName()));
+      affectedMetabList.append("\n");
     }
 
   if (Values.size() > 0)
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
-          effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedValueList.append(", ");
+          affectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+          affectedValueList.append(", ");
         }
 
-      effectedValueList.remove(effectedValueList.length() - 2, 2);
-      effectedValueList.append("  ---> ");
-      effectedValueList.append(FROM_UTF8(pReaction->getObjectName()));
-      effectedValueList.append("\n");
+      affectedValueList.remove(affectedValueList.length() - 2, 2);
+      affectedValueList.append("  ---> ");
+      affectedValueList.append(FROM_UTF8(pReaction->getObjectName()));
+      affectedValueList.append("\n");
     }
 
   if (Compartments.size() > 0)
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
-          effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedCompartmentList.append(", ");
+          affectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+          affectedCompartmentList.append(", ");
         }
 
-      effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
-      effectedCompartmentList.append("  ---> ");
-      effectedCompartmentList.append(FROM_UTF8(pReaction->getObjectName()));
-      effectedCompartmentList.append("\n");
+      affectedCompartmentList.remove(affectedCompartmentList.length() - 2, 2);
+      affectedCompartmentList.append("  ---> ");
+      affectedCompartmentList.append(FROM_UTF8(pReaction->getObjectName()));
+      affectedCompartmentList.append("\n");
     }
 
   reactionList.remove(reactionList.length() - 2, 2);
@@ -488,29 +686,30 @@ void ReactionsWidget1::slotBtnDeleteClicked()
   if (compartmentFound)
     {
       msg.append("\n \n");
-      msg.append(effectedCompartmentList);
+      msg.append(affectedCompartmentList);
     }
 
   if (metabFound)
     {
       msg.append("\n \n");
-      msg.append(effectedMetabList);
+      msg.append(affectedMetabList);
     }
 
   if (reacFound)
     {
       msg.append("\n \n");
-      msg.append(effectedReacList);
+      msg.append(affectedReacList);
     }
 
   if (valueFound)
     {
       msg.append("\n \n");
-      msg.append(effectedValueList);
+      msg.append(affectedValueList);
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -518,7 +717,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case QMessageBox::Ok:                                                     // Yes or Enter
+      case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index
         = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
@@ -537,8 +736,8 @@ void ReactionsWidget1::slotBtnDeleteClicked()
         protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
         break;
       }
-    default:                                                     // No or Escape
-      break;
+      default:                                                     // No or Escape
+        break;
     }
 }
 
@@ -548,14 +747,11 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
 
-  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
-  if (reac)
-    LineEdit3->setText(QString::number(reac->getFlux()));
-  else
-    LineEdit3->setText("");
+  setFramework(mFramework);
 
   // the reversibility checkbox
   CheckBox->setChecked(false);
+
   if (mpRi->isReversible() == true)
     {
       CheckBox->setChecked(true);
@@ -608,6 +804,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   else if (mpRi->getUsage(index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
+
       mpRi->setMapping(index, TO_UTF8(newValue));
     }
   else
@@ -672,16 +869,17 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
 
   switch (objectType)
     {
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::COMPARTMENT:
-    case ListViews::METABOLITE:
-      return loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
-      break;
+      case ListViews::MODEL:
+      case ListViews::STATE:
+      case ListViews::COMPARTMENT:
+      case ListViews::METABOLITE:
+        return loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return true;
 }
 
@@ -702,4 +900,51 @@ bool ReactionsWidget1::enter(const std::string & key)
 
   mpListView->switchToOtherWidget(114, "");
   return false;
+}
+
+void ReactionsWidget1::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  const CReaction * pReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
+  const CModel * pModel = NULL;
+
+  if (pReaction != NULL)
+    pModel = dynamic_cast<const CModel *>(pReaction->getObjectAncestor("Model"));
+
+  QString Units;
+
+  switch (mFramework)
+    {
+      case 0:
+
+        if (pModel)
+          Units = FROM_UTF8(pModel->getQuantityRateUnits());
+
+        if (!Units.isEmpty())
+          Units = " (" + Units + ")";
+
+        TextLabel8->setText("Flux" + Units);
+
+        if (pReaction != NULL)
+          LineEdit3->setText(QString::number(pReaction->getFlux()));
+
+        break;
+
+      case 1:
+
+        if (pModel)
+          Units = FROM_UTF8(pModel->getFrequencyUnits());
+
+        if (!Units.isEmpty())
+          Units = " (" + Units + ")";
+
+        TextLabel8->setText("Particle Flux" + Units);
+
+        if (pReaction != NULL)
+          LineEdit3->setText(QString::number(pReaction->getParticleFlux()));
+
+        break;
+    }
 }

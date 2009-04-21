@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ bool CQOptimizationWidget::saveTask()
 {
   COptTask * pTask =
     dynamic_cast< COptTask * >(mpTask);
+
   if (!pTask) return false;
 
   saveCommon();
@@ -49,6 +50,7 @@ bool CQOptimizationWidget::saveTask()
 
   COptProblem * pProblem =
     dynamic_cast<COptProblem *>(mpTask->getProblem());
+
   if (!pProblem) return false;
 
   // expression
@@ -95,6 +97,7 @@ bool CQOptimizationWidget::loadTask()
 {
   COptTask * pTask =
     dynamic_cast< COptTask * >(mpTask);
+
   if (!pTask) return false;
 
   loadCommon();
@@ -102,6 +105,7 @@ bool CQOptimizationWidget::loadTask()
 
   COptProblem * pProblem =
     dynamic_cast<COptProblem *>(mpTask->getProblem());
+
   if (!pProblem) return false;
 
   // expression
@@ -109,6 +113,7 @@ bool CQOptimizationWidget::loadTask()
   mpExpressionEMW->updateWidget();
 
   mpBtnMaximize->setChecked(pProblem->maximize());
+  mpBtnMinimize->setChecked(!pProblem->maximize());
 
   mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
@@ -131,6 +136,7 @@ bool CQOptimizationWidget::runTask()
 
   COptTask * pTask =
     dynamic_cast< COptTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+
   if (!pTask) return false;
 
   if (!commonBeforeRunTask()) return false;
@@ -177,7 +183,7 @@ void CQOptimizationWidget::init()
   addMethodSelectionBox(COptTask::ValidMethods);
   addMethodParameterTable();
 
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::OPTIMIZATION_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
   mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
 

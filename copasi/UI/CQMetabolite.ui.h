@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,15 +57,15 @@ void CQMetabolite::init()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   int Width = fontMetrics().width("Concentration (" +
-                                  FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getConcentrationUnitName()) +
+                                  FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getConcentrationUnits()) +
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
   mExpressionValid = false;
-  mpExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::TRANSIENT_EXPRESSION);
+  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mInitialExpressionValid = false;
-  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CCopasiSimpleSelectionTree::INITIAL_EXPRESSION);
+  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
 }
 
 /*!
@@ -107,13 +107,13 @@ void CQMetabolite::slotBtnNew()
 
   switch (mFramework)
     {
-    case 0:
-      mpMetab->setInitialConcentration(1.0);
-      break;
+      case 0:
+        mpMetab->setInitialConcentration(1.0);
+        break;
 
-    case 1:
-      mpMetab->setInitialValue(100.0);
-      break;
+      case 1:
+        mpMetab->setInitialValue(100.0);
+        break;
     }
 
   enter(mpMetab->getKey());
@@ -126,6 +126,7 @@ void CQMetabolite::slotBtnDelete()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -156,6 +157,7 @@ void CQMetabolite::slotBtnDelete()
     {
       reacFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+
       for (it = Reactions.begin(); it != itEnd; ++it)
         {
           effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
@@ -172,6 +174,7 @@ void CQMetabolite::slotBtnDelete()
     {
       metabFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+
       for (it = Metabolites.begin(); it != itEnd; ++it)
         {
           effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
@@ -188,6 +191,7 @@ void CQMetabolite::slotBtnDelete()
     {
       valueFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+
       for (it = Values.begin(); it != itEnd; ++it)
         {
           effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
@@ -204,6 +208,7 @@ void CQMetabolite::slotBtnDelete()
     {
       compartmentFound = true;
       std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+
       for (it = Compartments.begin(); it != itEnd; ++it)
         {
           effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
@@ -245,7 +250,8 @@ void CQMetabolite::slotBtnDelete()
     }
 
   C_INT32 choice = 0;
-  if (metabFound || reacFound || valueFound || valueFound)
+
+  if (metabFound || reacFound || valueFound || compartmentFound)
     choice = CQMessageBox::question(this,
                                     "CONFIRM DELETE",
                                     msg,
@@ -253,7 +259,7 @@ void CQMetabolite::slotBtnDelete()
 
   switch (choice)
     {
-    case QMessageBox::Ok:                                                     // Yes or Enter
+      case QMessageBox::Ok:                                                     // Yes or Enter
       {
         unsigned C_INT32 index =
           pDataModel->getModel()->getMetabolites().getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
@@ -273,8 +279,8 @@ void CQMetabolite::slotBtnDelete()
         //TODO notify about reactions
         break;
       }
-    default:                                                     // No or Escape
-      break;
+      default:                                                     // No or Escape
+        break;
     }
 }
 
@@ -306,53 +312,48 @@ void CQMetabolite::slotTypeChanged(int type)
 {
   switch ((CModelEntity::Status) mItemToType[type])
     {
-    case CModelEntity::FIXED:
-      gridLayout->remove(mpLblExpression);
+      case CModelEntity::FIXED:
+        mpLblExpression->hide();
+        mpExpressionEMW->hide();
 
-      mpLblExpression->hide();
-      mpExpressionEMW->hide();
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        break;
 
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-      break;
+      case CModelEntity::ASSIGNMENT:
+        mpLblExpression->show();
+        mpExpressionEMW->show();
 
-    case CModelEntity::ASSIGNMENT:
-      gridLayout->addWidget(mpLblExpression, 3, 0);
+        mpBoxUseInitialExpression->setEnabled(false);
+        slotInitialTypeChanged(false);
 
-      mpLblExpression->show();
-      mpExpressionEMW->show();
+        mpExpressionEMW->updateWidget();
+        break;
 
-      mpBoxUseInitialExpression->setEnabled(false);
-      slotInitialTypeChanged(false);
+      case CModelEntity::ODE:
+        mpLblExpression->show();
+        mpExpressionEMW->show();
 
-      mpExpressionEMW->updateWidget();
-      break;
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
-    case CModelEntity::ODE:
-      gridLayout->addWidget(mpLblExpression, 3, 0);
+        mpExpressionEMW->updateWidget();
+        break;
 
-      mpLblExpression->show();
-      mpExpressionEMW->show();
+      case CModelEntity::REACTIONS:
+        mpLblExpression->hide();
+        mpExpressionEMW->hide();
 
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        mpBoxUseInitialExpression->setEnabled(true);
+        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
+        break;
 
-      mpExpressionEMW->updateWidget();
-      break;
-
-    case CModelEntity::REACTIONS:
-      gridLayout->remove(mpLblExpression);
-
-      mpLblExpression->hide();
-      mpExpressionEMW->hide();
-
-      mpBoxUseInitialExpression->setEnabled(true);
-      slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
+
+  // This will update the unit display.
+  setFramework(mFramework);
 }
 
 /*!
@@ -447,31 +448,35 @@ bool CQMetabolite::update(ListViews::ObjectType objectType,
 {
   switch (objectType)
     {
-    case ListViews::MODEL:
-      // For a new model we need to remove references to no longer existing metabolites
-      if (action == ListViews::ADD)
-        {
-          mKey = "";
-          mpMetab = NULL;
-        }
-      break;
+      case ListViews::MODEL:
 
-    case ListViews::METABOLITE:
-      // If the currently displayed metabolite is deleted we need to remove its references.
-      if (action == ListViews::DELETE && mKey == key)
-        {
-          mKey = "";
-          mpMetab = NULL;
-        }
-      break;
+        // For a new model we need to remove references to no longer existing metabolites
+        if (action == ListViews::ADD)
+          {
+            mKey = "";
+            mpMetab = NULL;
+          }
 
-    case ListViews::STATE:
-    case ListViews::COMPARTMENT:
-      break;
+        break;
 
-    default:
-      return true;
-      break;
+      case ListViews::METABOLITE:
+
+        // If the currently displayed metabolite is deleted we need to remove its references.
+        if (action == ListViews::DELETE && mKey == key)
+          {
+            mKey = "";
+            mpMetab = NULL;
+          }
+
+        break;
+
+      case ListViews::STATE:
+      case ListViews::COMPARTMENT:
+        break;
+
+      default:
+        return true;
+        break;
     }
 
   if (isVisible() && !mIgnoreUpdates)
@@ -484,9 +489,22 @@ void CQMetabolite::load()
 {
   if (mpMetab == NULL) return;
 
+  const CModel * pModel = NULL;
+
+  if (mpMetab)
+    pModel = mpMetab->getModel();
+
+  QString TimeUnits;
+
+  if (pModel)
+    TimeUnits = FROM_UTF8(pModel->getTimeUnits());
+
+  if (!TimeUnits.isEmpty())
+    TimeUnits = " (" + TimeUnits + ")";
+
   // Update the labels to reflect the model units
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnitName()) + ")");
+  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnits()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
@@ -496,8 +514,9 @@ void CQMetabolite::load()
   CCompartment * pCompartment;
   mpComboBoxCompartment->clear();
 
-  mpComboBoxCompartment->setDuplicatesEnabled (false);
+  mpComboBoxCompartment->setDuplicatesEnabled(false);
   unsigned C_INT32 m;
+
   for (m = 0; m < Compartments.size(); m++)
     {
       pCompartment = Compartments[m];
@@ -559,6 +578,7 @@ void CQMetabolite::load()
 void CQMetabolite::save()
 {
   if (mpMetab == NULL) return;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -680,6 +700,7 @@ void CQMetabolite::slotReactionTableCurrentChanged(Q3ListViewItem * pItem)
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -710,35 +731,37 @@ void CQMetabolite::slotInitialValueLostFocus()
 {
   switch (mFramework)
     {
-    case 0:
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
-        return;
+      case 0:
+        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (!mpMetab || !mpCurrentCompartment) return;
+        if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
+          return;
 
-      mInitialConcentration = mpEditInitialValue->text().toDouble();
-      mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
-                       *mpCurrentCompartment,
-                       *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+        if (!mpMetab || !mpCurrentCompartment) return;
 
-      mInitialNumberLastChanged = false;
-      break;
+        mInitialConcentration = mpEditInitialValue->text().toDouble();
+        mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
+                         *mpCurrentCompartment,
+                         *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
 
-    case 1:
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
-        return;
+        mInitialNumberLastChanged = false;
+        break;
 
-      if (!mpMetab || !mpCurrentCompartment) return;
+      case 1:
+        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      mInitialNumber = mpEditInitialValue->text().toDouble();
-      mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
-                              *mpCurrentCompartment,
-                              *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+        if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
+          return;
 
-      mInitialNumberLastChanged = true;
-      break;
+        if (!mpMetab || !mpCurrentCompartment) return;
+
+        mInitialNumber = mpEditInitialValue->text().toDouble();
+        mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
+                                *mpCurrentCompartment,
+                                *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+
+        mInitialNumberLastChanged = true;
+        break;
     }
 }
 
@@ -748,6 +771,7 @@ void CQMetabolite::loadReactionTable()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
+
   if (pModel == NULL) return;
 
   if (mpMetab == NULL) return;
@@ -785,59 +809,98 @@ void CQMetabolite::setFramework(int framework)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
+  const CModel * pModel = NULL;
+
+  if (mpMetab)
+    pModel = mpMetab->getModel();
+
+  QString ValueUnits;
+
+  if (pModel)
+    ValueUnits = FROM_UTF8(pModel->getConcentrationUnits());
+
+  if (!ValueUnits.isEmpty())
+    ValueUnits = " (" + ValueUnits + ")";
+
+  QString RateUnits;
+
+  if (pModel)
+    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+
+  if (!RateUnits.isEmpty())
+    RateUnits = " (" + RateUnits + ")";
+
+  QString FrequencyUnits;
+
+  if (pModel)
+    FrequencyUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+
+  if (!FrequencyUnits.isEmpty())
+    FrequencyUnits = " (" + FrequencyUnits + ")";
+
   switch (mFramework)
     {
-    case 0:
-      mpLblInitialValue->setText("Initial Concentration\n("
-                                 + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
-      mpLblInitialExpression->setText("Initial Expression\n("
-                                      + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
-      mpLblExpression->setText("Expression\n("
-                               + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
-      mpLblValue->setText("Concentration ("
-                          + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
-      mpLblRate->setText("Rate ("
-                         + FROM_UTF8(pDataModel->getModel()->getConcentrationRateUnitName()) + ")");
-      mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+      case 0:
+        mpLblValue->setText("Concentration" + ValueUnits);
 
-      if (mpMetab != NULL)
-        {
-          mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
-          mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
-          mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
-        }
-      else
-        {
-          mpEditInitialValue->setReadOnly(false);
-          mpEditCurrentValue->setText("");
-          mpEditRate->setText("");
-        }
+        if (mpMetab != NULL &&
+            (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] == CModelEntity::ASSIGNMENT)
+          mpLblExpression->setText("Expression" + ValueUnits);
+        else
+          mpLblExpression->setText("Expression" + RateUnits);
 
-      break;
+        mpLblRate->setText("Rate" + RateUnits);
 
-    case 1:
-      mpLblInitialValue->setText("Initial Particle Number");
-      mpLblInitialExpression->setText("Initial Expression\n("
-                                      + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
-      mpLblExpression->setText("Expression\n("
-                               + FROM_UTF8(pDataModel->getModel()->getConcentrationUnitName()) + ")");
-      mpLblValue->setText("Particle Number");
-      mpLblRate->setText("Rate (1/"
-                         + FROM_UTF8(pDataModel->getModel()->getTimeUnitName()) + ")");
-      mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
-      mpEditInitialValue->setReadOnly(false);
+        ValueUnits.replace(0, 1, '\n'); // Line break instead of space
+        mpLblInitialValue->setText("Initial Concentration" + ValueUnits);
+        mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
 
-      if (mpMetab != NULL)
-        {
-          mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
-          mpEditRate->setText(QString::number(mpMetab->getRate()));
-        }
-      else
-        {
-          mpEditCurrentValue->setText("");
-          mpEditRate->setText("");
-        }
+        mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
 
-      break;
+        if (mpMetab != NULL)
+          {
+            mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
+            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration()));
+            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate()));
+          }
+        else
+          {
+            mpEditInitialValue->setReadOnly(false);
+            mpEditCurrentValue->setText("");
+            mpEditRate->setText("");
+          }
+
+        break;
+
+      case 1:
+        mpLblInitialValue->setText("Initial Particle Number");
+
+        ValueUnits.replace(0, 1, '\n'); // Line break instead of space
+        mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+
+        if (mpMetab != NULL &&
+            mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
+          mpLblExpression->setText("Expression" + ValueUnits);
+        else
+          mpLblExpression->setText("Expression" + RateUnits);
+
+        mpLblValue->setText("Particle Number");
+        mpLblRate->setText("Rate" + FrequencyUnits);
+
+        mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+        mpEditInitialValue->setReadOnly(false);
+
+        if (mpMetab != NULL)
+          {
+            mpEditCurrentValue->setText(QString::number(mpMetab->getValue()));
+            mpEditRate->setText(QString::number(mpMetab->getRate()));
+          }
+        else
+          {
+            mpEditCurrentValue->setText("");
+            mpEditRate->setText("");
+          }
+
+        break;
     }
 }

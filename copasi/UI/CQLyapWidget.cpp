@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 19:49:56 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ bool CQLyapWidget::loadTask()
 
   if (!pProblem) return false;
 
-  mpEditExponent->setText(QString::number(std::max<unsigned C_INT32>(1, pProblem->getExponentNumber())));
+  mpEditExponent->setText(QString::number(pProblem->getExponentNumber()));
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
@@ -124,7 +124,7 @@ bool CQLyapWidget::saveTask()
 
   if (QString::number(pProblem->getExponentNumber()) != mpEditExponent->text())
     {
-      pProblem->setExponentNumber(std::max(1, mpEditExponent->text().toInt()));
+      pProblem->setExponentNumber(std::max(0, mpEditExponent->text().toInt()));
       mChanged = true;
     }
 

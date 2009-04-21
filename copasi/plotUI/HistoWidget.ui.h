@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:16 $
+//   $Date: 2009/04/21 16:18:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,14 +40,19 @@
 void HistoWidget::buttonPressedX()
 {
   if (!mpModel) return;
+
   //  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectX);
   //mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectX);
 
   std::vector< const CCopasiObject * > oldSelection;
+
   if (mpObjectX)
     oldSelection.push_back(mpObjectX);
-  std::vector< const CCopasiObject * > objects = CCopasiSelectionDialog::getObjectVector(this,
-      CCopasiSimpleSelectionTree::PLOT_OBJECT, &oldSelection);
+
+  std::vector< const CCopasiObject * > objects =
+    CCopasiSelectionDialog::getObjectVector(this,
+                                            CCopasiSimpleSelectionTree::NumericValues,
+                                            &oldSelection);
 
   if (objects.size() && objects[0])
     {
@@ -67,6 +72,7 @@ void HistoWidget::buttonPressedX()
     {
       PlotWidget1* pParent;
       QObject* tmp = this;
+
       while (!(pParent = dynamic_cast<PlotWidget1*>(tmp)) && this)
         tmp = tmp->parent();
 
@@ -80,6 +86,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (!curve) return false;
 
   if (curve->getType() != CPlotItem::histoItem1d) return false;
+
   if (curve->getChannels().size() != 1) return false;
 
   //title
@@ -99,7 +106,9 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   //other parameters:
   const void* tmp;
+
   if (!(tmp = curve->getValue("increment").pVOID)) return false;
+
   lineEditInc->setText(QString::number(*(const C_FLOAT64*)tmp));
 
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
@@ -110,25 +119,29 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 }
 
 bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
-  {
-    //title
-    curve->setTitle(TO_UTF8(lineEditTitle->text()));
+{
+  //title
+  curve->setTitle(TO_UTF8(lineEditTitle->text()));
 
-    //channels
-    curve->getChannels().clear();
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
 
-    //other parameters: TODO
-    curve->setValue("increment", lineEditInc->text().toDouble());
+  //other parameters: TODO
+  curve->setValue("increment", lineEditInc->text().toDouble());
 
-    C_INT32 Activity = 0;
-    if (mpCheckBefore->isChecked()) Activity += COutputInterface::BEFORE;
-    if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
-    if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
-    curve->setActivity((COutputInterface::Activity) Activity);
+  C_INT32 Activity = 0;
 
-    return true;
-  }
+  if (mpCheckBefore->isChecked()) Activity += COutputInterface::BEFORE;
+
+  if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
+
+  if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  curve->setActivity((COutputInterface::Activity) Activity);
+
+  return true;
+}
 
 void HistoWidget::setModel(const CModel * model)
 {

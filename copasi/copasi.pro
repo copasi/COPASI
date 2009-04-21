@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.57 $
+#   $Revision: 1.58 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 21:38:56 $
+#   $Date: 2009/04/21 16:12:03 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.57 $ $Author: shoops $ $Date: 2008/12/18 21:38:56 $
+# $Revision: 1.58 $ $Author: shoops $ $Date: 2009/04/21 16:12:03 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -96,7 +96,9 @@ addSubdirs(CopasiSE, libs)
 
 isEmpty(COPASI_SRC_PACKAGE) {
   # The bindings
-  SUBDIRS += bindings
+  !contains(BUILD_BINDINGS, no) {
+    addSubdirs(bindings, libs)
+  }
 
   # unit tests
   !isEmpty(CPPUNIT_PATH) {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,10 +82,12 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
 
       raptor_set_statement_handler(mpParser, pGraph, &CRDFParser::TripleHandler);
       raptor_set_namespace_handler(mpParser, pGraph, &CRDFParser::NameSpaceHandler);
+      raptor_set_generate_id_handler(mpParser, pGraph, &CRDFParser::GenerateIdHandler);
 
       while (!done)
         {
           if (stream.eof()) done = true;
+
           if (stream.fail() && !done)
             fatalError();
 
@@ -127,65 +129,67 @@ void CRDFParser::TripleHandler(void * pGraph, const raptor_statement * pTriple)
 
   switch (pTriple->subject_type)
     {
-    case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
-      Subject.setType(CRDFSubject::RESOURCE);
-      Subject.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->subject),
-                          CRaptorInit::isLocalURI((raptor_uri *) pTriple->subject));
-      break;
+      case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
+        Subject.setType(CRDFSubject::RESOURCE);
+        Subject.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->subject),
+                            CRaptorInit::isLocalURI((raptor_uri *) pTriple->subject));
+        break;
 
-    case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
-      Subject.setType(CRDFSubject::BLANK_NODE);
-      Subject.setBlankNodeId((char *) pTriple->subject);
-      break;
+      case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
+        Subject.setType(CRDFSubject::BLANK_NODE);
+        Subject.setBlankNodeId((char *) pTriple->subject);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   switch (pTriple->predicate_type)
     {
-    case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
-      Predicate = (char *) raptor_uri_as_string((raptor_uri *) pTriple->predicate);
-      break;
+      case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
+        Predicate = (char *) raptor_uri_as_string((raptor_uri *) pTriple->predicate);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   switch (pTriple->object_type)
     {
-    case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
-      Object.setType(CRDFObject::RESOURCE);
-      Object.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->object),
-                         CRaptorInit::isLocalURI((raptor_uri *) pTriple->object));
-      break;
+      case RAPTOR_IDENTIFIER_TYPE_ORDINAL:
+      case RAPTOR_IDENTIFIER_TYPE_RESOURCE:
+        Object.setType(CRDFObject::RESOURCE);
+        Object.setResource((char *) raptor_uri_as_string((raptor_uri *) pTriple->object),
+                           CRaptorInit::isLocalURI((raptor_uri *) pTriple->object));
+        break;
 
-    case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
-      Object.setType(CRDFObject::BLANK_NODE);
-      Object.setBlankNodeId((char *) pTriple->object);
-      break;
+      case RAPTOR_IDENTIFIER_TYPE_ANONYMOUS:
+        Object.setType(CRDFObject::BLANK_NODE);
+        Object.setBlankNodeId((char *) pTriple->object);
+        break;
 
-    case RAPTOR_IDENTIFIER_TYPE_LITERAL:
-      Object.setType(CRDFObject::LITERAL);
+      case RAPTOR_IDENTIFIER_TYPE_LITERAL:
+        Object.setType(CRDFObject::LITERAL);
 
-      if (pTriple->object_literal_datatype != NULL)
-        {
-          Literal.setType(CRDFLiteral::TYPED);
-          Literal.setDataType((const char *) raptor_uri_as_string(pTriple->object_literal_datatype));
-        }
-      else
-        {
-          Literal.setType(CRDFLiteral::PLAIN);
-          if (pTriple->object_literal_language != NULL)
-            Literal.setLanguage((const char *) pTriple->object_literal_language);
-        }
+        if (pTriple->object_literal_datatype != NULL)
+          {
+            Literal.setType(CRDFLiteral::TYPED);
+            Literal.setDataType((const char *) raptor_uri_as_string(pTriple->object_literal_datatype));
+          }
+        else
+          {
+            Literal.setType(CRDFLiteral::PLAIN);
 
-      Literal.setLexicalData((char *) pTriple->object);
-      Object.setLiteral(Literal);
-      break;
+            if (pTriple->object_literal_language != NULL)
+              Literal.setLanguage((const char *) pTriple->object_literal_language);
+          }
 
-    default:
-      fatalError();
+        Literal.setLexicalData((char *) pTriple->object);
+        Object.setLiteral(Literal);
+        break;
+
+      default:
+        fatalError();
     }
 
   // Add the triplet to the graph
@@ -198,14 +202,31 @@ void CRDFParser::NameSpaceHandler(void * pGraph, raptor_namespace * pNameSpace)
   const unsigned char * pURI =
     raptor_uri_as_string(raptor_namespace_get_uri(pNameSpace));
   std::string URI("");
+
   if (pURI) URI = (const char *) pURI;
 
   const unsigned char * pPrefix =
     raptor_namespace_get_prefix(pNameSpace);
   std::string Prefix("");
+
   if (pPrefix) Prefix = (const char *) pPrefix;
 
   static_cast<CRDFGraph *>(pGraph)->addNameSpace(Prefix, URI);
+}
+
+// static
+unsigned char * CRDFParser::GenerateIdHandler(void * pGraph,
+    raptor_genid_type /* type */,
+    unsigned char * existingNodeId)
+{
+  std::string NodeId;
+
+  if (existingNodeId != NULL)
+    NodeId = static_cast<CRDFGraph *>(pGraph)->generatedNodeId((char *) existingNodeId).c_str();
+  else
+    NodeId = static_cast<CRDFGraph *>(pGraph)->generatedNodeId().c_str();
+
+  return (unsigned char *) strdup(NodeId.c_str());
 }
 
 // static

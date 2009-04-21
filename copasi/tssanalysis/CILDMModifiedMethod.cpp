@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:14 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,10 +84,14 @@ void CILDMModifiedMethod::start(const CState * initialState)
 
   mDtol = mpProblem->getDeufelhardTol();
 
+  std::cout << "ILDM Modified :  " << mDtol << std::endl;
+
   mVslow.resize(mData.dim, mData.dim);
   mVslow_metab.resize(mData.dim, mData.dim);
   mVslow_space.resize(mData.dim);
   mVfast_space.resize(mData.dim);
+
+  emptyVectors();
 
   return;
 }
@@ -301,12 +305,14 @@ void CILDMModifiedMethod::step(const double & deltaT)
     {
       slow2 = slow2 - 1;
       fast2 = dim - slow2;
+
       if (mR(dim - fast2, dim - fast2) >= 0)
         {
           // std::cout << "there are positive eigenvalues " << mR(dim - fast2, dim - fast2) << " for slow = " << slow2 << std::endl;
           failed = 1;
           goto integration;
         }
+
       deuflhard_metab(slow2, info);
 
       if (info)
@@ -333,8 +339,10 @@ integration:
         {
           fast = fast - 1;
           slow = dim - fast;
+
           if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
             fast = fast - 1;
+
           slow = dim - fast;
         }
     }
@@ -408,6 +416,7 @@ integration:
 
       if (number > - 1)
         newton_for_timestep(number, y_cons, info);
+
       //      else
       //        std::cout << "The are no dominant metabolites in  fastest mode" << std::endl;
 
@@ -416,6 +425,7 @@ integration:
           if (number > -1)
             {
               dxdt.resize(dim);
+
               for (j = 0; j < dim; j++)
                 dxdt[j] = 0.;
 
@@ -495,6 +505,7 @@ integration:
                           re[i] = fabs(dxdt_relax[i] - dxdt[i]);
                           re[i] = re[i] * eps;
                         }
+
                       /*                      if (flag_deufl == 0)
                                               std::cout << " re[" << i << "] = " << re[i] << std::endl;*/
                     }
@@ -524,6 +535,7 @@ integration:
                                     std::cout << std::endl;*/
                 }
             }
+
           k = k + 1;
           number = index_metab[k];
           max = 0;
@@ -532,6 +544,7 @@ integration:
       /*      std::cout << "********** end of block to prove every metabolite for DAE" << std::endl;
             std::cout << std::endl;*/
     }
+
   /** end of the of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
   /** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
 
@@ -563,11 +576,13 @@ void CILDMModifiedMethod::evalsort(C_FLOAT64 *reval, C_INT *index, const C_INT &
   for (i = 0; i < dim - 1; i++)
     {
       min = i;
+
       for (j = i + 1; j < dim; j++)
         {
           if (reval[j] <= reval[min])
             min = j;
         }
+
       //std::cout << "min from evalsort [" << i << "]: " << min << std::endl;
       tmp1r = reval[min];
       tmp_ind = index[min];
@@ -625,8 +640,8 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     {
       help[i] = mVfast_space[i];
-      /*      if (flag_deufl == 0)
-              std::cout << "mVfast[ " << i << "]: " << mVfast_space[i] << std::endl;*/
+      //if (flag_deufl == 0)
+      // std::cout << "mVfast[ " << i << "]: " << mVfast_space[i] << std::endl;
     }
 
   evalsort(help.array(), index.array(), dim);
@@ -634,16 +649,16 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     index_temp[i] = index[i];
 
-  /*  if (flag_deufl == 0)
-      {
-        std::cout << std::endl;
-        std::cout << "index after evalsort" << std::endl;
-      }*/
+  //if (flag_deufl == 0)
+  //{
+  // std::cout << std::endl;
+  //std::cout << "index after evalsort" << std::endl;
+  //}
   for (i = 0; i < dim; i++)
     {
       index[i] = index_temp[dim - i - 1];
-      /*      if (flag_deufl == 0)
-              std::cout << "index[" << i << "]: " << index[i] << std::endl;*/
+      //  if (flag_deufl == 0)
+      //  std::cout << "index[" << i << "]: " << index[i] << std::endl;
     }
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
@@ -659,8 +674,8 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   for (j = 0; j < dim; j++)
     {
       x_help[j] = mY_initial[j] * number2conc;
-      /*      if (flag_deufl == 0)
-              std::cout << "x_help: " << x_help[j] << std::endl;*/
+      //  if (flag_deufl == 0)
+      //   std::cout << "x_help: " << x_help[j] << std::endl;
     }
 
   // mpModel->calculateDerivativesX(dxdt.array());
@@ -695,22 +710,24 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   //CVector<C_FLOAT64> dxdt_relax;
   dxdt_relax.resize(dim);
 
-  //   if (flag_deufl == 0)
-  //     for (i = 0; i < dim; i++)
-  //       std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
+  if (flag_deufl == 0)
+    for (i = 0; i < dim; i++)
+      std::cout << "x_relax[" << i << "] = " << x_relax[i] << std::endl;
 
   calculateDerivativesX(x_relax.array(), dxdt_relax.array());
 
-  //   if (flag_deufl == 0)
-  //     {
-  //       std::cout << "Two right hand side for deuflhard " << std::endl;
-  //       for (i = 0; i < dim; i++)
-  //         {
-  //           std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
-  //           std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
-  //}
-  //       std::cout << std::endl;
-  //}
+  if (flag_deufl == 0)
+    {
+      std::cout << "Two right hand side for deuflhard " << std::endl;
+
+      for (i = 0; i < dim; i++)
+        {
+          std::cout << "dxdt_relax[" << i << "]: " << dxdt_relax[i] << std::endl;
+          std::cout << "dxdt[" << i << "]: " << dxdt[i] << std::endl;
+        }
+
+      std::cout << std::endl;
+    }
 
   //CVector<C_FLOAT64> re;
   re.resize(dim);
@@ -721,11 +738,13 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
     {
       re[i] = fabs(dxdt_relax[i] - dxdt[i]);
       re[i] = re[i] * eps;
+
       for (j = 0; j < fast; j ++)
         if (i == index[j])
           re[i] = 0;
-      /*      if (flag_deufl == 0)
-              std::cout << " re[" << i << "] = " << re[i] << std::endl;*/
+
+      if (flag_deufl == 0)
+        std::cout << " re[" << i << "] = " << re[i] << std::endl;
     }
 
   for (i = 0; i < dim; i++)
@@ -736,8 +755,6 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
     info = 1;
   else
     info = 0;
-
-  //  std::cout << std::endl;
 
   return;
 }
@@ -781,6 +798,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
   CMatrix<C_FLOAT64> Jac_fast;
   Jac_fast.resize(fast, fast);
 
+  C_FLOAT64 g1, g2 = 0.0;
   mY_cons.resize(dim);
 
   nrhs = 1;
@@ -800,10 +818,12 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
   for (i = 0; i < fast; i++)
     {
       m = index_metab[i];
+
       //    std::cout << mpModel->getMetabolitesX()[m]->getObjectName() << ", ";
       for (j = 0; j < fast; j++)
         {
           k = index_metab[ j];
+
           if ((m > -1) & (k > -1))
             Jac_fast(i, j) = mJacobian_initial(m, k);
           else
@@ -933,6 +953,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
       for (j = 0; j < fast; j++)
         {
           k = index_metab[j];
+
           for (i = 0; i < dim; i ++)
             {
               if (i == k)
@@ -941,9 +962,11 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
         }
 
       err = -10.;
+
       for (i = 0; i < fast; i++)
         {
           gf_newton[i] = fabs(gf_newton[i]);
+
           if (err < gf_newton[i])
             err = gf_newton[i];
         }
@@ -952,14 +975,16 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
 
       // stop criterion of newton method
 
-      C_FLOAT64 g1, g2 = 0.0;
+      //   C_FLOAT64 g1, g2 = 0.0;
 
-      g2 = err;
+      //   g2 = err;
 
       if (iter == 1)
         g1 = 3.0 * err;
       else
         g1 = g2;
+
+      g2 = err;
 
       if (g2 / g1 > 1.0)
         {
@@ -1096,6 +1121,7 @@ void CILDMModifiedMethod::setVectors(int slowMode)
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
   int i;
+
   for (i = 0; i < mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
@@ -1174,6 +1200,7 @@ void CILDMModifiedMethod::createAnnotationsM()
 void CILDMModifiedMethod::setAnnotationM(int step)
 {
   if (!step) return;
+
   step -= 1;
   double timeScale;
   std::string str;
@@ -1186,13 +1213,16 @@ void CILDMModifiedMethod::setAnnotationM(int step)
   mVslowPrint = mVec_mVslow[step];
   pVslowPrintAnn->resize();
   pVslowPrintAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+
   for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
+
       sstr << timeScale;
       str = sstr.str();
       pVslowPrintAnn->setAnnotationString(0, i, str);
@@ -1204,13 +1234,16 @@ void CILDMModifiedMethod::setAnnotationM(int step)
   mVslowMetabPrint = mVec_mVslowMetab[step];
   pVslowMetabPrintAnn->resize();
   pVslowMetabPrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+
   for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
+
       sstr << timeScale;
       str = sstr.str();
       pVslowMetabPrintAnn->setAnnotationString(1, i, str);
@@ -1231,148 +1264,158 @@ void CILDMModifiedMethod::setAnnotationM(int step)
 
   str = sstr.str();
   mVslowSpacePrint.resize(mData.dim, 1);
+
   for (i = 0; i < mData.dim; i++)
     mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
+
   pVslowSpacePrintAnn->resize();
   pVslowSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
   pVslowSpacePrintAnn->setAnnotationString(1, 0, str);
 
   mVfastSpacePrint.resize(mData.dim, 1);
+
   for (i = 0; i < mData.dim; i++)
     mVfastSpacePrint(i, 0) = mVec_mVfastSpace[step][i];
+
   pVfastSpacePrintAnn->resize();
   pVfastSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
   pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
 }
 
 void CILDMModifiedMethod::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
-    double timeScale;
-    C_INT i, j, istep = 0;
+{
+  std::ostream & os = *ostream;
+  double timeScale;
+  C_INT i, j, istep = 0;
 
-    this->print(&os);
+  this->print(&os);
 
-    C_INT32 stepNumber;
+  C_INT32 stepNumber;
 
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
-    const CTSSATask* pTask =
-      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CTSSATask* pTask =
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
 
-    const CTSSAProblem* pProblem = dynamic_cast<const CTSSAProblem*>(pTask->getProblem());
+  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
-    stepNumber = pProblem->getStepNumber();
+  stepNumber = pProblem->getStepNumber();
 
-    for (istep = 0; istep < stepNumber; istep++)
-      {
+  for (istep = 0; istep < stepNumber; istep++)
+    {
 
-        os << std::endl;
-        os << "**************** Time step " << istep + 1 << " **************************  " << std::endl;
+      os << std::endl;
+      os << "**************** Time step " << istep + 1 << " **************************  " << std::endl;
 
-        os << std::endl;
+      os << std::endl;
 
-        os << "Contribution of species to modes" << std::endl;
+      os << "Contribution of species to modes" << std::endl;
 
-        os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
-        os << "Columns: species  ";
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "   ";
-          }
+      os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
+      os << "Columns: species  ";
 
-        os << std::endl;
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "   ";
+        }
 
-        for (i = 0; i < mData.dim; i++)
-          {
-            timeScale = mVec_TimeScale[istep][i];
-            if (i < mVec_SlowModes[istep])
-              os << "Slow (";
-            else
-              os << "Fast (";
-            os << timeScale << "): ";
+      os << std::endl;
 
-            for (j = 0; j < mData.dim; j++)
-              os << mVec_mVslow[istep][i][j] << " ";
+      for (i = 0; i < mData.dim; i++)
+        {
+          timeScale = mVec_TimeScale[istep][i];
 
-            os << std::endl;
-          }
+          if (i < mVec_SlowModes[istep])
+            os << "Slow (";
+          else
+            os << "Fast (";
 
-        os << std::endl;
+          os << timeScale << "): ";
 
-        os << "Modes distribution for species" << std::endl;
+          for (j = 0; j < mData.dim; j++)
+            os << mVec_mVslow[istep][i][j] << " ";
 
-        os << "Rows : Mode distribution for each species" << std::endl;
-        os << "Columns: Modes (TS - corresponding  timescale) ";
-        os << std::endl;
+          os << std::endl;
+        }
 
-        for (i = 0; i < mData.dim; i++)
-          {
-            timeScale = mVec_TimeScale[istep][i];
-            if (i < mVec_SlowModes[istep])
-              os << "Slow (";
-            else
-              os << "Fast (";
-            os << timeScale << ")  ";
-          }
+      os << std::endl;
 
-        os << std::endl;
+      os << "Modes distribution for species" << std::endl;
 
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+      os << "Rows : Mode distribution for each species" << std::endl;
+      os << "Columns: Modes (TS - corresponding  timescale) ";
+      os << std::endl;
 
-            for (i = 0; i < mData.dim; i++)
-              os << mVec_mVslowMetab[istep][j][i] << "  ";
+      for (i = 0; i < mData.dim; i++)
+        {
+          timeScale = mVec_TimeScale[istep][i];
 
-            os << std::endl;
-          }
+          if (i < mVec_SlowModes[istep])
+            os << "Slow (";
+          else
+            os << "Fast (";
 
-        os << std::endl;
+          os << timeScale << ")  ";
+        }
 
-        os << "Slow space" << std::endl;
+      os << std::endl;
 
-        os << "Rows : Species" << std::endl;
-        os << "Column: Contribution to slow space ";
-        os << std::endl;
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
 
-        os << mVec_SlowModes[istep];
-        os << " slow; ";
+          for (i = 0; i < mData.dim; i++)
+            os << mVec_mVslowMetab[istep][j][i] << "  ";
 
-        os << mData.dim - mVec_SlowModes[istep];
-        os << " fast";
-        os << std::endl;
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
-            os << mVec_mVslowSpace[istep][j] << "  ";
+          os << std::endl;
+        }
 
-            os << std::endl;
-          }
+      os << std::endl;
 
-        os << std::endl;
-        os << "Fast space" << std::endl;
+      os << "Slow space" << std::endl;
 
-        os << "Rows : Species" << std::endl;
-        os << "Column: Contribution to fast space ";
-        os << std::endl;
+      os << "Rows : Species" << std::endl;
+      os << "Column: Contribution to slow space ";
+      os << std::endl;
 
-        os << mVec_SlowModes[istep];
-        os << " slow; ";
+      os << mVec_SlowModes[istep];
+      os << " slow; ";
 
-        os << mData.dim - mVec_SlowModes[istep];
-        os << " fast";
-        os << std::endl;
+      os << mData.dim - mVec_SlowModes[istep];
+      os << " fast";
+      os << std::endl;
 
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
-            os << mVec_mVfastSpace[istep][j] << "  ";
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << mVec_mVslowSpace[istep][j] << "  ";
 
-            os << std::endl;
-          }
+          os << std::endl;
+        }
 
-        os << std::endl;
-      }
-    return;
-  }
+      os << std::endl;
+      os << "Fast space" << std::endl;
+
+      os << "Rows : Species" << std::endl;
+      os << "Column: Contribution to fast space ";
+      os << std::endl;
+
+      os << mVec_SlowModes[istep];
+      os << " slow; ";
+
+      os << mData.dim - mVec_SlowModes[istep];
+      os << " fast";
+      os << std::endl;
+
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << mVec_mVfastSpace[istep][j] << "  ";
+
+          os << std::endl;
+        }
+
+      os << std::endl;
+    }
+
+  return;
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,7 @@ void CQReportDefinition::btnAdvancedClicked()
           mpTableList->clear();
 
           unsigned C_INT32 i, imax;
+
           for (i = 0, imax = mpBodyList->numRows(); i < imax; i++)
             if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
                 != "Separator")
@@ -114,11 +115,12 @@ void CQReportDefinition::btnItemClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
   if (!pModel) return;
 
   std::vector< const CCopasiObject * > SelectedVector =
     //    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::NO_RESTRICTION);
-    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::REPORT_ITEM);
+    CCopasiSelectionDialog::getObjectVector(this, CCopasiSimpleSelectionTree::AnyObject);
 
   if (SelectedVector.size() != 0)
     {
@@ -138,6 +140,7 @@ void CQReportDefinition::btnItemClicked()
 void CQReportDefinition::btnSeparatorClicked()
 {
   CCopasiReportSeparator Separator;
+
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
@@ -178,6 +181,7 @@ void CQReportDefinition::btnDeleteClicked()
     if (pList->isSelected(i))
       {
         pList->removeItem(i);
+
         if (!pNewSelection) pNewSelection = pList->item(i); // We select the next.
 
         multipleSelection++;
@@ -216,6 +220,7 @@ void CQReportDefinition::btnUpClicked()
     if (pList->isSelected(i))
       {
         if (multipleSelection == 0) pAfter = pList->item(i);
+
         multipleSelection++;
       }
     else if (multipleSelection > 0)
@@ -251,6 +256,7 @@ void CQReportDefinition::btnDownClicked()
     if (pList->isSelected(i))
       {
         if (multipleSelection == 0) before = i;
+
         multipleSelection++;
       }
     else if (multipleSelection > 0)
@@ -286,6 +292,7 @@ void CQReportDefinition::btnDeleteReportClicked()
   assert(pDataModel != NULL);
   std::set< std::string > TaskKeys =
     pDataModel->listTaskDependentOnReport(mKey);
+
   if (TaskKeys.size() > 0)
     {
       std::set< std::string >::const_iterator it = TaskKeys.begin();
@@ -334,6 +341,7 @@ void CQReportDefinition::btnNewReportClicked()
   int i = 0;
   CReportDefinition* pRep;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   while (!(pRep = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(Name, "")))
     {
       i++;
@@ -360,6 +368,7 @@ void CQReportDefinition::init()
   setAdvancedMode(false);
 
   unsigned C_INT32 i;
+
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     mpTaskBox->insertItem(FROM_UTF8(CCopasiTask::TypeName[i]));
 
@@ -376,7 +385,8 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
                                 ListViews::Action action,
                                 const std::string & key)
 {
-  if (objectType != ListViews::REPORT ||
+  if (mIgnoreUpdates ||
+      objectType != ListViews::REPORT ||
       key != mKey ||
       action == ListViews::DELETE)
     return true;
@@ -442,6 +452,7 @@ bool CQReportDefinition::load()
       mpTitleCheck->setChecked(mpReportDefinition->getTitle());
 
       pList = mpReportDefinition->getTableAddr();
+
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         new CQReportListItem(mpTableList, *it);
     }
@@ -450,14 +461,17 @@ bool CQReportDefinition::load()
       setAdvancedMode(true);
 
       pList = mpReportDefinition->getHeaderAddr();
+
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         new CQReportListItem(mpHeaderList, *it);
 
       pList = mpReportDefinition->getBodyAddr();
+
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         new CQReportListItem(mpBodyList, *it);
 
       pList = mpReportDefinition->getFooterAddr();
+
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         new CQReportListItem(mpFooterList, *it);
     }
@@ -469,6 +483,7 @@ bool CQReportDefinition::load()
 bool CQReportDefinition::save()
 {
   if (!mChanged) return true;
+
   if (!mpReportDefinition) return false;
 
   if (mpReportDefinition->getObjectName() != TO_UTF8(mpName->text()))
@@ -494,10 +509,12 @@ bool CQReportDefinition::save()
   mpReportDefinition->setComment(TO_UTF8(mpCommentEdit->text()));
 
   CCopasiReportSeparator Separator;
+
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
     Separator = TO_UTF8(mpSeparator->text());
+
   mpReportDefinition->setSeparator(Separator);
 
   mpReportDefinition->setPrecision(mpPrecision->text().toULong());
@@ -515,6 +532,7 @@ bool CQReportDefinition::save()
       mpReportDefinition->setIsTable(false);
 
       pList = mpReportDefinition->getHeaderAddr();
+
       for (i = 0, imax = mpHeaderList->numRows(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN().getObjectType()
             == "Separator")
@@ -523,6 +541,7 @@ bool CQReportDefinition::save()
           pList->push_back(static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN());
 
       pList = mpReportDefinition->getBodyAddr();
+
       for (i = 0, imax = mpBodyList->numRows(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
             == "Separator")
@@ -531,6 +550,7 @@ bool CQReportDefinition::save()
           pList->push_back(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
 
       pList = mpReportDefinition->getFooterAddr();
+
       for (i = 0, imax = mpFooterList->numRows(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN().getObjectType()
             == "Separator")
@@ -545,6 +565,7 @@ bool CQReportDefinition::save()
       mpReportDefinition->setTitle(mpTitleCheck->isChecked());
 
       pList = mpReportDefinition->getTableAddr();
+
       for (i = 0, imax = mpTableList->numRows(); i < imax; i++)
         pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
     }

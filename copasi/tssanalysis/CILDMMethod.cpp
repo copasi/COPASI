@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,8 @@
 
 #include "clapackwrap.h"        // CLAPACK
 #include "blaswrap.h"           // BLAS
+
+//#define ILDMDEBUG
 
 CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
     CTSSAMethod(CCopasiMethod::tssILDM, pParent) //,
@@ -83,8 +85,7 @@ void CILDMMethod::step(const double & deltaT)
   C_INT fast = 0;
   C_INT slow = dim - fast;
 
-  C_INT i, j, k;
-
+  C_INT i, j, k, info_schur = 0;
   mY_initial.resize(dim);
   mJacobian_initial.resize(dim, dim);
   mQ.resize(dim, dim);
@@ -145,6 +146,7 @@ void CILDMMethod::step(const double & deltaT)
 
   CVector<C_FLOAT64> Xconc_initial; //current state converted to concentrations
   Xconc_initial.resize(dim);
+
   for (i = 0; i < dim; ++i)
     Xconc_initial[i] = mY_initial[i] * number2conc;
 
@@ -162,11 +164,44 @@ void CILDMMethod::step(const double & deltaT)
   // Calculate Jacobian for time step control
   mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
+#ifdef ILDMDEBUG
+
   if (flag_jacob == 0)
     {
-      //std::cout << "Jacobian_next:" << std::endl;
-      //std::cout << mJacobian << std::endl;
+      std::cout << "Jacobian_next:" << std::endl;
+      std::cout << mJacobian << std::endl;
     }
+
+#endif
+
+// to be removed
+  CMatrix<C_FLOAT64> Jacobian_for_test;
+  Jacobian_for_test.resize(dim, dim);
+
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      Jacobian_for_test(i, j) = mJacobian_initial(i, j);
+
+  // save initial  Jacobian before next time step
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      mJacobian_initial(i, j) = mJacobian(i, j);
+
+  schur(info_schur);
+
+#ifdef ILDMDEBUG
+  std::cout << "Eigenvalues of next Jacobian" << std::endl;
+
+  for (i = 0; i < dim; i++)
+    std::cout << mR(i, i) << std::endl;
+
+#endif
+
+  for (i = 0; i < dim; i++)
+    for (j = 0; j < dim; j++)
+      mJacobian_initial(i, j) = Jacobian_for_test(i, j);
+
+  //end to be removed
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
@@ -186,7 +221,7 @@ void CILDMMethod::step(const double & deltaT)
   Output:  mQ - transformation matrix mR - block upper triangular matrix (with ordered eigenvalues) */
 
   C_INT failed = 0;
-  C_INT info_schur = 0;
+//  C_INT info_schur = 0;
 
   schur(info_schur); // TO DO : move the test to the TSSAMethod
 
@@ -201,18 +236,28 @@ void CILDMMethod::step(const double & deltaT)
     }
 
   C_INT flag_schur;
-  flag_schur = 1;
+  flag_schur = 0;
 
-  if (flag_schur == 0)
+#ifdef ILDMDEBUG
+
+  std::cout << "Eigenvalues of initial Jacobian" << std::endl;
+
+  for (i = 0; i < dim; i++)
+    std::cout << mR(i, i) << std::endl;
+
+  if (flag_schur == 1)
     {
-      /*      std::cout << "Schur Decomposition" << std::endl;
-            std::cout << "mR - block upper triangular matrix :" << std::endl;
-            std::cout << mR << std::endl;
-            std::cout << "mQ - transformation matrix" << std::endl;
-            std::cout << mQ << std::endl;*/
+      std::cout << "Schur Decomposition" << std::endl;
+      std::cout << "mR - block upper triangular matrix :" << std::endl;
+      std::cout << mR << std::endl;
+      //std::cout << "mQ - transformation matrix" << std::endl;
+      //std::cout << mQ << std::endl;
     }
 
+#endif
+
   /* If complex eigenvalues */
+
   //BUG 873
   if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
     if (dim == 2)
@@ -278,7 +323,8 @@ void CILDMMethod::step(const double & deltaT)
         {
           /** Solution of Sylvester equation for given slow, mQ,mR
                 Output: mTd, mTdinverse and mQz (mQz is used later for newton iterations) */
-          sylvester (slow, info);
+          sylvester(slow, info);
+
           if (info)
             {
               CCopasiMessage(CCopasiMessage::WARNING,
@@ -289,6 +335,7 @@ void CILDMMethod::step(const double & deltaT)
               goto integration;
             }
         }
+
       /* Check real parts of eigenvalues of Jacobian */
 
       for (i = slow ; i < dim; i++)
@@ -326,6 +373,7 @@ void CILDMMethod::step(const double & deltaT)
           goto integration;
         }
     }
+
   /** end of iterations to find the number of slow modes */
 
 integration:
@@ -336,9 +384,12 @@ integration:
         {
           fast = fast - 1;
           slow = dim - fast;
+
           if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
             fast = fast - 1;
+
           slow = dim - fast;
+
           for (i = 0; i < dim; i++)
             for (j = 0; j < dim; j++)
               {
@@ -425,6 +476,7 @@ integration:
       for (i = 0; i < reacs_size; i ++)
         {
           Reac_slow_space_orth[i] = 0;
+
           for (j = 0; j < dim; j++)
             {
               Reac_slow_space_orth[i] = Reac_slow_space_orth[i] + mVfast_space[j] * Stoichiom(j, i);
@@ -445,6 +497,7 @@ integration:
             mTdInverse(i, j) = mTdInverse_save(i, j);
           }
     }
+
   // end of test
 
   // Post Analysis
@@ -463,8 +516,14 @@ integration:
       CMatrix<C_FLOAT64> Slow_react_contr;
       Slow_react_contr.resize(dim, reacs_size);
 
+      CMatrix<C_FLOAT64> Mode_react_contr;
+      Mode_react_contr.resize(dim, reacs_size);
+
       CVector<C_FLOAT64> Reac_slow_space;
       Reac_slow_space.resize(reacs_size);
+
+      CVector<C_FLOAT64> Reac_fast_space;
+      Reac_fast_space.resize(reacs_size);
 
       mReacSlowSpace.resize(reacs_size); //NEW TAB
 
@@ -472,34 +531,82 @@ integration:
         for (j = 0; j < reacs_size; j++)
           {
             Slow_react_contr(i, j) = 0;
+
             for (k = 0; k < dim; k++)
               Slow_react_contr(i, j) = Slow_react_contr(i, j) + mVslow(i, k) * Stoichiom(k, j);
           }
 
-      //       std::cout << "Reactions contribution to the mode:" << std::endl;
-      //       for (i = 0; i < dim; i ++)
-      //         {
-      //           std::cout << "Mode N: " << i + 1 << std::endl;
-      //           for (j = 0; j < reacs_size; j++)
-      //             std::cout << Slow_react_contr(i, j) << " ";
-      //           std::cout << std::endl;
-      //}
-      //
-      //       std::cout << "***********************" << std::endl;
-      //
-      //       std::cout << "Reactions distribution between modes:" << std::endl;
-      //
-      //       for (j = 0; j < reacs_size; j++)
-      //         {
-      //           std::cout << "Reaction: " << j + 1 << std::endl;
-      //           for (i = 0; i < dim; i++)
-      //             std::cout << Slow_react_contr(i, j) << " ";
-      //           std::cout << std::endl;
-      //}
+      CVector<C_FLOAT64> denom_mode;
+      denom_mode.resize(dim);
 
+      for (j = 0; j < dim; j++)
+        denom_mode[j] = 0;
+
+      for (i = 0; i < dim; i++)
+        for (j = 0; j < reacs_size; j++)
+          denom_mode[i] = denom_mode[i] + fabs(Slow_react_contr(i, j));
+
+      for (i = 0; i < dim; i++)
+        for (j = 0; j < reacs_size; j++)
+          {
+            if (denom_mode[i] == 0)
+              Mode_react_contr(i, j) = 0;
+            else
+              Mode_react_contr(i, j) = (Slow_react_contr(i, j)) / denom_mode[i] * 100;
+          }
+
+      CVector<C_FLOAT64> denom_reac;
+      denom_reac.resize(reacs_size);
+
+      for (j = 0; j < reacs_size; j++)
+        denom_reac[j] = 0;
+
+      for (i = 0; i < reacs_size; i++)
+        for (j = 0; j < dim; j++)
+          denom_reac[i] = denom_reac[i] + fabs(Slow_react_contr(j, i));
+
+      for (i = 0; i < reacs_size; i++)
+        for (j = 0; j < dim; j++)
+          {
+            if (denom_reac[i] == 0)
+              Slow_react_contr(j, i) = 0;
+            else
+              Slow_react_contr(j, i) = (Slow_react_contr(j , i)) / denom_reac[i] * 100;
+          }
+
+      /*
+      std::cout << "Time:  " << mTime - deltaT << std::endl;
+      std::cout << std::endl;
+
+               std::cout << "Reactions contribution to the mode:" << std::endl;
+               for (i = 0; i < dim; i ++)
+                 {
+                   std::cout << "Mode N: " << i + 1 << std::endl;
+                   for (j = 0; j < reacs_size; j++)
+             std::cout << " Reaction " << j + 1 << "." <<  mpModel->getReactions()[j]->getObjectName() << ": " << Mode_react_contr(i, j) << std::endl;
+             std::cout << std::endl;
+          }
+
+               std::cout << "***********************" << std::endl;
+
+               std::cout << "Reactions distribution between modes:" << std::endl;
+
+               for (j = 0; j < reacs_size; j++)
+                 {
+                   std::cout << "Reaction: " << j + 1  << " " <<  mpModel->getReactions()[j]->getObjectName() << ": " << std::endl;
+                   for (i = 0; i < dim; i++)
+                       std::cout <<  "Mode " << i + 1 << ":  " << Slow_react_contr(i, j)<< std::endl;
+             std::cout << std::endl;
+             //  std::cout << Slow_react_contr(i, j) << " ";
+                   //std::cout << std::endl;
+        }
+
+      std::cout << "***********************" << std::endl;
+      */
       for (i = 0; i < reacs_size; i ++)
         {
           Reac_slow_space[i] = 0;
+
           for (j = 0; j < dim; j++)
             {
               Reac_slow_space[i] = Reac_slow_space[i] + mVslow_space[j] * Stoichiom(j, i);
@@ -518,10 +625,55 @@ integration:
         else
           mReacSlowSpace[i] = 0;
 
-      /*      std::cout << "Reac_slow_space:" << std::endl;
-            for (j = 0; j < reacs_size; j++)
-              std::cout << Reac_slow_space[j] << " ";
-            std::cout << std::endl;*/
+//            std::cout << "Reac_slow_space:" << std::endl;
+      //          for (j = 0; j < reacs_size; j++)
+      //          std::cout << Reac_slow_space[j] << " ";
+      //      std::cout << std::endl;
+
+      for (i = 0; i < reacs_size; i ++)
+        {
+          Reac_fast_space[i] = 0;
+
+          for (j = 0; j < dim; j++)
+            Reac_fast_space[i] = Reac_fast_space[i] + mVfast_space[j] * Stoichiom(j, i);
+        }
+
+      length = 0;
+
+      for (i = 0; i < reacs_size; i++)
+        length = length + fabs(Reac_fast_space[i]);
+
+      for (i = 0; i < reacs_size; i++)
+        if (length > 0)
+          Reac_fast_space[i] = Reac_fast_space[i] / length * 100;
+        else
+          Reac_fast_space[i] = 0;
+
+//  std::cout << "Reac_fast_space for time =" << mTime - deltaT << std::endl;
+//  for (j = 0; j < reacs_size; j++)
+//    std::cout << "Reaction " << j + 1 << ". " <<  mpModel->getReactions()[j]->getObjectName() << ": " << Reac_fast_space[j] << std::endl;
+
+#ifdef ILDMDEBUG
+
+      std::cout << "**********************************************************" << std::endl;
+      std::cout << "**********************************************************" << std::endl;
+      std::cout << std::endl;
+      std::cout << std::endl;
+#endif
+
+      mTMP1.resize(reacs_size, dim);
+      mTMP2.resize(reacs_size, dim);
+      mTMP3.resize(reacs_size, 1);
+
+      for (i = 0; i < dim; i++)
+        for (j = 0; j < reacs_size; j++)
+          {
+            mTMP1(j, i) = Mode_react_contr(i, j);
+            mTMP2(j, i) = Slow_react_contr(i, j);
+          }
+
+      for (j = 0; j < reacs_size; j++)
+        mTMP3(j, 0) = Reac_fast_space[j];
     }
 
   // End of reaction analysis
@@ -587,6 +739,8 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   CMatrix<C_FLOAT64> S_22;
   S_22.resize(fast, fast);
 
+  C_FLOAT64 g1, g2 = 0;
+
   nrhs = 1;
   tol = 1e-9;
   err = 10.0;
@@ -636,6 +790,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       for (i = 0; i < dim; i++)
         {
           x_newton[i] = 0.0;
+
           for (j = 0; j < dim; j++)
             x_newton[i] = x_newton[i] + mTd(i, j) * y_newton[j];
         }
@@ -645,6 +800,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       for (i = 0; i < dim; i++)
         {
           g_newton[i] = 0.;
+
           for (j = 0; j < dim; j++)
             g_newton[i] = g_newton[i] + mTdInverse(i, j) * dxdt_newton[j];
         }
@@ -727,9 +883,11 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
         d_yf[i] = gf_newton[i];
 
       err = -10.;
+
       for (i = 0; i < fast; i++)
         {
           gf_newton[i] = fabs(gf_newton[i]);
+
           if (err < gf_newton[i])
             err = gf_newton[i];
         }
@@ -738,16 +896,16 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       /* stop criterion of newton method */
 
-      C_FLOAT64 g1, g2;
+      //  C_FLOAT64 g1, g2;
 
-      g2 = err;
+      //  g2 = err;
 
       if (iter == 1)
         g1 = 3.0 * err;
       else
         g1 = g2;
 
-      //    g2 = err;
+      g2 = err;
 
       if (g2 / g1 > 1.0)
         {
@@ -815,12 +973,14 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   CVector<C_FLOAT64> Xconc; //current state converted to concentrations
   Xconc.resize(dim);
+
   for (i = 0; i < dim; ++i)
     Xconc[i] = mY_initial[i] * number2conc;
 
   for (i = 0; i < dim; i++)
     {
       c_full[i] = 0.0;
+
       for (j = 0; j < dim; j++)
         c_full[i] = c_full[i] + mTdInverse(i, j) * Xconc[j];
     }
@@ -874,6 +1034,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     {
       g_full[i] = 0.0;
+
       for (j = 0; j < dim; j++)
         g_full[i] = g_full[i] + mTdInverse(i, j) * dxdt[j];
     }
@@ -918,6 +1079,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     {
       x_relax[i] = 0.0;
+
       for (j = 0; j < dim; j++)
         x_relax[i] = x_relax[i] + mTd(i, j) * c_relax[j];
     }
@@ -945,6 +1107,7 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   for (i = 0; i < dim; i++)
     {
       g_relax[i] = 0.0;
+
       for (j = 0; j < dim; j++)
         g_relax[i] = g_relax[i] + mTdInverse(i, j) * dxdt_relax[j];
     }
@@ -1013,6 +1176,12 @@ void CILDMMethod::emptyVectors()
   mVec_mVslowMetab.erase(mVec_mVslowMetab.begin(), mVec_mVslowMetab.end());
   mVec_mVslowSpace.erase(mVec_mVslowSpace.begin(), mVec_mVslowSpace.end());
   mVec_SlowModes.erase(mVec_SlowModes.begin(), mVec_SlowModes.end());
+
+  /* temporary tabs */
+
+  mVec_mTMP1.erase(mVec_mTMP1.begin(), mVec_mTMP1.end());
+  mVec_mTMP2.erase(mVec_mTMP2.begin(), mVec_mTMP2.end());
+  mVec_mTMP3.erase(mVec_mTMP3.begin(), mVec_mTMP3.end());
 }
 
 /**
@@ -1027,6 +1196,7 @@ void CILDMMethod::setVectors(int slowMode)
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
   unsigned C_INT32 i;
+
   for (i = 0; i < (unsigned C_INT32) mData.dim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
@@ -1057,6 +1227,22 @@ void CILDMMethod::setVectors(int slowMode)
   mVec_mReacSlowSpace.push_back(mCurrentStep);
   mVec_mReacSlowSpace[mCurrentStep].resize(mReacSlowSpace.size());
   mVec_mReacSlowSpace[mCurrentStep] = mReacSlowSpace;
+
+  /* temporary tabs */
+
+  C_INT reacs_size = mpModel->getReactions().size();
+
+  mVec_mTMP1.push_back(mCurrentStep);
+  mVec_mTMP1[mCurrentStep].resize(reacs_size, mData.dim);
+  mVec_mTMP1[mCurrentStep] = mTMP1;
+
+  mVec_mTMP2.push_back(mCurrentStep);
+  mVec_mTMP2[mCurrentStep].resize(reacs_size, mData.dim);
+  mVec_mTMP2[mCurrentStep] = mTMP2;
+
+  mVec_mTMP3.push_back(mCurrentStep);
+  mVec_mTMP3[mCurrentStep].resize(reacs_size, 1);
+  mVec_mTMP3[mCurrentStep] = mTMP3;
 }
 /**
  * Create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget.
@@ -1115,6 +1301,38 @@ void CILDMMethod::createAnnotationsM()
   pTmp5->setDimensionDescription(0, "Reactions");
   pTmp5->setDimensionDescription(1, "Contribution to slow space");
   pReacSlowSpacePrintAnn = pTmp5;
+
+  /* tamporary tabs */
+
+  CArrayAnnotation *
+  pTMP1 = new CArrayAnnotation("", this,
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP1Print), true);
+  pTMP1->setMode(0, pTMP1->VECTOR);
+  pTMP1->setMode(1, pTMP1->STRINGS);
+  pTMP1->setDescription("Reactions contribution to the mode ");
+  pTMP1->setDimensionDescription(0, "Reactions");
+  pTMP1->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
+  pTMP1PrintAnn = pTMP1;
+
+  CArrayAnnotation *
+  pTMP2 = new CArrayAnnotation("", this,
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP2Print), true);
+  pTMP2->setMode(0, pTMP2->VECTOR);
+  pTMP2->setMode(1, pTMP2->STRINGS);
+  pTMP2->setDescription("Reactions distribution between modes ");
+  pTMP2->setDimensionDescription(0, "Reactions");
+  pTMP2->setDimensionDescription(1, "Modes (TS - corresponding  timescale)");
+  pTMP2PrintAnn = pTMP2;
+
+  CArrayAnnotation *
+  pTMP3 = new CArrayAnnotation("", this,
+                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP3Print), true);
+  pTMP3->setMode(0, pTMP3->VECTOR);
+  pTMP3->setMode(1, pTMP3->STRINGS);
+  pTMP3->setDescription("Reactions fast space ");
+  pTMP3->setDimensionDescription(0, "Reactions");
+  pTMP3->setDimensionDescription(1, "");
+  pTMP3PrintAnn = pTMP3;
 }
 /**
  * Set the every CArrayAnnotation for the requested step.
@@ -1126,6 +1344,7 @@ void CILDMMethod::createAnnotationsM()
 void CILDMMethod::setAnnotationM(int step)
 {
   if (!step) return;
+
   step -= 1;
   double timeScale;
   std::string str;
@@ -1138,13 +1357,16 @@ void CILDMMethod::setAnnotationM(int step)
   mVslowPrint = mVec_mVslow[step];
   pVslowPrintAnn->resize();
   pVslowPrintAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
+
   for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
+
       sstr << timeScale;
       str = sstr.str();
       pVslowPrintAnn->setAnnotationString(0, i, str);
@@ -1156,13 +1378,16 @@ void CILDMMethod::setAnnotationM(int step)
   mVslowMetabPrint = mVec_mVslowMetab[step];
   pVslowMetabPrintAnn->resize();
   pVslowMetabPrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
+
   for (i = 0; i < mData.dim; i++)
     {
       timeScale = mVec_TimeScale[step][i];
+
       if (i < mVec_SlowModes[step])
         sstr << "Slow: ";
       else
         sstr << "Fast: ";
+
       sstr << timeScale;
       str = sstr.str();
       pVslowMetabPrintAnn->setAnnotationString(1, i, str);
@@ -1183,15 +1408,19 @@ void CILDMMethod::setAnnotationM(int step)
 
   str = sstr.str();
   mVslowSpacePrint.resize(mData.dim, 1);
+
   for (i = 0; i < mData.dim; i++)
     mVslowSpacePrint(i, 0) = mVec_mVslowSpace[step][i];
+
   pVslowSpacePrintAnn->resize();
   pVslowSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
   pVslowSpacePrintAnn->setAnnotationString(1, 0, str);
 
   mVfastSpacePrint.resize(mData.dim, 1);
+
   for (i = 0; i < mData.dim; i++)
     mVfastSpacePrint(i, 0) = mVec_mVfastSpace[step][i];
+
   pVfastSpacePrintAnn->resize();
   pVfastSpacePrintAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
   pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
@@ -1201,156 +1430,223 @@ void CILDMMethod::setAnnotationM(int step)
   str = sstr.str();
 
   mReacSlowSpacePrint.resize(mReacSlowSpace.size(), 1);
+
   for (i = 0; i < (C_INT32) mReacSlowSpace.size(); i++)
     mReacSlowSpacePrint(i, 0) = mVec_mReacSlowSpace[step][i];
+
   pReacSlowSpacePrintAnn->resize();
   pReacSlowSpacePrintAnn->setCopasiVector(0, &mpModel->getReactions());
   pReacSlowSpacePrintAnn->setAnnotationString(1, 0, str);
+
+  sstr.str("");
+  str = sstr.str();
+
+  /* temporary tabs */
+
+  C_INT reacs_size = mpModel->getReactions().size();
+
+  mTMP1Print.resize(reacs_size, mData.dim);
+  mTMP1Print = mVec_mTMP1[step];
+
+  pTMP1PrintAnn->resize();
+
+  for (i = 0; i < (C_INT) mVec_mTMP1[step].numCols(); i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+
+      if (i < (C_INT) mVec_SlowModes[step])
+        sstr << "Slow: ";
+      else
+        sstr << "Fast: ";
+
+      sstr << timeScale;
+      str = sstr.str();
+      pTMP1PrintAnn->setAnnotationString(1, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  pTMP1PrintAnn->setCopasiVector(0, &mpModel->getReactions());
+
+  mTMP2Print.resize(reacs_size, mData.dim);
+  mTMP2Print = mVec_mTMP2[step];
+
+  pTMP2PrintAnn->resize();
+
+  for (i = 0; i < (C_INT) mVec_mTMP2[step].numCols(); i++)
+    {
+      timeScale = mVec_TimeScale[step][i];
+
+      if (i < (C_INT) mVec_SlowModes[step])
+        sstr << "Slow: ";
+      else
+        sstr << "Fast: ";
+
+      sstr << timeScale;
+      str = sstr.str();
+      pTMP2PrintAnn->setAnnotationString(1, i, str);
+      sstr.str("");
+      sstr.clear();
+    }
+
+  pTMP2PrintAnn->setCopasiVector(0, &mpModel->getReactions());
+
+  mTMP3Print.resize(reacs_size, 1);
+  mTMP3Print = mVec_mTMP3[step];
+  pTMP3PrintAnn->resize();
+  pTMP3PrintAnn->setCopasiVector(0, &mpModel->getReactions());
+  pTMP3PrintAnn->setAnnotationString(1, 0, str);
 }
 
-void CILDMMethod::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
-    double timeScale;
-    C_INT i, j, istep = 0;
+void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs are not included in Report !!!
+{
+  std::ostream & os = *ostream;
+  double timeScale;
+  C_INT i, j, istep = 0;
 
-    C_INT32 stepNumber;
+  C_INT32 stepNumber;
 
-    this->print(&os);
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
+  this->print(&os);
 
-    const CTSSATask* pTask =
-      dynamic_cast<const CTSSATask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time Scale Separation Analysis"]);
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CTSSATask* pTask =
+    dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
 
-    const CTSSAProblem* pProblem = dynamic_cast<const CTSSAProblem*>(pTask->getProblem());
+  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
-    stepNumber = pProblem->getStepNumber();
+  stepNumber = pProblem->getStepNumber();
 
-    for (istep = 0; istep < stepNumber; istep++)
-      {
+  for (istep = 0; istep < stepNumber; istep++)
+    {
 
-        os << std::endl;
-        os << "****************  Time step " << istep + 1 << " **************************  " << std::endl;
+      os << std::endl;
+      os << "****************  Time step " << istep + 1 << " **************************  " << std::endl;
 
-        os << std::endl;
+      os << std::endl;
 
-        os << "Contribution of species to modes" << std::endl;
+      os << "Contribution of species to modes" << std::endl;
 
-        os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
-        os << "Columns: species  ";
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "   ";
-          }
+      os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
+      os << "Columns: species  ";
 
-        os << std::endl;
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "   ";
+        }
 
-        for (i = 0; i < mData.dim; i++)
-          {
-            timeScale = mVec_TimeScale[istep][i];
-            if (i < mVec_SlowModes[istep])
-              os << "Slow (";
-            else
-              os << "Fast (";
-            os << timeScale << "): ";
+      os << std::endl;
 
-            for (j = 0; j < mData.dim; j++)
-              os << mVec_mVslow[istep][i][j] << " ";
+      for (i = 0; i < mData.dim; i++)
+        {
+          timeScale = mVec_TimeScale[istep][i];
 
-            os << std::endl;
-          }
+          if (i < mVec_SlowModes[istep])
+            os << "Slow (";
+          else
+            os << "Fast (";
 
-        os << std::endl;
+          os << timeScale << "): ";
 
-        os << "Modes distribution for species" << std::endl;
+          for (j = 0; j < mData.dim; j++)
+            os << mVec_mVslow[istep][i][j] << " ";
 
-        os << "Rows : Mode distribution for each species" << std::endl;
-        os << "Columns: Modes (TS - corresponding  timescale) ";
-        os << std::endl;
+          os << std::endl;
+        }
 
-        for (i = 0; i < mData.dim; i++)
-          {
-            timeScale = mVec_TimeScale[istep][i];
-            if (i < mVec_SlowModes[istep])
-              os << "Slow (";
-            else
-              os << "Fast (";
-            os << timeScale << ")  ";
-          }
+      os << std::endl;
 
-        os << std::endl;
+      os << "Modes distribution for species" << std::endl;
 
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+      os << "Rows : Mode distribution for each species" << std::endl;
+      os << "Columns: Modes (TS - corresponding  timescale) ";
+      os << std::endl;
 
-            for (i = 0; i < mData.dim; i++)
-              os << mVec_mVslowMetab[istep][j][i] << "  ";
+      for (i = 0; i < mData.dim; i++)
+        {
+          timeScale = mVec_TimeScale[istep][i];
 
-            os << std::endl;
-          }
+          if (i < mVec_SlowModes[istep])
+            os << "Slow (";
+          else
+            os << "Fast (";
 
-        os << std::endl;
+          os << timeScale << ")  ";
+        }
 
-        os << "Slow space" << std::endl;
+      os << std::endl;
 
-        os << "Rows : Species" << std::endl;
-        os << "Column: Contribution to slow space ";
-        os << std::endl;
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
 
-        os << mVec_SlowModes[istep];
-        os << " slow; ";
+          for (i = 0; i < mData.dim; i++)
+            os << mVec_mVslowMetab[istep][j][i] << "  ";
 
-        os << mData.dim - mVec_SlowModes[istep];
-        os << " fast";
-        os << std::endl;
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
-            os << mVec_mVslowSpace[istep][j] << "  ";
+          os << std::endl;
+        }
 
-            os << std::endl;
-          }
+      os << std::endl;
 
-        os << std::endl;
-        os << "Fast space" << std::endl;
+      os << "Slow space" << std::endl;
 
-        os << "Rows : Species" << std::endl;
-        os << "Column: Contribution to fast space ";
-        os << std::endl;
+      os << "Rows : Species" << std::endl;
+      os << "Column: Contribution to slow space ";
+      os << std::endl;
 
-        os << mVec_SlowModes[istep];
-        os << " slow; ";
+      os << mVec_SlowModes[istep];
+      os << " slow; ";
 
-        os << mData.dim - mVec_SlowModes[istep];
-        os << " fast";
-        os << std::endl;
+      os << mData.dim - mVec_SlowModes[istep];
+      os << " fast";
+      os << std::endl;
 
-        for (j = 0; j < mData.dim; j++)
-          {
-            os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
-            os << mVec_mVfastSpace[istep][j] << "  ";
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << mVec_mVslowSpace[istep][j] << "  ";
 
-            os << std::endl;
-          }
+          os << std::endl;
+        }
 
-        os << std::endl;
-        os << "Reactions slow space" << std::endl;
+      os << std::endl;
+      os << "Fast space" << std::endl;
 
-        os << "Rows : Reactions" << std::endl;
-        os << "Column: Contribution to slow space ";
-        os << std::endl;
+      os << "Rows : Species" << std::endl;
+      os << "Column: Contribution to fast space ";
+      os << std::endl;
 
-        for (j = 0; j < (C_INT32) mpModel->getReactions().size(); j++)
-          {
-            os << mpModel->getReactions()[j]->getObjectName() << "  ";
-            os << mVec_mReacSlowSpace[istep][j] << "  ";
+      os << mVec_SlowModes[istep];
+      os << " slow; ";
 
-            os << std::endl;
-          }
+      os << mData.dim - mVec_SlowModes[istep];
+      os << " fast";
+      os << std::endl;
 
-        os << std::endl;
-      }
-    return;
-  }
+      for (j = 0; j < mData.dim; j++)
+        {
+          os << mpModel->getMetabolitesX()[j]->getObjectName() << "  ";
+          os << mVec_mVfastSpace[istep][j] << "  ";
+
+          os << std::endl;
+        }
+
+      os << std::endl;
+      os << "Reactions slow space" << std::endl;
+
+      os << "Rows : Reactions" << std::endl;
+      os << "Column: Contribution to slow space ";
+      os << std::endl;
+
+      for (j = 0; j < (C_INT32) mpModel->getReactions().size(); j++)
+        {
+          os << mpModel->getReactions()[j]->getObjectName() << "  ";
+          os << mVec_mReacSlowSpace[istep][j] << "  ";
+
+          os << std::endl;
+        }
+
+      os << std::endl;
+    }
+
+  return;
+}

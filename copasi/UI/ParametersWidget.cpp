@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,46 +48,47 @@
 #define COL_UNIT 3
 
 class CParameterListItem : public Q3ListViewItem
+{
+public:
+  CParameterListItem(Q3ListView *parent, const QString & text)
+      : Q3ListViewItem(parent, text),
+      mpObject(NULL),
+      mIsChanged(false)
   {
-  public:
-    CParameterListItem(Q3ListView *parent, const QString & text)
-        : Q3ListViewItem(parent, text),
-        mpObject(NULL),
-        mIsChanged(false)
-    {
-      setOpen(true);
-      setSelectable(false);
-    }
+    setOpen(true);
+    setSelectable(false);
+  }
 
-    CParameterListItem(CParameterListItem *parent, const QString & text)
-        : Q3ListViewItem(parent, text),
-        mpObject(NULL),
-        mIsChanged(false)
-    {
-      setOpen(true);
-      setSelectable(false);
-    }
+  CParameterListItem(CParameterListItem *parent, const QString & text)
+      : Q3ListViewItem(parent, text),
+      mpObject(NULL),
+      mIsChanged(false)
+  {
+    setOpen(true);
+    setSelectable(false);
+  }
 
-    CParameterListItem(CParameterListItem *parent, const QString & name,
-                       CCopasiObject* obj, C_FLOAT64 value, const QString & unit, int framework = 0)
-        : Q3ListViewItem(parent, name, "", QString::number(value), unit),
-        mpObject(obj),
-        mIsChanged(false)
-    {
-      setRenameEnabled(COL_VALUE, true);
+  CParameterListItem(CParameterListItem *parent, const QString & name,
+                     CCopasiObject* obj, C_FLOAT64 value, const QString & unit, int framework = 0)
+      : Q3ListViewItem(parent, name, "", QString::number(value), unit),
+      mpObject(obj),
+      mIsChanged(false)
+  {
+    setRenameEnabled(COL_VALUE, true);
 
-      CModelEntity* me = dynamic_cast<CModelEntity*>(obj);
-      if (me) //object is a CModelEntity
-        {
-          bool InitiaValueChangeAllowed = (me->getInitialExpression() == "");
+    CModelEntity* me = dynamic_cast<CModelEntity*>(obj);
 
-          CMetab * pMetab = dynamic_cast< CMetab * >(me);
+    if (me) //object is a CModelEntity
+      {
+        bool InitiaValueChangeAllowed = (me->getInitialExpression() == "");
 
-          if (pMetab != NULL && framework == 0)
-            InitiaValueChangeAllowed &= pMetab->isInitialConcentrationChangeAllowed();
+        CMetab * pMetab = dynamic_cast< CMetab * >(me);
 
-          switch (me->getStatus())
-            {
+        if (pMetab != NULL && framework == 0)
+          InitiaValueChangeAllowed &= pMetab->isInitialConcentrationChangeAllowed();
+
+        switch (me->getStatus())
+          {
             case CModelEntity::FIXED:
               setText(COL_STATUS, "fixed");
               setRenameEnabled(COL_VALUE, InitiaValueChangeAllowed);
@@ -104,6 +105,7 @@ class CParameterListItem : public Q3ListViewItem
               break;
 
             case CModelEntity::REACTIONS:
+
               if (static_cast< CMetab * >(me)->isDependent())
                 setText(COL_STATUS, "dep");
               else if (me->isUsed())
@@ -115,56 +117,60 @@ class CParameterListItem : public Q3ListViewItem
               break;
 
             case CModelEntity::TIME:
+
               if (static_cast< CModel * >(me)->isAutonomous())
                 setRenameEnabled(COL_VALUE, false);
               else
                 setRenameEnabled(COL_VALUE, true);
+
               break;
 
             default:
               break;
-            }
-        }
-    }
+          }
+      }
+  }
 
-    //this constructor is used for global parameters in reactions
-    CParameterListItem(CParameterListItem *parent, const QString & name,
-                       CCopasiObject* obj, const QString & value, const QString & unit)
-        : Q3ListViewItem(parent, name, "", value, unit),
-        mpObject(obj),
-        mIsChanged(false)
-    {
-      setRenameEnabled(COL_VALUE, false);
-      setText(COL_STATUS, "global");
-    }
+  //this constructor is used for global parameters in reactions
+  CParameterListItem(CParameterListItem *parent, const QString & name,
+                     CCopasiObject* obj, const QString & value, const QString & unit)
+      : Q3ListViewItem(parent, name, "", value, unit),
+      mpObject(obj),
+      mIsChanged(false)
+  {
+    setRenameEnabled(COL_VALUE, false);
+    setText(COL_STATUS, "global");
+  }
 
-    CCopasiObject* getObject() const
-      {return mpObject;}
+  CCopasiObject* getObject() const
+  {return mpObject;}
 
-    C_FLOAT64 getValue() const
-      {return text(COL_VALUE).toDouble();}
+  C_FLOAT64 getValue() const
+  {return text(COL_VALUE).toDouble();}
 
-    bool isChanged() const
-      {return mIsChanged;}
+  bool isChanged() const
+  {return mIsChanged;}
 
-    //QString key(int, bool) const;
+  //QString key(int, bool) const;
 
-  protected:
-    CCopasiObject* mpObject;
-    bool mIsChanged;
+protected:
+  CCopasiObject* mpObject;
+  bool mIsChanged;
 
-    virtual void okRename (int col)
-    {
-      QString oldText = text(COL_VALUE);
-      Q3ListViewItem::okRename(col);
-      QString newText = text(COL_VALUE);
-      if (oldText == newText) return;
+  virtual void okRename(int col)
+  {
+    QString oldText = text(COL_VALUE);
+    Q3ListViewItem::okRename(col);
+    QString newText = text(COL_VALUE);
 
-      mIsChanged = true;
-      if ('*' != text(COL_NAME)[0])
-        setText(COL_NAME, "*" + text(COL_NAME)); //TODO: find better way to display changed values
-    }
-  };
+    if (oldText == newText) return;
+
+    mIsChanged = true;
+
+    if ('*' != text(COL_NAME)[0])
+      setText(COL_NAME, "*" + text(COL_NAME)); //TODO: find better way to display changed values
+  }
+};
 
 //****************************************************************************
 
@@ -173,6 +179,7 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
 {
   if (!name)
     setName("ParametersWidget");
+
   ParametersWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "ParametersWidgetLayout");
 
   commitButton = new QPushButton(this, "commitButton");
@@ -273,9 +280,11 @@ void ParametersWidget::savePressed()
     }
 
   std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+
   if (file.fail()) return;
 
   CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (!model) return;
 
   file << model->printParameterOverview() << std::endl;
@@ -284,6 +293,7 @@ void ParametersWidget::savePressed()
 bool ParametersWidget::loadFromModel()
 {
   CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (!model) return false;
 
   listView->clear();
@@ -293,15 +303,16 @@ bool ParametersWidget::loadFromModel()
 
   //Time
   mTimeItem = new CParameterListItem(listView, "Initial Time");
-  unit = FROM_UTF8(model->getTimeUnitName());
+  unit = FROM_UTF8(model->getTimeUnits());
   new CParameterListItem(mTimeItem, "Model",
                          model, model->getInitialTime(), unit);
 
   //Compartments
   mCompItem = new CParameterListItem(listView, "Initial Volumes");
-  unit = FROM_UTF8(model->getVolumeUnitName());
+  unit = FROM_UTF8(model->getVolumeUnits());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
+
   for (i = 0; i < imax; ++i)
     new CParameterListItem(mCompItem, FROM_UTF8(comps[i]->getObjectName()),
                            comps[i], comps[i]->getInitialValue(), unit);
@@ -309,36 +320,45 @@ bool ParametersWidget::loadFromModel()
   //Metabs
   const CCopasiVector< CMetab > & metabs = model->getMetabolites();
   imax = metabs.size();
+
   switch (mFramework)
     {
-    case 0:
-      mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
-      unit = FROM_UTF8(model->getConcentrationUnitName());
-      for (i = 0; i < imax; ++i)
-        new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
-                               metabs[i], metabs[i]->getInitialConcentration(), unit, mFramework);
-      break;
+      case 0:
+        mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
+        unit = FROM_UTF8(model->getConcentrationUnits());
 
-    case 1:
-      mMetabItem = new CParameterListItem(listView, "Initial Particle Numbers");
-      unit = "1";
-      for (i = 0; i < imax; ++i)
-        new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
-                               metabs[i], metabs[i]->getInitialValue(), unit, mFramework);
-      break;
+        for (i = 0; i < imax; ++i)
+          new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
+                                 metabs[i], metabs[i]->getInitialConcentration(), unit, mFramework);
+
+        break;
+
+      case 1:
+        mMetabItem = new CParameterListItem(listView, "Initial Particle Numbers");
+        unit = "";
+
+        for (i = 0; i < imax; ++i)
+          new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
+                                 metabs[i], metabs[i]->getInitialValue(), unit, mFramework);
+
+        break;
     }
+
   //Reactions
   mReacItem = new CParameterListItem(listView, "Kinetic Parameters");
   const CCopasiVector< CReaction > & reacs = model->getReactions();
   CReaction* reac;
   CParameterListItem* tmp;
   imax = reacs.size();
+
   for (i = 0; i < imax; ++i)
     {
       reac = reacs[i];
 
       //calculate units
-      CFindDimensions units(reac->getFunction());
+      CFindDimensions units(reac->getFunction(), model->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                            model->getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                            model->getTimeUnitEnum() == CModel::dimensionlessTime);
       units.setUseHeuristics(true);
       units.setChemicalEquation(&reac->getChemEq());
       units.findDimensions(reac->getCompartmentNumber() > 1);
@@ -347,11 +367,14 @@ bool ParametersWidget::loadFromModel()
 
       const CFunctionParameters & params = reac->getFunctionParameters();
       jmax = params.size();
+
       for (j = 0; j < jmax; ++j)
         if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
           {
             CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(reac->getParameterMappings()[j][0]);
+
             if (!obj) continue;
+
             assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
             CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
             assert(pDataModel != NULL);
@@ -359,7 +382,9 @@ bool ParametersWidget::loadFromModel()
             if (reac->isLocalParameter(j))
               {
                 CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
+
                 if (!par) continue; //or rather fatal error?
+
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
                                        * par->getValue().pDOUBLE,
                                        FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
@@ -367,18 +392,14 @@ bool ParametersWidget::loadFromModel()
             else
               {
                 CModelValue * par = dynamic_cast<CModelValue*>(obj); //must be a CModelValue
+
                 if (!par) continue; //or rather fatal error?
+
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
                                        FROM_UTF8("-> " + par->getObjectName()),
                                        FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
               }
           }
-
-      /*jmax = reac->getParameters().size();
-      for (j = 0; j < jmax; ++j)
-        new CParameterListItem(tmp, FROM_UTF8(reac->getParameters().getParameter(j)->getObjectName()),
-                               reac->getParameters().getParameter(j),
-                               * reac->getParameters().getParameter(j)->getValue().pDOUBLE, "");*/
     }
 
   //global Parameters
@@ -386,6 +407,7 @@ bool ParametersWidget::loadFromModel()
   unit = "";
   const CCopasiVector< CModelValue > & params = model->getModelValues();
   imax = params.size();
+
   for (i = 0; i < imax; ++i)
     new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
                            params[i], params[i]->getInitialValue(), unit);
@@ -400,6 +422,7 @@ bool ParametersWidget::saveToModel()
       //the following is a hack to force termination of an active editor
       Q3ListViewItem* tmp = listView->currentItem();
       listView->setCurrentItem(listView->firstChild());
+
       if (tmp)
         {
           listView->setCurrentItem(tmp);
@@ -412,79 +435,96 @@ bool ParametersWidget::saveToModel()
 
   //Time
   child = (CParameterListItem *)mTimeItem->firstChild();
+
   if (child->isChanged())
     {
       changed = true;
       CModel* tmp = dynamic_cast<CModel*>(child->getObject());
+
       if (tmp) tmp->setInitialTime(child->getValue());
     }
 
   //Metabs
   child = (CParameterListItem *)mMetabItem->firstChild();
+
   while (child)
     {
       if (child->isChanged())
         {
           changed = true;
           CMetab* tmp = dynamic_cast<CMetab*>(child->getObject());
+
           if (tmp)
             switch (mFramework)
               {
-              case 0:
-                tmp->setInitialConcentration(child->getValue());
-                break;
+                case 0:
+                  tmp->setInitialConcentration(child->getValue());
+                  break;
 
-              case 1:
-                tmp->setInitialValue(child->getValue());
-                break;
+                case 1:
+                  tmp->setInitialValue(child->getValue());
+                  break;
               }
         }
+
       child = (CParameterListItem *)child->nextSibling();
     }
 
   //Compartments
   child = (CParameterListItem *)mCompItem->firstChild();
+
   while (child)
     {
       if (child->isChanged())
         {
           changed = true;
           CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
+
           if (tmp) tmp->setInitialValue(child->getValue());
         }
+
       child = (CParameterListItem *)child->nextSibling();
     }
 
   //Reactions
   CParameterListItem * child2;
   child = (CParameterListItem *)mReacItem->firstChild();
+
   while (child)
     {
       child2 = (CParameterListItem *)child->firstChild();
+
       while (child2)
         {
           if (child2->isChanged())
             {
               changed = true;
               CCopasiParameter* tmp = dynamic_cast<CCopasiParameter*>(child2->getObject());
+
               if (tmp) tmp->setValue(child2->getValue());
+
               //this does nothing for global parameters since the dynamic cast fails for those
             }
+
           child2 = (CParameterListItem *)child2->nextSibling();
         }
+
       child = (CParameterListItem *)child->nextSibling();
     }
 
   //global Parameters
   child = (CParameterListItem *)mParamItem->firstChild();
+
   while (child)
     {
       if (child->isChanged())
         {
           changed = true;
           CModelValue* tmp = dynamic_cast<CModelValue*>(child->getObject());
+
           if (tmp) tmp->setInitialValue(child->getValue());
         }
+
       child = (CParameterListItem *)child->nextSibling();
     }
 
@@ -502,6 +542,7 @@ bool ParametersWidget::saveToModel()
 void ParametersWidget::editItem(Q3ListViewItem * item, const QPoint & C_UNUSED(pnt), int c)
 {
   if (!item) return;
+
   if (c == COL_VALUE) //column 1
     item->startRename(COL_VALUE);
 }
@@ -510,6 +551,7 @@ void ParametersWidget::editItem(Q3ListViewItem * item, const QPoint & C_UNUSED(p
 void ParametersWidget::editItem(Q3ListViewItem * item)
 {
   if (!item) return;
+
   item->startRename(COL_VALUE);
 }
 
@@ -531,24 +573,28 @@ bool ParametersWidget::update(ListViews::ObjectType objectType,
 
   switch (objectType)
     {
-    case ListViews::REACTION:
-    case ListViews::MODEL:
-    case ListViews::METABOLITE:
-    case ListViews::COMPARTMENT:
-      return loadFromModel();
-      break;
+      case ListViews::REACTION:
+      case ListViews::MODEL:
+      case ListViews::METABOLITE:
+      case ListViews::COMPARTMENT:
+        return loadFromModel();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return true;
 }
 
 bool ParametersWidget::leave()
 {
   bool success = true;
+
   if (!saveToModel()) success = false;
+
   if (!loadFromModel()) success = false;
+
   return success;
 }
 

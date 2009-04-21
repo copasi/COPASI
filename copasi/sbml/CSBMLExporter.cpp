@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/04/17 06:26:54 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:19:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@
 #include "ConverterASTNode.h"
 #include "utilities/CCopasiTree.h"
 #include "model/CChemEqElement.h"
+#include "utilities/CVersion.h"
 #include "sbml/Trigger.h"
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
@@ -130,6 +131,9 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
       case CModel::fs:
         unit = Unit(UNIT_KIND_SECOND, 1, -15);
         break;
+      case CModel::dimensionlessTime:
+        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
         break;
@@ -150,6 +154,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
+      // only add it if it is not the default unit definition anyway
       if (unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
@@ -192,6 +197,9 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
       case CModel::m3:
         unit = Unit(UNIT_KIND_METRE, 3, 0);
         break;
+      case CModel::dimensionlessVolume:
+        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
         break;
@@ -212,6 +220,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
+      // only add it if it is not the default unit definition anyway
       if (unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
@@ -254,6 +263,9 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
       case CModel::number:
         unit = Unit(UNIT_KIND_ITEM, 1, 0);
         break;
+      case CModel::dimensionlessQuantity:
+        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
         break;
@@ -274,6 +286,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
     }
   else
     {
+      // only add it if it is not the default unit definition anyway
       if (unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
         {
           // set the unit definition
@@ -936,6 +949,9 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       assert(pOrigNode != NULL);
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
+      // convert local parameters that are referenced in an expression to global
+      // parameters
+      this->replace_local_parameters(pNode, dataModel);
 
       if (pNode != NULL)
         {
@@ -1199,6 +1215,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
         }
 
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
+      this->replace_local_parameters(pNode, dataModel);
       delete pOrigNode;
 
       if (pNode != NULL)
@@ -1476,6 +1493,9 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
 
   // SBML Level 2 Version 2 and above can have the same references as level 1 plus references to
   // reaction fluxes.
+
+  // Starting with COPASI Build 30 references to local parameters are allowed
+  // as well because they are converted to global parameters
   const std::vector<CEvaluationNode*>& objectNodes = expr.getNodeList();
   unsigned j, jMax = objectNodes.size();
 
@@ -1490,7 +1510,8 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
 
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
-          const CCopasiObject* pObject = dataModel.ObjectFromName(containers, pObjectNode->getObjectCN());
+          const CCopasiObject* pObject =
+            dataModel.ObjectFromName(containers, pObjectNode->getObjectCN());
           assert(pObject);
 
           if (pObject->isReference())
@@ -1561,6 +1582,14 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                       result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "model", pObjectParent->getObjectName().c_str()));
                     }
                 }
+              else if (typeString == "Parameter")
+                {
+                  // must be a local parameter
+                  if (pObject->getObjectName() != "Value")
+                    {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "local parameter", pObjectParent->getObjectName().c_str()));
+                    }
+                }
               else
                 {
                   if (sbmlLevel == 1 || (sbmlLevel == 2 && sbmlVersion == 1))
@@ -1581,7 +1610,14 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
             }
           else
             {
-              result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+              // normally local parameters are referenced via their value and
+              // not directly, so this code should never be called
+              const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+
+              if (pLocalParameter == NULL)
+                {
+                  result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+                }
             }
         }
     }
@@ -2084,7 +2120,7 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   if (pOldSBMLDocument == NULL)
     {
-      this->mpSBMLDocument = new SBMLDocument(2, 3);
+      this->mpSBMLDocument = new SBMLDocument();
     }
   else
     {
@@ -2154,8 +2190,12 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     }
 
   createRules(dataModel);
-  createReactions(dataModel);
   createEvents(dataModel);
+  // we have to export the reactions after all other entities that have
+  // expressions since an expression could contain a local parameter
+  // If it did, it would have to be converted to a global parameter and that
+  // has to be taken into consideration when creating the reactions
+  createReactions(dataModel);
   // find all used functions
   createFunctionDefinitions(dataModel);
 
@@ -2617,6 +2657,9 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   assert(pOrigNode != NULL);
   ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
   delete pOrigNode;
+  // convert local parameters that are referenced in an expression to global
+  // parameters
+  this->replace_local_parameters(pNode, dataModel);
 
   if (pNode != NULL)
     {
@@ -2686,6 +2729,9 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       assert(pOrigNode != NULL);
       pNode = this->convertToASTNode(pOrigNode, dataModel);
       delete pOrigNode;
+      // convert local parameters that are referenced in an expression to global
+      // parameters
+      this->replace_local_parameters(pNode, dataModel);
 
       if (pNode != NULL)
         {
@@ -2952,6 +2998,9 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
           ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
           delete pOrigNode;
+          // convert local parameters that are referenced in an expression to global
+          // parameters
+          this->replace_local_parameters(pNode, dataModel);
 
           if (pNode != NULL)
             {
@@ -3037,18 +3086,30 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       if (pPara->getUsage() == CFunctionParameter::PARAMETER)
         {
           // only create a parameter if it is a local parameter,
+          // and if it is not in the replacement map
           // otherwise the parameter already has been created
           if (reaction.isLocalParameter(i))
             {
-              Parameter* pSBMLPara = pKLaw->createParameter();
+              std::vector<std::string> v = reaction.getParameterMapping(pPara->getObjectName());
+              assert(v.size() == 1);
+              CCopasiObject* pTmpObject = CCopasiRootContainer::getKeyFactory()->get(v[0]);
+              assert(pTmpObject != NULL);
+              CCopasiParameter* pLocalParameter = dynamic_cast<CCopasiParameter*>(pTmpObject);
+              assert(pLocalParameter != NULL);
 
-              pSBMLPara->setId(pPara->getObjectName().c_str());
-              double value = reaction.getParameterValue(pPara->getObjectName());
-
-              // if the value is NaN, leave the parameter value unset.
-              if (!isnan(value))
+              if (this->mParameterReplacementMap.find(pLocalParameter->getCN()) == this->mParameterReplacementMap.end())
                 {
-                  pSBMLPara->setValue(value);
+                  Parameter* pSBMLPara = pKLaw->createParameter();
+
+                  pSBMLPara->setId(pPara->getObjectName().c_str());
+                  pSBMLPara->setName(pPara->getObjectName().c_str());
+                  double value = reaction.getParameterValue(pPara->getObjectName());
+
+                  // if the value is NaN, leave the parameter value unset.
+                  if (!isnan(value))
+                    {
+                      pSBMLPara->setValue(value);
+                    }
                 }
             }
         }
@@ -3076,6 +3137,10 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       delete pExpression;
       assert(pOrigNode != NULL);
       ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
+      // since toAST in CEvaluationNodeObject sets the CN of local parameters
+      // as the name of the node, we have to go and replace all node names
+      // that have a common name that is the CN of a local parameter
+      this->restore_local_parameters(pNode, dataModel);
       delete pOrigNode;
       assert(pNode != NULL);
 
@@ -4080,7 +4145,7 @@ void CSBMLExporter::removeUnusedObjects()
 
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
-              removedObjects.push_back(pList->remove(i - i));
+              removedObjects.push_back(pList->remove(i - 1));
             }
         }
 
@@ -4092,7 +4157,7 @@ void CSBMLExporter::removeUnusedObjects()
 
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
-              removedObjects.push_back(pList->remove(i - i));
+              removedObjects.push_back(pList->remove(i - 1));
             }
         }
 
@@ -4104,7 +4169,7 @@ void CSBMLExporter::removeUnusedObjects()
 
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
-              removedObjects.push_back(pList->remove(i - i));
+              removedObjects.push_back(pList->remove(i - 1));
             }
         }
 
@@ -4118,7 +4183,7 @@ void CSBMLExporter::removeUnusedObjects()
             {
               // we don't have to store the initial assignments since
               // there are no rules or events for initial assignments
-              delete pList->remove(i - i);
+              delete pList->remove(i - 1);
             }
         }
 
@@ -4132,7 +4197,7 @@ void CSBMLExporter::removeUnusedObjects()
             {
               // we don't have to store the reactions since
               // there are no rules or events for reactions
-              delete pList->remove(i - i);
+              delete pList->remove(i - 1);
             }
         }
 
@@ -4805,15 +4870,16 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
-            // Predicates added with libsbml 3.3.x
-          case CRDFPredicate::bqbiol_occursIn:
-          case CRDFPredicate::copasi_occursIn:
-            cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
-            // libsbml does not reset the model qualifier type and the
-            // biological qualifier type if the qualifier type is set
-            cvTerm.setModelQualifierType(BQM_UNKNOWN);
-            cvTerm.setBiologicalQualifierType(BQB_OCCURS_IN);
-            break;
+            // TODO There is no OCCURS IN in libsbml !!!
+            // TODO I also couldn't find one in the spec !!!
+            //case CRDFPredicate::bqbiol_occursIn:
+            //case CRDFPredicate::copasi_occursIn:
+            //    cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+            //    // libsbml does not reset the model qualifier type and the
+            //    // biological qualifier type if the qualifier type is set
+            //    cvTerm.setModelQualifierType(BQM_UNKNOWN);
+            //    cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+            //    break;
           case CRDFPredicate::bqmodel_is:
             cvTerm.setQualifierType(MODEL_QUALIFIER);
             // libsbml does not reset the model qualifier type and the
@@ -4841,6 +4907,16 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
           cvTerm.addResource(pDescription->getURI());
+
+          // before we set the CVTerm, we should make sure that the object has
+          // a meta id
+          if (!pSBMLObject->isSetMetaId())
+            {
+              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+              pSBMLObject->setMetaId(metaId);
+            }
+
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4914,6 +4990,16 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
           cvTerm.addResource(pReference->getURI());
+
+          // before we set the CVTerm, we should make sure that the object has
+          // a meta id
+          if (!pSBMLObject->isSetMetaId())
+            {
+              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+              pSBMLObject->setMetaId(metaId);
+            }
+
           pSBMLObject->addCVTerm(&cvTerm);
         }
     }
@@ -4925,12 +5011,18 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       // the model history consists of the creators, the creation time and the
       // modification time
       // create a model history instance
+      bool modified = false;
       ModelHistory modelHistory;
       // first we add all creators
       const CCopasiVector<CCreator>& creators = miriamInfo.getCreators();
       unsigned int i, iMax = creators.size();
       const CCreator* pCreator = NULL;
       ModelCreator modelCreator;
+
+      if (iMax > 0)
+        {
+          modified = true;
+        }
 
       for (i = 0; i < iMax; ++i)
         {
@@ -4947,8 +5039,13 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
       // now set the creation date
       std::string creationDateString = miriamInfo.getCreatedDT();
-      Date creationDate = Date(creationDateString);
-      modelHistory.setCreatedDate(&creationDate);
+
+      if (!creationDateString.empty())
+        {
+          Date creationDate = Date(creationDateString);
+          modelHistory.setCreatedDate(&creationDate);
+          modified = true;
+        }
 
       // Since SBML can have only one modification time, and we can have several,
       // we have to take the last one
@@ -4957,6 +5054,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
       if (iMax != 0)
         {
+          modified = true;
           const CModification* pModification = modifications[0];
           assert(pModification != NULL);
           std::string lastDateString = pModification->getDate();
@@ -4982,7 +5080,19 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
       // set the model history on the model
       Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
       assert(pSBMLModel != NULL);
-      pSBMLModel->setModelHistory(&modelHistory);
+
+      // make sure the model has a meta id
+      if (!pSBMLModel->isSetMetaId())
+        {
+          std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI");
+          metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLModel));
+          pSBMLModel->setMetaId(metaId);
+        }
+
+      if (modified == true)
+        {
+          pSBMLModel->setModelHistory(&modelHistory);
+        }
     }
 
   if (this->mExportCOPASIMIRIAM == true)
@@ -6669,5 +6779,134 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
         }
     }
 }
-
 #endif // COPASI_DEBUG
+
+/**
+ * Goes through the expression tree and tries to find occurences of local
+ * parameters. If one is found, a global parameter is created and all
+ * references to the local parameters are substituted.
+ */
+void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel)
+{
+  //  go through the expression and check if it contains a local reaction
+  //  parameter, if it does, we have to create a global parameter to replace it
+  //  the replacement has to be recorded in same data structure so that we can
+  //  consider it when the reactions are created later on
+  //  In the end, we need to use this map to create a warning message.
+  if (pOrigNode != NULL)
+    {
+      // the new id for the global parameter should contain the reaction name and
+      // the parameter name
+      if (pOrigNode->getType() == AST_NAME)
+        {
+          std::string objectName = pOrigNode->getName();
+          std::vector<CCopasiContainer*> containers;
+          containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+          const CCopasiObject* pObject = dataModel.ObjectFromName(containers, objectName);
+
+          if (pObject != NULL)
+            {
+              const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+
+              if (pLocalParameter != NULL)
+                {
+                  // it must be a local parameter
+                  std::map<std::string, Parameter*>::iterator pos = this->mParameterReplacementMap.find(pLocalParameter->getCN());
+
+                  if (pos == this->mParameterReplacementMap.end())
+                    {
+                      // not found, so we create a new global parameter
+                      const CCopasiObject* pParent = pLocalParameter->getObjectParent();
+
+                      // find the reaction
+                      while (pParent != NULL && dynamic_cast<const CReaction*>(pParent) == NULL)
+                        {
+                          pParent = pParent->getObjectParent();
+                        }
+
+                      assert(pParent);
+                      // now we create a new global parameter with a unique name
+                      std::string name = pParent->getObjectName() + "_" + pLocalParameter->getObjectName();
+                      std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "parameter_");
+                      Parameter* pParameter = this->mpSBMLDocument->getModel()->createParameter();
+                      pParameter->setName(name);
+                      pParameter->setId(sbmlId);
+                      this->mIdMap.insert(std::pair<std::string, SBase*>(sbmlId, pParameter));
+                      pParameter->setValue(*pLocalParameter->getValue().pDOUBLE);
+                      this->mParameterReplacementMap[pLocalParameter->getCN()] = pParameter;
+                      pOrigNode->setName(sbmlId.c_str());
+                      this->mHandledSBMLObjects.insert(pParameter);
+                    }
+                  else
+                    {
+                      // we set the node name to the existing parameter name
+                      pOrigNode->setName(pos->second->getId().c_str());
+                    }
+                }
+            }
+        }
+
+      unsigned int i = 0, iMax = pOrigNode->getNumChildren();
+
+      while (i < iMax)
+        {
+          this->replace_local_parameters(pOrigNode->getChild(i), dataModel);
+          ++i;
+        }
+    }
+}
+
+/**
+ * This method goes through the expression tree and tries to find node
+ * names that correspond to common names of local parameters.
+ * If the common name also occurs in the replacement map, the node name has
+ * to be set to the id of the corresponding global parameter, otherwise the name
+ * has to be set to the object name of the parameter.
+ */
+void CSBMLExporter::restore_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel)
+{
+  if (pOrigNode != NULL)
+    {
+      if (pOrigNode->getType() == AST_NAME)
+        {
+          // check if the common name is in the replacement map
+          std::string objectName = pOrigNode->getName();
+          std::map<std::string, Parameter*>::iterator pos = this->mParameterReplacementMap.find(objectName);
+
+          if (pos != this->mParameterReplacementMap.end())
+            {
+              // it was in the map, so we know that the local parameter has
+              // been replaced by a global parameter and we need to set the
+              // id of the global parameter as the new name of the node
+              pOrigNode->setName(pos->second->getId().c_str());
+            }
+          else
+            {
+              // we need to reset the node name to the id of the local
+              // parameter which is the object name
+              std::vector<CCopasiContainer*> containers;
+              containers.push_back(const_cast<CModel*>(dataModel.getModel()));
+              const CCopasiObject* pObject = dataModel.ObjectFromName(containers, objectName);
+
+              if (pObject != NULL)
+                {
+                  const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+
+                  if (pLocalParameter != NULL)
+                    {
+                      // we set the node name to the existing parameter name
+                      pOrigNode->setName(pLocalParameter->getObjectName().c_str());
+                    }
+                }
+            }
+        }
+
+      unsigned int i = 0, iMax = pOrigNode->getNumChildren();
+
+      while (i < iMax)
+        {
+          this->restore_local_parameters(pOrigNode->getChild(i), dataModel);
+          ++i;
+        }
+    }
+}

@@ -139,25 +139,25 @@ function test_run_files
         2 )
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e "\nThere was additional output from COPASI. Check ${OUTPUT_DIR}/${NAME}.import.err for details.";
+            echo -e "\nThere was additional output from COPASI. Check ${OUTPUT_DIR}/${NAME}.franks.err for details.";
             NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         102 ) 
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e "\nValgrind reported errors. Check ${OUTPUT_DIR}/${NAME}.import.log for details.";
+            echo -e "\nValgrind reported errors. Check ${OUTPUT_DIR}/${NAME}.franks.log for details.";
             NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         103 ) 
             echo -n -e '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${NAME}.import.log.";
+            echo -e "\nValgrind reported errors and memory leaks. Check ${OUTPUT_DIR}/${NAME}.franks.log.";
             NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         104 ) 
             echo -e -n '\E[33;47mSUCCEDED';
             ${TPUT} sgr0;
-            echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${NAME}.import.log for details.";
+            echo -e "\nValgrind reported memory leaks. Check ${OUTPUT_DIR}/${NAME}.franks.log for details.";
             NUM_SUCCEEDED=$(($NUM_SUCCEEDED + 1));
             ;;
         * )

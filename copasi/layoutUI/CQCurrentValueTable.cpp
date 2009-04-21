@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 17:41:15 $
+//   $Date: 2009/04/21 16:15:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,16 +87,19 @@ void CQCurrentValueTable::setValue(int row, C_FLOAT64 val)
 void CQCurrentValueTable::setAllBoxesChecked(bool checked)
 {
   int i;
-  for (i = 0;i < this->mpTable->numRows();i++)
+
+  for (i = 0; i < this->mpTable->numRows(); i++)
     {
       Q3TableItem *pCell = this->mpTable->item(i, 0);
+
       if (pCell->rtti() == 2)
         {// is cell a QCheckTableItem?
-          Q3CheckTableItem *pCheckItem = dynamic_cast<Q3CheckTableItem *> (pCell);
+          Q3CheckTableItem *pCheckItem = dynamic_cast<Q3CheckTableItem *>(pCell);
           // set checkbox item checked
           pCheckItem->setChecked(checked);
           CQLayoutMainWindow * pTmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
           assert(pTmp);
+
           if (pTmp)
             {
               pTmp->addItemInAnimation(this->getKeyForRow(i));
@@ -119,25 +122,27 @@ void CQCurrentValueTable::setKeyIndex(std::string key, int row)
 }
 
 std::string CQCurrentValueTable::getKeyForRow(int row) const
-  {
-    std::string s = "";
+{
+  std::string s = "";
 
-    std::map<int, std::string>::const_iterator itIndexObj = this->mIndexMap.find(row);
-    if (itIndexObj != this->mIndexMap.end())
-      {
-        s = (*itIndexObj).second;
-      }
-    return s;
-  }
+  std::map<int, std::string>::const_iterator itIndexObj = this->mIndexMap.find(row);
+
+  if (itIndexObj != this->mIndexMap.end())
+    {
+      s = (*itIndexObj).second;
+    }
+
+  return s;
+}
 
 bool CQCurrentValueTable::getValueForRow(int row) const
-  {
-    Q3TableItem *pCell = this->mpTable->item(row, 0);
-    assert(pCell != NULL);
-    Q3CheckTableItem *pCheckItem = dynamic_cast<Q3CheckTableItem *> (pCell);
-    assert(pCheckItem != NULL);
-    return pCheckItem->isChecked();
-  }
+{
+  Q3TableItem *pCell = this->mpTable->item(row, 0);
+  assert(pCell != NULL);
+  Q3CheckTableItem *pCheckItem = dynamic_cast<Q3CheckTableItem *>(pCell);
+  assert(pCheckItem != NULL);
+  return pCheckItem->isChecked();
+}
 
 void CQCurrentValueTable::slotCheckAllClicked()
 {
@@ -160,9 +165,9 @@ void CQCurrentValueTable::setNumCols(int columns)
 }
 
 int CQCurrentValueTable::numRows() const
-  {
-    return this->mpTable->numRows();
-  }
+{
+  return this->mpTable->numRows();
+}
 
 Q3Header* CQCurrentValueTable::verticalHeader()
 {

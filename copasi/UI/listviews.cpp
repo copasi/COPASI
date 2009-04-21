@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.263 $
+//   $Revision: 1.264 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/03/05 17:23:47 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,6 +161,7 @@ void FolderListItem::createSubFolders()
   const std::vector<IndexedNode*> & children = mpFolder->children();
 
   std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
+
   for (it = children.begin(); it != itEnd; ++it)
     {
       new FolderListItem(this, *it, true);
@@ -170,6 +171,7 @@ void FolderListItem::createSubFolders()
 void FolderListItem::deleteSubFolders()
 {
   Q3ListViewItem * tmp;
+
   for (tmp = firstChild(); tmp; tmp = firstChild())
     {
       delete tmp;
@@ -184,16 +186,16 @@ bool FolderListItem::setFolder(const IndexedNode * folder)
 }
 
 const IndexedNode * FolderListItem::getFolder() const
-  {return mpFolder;}
+{return mpFolder;}
 
 QString FolderListItem::key(int, bool) const
-  {
-    /*    if (mpFolder)
-          return mpFolder->getSortKey();
-        else
-          return "";*/
-    return mSortKey;
-  }
+{
+  /*    if (mpFolder)
+        return mpFolder->getSortKey();
+      else
+        return "";*/
+  return mSortKey;
+}
 
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
@@ -283,6 +285,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   moveToFirst(folders);
   moveToLast(defaultWidget);
   setResizeMode(folders, QSplitter::KeepSize);
+
   if (!opaqueResize())
     setOpaqueResize();
 
@@ -348,150 +351,198 @@ void ListViews::ConstructNodeWidgets()
 {
   // create the model widgets
   if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
+
   compartmentsWidget->hide();
 
   if (!compartmentsWidget1)
-    compartmentsWidget1 = new CTabWidget(QString ("Compartment"), new CQCompartment(this), this);
+    compartmentsWidget1 = new CTabWidget(QString("Compartment"), new CQCompartment(this), this);
+
   compartmentsWidget1->hide();
 
 #ifdef HAVE_MML
+
   if (!differentialEquations) differentialEquations = new CQDifferentialEquations(this);
+
   differentialEquations->hide();
 #endif // HAVE_MML
 
 #ifdef COPASI_DEBUG
+
   if (!eventsWidget) eventsWidget = new CQEventsWidget(this);
+
   eventsWidget->hide();
 
   if (!eventWidget1) eventWidget1 = new CQEventWidget1(this);
+
   eventWidget1->hide();
 #endif // COPASI_DEBUG
 
   if (!functionWidget) functionWidget = new FunctionWidget(this);
+
   functionWidget->hide();
 
   if (!functionWidget1)
-    functionWidget1 = new CTabWidget(QString ("Function"), new FunctionWidget1(this), this);
+    functionWidget1 = new CTabWidget(QString("Function"), new FunctionWidget1(this), this);
+
   functionWidget1->hide();
 
   if (!lyapWidget) lyapWidget = new CQLyapWidget(this);
+
   lyapWidget->hide();
 
   if (!lyapResultWidget) lyapResultWidget = new CQLyapResultWidget(this);
+
   lyapResultWidget->hide();
 
   if (!metabolitesWidget) metabolitesWidget = new MetabolitesWidget(this);
+
   metabolitesWidget->hide();
 
   if (!metabolitesWidget1)
-    metabolitesWidget1 = new CTabWidget(QString ("Metabolite"), new CQMetabolite(this), this);
+    metabolitesWidget1 = new CTabWidget(QString("Metabolite"), new CQMetabolite(this), this);
+
   metabolitesWidget1->hide();
 
   if (!modelWidget)
-    modelWidget = new CTabWidget(QString ("Model"), new ModelWidget(this), this);
+    modelWidget = new CTabWidget(QString("Model"), new ModelWidget(this), this);
+
   modelWidget->hide();
 
   if (!mpModelValueWidget)
-    mpModelValueWidget = new CTabWidget(QString ("ModelValue"), new CQModelValue(this), this);
+    mpModelValueWidget = new CTabWidget(QString("ModelValue"), new CQModelValue(this), this);
+
   mpModelValueWidget->hide();
 
   if (!modelValuesWidget) modelValuesWidget = new ModelValuesWidget(this);
+
   modelValuesWidget->hide();
 
   if (!modesWidget) modesWidget = new CQEFMWidget(this);
+
   modesWidget->hide();
 
   if (!mpMoietiesTaskResult)
     mpMoietiesTaskResult = new CQMoietiesTaskResult(this);
+
   mpMoietiesTaskResult->hide();
 
   if (!mpMoietiesTaskWidget)
     mpMoietiesTaskWidget = new CQMoietiesTaskWidget(this);
+
   mpMoietiesTaskWidget->hide();
 
   if (!parametersWidget) parametersWidget = new ParametersWidget(this);
+
   parametersWidget->hide();
 
   if (!mpCMCAResultWidget) mpCMCAResultWidget = new CMCAResultWidget(this);
+
   mpCMCAResultWidget->hide();
 
   if (!mpCQMCAWidget) mpCQMCAWidget = new CQMCAWidget(this);
+
   mpCQMCAWidget->hide();
 
   if (!optimizationWidget) optimizationWidget = new CQOptimizationWidget(this);
+
   optimizationWidget->hide();
 
   if (!optResultWidget) optResultWidget = new CQOptimizationResult(this);
+
   optResultWidget->hide();
 
   if (!paramFittingWidget) paramFittingWidget = new CQFittingWidget(this);
+
   paramFittingWidget->hide();
 
   if (!mpFittingResultWidget) mpFittingResultWidget = new CQFittingResult(this);
+
   mpFittingResultWidget->hide();
 
   if (!plotWidget) plotWidget = new PlotWidget(this);
+
   plotWidget->hide();
 
   if (!plotWidget1) plotWidget1 = new PlotWidget1(this);
+
   plotWidget1->hide();
 
   if (!reactionsWidget) reactionsWidget = new CQReactionsWidget(this);
+
   reactionsWidget->hide();
 
   if (!reactionsWidget1)
-    reactionsWidget1 = new CTabWidget(QString ("Reaction"), new ReactionsWidget1(this), this);
+    reactionsWidget1 = new CTabWidget(QString("Reaction"), new ReactionsWidget1(this), this);
+
   reactionsWidget1->hide();
 
   if (!scanWidget) scanWidget = new ScanWidget(this);
+
   scanWidget->hide();
 
   if (!stateWidget) stateWidget = new StateWidget(this);
+
   stateWidget->hide();
 
   if (!steadystateWidget) steadystateWidget = new SteadyStateWidget(this);
+
   steadystateWidget->hide();
 
   if (!tableDefinition) tableDefinition = new TableDefinition(this);
+
   tableDefinition->hide();
 
   if (!tableDefinition1) tableDefinition1 = new CQReportDefinition(this);
+
   tableDefinition1->hide();
 
 #ifdef COPASI_TSS
+
   if (!tssWidget) tssWidget = new TSSWidget(this);
+
   tssWidget->hide();
 #endif
 
   if (!sensWidget) sensWidget = new SensitivitiesWidget(this);
+
   sensWidget->hide();
 
   if (!sensResultWidget) sensResultWidget = new CQSensResultWidget(this);
+
   sensResultWidget->hide();
 
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
+
   timeSeriesWidget->hide();
 
   if (!trajectoryWidget) trajectoryWidget = new CQTrajectoryWidget(this);
+
   trajectoryWidget->hide();
 
 #ifdef COPASI_TSSA
+
   if (!tssaWidget) tssaWidget = new CQTSSAWidget(this);
+
   tssaWidget->hide();
 
   if (!tssaResultWidget) tssaResultWidget = new CQTSSAResultWidget(this);
+
   tssaResultWidget->hide();
 #endif // COPASI_TSSA
 
 #ifdef COPASI_DEBUG
+
   if (!mpUpdatesWidget) mpUpdatesWidget = new CQUpdatesWidget(this);
+
   mpUpdatesWidget->hide();
 #endif // COPASI_DEBUG
 
   if (!mpMathMatrixWidget) mpMathMatrixWidget = new CQMathMatrixWidget(this);
+
   mpMathMatrixWidget->hide();
 
   if (!mpLayoutsWidget) mpLayoutsWidget = new CQLayoutsWidget(this);
+
   mpLayoutsWidget->hide();
 }
 
@@ -499,21 +550,23 @@ void ListViews::ConstructNodeWidgets()
  * tries to find the right hand side widget that belongs to an item of the tree view
  */
 CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
-  {
-    // first try ID
-    C_INT32 id = item->getFolder()->getId();
-    CopasiWidget* pWidget = findWidgetFromId(id);
+{
+  // first try ID
+  C_INT32 id = item->getFolder()->getId();
+  CopasiWidget* pWidget = findWidgetFromId(id);
 
-    if (pWidget != NULL)
-      return pWidget;
+  if (pWidget != NULL)
+    return pWidget;
 
-    // then try parent id:
-    FolderListItem* parent = (FolderListItem*)item->parent();
-    if (!parent) return NULL;
-    id = parent->getFolder()->getId();
+  // then try parent id:
+  FolderListItem* parent = (FolderListItem*)item->parent();
 
-    switch (id)
-      {
+  if (!parent) return NULL;
+
+  id = parent->getFolder()->getId();
+
+  switch (id)
+    {
       case 111:
         return compartmentsWidget1;
         break;
@@ -540,16 +593,16 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 5:
         return functionWidget1;
         break;
-      }
+    }
 
-    //give up
-    return NULL;
-  }
+  //give up
+  return NULL;
+}
 
 CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
-  {
-    switch (id)
-      {
+{
+  switch (id)
+    {
       case - 1:
         break; //continue with parent id
       case 0:
@@ -673,19 +726,21 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 5:
         return functionWidget;
         break;
-      }
+    }
 
-    return NULL;
-  }
+  return NULL;
+}
 
 FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //should always return a valid item
 {
   FolderListItem * item = NULL;
 
   Q3ListViewItemIterator it(folders);
+
   for (; *it; ++it)
     {
       item = (FolderListItem*) * it;
+
       if (item->getFolder()->getId() == id)
         break;
     }
@@ -701,11 +756,14 @@ FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //shoul
   FolderListItem * item2;
   Q3ListViewItemIterator it2(item->firstChild());
   Q3ListViewItem * itemEnd = item->nextSibling();
+
   for (; *it2 && (*it2 != itemEnd); ++it2)
     {
       item2 = (FolderListItem*) * it2;
+
       if (item2->getFolder()->getObjectKey() == key)
         break;
+
       //if (item2 == itemEnd) //not found
       //  break;
     }
@@ -726,6 +784,7 @@ FolderListItem* ListViews::findListViewItem(C_INT32 id, std::string key) //shoul
 void ListViews::slotFolderChanged(Q3ListViewItem *i)
 {
   bool changeWidget = true;
+
   if (!i) return;
 
   folders->setCurrentItem(i);
@@ -736,7 +795,9 @@ void ListViews::slotFolderChanged(Q3ListViewItem *i)
 
   // find the widget
   CopasiWidget* newWidget = findWidgetFromItem(item);
+
   if (!newWidget) return; //do nothing
+
   std::string itemKey = item->getFolder()->getObjectKey();
 
   if (newWidget == currentWidget)
@@ -746,14 +807,18 @@ void ListViews::slotFolderChanged(Q3ListViewItem *i)
   if (currentWidget)
     {
       changeWidget = currentWidget->leave();
+
       if (!changeWidget) return;
+
       //item may point to an invalid ListViewItem now
       item = (FolderListItem*)folders->currentItem();
     }
 
   // find the widget again (it may have changed)
   newWidget = findWidgetFromItem(item);
+
   if (!newWidget) newWidget = defaultWidget; //should never happen
+
   itemKey = item->getFolder()->getObjectKey();
 
   // enter new widget
@@ -762,11 +827,12 @@ void ListViews::slotFolderChanged(Q3ListViewItem *i)
 
   // fall back
   if (!newWidget)
-  {newWidget = defaultWidget;}
+    {newWidget = defaultWidget;}
 
   if (currentWidget != newWidget)
     {
       if (currentWidget) currentWidget->hide();
+
       if (newWidget) newWidget->show();
     }
 
@@ -802,6 +868,7 @@ bool ListViews::updateAllListviews(C_INT32 id) //static
 
       (*it)->folders->blockSignals(false);
     }
+
   return true;
 }
 
@@ -813,6 +880,7 @@ void ListViews::storeCurrentItem()
   FolderListItem* item = (FolderListItem*)folders->currentItem();
   mSaveObjectKey = item->getFolder()->getObjectKey();
   mSaveFolderID = item->getFolder()->getId();
+
   while (mSaveFolderID == -1)
     {
       item = (FolderListItem*)item->parent();
@@ -833,8 +901,9 @@ void ListViews::storeCurrentItemInAllListViews()
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
   for (; it != ende; ++it)
-  {(*it)->storeCurrentItem();}
+    {(*it)->storeCurrentItem();}
 }
 
 //static
@@ -842,8 +911,9 @@ void ListViews::restoreCurrentItemInAllListViews()
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
   for (; it != ende; ++it)
-  {(*it)->restoreCurrentItem();}
+    {(*it)->restoreCurrentItem();}
 }
 
 //*******************************************************************************
@@ -859,174 +929,206 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   //maintain the "changed" flag
   switch (objectType)
     {
-    case METABOLITE:
-      switch (action)
-        {
-        case CHANGE:
-          break;
-        case RENAME:
-          break;
-        case ADD:
-          break;
-        case DELETE:
-          // check if it was the last metabolite, if yes,
-          // make the metabolite table the current widget
-          if (dataModel)
-            {
-              unsigned int numMetabolites = pDataModel->getModel()->getMetabolites().size();
-              if (numMetabolites == 0)
+      case METABOLITE:
+
+        switch (action)
+          {
+            case CHANGE:
+              break;
+            case RENAME:
+              break;
+            case ADD:
+              break;
+            case DELETE:
+
+              // check if it was the last metabolite, if yes,
+              // make the metabolite table the current widget
+              if (dataModel)
                 {
-                  ListViews::switchAllListViewsToWidget(112, "");
+                  unsigned int numMetabolites = pDataModel->getModel()->getMetabolites().size();
+
+                  if (numMetabolites == 0)
+                    {
+                      ListViews::switchAllListViewsToWidget(112, "");
+                    }
                 }
-            }
-          break;
-        default:
-          break;
-        }
-      break;
-    case COMPARTMENT:
-      switch (action)
-        {
-        case CHANGE:
-          break;
-        case RENAME:
-          break;
-        case ADD:
-          break;
-        case DELETE:
-          // check if it was the last compartment, if yes,
-          // make the compartment table the current widget
-          if (dataModel)
-            {
-              unsigned int numCompartments = pDataModel->getModel()->getCompartments().size();
-              if (numCompartments == 0)
+
+              break;
+            default:
+              break;
+          }
+
+        break;
+      case COMPARTMENT:
+
+        switch (action)
+          {
+            case CHANGE:
+              break;
+            case RENAME:
+              break;
+            case ADD:
+              break;
+            case DELETE:
+
+              // check if it was the last compartment, if yes,
+              // make the compartment table the current widget
+              if (dataModel)
                 {
-                  ListViews::switchAllListViewsToWidget(111, "");
+                  unsigned int numCompartments = pDataModel->getModel()->getCompartments().size();
+
+                  if (numCompartments == 0)
+                    {
+                      ListViews::switchAllListViewsToWidget(111, "");
+                    }
                 }
-            }
-          break;
-        default:
-          break;
-        }
-      break;
-    case REACTION:
-      switch (action)
-        {
-        case CHANGE:
-          break;
-        case RENAME:
-          break;
-        case ADD:
-          break;
-        case DELETE:
-          // check if it was the last reaction, if yes,
-          // make the reaction table the current widget
-          if (dataModel)
-            {
-              unsigned int numReactions = pDataModel->getModel()->getReactions().size();
-              if (numReactions == 0)
+
+              break;
+            default:
+              break;
+          }
+
+        break;
+      case REACTION:
+
+        switch (action)
+          {
+            case CHANGE:
+              break;
+            case RENAME:
+              break;
+            case ADD:
+              break;
+            case DELETE:
+
+              // check if it was the last reaction, if yes,
+              // make the reaction table the current widget
+              if (dataModel)
                 {
-                  ListViews::switchAllListViewsToWidget(114, "");
-                }
-            }
-          break;
-        default:
-          break;
-        }
-      break;
+                  unsigned int numReactions = pDataModel->getModel()->getReactions().size();
 
-    case MODELVALUE:
-      switch (action)
-        {
-        case CHANGE:
-          break;
-        case RENAME:
-          break;
-        case ADD:
-          break;
-        case DELETE:
-          // check if it was the last value, if yes,
-          // make the model value table the current widget
-          if (dataModel)
-            {
-              unsigned int numValues = pDataModel->getModel()->getNumModelValues();
-              if (numValues == 0)
+                  if (numReactions == 0)
+                    {
+                      ListViews::switchAllListViewsToWidget(114, "");
+                    }
+                }
+
+              break;
+            default:
+              break;
+          }
+
+        break;
+
+      case MODELVALUE:
+
+        switch (action)
+          {
+            case CHANGE:
+              break;
+            case RENAME:
+              break;
+            case ADD:
+              break;
+            case DELETE:
+
+              // check if it was the last value, if yes,
+              // make the model value table the current widget
+              if (dataModel)
                 {
-                  ListViews::switchAllListViewsToWidget(115, "");
+                  unsigned int numValues = pDataModel->getModel()->getNumModelValues();
+
+                  if (numValues == 0)
+                    {
+                      ListViews::switchAllListViewsToWidget(115, "");
+                    }
                 }
-            }
-          break;
-        default:
-          break;
-        }
-      break;
-      //case FUNCTION:
 
-    case PLOT:
+              break;
+            default:
+              break;
+          }
 
-      switch (action)
-        {
-        case DELETE:
-          if (dataModel)
-            {
-              unsigned int numPlots = (pDataModel->getPlotDefinitionList())->size();
-              if (numPlots == 0)
+        break;
+        //case FUNCTION:
+
+      case PLOT:
+
+        switch (action)
+          {
+            case DELETE:
+
+              if (dataModel)
                 {
-                  ListViews::switchAllListViewsToWidget(42, "");
+                  unsigned int numPlots = (pDataModel->getPlotDefinitionList())->size();
+
+                  if (numPlots == 0)
+                    {
+                      ListViews::switchAllListViewsToWidget(42, "");
+                    }
                 }
-            }
-          break;
-        case CHANGE:
-        case ADD:
-        case RENAME:
-          break;
-        }
 
-      if (dataModel) pDataModel->changed();
+              break;
+            case CHANGE:
+            case ADD:
+            case RENAME:
+              break;
+          }
 
-      break;
+        if (dataModel) pDataModel->changed();
 
-    case REPORT:
-      switch (action)
-        {
-        case DELETE:
+        break;
 
-          if (dataModel)
+      case REPORT:
 
-            {
-              unsigned int numReports = ((pDataModel)->getReportDefinitionList())->size();
-              if (numReports == 0)
+        switch (action)
+          {
+            case DELETE:
+
+              if (dataModel)
+
                 {
-                  ListViews::switchAllListViewsToWidget(43, "");
+                  unsigned int numReports = ((pDataModel)->getReportDefinitionList())->size();
+
+                  if (numReports == 0)
+                    {
+                      ListViews::switchAllListViewsToWidget(43, "");
+                    }
                 }
-            }
 
-          pDataModel->changed();
+              pDataModel->changed();
 
-          break;
-        default :
-          ;
-        }
-      break;
+              break;
+            default :
+              ;
+          }
 
-    case MODEL:
-      switch (action)
-        {
-        case CHANGE:
-        case RENAME:
-          if (dataModel) pDataModel->changed();
-          break;
-        case ADD:
-        case DELETE:
-          if (dataModel) setDataModel(dataModel);
-          break;
-        default:
-          break;
-        }
-      break;
+        break;
 
-    default:
-      break;
+      case MODEL:
+
+        switch (action)
+          {
+            case CHANGE:
+            case RENAME:
+
+              if (dataModel) pDataModel->changed();
+
+              break;
+            case ADD:
+            case DELETE:
+
+              if (dataModel) setDataModel(dataModel);
+
+              break;
+            default:
+              break;
+          }
+
+        break;
+
+      default:
+        break;
     }
 
   storeCurrentItemInAllListViews();
@@ -1105,6 +1207,7 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
     }
 
   bool success = true;
+
   // delete the layout windows when the current model is added
   // actually it would have been better to do this when a model is deleted, but
   // the deletion notification is only sent to the listviews if the deleted
@@ -1113,6 +1216,7 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
     {
       std::set<ListViews *>::iterator it = mListOfListViews.begin();
       std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
       for (; it != ende; ++it)
         {
           (*it)->mpLayoutsWidget->deleteLayoutWindows();
@@ -1129,9 +1233,10 @@ bool ListViews::notify(ObjectType objectType, Action action, const std::string &
   //tell the listviews to notify the other widgets
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
   for (; it != ende; ++it)
     {
-      if (! (*it)->updateCurrentWidget(objectType, action, key)) success = false;
+      if (!(*it)->updateCurrentWidget(objectType, action, key)) success = false;
     }
 
   notifyAllChildWidgets(objectType, action, key);
@@ -1163,6 +1268,7 @@ bool ListViews::commit()
   for (; it != ende; ++it)
     {
       tmp = (*it)->currentWidget;
+
       if (tmp && !tmp->leave()) success = false;
     }
 
@@ -1174,8 +1280,9 @@ void ListViews::switchAllListViewsToWidget(C_INT32 id, const std::string & key)
 {
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
   for (; it != ende; ++it)
-  {(*it)->switchToOtherWidget(id, key);}
+    {(*it)->switchToOtherWidget(id, key);}
 }
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
@@ -1236,6 +1343,7 @@ void ListViews::updateBiologicalDescriptionContents()
   while (it.hasNext())
     {
       pWidget = it.next();
+
       if (dynamic_cast<CQMiriamWidget* >(pWidget))
         dynamic_cast<CQMiriamWidget* >(pWidget)->updateResourcesList();
     }
@@ -1309,6 +1417,24 @@ void ListViews::buildChangedObjects()
       for (i = 0, imax = Group.size(); i < imax; i++)
         mChangedObjects.insert(Group.getParameter(i)->getObject(CCopasiObjectName("Reference=Value")));
     }
+
+  // Fix for Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrices.
+  const CArrayAnnotation * pMatrix = NULL;
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Stoichiometry(ann)")));
+
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Reduced stoichiometry(ann)")));
+
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
+
+  pMatrix = dynamic_cast<const CArrayAnnotation *>(pModel->getObject(std::string("Array=Link matrix(ann)")));
+
+  if (pMatrix != NULL)
+    pMatrix->appendElementReferences(mChangedObjects);
 
   try
     {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/20 10:39:43 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:19:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,14 +48,17 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
 {
   bool result = true;
   std::set<std::string> ids;
+
   if (pSBMLModel != NULL)
     {
       // the model itself
       const SBase* pSBase = NULL;
       std::string id;
+
       if (pSBMLModel->isSetId())
         {
           id = pSBMLModel->getId();
+
           if (ids.find(id) == ids.end())
             {
               ids.insert(id);
@@ -65,13 +68,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
               result = false;
             }
         }
+
       // ListOfFunctionDefinitions
       pSBase = pSBMLModel->getListOfFunctionDefinitions();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -81,13 +87,17 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           unsigned int i, iMax = pSBMLModel->getListOfFunctionDefinitions()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               pSBase = pSBMLModel->getListOfFunctionDefinitions()->get(i);
+
               if (pSBase->isSetId())
                 {
                   id = pSBase->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -99,13 +109,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfCompartmentTypes
       pSBase = pSBMLModel->getListOfCompartmentTypes();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -115,15 +128,19 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           // each compartment type
           unsigned int i, iMax = pSBMLModel->getListOfCompartmentTypes()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               pSBase = pSBMLModel->getCompartmentType(i);
               assert(pSBase != NULL);
+
               if (pSBase->isSetId())
                 {
                   id = pSBase->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -135,13 +152,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfSpeciesTypes
       pSBase = pSBMLModel->getListOfSpeciesTypes();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -151,15 +171,19 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           // each species type
           unsigned int i, iMax = pSBMLModel->getListOfSpeciesTypes()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               pSBase = pSBMLModel->getSpeciesType(i);
               assert(pSBase != NULL);
+
               if (pSBase->isSetId())
                 {
                   id = pSBase->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -171,13 +195,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfCompartments
       pSBase = pSBMLModel->getListOfCompartments();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -187,15 +214,19 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           // all compartments
           unsigned int i, iMax = pSBMLModel->getListOfCompartments()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               pSBase = pSBMLModel->getCompartment(i);
               assert(pSBase != NULL);
+
               if (pSBase->isSetId())
                 {
                   id = pSBase->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -207,13 +238,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfSpecies
       pSBase = pSBMLModel->getListOfSpecies();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -223,15 +257,19 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           // all species
           unsigned int i, iMax = pSBMLModel->getListOfSpecies()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               pSBase = pSBMLModel->getSpecies(i);
               assert(pSBase != NULL);
+
               if (pSBase->isSetId())
                 {
                   id = pSBase->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -243,13 +281,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfParameters
       pSBase = pSBMLModel->getListOfParameters();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -259,15 +300,19 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           // each parameter
           unsigned int i, iMax = pSBMLModel->getListOfParameters()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               pSBase = pSBMLModel->getParameter(i);
               assert(pSBase != NULL);
+
               if (pSBase->isSetId())
                 {
                   id = pSBase->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -279,13 +324,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfInitialAssignments
       pSBase = pSBMLModel->getListOfInitialAssignments();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -296,13 +344,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfRules
       pSBase = pSBMLModel->getListOfRules();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -313,13 +364,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfConstraints
       pSBase = pSBMLModel->getListOfConstraints();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -330,13 +384,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfReactions
       pSBase = pSBMLModel->getListOfReactions();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -346,15 +403,19 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                   result = false;
                 }
             }
+
           // all reactions
           unsigned int i, iMax = pSBMLModel->getListOfReactions()->size();
-          for (i = 0;i < iMax;++i)
+
+          for (i = 0; i < iMax; ++i)
             {
               const Reaction* pReaction = pSBMLModel->getReaction(i);
               assert(pReaction != NULL);
+
               if (pReaction->isSetId())
                 {
                   id = pReaction->getId();
+
                   if (ids.find(id) == ids.end())
                     {
                       ids.insert(id);
@@ -364,6 +425,7 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                       result = false;
                     }
                 }
+
               // for each reaction: ListOfSubstrates, each substrate, ListOfProducts, each
               // Product, ListOfModifieres, each modifier, KineticLaw, ListOfparameters,
               // each parameter
@@ -371,14 +433,17 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 {
                   pSBase = pReaction->getListOfReactants();
                   unsigned int j, jMax = pReaction->getListOfReactants()->size();
-                  for (j = 0;j < jMax;++j)
+
+                  for (j = 0; j < jMax; ++j)
                     {
                       pSBase = pReaction->getReactant(j);
                       assert(pSBase != NULL);
+
                       // since L2V2 species references can have ids
                       if (pSBase->isSetId())
                         {
                           id = pSBase->getId();
+
                           if (ids.find(id) == ids.end())
                             {
                               ids.insert(id);
@@ -390,18 +455,22 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                         }
                     }
                 }
+
               if (pReaction->getListOfProducts() != NULL)
                 {
                   pSBase = pReaction->getListOfProducts();
                   unsigned int j, jMax = pReaction->getListOfProducts()->size();
-                  for (j = 0;j < jMax;++j)
+
+                  for (j = 0; j < jMax; ++j)
                     {
                       pSBase = pReaction->getProduct(j);
                       assert(pSBase != NULL);
+
                       // since L2V2 species references can have ids
                       if (pSBase->isSetId())
                         {
                           id = pSBase->getId();
+
                           if (ids.find(id) == ids.end())
                             {
                               ids.insert(id);
@@ -413,18 +482,22 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                         }
                     }
                 }
+
               if (pReaction->getListOfModifiers() != NULL)
                 {
                   pSBase = pReaction->getListOfModifiers();
                   unsigned int j, jMax = pReaction->getListOfModifiers()->size();
-                  for (j = 0;j < jMax;++j)
+
+                  for (j = 0; j < jMax; ++j)
                     {
                       pSBase = pReaction->getModifier(j);
                       assert(pSBase != NULL);
+
                       // since L2V2 species references can have ids
                       if (pSBase->isSetId())
                         {
                           id = pSBase->getId();
+
                           if (ids.find(id) == ids.end())
                             {
                               ids.insert(id);
@@ -438,13 +511,16 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
                 }
             }
         }
+
       // ListOfEvents
       pSBase = pSBMLModel->getListOfEvents();
+
       if (pSBase != NULL)
         {
           if (pSBase->isSetId())
             {
               id = pSBase->getId();
+
               if (ids.find(id) == ids.end())
                 {
                   ids.insert(id);
@@ -456,6 +532,7 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
             }
         }
     }
+
   /*
   std::cout << "number of ids: " << ids.size() << std::endl;
   std::set<std::string>::iterator it=ids.begin();
@@ -494,10 +571,12 @@ void test000059::test_unique_id_1()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -537,10 +616,12 @@ void test000059::test_unique_id_2()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -580,10 +661,12 @@ void test000059::test_unique_id_3()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -624,10 +707,12 @@ void test000059::test_unique_id_4()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -667,10 +752,12 @@ void test000059::test_unique_id_5()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -710,10 +797,12 @@ void test000059::test_unique_id_6()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -754,10 +843,12 @@ void test000059::test_unique_id_7()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -797,10 +888,12 @@ void test000059::test_unique_id_8()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -841,10 +934,12 @@ void test000059::test_unique_id_9()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -885,10 +980,12 @@ void test000059::test_unique_id_10()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -922,10 +1019,12 @@ void test000059::test_unique_id_11()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -959,10 +1058,12 @@ void test000059::test_unique_id_12()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -997,10 +1098,12 @@ void test000059::test_unique_id_13()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -1034,10 +1137,12 @@ void test000059::test_unique_id_14()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -1072,10 +1177,12 @@ void test000059::test_unique_id_15()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -1110,10 +1217,12 @@ void test000059::test_unique_id_16()
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getObject(CCopasiObjectName("Reference=Value")));
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -1163,10 +1272,12 @@ void test000059::test_unique_id_17()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -1216,10 +1327,12 @@ void test000059::test_unique_id_18()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -1269,10 +1382,12 @@ void test000059::test_unique_id_19()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -1322,10 +1437,12 @@ void test000059::test_unique_id_20()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   pDocument = pDataModel->getCurrentSBMLDocument();
   pSBMLModel = pDocument->getModel();
@@ -1370,10 +1487,12 @@ void test000059::test_unique_id_21()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -1419,10 +1538,12 @@ void test000059::test_unique_id_21_2()
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
+
   while (refreshIt != refreshEndit)
     {
       (**refreshIt++)();
     }
+
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == false);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   const Model* pSBMLModel = pDocument->getModel();
@@ -1433,6 +1554,49 @@ void test000059::test_unique_id_21_2()
   CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
   CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
   CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 2);
+  CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
+}
+
+void test000059::test_unique_id_22()
+{
+  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  std::istringstream iss(test000059::MODEL_STRING22);
+  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  std::string modelString;
+
+  try
+    {
+      modelString = pDataModel->exportSBMLToString(NULL, 2, 3);
+    }
+  catch (...)
+    {
+      CPPUNIT_ASSERT(false);
+    }
+
+  CPPUNIT_ASSERT(modelString.empty() == false);
+
+  try
+    {
+      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(modelString));
+    }
+  catch (...)
+    {
+      CPPUNIT_ASSERT(false);
+    }
+
+  CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
+  const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
+  const Model* pSBMLModel = pDocument->getModel();
+  CPPUNIT_ASSERT(pSBMLModel != NULL);
+  CPPUNIT_ASSERT(pSBMLModel->getNumFunctionDefinitions() == 0);
+  CPPUNIT_ASSERT(pSBMLModel->getNumCompartments() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumSpecies() == 3);
+  CPPUNIT_ASSERT(pSBMLModel->getNumReactions() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumRules() == 1);
+  CPPUNIT_ASSERT(pSBMLModel->getNumInitialAssignments() == 2);
+  CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 5);
+  // now we check if the ids are unique
   CPPUNIT_ASSERT(checkIfIdsUnique(pSBMLModel) == true);
 }
 
@@ -1503,7 +1667,7 @@ const char* test000059::MODEL_STRING1 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING2 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1572,7 +1736,7 @@ const char* test000059::MODEL_STRING2 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING3 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1641,7 +1805,7 @@ const char* test000059::MODEL_STRING3 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING4 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1710,7 +1874,7 @@ const char* test000059::MODEL_STRING4 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING5 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1779,7 +1943,7 @@ const char* test000059::MODEL_STRING5 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING6 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1848,7 +2012,7 @@ const char* test000059::MODEL_STRING6 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING7 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1917,7 +2081,7 @@ const char* test000059::MODEL_STRING7 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING8 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1986,7 +2150,7 @@ const char* test000059::MODEL_STRING8 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING9 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2055,7 +2219,7 @@ const char* test000059::MODEL_STRING9 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING10 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2124,7 +2288,7 @@ const char* test000059::MODEL_STRING10 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING11 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2196,7 +2360,7 @@ const char* test000059::MODEL_STRING11 =
   "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING12 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2268,7 +2432,7 @@ const char* test000059::MODEL_STRING12 =
   "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING13 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2340,7 +2504,7 @@ const char* test000059::MODEL_STRING13 =
   "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING14 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2412,7 +2576,7 @@ const char* test000059::MODEL_STRING14 =
   "    <SBMLMap SBMLid=\"parameter_2\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING15 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2484,7 +2648,7 @@ const char* test000059::MODEL_STRING15 =
   "    <SBMLMap SBMLid=\"reaction_2\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING16 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2556,7 +2720,7 @@ const char* test000059::MODEL_STRING16 =
   "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING17 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2625,7 +2789,7 @@ const char* test000059::MODEL_STRING17 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING18 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2694,7 +2858,7 @@ const char* test000059::MODEL_STRING18 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING19 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2763,7 +2927,7 @@ const char* test000059::MODEL_STRING19 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING20 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2832,7 +2996,7 @@ const char* test000059::MODEL_STRING20 =
   "    </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;
 
 const char* test000059::MODEL_STRING21 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2905,4 +3069,105 @@ const char* test000059::MODEL_STRING21 =
   "    <SBMLMap SBMLid=\"species_1\" COPASIkey=\"Metabolite_0\"/>\n"
   "  </SBMLReference>\n"
   "</COPASI>\n"
-;
+  ;
+
+const char* test000059::MODEL_STRING22 =
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+  "<!-- generated with COPASI 4.4.29 (Debug) (http://www.copasi.org) at 2009-01-12 15:53:36 UTC -->\n"
+  "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"29\">\n"
+  "  <ListOfFunctions>\n"
+  "    <Function key=\"Function_14\" name=\"Mass action (reversible)\" type=\"MassAction\" reversible=\"true\">\n"
+  "      <Expression>\n"
+  "        k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;\n"
+  "      </Expression>\n"
+  "      <ListOfParameterDescriptions>\n"
+  "        <ParameterDescription key=\"FunctionParameter_62\" name=\"k1\" order=\"0\" role=\"constant\"/>\n"
+  "        <ParameterDescription key=\"FunctionParameter_39\" name=\"substrate\" order=\"1\" role=\"substrate\"/>\n"
+  "        <ParameterDescription key=\"FunctionParameter_67\" name=\"k2\" order=\"2\" role=\"constant\"/>\n"
+  "        <ParameterDescription key=\"FunctionParameter_71\" name=\"product\" order=\"3\" role=\"product\"/>\n"
+  "      </ListOfParameterDescriptions>\n"
+  "    </Function>\n"
+  "  </ListOfFunctions>\n"
+  "  <Model key=\"Model_1\" name=\"New Model\" timeUnit=\"s\" volumeUnit=\"ml\" quantityUnit=\"mmol\" type=\"deterministic\">\n"
+  "    <Comment>\n"
+  "      <body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  "        \n"
+  "      </body>\n"
+  "    </Comment>\n"
+  "    <ListOfCompartments>\n"
+  "      <Compartment key=\"Compartment_0\" name=\"compartment\" simulationType=\"fixed\">\n"
+  "      </Compartment>\n"
+  "    </ListOfCompartments>\n"
+  "    <ListOfMetabolites>\n"
+  "      <Metabolite key=\"Metabolite_0\" name=\"A\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "      <Metabolite key=\"Metabolite_1\" name=\"B\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "      <Metabolite key=\"Metabolite_2\" name=\"C\" simulationType=\"reactions\" compartment=\"Compartment_0\">\n"
+  "      </Metabolite>\n"
+  "    </ListOfMetabolites>\n"
+  "    <ListOfModelValues>\n"
+  "      <ModelValue key=\"ModelValue_0\" name=\"quantity\" simulationType=\"fixed\">\n"
+  "        <InitialExpression>\n"
+  "          &lt;CN=Root,Model=New Model,Vector=Reactions[reaction],ParameterGroup=Parameters,Parameter=k1,Reference=Value&gt;\n"
+  "        </InitialExpression>\n"
+  "      </ModelValue>\n"
+  "      <ModelValue key=\"ModelValue_1\" name=\"quantity_1\" simulationType=\"fixed\">\n"
+  "        <InitialExpression>\n"
+  "          2*&lt;CN=Root,Model=New Model,Vector=Values[quantity],Reference=InitialValue&gt;\n"
+  "        </InitialExpression>\n"
+  "      </ModelValue>\n"
+  "      <ModelValue key=\"ModelValue_2\" name=\"quantity_2\" simulationType=\"assignment\">\n"
+  "        <Expression>\n"
+  "          2*&lt;CN=Root,Model=New Model,Vector=Reactions[reaction],ParameterGroup=Parameters,Parameter=k2,Reference=Value&gt;\n"
+  "        </Expression>\n"
+  "      </ModelValue>\n"
+  "    </ListOfModelValues>\n"
+  "    <ListOfReactions>\n"
+  "      <Reaction key=\"Reaction_0\" name=\"reaction\" reversible=\"true\">\n"
+  "        <ListOfSubstrates>\n"
+  "          <Substrate metabolite=\"Metabolite_0\" stoichiometry=\"1\"/>\n"
+  "          <Substrate metabolite=\"Metabolite_1\" stoichiometry=\"2\"/>\n"
+  "        </ListOfSubstrates>\n"
+  "        <ListOfProducts>\n"
+  "          <Product metabolite=\"Metabolite_2\" stoichiometry=\"1\"/>\n"
+  "        </ListOfProducts>\n"
+  "        <ListOfConstants>\n"
+  "          <Constant key=\"Parameter_971\" name=\"k1\" value=\"0.1\"/>\n"
+  "          <Constant key=\"Parameter_970\" name=\"k2\" value=\"10\"/>\n"
+  "        </ListOfConstants>\n"
+  "        <KineticLaw function=\"Function_14\">\n"
+  "          <ListOfCallParameters>\n"
+  "            <CallParameter functionParameter=\"FunctionParameter_62\">\n"
+  "              <SourceParameter reference=\"Parameter_971\"/>\n"
+  "            </CallParameter>\n"
+  "            <CallParameter functionParameter=\"FunctionParameter_39\">\n"
+  "              <SourceParameter reference=\"Metabolite_0\"/>\n"
+  "              <SourceParameter reference=\"Metabolite_1\"/>\n"
+  "              <SourceParameter reference=\"Metabolite_1\"/>\n"
+  "            </CallParameter>\n"
+  "            <CallParameter functionParameter=\"FunctionParameter_67\">\n"
+  "              <SourceParameter reference=\"Parameter_970\"/>\n"
+  "            </CallParameter>\n"
+  "            <CallParameter functionParameter=\"FunctionParameter_71\">\n"
+  "              <SourceParameter reference=\"Metabolite_2\"/>\n"
+  "            </CallParameter>\n"
+  "          </ListOfCallParameters>\n"
+  "        </KineticLaw>\n"
+  "      </Reaction>\n"
+  "    </ListOfReactions>\n"
+  "    <StateTemplate>\n"
+  "      <StateTemplateVariable objectReference=\"Model_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Metabolite_2\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_2\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_0\"/>\n"
+  "      <StateTemplateVariable objectReference=\"ModelValue_1\"/>\n"
+  "      <StateTemplateVariable objectReference=\"Compartment_0\"/>\n"
+  "    </StateTemplate>\n"
+  "    <InitialState type=\"initialState\">\n"
+  "      0 6.022141500000001e+19 6.022141500000001e+19 6.022141500000001e+19 20 0.1 0.2 1\n"
+  "    </InitialState>\n"
+  "  </Model>\n"
+  "</COPASI>\n";

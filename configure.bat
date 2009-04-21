@@ -65,7 +65,7 @@ cd semantic-test-suite
 echo executing in semantic-test-suite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
@@ -75,7 +75,7 @@ cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
-echo   qmake "CONFIG-=release" "CONFIG-=debug" %arguments%
+echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..

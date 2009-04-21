@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,15 +90,15 @@ void StateSubwidget::loadMetabolites()
 
         switch (mFramework)
           {
-          case 0:
-            mpTblMetabolites->setText(i, 2, QString::number((*it)->getConcentration()));
-            mpTblMetabolites->setText(i, 3, QString::number((*it)->getConcentrationRate()));
-            break;
+            case 0:
+              mpTblMetabolites->setText(i, 2, QString::number((*it)->getConcentration()));
+              mpTblMetabolites->setText(i, 3, QString::number((*it)->getConcentrationRate()));
+              break;
 
-          case 1:
-            mpTblMetabolites->setText(i, 2, QString::number((*it)->getValue()));
-            mpTblMetabolites->setText(i, 3, QString::number((*it)->getRate()));
-            break;
+            case 1:
+              mpTblMetabolites->setText(i, 2, QString::number((*it)->getValue()));
+              mpTblMetabolites->setText(i, 3, QString::number((*it)->getRate()));
+              break;
           }
 
         mpTblMetabolites->setText(i, 4, QString::number((*it)->getTransitionTime()));
@@ -155,13 +155,13 @@ void StateSubwidget::loadReactions()
 
       switch (mFramework)
         {
-        case 0:
-          mpTblReactions->setText(i, 1, QString::number((*it)->getFlux()));
-          break;
+          case 0:
+            mpTblReactions->setText(i, 1, QString::number((*it)->getFlux()));
+            break;
 
-        case 1:
-          mpTblReactions->setText(i, 1, QString::number((*it)->getParticleFlux()));
-          break;
+          case 1:
+            mpTblReactions->setText(i, 1, QString::number((*it)->getParticleFlux()));
+            break;
         }
 
       mpTblReactions->setText(i, 2, FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, **it, false)));
@@ -180,6 +180,7 @@ void StateSubwidget::loadModelValues()
   C_INT32 i = 0;
 
   mpTblModelValues->setNumRows(mpModel->getModelValues().size());
+
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
       {
@@ -214,6 +215,7 @@ void StateSubwidget::loadJacobian()
 
   unsigned C_INT32 i, imax = eigen_i.size();
   tableEigenValues->setNumRows(imax);
+
   for (i = 0; i < imax; ++i)
     {
       tableEigenValues->setText(i, 0, QString::number(eigen_r[i]));
@@ -221,6 +223,7 @@ void StateSubwidget::loadJacobian()
     }
 
   unsigned C_INT32 j;
+
   for (j = 0; j < 2; ++j)
     tableEigenValues->adjustColumn(j);
 
@@ -240,6 +243,7 @@ void StateSubwidget::loadJacobian()
 
   imax = eigen_iX.size();
   tableEigenValuesX->setNumRows(imax);
+
   for (i = 0; i < imax; ++i)
     {
       tableEigenValuesX->setText(i, 0, QString::number(eigen_rX[i]));
@@ -266,42 +270,65 @@ void StateSubwidget::showUnits()
 
   // Update the column titles
 
-  QString TimeUnits(FROM_UTF8(mpModel->getTimeUnitName()));
-  QString ConcentrationUnits(FROM_UTF8(mpModel->getConcentrationUnitName()));
-  QString VolumeUnits(FROM_UTF8(mpModel->getVolumeUnitName()));
+  QString TimeUnits = FROM_UTF8(mpModel->getTimeUnits());
+
+  if (!TimeUnits.isEmpty())
+    TimeUnits = "\n(" + TimeUnits + ")";
+
+  QString FrequencyUnits = FROM_UTF8(mpModel->getFrequencyUnits());
+
+  if (!FrequencyUnits.isEmpty())
+    FrequencyUnits = "\n(" + FrequencyUnits + ")";
+
+  QString ConcentrationUnits = FROM_UTF8(mpModel->getConcentrationUnits());
+
+  if (!ConcentrationUnits.isEmpty())
+    ConcentrationUnits = "\n(" + ConcentrationUnits + ")";
+
+  QString ConcentrationRateUnits = FROM_UTF8(mpModel->getConcentrationRateUnits());
+
+  if (!ConcentrationRateUnits.isEmpty())
+    ConcentrationRateUnits = "\n(" + ConcentrationRateUnits + ")";
+
+  QString VolumeUnits = FROM_UTF8(mpModel->getVolumeUnits());
+
+  if (!VolumeUnits.isEmpty())
+    VolumeUnits = "\n(" + VolumeUnits + ")";
+
+  QString VolumeRateUnits = FROM_UTF8(mpModel->getVolumeRateUnits());
+
+  if (!VolumeRateUnits.isEmpty())
+    VolumeRateUnits = "\n(" + VolumeRateUnits + ")";
+
+  QString QuantityRateUnits = FROM_UTF8(mpModel->getQuantityRateUnits());
+
+  if (!QuantityRateUnits.isEmpty())
+    QuantityRateUnits = "\n(" + QuantityRateUnits + ")";
 
   mpTblMetabolites->horizontalHeader()
-  ->setLabel(4, "Transition Time\n(" + TimeUnits + ")");
+  ->setLabel(4, "Transition Time" + TimeUnits);
 
-  mpTblCompartments->horizontalHeader()
-  ->setLabel(2, "Volume\n(" + VolumeUnits + ")");
+  mpTblCompartments->horizontalHeader()->setLabel(2, "Volume" + VolumeUnits);
 
-  mpTblCompartments->horizontalHeader()
-  ->setLabel(3, "Rate\n(" + VolumeUnits + "/" + TimeUnits + ")");
+  mpTblCompartments->horizontalHeader()->setLabel(3, "Rate" + VolumeRateUnits);
 
   switch (mFramework)
     {
-    case 0:
-      mpTblMetabolites->horizontalHeader()
-      ->setLabel(2, "Concentration\n(" + ConcentrationUnits + ")");
+      case 0:
+        mpTblMetabolites->horizontalHeader()->setLabel(2, "Concentration" + ConcentrationUnits);
 
-      mpTblMetabolites->horizontalHeader()
-      ->setLabel(3, "Rate\n(" + ConcentrationUnits + "/" + TimeUnits + ")");
+        mpTblMetabolites->horizontalHeader()->setLabel(3, "Rate" + ConcentrationRateUnits);
 
-      mpTblReactions->horizontalHeader()
-      ->setLabel(1, "Flux\n(" + FROM_UTF8(mpModel->getQuantityRateUnitName()) + ")");
-      break;
+        mpTblReactions->horizontalHeader()->setLabel(1, "Flux" + QuantityRateUnits);
+        break;
 
-    case 1:
-      mpTblMetabolites->horizontalHeader()
-      ->setLabel(2, "Particle Numbers");
+      case 1:
+        mpTblMetabolites->horizontalHeader()->setLabel(2, "Particle Numbers");
 
-      mpTblMetabolites->horizontalHeader()
-      ->setLabel(3, "Rate\n(#/" + TimeUnits + ")");
+        mpTblMetabolites->horizontalHeader()->setLabel(3, "Rate" + FrequencyUnits);
 
-      mpTblReactions->horizontalHeader()
-      ->setLabel(1, "Particle Flux\n(#/" + TimeUnits + ")");
-      break;
+        mpTblReactions->horizontalHeader()->setLabel(1, "Particle Flux" + FrequencyUnits);
+        break;
     }
 }
 
@@ -417,29 +444,31 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
 {
   switch (objectType)
     {
-    case ListViews::MODEL:
-      // For a new model we need to remove references to no longer existing metabolites
-      switch (action)
-        {
-        case ListViews::ADD:
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-          mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-          clear();
-          showUnits();
-          mpTask = NULL;
-          break;
+      case ListViews::MODEL:
 
-        case ListViews::CHANGE:
-          showUnits();
-          break;
+        // For a new model we need to remove references to no longer existing metabolites
+        switch (action)
+          {
+            case ListViews::ADD:
+              assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+              mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+              clear();
+              showUnits();
+              mpTask = NULL;
+              break;
 
-        default:
-          break;
-        }
-      break;
+            case ListViews::CHANGE:
+              showUnits();
+              break;
 
-    default:
-      break;
+            default:
+              break;
+          }
+
+        break;
+
+      default:
+        break;
     }
 
   return true;

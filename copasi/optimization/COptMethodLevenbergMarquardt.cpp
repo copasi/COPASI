@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Date: 2009/04/21 16:18:08 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -90,17 +95,17 @@ bool COptMethodLevenbergMarquardt::optimise()
 
       switch (OptItem.checkConstraint())
         {
-        case - 1:
-          mCurrent[i] = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mCurrent[i] = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mCurrent[i] = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mCurrent[i] = *OptItem.getUpperBoundValue();
+            break;
 
-        case 0:
-          mCurrent[i] = OptItem.getStartValue();
-          break;
+          case 0:
+            mCurrent[i] = OptItem.getStartValue();
+            break;
         }
 
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
@@ -121,7 +126,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       mpParentTask->output(COutputInterface::DURING);
     }
 
-  // initialise LM_lambda
+  // Initialize LM_lambda
   LM_lambda = 1.0;
   nu = 2.0;
   calc_hess = true;
@@ -136,6 +141,7 @@ bool COptMethodLevenbergMarquardt::optimise()
 
       // Cholesky decomposition of Hessian
       mHessianLM = mHessian;
+
       // add Marquardt lambda to Hessian
       // put -gradient in h
       for (i = 0; i < mVariableSize; i++)
@@ -174,16 +180,16 @@ bool COptMethodLevenbergMarquardt::optimise()
 
           switch (OptItem.checkConstraint(mCurrent[i]))
             {
-            case - 1:
-              mCurrent[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
-              break;
+              case - 1:
+                mCurrent[i] = *OptItem.getLowerBoundValue() + DBL_EPSILON;
+                break;
 
-            case 1:
-              mCurrent[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
-              break;
+              case 1:
+                mCurrent[i] = *OptItem.getUpperBoundValue() - DBL_EPSILON;
+                break;
 
-            case 0:
-              break;
+              case 0:
+                break;
             }
         }
 
@@ -274,6 +280,7 @@ bool COptMethodLevenbergMarquardt::optimise()
         {
           // restore the old parameter values
           mCurrent = mBest;
+
           for (i = 0; i < mVariableSize; i++)
             (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
 
@@ -293,6 +300,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       if (mpCallBack)
         mContinue &= mpCallBack->progress(mhIteration);
     }
+
   return true;
 }
 
@@ -330,6 +338,7 @@ bool COptMethodLevenbergMarquardt::initialize()
   mTolerance = * getValue("Tolerance").pDOUBLE;
 
   mIteration = 0;
+
   if (mpCallBack)
     mhIteration =
       mpCallBack->addItem("Current Iteration",
@@ -345,11 +354,12 @@ bool COptMethodLevenbergMarquardt::initialize()
   mGradient.resize(mVariableSize);
   mHessian.resize(mVariableSize, mVariableSize);
 
-  mBestValue = mpOptProblem->getSolutionValue();
+  mBestValue = 2.0 * DBL_MAX;
 
   mContinue = true;
 
   CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
+
   if (pFitProblem != NULL)
     // if (false)
     {
@@ -484,6 +494,7 @@ void COptMethodLevenbergMarquardt::hessian()
       for (i = 0; i < mVariableSize; i++)
         {
           pHessian = mHessian[i];
+
           for (j = 0; j <= i; j++, pHessian++)
             {
               *pHessian = 0.0;
@@ -539,8 +550,8 @@ void COptMethodLevenbergMarquardt::hessian()
       mGradient = mTemp;
     }
 
-  // make the matrix symetric
-  // not realy necessary
+  // make the matrix symmetric
+  // not really necessary
   for (i = 0; i < mVariableSize; i++)
     for (j = i + 1; j < mVariableSize; j++)
       mHessian[i][j] = mHessian[j][i];

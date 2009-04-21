@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:16 $
+//   $Date: 2009/04/21 16:18:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.60 2009/03/02 21:02:16 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.61 2009/04/21 16:18:35 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,7 +36,7 @@
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <qtoolbutton.h>
-#include <qlayout.h> 
+#include <qlayout.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <Q3GridLayout>
@@ -263,9 +263,9 @@ void PlotWidget1::addCurve2D()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
-  pBrowser->setModel(pDataModel->getModel(), CCopasiSimpleSelectionTree::PLOT_OBJECT);
+  pBrowser->setModel(pDataModel->getModel(), CCopasiSimpleSelectionTree::NumericValues);
 
-  if (pBrowser->exec () == QDialog::Rejected)
+  if (pBrowser->exec() == QDialog::Rejected)
     {
       return;
     }
@@ -286,6 +286,7 @@ void PlotWidget1::addCurve2D()
 
   // x-axis is set for single cell selection
   std::string cn;
+
   for (i = 0; i < vector1.size(); i++)
     {
       if (vector1[i])  // the object is not empty
@@ -296,6 +297,7 @@ void PlotWidget1::addCurve2D()
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
               const CCopasiObject * pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+
               if (!pObject) continue;
 
               cn = pObject->getCN();
@@ -327,14 +329,17 @@ void PlotWidget1::addCurve2D()
               // second argument is set false for multi selection
               std::vector<const CCopasiObject*> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
               std::vector<const CCopasiObject*>::const_iterator it;
+
               for (it = vvv.begin(); it != vvv.end(); ++it)
                 {
                   if (!*it) continue;
+
                   cn = (*it)->getCN();
 
                   //check if the CN already is in the list, if not add it.
                   for (sit = objects2.begin(); sit != objects2.end(); ++sit)
                     if (*sit == cn) break;
+
                   if (sit == objects2.end())
                     objects2.push_back(cn);
                 }
@@ -346,6 +351,7 @@ void PlotWidget1::addCurve2D()
               //check if the CN already is in the list, if not add it.
               for (sit = objects2.begin(); sit != objects2.end(); ++sit)
                 if (*sit == cn) break;
+
               if (sit == objects2.end())
                 objects2.push_back(cn);
             }
@@ -377,6 +383,7 @@ void PlotWidget1::addCurve2D()
   else
     {
       unsigned C_INT32 imax;
+
       if (objects1.size() > objects2.size())
         imax = objects2.size();
       else
@@ -422,6 +429,7 @@ void PlotWidget1::createHistograms(std::vector<const CCopasiObject* >objects, co
   C_INT32 storeTab = tabs->count();
 
   unsigned C_INT32 i;
+
   for (i = 1; i < objects.size(); ++i)
     {
       if (objects[i])
@@ -459,10 +467,12 @@ void PlotWidget1::deletePlot()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   if (!pDataModel->getModel())
     return;
 
   CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (!pspec) return;
 
   Index =
@@ -519,11 +529,11 @@ void PlotWidget1::typeChanged()
 
   switch (comboType->currentItem())
     {
-    case 0:
-      newType = CPlotItem::plot2d;
-      break;
-    default :
-      fatalError();
+      case 0:
+        newType = CPlotItem::plot2d;
+        break;
+      default :
+        fatalError();
     }
 
   if (mType == newType)
@@ -551,16 +561,17 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 
   //type
   mType = pspec->getType();
+
   switch (mType)
     {
-    case CPlotItem::plot2d:
-      comboType->setCurrentItem(0);
-      checkLogX->setChecked(pspec->isLogX());
-      checkLogY->setChecked(pspec->isLogY());
-      break;
-      break;
-    default:
-      fatalError();
+      case CPlotItem::plot2d:
+        comboType->setCurrentItem(0);
+        checkLogX->setChecked(pspec->isLogX());
+        checkLogY->setChecked(pspec->isLogY());
+        break;
+        break;
+      default:
+        fatalError();
     }
 
   C_INT32 oldIndex = tabs->currentPageIndex();
@@ -571,6 +582,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
   //reconstruct tabWidget from curve specs
   const CCopasiVector<CPlotItem> & curves = pspec->getItems();
   unsigned C_INT32 i, imax = curves.size();
+
   for (i = 0; i < imax; ++i)
     {
       if (curves[i]->getType() == CPlotItem::curve2d)
@@ -600,6 +612,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 bool PlotWidget1::saveToPlotSpec()
 {
   CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+
   if (!pspec) return true;
 
   pspec->cleanup();
@@ -622,9 +635,11 @@ bool PlotWidget1::saveToPlotSpec()
   CPlotItem* item;
   unsigned C_INT32 i, imax;
   imax = tabs->count();
+
   for (i = 0; i < imax; ++i)
     {
       Curve2DWidget* tmpCurve2D = dynamic_cast<Curve2DWidget*>(tabs->page(i));
+
       if (tmpCurve2D)
         {
           item = pspec->createItem("dummyname", CPlotItem::curve2d);
@@ -632,6 +647,7 @@ bool PlotWidget1::saveToPlotSpec()
         }
 
       HistoWidget* tmpHisto = dynamic_cast<HistoWidget*>(tabs->page(i));
+
       if (tmpHisto)
         {
           item = pspec->createItem("dummyname", CPlotItem::histoItem1d);
@@ -669,19 +685,20 @@ bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_U
   if (mIgnoreUpdates) return true;
 
   switch (objectType)
-    { //TODO: check list:
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::COMPARTMENT:
-    case ListViews::METABOLITE:
-    case ListViews::REPORT:
-    case ListViews::PLOT:
-      return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
-      break;
+    {//TODO: check list:
+      case ListViews::MODEL:
+      case ListViews::STATE:
+      case ListViews::COMPARTMENT:
+      case ListViews::METABOLITE:
+      case ListViews::REPORT:
+      case ListViews::PLOT:
+        return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return true;
 }
 

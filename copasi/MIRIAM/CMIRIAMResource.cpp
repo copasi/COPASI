@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,16 +83,16 @@ void CMIRIAMResources::addMIRIAMResource(CMIRIAMResource * mimriamResource)
 }
 
 const CMIRIAMResources & CMIRIAMResources::getMIRIAMResources() const
-  {return * this;}
+{return * this;}
 
 const CCopasiParameterGroup & CMIRIAMResources::getResourceList() const
-  {return * mpMIRIAMResources;}
+{return * mpMIRIAMResources;}
 
 const unsigned C_INT32 & CMIRIAMResources::getMIRIAMLastUpdateDate() const
-  {return * mpLastUpdateDate;}
+{return * mpLastUpdateDate;}
 
 const unsigned C_INT32 & CMIRIAMResources::getMIRIAMUpdateFrequency() const
-  {return * mpUpdateFrequency;}
+{return * mpUpdateFrequency;}
 
 bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
 {
@@ -105,86 +105,75 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
   CCopasiParameterGroup * pTmpCpyCMIRIAMResources = new CCopasiParameterGroup("Resources");
 
   CMIRIAMResource * pMIRIAMResource = NULL;
-  char *pURI, *pName, *pURL, *pURL2, *pIsDeprecated, *pPattern, *pRegExp;
-  int itNames = 0, itURLs = 0, sizeNames = 0, sizeURLs = 0;
+  std::string Name, URI, Deprecated, Pattern, IsDeprecated;
+  int itNames = 0, itURIs = 0, sizeNames = 0, sizeURIs = 0;
   unsigned C_INT32 processStep = 0, processSteps, hUpdateStep;
-  struct ns2__getDataTypesNameResponse * pDataTypesName = new ns2__getDataTypesNameResponse();
-  struct ns2__getDataTypeURLsResponse * pDataTypeURLs = NULL;
+  struct ns2__getDataTypesNameResponse DataTypesName;
 
-  if (pProxy->getDataTypesName(*pDataTypesName) == SOAP_OK)
+  if (pProxy->getDataTypesName(DataTypesName) == SOAP_OK)
     {
-      sizeNames = pDataTypesName->getDataTypesNameReturn->__size;
+      sizeNames = DataTypesName.getDataTypesNameReturn->__size;
       processSteps = sizeNames + 2;
       hUpdateStep = pProcessReport->addItem("Update Process",
                                             CCopasiParameter::UINT, &processStep, &processSteps);
-      if (pProcessReport && !pProcessReport->progress(hUpdateStep)) return false;
+
+      if (pProcessReport && !pProcessReport->progress(hUpdateStep))
+        return false;
 
       for (itNames = 0; itNames < sizeNames; itNames++)
         {
-          pName = "", pURL = "";
-          pDataTypeURLs = new ns2__getDataTypeURLsResponse();
+          struct ns2__getDataTypeURIsResponse DataTypeURIs;
 
-          if (pDataTypesName->getDataTypesNameReturn->__ptr[itNames])
-          {pName = pDataTypesName->getDataTypesNameReturn->__ptr[itNames];}
-          pMIRIAMResource = new CMIRIAMResource(pName, NULL);
+          if (DataTypesName.getDataTypesNameReturn->__ptr[itNames] != "")
+            Name = DataTypesName.getDataTypesNameReturn->__ptr[itNames];
 
-          if ((pProxy->getDataTypeURI(NULL, &*pName, *&pURI) == SOAP_OK)
-              && (pProxy->getDataTypeURLs(&*pName, *pDataTypeURLs) == SOAP_OK)
-              && (pProxy->getDataTypePattern(&*pName, *&pPattern) == SOAP_OK)
-              && (pProxy->checkRegExp(&*pName, NULL, *&pRegExp) == SOAP_OK))
+          pMIRIAMResource = new CMIRIAMResource(Name, NULL);
+
+          if ((pProxy->getDataTypeURI(Name, URI) == SOAP_OK)
+              && (pProxy->getDataTypeURIs(Name, DataTypeURIs) == SOAP_OK)
+              && (pProxy->getDataTypePattern(Name, Pattern) == SOAP_OK))
             {
-              sizeURLs = pDataTypeURLs->_getDataTypeURLsReturn->__size;
-              if (sizeURLs != 0)
-                {
-                  pURL = pDataTypeURLs->_getDataTypeURLsReturn->__ptr[0];
-                  for (itURLs = 0; itURLs < sizeURLs; itURLs++)
-                    {
-                      pURL2 = pDataTypeURLs->_getDataTypeURLsReturn->__ptr[itURLs];
+              sizeURIs = DataTypeURIs._getDataTypeURIsReturn->__size;
 
-                      if (pProxy->isDeprecated(&*pURL2, *&pIsDeprecated) == SOAP_OK)
-                        {
-                          if (strcmp(pIsDeprecated, "true") == 0)
-                          {pMIRIAMResource->addDeprecatedURL(pURL2);}
-                        }
-                      else
-                      {success = false;}
+              if (sizeURIs != 0)
+                {
+                  for (itURIs = 0; itURIs < sizeURIs; itURIs++)
+                    {
+                      Deprecated = DataTypeURIs._getDataTypeURIsReturn->__ptr[itURIs];
+
+                      if (Deprecated != URI)
+                        pMIRIAMResource->addDeprecatedURL(Deprecated);
                     }
                 }
 
-              pMIRIAMResource->setMIRIAMDisplayName(pName);
-              pMIRIAMResource->setMIRIAMURL(pURL);
-              pMIRIAMResource->setMIRIAMURI(pURI);
-              pMIRIAMResource->setMIRIAMPattern(pPattern);
-              pMIRIAMResource->setMIRIAMRegExp(strcmp(pRegExp, "true") == 0);
-              if (!strcmp(pURI, "urn:miriam:arxiv") ||
-                  !strcmp(pURI, "urn:miriam:doi") ||
-                  !strcmp(pURI, "urn:miriam:pubmed"))
-                pMIRIAMResource->setMIRIAMCitation(true);
-              else
-                pMIRIAMResource->setMIRIAMCitation(false);
+              pMIRIAMResource->setMIRIAMDisplayName(Name);
+              pMIRIAMResource->setMIRIAMURI(URI);
+              pMIRIAMResource->setMIRIAMPattern(Pattern);
+              pMIRIAMResource->setMIRIAMCitation(URI == "urn:miriam:arxiv" ||
+                                                 URI == "urn:miriam:doi" ||
+                                                 URI == "urn:miriam:pubmed" ||
+                                                 URI == "urn:miriam:isbn");
 
               pTmpCpyCMIRIAMResources->addParameter(pMIRIAMResource);
             }
           else
-          {success = false;}
-          processStep++;
-          if (pProcessReport && !pProcessReport->progress(hUpdateStep)) return false;
-        }
-      pdelete(pDataTypesName);
-      processStep++;
-      if (pProcessReport && !pProcessReport->progress(hUpdateStep)) return false;
-    }
-  else
-  {success = false;}
+            success = false;
 
-  if (!success)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR,
-                     "Connection to MIRIRAM Web Services failed.\n%s\n%s",
-                     pProxy->soap_fault_string(),
-                     pProxy->soap_fault_detail());
+          processStep++;
+
+          if (pProcessReport && !pProcessReport->progress(hUpdateStep))
+            return false;
+        }
+
+      processStep++;
+
+      if (pProcessReport && !pProcessReport->progress(hUpdateStep))
+        return false;
     }
   else
+    success = false;
+
+  if (success)
     {
       // TODO add a resource for local objects, i.e., within the current model.
 
@@ -194,13 +183,21 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
       createDisplayNameMap();
       createURIMap();
     }
+  else
+    CCopasiMessage(CCopasiMessage::ERROR,
+                   "Connection to MIRIRAM Web Services failed.\n%s\n%s",
+                   pProxy->soap_fault_string(),
+                   pProxy->soap_fault_detail());
 
   pdelete(pTmpCpyCMIRIAMResources);
 
   processStep++;
+
   if (pProcessReport && !pProcessReport->progress(hUpdateStep)) return false;
+
   if (pProcessReport) pProcessReport->finish(hUpdateStep);
-  pProxy->~MiriamWebServicesSoapBindingProxy();
+
+  pdelete(pProxy);
 
   return success;
 }
@@ -217,7 +214,8 @@ unsigned C_INT32 CMIRIAMResources::getActDateInSeconds()
 bool CMIRIAMResources::autoUpdateMIRIAMResources(CProcessReport * pProcessReport)
 {
   if ((*mpLastUpdateDate + *mpUpdateFrequency) <= getActDateInSeconds())
-  {return updateMIRIAMResources(pProcessReport);}
+    {return updateMIRIAMResources(pProcessReport);}
+
   return false;
 }
 
@@ -263,72 +261,69 @@ void CMIRIAMResources::createURIMap()
   for (; it != end; ++it)
     {
       pResource = static_cast< CMIRIAMResource * >(*it);
-      mURI2Resource[pResource->getMIRIAMURI()] = Index;
+      mURI2Resource[pResource->getMIRIAMURI() + ":"] = Index;
 
       const CCopasiParameterGroup * pDeprecated = &pResource->getMIRIAMDeprecated();
       CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
       CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
 
       for (; itDeprecated != endDeprecated; ++itDeprecated)
-      {mURI2Resource[*(*itDeprecated)->getValue().pSTRING] = Index;}
+        {mURI2Resource[*(*itDeprecated)->getValue().pSTRING + ":"] = Index;}
 
       Index++;
     }
 }
 
 const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const unsigned C_INT32 index) const
-  {
-    if (index >= mpMIRIAMResources->size())
-      return * pUnknownResource;
+{
+  if (index >= mpMIRIAMResources->size())
+    return * pUnknownResource;
 
-    return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
-  }
+  return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
+}
 
 unsigned C_INT32 CMIRIAMResources::getMIRIAMResourceIndex(const std::string & URI) const
-  {
-    // Since the URI contains always an id this will always point past the actual element.
-    std::map< std::string , unsigned C_INT32 >::const_iterator it = mURI2Resource.upper_bound(URI);
+{
+  unsigned C_INT32 index = C_INVALID_INDEX;
 
-    // we have an unknown URI
-    if (it == mURI2Resource.begin())
-      return C_INVALID_INDEX;
+  std::map< std::string , unsigned C_INT32 >::const_iterator it = mURI2Resource.lower_bound(URI);
+  std::map< std::string , unsigned C_INT32 >::const_iterator end = mURI2Resource.upper_bound(URI);
 
-    // it-- is defined for end as long as x exist with x++ = end, i.e., the map is not empty.
-    it--;
+  if (it == mURI2Resource.begin())
+    return index;
 
-    const CMIRIAMResource * pResource = &getMIRIAMResource(it->second);
+  it--;
 
-    // Check whether the URI base of the candidate matches.
-    if (URI.substr(0, pResource->getMIRIAMURI().length()) == pResource->getMIRIAMURI())
-    {return it->second;}
+  for (; it != end; ++it)
+    {
+      const CMIRIAMResource * pResource = &getMIRIAMResource(it->second);
 
-    // We need to check for deprecated URIs
-    const CCopasiParameterGroup * pDeprecated = &pResource->getMIRIAMDeprecated();
-    CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
-    CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
+      // Check whether the URI base of the candidate matches.
+      if (URI.substr(0, pResource->getMIRIAMURI().length()) == pResource->getMIRIAMURI())
+        {
+          index =  it->second;
+          break;
+        }
+    }
 
-    for (; itDeprecated != endDeprecated; ++itDeprecated)
-      if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING)
-      {return it->second;}
-
-    return C_INVALID_INDEX;
-  }
+  return index;
+}
 
 unsigned C_INT32 CMIRIAMResources::getResourceIndexFromDisplayName(const std::string & displayName) const
-  {
-    // Check if the display name is a know resource
-    std::map< std::string, unsigned C_INT32>::const_iterator it =
-      mDisplayName2Resource.find(displayName.c_str());
+{
+  // Check if the display name is a know resource
+  std::map< std::string, unsigned C_INT32>::const_iterator it =
+    mDisplayName2Resource.find(displayName.c_str());
 
-    // If we did not find the resource we set it to unknown
-    if (it == mDisplayName2Resource.end())
-      {
-        // unknown is indicated by an invalid index.
-        return C_INVALID_INDEX;
-      }
+  // If we did not find the resource we set it to unknown
+  if (it == mDisplayName2Resource.end())
+    {
+      // unknown is indicated by an invalid index.
+      return C_INVALID_INDEX;
+    }
 
-    return it->second;
-  }
+  return it->second;
+}
 
 /*void CMIRIAMResources::printResources(const std::string & sourceClass,
                                       const std::string & sourceFunction) const
@@ -358,9 +353,7 @@ CMIRIAMResource::CMIRIAMResource(const std::string & name,
                                  const CCopasiContainer * pParent) :
     CCopasiParameterGroup(name, pParent),
     mpDisplayName(NULL),
-    mpURL(NULL),
     mpURI(NULL),
-    mpRegExp(NULL),
     mpCitation(NULL),
     mpDeprecated(NULL)
 {initializeParameter();}
@@ -369,9 +362,7 @@ CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
                                  const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     mpDisplayName(NULL),
-    mpURL(NULL),
     mpURI(NULL),
-    mpRegExp(NULL),
     mpCitation(NULL),
     mpDeprecated(NULL)
 {initializeParameter();}
@@ -380,9 +371,7 @@ CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
                                  const CCopasiContainer * pParent):
     CCopasiParameterGroup(group, pParent),
     mpDisplayName(NULL),
-    mpURL(NULL),
     mpURI(NULL),
-    mpRegExp(NULL),
     mpCitation(NULL),
     mpDeprecated(NULL)
 {initializeParameter();}
@@ -391,14 +380,10 @@ void CMIRIAMResource::initializeParameter()
 {
   mpDisplayName = assertParameter("DisplayName", CCopasiParameter::STRING,
                                   (std::string) "")->getValue().pSTRING;
-  mpURL = assertParameter("URL", CCopasiParameter::STRING,
-                          (std::string) "")->getValue().pSTRING;
   mpURI = assertParameter("URI", CCopasiParameter::STRING,
                           (std::string) "")->getValue().pSTRING;
   mpPattern = assertParameter("Pattern", CCopasiParameter::STRING,
                               (std::string) "")->getValue().pSTRING;
-  mpRegExp = assertParameter("RegExp", CCopasiParameter::BOOL,
-                             false)->getValue().pBOOL;
   mpCitation = assertParameter("Citation", CCopasiParameter::BOOL,
                                false)->getValue().pBOOL;
   mpDeprecated = assertGroup("Deprecated");
@@ -428,46 +413,34 @@ void CMIRIAMResource::printResource() const
   }*/
 
 const CMIRIAMResource & CMIRIAMResource::getMIRIAMMIRIAMResource() const
-  {return * this;}
+{return * this;}
 
 void CMIRIAMResource::setMIRIAMDisplayName(const std::string & displayName)
 {*mpDisplayName = displayName;}
 
 const std::string & CMIRIAMResource::getMIRIAMDisplayName() const
-  {return *mpDisplayName;}
-
-void CMIRIAMResource::setMIRIAMURL(const std::string & URL)
-{*mpURL = URL;}
-
-const std::string & CMIRIAMResource::getMIRIAMURL() const
-  {return * mpURL;}
+{return *mpDisplayName;}
 
 void CMIRIAMResource::setMIRIAMURI(const std::string & URI)
 {*mpURI = URI;}
 
 const std::string & CMIRIAMResource::getMIRIAMURI() const
-  {return * mpURI;}
+{return * mpURI;}
 
 void CMIRIAMResource::setMIRIAMPattern(const std::string & pattern)
 {*mpPattern = pattern;}
 
 const std::string & CMIRIAMResource::getMIRIAMPattern() const
-  {return * mpPattern;}
-
-void CMIRIAMResource::setMIRIAMRegExp(const bool & regExp)
-{*mpRegExp = regExp;}
-
-const bool & CMIRIAMResource::getMIRIAMRegExp() const
-  {return * mpRegExp;}
+{return * mpPattern;}
 
 void CMIRIAMResource::setMIRIAMCitation(const bool & citation)
 {*mpCitation = citation;}
 
 const bool & CMIRIAMResource::getMIRIAMCitation() const
-  {return * mpCitation;}
+{return * mpCitation;}
 
 void CMIRIAMResource::addDeprecatedURL(const std::string & URL)
 {mpDeprecated->addParameter("URL", CCopasiParameter::STRING, URL);}
 
 const CCopasiParameterGroup & CMIRIAMResource::getMIRIAMDeprecated() const
-  {return * mpDeprecated;}
+{return * mpDeprecated;}

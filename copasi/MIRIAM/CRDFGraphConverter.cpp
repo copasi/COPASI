@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,92 +23,92 @@
 
 // static
 CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
+{
   {
+    CRDFPredicate::bqbiol_encodes,
     {
-      CRDFPredicate::bqbiol_encodes,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_encodes, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_hasPart,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_hasPart, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_hasVersion,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_hasVersion, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_is,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_is, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_isDescribedBy,
-      {
-        CRDFPredicate::about, CRDFPredicate::dcterms_bibliographicCitation, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_isEncodedBy,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_isEncodedBy, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_isHomologTo,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_isHomologTo, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_isPartOf,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_isPartOf, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_isVersionOf,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_isVersionOf, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqbiol_occursIn,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_occursIn, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqmodel_is,
-      {
-        CRDFPredicate::about, CRDFPredicate::copasi_is, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::bqmodel_isDescribedBy,
-      {
-        CRDFPredicate::about, CRDFPredicate::dcterms_bibliographicCitation, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
-      }
-    },
-    {
-      CRDFPredicate::dc_creator,
-      {
-        CRDFPredicate::about, CRDFPredicate::dcterms_creator, CRDFPredicate::end
-      },
-    },
-    {
-      CRDFPredicate::end,
-      {
-        CRDFPredicate::end
-      }
+      CRDFPredicate::about, CRDFPredicate::copasi_encodes, CRDFPredicate::end
     }
-  };
+  },
+  {
+    CRDFPredicate::bqbiol_hasPart,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_hasPart, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_hasVersion,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_hasVersion, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_is,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_is, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_isDescribedBy,
+    {
+      CRDFPredicate::about, CRDFPredicate::dcterms_bibliographicCitation, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_isEncodedBy,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_isEncodedBy, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_isHomologTo,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_isHomologTo, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_isPartOf,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_isPartOf, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_isVersionOf,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_isVersionOf, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqbiol_occursIn,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_occursIn, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqmodel_is,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_is, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::bqmodel_isDescribedBy,
+    {
+      CRDFPredicate::about, CRDFPredicate::dcterms_bibliographicCitation, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
+    }
+  },
+  {
+    CRDFPredicate::dc_creator,
+    {
+      CRDFPredicate::about, CRDFPredicate::dcterms_creator, CRDFPredicate::end
+    },
+  },
+  {
+    CRDFPredicate::end,
+    {
+      CRDFPredicate::end
+    }
+  }
+};
 
 // static
 bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
@@ -119,6 +119,7 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
 
   // Create the RDF graph
   CRDFGraph * pGraph = CRDFParser::graphFromXml(XML);
+
   if (pGraph == NULL)
     return false;
 
@@ -142,6 +143,7 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
   unsigned C_INT32 Size = CCopasiMessage::size();
 
   pGraph = CRDFParser::graphFromXml(XML);
+
   if (pGraph == NULL)
     return false;
 
@@ -179,6 +181,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
       // Create the new path
       CRDFPredicate::Path NewPath;
       const CRDFPredicate::ePredicateType * pNewPath = pChange->Target;
+
       while (*pNewPath != CRDFPredicate::end)
         NewPath.push_back(*pNewPath++);
 
@@ -234,6 +237,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
         CRDFPredicate::getAllowedLocationList(newPath[SubPathIndex]);
       CRDFPredicate::AllowedLocationList::const_iterator it = List.begin();
       CRDFPredicate::AllowedLocationList::const_iterator end = List.end();
+
       for (; it != end; ++it)
         {
           if (it->Type == CRDFObject::BLANK_NODE &&
@@ -247,7 +251,7 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph,
       // We are now sure that the new predicate points to a blank node.
       CRDFObject Object;
       Object.setType(CRDFObject::BLANK_NODE);
-      Object.setBlankNodeId(pGraph->generatedBlankNodeId());
+      Object.setBlankNodeId(pGraph->generatedNodeId());
 
       Triplet = pGraph->addTriplet(triplet.pSubject->getSubject(),
                                    CRDFPredicate::getURI(newPath[SubPathIndex]),

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFTriplet.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/06/10 20:31:11 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,32 +26,32 @@ CRDFTriplet::~CRDFTriplet()
 {}
 
 CRDFTriplet::operator bool() const
-  {return (pSubject != NULL && pObject != NULL);}
+{return (pSubject != NULL && pObject != NULL);}
 
 bool CRDFTriplet::operator == (const CRDFTriplet & rhs) const
-  {
-    return (pSubject == rhs.pSubject &&
-            pObject == rhs.pObject &&
-            Predicate == rhs.Predicate);
-  }
+{
+  return (pSubject == rhs.pSubject &&
+          pObject == rhs.pObject &&
+          Predicate == rhs.Predicate);
+}
 
 bool CRDFTriplet::operator < (const CRDFTriplet & rhs) const
-  {
-    if (Predicate != rhs.Predicate)
-      return Predicate < rhs.Predicate;
+{
+  if (Predicate != rhs.Predicate)
+    return Predicate < rhs.Predicate;
 
-    if (pSubject != rhs.pSubject)
-      return pSubject < rhs.pSubject;
+  if (pSubject != rhs.pSubject)
+    return pSubject < rhs.pSubject;
 
-    return pObject < rhs.pObject;
-  }
+  return pObject < rhs.pObject;
+}
 
 std::ostream & operator << (std::ostream & os, const CRDFTriplet & triplet)
 {
   if (triplet)
     {
       os << triplet.pSubject->getSubject() << ", ";
-      os << triplet.Predicate << ", ";
+      os << triplet.Predicate.getURI() << ", ";
       os << triplet.pObject->getObject() << std::endl;
     }
   else

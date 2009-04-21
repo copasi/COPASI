@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:16 $
+//   $Date: 2009/04/21 16:18:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (!curve) return false;
 
   if (curve->getType() != CPlotItem::curve2d) return false;
+
   //if (curve->getChannels().getSize != 2) return false;
 
   mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
@@ -48,19 +49,23 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = NULL;
+
   if (curve->getChannels().size() >= 1)
     mpObjectX = pDataModel->getObject(curve->getChannels()[0]);
+
   if (curve->getChannels().size() >= 2)
     mpObjectY = pDataModel->getObject(curve->getChannels()[1]);
 
   if (mpObjectX)
     mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+
   if (mpObjectY)
     mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
 
   const void* tmp;
 
   if (!(tmp = curve->getValue("Line type").pVOID)) return false;
+
   mpBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
 
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
@@ -79,34 +84,39 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 }
 
 bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
-  {
-    //if (!(mpObjectX && mpObjectY)) return false;
+{
+  //if (!(mpObjectX && mpObjectY)) return false;
 
-    //title
-    curve->setTitle(TO_UTF8(mpEditTitle->text()));
+  //title
+  curve->setTitle(TO_UTF8(mpEditTitle->text()));
 
-    //channels
-    curve->getChannels().clear();
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
+  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
 
-    curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentItem());
+  curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentItem());
 
-    C_INT32 Activity = 0;
-    if (mpCheckBefore->isChecked()) Activity += COutputInterface::BEFORE;
-    if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
-    if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
-    curve->setActivity((COutputInterface::Activity) Activity);
+  C_INT32 Activity = 0;
 
-    return true;
-  }
+  if (mpCheckBefore->isChecked()) Activity += COutputInterface::BEFORE;
+
+  if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
+
+  if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  curve->setActivity((COutputInterface::Activity) Activity);
+
+  return true;
+}
 
 void Curve2DWidget::buttonPressedX()
 {
   if (!mpModel) return;
 
-  //  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectX);
-  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectX);
+  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this,
+              CCopasiSimpleSelectionTree::NumericValues,
+              mpObjectX);
 
   if (mpObjectX)
     {
@@ -116,6 +126,7 @@ void Curve2DWidget::buttonPressedX()
         mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
                                        + "|"
                                        + mpObjectX->getObjectDisplayName()));
+
       //TODO update tab title
     }
   else
@@ -126,8 +137,9 @@ void Curve2DWidget::buttonPressedY()
 {
   if (!mpModel) return;
 
-  //  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::NUMERIC, mpObjectY);
-  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::PLOT_OBJECT, mpObjectY);
+  mpObjectY = CCopasiSelectionDialog::getObjectSingle(this,
+              CCopasiSimpleSelectionTree::NumericValues,
+              mpObjectY);
 
   if (mpObjectY)
     {
@@ -137,6 +149,7 @@ void Curve2DWidget::buttonPressedY()
         mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
                                        + "|"
                                        + mpObjectX->getObjectDisplayName()));
+
       //TODO update tab title
     }
   else

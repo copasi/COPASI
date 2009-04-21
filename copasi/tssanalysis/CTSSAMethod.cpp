@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:14 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,22 +49,25 @@ CTSSAMethod::createTSSAMethod(CCopasiMethod::SubType subType,
 
   switch (subType)
     {
-    case unset:
-    case tssILDM:
-      pMethod = new CILDMMethod();
-      break;
+      case unset:
+      case tssILDM:
+        pMethod = new CILDMMethod();
+        break;
 
-    case tssILDMModified:
-      pMethod = new CILDMModifiedMethod();
-      break;
+      case tssILDMModified:
+        pMethod = new CILDMModifiedMethod();
+        break;
 
-    case tssCSP:
-      pMethod = new CCSPMethod();
-      break;
+#ifdef  WITH_CSPMETHOD
+      case tssCSP:
+        pMethod = new CCSPMethod();
+        break;
+#endif
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
+
   return pMethod;
 }
 
@@ -139,6 +142,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CTSSAProblem * pTP = dynamic_cast<const CTSSAProblem *>(pProblem);
+
   if (!pTP)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 2);
@@ -156,6 +160,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 14);
       return false;
     }
+
   return true;
 }
 
@@ -344,6 +349,7 @@ void CTSSAMethod::mat_anal_mod(C_INT & slow)
         {
           for (j = 0; j < dim; j++)
             mVslow(i, j) = fabs(mTdInverse(i, j)) / denom[i] * 100;
+
           //  mVslow(i, j) = fabs(mTd(i, j)) / denom[i] * 100;
         }
     }
@@ -384,6 +390,7 @@ void CTSSAMethod::mat_anal_metab(C_INT & slow)
     for (i = 0; i < dim; i++)
       for (j = 0; j < dim; j++)
         mVslow_metab(i, j) = 0;
+
   return;
 }
 
@@ -406,17 +413,21 @@ void CTSSAMethod::mat_anal_mod_space(C_INT & slow)
   for (j = 0; j < dim; j++)
     {
       length = 0;
+
       for (i = 0; i < dim; i++)
         length = length + mTdInverse(i, j) * mTdInverse(i, j);
+
       length = sqrt(length);
       length = 1;
+
       for (i = 0; i < dim; i++)
-        Matrix_anal (i, j) = mTdInverse(i, j) / length;
+        Matrix_anal(i, j) = mTdInverse(i, j) / length;
     }
 
   if ((slow < dim)&(slow > 0))
     {
       denom = 0.0;
+
       for (i = 0; i < dim; i++)
         {
           for (j = 0; j < slow; j++)
@@ -437,6 +448,7 @@ void CTSSAMethod::mat_anal_mod_space(C_INT & slow)
   else
     for (i = 0; i < dim; i++)
       mVslow_space[i] = 0;
+
   return;
 }
 
@@ -459,17 +471,21 @@ void CTSSAMethod::mat_anal_fast_space(C_INT & slow)
   for (j = 0; j < dim; j++)
     {
       length = 0;
+
       for (i = 0; i < dim; i++)
         length = length + mTdInverse(i, j) * mTdInverse(i, j);
+
       length = sqrt(length);
       length = 1;
+
       for (i = 0; i < dim; i++)
-        Matrix_anal (i, j) = mTdInverse(i, j) / length;
+        Matrix_anal(i, j) = mTdInverse(i, j) / length;
     }
 
   if (slow < dim)
     {
       denom = 0.0;
+
       for (i = 0; i < dim; i++)
         {
           for (j = slow; j < dim; j++)
@@ -490,6 +506,7 @@ void CTSSAMethod::mat_anal_fast_space(C_INT & slow)
   else
     for (i = 0; i < dim; i++)
       mVfast_space[i] = 0;
+
   return;
 }
 
@@ -527,21 +544,26 @@ void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
     {
       for (i = 0; i < slow; i++)
         d_full[i] = 0.0;
+
       for (i = slow; i < dim; i++)
         d_full[i] = mQ(j, i) * Xconc[j];
 
       for (i = 0; i < dim; i ++)
         {
           d_transformed[i] = 0.0;
+
           for (k = 0; k < dim; k++)
             d_transformed[i] += mQ(i, k) * d_full[k];
         }
 
       scalar_product = d_transformed[j];
       absolute_value_1 = 0.0;
+
       for (i = 0; i < dim; i++)
         absolute_value_1 += d_transformed[i] * d_transformed[i];
+
       absolute_value_1 = sqrt(absolute_value_1);
+
       if (absolute_value_1 * Xconc[j] > 0.0)
         scalar_product = scalar_product / absolute_value_1;
       else
@@ -796,20 +818,20 @@ void CTSSAMethod::schur(C_INT &info)
 
           switch (subType)
             {
-            case tssILDM:
-              diagorder = (index[count + 1] < index[count]);
-              break;
+              case tssILDM:
+                diagorder = (index[count + 1] < index[count]);
+                break;
 
-            case tssILDMModified:
-              diagorder = (index[count + 1] < index[count]);
-              break;
+              case tssILDMModified:
+                diagorder = (index[count + 1] < index[count]);
+                break;
 
-            case tssCSP:
-              diagorder = (index[count + 1] > index[count]);
-              break;
+              case tssCSP:
+                diagorder = (index[count + 1] > index[count]);
+                break;
 
-            default:
-              fatalError();
+              default:
+                fatalError();
             }
 
           //ILDM : if (index[count + 1] < index[count])
@@ -1566,6 +1588,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
       for (j = 0; j < dim; j++)
         {
           mTd(i, j) = 0.;
+
           for (k = 0; k < dim; k++)
             mTd(i, j) = mTd(i, j) + mQ(i, k) * C(k, j);
         }
@@ -1590,6 +1613,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
       for (j = 0; j < dim; j++)
         {
           mTdInverse(i, j) = 0.0;
+
           for (k = 0; k < dim; k++)
             mTdInverse(i, j) = mTdInverse(i, j) + C(i, k) * transp_Qt(k, j);
         }
@@ -1606,6 +1630,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
       for (j = 0; j < dim; j++)
         {
           E(i, j) = 0.;
+
           for (k = 0; k < dim; k++)
             E(i, j) = E(i, j) + mJacobian_initial(i, k) * mTd(k, j);
         }
@@ -1616,6 +1641,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
       for (j = 0; j < dim; j++)
         {
           S(i, j) = 0.;
+
           for (k = 0; k < dim; k++)
             S(i, j) = S(i, j) + mTdInverse(i, k) * E(k, j);
         }
@@ -1673,7 +1699,7 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
                           / mpModel->getCompartments()[0]->getInitialValue();
 
-  for (i = 0; i < imax;++i)
+  for (i = 0; i < imax; ++i)
     Y1[i] *= number2conc;
 
   /* write back concentrations of the current state*/
@@ -1729,12 +1755,14 @@ void CTSSAMethod::map_index(C_FLOAT64 *eval_r, C_INT *index, const C_INT & dim)
   for (i = 0; i < dim; i++)
     {
       max = i;
+
       for (j = 0; j < dim; j++)
         {
           //if (abs_eval_r[j] > abs_eval_r[max])
           if (abs_eval_r[j] < abs_eval_r[max])
             max = j;
         }
+
       index[max] = count;
       abs_eval_r[max] = factor * max_value;
       count --;
@@ -1781,12 +1809,14 @@ void CTSSAMethod::map_index_desc(C_FLOAT64 *eval_r, C_INT *index, const C_INT & 
   for (i = 0; i < dim; i++)
     {
       min = i;
+
       for (j = 0; j < dim; j++)
         {
           //if (abs_eval_r[j] > abs_eval_r[max])
           if (abs_eval_r[j] >= abs_eval_r[min])
             min = j;
         }
+
       index[min] = count;
       abs_eval_r[min] = factor * min_value;
       count --;
@@ -1834,6 +1864,7 @@ void CTSSAMethod::update_pid(C_INT *index, C_INT *pid, const C_INT & dim)
   for (k = 1; k < dim; k++)
     if (index[k] == index[k - 1])
       pid[k] = k;
+
   return;
 }
 
@@ -1857,6 +1888,7 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   mTime = mpState->getTime();
 
   mReducedModel = true; /* * getValue("Integrate Reduced Model").pBOOL; */
+
   if (mReducedModel)
     {
       //mpState->setUpdateDependentRequired(true);
@@ -1918,7 +1950,7 @@ void CTSSAMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * 
 
 void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  assert (y == mY);
+  assert(y == mY);
 
   mpState->setTime(*t);
 

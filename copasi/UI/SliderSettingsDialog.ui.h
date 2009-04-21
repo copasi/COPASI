@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,8 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
   unsigned int i;
   unsigned int iMax = mDefinedSliders.size();
   bool found = false;
-  for (i = 0; i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (mDefinedSliders[i] == slider)
         {
@@ -57,9 +58,11 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
           break;
         }
     }
+
   if (found)
     {
       mpSlider = slider;
+
       if (slider->getSliderObject())
         {
           mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
@@ -68,6 +71,7 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
         {
           mpObjectNameLineEdit->setText("Object not avalable!");
         }
+
       updateInputFields();
       updateInputFieldsValues();
     }
@@ -173,6 +177,7 @@ void SliderSettingsDialog::minorTickSizeChanged()
 {
   // adjust numMinorTicks
   mMinorTickSize = mpMinorTickSizeEdit->text().toDouble();
+
   if (mMinorTickSize == 0.0)
     {
       mNumMinorTicks = 1;
@@ -181,12 +186,14 @@ void SliderSettingsDialog::minorTickSizeChanged()
     {
       mNumMinorTicks = (unsigned int)floor(((mMaxValue - mMinValue) / mMinorTickSize) + 0.5);
     }
+
   if (mNumMinorTicks == 0)
     {
       mNumMinorTicks = 1;
       mMinorTickSize = mMaxValue - mMinValue;
       mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
     }
+
   mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
   mChanged = NONE;
 }
@@ -195,11 +202,13 @@ void SliderSettingsDialog::numMinorTicksChanged()
 {
   // adjust minorTickSize
   mNumMinorTicks = mpNumMinorTicksEdit->text().toUInt();
+
   if (mNumMinorTicks == 1)
     {
       mNumMinorTicks = 1;
       mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
     }
+
   mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
   mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
   mChanged = NONE;
@@ -210,11 +219,12 @@ void SliderSettingsDialog::minValueChanged()
   // check if it is smaller than the current value
   // if not, set it to the current value
   double value = mpMinValueEdit->text().toDouble();
+
   if ((value > mOriginalValue) &&
       (CQMessageBox::question(this, "Default value out of range.",
                               "The minimum value you set is larger than the default value of the slider. The new default will be set to the minimum. Do you want to procceed?",
                               QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
-)
+     )
     {
       mpMinValueEdit->setText(QString::number(mMinValue));
     }
@@ -223,18 +233,22 @@ void SliderSettingsDialog::minValueChanged()
       mOriginalValue = value;
       mpOriginalValueEdit->setText(QString::number(mOriginalValue));
       mMinValue = value;
+
       if (mMinValue > mMaxValue)
         {
           mMaxValue = mMinValue;
           mpMaxValueEdit->setText(QString::number(mMaxValue));
         }
+
       if (mMinValue > mValue)
         {
           mValue = mMinValue;
           mpObjectValueEdit->setText(QString::number(mValue));
         }
+
       mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
       mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+
       if (mMinValue <= 0.0 && mpLogCheckBox->isChecked())
         {
           CQMessageBox::information(this, "Incorrect min value",
@@ -244,6 +258,7 @@ void SliderSettingsDialog::minValueChanged()
           mScaling = CSlider::linear;
         }
     }
+
   mChanged = NONE;
 }
 
@@ -252,6 +267,7 @@ void SliderSettingsDialog::maxValueChanged()
   // check if it is larget then the current value
   // else set it to the current value
   double value = mpMaxValueEdit->text().toDouble();
+
   if (value < mOriginalValue)
     {
       if (CQMessageBox::question(this, "Default value out of range.",
@@ -262,20 +278,25 @@ void SliderSettingsDialog::maxValueChanged()
           mChanged = NONE;
           return;
         }
+
       mOriginalValue = value;
       mpOriginalValueEdit->setText(QString::number(mOriginalValue));
     }
+
   mMaxValue = value;
+
   if (mMinValue > mMaxValue)
     {
       mMinValue = mMaxValue;
       mpMinValueEdit->setText(QString::number(mMinValue));
     }
+
   if (mMaxValue < mValue)
     {
       mValue = mMaxValue;
       mpObjectValueEdit->setText(QString::number(mValue));
     }
+
   mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
   mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
   mChanged = NONE;
@@ -286,16 +307,19 @@ void SliderSettingsDialog::objectValueChanged()
   // check if the value is within range, else set a new range
   // get the value and set it in the current slider
   mValue = mpObjectValueEdit->text().toDouble();
+
   if (mValue > mMaxValue)
     {
       mMaxValue = mValue;
       mpMaxValueEdit->setText(QString::number(mMaxValue));
     }
+
   if (mValue < mMinValue)
     {
       mMinValue = mValue;
       mpMinValueEdit->setText(QString::number(mMinValue));
     }
+
   mChanged = NONE;
 }
 
@@ -330,7 +354,9 @@ void SliderSettingsDialog::init()
 void SliderSettingsDialog::browseButtonPressed()
 {
   const CCopasiObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, CCopasiSimpleSelectionTree::INITIAL_VALUE);
+    CCopasiSelectionDialog::getObjectSingle(this,
+                                            CCopasiSimpleSelectionTree::InitialTime |
+                                            CCopasiSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
@@ -346,6 +372,7 @@ void SliderSettingsDialog::browseButtonPressed()
 
       /* Determine the associated entity key */
       CCopasiContainer * pAncestor = pObject->getObjectAncestor("Task");
+
       if (!pAncestor) pAncestor = pObject->getObjectAncestor("Model");
 
       if (!pAncestor)
@@ -382,7 +409,7 @@ void SliderSettingsDialog::browseButtonPressed()
       // Check whether a slider with the object already exists
       unsigned C_INT32 i, iMax = mDefinedSliders.size();
 
-      for (i = 0; i < iMax;++i)
+      for (i = 0; i < iMax; ++i)
         if (mDefinedSliders[i]->getSliderObject() == pObject)
           break;
 
@@ -418,6 +445,7 @@ void SliderSettingsDialog::disableObjectChoosing(bool disableChoosing)
 void SliderSettingsDialog::updateSlider()
 {
   updateInternalValues();
+
   if (mpSlider)
     {
       if (mMinValue < mpSlider->getMaxValue())
@@ -430,6 +458,7 @@ void SliderSettingsDialog::updateSlider()
           mpSlider->setMaxValue(mMaxValue);
           mpSlider->setMinValue(mMinValue);
         }
+
       mpSlider->setSliderValue(mValue);
       mpSlider->setTickNumber(mNumMinorTicks);
       mpSlider->setTickFactor(mMinorMajorFactor);
@@ -456,6 +485,7 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
 {
   updateInternalValues();
   mChanged = LOGARITHMIC;
+
   if (on)
     {
       // check if the minValue is 0.0 or negative if so, issue an error message and uncheck the checkbox again
@@ -487,29 +517,29 @@ void SliderSettingsDialog::updateInternalValues()
 {
   switch (mChanged)
     {
-    case VALUE:
-      objectValueChanged();
-      break;
-    case ORIGVAL:
-      originalValueChanged();
-      break;
-    case MIN:
-      minValueChanged();
-      break;
-    case MAX:
-      maxValueChanged();
-      break;
-    case TICKFACTOR:
-      minorMajorFactorChanged();
-      break;
-    case TICKSIZE:
-      minorTickSizeChanged();
-      break;
-    case NUMTICKS:
-      numMinorTicksChanged();
-      break;
-    default:
-      break;
+      case VALUE:
+        objectValueChanged();
+        break;
+      case ORIGVAL:
+        originalValueChanged();
+        break;
+      case MIN:
+        minValueChanged();
+        break;
+      case MAX:
+        maxValueChanged();
+        break;
+      case TICKFACTOR:
+        minorMajorFactorChanged();
+        break;
+      case TICKSIZE:
+        minorTickSizeChanged();
+        break;
+      case NUMTICKS:
+        numMinorTicksChanged();
+        break;
+      default:
+        break;
     }
 }
 
@@ -518,16 +548,19 @@ void SliderSettingsDialog::originalValueChanged()
   // check if the value is within range, else set it to
   // set new values for the range
   mOriginalValue = mpOriginalValueEdit->text().toDouble();
+
   if (mOriginalValue > mMaxValue)
     {
       mMaxValue = mOriginalValue;
       mpMaxValueEdit->setText(QString::number(mMaxValue));
     }
+
   if (mOriginalValue < mMinValue)
     {
       mMinValue = mOriginalValue;
       mpMinValueEdit->setText(QString::number(mMinValue));
     }
+
   mChanged = NONE;
 }
 

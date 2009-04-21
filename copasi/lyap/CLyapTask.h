@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:54:03 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:16:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,197 +25,169 @@
 #include "lyap/CLyapMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CReadConfig.h"
-//#include "trajectory/CTimeSeries.h"
 
 class CLyapProblem;
 class CLyapMethod;
 class CState;
 
 class CLyapTask : public CCopasiTask
-  {
-    friend class CLyapWolfMethod;
+{
+  friend class CLyapWolfMethod;
 
-    //Attributes
-  private:
+  //Attributes
+private:
 
-    /**
-     * whether the time series should be stored in mTimeSeries
-     */
-    //bool mTimeSeriesRequested;
+  /**
+   * A pointer to the trajectory Problem
+   */
+  CLyapProblem * mpLyapProblem;
 
-    /**
-     * the time series (if requested)
-     */
-    //CTimeSeries mTimeSeries;
+  /**
+   * A pointer to the trajectory method
+   */
+  CLyapMethod * mpLyapMethod;
 
-    /**
-     * A pointer to the trajectory Problem
-     */
-    CLyapProblem * mpLyapProblem;
+  /**
+   *  Vectors with the result
+   */
+  CVector<C_FLOAT64> mLocalExponents;
+  CVector<C_FLOAT64> mExponents;
 
-    /**
-     * A pointer to the trajectory method
-     */
-    CLyapMethod * mpLyapMethod;
+  C_FLOAT64 mSumOfExponents;
+  C_FLOAT64 mSumOfLocalExponents;
 
-    /**
-     *  Vectors with the result
-     */
-    CVector<C_FLOAT64> mLocalExponents;
-    CVector<C_FLOAT64> mExponents;
+  /**
+   *  Divergence averaged over the last orthonormalization interval
+   */
+  C_FLOAT64 mIntervalDivergence;
 
-    C_FLOAT64 mSumOfExponents;
-    C_FLOAT64 mSumOfLocalExponents;
+  /**
+   *  Divergence averaged over the whole integration time
+   */
+  C_FLOAT64 mAverageDivergence;
 
-    /**
-     *  Divergence at the point of time of the reporting
-     */
-    //C_FLOAT64 mDivergence;
+  //for the progress bar
+  C_FLOAT64 mPercentage;
+  unsigned C_INT32 mhProcess;
 
-    /**
-     *  Divergence averaged over the last orthonormalization interval
-     */
-    C_FLOAT64 mIntervalDivergence;
+  //for updating the references
+  std::vector<CCopasiObjectReference<C_FLOAT64> *> mvExpRef;
+  std::vector<CCopasiObjectReference<C_FLOAT64> *> mvLocExpRef;
 
-    /**
-     *  Divergence averaged over the whole integration time
-     */
-    C_FLOAT64 mAverageDivergence;
+  bool mResultAvailable;
+  bool mResultHasDivergence;
+  unsigned C_INT32 mModelVariablesInResult;
+  unsigned C_INT32 mNumExponentsCalculated;
 
-    //for the progress bar
-    C_FLOAT64 mPercentage;
-    unsigned C_INT32 mhProcess;
+public:
+  /**
+   * Default constructor
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CLyapTask(const CCopasiContainer * pParent = NULL);
 
-    //for updating the references
-    std::vector<CCopasiObjectReference<C_FLOAT64> *> mvExpRef;
-    std::vector<CCopasiObjectReference<C_FLOAT64> *> mvLocExpRef;
+  /**
+   * Destructor
+   */
+  ~CLyapTask();
 
-    bool mResultAvailable;
-    bool mResultHasDivergence;
-    unsigned C_INT32 mModelVariablesInResult;
-    unsigned C_INT32 mNumExponentsCalculated;
+  /**
+   * Initialize the task. If an ostream is given this ostream is used
+   * instead of the target specified in the report. This allows nested
+   * tasks to share the same output device.
+   * @param const OutputFlag & of
+   * @param COutputHandler * pOutputHandler
+   * @param std::ostream * pOstream (default: NULL)
+   * @return bool success
+   */
+  virtual bool initialize(const OutputFlag & of,
+                          COutputHandler * pOutputHandler,
+                          std::ostream * pOstream);
 
-  public:
-    /**
-     * Default constructor
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CLyapTask(const CCopasiContainer * pParent = NULL);
+  /**
+   * Process the task with or without initializing to the initial state.
+   * @param const bool & useInitialValues
+   * @return bool success
+   */
+  virtual bool process(const bool & useInitialValues);
 
-    /**
-     * Destructor
-     */
-    ~CLyapTask();
+  /**
+   * Perform neccessary cleaup procedures
+   */
+  virtual bool restore();
 
-    /**
-     * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested
-     * tasks to share the same output device.
-     * @param const OutputFlag & of
-     * @param COutputHandler * pOutputHandler
-     * @param std::ostream * pOstream (default: NULL)
-     * @return bool success
-     */
-    virtual bool initialize(const OutputFlag & of,
-                            COutputHandler * pOutputHandler,
-                            std::ostream * pOstream);
+  //methods needed by the result widget
 
-    /**
-     * Process the task with or without initializing to the initial state.
-     * @param const bool & useInitialValues
-     * @return bool success
-     */
-    virtual bool process(const bool & useInitialValues);
+  const CVector<C_FLOAT64> & exponents() const
+  {return mExponents;}
 
-    /**
-     * Perform neccessary cleaup procedures
-     */
-    virtual bool restore();
+  //const CVector<C_FLOAT64> & localExponents() const
+  //{return mLocalExponents;}
 
-    //methods needed by the result widget
+  const C_FLOAT64 & sumOfExponents() const
+  {return mSumOfExponents;}
 
-    const CVector<C_FLOAT64> & exponents() const
-      {return mExponents;}
+  const C_FLOAT64 & averageDivergence() const
+  {return mAverageDivergence;}
 
-    //const CVector<C_FLOAT64> & localExponents() const
-    //{return mLocalExponents;}
+  /**
+   *
+   */
+  bool resultAvailable() const;
 
-    const C_FLOAT64 & sumOfExponents() const
-      {return mSumOfExponents;}
+  /**
+   * was divergence requested for the last calculation?
+   */
+  bool resultHasDivergence() const;
 
-    const C_FLOAT64 & averageDivergence() const
-      {return mAverageDivergence;}
+  /**
+   * how many independent variables had the model at the time of the
+   * last calculation?
+   */
+  unsigned C_INT32 modelVariablesInResult() const;
 
-    /**
-     *
-     */
-    bool resultAvailable() const;
+  unsigned C_INT32 numberOfExponentsCalculated() const;
 
-    /**
-     * was divergence requested for the last calculation?
-     */
-    bool resultHasDivergence() const;
+  /**
+   * Set the method type applied to solve the task
+   * @param const CCopasiMethod::SubType & type
+   * @return bool success
+   */
+  virtual bool setMethodType(const int & type);
 
-    /**
-     * how many independent variables had the model at the time of the
-     * last calculation?
-     */
-    unsigned C_INT32 modelVariablesInResult() const;
+  /**
+   * Perform an output event for the current activity
+   * @param const Activity & activity
+   */
+  virtual void output(const COutputInterface::Activity & activity);
 
-    unsigned C_INT32 numberOfExponentsCalculated() const;
+  /**
+   * This is called by the method to generate the output and update the progress
+   * bar. The parameter is the percentage for the progress bar.
+   * The return value is the return value of the progress bar handler (and
+   * determines if the calculation will be stopped).
+   * If onlyProgess is true, no output is done.
+   */
+  bool methodCallback(const C_FLOAT64 & percentage, bool onlyProgress);
 
-    /**
-     * Set the method type applied to solve the task
-     * @param const CCopasiMethod::SubType & type
-     * @return bool success
-     */
-    virtual bool setMethodType(const int & type);
+  /**
+   * This functionality is expected from CLyapProblem but has to be implmented
+   * here for the moment. This is called from the corresponding method of the problem
+   */
+  void printResult(std::ostream * ostream) const;
 
-    /**
-     * Loads parameters for this solver with data coming from a
-     * CReadConfig object. (CReadConfig object reads an input stream)
-     * @param configbuffer reference to a CReadConfig object.
-     */
-    //void load(CReadConfig & configBuffer);
+private:
+  /**
+   * cleanup()
+   */
+  void cleanup();
 
-    /**
-     * gets a reference to the time series
-     * @return time series
-     */
-    //const CTimeSeries & getTimeSeries() const;
+  void initObjects();
 
-    /**
-     * Perform an output event for the current activity
-     * @param const Activity & activity
-     */
-    virtual void output(const COutputInterface::Activity & activity);
-
-    /**
-     * This is called by the method to generate the output and update the progress
-     * bar. The parameter is the percentage for the progress bar.
-     * The return value is the return value of the progress bar handler (and
-     * determines if the calculation will be stopped).
-     */
-    bool methodCallback(const C_FLOAT64 & percentage);
-
-    /**
-     * This functionality is expected from CLyapProblem but has to be implmented
-     * here for the moment. This is called from the corresponding method of the problem
-     */
-    void printResult(std::ostream * ostream) const;
-
-  private:
-    /**
-     * cleanup()
-     */
-    void cleanup();
-
-    void initObjects();
-
-    /**
-     * this does calculations that need to be done before output:
-     * sum of exponents, divergence, ...
-     */
-    void calculationsBeforeOutput();
-  };
+  /**
+   * this does calculations that need to be done before output:
+   * sum of exponents, divergence, ...
+   */
+  void calculationsBeforeOutput();
+};
 #endif // COPASI_CLyapTask

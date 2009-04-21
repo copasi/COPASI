@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2009/02/19 19:50:47 $
+//   $Date: 2009/04/21 16:17:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,9 +96,11 @@ void CQRDFListViewWidget::load()
   // We iterate of all triplets
   std::set< CRDFTriplet >::const_iterator it = mpGraph->getTriplets().begin();
   std::set< CRDFTriplet >::const_iterator end = mpGraph->getTriplets().end();
+
   for (; it != end; ++it)
     {
       CRDFListViewItem * pSubjectItem = Ui::CQRDFListViewWidget::mpListView->find(it->pSubject);
+
       if (pSubjectItem == NULL)
         {
           pSubjectItem = new CRDFListViewItem(Ui::CQRDFListViewWidget::mpListView, NULL);
@@ -106,19 +108,26 @@ void CQRDFListViewWidget::load()
           // Display the subject information
 
           const CRDFSubject & Subject = it->pSubject->getSubject();
+
           switch (Subject.getType())
             {
-            case CRDFSubject::RESOURCE:
-              pSubjectItem->setText(COL_SUBJECT, FROM_UTF8(Subject.getResource()));
-              break;
+              case CRDFSubject::RESOURCE:
+                pSubjectItem->setText(COL_SUBJECT, FROM_UTF8(Subject.getResource()));
+                break;
 
-            case CRDFSubject::BLANK_NODE:
-              pSubjectItem->setText(COL_SUBJECT, FROM_UTF8(Subject.getBlankNodeID()));
-              break;
+              case CRDFSubject::BLANK_NODE:
+                pSubjectItem->setText(COL_SUBJECT, FROM_UTF8(Subject.getBlankNodeID()));
+                break;
             }
         }
 
-      CRDFListViewItem * pObjectItem = Ui::CQRDFListViewWidget::mpListView->find(it->pObject);
+      CRDFListViewItem * pObjectItem = NULL;
+
+      if (it->Predicate.getURI() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")
+        pObjectItem = new CRDFListViewItem(pSubjectItem, NULL);
+      else
+        pObjectItem = Ui::CQRDFListViewWidget::mpListView->find(it->pObject);
+
       if (pObjectItem == NULL)
         {
           pObjectItem = new CRDFListViewItem(pSubjectItem, NULL);

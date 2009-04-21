@@ -1,9 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:41:02 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:19:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,90 +32,95 @@ class CCopasiDataModel;
  */
 
 class test000059 : public CppUnit::TestFixture
-  {
-    CPPUNIT_TEST_SUITE(test000059);
-    CPPUNIT_TEST(test_unique_id_1);
-    CPPUNIT_TEST(test_unique_id_2);
-    CPPUNIT_TEST(test_unique_id_3);
-    CPPUNIT_TEST(test_unique_id_4);
-    CPPUNIT_TEST(test_unique_id_5);
-    CPPUNIT_TEST(test_unique_id_6);
-    CPPUNIT_TEST(test_unique_id_7);
-    CPPUNIT_TEST(test_unique_id_8);
-    CPPUNIT_TEST(test_unique_id_9);
-    CPPUNIT_TEST(test_unique_id_10);
-    CPPUNIT_TEST(test_unique_id_11);
-    CPPUNIT_TEST(test_unique_id_12);
-    CPPUNIT_TEST(test_unique_id_13);
-    CPPUNIT_TEST(test_unique_id_14);
-    CPPUNIT_TEST(test_unique_id_15);
-    CPPUNIT_TEST(test_unique_id_16);
-    CPPUNIT_TEST(test_unique_id_17);
-    CPPUNIT_TEST(test_unique_id_18);
-    CPPUNIT_TEST(test_unique_id_19);
-    CPPUNIT_TEST(test_unique_id_20);
-    CPPUNIT_TEST(test_unique_id_21);
-    CPPUNIT_TEST(test_unique_id_21_2);
-    CPPUNIT_TEST_SUITE_END();
+{
+  CPPUNIT_TEST_SUITE(test000059);
+  CPPUNIT_TEST(test_unique_id_1);
+  CPPUNIT_TEST(test_unique_id_2);
+  CPPUNIT_TEST(test_unique_id_3);
+  CPPUNIT_TEST(test_unique_id_4);
+  CPPUNIT_TEST(test_unique_id_5);
+  CPPUNIT_TEST(test_unique_id_6);
+  CPPUNIT_TEST(test_unique_id_7);
+  CPPUNIT_TEST(test_unique_id_8);
+  CPPUNIT_TEST(test_unique_id_9);
+  CPPUNIT_TEST(test_unique_id_10);
+  CPPUNIT_TEST(test_unique_id_11);
+  CPPUNIT_TEST(test_unique_id_12);
+  CPPUNIT_TEST(test_unique_id_13);
+  CPPUNIT_TEST(test_unique_id_14);
+  CPPUNIT_TEST(test_unique_id_15);
+  CPPUNIT_TEST(test_unique_id_16);
+  CPPUNIT_TEST(test_unique_id_17);
+  CPPUNIT_TEST(test_unique_id_18);
+  CPPUNIT_TEST(test_unique_id_19);
+  CPPUNIT_TEST(test_unique_id_20);
+  CPPUNIT_TEST(test_unique_id_21);
+  CPPUNIT_TEST(test_unique_id_21_2);
+  CPPUNIT_TEST(test_unique_id_22);
+  CPPUNIT_TEST_SUITE_END();
 
-  protected:
-    static const char* MODEL_STRING1;
-    static const char* MODEL_STRING2;
-    static const char* MODEL_STRING3;
-    static const char* MODEL_STRING4;
-    static const char* MODEL_STRING5;
-    static const char* MODEL_STRING6;
-    static const char* MODEL_STRING7;
-    static const char* MODEL_STRING8;
-    static const char* MODEL_STRING9;
-    static const char* MODEL_STRING10;
-    static const char* MODEL_STRING11;
-    static const char* MODEL_STRING12;
-    static const char* MODEL_STRING13;
-    static const char* MODEL_STRING14;
-    static const char* MODEL_STRING15;
-    static const char* MODEL_STRING16;
-    static const char* MODEL_STRING17;
-    static const char* MODEL_STRING18;
-    static const char* MODEL_STRING19;
-    static const char* MODEL_STRING20;
-    static const char* MODEL_STRING21;
-    static CCopasiDataModel* pCOPASIDATAMODEL;
+protected:
+  static const char* MODEL_STRING1;
+  static const char* MODEL_STRING2;
+  static const char* MODEL_STRING3;
+  static const char* MODEL_STRING4;
+  static const char* MODEL_STRING5;
+  static const char* MODEL_STRING6;
+  static const char* MODEL_STRING7;
+  static const char* MODEL_STRING8;
+  static const char* MODEL_STRING9;
+  static const char* MODEL_STRING10;
+  static const char* MODEL_STRING11;
+  static const char* MODEL_STRING12;
+  static const char* MODEL_STRING13;
+  static const char* MODEL_STRING14;
+  static const char* MODEL_STRING15;
+  static const char* MODEL_STRING16;
+  static const char* MODEL_STRING17;
+  static const char* MODEL_STRING18;
+  static const char* MODEL_STRING19;
+  static const char* MODEL_STRING20;
+  static const char* MODEL_STRING21;
+  static CCopasiDataModel* pCOPASIDATAMODEL;
 
-  public:
-    static bool checkIfIdsUnique(const Model* pSBMLModel);
+public:
+  static bool checkIfIdsUnique(const Model* pSBMLModel);
 
-    void setUp();
+  void setUp();
 
-    void tearDown();
+  void tearDown();
 
-    // tests with SBML files
-    void test_unique_id_1();
-    void test_unique_id_2();
-    void test_unique_id_3();
-    void test_unique_id_4();
-    void test_unique_id_5();
-    void test_unique_id_6();
-    void test_unique_id_7();
-    void test_unique_id_8();
-    void test_unique_id_9();
-    void test_unique_id_10();
-    void test_unique_id_17();
-    void test_unique_id_18();
-    void test_unique_id_19();
-    void test_unique_id_20();
+  // tests with SBML files
+  void test_unique_id_1();
+  void test_unique_id_2();
+  void test_unique_id_3();
+  void test_unique_id_4();
+  void test_unique_id_5();
+  void test_unique_id_6();
+  void test_unique_id_7();
+  void test_unique_id_8();
+  void test_unique_id_9();
+  void test_unique_id_10();
+  void test_unique_id_17();
+  void test_unique_id_18();
+  void test_unique_id_19();
+  void test_unique_id_20();
 
-    // test with COPASI models
-    void test_unique_id_11();
-    void test_unique_id_12();
-    void test_unique_id_13();
-    void test_unique_id_14();
-    void test_unique_id_15();
-    void test_unique_id_16();
+  // test with COPASI models
+  void test_unique_id_11();
+  void test_unique_id_12();
+  void test_unique_id_13();
+  void test_unique_id_14();
+  void test_unique_id_15();
+  void test_unique_id_16();
 
-    // test for bug 1060
-    void test_unique_id_21();
-    void test_unique_id_21_2();
-  };
+  // test for bug 1060
+  void test_unique_id_21();
+  void test_unique_id_21_2();
+
+  // additional test for exporting references to local reaction parameters
+  // (Bug 1035)
+  void test_unique_id_22();
+};
 
 #endif /* TEST000059_H__ */

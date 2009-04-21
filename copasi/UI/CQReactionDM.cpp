@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/04/19 19:04:43 $
+//   $Author: shoops $
+//   $Date: 2009/04/21 16:20:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,14 +98,15 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
           case COL_FLUX:
           {
             QString header = "Flux";
-            QString units = FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName());
+            // TODO: Fix unit display see CReactionWidget.cpp
+            // QString units = FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName());
 
-            if (!units.isNull())
-              {
-                header += " (";
-                header += units;
-                header += ")";
-              }
+            // if (!units.isNull())
+            //  {
+            //    header += " (";
+            //    header += units;
+            //    header += ")";
+            //}
 
             return QVariant(header);
           }

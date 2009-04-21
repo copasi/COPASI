@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CRDFListViewItem.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 18:57:10 $
+//   $Date: 2009/04/21 16:17:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,27 +50,34 @@ void CRDFListViewItem::setTriplet(const CRDFTriplet & triplet)
   setText(COL_PREDICATE, FROM_UTF8(mTriplet.Predicate.getURI()));
 
   const CRDFObject & Object = mTriplet.pObject->getObject();
+
   switch (Object.getType())
     {
-    case CRDFObject::LITERAL:
+      case CRDFObject::LITERAL:
       {
         const CRDFLiteral & Literal = Object.getLiteral();
+
         switch (Literal.getType())
           {
-          case CRDFLiteral::PLAIN:
-          case CRDFLiteral::TYPED:
-            setText(COL_OBJECT, FROM_UTF8(Literal.getLexicalData()));
-            break;
+            case CRDFLiteral::PLAIN:
+            case CRDFLiteral::TYPED:
+              setText(COL_OBJECT, FROM_UTF8(Literal.getLexicalData()));
+              break;
           }
       }
       break;
 
-    case CRDFObject::RESOURCE:
-      setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
-      break;
+      case CRDFObject::RESOURCE:
+        setText(COL_OBJECT, FROM_UTF8(Object.getResource()));
+        break;
 
-    case CRDFObject::BLANK_NODE:
-      setText(COL_SUBJECT, FROM_UTF8(Object.getBlankNodeID()));
-      break;
+      case CRDFObject::BLANK_NODE:
+
+        if (mTriplet. Predicate.getURI() != "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject")
+          setText(COL_SUBJECT, FROM_UTF8(Object.getBlankNodeID()));
+        else
+          setText(COL_OBJECT, FROM_UTF8(Object.getBlankNodeID()));
+
+        break;
     }
 }

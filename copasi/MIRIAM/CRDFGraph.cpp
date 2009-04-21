@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
+//   $Date: 2009/04/21 16:16:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,9 @@ CRDFGraph::CRDFGraph():
     mTriplets(),
     mSubject2Triplet(),
     mObject2Triplet(),
-    mPredicate2Triplet()
+    mPredicate2Triplet(),
+    mGeneratedIds(),
+    mIdMap()
 {}
 
 CRDFGraph::~CRDFGraph()
@@ -84,18 +86,18 @@ const CRDFNode * CRDFGraph::getAboutNode() const
 {return mpAbout;}
 
 const std::map< std::string, std::string > & CRDFGraph::getNameSpaceMap() const
-  {return mPrefix2Namespace;}
+{return mPrefix2Namespace;}
 
 const std::map< std::string, CRDFNode * > & CRDFGraph::getBlankNodeMap() const
-  {return mBlankNodeId2Node;}
+{return mBlankNodeId2Node;}
 
 const std::map< std::string, CRDFNode * > & CRDFGraph::getLocalResourceNodeMap() const
-  {return mLocalResource2Node;}
+{return mLocalResource2Node;}
 
 const std::vector< CRDFNode * > & CRDFGraph::getRemoteResourceNodes() const
-  {return mRemoteResourceNodes;}
+{return mRemoteResourceNodes;}
 
-bool CRDFGraph::guessGraphRoot()
+bool CRDFGraph::guessGraphRoot(const std::string & about)
 {
   mpAbout = NULL;
   CRDFNode * pNode;
@@ -103,11 +105,15 @@ bool CRDFGraph::guessGraphRoot()
   std::map< std::string, CRDFNode * >::iterator itMap = mLocalResource2Node.begin();
   std::map< std::string, CRDFNode * >::iterator endMap = mLocalResource2Node.end();
 
-  for (;itMap != endMap; ++itMap)
+  for (; itMap != endMap; ++itMap)
     {
       pNode = itMap->second;
 
-      if (pNode->isSubjectNode() && !pNode->isObjectNode())
+      if (pNode->isSubjectNode() &&
+          pNode->getSubject().isLocal() &&
+          pNode->getSubject().getType() == CRDFSubject::RESOURCE &&
+          (about == " " ||
+           pNode->getSubject().getResource() == about))
         {
           if (mpAbout != NULL)
             {
@@ -145,38 +151,48 @@ CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
 
   switch (subject.getType())
     {
-    case CRDFSubject::RESOURCE:
-      if (subject.isLocal())
-        {
-          found = mLocalResource2Node.find(subject.getResource());
-          if (found != mLocalResource2Node.end())
-            pSubjectNode = found->second;
-          else
-            {
-              pSubjectNode = new CRDFNode(*this);
-              pSubjectNode->setSubject(subject);
-              mLocalResource2Node[subject.getResource()] = pSubjectNode;
-            }
-        }
-      else
-        {
-          pSubjectNode = new CRDFNode(*this);
-          pSubjectNode->setSubject(subject);
-          mRemoteResourceNodes.push_back(pSubjectNode);
-        }
-      break;
+      case CRDFSubject::RESOURCE:
 
-    case CRDFSubject::BLANK_NODE:
-      found = mBlankNodeId2Node.find(subject.getBlankNodeID());
-      if (found != mBlankNodeId2Node.end())
-        pSubjectNode = found->second;
-      else
-        {
-          pSubjectNode = new CRDFNode(*this);
-          pSubjectNode->setSubject(subject);
-          mBlankNodeId2Node[subject.getBlankNodeID()] = pSubjectNode;
-        }
-      break;
+        if (subject.isLocal())
+          {
+            found = mLocalResource2Node.find(subject.getResource());
+
+            if (found != mLocalResource2Node.end())
+              {
+                pSubjectNode = found->second;
+
+                if (!pSubjectNode->isSubjectNode())
+                  pSubjectNode->setSubject(subject);
+              }
+            else
+              {
+                pSubjectNode = new CRDFNode(*this);
+                pSubjectNode->setSubject(subject);
+                mLocalResource2Node[subject.getResource()] = pSubjectNode;
+              }
+          }
+        else
+          {
+            pSubjectNode = new CRDFNode(*this);
+            pSubjectNode->setSubject(subject);
+            mRemoteResourceNodes.push_back(pSubjectNode);
+          }
+
+        break;
+
+      case CRDFSubject::BLANK_NODE:
+        found = mBlankNodeId2Node.find(subject.getBlankNodeID());
+
+        if (found != mBlankNodeId2Node.end())
+          pSubjectNode = found->second;
+        else
+          {
+            pSubjectNode = new CRDFNode(*this);
+            pSubjectNode->setSubject(subject);
+            mBlankNodeId2Node[subject.getBlankNodeID()] = pSubjectNode;
+          }
+
+        break;
     }
 
   // Find or create the object node
@@ -184,45 +200,60 @@ CRDFTriplet CRDFGraph::addTriplet(const CRDFSubject & subject,
 
   switch (object.getType())
     {
-    case CRDFObject::RESOURCE:
-      if (object.isLocal())
-        {
-          found = mLocalResource2Node.find(object.getResource());
-          if (found != mLocalResource2Node.end())
-            pObjectNode = found->second;
-          else
-            {
-              pObjectNode = new CRDFNode(*this);
-              pObjectNode->setObject(object);
-              mLocalResource2Node[object.getResource()] = pObjectNode;
-            }
-        }
-      else
-        {
-          pObjectNode = new CRDFNode(*this);
-          pObjectNode->setObject(object);
-          mRemoteResourceNodes.push_back(pObjectNode);
-        }
-      break;
+      case CRDFObject::RESOURCE:
 
-    case CRDFObject::BLANK_NODE:
-      found = mBlankNodeId2Node.find(object.getBlankNodeID());
-      if (found != mBlankNodeId2Node.end())
-        pObjectNode = found->second;
-      else
-        {
-          pObjectNode = new CRDFNode(*this);
-          pObjectNode->setObject(object);
-          mBlankNodeId2Node[object.getBlankNodeID()] = pObjectNode;
-        }
-      break;
+        if (object.isLocal())
+          {
+            found = mLocalResource2Node.find(object.getResource());
 
-    case CRDFObject::LITERAL:
-      pObjectNode = new CRDFNode(*this);
-      pObjectNode->setObject(object);
-      mLiteralNodes.push_back(pObjectNode);
-      break;
+            if (found != mLocalResource2Node.end())
+              {
+                pObjectNode = found->second;
+
+                if (!pObjectNode->isObjectNode())
+                  pObjectNode->setObject(object);
+              }
+            else
+              {
+                pObjectNode = new CRDFNode(*this);
+                pObjectNode->setObject(object);
+                mLocalResource2Node[object.getResource()] = pObjectNode;
+              }
+          }
+        else
+          {
+            pObjectNode = new CRDFNode(*this);
+            pObjectNode->setObject(object);
+            mRemoteResourceNodes.push_back(pObjectNode);
+          }
+
+        break;
+
+      case CRDFObject::BLANK_NODE:
+        found = mBlankNodeId2Node.find(object.getBlankNodeID());
+
+        if (found != mBlankNodeId2Node.end())
+          pObjectNode = found->second;
+        else
+          {
+            pObjectNode = new CRDFNode(*this);
+            pObjectNode->setObject(object);
+            mBlankNodeId2Node[object.getBlankNodeID()] = pObjectNode;
+          }
+
+        break;
+
+      case CRDFObject::LITERAL:
+        pObjectNode = new CRDFNode(*this);
+        pObjectNode->setObject(object);
+        mLiteralNodes.push_back(pObjectNode);
+        break;
     }
+
+  if (predicate == CRDFPredicate::rdf_predicate &&
+      pObjectNode->getObject().getType() == CRDFObject::RESOURCE &&
+      CRDFPredicate::getPredicateFromURI(pObjectNode->getObject().getResource()) == CRDFPredicate::rdf_li)
+    pObjectNode->getObject().setResource(CRDFPredicate::getURI(CRDFPredicate::rdf_li), false);
 
   return pSubjectNode->addEdge(predicate, pObjectNode);
 }
@@ -239,6 +270,8 @@ bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
       mSubject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pSubject, triplet));
       mObject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pObject, triplet));
       mPredicate2Triplet.insert(std::pair< const CRDFPredicate , CRDFTriplet >(triplet.Predicate, triplet));
+
+      // DebugFile << "Inserted: " << triplet;
     }
 
   return true;
@@ -254,12 +287,15 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   if (!triplet)
     return;
 
+  // DebugFile << "Removed: " << triplet;
+
   // Remove the triplet
   mTriplets.erase(triplet);
 
   // Remove its references
   // Subject2Triplets
   std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Range = mSubject2Triplet.equal_range(triplet.pSubject);
+
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
       {
@@ -271,6 +307,7 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
       }
 
   Range = mObject2Triplet.equal_range(triplet.pObject);
+
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
       {
@@ -282,6 +319,7 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
       }
 
   std::pair< Predicate2Triplet::iterator, Predicate2Triplet::iterator> RangeP = mPredicate2Triplet.equal_range(triplet.Predicate);
+
   for (; RangeP.first != RangeP.second; ++RangeP.first)
     if (RangeP.first->second == triplet)
       {
@@ -318,7 +356,8 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
   Node2TripletRange Range = mObject2Triplet.equal_range(pCurrent);
   std::set< const CRDFNode * > Visited;
 
-  while (Range.first != Range.second)
+  while ((Range.first != Range.second) &&
+         pCurrent != mpAbout)
     {
       // We ignore rdf_li predicates
       if (Range.first->second.Predicate != CRDFPredicate::rdf_li)
@@ -328,6 +367,7 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
 
       std::pair< std::set< const CRDFNode * >::iterator, bool > Inserted =
         Visited.insert(pCurrent);
+
       if (!Inserted.second)
         break;
 
@@ -340,37 +380,51 @@ CRDFPredicate::Path CRDFGraph::getPredicatePath(const CRDFNode * pNode)
   return Path;
 }
 
-std::string CRDFGraph::generatedBlankNodeId() const
-  {
-    static std::set< unsigned C_INT32 > GeneratedIds;
+std::string CRDFGraph::generatedNodeId(const std::string & existingId)
+{
+  // If we have an existing Id we check whether we have already mapped it.
+  if (existingId != "")
+    {
+      std::map< std::string, std::string >::const_iterator found = mIdMap.find(existingId);
 
-    unsigned C_INT32 Id = 0;
-    if (GeneratedIds.rbegin() != GeneratedIds.rend())
-      Id = *GeneratedIds.rbegin();
+      if (found != mIdMap.end())
+        return found->second;
+    }
 
-    std::stringstream IdStream;
-    IdStream << "CopasiId" << ++Id;
+  unsigned int Id = 0;
 
-    while (mBlankNodeId2Node.count(IdStream.str()) != 0)
-      {
-        GeneratedIds.insert(Id);
+  if (mGeneratedIds.rbegin() != mGeneratedIds.rend())
+    Id = *mGeneratedIds.rbegin();
 
-        IdStream.str("");
-        IdStream << "CopasiId" << ++Id;
-      }
+  std::stringstream IdStream;
+  IdStream << "CopasiId" << ++Id;
 
-    GeneratedIds.insert(Id);
-    return IdStream.str();
-  }
+  while (mBlankNodeId2Node.count(IdStream.str()) != 0)
+    {
+      mGeneratedIds.insert(Id);
+
+      IdStream.str("");
+      IdStream << "CopasiId" << ++Id;
+    }
+
+  mGeneratedIds.insert(Id);
+
+  // Remember the mapping for an existing Id
+  if (existingId != "")
+    mIdMap[existingId] = IdStream.str();
+
+  return IdStream.str();
+}
 
 CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
 {
-  if (!guessGraphRoot())
+  std::string About = "#" + key;
+
+  if (!guessGraphRoot(About))
     {
       CRDFSubject subject;
       mpAbout = new CRDFNode(*this);
 
-      std::string About = "#" + key;
       subject.setType(CRDFSubject::RESOURCE);
       subject.setResource(About, true);
       mpAbout->setSubject(subject);
@@ -381,73 +435,79 @@ CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
 }
 
 const std::set< CRDFTriplet > & CRDFGraph::getTriplets() const
-  {return mTriplets;}
+{return mTriplets;}
 
 std::set< CRDFTriplet > CRDFGraph::getTriplets(const CRDFPredicate & predicate) const
-  {
-    std::set< CRDFTriplet > Triplets;
+{
+  std::set< CRDFTriplet > Triplets;
 
-    Predicate2TripletConstRange Range = mPredicate2Triplet.equal_range(predicate);
-    for (; Range.first != Range.second; ++Range.first)
-      if (Range.first->second.pObject->isBagNode())
-        {
-          std::set< CRDFTriplet > LiTriplets = getTriplets(Range.first->second.pObject, CRDFPredicate::rdf_li);
-          std::set< CRDFTriplet >::const_iterator it = LiTriplets.begin();
-          std::set< CRDFTriplet >::const_iterator end = LiTriplets.end();
-          for (; it != end; ++it)
-            Triplets.insert(CRDFTriplet(Range.first->second.pSubject, predicate, it->pObject));
-        }
-      else
-        Triplets.insert(Range.first->second);
+  Predicate2TripletConstRange Range = mPredicate2Triplet.equal_range(predicate);
 
-    return Triplets;
-  }
+  for (; Range.first != Range.second; ++Range.first)
+    if (Range.first->second.pObject->isBagNode())
+      {
+        std::set< CRDFTriplet > LiTriplets = getTriplets(Range.first->second.pObject, CRDFPredicate::rdf_li);
+        std::set< CRDFTriplet >::const_iterator it = LiTriplets.begin();
+        std::set< CRDFTriplet >::const_iterator end = LiTriplets.end();
 
-std::set< CRDFTriplet > CRDFGraph::getTriplets(const CRDFNode * pSubject) const
-  {
-    std::set< CRDFTriplet > Triplets;
-
-    Node2TripletConstRange Range = mSubject2Triplet.equal_range(const_cast< CRDFNode * >(pSubject));
-    for (; Range.first != Range.second; ++Range.first)
+        for (; it != end; ++it)
+          Triplets.insert(CRDFTriplet(Range.first->second.pSubject, predicate, it->pObject));
+      }
+    else
       Triplets.insert(Range.first->second);
 
-    return Triplets;
-  }
+  return Triplets;
+}
+
+std::set< CRDFTriplet > CRDFGraph::getTriplets(const CRDFNode * pSubject) const
+{
+  std::set< CRDFTriplet > Triplets;
+
+  Node2TripletConstRange Range = mSubject2Triplet.equal_range(const_cast< CRDFNode * >(pSubject));
+
+  for (; Range.first != Range.second; ++Range.first)
+    Triplets.insert(Range.first->second);
+
+  return Triplets;
+}
 
 std::set< CRDFTriplet > CRDFGraph::getTriplets(const CRDFNode * pSubject,
     const CRDFPredicate & predicate) const
-  {
-    std::set< CRDFTriplet > Triplets;
+{
+  std::set< CRDFTriplet > Triplets;
 
-    Predicate2TripletConstRange Range = mPredicate2Triplet.equal_range(predicate);
-    for (; Range.first != Range.second; ++Range.first)
-      if (Range.first->second.pSubject == pSubject)
-        Triplets.insert(Range.first->second);
+  Predicate2TripletConstRange Range = mPredicate2Triplet.equal_range(predicate);
 
-    return Triplets;
-  }
-
-std::set< CRDFTriplet > CRDFGraph::getIncomingTriplets(const CRDFNode * pObject) const
-  {
-    std::set< CRDFTriplet > Triplets;
-
-    Node2TripletConstRange Range = mObject2Triplet.equal_range(const_cast< CRDFNode * >(pObject));
-    for (; Range.first != Range.second; ++Range.first)
+  for (; Range.first != Range.second; ++Range.first)
+    if (Range.first->second.pSubject == pSubject)
       Triplets.insert(Range.first->second);
 
-    return Triplets;
-  }
+  return Triplets;
+}
+
+std::set< CRDFTriplet > CRDFGraph::getIncomingTriplets(const CRDFNode * pObject) const
+{
+  std::set< CRDFTriplet > Triplets;
+
+  Node2TripletConstRange Range = mObject2Triplet.equal_range(const_cast< CRDFNode * >(pObject));
+
+  for (; Range.first != Range.second; ++Range.first)
+    Triplets.insert(Range.first->second);
+
+  return Triplets;
+}
 
 std::set< const CRDFNode * > CRDFGraph::getParentSubjects(const CRDFNode * pObject) const
-  {
-    std::set< const CRDFNode * > Nodes;
+{
+  std::set< const CRDFNode * > Nodes;
 
-    Node2TripletConstRange Range = mObject2Triplet.equal_range(const_cast< CRDFNode * >(pObject));
-    for (; Range.first != Range.second; ++Range.first)
-      Nodes.insert(Range.first->second.pSubject);
+  Node2TripletConstRange Range = mObject2Triplet.equal_range(const_cast< CRDFNode * >(pObject));
 
-    return Nodes;
-  }
+  for (; Range.first != Range.second; ++Range.first)
+    Nodes.insert(Range.first->second.pSubject);
+
+  return Nodes;
+}
 
 void CRDFGraph::clean()
 {
@@ -463,7 +523,7 @@ bool CRDFGraph::removeEmptyNodes()
 
   std::set< CRDFNode * > ToBeRemoved;
 
-  for (;it != end; ++it)
+  for (; it != end; ++it)
     {
       pNode = it->second;
       unsigned int Edges =
@@ -476,6 +536,7 @@ bool CRDFGraph::removeEmptyNodes()
 
   std::set< CRDFNode * >::iterator itRemove = ToBeRemoved.begin();
   std::set< CRDFNode * >::iterator endRemove = ToBeRemoved.end();
+
   for (; itRemove != endRemove; ++itRemove)
     {
       std::set< CRDFTriplet > Triplets = getIncomingTriplets(*itRemove);
@@ -510,7 +571,8 @@ void CRDFGraph::updateNamespaces()
 
   std::map< std::string, std::string >::iterator itNamespace;
   std::map< std::string, std::string >::iterator endNamespace = mPrefix2Namespace.end();
-  for (;it != end; ++it)
+
+  for (; it != end; ++it)
     {
       for (itNamespace = mPrefix2Namespace.begin(), itUsed = Used.begin();
            itNamespace != endNamespace;
@@ -518,6 +580,7 @@ void CRDFGraph::updateNamespaces()
         if (!*itUsed)
           {
             const std::string & Predicate = it->Predicate.getURI();
+
             if (Predicate.compare(0, itNamespace->second.length(), itNamespace->second) == 0)
               {
                 *itUsed = true;
@@ -529,6 +592,7 @@ void CRDFGraph::updateNamespaces()
   itNamespace = mPrefix2Namespace.begin();
   itUsed = Used.begin();
   std::vector< std::string > ToBeRemoved;
+
   for (itNamespace = mPrefix2Namespace.begin(), itUsed = Used.begin();
        itNamespace != endNamespace;
        ++itNamespace, ++itUsed)
@@ -537,6 +601,7 @@ void CRDFGraph::updateNamespaces()
 
   std::vector< std::string >::iterator itRemove = ToBeRemoved.begin();
   std::vector< std::string >::iterator endRemove = ToBeRemoved.end();
+
   for (; itRemove != endRemove; ++itRemove)
     mPrefix2Namespace.erase(*itRemove);
 }
@@ -550,43 +615,49 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
   // Remove all triplets where the node is subject
   std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Range = mSubject2Triplet.equal_range(pNode);
   std::set< CRDFTriplet > RemoveTriplets;
+
   for (; Range.first != Range.second; ++Range.first)
     RemoveTriplets.insert(Range.first->second);
 
   std::set< CRDFTriplet >::const_iterator itTriplet = RemoveTriplets.begin();
   std::set< CRDFTriplet >::const_iterator endTriplet = RemoveTriplets.end();
+
   for (; itTriplet != endTriplet; ++itTriplet)
     itTriplet->pSubject->removeEdge(itTriplet->Predicate, itTriplet->pObject);
 
   // Remove the object from the appropriate container.
   switch (pNode->getObject().getType())
     {
-    case CRDFObject::RESOURCE:
-      if (pNode->getObject().isLocal())
-        mLocalResource2Node.erase(pNode->getObject().getResource());
-      else
-        {
-          // Check whether the pointer still exists mRemoteResourceNodes
-          std::vector< CRDFNode * >::iterator it = mRemoteResourceNodes.begin();
-          std::vector< CRDFNode * >::iterator end = mRemoteResourceNodes.end();
-          for (; it != end; ++it)
-            if (pNode == *it)
-              {
-                mRemoteResourceNodes.erase(it);
-                break;
-              }
-        }
-      break;
+      case CRDFObject::RESOURCE:
 
-    case CRDFObject::BLANK_NODE:
-      mBlankNodeId2Node.erase(pNode->getObject().getBlankNodeID());
-      break;
+        if (pNode->getObject().isLocal())
+          mLocalResource2Node.erase(pNode->getObject().getResource());
+        else
+          {
+            // Check whether the pointer still exists mRemoteResourceNodes
+            std::vector< CRDFNode * >::iterator it = mRemoteResourceNodes.begin();
+            std::vector< CRDFNode * >::iterator end = mRemoteResourceNodes.end();
 
-    case CRDFObject::LITERAL:
+            for (; it != end; ++it)
+              if (pNode == *it)
+                {
+                  mRemoteResourceNodes.erase(it);
+                  break;
+                }
+          }
+
+        break;
+
+      case CRDFObject::BLANK_NODE:
+        mBlankNodeId2Node.erase(pNode->getObject().getBlankNodeID());
+        break;
+
+      case CRDFObject::LITERAL:
       {
         // Check whether the pointer still exists in mLiteralNodes
         std::vector< CRDFNode * >::iterator it = mLiteralNodes.begin();
         std::vector< CRDFNode * >::iterator end = mLiteralNodes.end();
+
         for (; it != end; ++it)
           if (pNode == *it)
             {
@@ -604,11 +675,11 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
 // The next two methods are coded here to allows for easier debugging of the calls
 // to the private methods addTriplet and removeTriplet from its only friends.
 bool CRDFNode::addTripletToGraph(const CRDFTriplet & triplet) const
-  {
-    return mGraph.addTriplet(triplet);
-  }
+{
+  return mGraph.addTriplet(triplet);
+}
 
 void CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const
-  {
-    mGraph.removeTriplet(triplet);
-  }
+{
+  mGraph.removeTriplet(triplet);
+}

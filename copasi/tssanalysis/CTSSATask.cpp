@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:37:23 $
+//   $Date: 2009/04/21 16:20:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,14 +54,14 @@ bool tbl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
 const unsigned C_INT32 CTSSATask::ValidMethods[] =
-  {
-    CCopasiMethod::tssILDM,
-    CCopasiMethod::tssILDMModified,
+{
+  CCopasiMethod::tssILDM,
+  CCopasiMethod::tssILDMModified,
 #ifdef WITH_CSPMETHOD
-    CCopasiMethod::tssCSP,
+  CCopasiMethod::tssCSP,
 #endif // WITH_CSPMETHOD
-    CCopasiMethod::unset
-  };
+  CCopasiMethod::unset
+};
 
 CTSSATask::CTSSATask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::tssAnalysis, pParent),
@@ -134,6 +134,7 @@ bool CTSSATask::initialize(const OutputFlag & of,
 
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTSSAProblem->timeSeriesRequested();
+
   if (pOutputHandler != NULL)
     {
       if (mTimeSeriesRequested)
@@ -170,6 +171,7 @@ bool CTSSATask::process(const bool & useInitialValues)
 
   bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &);
+
   if (StepSize < 0.0)
     {
       LE = &tble;
@@ -247,6 +249,7 @@ bool CTSSATask::process(const bool & useInitialValues)
         }
 
       if (mpCallBack) mpCallBack->finish(hProcess);
+
       output(COutputInterface::AFTER);
 
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 4);
@@ -263,6 +266,7 @@ bool CTSSATask::process(const bool & useInitialValues)
         }
 
       if (mpCallBack) mpCallBack->finish(hProcess);
+
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
@@ -314,6 +318,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
     }
 
   CompareTime = nextTime + 100 * fabs(nextTime) * DBL_EPSILON;
+
   if (*mpCurrentTime >= CompareTime)
     {
       do
@@ -361,9 +366,10 @@ bool CTSSATask::setMethodType(const int & type)
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
   if (!isValidMethod(Type, ValidMethods)) return false;
+
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
   mpMethod =
     CTSSAMethod::createTSSAMethod(Type,
                                   (CTSSAProblem *) mpProblem);
@@ -377,4 +383,4 @@ CState * CTSSATask::getState()
 {return mpCurrentState;}
 
 const CTimeSeries & CTSSATask::getTimeSeries() const
-  {return mTimeSeries;}
+{return mTimeSeries;}
