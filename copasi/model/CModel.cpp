@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.355 $
+//   $Revision: 1.356 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:17:54 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 13:29:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -239,8 +239,8 @@ void CModel::cleanup()
 
   /* The references */
   //mStepsInd.resize(0);
-  mMetabolites.resize(0);
-  mMetabolitesX.resize(0);
+  mMetabolites.clear();
+  mMetabolitesX.clear();
   mParticleFluxes.resize(0);
 }
 
@@ -818,7 +818,7 @@ void CModel::initializeMetabolites()
 {
   // Create a vector of pointers to all metabolites.
   // Note, the metabolites physically exist in the compartments.
-  mMetabolites.resize(0);
+  mMetabolites.clear();
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
@@ -876,7 +876,7 @@ void CModel::initializeMetabolites()
 
   // Update mMetabolitesX to reflect the reordering.
   // We need to to this to allow the use of the full model for simulation.
-  mMetabolitesX.resize(mMetabolites.size(), false);
+  mMetabolitesX.resizeWithoutAllocation(mMetabolites.size());
 
   mNumMetabolitesODE = ODEMetabs.size();
   itMetab = mMetabolitesX.begin();
@@ -1108,7 +1108,7 @@ void CModel::applyInitialValues()
 
 void CModel::clearMoieties()
 {
-  mMoieties.resize(0);
+  mMoieties.clear();
 }
 
 bool CModel::buildStateTemplate()
