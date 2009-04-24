@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:25:56 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:47:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,118 +32,118 @@ class FPraxis;
 class CPraxis;
 
 class COptMethodPraxis: public COptMethod
-  {
-    friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
+{
+  friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
 
-    // Operations
-  public:
-    /**
-     * Copy Constructor
-     * @param const COptMethodPraxis & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COptMethodPraxis(const COptMethodPraxis & src,
-                     const CCopasiContainer * pParent = NULL);
+  // Operations
+public:
+  /**
+   * Copy Constructor
+   * @param const COptMethodPraxis & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  COptMethodPraxis(const COptMethodPraxis & src,
+                   const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Destructor
-     */
-    virtual ~COptMethodPraxis();
+  /**
+   * Destructor
+   */
+  virtual ~COptMethodPraxis();
 
-    /**
-     * Execute the optimization algorithm calling simulation routine
-     * when needed. It is noted that this procedure can give feedback
-     * of its progress by the callback function set with SetCallback.
-     * @ return success;
-     */
-    virtual bool optimise();
+  /**
+   * Execute the optimization algorithm calling simulation routine
+   * when needed. It is noted that this procedure can give feedback
+   * of its progress by the callback function set with SetCallback.
+   * @ return success;
+   */
+  virtual bool optimise();
 
-  private:
-    /**
-     * Default Constructor
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COptMethodPraxis(const CCopasiContainer * pParent = NULL);
+private:
+  /**
+   * Default Constructor
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  COptMethodPraxis(const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Initialize contained objects.
-     */
-    void initObjects();
+  /**
+   * Initialize contained objects.
+   */
+  void initObjects();
 
-    /**
-     * Initialize arrays and pointer.
-     * @return bool success
-     */
-    virtual bool initialize();
+  /**
+   * Initialize arrays and pointer.
+   * @return bool success
+   */
+  virtual bool initialize();
 
-    /**
-     * Cleanup arrays and pointers.
-     * @return bool success
-     */
-    virtual bool cleanup();
+  /**
+   * Cleanup arrays and pointers.
+   * @return bool success
+   */
+  virtual bool cleanup();
 
-    /**
-     * The tolerance
-     */
-    C_FLOAT64 mTolerance;
+  /**
+   * The tolerance
+   */
+  C_FLOAT64 mTolerance;
 
-    /**
-     * The number of iterations
-     */
-    unsigned C_INT32 mIteration;
+  /**
+   * The number of iterations
+   */
+  unsigned C_INT32 mIteration;
 
-    /**
-     * Handle to the process report item "Current Iteration"
-     */
-    unsigned C_INT32 mhIteration;
+  /**
+   * Handle to the process report item "Current Iteration"
+   */
+  unsigned C_INT32 mhIteration;
 
-    /**
-     * number of parameters
-     */
-    C_INT mVariableSize;
+  /**
+   * number of parameters
+   */
+  C_INT mVariableSize;
 
-    /**
-     * The current solution guess
-     */
-    CVector< C_FLOAT64 > mCurrent;
+  /**
+   * The current solution guess
+   */
+  CVector< C_FLOAT64 > mCurrent;
 
-    /**
-     * The last individual
-     */
-    CVector< C_FLOAT64 > mBest;
+  /**
+   * The last individual
+   */
+  CVector< C_FLOAT64 > mBest;
 
-    /**
-     * The best value found so far
-     */
-    C_FLOAT64 mBestValue;
+  /**
+   * The best value found so far
+   */
+  C_FLOAT64 mBestValue;
 
-    /**
-     * The result of a function evaluation
-     */
-    C_FLOAT64 mEvaluationValue;
+  /**
+   * The result of a function evaluation
+   */
+  C_FLOAT64 mEvaluationValue;
 
-    /**
-     * Flag indicating whether the computation shall continue
-     */
-    bool mContinue;
+  /**
+   * Flag indicating whether the computation shall continue
+   */
+  bool mContinue;
 
-    /**
-     * Functor pointing to the Praxis method.
-     */
-    FPraxis * mpPraxis;
+  /**
+   * Functor pointing to the Praxis method.
+   */
+  FPraxis * mpPraxis;
 
-    /**
-     * CPraxis function.
-     */
-    CPraxis * mpCPraxis;
+  /**
+   * CPraxis function.
+   */
+  CPraxis * mpCPraxis;
 
-    const C_FLOAT64 evaluateFunction(C_FLOAT64 *, C_INT *);
+  C_FLOAT64 evaluateFunction(C_FLOAT64 *, C_INT *);
 
-    /**
-     * Evaluate the objective function
-     * @return bool continue
-     */
-    const C_FLOAT64 & evaluate();
-  };
+  /**
+   * Evaluate the objective function
+   * @return bool continue
+   */
+  const C_FLOAT64 & evaluate();
+};
 
 #endif  // COPASI_COptMethodPraxis

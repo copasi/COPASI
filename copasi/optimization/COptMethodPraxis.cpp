@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/03/12 01:25:56 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:47:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,13 +79,13 @@ bool COptMethodPraxis::optimise()
       //force it to be within the bounds
       switch (OptItem.checkConstraint(mCurrent[i]))
         {
-        case - 1:
-          mCurrent[i] = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mCurrent[i] = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mCurrent[i] = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mCurrent[i] = *OptItem.getUpperBoundValue();
+            break;
         }
 
       //set the value
@@ -102,12 +102,14 @@ bool COptMethodPraxis::optimise()
 
   //estimate the machine epsilon
   d1 = 1.0;
+
   do
     {
       d1 /= 2.0;
       d2 = d1 + 1.;
     }
   while (d2 != 1.0);
+
   machep = d1 * 2.0;
 
   //estimate the maximum step size
@@ -119,7 +121,7 @@ bool COptMethodPraxis::optimise()
       mpCPraxis->praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
     }
   catch (bool)
-  {}
+    {}
 
   return mContinue;
 }
@@ -148,9 +150,10 @@ bool COptMethodPraxis::cleanup()
 }
 
 // evaluate the value of the objective function
-const C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
+C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
 {
   C_INT i;
+
   for (i = 0; i < *n; i++)
     (*(*mpSetCalculateVariable)[i])(x[i]);
 

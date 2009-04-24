@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:18 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:51:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,9 +28,9 @@ CSensItem::CSensItem()
 {}
 
 bool CSensItem::isSingleObject() const
-  {
-    return (mListType == CObjectLists::SINGLE_OBJECT);
-  }
+{
+  return (mListType == CObjectLists::SINGLE_OBJECT);
+}
 
 void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
 {
@@ -40,18 +40,19 @@ void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
 }
 
 const CCopasiObjectName & CSensItem::getSingleObjectCN() const
-  {
-    return mSingleObjectCN;
-  }
+{
+  return mSingleObjectCN;
+}
 
 std::string CSensItem::getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const
-  {
-    const CCopasiObject* tmpObject = pDataModel->getObject(mSingleObjectCN);
-    if (tmpObject)
-      return tmpObject->getObjectDisplayName();
-    else
-      return "";
-  }
+{
+  const CCopasiObject* tmpObject = pDataModel->getObject(mSingleObjectCN);
+
+  if (tmpObject)
+    return tmpObject->getObjectDisplayName();
+  else
+    return "";
+}
 
 void CSensItem::setListType(CObjectLists::ListType lt)
 {
@@ -59,36 +60,35 @@ void CSensItem::setListType(CObjectLists::ListType lt)
 }
 
 const CObjectLists::ListType & CSensItem::getListType() const
-  {
-    return mListType;
-  }
+{
+  return mListType;
+}
 
 std::string CSensItem::getListTypeDisplayName() const
-  {
-    return CObjectLists::ListTypeName[mListType];
-  }
+{
+  return CObjectLists::ListTypeName[mListType];
+}
 
 bool CSensItem::operator==(const CSensItem & rhs) const
-  {
-    if (isSingleObject() != rhs.isSingleObject())
-      return false;
+{
+  if (isSingleObject() != rhs.isSingleObject())
+    return false;
 
-    if (isSingleObject())
-      {
-        if (getSingleObjectCN() != rhs.getSingleObjectCN())
-          return false;
-      }
-    else
-      if (getListType() != rhs.getListType())
+  if (isSingleObject())
+    {
+      if (getSingleObjectCN() != rhs.getSingleObjectCN())
         return false;
+    }
+  else if (getListType() != rhs.getListType())
+    return false;
 
-    return true;
-  }
+  return true;
+}
 
 bool CSensItem::operator!=(const CSensItem & rhs) const
-  {
-    return !(*this == rhs);
-  }
+{
+  return !(*this == rhs);
+}
 
 std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel* pDataModel)
 {
@@ -97,8 +97,11 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel*
   if (isSingleObject())
     {
       CCopasiObject * tmpObject = const_cast<CCopasiObject *>(pDataModel->getObject(getSingleObjectCN()));
+
       if (!tmpObject) {return ret;}  //return empty list
+
       if (!tmpObject->isValueDbl()) {return ret;}  //return empty list
+
       ret.push_back(tmpObject);
     }
   else
@@ -116,22 +119,22 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel*
 //************************ CSensProblem ***************************
 
 const std::string CSensProblem::SubTaskName[] =
-  {
-    "Evaluation",
-    "Steady State",
-    "Time Series",
-    //"Lyapunov Exponents",
-    ""
-  };
+{
+  "Evaluation",
+  "Steady State",
+  "Time Series",
+  //"Lyapunov Exponents",
+  ""
+};
 
 const char * CSensProblem::XMLSubTask[] =
-  {
-    "Evaluation",
-    "SteadyState",
-    "TimeSeries",
-    //"LyapunovExponents",
-    NULL
-  };
+{
+  "Evaluation",
+  "SteadyState",
+  "TimeSeries",
+  //"LyapunovExponents",
+  NULL
+};
 
 //static
 void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
@@ -159,15 +162,18 @@ void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiPar
 //static
 void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si)
 {
+
   if (!pg) return; if (!si) return;
 
   CCopasiObjectName* pCN = pg->getValue("SingleObject").pCN;
   CObjectLists::ListType* pLT = (CObjectLists::ListType*)pg->getValue("ObjectListType").pUINT;
 
   CCopasiObjectName cn("");
+
   if (pCN) cn = *pCN;
 
   CObjectLists::ListType lt = (CObjectLists::ListType)0;
+
   if (pLT) lt = *pLT;
 
   //  if (cn != "")
@@ -270,26 +276,25 @@ CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
 /**
  *   get the problem's SubTaskType:
  **/
-const CSensProblem::SubTaskType
-CSensProblem::getSubTaskType() const
-  {
-    if (mpSubTaskType)
-      return *mpSubTaskType;
-    else
-      return CSensProblem::Evaluation;
-  }
+CSensProblem::SubTaskType CSensProblem::getSubTaskType() const
+{
+  if (mpSubTaskType)
+    return *mpSubTaskType;
+  else
+    return CSensProblem::Evaluation;
+}
 
 CSensItem CSensProblem::getTargetFunctions() const
-  {
-    CSensItem ret;
-    CCopasiParameterGroup* tmp;
+{
+  CSensItem ret;
+  CCopasiParameterGroup* tmp;
 
-    tmp = (CCopasiParameterGroup*)(mpTargetFunctions);
+  tmp = (CCopasiParameterGroup*)(mpTargetFunctions);
 
-    copyParameterGroupToSensItem(tmp, &ret);
+  copyParameterGroupToSensItem(tmp, &ret);
 
-    return ret;
-  }
+  return ret;
+}
 
 void CSensProblem::changeTargetFunctions(const CSensItem item)
 {
@@ -297,21 +302,21 @@ void CSensProblem::changeTargetFunctions(const CSensItem item)
 }
 
 unsigned C_INT32 CSensProblem::getNumberOfVariables() const
-  {
-    return mpVariablesGroup->size();
-  }
+{
+  return mpVariablesGroup->size();
+}
 
 CSensItem CSensProblem::getVariables(unsigned C_INT32 index) const
-  {
-    CSensItem ret;
-    CCopasiParameterGroup* tmp;
+{
+  CSensItem ret;
+  CCopasiParameterGroup* tmp;
 
-    tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(index));
+  tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(index));
 
-    copyParameterGroupToSensItem(tmp, &ret);
+  copyParameterGroupToSensItem(tmp, &ret);
 
-    return ret;
-  }
+  return ret;
+}
 
 void CSensProblem::addVariables(const CSensItem & item)
 {
@@ -328,8 +333,10 @@ void CSensProblem::addVariables(const CSensItem & item)
 bool CSensProblem::removeVariables()
 {
   C_INT32 imax = mpVariablesGroup->size();
+
   for (C_INT32 i = 0; i < imax; ++i)
     mpVariablesGroup->removeParameter(0);
+
   return true;
 }
 
@@ -363,9 +370,9 @@ CCopasiArray & CSensProblem::getResult()
 }
 
 const CCopasiArray & CSensProblem::getResult() const
-  {
-    return mResult;
-  }
+{
+  return mResult;
+}
 
 CArrayAnnotation * CSensProblem::getResultAnnotated()
 {
@@ -373,9 +380,9 @@ CArrayAnnotation * CSensProblem::getResultAnnotated()
 }
 
 const CArrayAnnotation * CSensProblem::getResultAnnotated() const
-  {
-    return mpResultAnnotation;
-  }
+{
+  return mpResultAnnotation;
+}
 
 CCopasiArray & CSensProblem::getScaledResult()
 {
@@ -383,9 +390,9 @@ CCopasiArray & CSensProblem::getScaledResult()
 }
 
 const CCopasiArray & CSensProblem::getScaledResult() const
-  {
-    return mScaledResult;
-  }
+{
+  return mScaledResult;
+}
 
 CArrayAnnotation * CSensProblem::getScaledResultAnnotated()
 {
@@ -393,9 +400,9 @@ CArrayAnnotation * CSensProblem::getScaledResultAnnotated()
 }
 
 const CArrayAnnotation * CSensProblem::getScaledResultAnnotated() const
-  {
-    return mpScaledResultAnnotation;
-  }
+{
+  return mpScaledResultAnnotation;
+}
 
 CCopasiArray & CSensProblem::getCollapsedResult()
 {
@@ -403,9 +410,9 @@ CCopasiArray & CSensProblem::getCollapsedResult()
 }
 
 const CCopasiArray & CSensProblem::getCollapsedResult() const
-  {
-    return mCollapsedResult;
-  }
+{
+  return mCollapsedResult;
+}
 
 CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated()
 {
@@ -413,14 +420,14 @@ CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated()
 }
 
 const CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated() const
-  {
-    return mpCollapsedResultAnnotation;
-  }
+{
+  return mpCollapsedResultAnnotation;
+}
 
 bool CSensProblem::collapsRequested() const
-  {
-    return !getTargetFunctions().isSingleObject();
-  }
+{
+  return !getTargetFunctions().isSingleObject();
+}
 
 //static
 std::vector<CObjectLists::ListType>
@@ -435,47 +442,47 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
   //   getTargetFunctionName()
   switch (type)
     {
-    case (CSensProblem::Evaluation):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-      list.push_back(CObjectLists::REACTION_PART_FLUXES);
-      list.push_back(CObjectLists::METAB_CONC_RATES);
-      list.push_back(CObjectLists::METAB_PART_RATES);
-      list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
-      break;
+      case(CSensProblem::Evaluation):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+        list.push_back(CObjectLists::REACTION_PART_FLUXES);
+        list.push_back(CObjectLists::METAB_CONC_RATES);
+        list.push_back(CObjectLists::METAB_PART_RATES);
+        list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
+        break;
 
-    case (CSensProblem::SteadyState):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::ALL_VARIABLES);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::METAB_CONC_RATES);
-      list.push_back(CObjectLists::METAB_PART_RATES);
-      list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-      list.push_back(CObjectLists::REACTION_PART_FLUXES);
-      break;
+      case(CSensProblem::SteadyState):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_VARIABLES);
+        list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+        list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+        list.push_back(CObjectLists::METAB_CONC_RATES);
+        list.push_back(CObjectLists::METAB_PART_RATES);
+        list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+        list.push_back(CObjectLists::REACTION_PART_FLUXES);
+        break;
 
-    case (CSensProblem::TimeSeries):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::ALL_VARIABLES);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::METAB_CONC_RATES);
-      list.push_back(CObjectLists::METAB_PART_RATES);
-      list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-      list.push_back(CObjectLists::REACTION_PART_FLUXES);
-      //TODO all model variables
-      break;
+      case(CSensProblem::TimeSeries):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_VARIABLES);
+        list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+        list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+        list.push_back(CObjectLists::METAB_CONC_RATES);
+        list.push_back(CObjectLists::METAB_PART_RATES);
+        list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+        list.push_back(CObjectLists::REACTION_PART_FLUXES);
+        //TODO all model variables
+        break;
 
-      /*case (CSensProblem::LyapunovExp):
-              list.push_back(CObjectLists::SINGLE_OBJECT);
-              list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-              list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-              list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-              list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
-        break;*/
+        /*case (CSensProblem::LyapunovExp):
+                list.push_back(CObjectLists::SINGLE_OBJECT);
+                list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+                list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+                list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+                list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+          break;*/
     }
 
   return list;
@@ -495,42 +502,42 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
   //   getVariableName()
   switch (type)
     {
-    case (Evaluation):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-      break;
+      case(Evaluation):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+        list.push_back(CObjectLists::METAB_CONCENTRATIONS);
+        list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+        list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+        break;
 
-    case (SteadyState):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
-      //TODO all const values, all model parameters
-      break;
+      case(SteadyState):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
+        //TODO all const values, all model parameters
+        break;
 
-    case (TimeSeries):
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-      list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
-      list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
-      //TODO all const values, all model parameters, all initial values
-      break;
+      case(TimeSeries):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
+        list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
+        //TODO all const values, all model parameters, all initial values
+        break;
 
-      /*case (LyapunovExp):
-              list.push_back(CObjectLists::SINGLE_OBJECT);
-              list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-              list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
-              list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
-              list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-              list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
-        break;*/
+        /*case (LyapunovExp):
+                list.push_back(CObjectLists::SINGLE_OBJECT);
+                list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+                list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
+                list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+                list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+                list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
+          break;*/
     }
 
   return list;
@@ -538,14 +545,15 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
 
 void CSensProblem::printResult(std::ostream * ostream) const
 {
-    std::ostream & os = *ostream;
+  std::ostream & os = *ostream;
 
-    //os << "Sensitivities result." << std::endl;
-    if (mpResultAnnotation)
-      os << *mpResultAnnotation << std::endl;
-    if (mpScaledResultAnnotation)
-      os << *mpScaledResultAnnotation << std::endl;
-  }
+  //os << "Sensitivities result." << std::endl;
+  if (mpResultAnnotation)
+    os << *mpResultAnnotation << std::endl;
+
+  if (mpScaledResultAnnotation)
+    os << *mpScaledResultAnnotation << std::endl;
+}
 
 /**
  * Had to disable the output operator because the datamodel is needed to print
@@ -556,21 +564,22 @@ std::ostream &operator<<(std::ostream &os, const CSensItem & si)
     os << si.getSingleObjectDisplayName();
   else
     os << si.getListTypeDisplayName();
- 
+
   return os;
 }
  */
 
 std::string CSensItem::print(const CCopasiDataModel* pDataModel) const
-  {
-    std::ostringstream os;
-    if (this->isSingleObject())
-      os << this->getSingleObjectDisplayName(pDataModel);
-    else
-      os << this->getListTypeDisplayName();
+{
+  std::ostringstream os;
 
-    return os.str();
-  }
+  if (this->isSingleObject())
+    os << this->getSingleObjectDisplayName(pDataModel);
+  else
+    os << this->getListTypeDisplayName();
+
+  return os.str();
+}
 
 std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
 {
@@ -583,6 +592,7 @@ std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
   << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
 
   unsigned C_INT32 i, imax = o.getNumberOfVariables();
+
   for (i = 0; i < imax; ++i)
     {
       os << "Variable(s) for " << i + 1 << ". derivation:" << std::endl;
@@ -593,7 +603,7 @@ std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
 }
 
 void CSensProblem::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 void CSensProblem::initDebugProblem()
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:15:24 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:45:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2291,15 +2291,17 @@ void CQGLNetworkPainter::showStep(C_INT32 stepNumber)
                   setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
 
                   if (val != -DBL_MAX)
-                    if (isnan(val)) // test for NaN
-                      {
-                        // std::cout << "NaN value found: " << viewerNodes[i] << std::endl;
-                        setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
-                      }
-                    else
-                      {
-                        setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
-                      }
+                    {
+                      if (isnan(val)) // test for NaN
+                        {
+                          // std::cout << "NaN value found: " << viewerNodes[i] << std::endl;
+                          setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
+                        }
+                      else
+                        {
+                          setNodeSizeWithoutChangingCurves(viewerNodes[i], val);
+                        }
+                    }
                 }
             }
         }

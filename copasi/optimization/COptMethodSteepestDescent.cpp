@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/10 19:41:45 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:48:15 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -57,17 +62,17 @@ bool COptMethodSteepestDescent::optimise()
 
       switch (OptItem.checkConstraint())
         {
-        case - 1:
-          mIndividual[i] = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mIndividual[i] = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mIndividual[i] = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mIndividual[i] = *OptItem.getUpperBoundValue();
+            break;
 
-        case 0:
-          mIndividual[i] = OptItem.getStartValue();
-          break;
+          case 0:
+            mIndividual[i] = OptItem.getStartValue();
+            break;
         }
 
       (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
@@ -111,6 +116,7 @@ bool COptMethodSteepestDescent::optimise()
 
               // calculate the size of the largest jump
               tmp = (tmp - mIndividual[i]) / mGradient[i];
+
               // keep it if it is the smallest
               if (tmp < x0) x0 = tmp;
             }
@@ -226,7 +232,7 @@ void COptMethodSteepestDescent::gradient()
     }
 }
 
-const C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
+C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
   for (unsigned C_INT32 i = 0; i < mVariableSize; i++)
     (*(*mpSetCalculateVariable)[i])(mIndividual[i] + x * mGradient[i]);

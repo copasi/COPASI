@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:42:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -511,7 +511,7 @@ std::set< const CRDFNode * > CRDFGraph::getParentSubjects(const CRDFNode * pObje
 
 void CRDFGraph::clean()
 {
-  while (removeEmptyNodes());
+  while (removeEmptyNodes()) {};
 }
 
 bool CRDFGraph::removeEmptyNodes()

@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/02/12 20:56:36 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:50:05 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -74,37 +79,37 @@
  */
 
 class FDescent
-  {
-  public:
-    virtual ~FDescent(){};
+{
+public:
+  virtual ~FDescent() {};
 
-    virtual const C_FLOAT64 operator()(const C_FLOAT64 & C_UNUSED(value))
-    {return std::numeric_limits<C_FLOAT64>::quiet_NaN();}
-  };
+  virtual C_FLOAT64 operator()(const C_FLOAT64 & C_UNUSED(value))
+  {return std::numeric_limits<C_FLOAT64>::quiet_NaN();}
+};
 
 template <class CType> class FDescentTemplate : public FDescent
+{
+private:
+  C_FLOAT64(CType::*mMethod)(const C_FLOAT64 &);  // pointer to member function
+  CType * mpType;                                         // pointer to object
+
+public:
+
+  // constructor - takes pointer to an object and pointer to a member and stores
+  // them in two private variables
+  FDescentTemplate(CType * pType,
+                   C_FLOAT64(CType::*method)(const C_FLOAT64 &))
   {
-  private:
-    const C_FLOAT64 (CType::*mMethod)(const C_FLOAT64 &); // pointer to member function
-    CType * mpType;                                         // pointer to object
-
-  public:
-
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    FDescentTemplate(CType * pType,
-                     const C_FLOAT64 (CType::*method)(const C_FLOAT64 &))
-    {
-      mpType = pType;
-      mMethod = method;
-    };
-
-    virtual ~FDescentTemplate(){};
-
-    // override operator "()"
-    virtual const C_FLOAT64 operator()(const C_FLOAT64 & value)
-    {return (*mpType.*mMethod)(value);}    ;              // execute member function
+    mpType = pType;
+    mMethod = method;
   };
+
+  virtual ~FDescentTemplate() {};
+
+  // override operator "()"
+  virtual C_FLOAT64 operator()(const C_FLOAT64 & value)
+  {return (*mpType.*mMethod)(value);}    ;              // execute member function
+};
 
 int FminBrent(double a,                /* Left border      */
               double b,                /* Right border      */

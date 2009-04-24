@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:15 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:44:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,8 @@ const std::string CFunctionParameter::RoleNameDisplay[] =
 CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xmlrole)
 {
   C_INT32 i;
-  for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != xmlrole); ++i);
+
+  for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != xmlrole); ++i) {};
 
   if (RoleNameXML[i] == "")
     return VARIABLE; //default for invalid XML string
@@ -110,9 +111,9 @@ void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 const CFunctionParameter::DataType &
 
 CFunctionParameter::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}
 
 void CFunctionParameter::setIsUsed(const bool & isUsed)
 {mIsUsed = isUsed;}
@@ -122,13 +123,15 @@ void CFunctionParameter::setIsUsed(const bool & isUsed)
  * @return const bool & isUsed
  */
 const bool & CFunctionParameter::isUsed() const
-  {return mIsUsed;}
+{return mIsUsed;}
 
 std::ostream& operator<<(std::ostream &os, const CFunctionParameter & d)
 {
   //os << "CFunctionParameter: "
   os << d.getObjectName();
+
   if (d.mType != 1) os << " mType " << d.mType;
+
   os << " [" << CFunctionParameter::RoleNameDisplay[d.mUsage] << "]";
 
   return os;

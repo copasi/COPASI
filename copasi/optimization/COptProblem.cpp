@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:48:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -625,7 +625,7 @@ const C_FLOAT64 & COptProblem::getSolutionValue() const
 COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
 {return *(*mpOptItems)[index];}
 
-const unsigned C_INT32 COptProblem::getOptItemSize() const
+unsigned C_INT32 COptProblem::getOptItemSize() const
 {return mpGrpItems->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.14 $
+$Revision: 1.15 $
 $Name:  $
-$Author: shoops $
-$Date: 2008/12/18 19:26:08 $
+$Author: ssahle $
+$Date: 2009/04/24 12:53:18 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ CTableRow::CTableRow(const CTableRow & src):
 CTableRow::~CTableRow() {}
 
 const std::vector< CTableCell > & CTableRow::getCells() const
-  {return mCells;}
+{return mCells;}
 
 bool CTableRow::resize(const unsigned C_INT32 & size)
 {
@@ -164,16 +164,17 @@ bool CTableRow::resize(const unsigned C_INT32 & size)
   return true;
 }
 
-const unsigned C_INT32 CTableRow::size() const
+unsigned C_INT32 CTableRow::size() const
 {return mCells.size();}
 
 const unsigned C_INT32 & CTableRow::getLastFilledCell() const
-  {return mLastFilledCell;}
+{return mLastFilledCell;}
 
 unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
     const bool & rewind)
 {
   std::istream::pos_type pos;
+
   if (rewind) pos = is.tellg();
 
   is >> *this;
@@ -196,9 +197,11 @@ std::istream & CTableRow::readLine(std::istream & is)
   std::stringstream line;
 
   char c;
+
   for (is.get(c); c != 0x0a && c != 0x0d; is.get(c))
     {
       if (is.fail() || is.eof()) break;
+
       line.put(c);
     }
 
@@ -214,9 +217,11 @@ std::istream & CTableRow::readLine(std::istream & is)
   std::vector< CTableCell >::iterator end = mCells.end();
 
   unsigned C_INT count;
+
   for (count = 0; it != end && !line.fail(); ++it, ++count)
     {
       line >> *it;
+
       if (!it->isEmpty())
         {
           mIsEmpty = false;
@@ -225,15 +230,18 @@ std::istream & CTableRow::readLine(std::istream & is)
     }
 
   CTableCell Unread(mSeparator);
+
   while (!line.fail() && !line.eof())
     {
       mCells.push_back(Unread);
       line >> mCells.back();
+
       if (!mCells.back().isEmpty())
         {
           mIsEmpty = false;
           mLastFilledCell = count;
         }
+
       count++;
     }
 
@@ -242,6 +250,7 @@ std::istream & CTableRow::readLine(std::istream & is)
   // Missing columns are filled with default
   for (; it != end; ++it)
     *it = Unread;
+
   return is;
 }
 

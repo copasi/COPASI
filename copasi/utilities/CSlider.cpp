@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 12:52:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,7 +74,9 @@ bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
   //setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, getObjectName()));
   setSliderObject(getObjectDataModel()->ObjectFromName(listOfContainer, mCN));
+
   if (this->mSync) this->sync();
+
   return (mpSliderObject != NULL);
 }
 
@@ -84,12 +86,12 @@ void CSlider::setSynced(bool synced)
 }
 
 bool CSlider::getSynced() const
-  {
-    return this->mSync;
-  }
+{
+  return this->mSync;
+}
 
 const std::string & CSlider::getKey() const
-  {return mKey;}
+{return mKey;}
 
 bool CSlider::setAssociatedEntityKey(const std::string & associatedEntityKey)
 {
@@ -99,7 +101,7 @@ bool CSlider::setAssociatedEntityKey(const std::string & associatedEntityKey)
 }
 
 const std::string & CSlider::getAssociatedEntityKey() const
-  {return mAssociatedEntityKey;}
+{return mAssociatedEntityKey;}
 
 bool CSlider::setSliderObject(CCopasiObject * pObject)
 {
@@ -110,6 +112,7 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
       mInitialRefreshes.clear();
       return false;
     }
+
   mCN = pObject->getCN();
 
   std::set< const CCopasiObject * > ChangedObjects;
@@ -131,17 +134,22 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
     {
       this->setSliderType(Undefined);
     }
+
   if (this->mSync) this->sync();
+
   C_FLOAT64 value = this->getSliderValue();
   this->mOriginalValue = value;
+
   if (this->mMinValue > value)
     {
       this->mMinValue = value;
     }
+
   if (this->mMaxValue < value)
     {
       this->mMaxValue = value;
     }
+
   return true;
 }
 
@@ -171,7 +179,7 @@ CCopasiObject * CSlider::getSliderObject()
 {return mpSliderObject;}
 
 const std::string & CSlider::getSliderObjectCN() const
-  {return mCN; /*getObjectName();*/}
+{return mCN; /*getObjectName();*/}
 
 bool CSlider::setSliderType(const CSlider::Type type)
 {
@@ -179,18 +187,20 @@ bool CSlider::setSliderType(const CSlider::Type type)
   return true;
 }
 
-const CSlider::Type CSlider::getSliderType() const
-  {return mSliderType;}
+CSlider::Type CSlider::getSliderType() const
+{return mSliderType;}
 
 bool CSlider::setOriginalValue(const C_FLOAT64 value)
 {
   if (mSliderType != Undefined)
     {
       mOriginalValue = value;
+
       if (mOriginalValue < this->mMinValue)
         {
           mOriginalValue = this->mMinValue;
         }
+
       if (mOriginalValue > this->mMaxValue)
         {
           mOriginalValue = this->mMaxValue;
@@ -210,10 +220,12 @@ bool CSlider::setSliderValue(const C_FLOAT64 value,
   if (mSliderType != Undefined)
     {
       mValue = value;
+
       if (mValue < this->mMinValue)
         {
           mValue = this->mMinValue;
         }
+
       if (mValue > this->mMaxValue)
         {
           mValue = this->mMaxValue;
@@ -235,6 +247,7 @@ bool CSlider::setSliderValue(const C_FLOAT64 value,
 void CSlider::sync()
 {
   if (!this->mpSliderObject) return;
+
   if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
     {
       C_INT32* reference =
@@ -271,15 +284,15 @@ void CSlider::writeToObject()
   return;
 }
 
-const C_FLOAT64 CSlider::getOriginalValue() const
-  {
-    return this->mOriginalValue;
-  }
+const C_FLOAT64 & CSlider::getOriginalValue() const
+{
+  return this->mOriginalValue;
+}
 
-const C_FLOAT64 CSlider::getSliderValue() const
-  {
-    return this->mValue;
-  }
+const C_FLOAT64 & CSlider::getSliderValue() const
+{
+  return this->mValue;
+}
 
 bool CSlider::setMinValue(const C_FLOAT64 minValue)
 {
@@ -291,6 +304,7 @@ bool CSlider::setMinValue(const C_FLOAT64 minValue)
         {
           mMaxValue = mMinValue;
         }
+
       if (mpSliderObject && getSliderValue() < mMinValue)
         {
           this->mValue = this->mMinValue;
@@ -305,8 +319,8 @@ bool CSlider::setMinValue(const C_FLOAT64 minValue)
     }
 }
 
-const C_FLOAT64 CSlider::getMinValue() const
-  {return mMinValue;}
+const C_FLOAT64 & CSlider::getMinValue() const
+{return mMinValue;}
 
 bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
 {
@@ -318,11 +332,13 @@ bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
         {
           mMinValue = mMaxValue;
         }
+
       if (mpSliderObject && getSliderValue() > mMaxValue)
         {
           this->mValue = this->mMaxValue;
           this->writeToObject();
         }
+
       return true;
     }
   else
@@ -331,8 +347,8 @@ bool CSlider::setMaxValue(const C_FLOAT64 maxValue)
     }
 }
 
-const C_FLOAT64 CSlider::getMaxValue() const
-  {return mMaxValue;}
+const C_FLOAT64 & CSlider::getMaxValue() const
+{return mMaxValue;}
 
 bool CSlider::setTickNumber(const unsigned C_INT32 tickNumber)
 {
@@ -340,8 +356,8 @@ bool CSlider::setTickNumber(const unsigned C_INT32 tickNumber)
   return true;
 }
 
-const unsigned C_INT32 CSlider::getTickNumber() const
-  {return mTickNumber;}
+unsigned C_INT32 CSlider::getTickNumber() const
+{return mTickNumber;}
 
 bool CSlider::setTickFactor(const unsigned C_INT32 tickFactor)
 {
@@ -349,13 +365,13 @@ bool CSlider::setTickFactor(const unsigned C_INT32 tickFactor)
   return true;
 }
 
-const unsigned C_INT32 CSlider::getTickFactor() const
-  {return mTickFactor;}
+unsigned C_INT32 CSlider::getTickFactor() const
+{return mTickFactor;}
 
 CSlider::Scale CSlider::getScaling() const
-  {
-    return this->mScaling;
-  }
+{
+  return this->mScaling;
+}
 
 bool CSlider::setScaling(CSlider::Scale scaling)
 {
@@ -382,5 +398,6 @@ CSlider::Scale CSlider::convertScaleNameToScale(const char* scaleName)
 const char* CSlider::convertScaleToScaleName(Scale scale)
 {
   if (scale < 0 || scale > CSlider::undefinedScale) return ScaleName[undefinedScale];
+
   return ScaleName[scale];
 }
