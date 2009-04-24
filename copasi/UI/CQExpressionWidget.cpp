@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/04/24 13:57:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "report/CCopasiRootContainer.h"
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : Q3SyntaxHighlighter(ew)
@@ -89,6 +89,10 @@ CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * n
     CQValidator< Q3TextEdit >(parent, name),
     mExpression()
 {
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  mExpression.setObjectParent(pDataModel);
   mExpression.setBoolean(isBoolean);
 }
 
