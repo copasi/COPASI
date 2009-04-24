@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.193 $
+//   $Revision: 1.194 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 13:31:44 $
+//   $Author: shoops $
+//   $Date: 2009/04/24 23:11:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2743,11 +2743,11 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
         mKey = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
 
-        mpEvent = new CEvent();
-        mCommon.KeyMap.addFix(mKey, mpEvent);
-        mpEvent->setObjectName(Name);
+        mCommon.pEvent = new CEvent();
+        mCommon.KeyMap.addFix(mKey, mCommon.pEvent);
+        mCommon.pEvent->setObjectName(Name);
 
-        mCommon.pModel->getEvents().add(mpEvent, true);
+        mCommon.pModel->getEvents().add(mCommon. pEvent, true);
         return;
 
       case TriggerExpression:
@@ -2796,12 +2796,6 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 {
-  // It is possible that we have an Expression but no InitialExpression,
-  // i.e., mCurrentElement = Expression and pszName = ModelValue may occur
-  // and is valid.
-  //  if (mCurrentElement == Expression && !strcmp(pszName, "ModelValue"))
-  //    mCurrentElement = ModelValue;
-
   switch (mCurrentElement)
     {
       case Event:
@@ -2826,7 +2820,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
         {
           unsigned C_INT32 Size = CCopasiMessage::size();
 
-          if (!mpEvent->setExpressionTrigger(mCommon.CharacterData)) fatalError();
+          if (!mCommon.pEvent->setTriggerExpression(mCommon.CharacterData)) fatalError();
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -2834,9 +2828,6 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
             {
               CCopasiMessage msg = CCopasiMessage::getLastMessage();
             }
-
-          //        while (CCopasiMessage::size() > Size)
-          //          CCopasiMessage::getLastMessage();
         }
 
         mCurrentElement = Event;
@@ -2851,7 +2842,7 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
         {
           unsigned C_INT32 Size = CCopasiMessage::size();
 
-          mpEvent->setExpressionDelay(mCommon.CharacterData);
+          mCommon.pEvent->setDelayExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -2859,81 +2850,13 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
             {
               CCopasiMessage msg = CCopasiMessage::getLastMessage();
             }
-
-          //        while (CCopasiMessage::size() > Size)
-          //          CCopasiMessage::getLastMessage();
         }
 
         mCurrentElement = Event;
         break;
 
       case ListOfAssignments:
-
-        if (strcmp(pszName, "ListOfAssignments"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfAssignments", mParser.getCurrentLineNumber());
-
-        {
-          unsigned C_INT32 Size = CCopasiMessage::size();
-
-          CCopasiMessage msg = CCopasiMessage::getLastMessage();
-
-          while (CCopasiMessage::size() > Size)
-            {
-              msg = CCopasiMessage::getLastMessage();
-            }
-        }
-
-        mpEvent->clearAssignment();
-
-        unsigned C_INT32 idx;
-
-        for (idx = 0; idx < mCommon.mAssignments.size(); idx++)
-          {
-            CCopasiMessage msg = CCopasiMessage::getLastMessage();
-
-            mpEvent->addAssignment(mCommon.mAssignments[idx].first, mCommon.mAssignments[idx].second);
-
-            msg = CCopasiMessage::getLastMessage();
-          }
-
-        //   mpEvent->addAssignment(mCommon.mAssignmentPair.first, mCommon.mAssignmentPair.second);
-        {
-          unsigned C_INT32 Size = CCopasiMessage::size();
-
-          CCopasiMessage msg = CCopasiMessage::getLastMessage();
-
-          while (CCopasiMessage::size() > Size)
-            {
-              msg = CCopasiMessage::getLastMessage();
-            }
-        }
-
-        // Remove error messages created by setExpression as this may fail
-        // due to incomplete model specification at this time.
-        //      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
-        //        CCopasiMessage::getLastMessage();
-        /*
-              if (!strcmp(pszName, "ListOfAssignments"))
-           {
-                mCurrentElement = Event;
-           }
-        */
         mCurrentElement = Event;
-
-        /*
-              if (strcmp(pszName, "ListOfAssignments"))
-                CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                               pszName, "ListOfAssignments", mParser.getCurrentLineNumber());
-              mpMV->setExpression(mCommon.FunctionDescription);
-
-              // Remove error messages created by setExpression as this may fail
-              // due to incomplete model specification at this time.
-              if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
-                CCopasiMessage::getLastMessage();
-
-              mCurrentElement = Event;
-        */
         break;
 
       case UNKNOWN_ELEMENT:
@@ -3054,6 +2977,7 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
 {
   mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
+
   const CModelEntity* pME = NULL;
 
   switch (mCurrentElement)
@@ -3064,13 +2988,20 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "Assignment", mParser.getCurrentLineNumber());
 
-        mKey = mParser.getAttributeValue("targetkey", papszAttrs);
+        mKey = mParser.getAttributeValue("targetKey", papszAttrs);
 
-        pME = dynamic_cast<const CModelEntity*>(mCommon.KeyMap.get(mKey));
+        pME = dynamic_cast<const CModelEntity *>(mCommon.KeyMap.get(mKey));
 
-        if (pME == NULL) fatalError();
+        mCommon.pEventAssignment = NULL;
 
-        mAssignmentPair.first = pME->getKey();
+        if (pME != NULL)
+          {
+            std::pair< std::set< CEventAssignment >::iterator, bool > inserted =
+              mCommon.pEvent->getAssignments().insert(CEventAssignment(pME->getKey()));
+
+            if (inserted.second)
+              mCommon.pEventAssignment = const_cast< CEventAssignment * >(&*inserted.first);
+          }
 
         return;
 
@@ -3100,12 +3031,6 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::AssignmentElement::end(const XML_Char *pszName)
 {
-  // It is possible that we have an Expression but no InitialExpression,
-  // i.e., mCurrentElement = Expression and pszName = ModelValue may occur
-  // and is valid.
-  //  if (mCurrentElement == Expression && !strcmp(pszName, "ModelValue"))
-  //    mCurrentElement = ModelValue;
-
   switch (mCurrentElement)
     {
       case Assignment:
@@ -3130,23 +3055,17 @@ void CCopasiXMLParser::AssignmentElement::end(const XML_Char *pszName)
         {
           unsigned C_INT32 Size = CCopasiMessage::size();
 
-          mAssignmentPair.second = mCommon.CharacterData;
-
-          mCommon.mAssignments.push_back(mAssignmentPair);
-
-          //        mpMV->setExpression(mCommon.CharacterData);
+          if (mCommon.pEventAssignment != NULL)
+            mCommon.pEventAssignment->setExpression(mCommon.CharacterData);
 
           CCopasiMessage msg = CCopasiMessage::getLastMessage();
 
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
           while (CCopasiMessage::size() > Size)
             {
               msg = CCopasiMessage::getLastMessage();
             }
-
-          // Remove error messages created by setExpression as this may fail
-          // due to incomplete model specification at this time.
-          //        while (CCopasiMessage::size() > Size)
-          //          CCopasiMessage::getLastMessage();
         }
 
         mCurrentElement = Assignment;

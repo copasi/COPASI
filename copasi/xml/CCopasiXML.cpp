@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.113 $
+//   $Revision: 1.114 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:21:36 $
+//   $Date: 2009/04/24 23:11:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -755,40 +755,42 @@ bool CCopasiXML::saveModel()
                         endSaveElement("MiriamAnnotation");
                       }
           */
-          if (pEvent->getExpressionTrigger() != "")
+          if (pEvent->getTriggerExpression() != "")
             {
               startSaveElement("TriggerExpression");
-              saveData(pEvent->getExpressionTrigger());
+              saveData(pEvent->getTriggerExpression());
               endSaveElement("TriggerExpression");
             }
 
-          if (pEvent->getExpressionDelay() != "")
+          if (pEvent->getDelayExpression() != "")
             {
               startSaveElement("DelayExpression");
-              saveData(pEvent->getExpressionDelay());
+              saveData(pEvent->getDelayExpression());
               endSaveElement("DelayExpression");
             }
 
-          CXMLAttributeList Attr;
+          const std::set< CEventAssignment > & Assignments = pEvent->getAssignments();
 
-          if (pEvent->getNumAssignments())
-            //          if (pEvent->getExpressionEA() != "")
+          if (Assignments.size() > 0)
             {
               startSaveElement("ListOfAssignments");
 
-              unsigned C_INT32 idxAct = 0;
+              CXMLAttributeList Attr;
+              Attr.add("targetKey", "");
 
-              for (; idxAct < pEvent->getNumAssignments(); idxAct++)
+              std::set< CEventAssignment >::const_iterator it = Assignments.begin();
+              std::set< CEventAssignment >::const_iterator end = Assignments.end();
+
+              for (; it != end; ++it)
                 {
-                  Attr.erase();
-                  Attr.add("targetkey", "");
-                  Attr.setValue(0, pEvent->getAssignmentObjectKey(idxAct));
+                  Attr.setValue(0, it->getTargetKey());
 
                   startSaveElement("Assignment", Attr);
+
                   startSaveElement("Expression");
-                  saveData(pEvent->getAssignmentExpressionStr(idxAct));
-                  //saveData(pEvent->getExpressionEA());
+                  saveData(it->getExpression());
                   endSaveElement("Expression");
+
                   endSaveElement("Assignment");
                 }
 

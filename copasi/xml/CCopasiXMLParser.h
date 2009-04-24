@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:21:36 $
+//   $Date: 2009/04/24 23:11:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ class CModel;
 class CModelEntity;
 class CModelValue;
 class CEvent;
+class CEventAssignment;
 class CReaction;
 class CEvaluationTree;
 class CFunctionParameter;
@@ -123,6 +124,16 @@ struct SCopasiXMLParserCommon
    * Pointer to the currently processed reaction.
    */
   CReaction * pReaction;
+
+  /**
+   * Pointer to the currently processed event
+   */
+  CEvent * pEvent;
+
+  /**
+   * Pointer to the currently processed event assignment
+   */
+  CEventAssignment * pEventAssignment;
 
   /**
    * The keys of the source parameters for a call parameter.
@@ -233,7 +244,7 @@ struct SCopasiXMLParserCommon
   std::map<std::string , std::vector < CCopasiTask* > > taskReferenceMap;
 
   /**
-   * A map that stores a vector of pairs of header,body or footer adresses
+   * A map that stores a vector of pairs of header,body or footer addresses
    *  with the index together with the key to the reference.
    */
   std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, unsigned C_INT32 > > > reportReferenceMap;
@@ -1470,8 +1481,6 @@ private:
       DelayExpression,
       ListOfAssignments
     };
-
-    CEvent * mpEvent;
 
     /**
      * The key in the CopasiML file
