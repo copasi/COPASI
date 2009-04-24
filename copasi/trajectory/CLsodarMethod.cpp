@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/04/24 19:28:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,6 +216,7 @@ void CLsodarMethod::start(const CState * initialState)
   mTime = mpState->getTime();
 
   mReducedModel = * getValue("Integrate Reduced Model").pBOOL;
+
   if (mReducedModel)
     mData.dim = mpState->getNumIndependent();
   else
@@ -232,7 +233,7 @@ void CLsodarMethod::start(const CState * initialState)
   C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
   mAtol = mpModel->initializeAtolVector(*pTolerance, mReducedModel);
 
-  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
+  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
   mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
@@ -249,7 +250,7 @@ void CLsodarMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
 
 void CLsodarMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  assert (y == mY);
+  assert(y == mY);
 
   mpState->setTime(*t);
 
