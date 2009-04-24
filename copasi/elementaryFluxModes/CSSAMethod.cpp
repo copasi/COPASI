@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2008/09/05 19:57:47 $
+//   $Date: 2009/04/24 12:44:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,9 +49,11 @@ CSSAMethod::CSSAMethod(const CCopasiContainer * pParent) :
 bool CSSAMethod::initialize()
 {
   CEFMTask * pTask = dynamic_cast< CEFMTask *>(getObjectParent());
+
   if (pTask == NULL) return false;
 
   mpModel = pTask->getProblem()->getModel();
+
   if (mpModel == NULL) return false;
 
   mFluxModes.clear();
@@ -69,6 +71,7 @@ bool CSSAMethod::initialize()
 
   /* Reversible reaction counter */
   mReversible = 0;
+
   for (row = 0; row < numRows; row++)
     {
       if (Reaction[row]->isReversible())
@@ -84,6 +87,7 @@ bool CSSAMethod::initialize()
   mStoi.resize(numRows);
   std::vector< std::vector< C_FLOAT64 > >::iterator it = mStoi.begin();
   std::vector< std::vector< C_FLOAT64 > >::iterator end = mStoi.end();
+
   for (; it != end; ++it)
     it->resize(numCols);
 
@@ -97,8 +101,11 @@ bool CSSAMethod::initialize()
   unsigned C_INT32 InsertIrreversible = numRows - 1;
 
   /* Build the transpose of the stoichiometry matrix, */
+
   /* sort reversible reactions to the top, count them */
+
   /* and keep track of the rearrangement */
+
   //for (row = 0; row < numOrigRows; row++)
   for (row = 0; row < numOrigRows; row++)
     {
@@ -118,6 +125,7 @@ bool CSSAMethod::initialize()
       for (col = 0; col < numCols; col++)
         {
           mStoi[Insert][col] = ModelStoi(row, col);
+
           if (Reaction[row]->isReversible())
             mStoi[InsertReversible - 1][col] = - ModelStoi(row, col);
         }
@@ -125,6 +133,7 @@ bool CSSAMethod::initialize()
 
 #ifdef COPASI_DEBUG
   std::cout << "mStoi:\n";
+
   for (int i = 0; i < numRows; ++i)
     {
       for (int j = 0; j < numCols; ++j)
@@ -132,8 +141,10 @@ bool CSSAMethod::initialize()
           std::cout << mStoi[i][j];
           std::cout << " ";
         }
+
       std::cout << std::endl;
     }
+
 #endif
 
   mStep = 0;
@@ -183,7 +194,7 @@ CSSAMethod::isMixingStable(int indexEC)
 
 bool
 CSSAMethod::isReactionReversed(int index) const
-  {return mIsBackwardReaction[index];}
+{return mIsBackwardReaction[index];}
 
 bool
 CSSAMethod::testForMixingStability()
@@ -236,6 +247,7 @@ CSSAMethod::testForMixingStability()
 
       int partMetabs[ijmax];
       memset(&partMetabs, 0, ijmax*sizeof(int));
+
       for (int j = 0; j < EC.size(); ++j)
         {
           if (EC[j])
@@ -273,6 +285,7 @@ CSSAMethod::testForMixingStability()
           else
             {
               int zeroes = 0;
+
               for (int i = 0; i < ijmax && state == 1; ++i)
                 {
                   // only count zero eigenvals if the eigenvector contains a reaction
@@ -290,21 +303,27 @@ CSSAMethod::testForMixingStability()
                 }
             }
         }
+
 #ifdef COPASI_DEBUG
       std::cout << std::endl << std::endl;
       std::cout << "EC" << std::endl << "  (";
+
       for (int j = 0; j < mExtremeCurrents[0].size(); ++j)
         std::cout << mExtremeCurrents[ecIndex][j] << " ";
+
       std::cout << ")" << std::endl << std::endl;
 
       std::cout << "sub-jacobian #" << ecIndex + 1 << ":\n" << mTransformedSubJacobians[ecIndex] << "\n";
 
       std::cout << "\nEigenval\tEigenvector\tParticipating" << std::endl;
+
       for (int i = 0; i < ijmax; ++i)
         {
           std::cout << eigenvalues[i] << std::endl;
+
           for (int j = 0; j < ijmax; ++j)
             std::cout << "  \t\t\t" << outarray[i*ijmax + j] << "\t\t" << partMetabs[j] << std::endl;
+
           std::cout << std::endl;
         }
 
@@ -314,6 +333,7 @@ CSSAMethod::testForMixingStability()
         std::cout << "not mixing stable";
       else
         std::cout << "mixing stable";
+
       std::cout << std::endl << std::endl;
 #endif // COPASI_DEBUG
       mIsMixingStable.push_back(state);
@@ -322,7 +342,7 @@ CSSAMethod::testForMixingStability()
 #ifdef COPASI_DEBUG
   std::cout << std::endl;
   std::cout << "There is/are " << mIsMixingStable.size()
-  << " extreme current(s) not mixing stable!" << std::endl;
+            << " extreme current(s) not mixing stable!" << std::endl;
 #endif //COPASI_DEBUG
 
   return true;
@@ -349,6 +369,7 @@ CSSAMethod::decomposeJacobian()
 #endif
 
   std::vector< CVector<C_FLOAT64> >::iterator iter;
+
   for (iter = mExtremeCurrents.begin(); iter != mExtremeCurrents.end(); ++iter)
     {
       CMatrix<C_FLOAT64> diagE = diag(*iter);
@@ -431,7 +452,9 @@ CSSAMethod::buildKineticMatrix()
           CCopasiVector< CMetab >::iterator found = find(metabOrder.begin(),
               metabOrder.end(),
               substrates[jsubst]->getMetabolite());
+
           if ((*found)->isDependent()) continue;
+
           int kmetab = std::distance(metabOrder.begin(), found);
           mTransposedKineticMatrix[ireac][kmetab] = substrates[jsubst]->getMultiplicity();
         }
@@ -439,8 +462,8 @@ CSSAMethod::buildKineticMatrix()
 
 #ifdef COPASI_DEBUG
   std::cout << "transposed kinetic matrix: " << std::endl
-  << mTransposedKineticMatrix << std::endl
-  << std::endl;
+            << mTransposedKineticMatrix << std::endl
+            << std::endl;
 #endif // COPASI_DEBUG
 
   return true;
@@ -459,18 +482,23 @@ CSSAMethod::buildExtremeCurrents()
   extremecurrent.resize(mNumReactions);
 
   std::vector< CFluxMode >::iterator iter;
+
   for (iter = fluxmodes.begin(); iter != fluxmodes.end(); ++iter)
     {
       memset(extremecurrent.array(), 0, extremecurrent.size()*sizeof(C_FLOAT64));
-      for (uint i = 0; i < iter->size(); ++i)
+      unsigned C_INT32 i;
+
+      for (i = 0; i < iter->size(); ++i)
         {
           extremecurrent[iter->getReactionIndex(i)] = iter->getMultiplier(i);
         }
+
 #ifdef COPASI_DEBUG
       std::cout << "extreme current #" << distance(fluxmodes.begin(), iter) << std::endl
-      << "  " << extremecurrent << std::endl << std::endl;
+                << "  " << extremecurrent << std::endl << std::endl;
       mExtremeCurrents.push_back(extremecurrent);
 #endif
     }
+
   return true;
 }
