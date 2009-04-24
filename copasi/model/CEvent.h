@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2008/06/16 09:43:00 $
+//   $Author: shoops $
+//   $Date: 2009/04/24 19:27:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,319 +28,297 @@
 #define COPASI_CEvent
 
 #include <string>
-#include <vector>
+#include <set>
 
-#include "utilities/CCopasiVector.h"
-#include "function/CExpression.h"
+class CExpression;
 
-class SBase;
+class CEventAssignment : private CCopasiContainer
+{
+  // Operations
+private:
+  /**
+   * Default constructor
+   */
+  CEventAssignment();
 
-/*!
-    \brief The class for handling event task
+public:
+  /**
+   * Specific constructor
+   * @param const std::string & targetKey
+   * @param "const CCopasiContainer * pParent (default: NULL)
+   */
+  CEventAssignment(const std::string & targetKey,
+                   const CCopasiContainer * pParent = NULL);
 
- */
+  /**
+   * Copy constructor
+   * @param "const CEventAssignment &" src
+   * @param "const CCopasiContainer * pParent (default: NULL)
+   */
+  CEventAssignment(const CEventAssignment & src,
+                   const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Destructor
+   */
+  ~CEventAssignment();
+
+  /**
+   * A less than sort operator for sorting the entries in a container
+   * @param const CEventAssignment & rhs
+   * @return bool lessThan
+   */
+  bool operator < (const CEventAssignment & rhs) const;
+
+  /**
+   * Retrieve the key
+   * @return const std::string & key
+   */
+  const std::string & getKey() const;
+
+  /**
+   * Retrieve the target key
+   * @return const std::string & targetKey
+   */
+  const std::string & getTargetKey() const;
+
+  /**
+   * Set the expression from an infix string. The return value indicates if
+   * parsing the expression was successful.
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setExpression(const std::string & expression);
+
+  /**
+   * Set the expression from an expression pointer. CEventAssignment takes ownership.
+   * @param CExpression* pExpression
+   */
+  void setExpressionPtr(CExpression * pExpression);
+
+  /**
+   * Retrieve the expression as a string.
+   * @return std::string expression
+   */
+  std::string getExpression() const;
+
+  /**
+   * Retrieve the pointer to the expression.
+   * @return CExpression * pExpression
+   */
+  const CExpression * getExpressionPtr() const;
+
+  /**
+   * Retrieve the pointer to the expression.
+   * @return CExpression * pExpression
+   */
+  CExpression * getExpressionPtr();
+
+  // Attributes
+private:
+  /**
+   * The key
+   */
+  std::string mKey;
+
+  /**
+   * The key of the target value
+   */
+  std::string mTargetKey;
+
+  /**
+   * The expression to calculate the new value
+   */
+  CExpression * mpExpression;
+};
 
 class CEvent : public CCopasiContainer
-  {
-    // Attributes
-  private:
+{
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CEvent(const std::string & name = "NoName",
+         const CCopasiContainer * pParent = NULL);
 
-    /// The key of the event
-    std::string mKey;
+  /**
+   * Copy constructor
+   * @param "const CEvent &" src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CEvent(const CEvent & src,
+         const CCopasiContainer * pParent = NULL);
 
-    /**
-     * The id of the corresponding event in an SBML file.
-     * This value is either set upon importing an SBML file,
-     * or when the object is first exported to an SBML file.
-     */
-    std::string mSBMLId;
+private:
+  CEvent & operator= (const CEvent &);
 
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CEvent(const std::string & name = "NoName",
-           const CCopasiContainer * pParent = NULL);
+public:
+  /**
+   * Destructor
+   */
+  ~CEvent();
 
-    /**
-     * Copy constructor
-     * @param "const CEvent &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CEvent(const CEvent & src,
-           const CCopasiContainer * pParent = NULL);
+  /**
+   *  Delete
+   */
+  void cleanup();
 
-  private:
-    CEvent & operator= (const CEvent &);
+  /**
+   * Retrieve display name. Special treatment for reaction to
+   * provide a shorter display
+   */
+  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
-  public:
-    ///  Destructor
-    ~CEvent();
+  /**
+   * Retrieves the key of the event
+   * @return std::string key
+   */
+  virtual const std::string & getKey() const;
 
-    /**
-     *  Delete
-     */
-    void cleanup();
+  /**
+   * Compile the event.
+   */
+  bool compile();
 
-    /**
-     *  Retrieve display name. Special treatment for reaction to
-     *  provide a shorter display
-     */
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  /**
+   * Sets the SBMLId.
+   * @param const std::string & id
+   */
+  void setSBMLId(const std::string & id);
 
-    /**
-     * Retreive the list of deleted numeric child objects;
-     * @return std::set< const CCopasiObject * > deletedObjects
-     */
-    virtual std::set< const CCopasiObject * > getDeletedObjects() const;
+  /**
+   * Returns a reference to the SBML Id.
+   */
+  const std::string& getSBMLId() const;
 
-    /**
-     *  Retrieves the key of the event
-     *  @return std::string key
-     */
-    virtual const std::string & getKey() const;
+  /**
+   * Set the expression of trigger from a string. The return value indicates if
+   * parsing the expression was successful.
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setTriggerExpression(const std::string & expression);
 
-    /// Compile the event
-    bool compile();
+  /**
+   * Set the expression of trigger from an expression.
+   * @param CExpression* pExpression
+   */
+  void setTriggerExpressionPtr(CExpression * pExpression);
 
-    /// Sets the SBMLId.
-    void setSBMLId(const std::string& id);
+  /**
+   * Retrieve the expression of trigger as a string.
+   * @return std::string expression
+   */
+  std::string getTriggerExpression() const;
 
-    /**
-     * Returns a reference to the SBML Id.
-     */
-    const std::string& getSBMLId() const;
+  /**
+   * Retrieve the pointer to the expression of trigger.
+   * @return CExpression* pExpression
+   */
+  const CExpression * getTriggerExpressionPtr() const;
 
-    //    void setDelay(const C_FLOAT64 & d);
-    //    const C_FLOAT64 & getDelay() const;
+  /**
+   * Retrieve the pointer to the expression of trigger.
+   * @return CExpression* pExpression
+   */
+  CExpression * getTriggerExpressionPtr();
 
-    /**
-     * set the expression of trigger from a string. The return value indicates if
-     * parsing the expression was succesful.
-     * @param const st::string & expression
-     * @return bool success
-     */
-    bool setExpressionTrigger(const std::string & expression);
+  /**
+   * Set the expression of delay from a string. The return value indicates if
+   * parsing the expression was successful.
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setDelayExpression(const std::string & expression);
 
-    /**
-     * set the expression of trigger from an expression.
-     * @param CExpression* pExpression
-     */
-    void setTriggerExpressionPtr(CExpression* pExpression);
+  /**
+   * Set the expression of delay from an expression.
+   * @param CExpression* pExpression
+   */
+  void setDelayExpressionPtr(CExpression* pExpression);
 
-    /**
-     * retrieve the expression of trigger as a string.
-     * @return std::string expression
-     */
-    std::string getExpressionTrigger() const;
+  /**
+   * Retrieve the expression of delay as a string.
+   * @return std::string expression
+   */
+  std::string getDelayExpression() const;
 
-    /**
-     * retrieve the pointer to the expression of trigger.
-     * @return CExpression* pExpression
-     */
-    const CExpression* getTriggerExpressionPtr() const;
+  /**
+   * Retrieve the pointer to the expression of delay.
+   * @return CExpression* pExpression
+   */
+  CExpression* getDelayExpressionPtr();
 
-    /**
-     * retrieve the pointer to the expression of trigger.
-     * @return CExpression* pExpression
-     */
-    CExpression* getTriggerExpressionPtr();
+  /**
+   * Retrieve the pointer to the expression of delay.
+   * @return CExpression* pExpression
+   */
+  const CExpression* getDelayExpressionPtr() const;
 
-    /**
-     * set the expression of delay from an expression.
-     * @param CExpression* pExpression
-     */
-    void setDelayExpressionPtr(CExpression* pExpression);
+  /**
+   * Retrieve the assignments
+   * @return const std::set< CEventAssignment > & assignments
+   */
+  const std::set< CEventAssignment > & getAssignments() const;
 
-    /**
-     * set the expression of delay from a string. The return value indicates if
-     * parsing the expression was succesful.
-     * @param const st::string & expression
-     * @return bool success
-     */
-    bool setExpressionDelay(const std::string & expression);
+  /**
+   * Retrieve the assignments
+   * @return std::set< CEventAssignment > & assignments
+   */
+  std::set< CEventAssignment > & getAssignments();
 
-    /**
-     * retrieve the expression of delay as a string.
-     * @return std::string expression
-     */
-    std::string getExpressionDelay() const;
+  /**
+   * Delete assignment with the given key. Please note this is not the target key.
+   * @param const std::string & key
+   */
+  void deleteAssignment(const std::string & key);
 
-    /**
-     * retrieve the pointer to the expression of delay.
-     * @return CExpression* pExpression
-     */
-    CExpression* getDelayExpressionPtr();
+  /**
+   * insert operator
+   */
+  friend std::ostream & operator<<(std::ostream &os, const CEvent & d);
 
-    /**
-     * retrieve the pointer to the expression of delay.
-     * @return CExpression* pExpression
-     */
-    const CExpression* getDelayExpressionPtr() const;
+  // Attributes
+private:
 
-    /**************************************************************************************/
+  /**
+   *  The key of the event
+   */
+  std::string mKey;
 
-    /**
-     * set the expression of event assignment from a string. The return value indicates if
-     * parsing the expression was succesful.
-     * @param const st::string & expression
-     * @return bool success
-     */
-    bool setAssignmentExpression(const std::string & key, const std::string & expression);
+  /**
+   * A Boolean flag indicating whether the calculation or the assignment should be delayed
+   * in the case that a delay is present.
+   */
+  bool mDelayCalculation;
 
-    /**
-     * set the expression of event assignment from an expression object.
-     * @param CExpression* pExpression
-     */
-    void setAssignmentExpressionPtr(const std::string & key, CExpression* pExpression);
+  /**
+   * Pointer to the Trigger Expression of the event
+   */
+  CExpression * mpTriggerExpression;
 
-    /**
-     * retrieve the expression of event assignment as a string.
-     * @return std::string expression
-     */
-    //    std::string getExpressionEA() const;
+  /**
+   * Pointer to the Delay Expression of the event
+   */
+  CExpression * mpDelayExpression;
 
-    /// retrieve the number of assignment the event has
-    unsigned C_INT32 getNumAssignments() const;
+  /**
+   * A map of object keys and assignments expressions which specify the changes made by the event.
+   */
+  std::set < CEventAssignment > mAssignments;
 
-    /*!
-     * retrieve the key of the i-th assignment object
-        * since the object is unique then it acts also as the key.
-     */
-    const std::string getAssignmentObjectKey(unsigned C_INT32 i) const;
+  /**
+   * The id of the corresponding event in an SBML file.
+   * This value is either set upon importing an SBML file,
+   * or when the object is first exported to an SBML file.
+   */
+  std::string mSBMLId;
 
-    /* retrieve the position of object target in the current event object according to a given key.
-     * It is usefull in case of deleting object targets several times without being saved inbetween.
-     */
-    unsigned C_INT32 getAssignmentIndex(const std::string & key);
+private:
 
-    /// retrieve the expression with key target in string format
-    std::string getAssignmentExpressionStr(const std::string & key);
-
-    /// retrieve the expression of the i-th assignment in string format
-    std::string getAssignmentExpressionStr(unsigned C_INT32 i) const;
-
-    /// retrieve the expression of the i-th assignment
-    const CExpression* getAssignmentExpressionPtr(unsigned C_INT32 i) const;
-
-    /// retrieve the expression of the i-th assignment
-    CExpression* getAssignmentExpressionPtr(unsigned C_INT32 i);
-
-    /// retrieve the vector of assignment expression
-    // const std::vector<std::pair<std::string, CExpression> > getAssignmentExpressionVector() const;
-    std::vector<std::pair<std::string, CExpression*> > getAssignmentExpressionVector();
-    // std::vector<std::pair<std::string, CExpression> > * getAssignmentExpressionVector();
-
-    /// set the vector of assignment expression
-    //    void setAssignmentExpressionVector(std::vector<std::pair<std::string, CExpression> > &vector);
-
-    /// set the vector of assignments
-    //    void setAssignment(std::vector<std::pair<std::string, std::string> > &vector);
-
-    /// show all assignments saved in the event object
-    void showAssignments();
-
-    // +++++
-
-    /**
-     * add an assignment to the event. The assignment is described by the key of a copasi
-     * object and a mathematical expression, given as a string.
-     * @param const std::string & key
-     * @param const std::string & expression
-     */
-    bool addAssignment(const std::string & key, const std::string & expression);
-    //    bool addAssignment(const std::string & key);
-
-    /**
-     * update the i-th assignment of the event. The assignment is described by the key of a copasi
-     * object and a mathematical expression, given as a string.
-     * @param unsigned C_INT32 i
-     * @param const std::string & key
-     * @param const std::string & expression
-     */
-    bool updateAssignment(unsigned C_INT32 i, const std::string & key, const std::string & expression);
-
-    /**
-     * delete the i-th assignment from the vector.
-     * @param unsigned C_INT32 i
-     */
-    bool deleteAssignment(unsigned C_INT32 i);
-
-    /**
-     * delete all assignment
-     */
-    void clearAssignment();
-
-    /**
-     * insert operator
-     */
-    friend std::ostream & operator<<(std::ostream &os, const CEvent & d);
-
-  protected:
-
-    CCopasiObjectReference<C_FLOAT64> *mpTriggerValueReference;
-    CCopasiObjectReference<C_FLOAT64> *mpDelayValueReference;
-    CCopasiObjectReference<C_FLOAT64> *mpEAValueReference;
-    CCopasiObjectReference<C_FLOAT64> *mpValueReference;
-
-    /**
-     * Expression to trigger the event
-     */
-    //    CExpression mTriggerExpression;
-
-    /**
-     * Pointer to the Trigger Expression of the event
-     */
-    CExpression *mpTriggerExpression;
-
-    /**
-     * Pointer to the Delay Expression of the event
-     */
-    CExpression *mpDelayExpression;
-
-    /**
-     * Expression to the event assignment
-     */
-    //    CExpression *mpExpressionEA;
-
-    /**
-     * Delay before the action takes place.
-     */
-    //    C_FLOAT64 mDelay;
-
-    /**
-     *  List of assignment expressions that need to be applied after the event triggers.
-     *  The std::string is the key of a copasi object, the expression is an assignment expression
-     *  to this object.
-     */
-    //    std::vector < std::pair <std::string, CExpression> > mAssigns;
-
-    /**
-     *  List of assignment expressions that need to be applied after the event triggers.
-     *  The std::string is the key of a copasi object, the expression is an assignment expression
-     *  to this object.
-     */
-    std::vector < std::pair <std::string, CExpression*> > mAssignsExpression;
-
-    /**
-     *  List of assignment names that need to be applied after the event triggers.
-     *  The std::string is the key of a copasi object, the expression is an assignment name
-     *  to this object.
-     */
-    //    std::vector < std::pair <std::string, std::string> > mAssignsName;
-
-  public:
-
-    /**
-     *  List of pair of object key and its display name.
-     */
-    std::vector < std::pair <std::string, std::string> > mObjectKeyDisplayName;
-
-  private:
-
-    void initObjects();
-  };
+  void initObjects();
+};
 
 #endif // COPASI_CEvent

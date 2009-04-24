@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/17 20:55:50 $
+//   $Date: 2009/04/24 19:27:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,27 +15,32 @@
 #define COPASI_CProcessQueue
 
 #include <map>
-#include <stack>
+#include <set>
 
-class CExpression;
+// We have not yet a stack machine for expression thus we use the old AST
+#define CMathExpression CExpression
+
+class CMathExpression;
+class CMathModel;
+class CMathEvent;
 
 class CProcessQueue
 {
 private:
-  class CProcessQueueKey
+  class CKey
   {
     // Operations
   public:
     /**
      * Default constructor
      */
-    CProcessQueueKey();
+    CKey();
 
     /**
      * Copy constructor
-     * @param const CProcessQueueKey & src
+     * @param const CKey & src
      */
-    CProcessQueueKey(const CProcessQueueKey & src);
+    CKey(const CKey & src);
 
     /**
      * Specific constructor
@@ -44,22 +49,28 @@ private:
      * @param const unsigned C_INT32 & eventId
      * @param const unsigned C_INT32 & cascadingLevel
      */
-    CProcessQueueKey(const C_FLOAT64 & executionTime,
-                     const bool & equality,
-                     const unsigned C_INT32 & eventId,
-                     const unsigned C_INT32 & cascadingLevel);
+    CKey(const C_FLOAT64 & executionTime,
+         const bool & equality,
+         const unsigned C_INT32 & eventId,
+         const unsigned C_INT32 & cascadingLevel);
 
     /**
      * Destructor
      */
-    ~CProcessQueueKey();
+    ~CKey();
 
     /**
      * A less than sort operator for sorting the entries in the queue
-     * @param const CProcessQueueKey & rhs
+     * @param const CKey & rhs
      * @return bool lessThan
      */
-    bool operator < (const CProcessQueueKey & rhs) const;
+    bool operator < (const CKey & rhs) const;
+
+    /**
+     * Retrieve the event id
+     * @return const unsigned C_INT32 & eventId
+     */
+    inline const unsigned C_INT32 & getEventId() const {return mEventId;}
 
     // Attributes
   private:
@@ -67,6 +78,11 @@ private:
      * The time the entry is scheduled to be executed.
      */
     C_FLOAT64 mExecutionTime;
+
+    /**
+     * Cascading level
+     */
+    unsigned C_INT32 mCascadingLevel;
 
     /**
      * A Boolean value indication whether we have equality or inequality.
@@ -78,56 +94,64 @@ private:
      * The event Id is used for creating atomic sets of assignments.
      */
     unsigned C_INT32 mEventId;
-
-    /**
-     * Cascading level
-     */
-    unsigned C_INT32 mCascadingLevel;
   };
 
-  class CProcessQueueAction
+  class CAction
   {
     // Operations
   private:
     /**
      * Default constructor (hidden)
      */
-    CProcessQueueAction();
+    CAction();
 
   public:
     /**
      * Copy constructor
-     * @param const CProcessQueueEntry & src
+     * @param const CAction & src
      */
-    CProcessQueueAction(const CProcessQueueAction & src);
+    CAction(const CAction & src);
 
     /**
      * Specific constructor
      * @param C_FLOAT64 * pTarget
-     * @param CExpression * pExpression
+     * @param CMathExpression * pExpression
+     * @param CMathEvent * pEvent
      */
-    CProcessQueueAction(C_FLOAT64 * pTarget,
-                        const C_FLOAT64 & value);
+    CAction(C_FLOAT64 * pTarget,
+            const C_FLOAT64 & value,
+            CMathEvent * pEvent);
 
     /**
      * Specific constructor
      * @param C_FLOAT64 * pTarget
-     * @param CExpression * pExpression
+     * @param CMathExpression * pExpression
+     * @param CMathExpression * pDelayExpression
+     * @param CMathEvent * pEvent
      * @param CProcessQueue & processQueue
      */
-    CProcessQueueAction(C_FLOAT64 * pTarget,
-                        CExpression * pExpression,
-                        CProcessQueue * pProcessQueue);
+    CAction(C_FLOAT64 * pTarget,
+            CMathExpression * pExpression,
+            CMathExpression * pDelayExpression,
+            CMathEvent * pEvent,
+            CProcessQueue * pProcessQueue);
 
     /**
      * Destructor (hidden)
      */
-    ~CProcessQueueAction();
+    ~CAction();
 
     /**
      * Process the entry
+     * @param const unsigned C_INT32 & eventId
      */
-    void process();
+    void process(const unsigned C_INT32 & eventId);
+
+    /**
+     * Retrieve the event id
+     * @return CMathEvent * pEvent
+     */
+    inline CMathEvent * getEvent() const {return mpEvent;}
 
     // Attributes
   private:
@@ -144,7 +168,17 @@ private:
     /**
      * The expression to be evaluates if the entry is a calculation.
      */
-    CExpression * mpExpression;
+    CMathExpression * mpExpression;
+
+    /**
+     * The expression to be evaluates if the entry is a calculation.
+     */
+    CMathExpression * mpDelayExpression;
+
+    /**
+     * The event associated with this action
+     */
+    CMathEvent * mpEvent;
 
     /**
      * A pointer to the process queue to which a subsequent assignment must be added if
@@ -155,10 +189,10 @@ private:
 
   // Type definitions
 private:
-  typedef std::multimap< CProcessQueueKey, CProcessQueueAction >::iterator iterator;
+  typedef std::multimap< CKey, CAction >::iterator iterator;
 
-  typedef std::pair < std::multimap< CProcessQueueKey, CProcessQueueAction >::iterator,
-  std::multimap< CProcessQueueKey, CProcessQueueAction >::iterator > range;
+  typedef std::pair < std::multimap< CKey, CAction >::iterator,
+  std::multimap< CKey, CAction >::iterator > range;
 
   // Operations
 public:
@@ -184,13 +218,15 @@ public:
    * @param const unsigned C_INT32 & eventId
    * @param C_FLOAT64 * pTarget
    * @param const C_FLOAT64 & value
+   * @param CMathEvent * pEvent
    * @return bool success
    */
   bool addAssignment(const C_FLOAT64 & executionTime,
                      const bool & equality,
                      const unsigned C_INT32 & eventId,
                      C_FLOAT64 * pTarget,
-                     const C_FLOAT64 & value);
+                     const C_FLOAT64 & value,
+                     CMathEvent * pEvent);
 
   /**
    * Add a calculation to the process queue.
@@ -198,14 +234,25 @@ public:
    * @param const bool & equality
    * @param const unsigned C_INT32 & eventId
    * @param C_FLOAT64 * pTarget
-   * @param CExpression * pExpression
+   * @param CMathExpression * pExpression
+   * @param CMathExpression * pDelayExpression
+   * @param CMathEvent * pEvent
    * @return bool success
    */
   bool addCalculation(const C_FLOAT64 & executionTime,
                       const bool & equality,
                       const unsigned C_INT32 & eventId,
                       C_FLOAT64 * pTarget,
-                      CExpression * pExpression);
+                      CMathExpression * pExpression,
+                      CMathExpression * pDelayExpression,
+                      CMathEvent * pEvent);
+
+  /**
+   * Initialize the process queue.
+   * @param CMathModel * pMathModel
+   * @return bool success
+   */
+  bool initialize(CMathModel * pMathModel);
 
   /**
    * Process the queue.
@@ -216,7 +263,19 @@ public:
   bool process(const C_FLOAT64 & time,
                const bool & priorToOutput);
 
+  /**
+   * Create a unique eventId
+   * @return const unsigned C_INT32 & eventId;
+   */
+  const unsigned C_INT32 & createEventId();
+
 private:
+  /**
+   * Destroy a unique eventId
+   * @@param const unsigned C_INT32 & eventId;
+   */
+  void destroyEventId(const unsigned C_INT32 & eventId);
+
   /**
    * Retrieve the currently pending calculations
    * @return range calculations
@@ -255,12 +314,12 @@ private:
   /**
    * An ordered list of calculations in the queue.
    */
-  std::multimap< CProcessQueueKey, CProcessQueueAction > mCalculations;
+  std::multimap< CKey, CAction > mCalculations;
 
   /**
    * An ordered list of assignments in the queue.
    */
-  std::multimap< CProcessQueueKey, CProcessQueueAction > mAssignments;
+  std::multimap< CKey, CAction > mAssignments;
 
   /**
    * The limit of execution steps allowed for call to process
@@ -291,6 +350,16 @@ private:
    * A flag indicating that simultaneous assignments have been found.
    */
   bool mSimultaneousAssignments;
+
+  /**
+   * A set of currently active event ids
+   */
+  std::set< unsigned C_INT32 > mEventIdSet;
+
+  /**
+   * A pointer to the model
+   */
+  CMathModel * mpMathModel;
 };
 
 #endif // COPASI_CProcessQueue

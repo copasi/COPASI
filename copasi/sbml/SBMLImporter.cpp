@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.226 $
+//   $Revision: 1.227 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Date: 2009/04/24 19:27:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -6609,19 +6609,12 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
             }
         }
 
-      pCOPASIEvent->setAssignmentExpressionPtr(pObject->getKey(), pExpression);
+      CEventAssignment Assignment(pObject->getKey());
+      Assignment.setExpressionPtr(pExpression);
+      pCOPASIEvent->getAssignments().insert(Assignment);
     }
 
-  // make sure there have been event assignment and if not, delete the
-  // event
-  if (pCOPASIEvent->getAssignmentExpressionVector().size() == 0)
-    {
-      pCopasiModel->removeEvent(pCOPASIEvent->getKey());
-    }
-  else
-    {
-      copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
-    }
+  copasi2sbmlmap[pCOPASIEvent] = const_cast<Event*>(pEvent);
 }
 
 /**

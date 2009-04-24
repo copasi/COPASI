@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/04/24 19:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,13 +62,6 @@ void CQEventsWidget::init()
   tableHeader->setLabel(3, "Delay");
   tableHeader->setLabel(4, "Assignment Target");
   tableHeader->setLabel(5, "Assignment Expression");
-
-  //for SBML ids
-  //tableHeader->setLabel(numCols - 1, "SBML ID");
-  //table->setColumnReadOnly(numCols - 1, true);
-
-  //this restricts users from editing function names
-  //table->setColumnReadOnly (3, true);
 }
 
 void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -82,45 +75,31 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   //                                    + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
   table->setText(row, 1, FROM_UTF8(pEv->getObjectName()));
 
-  table->setText(row, 2, FROM_UTF8(pEv->getExpressionTrigger()));
-  table->setText(row, 3, FROM_UTF8(pEv->getExpressionDelay()));
+  table->setText(row, 2, FROM_UTF8(pEv->getTriggerExpression()));
+  table->setText(row, 3, FROM_UTF8(pEv->getDelayExpression()));
 
   QString assignmentTarget = "";
   QString assignmentExpression = "";
 
-  unsigned C_INT32 i;
+  std::set< CEventAssignment >::const_iterator it = pEv->getAssignments().begin();
+  std::set< CEventAssignment >::const_iterator begin = pEv->getAssignments().begin();
+  std::set< CEventAssignment >::const_iterator end = pEv->getAssignments().end();
 
-  for (i = 0; i < pEv->getNumAssignments(); i++)
+  for (; it != end; ++it)
     {
-      //    assignmentTarget += FROM_UTF8(pEv->getAssignmentObjectKey(i));
-      // QString sDisplayName = FROM_UTF8(pEv->getAssignmentObjectKey(i));
-      QStringList sKeyDisplay = QStringList::split("_", FROM_UTF8(pEv->getAssignmentObjectKey(i)));
-      QString sObjectName = sKeyDisplay[0];
-      QString sObjectIndex = sKeyDisplay[1];
+      const CModelEntity * pEntity =
+        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
 
-      // std::cout << "pEv->getAssignmentObjectKey(" << i << ") = " << pEv->getAssignmentObjectKey(i) << std::endl;
-
-      if (sObjectName == "Compartment")
-        //        assignmentTarget += FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments()[sObjectIndex.toULong()]->getObjectDisplayName() + ".Volume");
-        assignmentTarget += FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + ".Volume");
-      else if (sObjectName == "Metabolite")
-        //        assignmentTarget += FROM_UTF8("[" + (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[sObjectIndex.toULong()]->getObjectDisplayName() + "]");
-        assignmentTarget += FROM_UTF8("[" + CCopasiRootContainer::getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName() + "]");
-      else if (sObjectName == "ModelValue")
-        //        assignmentTarget += FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues()[sObjectIndex.toULong()]->getObjectDisplayName());
-        assignmentTarget += FROM_UTF8(CCopasiRootContainer::getKeyFactory()->get(pEv->getAssignmentObjectKey(i))->getObjectDisplayName());
-      else
+      if (pEntity != NULL)
         {
-          // std::cout << "sObjectName = " << UTF8_TO_CHAR(sObjectName) << std::endl;
-          assignmentTarget += "ERROR";
-        }
+          if (it != begin)
+            {
+              assignmentTarget += "\n";
+              assignmentExpression += "\n";
+            }
 
-      assignmentExpression += FROM_UTF8(pEv->getAssignmentExpressionStr(i));
-
-      if (i != pEv->getNumAssignments() - 1) // not the last object
-        {
-          assignmentTarget += "\n";
-          assignmentExpression += "\n";
+          assignmentTarget += FROM_UTF8(pEntity->getObjectDisplayName());
+          assignmentExpression += FROM_UTF8(it->getExpression());
         }
     }
 

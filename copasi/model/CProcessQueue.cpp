@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/20 13:30:38 $
+//   $Date: 2009/04/24 19:27:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,35 +16,38 @@
 #include "copasi.h"
 
 #include "CProcessQueue.h"
+#include "CMathModel.h"
 
-CProcessQueue::CProcessQueueKey::CProcessQueueKey() :
+#include "function/CExpression.h"
+
+CProcessQueue::CKey::CKey() :
     mExecutionTime(0.0),
+    mCascadingLevel(0),
     mEquality(false),
-    mEventId(std::numeric_limits<unsigned C_INT32>::max()),
-    mCascadingLevel(0)
+    mEventId(std::numeric_limits<unsigned C_INT32>::max())
 {}
 
-CProcessQueue::CProcessQueueKey::CProcessQueueKey(const CProcessQueueKey & src) :
+CProcessQueue::CKey::CKey(const CKey & src) :
     mExecutionTime(src.mExecutionTime),
+    mCascadingLevel(src.mCascadingLevel),
     mEquality(src.mEquality),
-    mEventId(src.mEventId),
-    mCascadingLevel(src.mCascadingLevel)
+    mEventId(src.mEventId)
 {}
 
-CProcessQueue::CProcessQueueKey::CProcessQueueKey(const C_FLOAT64 & executionTime,
-    const bool & equality,
-    const unsigned C_INT32 & eventId,
-    const unsigned C_INT32 & cascadingLevel) :
+CProcessQueue::CKey::CKey(const C_FLOAT64 & executionTime,
+                          const bool & equality,
+                          const unsigned C_INT32 & eventId,
+                          const unsigned C_INT32 & cascadingLevel) :
     mExecutionTime(executionTime),
+    mCascadingLevel(cascadingLevel),
     mEquality(equality),
-    mEventId(eventId),
-    mCascadingLevel(cascadingLevel)
+    mEventId(eventId)
 {}
 
-CProcessQueue::CProcessQueueKey::~CProcessQueueKey()
+CProcessQueue::CKey::~CKey()
 {}
 
-bool CProcessQueue::CProcessQueueKey::operator < (const CProcessQueue::CProcessQueueKey & rhs) const
+bool CProcessQueue::CKey::operator < (const CProcessQueue::CKey & rhs) const
 {
   if (mExecutionTime != rhs.mExecutionTime)
     return mExecutionTime < rhs.mExecutionTime;
@@ -58,61 +61,97 @@ bool CProcessQueue::CProcessQueueKey::operator < (const CProcessQueue::CProcessQ
   return mEventId < rhs.mEventId;
 }
 
-CProcessQueue::CProcessQueueAction::CProcessQueueAction() :
+CProcessQueue::CAction::CAction() :
     mpTarget(NULL),
     mValue(),
     mpExpression(NULL),
+    mpDelayExpression(NULL),
+    mpEvent(NULL),
     mpProcessQueue(NULL)
 {}
 
-CProcessQueue::CProcessQueueAction::CProcessQueueAction(const CProcessQueueAction & src) :
+CProcessQueue::CAction::CAction(const CAction & src) :
     mpTarget(src.mpTarget),
     mValue(src.mValue),
     mpExpression(src.mpExpression),
+    mpDelayExpression(src.mpDelayExpression),
+    mpEvent(src.mpEvent),
     mpProcessQueue(src.mpProcessQueue)
 {}
 
-CProcessQueue::CProcessQueueAction::CProcessQueueAction(C_FLOAT64 * pTarget,
-    const C_FLOAT64 & value) :
+CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
+                                const C_FLOAT64 & value,
+                                CMathEvent * pEvent) :
     mpTarget(pTarget),
     mValue(value),
     mpExpression(NULL),
+    mpDelayExpression(NULL),
+    mpEvent(pEvent),
     mpProcessQueue(NULL)
 {}
 
-CProcessQueue::CProcessQueueAction::CProcessQueueAction(C_FLOAT64 * pTarget,
-    CExpression * pExpression,
-    CProcessQueue * pProcessQueue) :
+CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
+                                CMathExpression * pExpression,
+                                CMathExpression * pDelayExpression,
+                                CMathEvent * pEvent,
+                                CProcessQueue * pProcessQueue) :
     mpTarget(pTarget),
     mValue(),
     mpExpression(pExpression),
+    mpDelayExpression(pDelayExpression),
+    mpEvent(pEvent),
     mpProcessQueue(pProcessQueue)
 {}
 
-CProcessQueue::CProcessQueueAction::~CProcessQueueAction()
+CProcessQueue::CAction::~CAction()
 {}
 
-void CProcessQueue::CProcessQueueAction::process()
+void CProcessQueue::CAction::process(const unsigned C_INT32 & eventId)
 {
-  // TODO Implement me!
+  if (mpExpression != NULL)
+    {
+      C_FLOAT64 ExecutionTime = mpProcessQueue->mTime;
+
+      if (mpDelayExpression != NULL)
+        {
+          ExecutionTime += mpDelayExpression->calcValue();
+        }
+
+      mpProcessQueue->addAssignment(ExecutionTime,
+                                    mpProcessQueue->mEquality,
+                                    eventId,
+                                    mpTarget,
+                                    mpExpression->calcValue(),
+                                    mpEvent);
+    }
+  else
+    {
+      *mpTarget = mValue;
+    }
 }
 
 CProcessQueue::CProcessQueue() :
     mCalculations(),
     mAssignments(),
     mExecutionLimit(10000),
+    mExecutionCounter(0),
     mTime(0.0),
     mEquality(true),
-    mCascadingLevel(0)
+    mCascadingLevel(0),
+    mSimultaneousAssignments(false),
+    mEventIdSet()
 {}
 
 CProcessQueue::CProcessQueue(const CProcessQueue & src):
     mCalculations(src.mCalculations),
     mAssignments(src.mAssignments),
     mExecutionLimit(src.mExecutionLimit),
+    mExecutionCounter(src.mExecutionCounter),
     mTime(src.mTime),
     mEquality(src.mEquality),
-    mCascadingLevel(src.mCascadingLevel)
+    mCascadingLevel(src.mCascadingLevel),
+    mSimultaneousAssignments(src.mSimultaneousAssignments),
+    mEventIdSet(src.mEventIdSet)
 {}
 
 CProcessQueue::~CProcessQueue()
@@ -122,7 +161,8 @@ bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
                                   const bool & equality,
                                   const unsigned C_INT32 & eventId,
                                   C_FLOAT64 * pTarget,
-                                  const C_FLOAT64 & value)
+                                  const C_FLOAT64 & value,
+                                  CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
   if (executionTime < mTime) return false;
@@ -132,11 +172,11 @@ bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
   if (executionTime > mTime)
     CascadingLevel = 0;
 
-  mAssignments.insert(std::make_pair(CProcessQueueKey(executionTime,
-                                     equality,
-                                     eventId,
-                                     CascadingLevel),
-                                     CProcessQueueAction(pTarget, value)));
+  mAssignments.insert(std::make_pair(CKey(executionTime,
+                                          equality,
+                                          eventId,
+                                          CascadingLevel),
+                                     CAction(pTarget, value, pEvent)));
 
   return true;
 }
@@ -145,7 +185,9 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
                                    const bool & equality,
                                    const unsigned C_INT32 & eventId,
                                    C_FLOAT64 * pTarget,
-                                   CExpression * pExpression)
+                                   CMathExpression * pExpression,
+                                   CMathExpression * pDelayExpression,
+                                   CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
   if (executionTime < mTime) return false;
@@ -155,15 +197,31 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
   if (executionTime > mTime)
     CascadingLevel = 0;
 
-  mCalculations.insert(std::make_pair(CProcessQueueKey(executionTime,
+  mCalculations.insert(std::make_pair(CKey(executionTime,
                                       equality,
                                       eventId,
                                       CascadingLevel),
-                                      CProcessQueueAction(pTarget,
-                                                          pExpression,
-                                                          this)));
+                                      CAction(pTarget,
+                                              pExpression,
+                                              pDelayExpression,
+                                              pEvent,
+                                              this)));
 
   return true;
+}
+
+bool CProcessQueue::initialize(CMathModel * pMathModel)
+{
+  bool success = true;
+
+  mpMathModel = pMathModel;
+
+  mCalculations.clear();
+  mAssignments.clear();
+  mEventIdSet.clear();
+  mSimultaneousAssignments = false;
+
+  return success;
 }
 
 bool CProcessQueue::process(const C_FLOAT64 & time,
@@ -171,6 +229,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 {
   mTime = time;
   mEquality = priorToOutput;
+  mExecutionCounter = 0;
   mCascadingLevel = 0;
 
   bool success = true;
@@ -185,7 +244,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   range Assignments = getAssignments();
 
-  if (notEmpty(Assignments))
+  if (notEmpty(Assignments) && !mSimultaneousAssignments)
     {
       while (mCascadingLevel != std::numeric_limits<unsigned C_INT32>::max() && success)
         {
@@ -196,14 +255,15 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
           // for this time and level.
 
           // Update the model.
-          // TODO Implement me!
+          mpMathModel->applyEvent(Assignments.first->second.getEvent());
 
-          // Note, updating the model may have added new events to the queue.
+          // Note, applying the events may have added new events to the queue.
           // The setting of the equality flag for these events may be either true
           // or false.
 
           // Switch to the next cascading level.
           mCascadingLevel++;
+
           // First we handle equalities.
           mEquality = true;
 
@@ -219,7 +279,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
           // Retrieve the pending assignments.
           Assignments = getAssignments();
 
-          if (notEmpty(Assignments))
+          if (notEmpty(Assignments) && !mSimultaneousAssignments)
             continue;
 
           // If we are here there are no more calculations and assignments for equality
@@ -238,7 +298,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
           // Retrieve the pending assignments.
           Assignments = getAssignments();
 
-          if (notEmpty(Assignments))
+          if (notEmpty(Assignments) && !mSimultaneousAssignments)
             continue;
 
           // If we are here we have no more calculations and assignment for this level.
@@ -246,20 +306,27 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
         }
     }
 
+  if (mSimultaneousAssignments)
+    {
+      success = false;
+
+      // TODO: Create an error message
+    }
+
   return success;
 }
 CProcessQueue::range CProcessQueue::getCalculations()
 {
   range Calculations;
-  CProcessQueueKey UpperBound(mTime, mEquality,
-                              std::numeric_limits<unsigned C_INT32>::max(),
-                              mCascadingLevel);
+  CKey UpperBound(mTime, mEquality,
+                  std::numeric_limits<unsigned C_INT32>::max(),
+                  mCascadingLevel);
 
   Calculations.first = mCalculations.begin();
 
   if (Calculations.first->first < UpperBound)
     {
-      Calculations.second = mCalculations.upper_bound(Calculations.first->first);
+      Calculations.second = mCalculations.upper_bound(UpperBound);
     }
   else
     {
@@ -272,9 +339,9 @@ CProcessQueue::range CProcessQueue::getCalculations()
 CProcessQueue::range CProcessQueue::getAssignments()
 {
   range Assignments;
-  CProcessQueueKey UpperBound(mTime, mEquality,
-                              std::numeric_limits<unsigned C_INT32>::max(),
-                              mCascadingLevel);
+  CKey UpperBound(mTime, mEquality,
+                  std::numeric_limits<unsigned C_INT32>::max(),
+                  mCascadingLevel);
 
   Assignments.first = mAssignments.begin();
 
@@ -302,10 +369,22 @@ bool CProcessQueue::executeCalculations(CProcessQueue::range & calculations)
   bool success = true;
 
   iterator it = calculations.first;
+  unsigned C_INT32 EventIdOld = it->first.getEventId();
+  unsigned C_INT32 EventIdNew = createEventId();
 
   for (; it != calculations.second; ++it)
-    it->second.process();
+    {
+      if (it->first.getEventId() != EventIdOld)
+        {
+          destroyEventId(EventIdOld);
+          EventIdOld = it->first.getEventId();
+          EventIdNew = createEventId();
+        }
 
+      it->second.process(EventIdNew);
+    }
+
+  destroyEventId(EventIdOld);
   mCalculations.erase(calculations.first, calculations.second);
 
   return success;
@@ -316,11 +395,14 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   bool success = true;
 
   iterator it = assignments.first;
+  destroyEventId(it->first.getEventId());
 
   for (; it != assignments.second; ++it)
-    it->second.process();
+    it->second.process(0);
 
   mAssignments.erase(assignments.first, assignments.second);
+
+  mExecutionCounter++;
 
   return success;
 }
@@ -329,4 +411,21 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
 bool CProcessQueue::notEmpty(const CProcessQueue::range & range)
 {
   return range.first != range.second;
+}
+
+const unsigned C_INT32 & CProcessQueue::createEventId()
+{
+  unsigned C_INT32 EventId = 0;
+
+  if (mEventIdSet.size() > 0)
+    {
+      EventId = * mEventIdSet.rbegin();
+    }
+
+  return * mEventIdSet.insert(++EventId).first;
+}
+
+void CProcessQueue::destroyEventId(const unsigned C_INT32 & eventId)
+{
+  mEventIdSet.erase(eventId);
 }

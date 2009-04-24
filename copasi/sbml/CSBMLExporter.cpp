@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Date: 2009/04/24 19:27:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2790,13 +2790,15 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
       pSBMLEvent->getListOfEventAssignments()->remove(pSBMLEvent->getNumEventAssignments() - 1);
     }
 
-  unsigned int i, iMax = event.getNumAssignments();
+  std::set< CEventAssignment >::const_iterator itAssignment = event.getAssignments().begin();
+  std::set< CEventAssignment >::const_iterator endAssignment = event.getAssignments().end();
 
-  for (i = 0; i < iMax; ++i)
+  for (; itAssignment != endAssignment; ++itAssignment)
     {
       //    ii) for each assignment, check if there already is an old assignment
       //        for this variable
-      std::string key = event.getAssignmentObjectKey(i);
+      std::string key = itAssignment->getTargetKey();
+
       //        now we have to get the object for the key, check if the object is a
       //        compartment, species or global parameter,
       const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
@@ -2901,7 +2903,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
       pAssignment->setVariable(sbmlId);
       //    iv) for each assignment, check the assignment expression if it is valid
-      const CExpression* pExpression = event.getAssignmentExpressionPtr(i);
+      const CExpression * pExpression = itAssignment->getExpressionPtr();
 
       if (pExpression != NULL)
         {
@@ -6691,11 +6693,13 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
 
   std::set<std::string> objectKeys;
   std::set<std::string> nonUniqueObjectKeys;
-  unsigned int i, iMax = pEvent->getNumAssignments();
 
-  for (i = 0; i < iMax; ++i)
+  std::set< CEventAssignment >::const_iterator itAssignment = pEvent->getAssignments().begin();
+  std::set< CEventAssignment >::const_iterator endAssignment = pEvent->getAssignments().end();
+
+  for (; itAssignment != endAssignment; ++itAssignment)
     {
-      std::string key = pEvent->getAssignmentObjectKey(i);
+      std::string key = itAssignment->getTargetKey();
 
       if (objectKeys.find(key) == objectKeys.end())
         {
@@ -6715,7 +6719,8 @@ void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDat
             }
         }
 
-      CSBMLExporter::isEventAssignmentSBMLCompatible(key, pEvent->getAssignmentExpressionPtr(i), dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result);
+      CSBMLExporter::isEventAssignmentSBMLCompatible(key, itAssignment->getExpressionPtr(),
+          dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result);
     }
 }
 

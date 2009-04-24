@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.193 $
+#   $Revision: 1.194 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/04/21 16:20:31 $
+#   $Date: 2009/04/24 19:28:40 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.193 $ $Author: shoops $ $Date: 2009/04/21 16:20:31 $
+# $Revision: 1.194 $ $Author: shoops $ $Date: 2009/04/24 19:28:40 $
 ######################################################################
 
 LIB = UI
@@ -182,7 +182,7 @@ SOURCES	+= \
 # FORMS3 += CQCompartment.ui
 # FORMS3 += CQDifferentialEquations.ui
 FORMS3 += CQEFMWidget.ui
-# FORMS3 += CQEventWidget1.ui
+FORMS3 += CQEventWidget1.ui
 # FORMS3 += CQExperimentData.ui
 # FORMS3 += CQExperimentSelection.ui
 # FORMS3 += CQExpressionMmlWidget.ui
@@ -234,7 +234,6 @@ HEADERS += \
            CQCompartment.ui.h \
            CQDifferentialEquations.h \
            CQEFMWidget.ui.h \
-           CQEventWidget1.h \
            CQEventWidget1.ui.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
@@ -306,7 +305,6 @@ SOURCES += \
            CMCAResultSubwidget.cpp \
            CQCompartment.cpp \
            CQDifferentialEquations.cpp \
-           CQEventWidget1.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
            CQExpressionMmlWidget.cpp \
