@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.192 $
+//   $Revision: 1.193 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:21:36 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 13:31:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -462,10 +462,12 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
       case GUI:
 
         if (!strcmp(pszName, "GUI"))
-          if (mCommon.pGUI)
-            mpCurrentHandler = new GUIElement(mParser, mCommon);
-          else
-            mParser.pushElementHandler(&mParser.mUnknownElement);
+          {
+            if (mCommon.pGUI)
+              mpCurrentHandler = new GUIElement(mParser, mCommon);
+            else
+              mParser.pushElementHandler(&mParser.mUnknownElement);
+          }
 
         break;
 
@@ -1266,7 +1268,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
 
                 while (!pFunction->getVariables().add(NewName,
                                                       CFunctionParameter::FLOAT64,
-                                                      CFunctionParameter::TEMPORARY));
+                                                      CFunctionParameter::TEMPORARY)) {};
 
                 NewName = StringPrint("TMP_%d", Counter++);
               }
@@ -1813,7 +1815,7 @@ void CCopasiXMLParser::ListOfCompartmentsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfCompartments", mParser.getCurrentLineNumber());
 
-        mCommon.pModel->getCompartments().resize(0);
+        mCommon.pModel->getCompartments().clear();
         break;
 
       case Compartment:
@@ -3188,7 +3190,7 @@ void CCopasiXMLParser::ListOfReactionsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfReactions", mParser.getCurrentLineNumber());
 
-        mCommon.pModel->getReactions().resize(0);
+        mCommon.pModel->getReactions().clear();
         break;
 
       case Reaction:
@@ -6495,7 +6497,7 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
           //interpret role string
           C_INT32 i;
 
-          for (i = 0; (CLMetabReferenceGlyph::XMLRole[i] != "") && (CLMetabReferenceGlyph::XMLRole[i] != role); ++i);
+          for (i = 0; (CLMetabReferenceGlyph::XMLRole[i] != "") && (CLMetabReferenceGlyph::XMLRole[i] != role); ++i) {};
 
           if (CLMetabReferenceGlyph::XMLRole[i] == "")
             mCommon.pMetaboliteReferenceGlyph->setRole(CLMetabReferenceGlyph::UNDEFINED);

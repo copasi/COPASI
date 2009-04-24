@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Author: ssahle $
+//   $Date: 2009/04/24 13:30:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,38 +39,38 @@
 std::istream & skipLine(std::istream & in);
 
 const std::string CExperiment::TypeName[] =
-  {
-    "ignored",
-    "independent",
-    "dependent",
-    "Time",
-    ""
-  };
+{
+  "ignored",
+  "independent",
+  "dependent",
+  "Time",
+  ""
+};
 
 const char* CExperiment::XMLType[] =
-  {
-    "ignored",
-    "independent",
-    "dependent",
-    "time",
-    NULL
-  };
+{
+  "ignored",
+  "independent",
+  "dependent",
+  "time",
+  NULL
+};
 
 const std::string CExperiment::WeightMethodName[] =
-  {
-    "Mean",
-    "Mean Square",
-    "Standard Deviation",
-    ""
-  };
+{
+  "Mean",
+  "Mean Square",
+  "Standard Deviation",
+  ""
+};
 
 const char* CExperiment::WeightMethodType[] =
-  {
-    "Mean",
-    "MeanSquare",
-    "StandardDeviation",
-    NULL
-  };
+{
+  "Mean",
+  "MeanSquare",
+  "StandardDeviation",
+  NULL
+};
 
 CExperiment::CExperiment(const std::string & name,
                          const CCopasiContainer * pParent):
@@ -222,9 +222,11 @@ bool CExperiment::elevateChildren()
 {
   mpObjectMap =
     elevate<CExperimentObjectMap, CCopasiParameterGroup>(getGroup("Object Map"));
+
   if (!mpObjectMap) return false;
 
   CCopasiParameterGroup *pGroup = getGroup("Column Role");
+
   if (pGroup) // We have an old data format
     {
       unsigned C_INT32 i, imax = pGroup->size();
@@ -233,7 +235,7 @@ bool CExperiment::elevateChildren()
 
       for (i = 0; i < imax; i++)
         {
-          Roles.setRole(i, * (Type *) pGroup->getValue(StringPrint("%d", i)).pUINT);
+          Roles.setRole(i, *(Type *) pGroup->getValue(StringPrint("%d", i)).pUINT);
           Roles.setObjectCN(i, mpObjectMap->getObjectCN(i));
         }
 
@@ -256,7 +258,7 @@ void CExperiment::updateFittedPoints()
 {
   unsigned C_INT32 i, imax = mpObjectMap->size();
 
-  mFittingPoints.resize(0);
+  mFittingPoints.clear();
   CFittingPoint * pPoint;
 
   for (i = 0; i < imax; i++)
@@ -312,62 +314,62 @@ void CExperiment::updateFittedPointValues(const unsigned C_INT32 & index)
 
 C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
                                     C_FLOAT64 *& residuals) const
-  {
-    C_FLOAT64 Residual;
-    C_FLOAT64 s = 0.0;
+{
+  C_FLOAT64 Residual;
+  C_FLOAT64 s = 0.0;
 
-    C_FLOAT64 const * pDataDependent = mDataDependent[index];
-    C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
-    C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
-    C_FLOAT64 const * pWeight = mWeight.array();
+  C_FLOAT64 const * pDataDependent = mDataDependent[index];
+  C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
+  C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+  C_FLOAT64 const * pWeight = mWeight.array();
 
-    std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
-    std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
+  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
 
-    for (; it != end; ++it)
-      (**it)();
+  for (; it != end; ++it)
+    (**it)();
 
-    if (mMissingData)
-      {
-        if (residuals)
-          for (; pDataDependent != pEnd;
-               pDataDependent++, ppDependentValues++, pWeight++, residuals++)
-            {
-              if (isnan(*pDataDependent)) continue;
+  if (mMissingData)
+    {
+      if (residuals)
+        for (; pDataDependent != pEnd;
+             pDataDependent++, ppDependentValues++, pWeight++, residuals++)
+          {
+            if (isnan(*pDataDependent)) continue;
 
-              *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
-              s += *residuals * *residuals;
-            }
-        else
-          for (; pDataDependent != pEnd;
-               pDataDependent++, ppDependentValues++, pWeight++)
-            {
-              if (isnan(*pDataDependent)) continue;
+            *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
+            s += *residuals * *residuals;
+          }
+      else
+        for (; pDataDependent != pEnd;
+             pDataDependent++, ppDependentValues++, pWeight++)
+          {
+            if (isnan(*pDataDependent)) continue;
 
-              Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
-              s += Residual * Residual;
-            }
-      }
-    else
-      {
-        if (residuals)
-          for (; pDataDependent != pEnd;
-               pDataDependent++, ppDependentValues++, pWeight++, residuals++)
-            {
-              *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
-              s += *residuals * *residuals;
-            }
-        else
-          for (; pDataDependent != pEnd;
-               pDataDependent++, ppDependentValues++, pWeight++)
-            {
-              Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
-              s += Residual * Residual;
-            }
-      }
+            Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
+            s += Residual * Residual;
+          }
+    }
+  else
+    {
+      if (residuals)
+        for (; pDataDependent != pEnd;
+             pDataDependent++, ppDependentValues++, pWeight++, residuals++)
+          {
+            *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
+            s += *residuals * *residuals;
+          }
+      else
+        for (; pDataDependent != pEnd;
+             pDataDependent++, ppDependentValues++, pWeight++)
+          {
+            Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
+            s += Residual * Residual;
+          }
+    }
 
-    return s;
-  }
+  return s;
+}
 
 C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
     C_FLOAT64 *& dependentValues)
@@ -395,6 +397,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
            pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
         {
           *dependentValues = **ppDependentValues;
+
           if (isnan(*pDataDependent)) continue;
 
           Residual = (*pDataDependent - *dependentValues) * *pWeight;
@@ -411,6 +414,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
           s += Residual * Residual;
         }
     }
+
   return s;
 }
 
@@ -551,6 +555,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   const CVector< CCopasiObject * > & Objects = mpObjectMap->getMappedObjects();
 
   unsigned C_INT32 i, imax = mpObjectMap->getLastNotIgnoredColumn();
+
   if (*mpNumColumns <= imax)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
@@ -581,54 +586,60 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   for (i = 0; i <= imax; i++)
     switch (mpObjectMap->getRole(i))
       {
-      case ignore:
-        break;
+        case ignore:
+          break;
 
-      case independent:
-        if (!Objects[i]) // Object not found
-          {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
-            return false;
-          }
-        if (!Objects[i]->isValueDbl())
-          {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
-            return false;
-          }
-        IdependentObjects.insert(Objects[i]);
-        mIndependentUpdateMethods[IndependentCount] =
-          Objects[i]->getUpdateMethod();
-        mIndependentValues[IndependentCount] =
-          *(C_FLOAT64 *)Objects[i]->getValuePointer();
-        // :TODO: do we have to check if getValuePointer() return a valid pointer?
+        case independent:
 
-        IndependentCount++;
-        break;
+          if (!Objects[i]) // Object not found
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+              return false;
+            }
 
-      case dependent:
-        if (!Objects[i]) // Object not found
-          {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
-            return false;
-          }
-        if (!Objects[i]->isValueDbl())
-          {
-            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
-            return false;
-          }
-        mDependentValues[DependentCount] =
-          (C_FLOAT64 *) Objects[i]->getValuePointer();
-        // :TODO: do we have to check if getValuePointer() return a valid pointer?
-        mDependentObjects[Objects[i]] = DependentCount;
-        mWeight[DependentCount] = sqrt(mpObjectMap->getWeight(i));
-        Dependencies.insert(Objects[i]->getValueObject());
+          if (!Objects[i]->isValueDbl())
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+              return false;
+            }
 
-        DependentCount++;
-        break;
+          IdependentObjects.insert(Objects[i]);
+          mIndependentUpdateMethods[IndependentCount] =
+            Objects[i]->getUpdateMethod();
+          mIndependentValues[IndependentCount] =
+            *(C_FLOAT64 *)Objects[i]->getValuePointer();
+          // :TODO: do we have to check if getValuePointer() return a valid pointer?
 
-      case time:
-        TimeFound = true;
-        break;
+          IndependentCount++;
+          break;
+
+        case dependent:
+
+          if (!Objects[i]) // Object not found
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+              return false;
+            }
+
+          if (!Objects[i]->isValueDbl())
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+              return false;
+            }
+
+          mDependentValues[DependentCount] =
+            (C_FLOAT64 *) Objects[i]->getValuePointer();
+          // :TODO: do we have to check if getValuePointer() return a valid pointer?
+          mDependentObjects[Objects[i]] = DependentCount;
+          mWeight[DependentCount] = sqrt(mpObjectMap->getWeight(i));
+          Dependencies.insert(Objects[i]->getValueObject());
+
+          DependentCount++;
+          break;
+
+        case time:
+          TimeFound = true;
+          break;
       }
 
   /* We need to check whether a column is mapped to time */
@@ -675,6 +686,7 @@ bool CExperiment::read(std::istream & in,
 {
   // Allocate for reading
   unsigned C_INT32 i, imax = mpObjectMap->size();
+
   if (*mpNumColumns < imax)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
@@ -689,21 +701,21 @@ bool CExperiment::read(std::istream & in,
   for (i = 0; i < imax; i++)
     switch (mpObjectMap->getRole(i))
       {
-      case ignore:
-        IgnoreCount++;
-        break;
+        case ignore:
+          IgnoreCount++;
+          break;
 
-      case independent:
-        IndependentCount++;
-        break;
+        case independent:
+          IndependentCount++;
+          break;
 
-      case dependent:
-        DependentCount++;
-        break;
+        case dependent:
+          DependentCount++;
+          break;
 
-      case time:
-        TimeCount++;
-        break;
+        case time:
+          TimeCount++;
+          break;
       }
 
   mNumDataRows = *mpLastRow - *mpFirstRow +
@@ -755,11 +767,13 @@ bool CExperiment::read(std::istream & in,
   for (j = 0; j < mNumDataRows && !in.fail(); j++, currentLine++)
     {
       in >> Row;
+
       if (currentLine == *mpHeaderRow)
         {
           j--;
 
           unsigned C_INT32 Column = 0;
+
           for (i = 0; i < *mpNumColumns; i++)
             if (mpObjectMap->getRole(i) != ignore)
               mColumnName[Column++] = Cells[i].getName();
@@ -774,34 +788,38 @@ bool CExperiment::read(std::istream & in,
         {
           switch (mpObjectMap->getRole(i))
             {
-            case ignore:
-              break;
+              case ignore:
+                break;
 
-            case independent:
-              if (!Cells[i].isValue())
-                {
-                  CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
-                                 getObjectName().c_str(), currentLine);
-                  return false;
-                }
-              mDataIndependent[j][IndependentCount++] =
-                Cells[i].getValue();
-              break;
+              case independent:
 
-            case dependent:
-              mDataDependent[j][DependentCount++] =
-                Cells[i].getValue();
-              break;
+                if (!Cells[i].isValue())
+                  {
+                    CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
+                                   getObjectName().c_str(), currentLine);
+                    return false;
+                  }
 
-            case time:
-              if (!Cells[i].isValue())
-                {
-                  CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
-                                 getObjectName().c_str(), currentLine);
-                  return false;
-                }
-              mDataTime[j] = Cells[i].getValue();
-              break;
+                mDataIndependent[j][IndependentCount++] =
+                  Cells[i].getValue();
+                break;
+
+              case dependent:
+                mDataDependent[j][DependentCount++] =
+                  Cells[i].getValue();
+                break;
+
+              case time:
+
+                if (!Cells[i].isValue())
+                  {
+                    CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
+                                   getObjectName().c_str(), currentLine);
+                    return false;
+                  }
+
+                mDataTime[j] = Cells[i].getValue();
+                break;
             }
         }
     }
@@ -857,6 +875,7 @@ bool CExperiment::calculateWeights()
     for (j = 0; j < DependentCount; j++)
       {
         C_FLOAT64 & Data = mDataDependent[i][j];
+
         if (!isnan(Data))
           {
             Counts[j]++;
@@ -900,17 +919,17 @@ bool CExperiment::calculateWeights()
 
       switch (*mpWeightMethod)
         {
-        case SD:
-          DefaultWeight = MeanSquares[i] - mMeans[i] * mMeans[i];
-          break;
+          case SD:
+            DefaultWeight = MeanSquares[i] - mMeans[i] * mMeans[i];
+            break;
 
-        case MEAN:
-          DefaultWeight = fabs(mMeans[i]);
-          break;
+          case MEAN:
+            DefaultWeight = fabs(mMeans[i]);
+            break;
 
-        case MEAN_SQUARE:
-          DefaultWeight = sqrt(MeanSquares[i]);
-          break;
+          case MEAN_SQUARE:
+            DefaultWeight = sqrt(MeanSquares[i]);
+            break;
         }
 
       if (DefaultWeight < MinWeight) MinWeight = DefaultWeight;
@@ -936,10 +955,12 @@ bool CExperiment::readColumnNames()
   // Open the file
   std::ifstream in;
   in.open(utf8ToLocale(getFileName()).c_str(), std::ios::binary);
+
   if (in.fail()) return false;
 
   // Forwind to header row.
   unsigned C_INT32 i;
+
   for (i = 1; i < *mpHeaderRow && !in.fail(); i++)
     skipLine(in);
 
@@ -957,26 +978,28 @@ bool CExperiment::readColumnNames()
 }
 
 unsigned C_INT32 CExperiment::guessColumnNumber() const
-  {
-    unsigned C_INT32 tmp, count = 0;
+{
+  unsigned C_INT32 tmp, count = 0;
 
-    std::ifstream in;
-    in.open(utf8ToLocale(getFileName()).c_str(), std::ios::binary);
-    if (in.fail()) return false;
+  std::ifstream in;
+  in.open(utf8ToLocale(getFileName()).c_str(), std::ios::binary);
 
-    // Forwind to first row.
-    unsigned C_INT32 i;
-    for (i = 1; i < *mpFirstRow && !in.fail(); i++)
-      skipLine(in);
+  if (in.fail()) return false;
 
-    CTableRow Row(0, (*mpSeparator)[0]);
+  // Forwind to first row.
+  unsigned C_INT32 i;
 
-    for (i--; i < *mpLastRow; i++)
-      if ((tmp = Row.guessColumnNumber(in, false)) > count)
-        count = tmp;
+  for (i = 1; i < *mpFirstRow && !in.fail(); i++)
+    skipLine(in);
 
-    return count;
-  }
+  CTableRow Row(0, (*mpSeparator)[0]);
+
+  for (i--; i < *mpLastRow; i++)
+    if ((tmp = Row.guessColumnNumber(in, false)) > count)
+      count = tmp;
+
+  return count;
+}
 
 const std::vector< std::string > & CExperiment::getColumnNames() const
 {return mColumnName;}
@@ -991,6 +1014,7 @@ bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
   // Update all initial values.
   std::vector< Refresh * >::const_iterator itRefresh = mIndependentRefreshMethods.begin();
   std::vector< Refresh * >::const_iterator endRefresh = mIndependentRefreshMethods.end();
+
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
@@ -1007,6 +1031,7 @@ bool CExperiment::restoreModelIndependentData()
   // Update all initial values.
   std::vector< Refresh * >::const_iterator itRefresh = mIndependentRefreshMethods.begin();
   std::vector< Refresh * >::const_iterator endRefresh = mIndependentRefreshMethods.end();
+
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
@@ -1020,15 +1045,16 @@ bool CExperiment::setExperimentType(const CCopasiTask::Type & type)
 {
   switch (type)
     {
-    case CCopasiTask::steadyState:
-    case CCopasiTask::timeCourse:
-      *mpTaskType = type;
-      return true;
-      break;
+      case CCopasiTask::steadyState:
+      case CCopasiTask::timeCourse:
+        *mpTaskType = type;
+        return true;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return false;
 }
 
@@ -1036,24 +1062,25 @@ const CVector< C_FLOAT64 > & CExperiment::getTimeData() const
 {return mDataTime;}
 
 const CMatrix< C_FLOAT64 > & CExperiment::getIndependentData() const
-  {return mDataIndependent;}
+{return mDataIndependent;}
 
 const CMatrix< C_FLOAT64 > & CExperiment::getDependentData() const
-  {return mDataDependent;}
+{return mDataDependent;}
 
 const std::string & CExperiment::getFileName() const
-  {
-    std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
+{
+  std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
 
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
-    if (CDirEntry::isRelativePath(*pFileName) &&
-        !CDirEntry::makePathAbsolute(*pFileName,
-                                     pDataModel->getFileName()))
-      *pFileName = CDirEntry::fileName(*pFileName);
+  const CCopasiDataModel* pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
 
-    return *mpFileName;
-  }
+  if (CDirEntry::isRelativePath(*pFileName) &&
+      !CDirEntry::makePathAbsolute(*pFileName,
+                                   pDataModel->getFileName()))
+    *pFileName = CDirEntry::fileName(*pFileName);
+
+  return *mpFileName;
+}
 
 bool CExperiment::setFileName(const std::string & fileName)
 {
@@ -1065,10 +1092,10 @@ CExperimentObjectMap & CExperiment::getObjectMap()
 {return * mpObjectMap;}
 
 const CCopasiVector< CFittingPoint > & CExperiment::getFittingPoints() const
-  {return mFittingPoints;}
+{return mFittingPoints;}
 
 const unsigned C_INT32 & CExperiment::getFirstRow() const
-  {return *mpFirstRow;}
+{return *mpFirstRow;}
 
 bool CExperiment::setFirstRow(const unsigned C_INT32 & first)
 {
@@ -1111,11 +1138,11 @@ bool CExperiment::setNumColumns(const unsigned C_INT32 & cols)
   return true;
 }
 
-const unsigned C_INT32 CExperiment::getNumDataRows() const
-  {return mNumDataRows;}
+unsigned C_INT32 CExperiment::getNumDataRows() const
+{return mNumDataRows;}
 
 const std::string & CExperiment::getSeparator() const
-  {return *mpSeparator;}
+{return *mpSeparator;}
 
 bool CExperiment::setSeparator(const std::string & separator)
 {
@@ -1124,7 +1151,7 @@ bool CExperiment::setSeparator(const std::string & separator)
 }
 
 const CExperiment::WeightMethod & CExperiment::getWeightMethod() const
-  {return *mpWeightMethod;}
+{return *mpWeightMethod;}
 
 bool CExperiment::setWeightMethod(const CExperiment::WeightMethod & weightMethod)
 {
@@ -1174,213 +1201,233 @@ bool operator == (const CExperiment & lhs,
 }
 
 void CExperiment::printResult(std::ostream * ostream) const
-  {
-    std::ostream & os = *ostream;
+{
+  std::ostream & os = *ostream;
 
-    os << "File Name:\t" << getFileName() << std::endl;
-    os << "Experiment:\t" << getObjectName() << std::endl;
+  os << "File Name:\t" << getFileName() << std::endl;
+  os << "Experiment:\t" << getObjectName() << std::endl;
 
-    os << "Mean:\t" << mMean << std::endl;
-    os << "Objective Value:\t" << mObjectiveValue << std::endl;
-    os << "Root Mean Square:\t" << mRMS << std::endl;
+  os << "Mean:\t" << mMean << std::endl;
+  os << "Objective Value:\t" << mObjectiveValue << std::endl;
+  os << "Root Mean Square:\t" << mRMS << std::endl;
 
-    unsigned i, imax = mNumDataRows;
-    unsigned j, jmax = mDataDependent.numCols();
-    unsigned k, kmax = mpObjectMap->getLastNotIgnoredColumn() + 1;
+  unsigned i, imax = mNumDataRows;
+  unsigned j, jmax = mDataDependent.numCols();
+  unsigned k, kmax = mpObjectMap->getLastNotIgnoredColumn() + 1;
 
-    const CVector<CCopasiObject *> & Objects =
-      mpObjectMap->getMappedObjects();
+  const CVector<CCopasiObject *> & Objects =
+    mpObjectMap->getMappedObjects();
 
-    os << "Row\t";
-    if (*mpTaskType == CCopasiTask::timeCourse)
-      os << "Time\t";
+  os << "Row\t";
 
-    for (k = 0; k < kmax; k++)
-      if (mpObjectMap->getRole(k) == CExperiment::dependent)
-        {
-          std::string Name;
-          if (Objects[k])
-            Name = Objects[k]->getObjectDisplayName();
-          else
-            Name = "unknown";
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    os << "Time\t";
 
-          os << Name << "(Data)\t";
-          os << Name << "(Fit)\t";
-          os << Name << "(Weighted Error)\t";
-        }
-    os << "Objective Value\tRoot Mean Square" << std::endl << std::endl;
+  for (k = 0; k < kmax; k++)
+    if (mpObjectMap->getRole(k) == CExperiment::dependent)
+      {
+        std::string Name;
 
-    C_FLOAT64 * pDataDependentCalculated = mpDataDependentCalculated;
-    if (pDataDependentCalculated)
-      for (i = 0; i < imax; i++)
-        {
-          os << i + 1 << ".\t";
-          if (*mpTaskType == CCopasiTask::timeCourse)
-            os << mDataTime[i] << "\t";
+        if (Objects[k])
+          Name = Objects[k]->getObjectDisplayName();
+        else
+          Name = "unknown";
 
-          for (j = 0; j < jmax; j++, pDataDependentCalculated++)
-            {
-              os << mDataDependent(i, j) << "\t";
-              os << *pDataDependentCalculated << "\t";
-              os << mWeight[j] * (*pDataDependentCalculated - mDataDependent(i, j)) << "\t";
-            }
+        os << Name << "(Data)\t";
+        os << Name << "(Fit)\t";
+        os << Name << "(Weighted Error)\t";
+      }
 
-          os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
-        }
-    else
-      for (i = 0; i < imax; i++)
-        {
-          os << i + 1 << ".\t";
-          if (*mpTaskType == CCopasiTask::timeCourse)
-            os << mDataTime[i] << "\t";
+  os << "Objective Value\tRoot Mean Square" << std::endl << std::endl;
 
-          for (j = 0; j < jmax; j++)
-            {
-              os << mDataDependent(i, j) << "\tNaN\tNaN\t";
-            }
-          os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
-        }
+  C_FLOAT64 * pDataDependentCalculated = mpDataDependentCalculated;
 
-    os << "Objective Value";
-    if (*mpTaskType == CCopasiTask::timeCourse)
-      os << "\t";
-    for (j = 0; j < jmax; j++)
-      os << "\t\t\t" << mColumnObjectiveValue[j];
-    os << std::endl;
+  if (pDataDependentCalculated)
+    for (i = 0; i < imax; i++)
+      {
+        os << i + 1 << ".\t";
 
-    os << "Root Mean Square";
-    if (*mpTaskType == CCopasiTask::timeCourse)
-      os << "\t";
-    for (j = 0; j < jmax; j++)
-      os << "\t\t\t" << mColumnRMS[j];
-    os << std::endl;
+        if (*mpTaskType == CCopasiTask::timeCourse)
+          os << mDataTime[i] << "\t";
 
-    os << "Weight";
-    if (*mpTaskType == CCopasiTask::timeCourse)
-      os << "\t";
-    for (j = 0; j < jmax; j++)
-      os << "\t\t\t" << mWeight[j];
-    os << std::endl;
+        for (j = 0; j < jmax; j++, pDataDependentCalculated++)
+          {
+            os << mDataDependent(i, j) << "\t";
+            os << *pDataDependentCalculated << "\t";
+            os << mWeight[j] *(*pDataDependentCalculated - mDataDependent(i, j)) << "\t";
+          }
 
-    return;
-  }
+        os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
+      }
+  else
+    for (i = 0; i < imax; i++)
+      {
+        os << i + 1 << ".\t";
+
+        if (*mpTaskType == CCopasiTask::timeCourse)
+          os << mDataTime[i] << "\t";
+
+        for (j = 0; j < jmax; j++)
+          {
+            os << mDataDependent(i, j) << "\tNaN\tNaN\t";
+          }
+
+        os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
+      }
+
+  os << "Objective Value";
+
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    os << "\t";
+
+  for (j = 0; j < jmax; j++)
+    os << "\t\t\t" << mColumnObjectiveValue[j];
+
+  os << std::endl;
+
+  os << "Root Mean Square";
+
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    os << "\t";
+
+  for (j = 0; j < jmax; j++)
+    os << "\t\t\t" << mColumnRMS[j];
+
+  os << std::endl;
+
+  os << "Weight";
+
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    os << "\t";
+
+  for (j = 0; j < jmax; j++)
+    os << "\t\t\t" << mWeight[j];
+
+  os << std::endl;
+
+  return;
+}
 
 const C_FLOAT64 & CExperiment::getObjectiveValue() const
 {return mObjectiveValue;}
 
 const C_FLOAT64 & CExperiment::getRMS() const
-  {return mRMS;}
+{return mRMS;}
 
 const C_FLOAT64 & CExperiment::getErrorMean() const
-  {return mMean;}
+{return mMean;}
 
 const C_FLOAT64 & CExperiment::getErrorMeanSD() const
-  {return mMeanSD;}
+{return mMeanSD;}
 
 C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
-  {
-    std::map< CCopasiObject *, unsigned C_INT32 >::const_iterator it
-    = mDependentObjects.find(pObject);
+{
+  std::map< CCopasiObject *, unsigned C_INT32 >::const_iterator it
+  = mDependentObjects.find(pObject);
 
-    if (it != mDependentObjects.end())
-      return mColumnObjectiveValue[it->second];
-    else
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  }
+  if (it != mDependentObjects.end())
+    return mColumnObjectiveValue[it->second];
+  else
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+}
 
 C_FLOAT64 CExperiment::getDefaultWeight(const CCopasiObject * const& pObject) const
-  {
-    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
-    = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
+{
+  std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+  = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
 
-    if (it == mDependentObjects.end())
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  if (it == mDependentObjects.end())
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    return mDefaultWeight[it->second];
-  }
+  return mDefaultWeight[it->second];
+}
 
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
-  {
-    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
-    = mDependentObjects.find(pObject);
+{
+  std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+  = mDependentObjects.find(pObject);
 
-    if (it != mDependentObjects.end())
-      return mColumnRMS[it->second];
-    else
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  }
+  if (it != mDependentObjects.end())
+    return mColumnRMS[it->second];
+  else
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+}
 
 C_FLOAT64 CExperiment::getErrorMean(CCopasiObject *const& pObject) const
-  {
-    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
-    = mDependentObjects.find(pObject);
+{
+  std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+  = mDependentObjects.find(pObject);
 
-    if (it == mDependentObjects.end() ||
-        mpDataDependentCalculated == NULL)
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  if (it == mDependentObjects.end() ||
+      mpDataDependentCalculated == NULL)
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    C_FLOAT64 Mean = 0;
-    C_FLOAT64 Residual;
-    unsigned C_INT32 numRows = mDataDependent.numRows();
-    unsigned C_INT32 numCols = mDataDependent.numCols();
+  C_FLOAT64 Mean = 0;
+  C_FLOAT64 Residual;
+  unsigned C_INT32 numRows = mDataDependent.numRows();
+  unsigned C_INT32 numCols = mDataDependent.numCols();
 
-    const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
-    const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
-    const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
-    const C_FLOAT64 & Weight = mWeight[it->second];
+  const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
+  const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
+  const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
+  const C_FLOAT64 & Weight = mWeight[it->second];
 
-    for (; pDataDependentCalculated != pEnd;
-         pDataDependentCalculated += numCols, pDataDependent += numCols)
-      {
-        Residual = Weight * (*pDataDependentCalculated - *pDataDependent);
-        if (isnan(Residual)) continue;
-        Mean += Residual;
-      }
+  for (; pDataDependentCalculated != pEnd;
+       pDataDependentCalculated += numCols, pDataDependent += numCols)
+    {
+      Residual = Weight * (*pDataDependentCalculated - *pDataDependent);
 
-    return Mean;
-  }
+      if (isnan(Residual)) continue;
+
+      Mean += Residual;
+    }
+
+  return Mean;
+}
 
 C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
                                       const C_FLOAT64 & errorMean) const
-  {
-    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
-    = mDependentObjects.find(pObject);
+{
+  std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+  = mDependentObjects.find(pObject);
 
-    if (it == mDependentObjects.end() ||
-        mpDataDependentCalculated == NULL)
-      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  if (it == mDependentObjects.end() ||
+      mpDataDependentCalculated == NULL)
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    C_FLOAT64 MeanSD = 0;
-    C_FLOAT64 Residual;
-    unsigned C_INT32 numRows = mDataDependent.numRows();
-    unsigned C_INT32 numCols = mDataDependent.numCols();
+  C_FLOAT64 MeanSD = 0;
+  C_FLOAT64 Residual;
+  unsigned C_INT32 numRows = mDataDependent.numRows();
+  unsigned C_INT32 numCols = mDataDependent.numCols();
 
-    const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
-    const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
-    const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
-    const C_FLOAT64 & Weight = mWeight[it->second];
+  const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
+  const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
+  const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
+  const C_FLOAT64 & Weight = mWeight[it->second];
 
-    for (; pDataDependentCalculated != pEnd;
-         pDataDependentCalculated += numCols, pDataDependent += numCols)
-      {
-        Residual = errorMean - Weight * (*pDataDependentCalculated - *pDataDependent);
-        if (isnan(Residual)) continue;
-        MeanSD += Residual * Residual;
-      }
+  for (; pDataDependentCalculated != pEnd;
+       pDataDependentCalculated += numCols, pDataDependent += numCols)
+    {
+      Residual = errorMean - Weight * (*pDataDependentCalculated - *pDataDependent);
 
-    return MeanSD;
-  }
+      if (isnan(Residual)) continue;
+
+      MeanSD += Residual * Residual;
+    }
+
+  return MeanSD;
+}
 
 unsigned C_INT32 CExperiment::getCount(CCopasiObject *const& pObject) const
-  {
-    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
-    = mDependentObjects.find(pObject);
+{
+  std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+  = mDependentObjects.find(pObject);
 
-    if (it != mDependentObjects.end())
-      return mColumnCount[it->second];
-    else
-      return 0;
-  }
+  if (it != mDependentObjects.end())
+    return mColumnCount[it->second];
+  else
+    return 0;
+}
 
 /* CFittingPoint Implementation */
 
