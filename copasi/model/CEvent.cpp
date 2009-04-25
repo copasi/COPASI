@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:27:21 $
+//   $Date: 2009/04/25 22:13:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,6 @@ CEventAssignment::CEventAssignment(const std::string & targetKey,
                                    const CCopasiContainer * pParent) :
     CCopasiContainer(targetKey, pParent, "EventAssignment"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
-    mTargetKey(targetKey),
     mpExpression(NULL)
 {}
 
@@ -45,7 +44,6 @@ CEventAssignment::CEventAssignment(const CEventAssignment & src,
                                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
-    mTargetKey(src.mTargetKey),
     mpExpression(NULL)
 {
   setExpression(src.getExpression());
@@ -56,11 +54,6 @@ CEventAssignment::~CEventAssignment()
   pdelete(mpExpression);
 }
 
-bool CEventAssignment::operator < (const CEventAssignment & rhs) const
-{
-  return mTargetKey < rhs.mTargetKey;
-}
-
 const std::string & CEventAssignment::getKey() const
 {
   return mKey;
@@ -68,7 +61,7 @@ const std::string & CEventAssignment::getKey() const
 
 const std::string & CEventAssignment::getTargetKey() const
 {
-  return mTargetKey;
+  return getObjectName();
 }
 
 bool CEventAssignment::setExpression(const std::string & expression)
@@ -117,10 +110,10 @@ CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Event"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
+    mAssignments("ListOfAssignments", this),
     mDelayCalculation(true),
     mpTriggerExpression(NULL),
-    mpDelayExpression(NULL),
-    mAssignments()
+    mpDelayExpression(NULL)
 {
   initObjects();
 }
@@ -129,10 +122,10 @@ CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
+    mAssignments(src.mAssignments, this),
     mDelayCalculation(src.mDelayCalculation),
     mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
-    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression)),
-    mAssignments(src.mAssignments)
+    mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression))
 {
   initObjects();
 }
@@ -270,23 +263,23 @@ CExpression* CEvent::getDelayExpressionPtr()
   return mpDelayExpression;
 }
 
-const std::set< CEventAssignment > & CEvent::getAssignments() const
+const CCopasiVectorN< CEventAssignment > & CEvent::getAssignments() const
 {
   return mAssignments;
 }
 
-std::set< CEventAssignment > & CEvent::getAssignments()
+CCopasiVectorN< CEventAssignment > & CEvent::getAssignments()
 {
   return mAssignments;
 }
 
 void CEvent::deleteAssignment(const std::string & key)
 {
-  const CEventAssignment * pAssignment =
-    dynamic_cast<const CEventAssignment *>(CCopasiRootContainer::getKeyFactory()->get(key));
+  CEventAssignment * pAssignment =
+    dynamic_cast<CEventAssignment *>(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (pAssignment != NULL)
     {
-      mAssignments.erase(pAssignment->getTargetKey());
+      mAssignments.CCopasiVector< CEventAssignment >::remove(pAssignment);
     }
 }

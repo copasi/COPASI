@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:28:40 $
+//   $Date: 2009/04/25 22:13:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,14 +81,14 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   QString assignmentTarget = "";
   QString assignmentExpression = "";
 
-  std::set< CEventAssignment >::const_iterator it = pEv->getAssignments().begin();
-  std::set< CEventAssignment >::const_iterator begin = pEv->getAssignments().begin();
-  std::set< CEventAssignment >::const_iterator end = pEv->getAssignments().end();
+  CCopasiVectorN< CEventAssignment >::const_iterator it = pEv->getAssignments().begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator begin = pEv->getAssignments().begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator end = pEv->getAssignments().end();
 
   for (; it != end; ++it)
     {
       const CModelEntity * pEntity =
-        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
+        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
 
       if (pEntity != NULL)
         {
@@ -99,7 +99,7 @@ void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
             }
 
           assignmentTarget += FROM_UTF8(pEntity->getObjectDisplayName());
-          assignmentExpression += FROM_UTF8(it->getExpression());
+          assignmentExpression += FROM_UTF8((*it)->getExpression());
         }
     }
 

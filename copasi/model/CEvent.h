@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:27:21 $
+//   $Date: 2009/04/25 22:13:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,22 +32,16 @@
 
 class CExpression;
 
-class CEventAssignment : private CCopasiContainer
+class CEventAssignment : public CCopasiContainer
 {
   // Operations
-private:
-  /**
-   * Default constructor
-   */
-  CEventAssignment();
-
 public:
   /**
-   * Specific constructor
-   * @param const std::string & targetKey
+   * Default constructor
+   * @param const std::string & targetKey (default: "")
    * @param "const CCopasiContainer * pParent (default: NULL)
    */
-  CEventAssignment(const std::string & targetKey,
+  CEventAssignment(const std::string & targetKey = "",
                    const CCopasiContainer * pParent = NULL);
 
   /**
@@ -62,13 +56,6 @@ public:
    * Destructor
    */
   ~CEventAssignment();
-
-  /**
-   * A less than sort operator for sorting the entries in a container
-   * @param const CEventAssignment & rhs
-   * @return bool lessThan
-   */
-  bool operator < (const CEventAssignment & rhs) const;
 
   /**
    * Retrieve the key
@@ -120,11 +107,6 @@ private:
    * The key
    */
   std::string mKey;
-
-  /**
-   * The key of the target value
-   */
-  std::string mTargetKey;
 
   /**
    * The expression to calculate the new value
@@ -259,15 +241,15 @@ public:
 
   /**
    * Retrieve the assignments
-   * @return const std::set< CEventAssignment > & assignments
+   * @return const CCopasiVectorN< CEventAssignment > & assignments
    */
-  const std::set< CEventAssignment > & getAssignments() const;
+  const CCopasiVectorN< CEventAssignment > & getAssignments() const;
 
   /**
    * Retrieve the assignments
-   * @return std::set< CEventAssignment > & assignments
+   * @return CCopasiVectorN< CEventAssignment > & assignments
    */
-  std::set< CEventAssignment > & getAssignments();
+  CCopasiVectorN< CEventAssignment > & getAssignments();
 
   /**
    * Delete assignment with the given key. Please note this is not the target key.
@@ -289,6 +271,11 @@ private:
   std::string mKey;
 
   /**
+   * A vector assignments expressions which specify the changes made by the event.
+   */
+  CCopasiVectorN < CEventAssignment > mAssignments;
+
+  /**
    * A Boolean flag indicating whether the calculation or the assignment should be delayed
    * in the case that a delay is present.
    */
@@ -303,11 +290,6 @@ private:
    * Pointer to the Delay Expression of the event
    */
   CExpression * mpDelayExpression;
-
-  /**
-   * A map of object keys and assignments expressions which specify the changes made by the event.
-   */
-  std::set < CEventAssignment > mAssignments;
 
   /**
    * The id of the corresponding event in an SBML file.

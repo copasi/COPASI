@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.194 $
+//   $Revision: 1.195 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 23:11:21 $
+//   $Date: 2009/04/25 22:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2988,19 +2988,15 @@ void CCopasiXMLParser::AssignmentElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "Assignment", mParser.getCurrentLineNumber());
 
+        mCommon.pEventAssignment = NULL;
         mKey = mParser.getAttributeValue("targetKey", papszAttrs);
-
         pME = dynamic_cast<const CModelEntity *>(mCommon.KeyMap.get(mKey));
 
-        mCommon.pEventAssignment = NULL;
-
-        if (pME != NULL)
+        if (pME != NULL &&
+            mCommon.pEvent->getAssignments().getIndex(pME->getKey()) == C_INVALID_INDEX)
           {
-            std::pair< std::set< CEventAssignment >::iterator, bool > inserted =
-              mCommon.pEvent->getAssignments().insert(CEventAssignment(pME->getKey()));
-
-            if (inserted.second)
-              mCommon.pEventAssignment = const_cast< CEventAssignment * >(&*inserted.first);
+            mCommon.pEventAssignment = new CEventAssignment(pME->getKey());
+            mCommon.pEvent->getAssignments().add(mCommon.pEventAssignment, true);
           }
 
         return;

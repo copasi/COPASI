@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEventWidget1.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:28:40 $
+//   $Date: 2009/04/25 22:13:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,8 +257,8 @@ bool CQEventWidget1::loadFromEvent()
     }
 
   // copy assignment from event
-  std::set< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
-  std::set< CEventAssignment >::const_iterator end = mpEvent->getAssignments().end();
+  CCopasiVectorN< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator end = mpEvent->getAssignments().end();
 
   mAssignments.clear();
   QStringList Targets;
@@ -268,12 +268,12 @@ bool CQEventWidget1::loadFromEvent()
   for (; it != end; ++it, ijk++)
     {
       const CModelEntity * pEntity =
-        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
+        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
 
       if (pEntity != NULL)
         {
           Targets.append(FROM_UTF8(pEntity->getObjectDisplayName()));
-          mAssignments.push_back(*it);
+          mAssignments.push_back(**it);
 
 #ifdef XXXX // Add type dependent information
 
@@ -368,35 +368,36 @@ void CQEventWidget1::saveToEvent()
   std::vector< CEventAssignment >::const_iterator it = mAssignments.begin();
   std::vector< CEventAssignment >::const_iterator end = mAssignments.end();
 
-  std::set< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
-  std::pair< std::set< CEventAssignment >::iterator, bool > found;
+  CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
+  unsigned C_INT32 Found;
 
   // We first update all assignments.
   for (; it != end; ++it)
     {
-      found = OldAssignments.insert(*it);
+      Found = OldAssignments.getIndex(it->getTargetKey());
 
-      if (found.second)
+      if (Found == C_INVALID_INDEX)
         {
+          OldAssignments.add(*it);
           mChanged = true;
         }
-      else if (found.first->getExpression() != it->getExpression())
+      else if (OldAssignments[Found]->getExpression() != it->getExpression())
         {
-          const_cast< CEventAssignment * >(&*found.first)->setExpression(it->getExpression());
+          OldAssignments[Found]->setExpression(it->getExpression());
           mChanged = true;
         }
     }
 
   // Find the deleted assignments and mark them.
-  std::set< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
-  std::set< CEventAssignment >::const_iterator endOld = OldAssignments.end();
+  CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
   C_INT32 DeleteCount = mAssignments.size() - OldAssignments.size();
-  std::vector< const CEventAssignment * > ToBeDeleted;
+  std::vector< const std::string > ToBeDeleted;
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
     {
-      const std::string & key = itOld->getTargetKey();
+      const std::string & key = (*itOld)->getTargetKey();
 
       for (it = mAssignments.begin(); it != end; ++it)
         {
@@ -405,19 +406,19 @@ void CQEventWidget1::saveToEvent()
 
       if (it == end)
         {
-          mChanged = true;
+          ToBeDeleted.push_back(key);
           DeleteCount--;
-          ToBeDeleted.push_back(&*itOld);
+          mChanged = true;
         }
     }
 
   // Delete the assignments marked to be deleted.
-  std::vector< const CEventAssignment * >::const_iterator itDelete = ToBeDeleted.begin();
-  std::vector< const CEventAssignment * >::const_iterator endDelete = ToBeDeleted.end();
+  std::vector< const std::string >::const_iterator itDelete = ToBeDeleted.begin();
+  std::vector< const std::string >::const_iterator endDelete = ToBeDeleted.end();
 
   for (; itDelete != endDelete; ++itDelete)
     {
-      OldAssignments.erase(**itDelete);
+      OldAssignments.remove(*itDelete);
     }
 
   if (mChanged)

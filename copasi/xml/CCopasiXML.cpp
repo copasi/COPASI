@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.114 $
+//   $Revision: 1.115 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 23:11:21 $
+//   $Date: 2009/04/25 22:13:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -769,7 +769,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("DelayExpression");
             }
 
-          const std::set< CEventAssignment > & Assignments = pEvent->getAssignments();
+          const CCopasiVectorN< CEventAssignment > & Assignments = pEvent->getAssignments();
 
           if (Assignments.size() > 0)
             {
@@ -778,17 +778,17 @@ bool CCopasiXML::saveModel()
               CXMLAttributeList Attr;
               Attr.add("targetKey", "");
 
-              std::set< CEventAssignment >::const_iterator it = Assignments.begin();
-              std::set< CEventAssignment >::const_iterator end = Assignments.end();
+              CCopasiVectorN< CEventAssignment >::const_iterator it = Assignments.begin();
+              CCopasiVectorN< CEventAssignment >::const_iterator end = Assignments.end();
 
               for (; it != end; ++it)
                 {
-                  Attr.setValue(0, it->getTargetKey());
+                  Attr.setValue(0, (*it)->getTargetKey());
 
                   startSaveElement("Assignment", Attr);
 
                   startSaveElement("Expression");
-                  saveData(it->getExpression());
+                  saveData((*it)->getExpression());
                   endSaveElement("Expression");
 
                   endSaveElement("Assignment");
