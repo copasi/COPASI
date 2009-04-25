@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="model"
 	ProjectGUID="{72D65F75-40D1-4DFB-A08E-93D67F786868}"
+	RootNamespace="model"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -69,87 +70,95 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="CChemEq.cpp"
+				RelativePath=".\CChemEq.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqElement.cpp"
+				RelativePath=".\CChemEqElement.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqInterface.cpp"
+				RelativePath=".\CChemEqInterface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqParser.cpp"
+				RelativePath=".\CChemEqParser.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqParser_lex.cpp"
+				RelativePath=".\CChemEqParser_lex.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqParser_yacc.cpp"
+				RelativePath=".\CChemEqParser_yacc.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CCompartment.cpp"
+				RelativePath=".\CCompartment.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CDeTerm.cpp"
+				RelativePath=".\CDotOutput.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CMetab.cpp"
+				RelativePath=".\CEvent.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CMetabNameInterface.cpp"
+				RelativePath=".\CMathEvent.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CModel.cpp"
+				RelativePath=".\CMathModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CModelValue.cpp"
+				RelativePath=".\CMetab.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CMoiety.cpp"
+				RelativePath=".\CMetabNameInterface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CObjectLists.cpp"
+				RelativePath=".\CMMLOutput.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CParticleNumberList.cpp"
+				RelativePath=".\CModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CReaction.cpp"
+				RelativePath=".\CModelAnalyzer.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CReactionInterface.cpp"
+				RelativePath=".\CModelValue.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CScanInputFlexLexer.cpp"
+				RelativePath=".\CMoiety.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CSpec2Model.cpp"
+				RelativePath=".\CObjectLists.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CSpecLine.cpp"
+				RelativePath=".\CProcessQueue.cpp"
 				>
 			</File>
 			<File
-				RelativePath="CState.cpp"
+				RelativePath=".\CReaction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CReactionInterface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CState.cpp"
 				>
 			</File>
 		</Filter>
@@ -158,87 +167,91 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="CChemEq.h"
+				RelativePath=".\CChemEq.h"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqElement.h"
+				RelativePath=".\CChemEqElement.h"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqInterface.h"
+				RelativePath=".\CChemEqInterface.h"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqParser.h"
+				RelativePath=".\CChemEqParser.h"
 				>
 			</File>
 			<File
-				RelativePath="CChemEqParser_yacc.h"
+				RelativePath=".\CChemEqParser_yacc.h"
 				>
 			</File>
 			<File
-				RelativePath="CCompartment.h"
+				RelativePath=".\CCompartment.h"
 				>
 			</File>
 			<File
-				RelativePath="CDeTerm.h"
+				RelativePath=".\CDotOutput.h"
 				>
 			</File>
 			<File
-				RelativePath="CMetab.h"
+				RelativePath=".\CEvent.h"
 				>
 			</File>
 			<File
-				RelativePath="CMetabNameInterface.h"
+				RelativePath=".\CMathEvent.h"
 				>
 			</File>
 			<File
-				RelativePath="CModel.h"
+				RelativePath=".\CMathModel.h"
 				>
 			</File>
 			<File
-				RelativePath="CModelValue.h"
+				RelativePath=".\CMetab.h"
 				>
 			</File>
 			<File
-				RelativePath="CMoiety.h"
+				RelativePath=".\CMetabNameInterface.h"
 				>
 			</File>
 			<File
-				RelativePath="CObjectLists.h"
+				RelativePath=".\CMMLOutput.h"
 				>
 			</File>
 			<File
-				RelativePath="CParticleNumberList.h"
+				RelativePath=".\CModel.h"
 				>
 			</File>
 			<File
-				RelativePath="CReaction.h"
+				RelativePath=".\CModelAnalyzer.h"
 				>
 			</File>
 			<File
-				RelativePath="CReactionInterface.h"
+				RelativePath=".\CModelValue.h"
 				>
 			</File>
 			<File
-				RelativePath="CScanInputFlexLexer.h"
+				RelativePath=".\CMoiety.h"
 				>
 			</File>
 			<File
-				RelativePath="CSpec2Model.h"
+				RelativePath=".\CObjectLists.h"
 				>
 			</File>
 			<File
-				RelativePath="CSpecLine.h"
+				RelativePath=".\CProcessQueue.h"
 				>
 			</File>
 			<File
-				RelativePath="CState.h"
+				RelativePath=".\CReaction.h"
 				>
 			</File>
 			<File
-				RelativePath="model.h"
+				RelativePath=".\CReactionInterface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CState.h"
 				>
 			</File>
 		</Filter>
