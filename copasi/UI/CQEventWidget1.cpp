@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/27 00:03:17 $
+//   $Author: ssahle $
+//   $Date: 2009/04/27 14:13:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,7 +245,7 @@ void CQEventWidget1::slotDeleteTarget()
 
   mCurrentTarget = C_INVALID_INDEX;
 
-  mpLBTarget->setCurrentItem(std::max(mCurrentTarget, mAssignments.size() - 1));
+  mpLBTarget->setCurrentItem(std::max<unsigned C_INT32>(mCurrentTarget, mAssignments.size() - 1));
 }
 
 /*! Load all values with respect to a chosen saved event */
@@ -423,7 +423,7 @@ void CQEventWidget1::saveToEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
   C_INT32 DeleteCount = mAssignments.size() - OldAssignments.size();
-  std::vector< const std::string > ToBeDeleted;
+  std::vector<std::string > ToBeDeleted;
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
     {
@@ -443,8 +443,8 @@ void CQEventWidget1::saveToEvent()
     }
 
   // Delete the assignments marked to be deleted.
-  std::vector< const std::string >::const_iterator itDelete = ToBeDeleted.begin();
-  std::vector< const std::string >::const_iterator endDelete = ToBeDeleted.end();
+  std::vector<std::string >::const_iterator itDelete = ToBeDeleted.begin();
+  std::vector<std::string >::const_iterator endDelete = ToBeDeleted.end();
 
   for (; itDelete != endDelete; ++itDelete)
     {
@@ -547,7 +547,7 @@ void CQEventWidget1::slotSelectObject()
 /// Slot to actualize the assignment expression widget of event assignment according to the target
 void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 {
-  unsigned C_INT32 NewTarget = std::max((unsigned C_INT32) index, mAssignments.size() - 1);
+  unsigned C_INT32 NewTarget = std::max<unsigned C_INT32>((unsigned C_INT32) index, mAssignments.size() - 1);
 
   // Save the current assignment
   if (NewTarget != mCurrentTarget &&
