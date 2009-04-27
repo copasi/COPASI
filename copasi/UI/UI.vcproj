@@ -74,6 +74,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CColorScale.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CCopasiPlotSelectionDialog.cpp"
 				>
 			</File>
@@ -91,6 +95,10 @@
 			</File>
 			<File
 				RelativePath="CMCAResultSubwidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CMCAResultSubwidget.ui.h"
 				>
 			</File>
 			<File
@@ -162,15 +170,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQCompartment.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQCopasiLayoutWidget.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\CQDifferentialEquations.cpp"
+				RelativePath=".\CQDateTimeEditTableItem.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\CQDifferentialEquations.h"
+				RelativePath=".\CQDifferentialEquations.cpp"
 				>
 			</File>
 			<File
@@ -182,11 +194,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQEventsWidget.cpp"
+				RelativePath=".\CQEFMWidget.ui.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CQEventsWidget.h"
+				RelativePath=".\CQEventsWidget.cpp"
 				>
 			</File>
 			<File
@@ -194,15 +206,31 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQEventWidget1.h"
-				>
-			</File>
-			<File
 				RelativePath="CQExperimentData.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\CQExperimentData.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQExperimentSelection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQExperimentSelection.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQExpressionMmlWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQExpressionMmlWidget.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQExpressionMmlWidgetStack.cpp"
 				>
 			</File>
 			<File
@@ -218,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQFittingItemWidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQFittingResult.cpp"
 				>
 			</File>
@@ -226,15 +258,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQFittingResultTab1.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQFittingWidget.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\CQFunctionBottomWidget.cpp"
+				RelativePath=".\CQFittingWidget.ui.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CQFunctionBottomWidget.h"
+				RelativePath=".\CQFunctionBottomWidget.cpp"
 				>
 			</File>
 			<File
@@ -246,11 +282,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQFunctionTopWidget.h"
+				RelativePath=".\CQFunctionTopWidget.ui.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CQFunctionTopWidget.ui.h"
+				RelativePath=".\CQLayoutsWidget.cpp"
 				>
 			</File>
 			<File
@@ -262,11 +298,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQLyapWidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQMathMatrixWidget.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\CQMatrixDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMatrixDialog.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQMCAWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMCAWidget.ui.h"
 				>
 			</File>
 			<File
@@ -278,7 +330,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQMetabolite.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMmlScrollView.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQModelValue.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQModelValue.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskResult.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskResult.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQMoietiesTaskWidget.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQOptimizationResult.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQOptimizationResult.ui.h"
 				>
 			</File>
 			<File
@@ -286,7 +374,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQOptimizationWidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQPreferenceDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQPreferenceDialog.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQPrintAsDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQPrintAsDialog.ui.h"
 				>
 			</File>
 			<File
@@ -294,7 +398,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQProgressDialog.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQProgressItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQProgressItem.ui.h"
 				>
 			</File>
 			<File
@@ -302,7 +414,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQProgressItemBar.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQProgressItemText.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQProgressItemText.ui.h"
 				>
 			</File>
 			<File
@@ -318,7 +438,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQRegistrationDialog.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQReportDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReportDefinition.ui.h"
 				>
 			</File>
 			<File
@@ -334,6 +462,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQSBMLSaveOptionsDialog.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQSensResultWidget.cpp"
 				>
 			</File>
@@ -346,7 +478,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQSplashWidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQStartValueReset.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQStartValueReset.ui.h"
 				>
 			</File>
 			<File
@@ -358,7 +498,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQTaskHeaderWidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CQTextDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQTextDialog.ui.h"
 				>
 			</File>
 			<File
@@ -366,11 +514,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQTSSAResultSubWidget.cpp"
+				RelativePath=".\CQTrajectoryWidget.ui.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CQTSSAResultSubWidget.h"
+				RelativePath=".\CQTSSAResultSubWidget.cpp"
 				>
 			</File>
 			<File
@@ -382,7 +530,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQTSSAResultWidget.h"
+				RelativePath=".\CQTSSATimeScaleWidget.cpp"
 				>
 			</File>
 			<File
@@ -390,11 +538,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQTSSAWidget.h"
+				RelativePath=".\CQTSSAWidget.ui.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CQTSSAWidget.ui.h"
+				RelativePath=".\CQUpdatesWidget.cpp"
 				>
 			</File>
 			<File
@@ -414,7 +562,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CScanWidgetBreak.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CScanWidgetRandom.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CScanWidgetRandom.ui.h"
 				>
 			</File>
 			<File
@@ -422,11 +578,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CScanWidgetRepeat.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CScanWidgetScan.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\CScanWidgetScan.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="CScanWidgetTask.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CScanWidgetTask.ui.h"
 				>
 			</File>
 			<File
@@ -442,11 +610,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CUpDownSubwidget.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="DataModelGUI.cpp"
 				>
 			</File>
 			<File
 				RelativePath="DefaultplotDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DefaultplotDialog.ui.h"
 				>
 			</File>
 			<File
@@ -526,6 +702,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\objectdebug.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="OptimizationResultWidget.cpp"
 				>
 			</File>
@@ -566,6 +746,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SensWidgetComboBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath="SliderDialog.cpp"
 				>
 			</File>
@@ -574,11 +758,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SliderSettingsDialog.ui.h"
+				>
+			</File>
+			<File
 				RelativePath="SSAWidget.cpp"
 				>
 			</File>
 			<File
 				RelativePath="StateSubwidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StateSubwidget.ui.h"
 				>
 			</File>
 			<File
@@ -603,6 +795,10 @@
 			</File>
 			<File
 				RelativePath="TimeSeriesSubwidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TimeSeriesSubwidget.ui.h"
 				>
 			</File>
 			<File
@@ -648,10 +844,6 @@
 			</File>
 			<File
 				RelativePath="CMCAResultSubwidget.h"
-				>
-			</File>
-			<File
-				RelativePath="CMCAResultSubwidget.ui.h"
 				>
 			</File>
 			<File
@@ -715,10 +907,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CQCompartment.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQCopasiLayoutWidget.h"
 				>
 			</File>
@@ -727,7 +915,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQEFMWidget.ui.h"
+				RelativePath=".\CQEventWidget1.h"
 				>
 			</File>
 			<File
@@ -735,15 +923,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQExperimentData.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQExperimentSelection.h"
-				>
-			</File>
-			<File
-				RelativePath="CQExperimentSelection.ui.h"
 				>
 			</File>
 			<File
@@ -759,15 +939,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQFittingItemWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQFittingResult.h"
-				>
-			</File>
-			<File
-				RelativePath="CQFittingResult.ui.h"
 				>
 			</File>
 			<File
@@ -775,15 +947,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQFittingResultTab1.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQFittingWidget.h"
-				>
-			</File>
-			<File
-				RelativePath="CQFittingWidget.ui.h"
 				>
 			</File>
 			<File
@@ -795,10 +959,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CQLyapWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQMathMatrixWidget.h"
 				>
 			</File>
@@ -807,15 +967,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQMCAWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQMessageBox.h"
-				>
-			</File>
-			<File
-				RelativePath="CQMessageBox.ui.h"
 				>
 			</File>
 			<File
@@ -823,15 +975,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQMetabolite.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQModelValue.h"
-				>
-			</File>
-			<File
-				RelativePath="CQModelValue.ui.h"
 				>
 			</File>
 			<File
@@ -839,15 +983,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQOptimizationWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQPreferenceDialog.h"
-				>
-			</File>
-			<File
-				RelativePath="CQPreferenceDialog.ui.h"
 				>
 			</File>
 			<File
@@ -855,15 +991,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQProgressDialog.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQProgressItem.h"
-				>
-			</File>
-			<File
-				RelativePath="CQProgressItem.ui.h"
 				>
 			</File>
 			<File
@@ -871,15 +999,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQProgressItemBar.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQProgressItemText.h"
-				>
-			</File>
-			<File
-				RelativePath="CQProgressItemText.ui.h"
 				>
 			</File>
 			<File
@@ -895,15 +1015,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQRegistrationDialog.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQReportDefinition.h"
-				>
-			</File>
-			<File
-				RelativePath="CQReportDefinition.ui.h"
 				>
 			</File>
 			<File
@@ -923,15 +1035,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CQSplashWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQStartValueReset.h"
-				>
-			</File>
-			<File
-				RelativePath="CQStartValueReset.ui.h"
 				>
 			</File>
 			<File
@@ -943,23 +1047,11 @@
 				>
 			</File>
 			<File
-				RelativePath="CQTaskHeaderWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQTextDialog.h"
 				>
 			</File>
 			<File
-				RelativePath="CQTextDialog.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CQTrajectoryWidget.h"
-				>
-			</File>
-			<File
-				RelativePath="CQTrajectoryWidget.ui.h"
 				>
 			</File>
 			<File
@@ -979,15 +1071,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CScanWidgetBreak.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CScanWidgetRandom.h"
-				>
-			</File>
-			<File
-				RelativePath="CScanWidgetRandom.ui.h"
 				>
 			</File>
 			<File
@@ -995,23 +1079,11 @@
 				>
 			</File>
 			<File
-				RelativePath="CScanWidgetRepeat.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CScanWidgetScan.h"
 				>
 			</File>
 			<File
-				RelativePath="CScanWidgetScan.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="CScanWidgetTask.h"
-				>
-			</File>
-			<File
-				RelativePath="CScanWidgetTask.ui.h"
 				>
 			</File>
 			<File
@@ -1027,10 +1099,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CUpDownSubwidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="DataModel.txt.h"
 				>
 			</File>
@@ -1040,10 +1108,6 @@
 			</File>
 			<File
 				RelativePath="DefaultplotDialog.h"
-				>
-			</File>
-			<File
-				RelativePath="DefaultplotDialog.ui.h"
 				>
 			</File>
 			<File
@@ -1123,10 +1187,6 @@
 				>
 			</File>
 			<File
-				RelativePath="objectdebug.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="OptimizationResultWidget.h"
 				>
 			</File>
@@ -1175,19 +1235,11 @@
 				>
 			</File>
 			<File
-				RelativePath="SliderSettingsDialog.ui.h"
-				>
-			</File>
-			<File
 				RelativePath="SSAWidget.h"
 				>
 			</File>
 			<File
 				RelativePath="StateSubwidget.h"
-				>
-			</File>
-			<File
-				RelativePath="StateSubwidget.ui.h"
 				>
 			</File>
 			<File
@@ -1212,10 +1264,6 @@
 			</File>
 			<File
 				RelativePath="TimeSeriesSubwidget.h"
-				>
-			</File>
-			<File
-				RelativePath="TimeSeriesSubwidget.ui.h"
 				>
 			</File>
 			<File
@@ -1249,7 +1297,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CQDifferentialEquations.ui"
+			>
+		</File>
+		<File
 			RelativePath="CQEFMWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQEventWidget1.ui"
 			>
 		</File>
 		<File
@@ -1258,6 +1314,10 @@
 		</File>
 		<File
 			RelativePath="CQExperimentSelection.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQExpressionMmlWidget.ui"
 			>
 		</File>
 		<File
@@ -1289,6 +1349,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CQMatrixDialog.ui"
+			>
+		</File>
+		<File
 			RelativePath="CQMCAWidget.ui"
 			>
 		</File>
@@ -1305,11 +1369,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CQMoietiesTaskResult.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQMoietiesTaskWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQOptimizationResult.ui"
+			>
+		</File>
+		<File
 			RelativePath="CQOptimizationWidget.ui"
 			>
 		</File>
 		<File
 			RelativePath="CQPreferenceDialog.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQPrintAsDialog.ui"
 			>
 		</File>
 		<File
@@ -1365,11 +1445,15 @@
 			>
 		</File>
 		<File
-			RelativePath="CScanWidgetBreak.ui"
+			RelativePath=".\CQTSSAResultSubWidget.ui"
 			>
 		</File>
 		<File
-			RelativePath="CScanWidgetBreak.ui.h.bak"
+			RelativePath=".\CQTSSAWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath="CScanWidgetBreak.ui"
 			>
 		</File>
 		<File
@@ -1409,11 +1493,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SensitivitiesWidget.ui"
+			>
+		</File>
+		<File
 			RelativePath="SliderSettingsDialog.ui"
 			>
 		</File>
 		<File
 			RelativePath="StateSubwidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\SteadyStateWidget.ui"
 			>
 		</File>
 		<File
