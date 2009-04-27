@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/25 22:13:14 $
+//   $Date: 2009/04/27 00:02:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,6 +173,16 @@ void CEvent::setSBMLId(const std::string& id)
 const std::string& CEvent::getSBMLId() const
 {
   return this->mSBMLId;
+}
+
+void CEvent::setDelayCalculation(const bool & delayCalculation)
+{
+  mDelayCalculation = delayCalculation;
+}
+
+const bool & CEvent::getDelayCalculation() const
+{
+  return mDelayCalculation;
 }
 
 std::string CEvent::getObjectDisplayName(bool regular, bool richtext) const
