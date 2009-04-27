@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:27:21 $
+//   $Date: 2009/04/27 19:03:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,11 +19,31 @@
 
 #include "copasi/function/CExpression.h"
 
-class CMathEvent
+class CMathEvent : public CCopasiContainer
 {
 private:
-  class CAssignment
+  class CAssignment : public CCopasiContainer
   {
+    // Operations
+  public:
+    /**
+     * Default constructor
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CAssignment(const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param "const CAssignment &" src
+     * @param "const CCopasiContainer * pParent (default: NULL)
+     */
+    CAssignment(const CAssignment & src,
+                const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Destructor
+     */
+    ~CAssignment();
 
     // Attributes
   private:
@@ -42,8 +62,17 @@ private:
 public:
   /**
    * Default constructor
+   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CMathEvent();
+  CMathEvent(const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Copy constructor
+   * @param "const CMathEvent &" src
+   * @param "const CCopasiContainer * pParent (default: NULL)
+   */
+  CMathEvent(const CMathEvent & src,
+             const CCopasiContainer * pParent = NULL);
 
   /**
    * Destructor
@@ -80,12 +109,12 @@ private:
   /**
    * Boolean value indicating whether the calculation or the assignment is delayed.
    */
-  bool mDelayCalculation;
+  bool mDelayAssignment;
 
   /**
    * List of assignments
    */
-  std::vector< CAssignment > mAssignments;
+  CCopasiVector< CAssignment > mAssignments;
 };
 
 #endif // COPASI_CMathEvent
