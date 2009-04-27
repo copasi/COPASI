@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/27 00:02:36 $
+//   $Date: 2009/04/27 14:43:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,7 @@ CEvent::CEvent(const std::string & name,
     CCopasiContainer(name, pParent, "Event"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mAssignments("ListOfAssignments", this),
-    mDelayCalculation(true),
+    mDelayAssignment(true),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL)
 {
@@ -123,7 +123,7 @@ CEvent::CEvent(const CEvent & src,
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
     mAssignments(src.mAssignments, this),
-    mDelayCalculation(src.mDelayCalculation),
+    mDelayAssignment(src.mDelayAssignment),
     mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
     mpDelayExpression(src.mpDelayExpression == NULL ? NULL : new CExpression(*src.mpDelayExpression))
 {
@@ -175,14 +175,14 @@ const std::string& CEvent::getSBMLId() const
   return this->mSBMLId;
 }
 
-void CEvent::setDelayCalculation(const bool & delayCalculation)
+void CEvent::setDelayAssignment(const bool & delayAssignment)
 {
-  mDelayCalculation = delayCalculation;
+  mDelayAssignment = delayAssignment;
 }
 
-const bool & CEvent::getDelayCalculation() const
+const bool & CEvent::getDelayAssignment() const
 {
-  return mDelayCalculation;
+  return mDelayAssignment;
 }
 
 std::string CEvent::getObjectDisplayName(bool regular, bool richtext) const

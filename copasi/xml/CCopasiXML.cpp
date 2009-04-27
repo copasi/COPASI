@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.115 $
+//   $Revision: 1.116 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/25 22:13:13 $
+//   $Date: 2009/04/27 14:43:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -736,7 +736,7 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      //      Attributes.add("delay", "");
+      Attributes.add("delayAssignment", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -744,17 +744,19 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pEvent->getKey());
           Attributes.setValue(1, pEvent->getObjectName());
+          Attributes.setValue(2, pEvent->getDelayAssignment());
 
           startSaveElement("Event", Attributes);
 
           /*
-                    if (pEvent->getMiriamAnnotation() != "")
-                      {
-                        startSaveElement("MiriamAnnotation");
-                        *mpOstream << pEvent->getMiriamAnnotation() << std::endl;
-                        endSaveElement("MiriamAnnotation");
-                      }
+          if (pEvent->getMiriamAnnotation() != "")
+            {
+              startSaveElement("MiriamAnnotation");
+              *mpOstream << pEvent->getMiriamAnnotation() << std::endl;
+              endSaveElement("MiriamAnnotation");
+            }
           */
+
           if (pEvent->getTriggerExpression() != "")
             {
               startSaveElement("TriggerExpression");

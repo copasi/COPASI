@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.195 $
+//   $Revision: 1.196 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/25 22:13:13 $
+//   $Date: 2009/04/27 14:43:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2728,6 +2728,7 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Name;
+  bool DelayAssignment;
 
   mpCurrentHandler = NULL;
   mCurrentElement++; /* We should always be on the next element */
@@ -2742,10 +2743,13 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
         mKey = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
+        DelayAssignment =
+          mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs));
 
         mCommon.pEvent = new CEvent();
         mCommon.KeyMap.addFix(mKey, mCommon.pEvent);
         mCommon.pEvent->setObjectName(Name);
+        mCommon.pEvent->setDelayAssignment(DelayAssignment);
 
         mCommon.pModel->getEvents().add(mCommon. pEvent, true);
         return;

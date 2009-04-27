@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/04/27 00:03:17 $ </comment>
+<comment>   $Date: 2009/04/27 14:43:59 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,14 +12,15 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQEventWidget1</class>
  <widget class="CopasiWidget" name="CQEventWidget1" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>488</width>
-    <height>443</height>
+    <width>528</width>
+    <height>465</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -32,6 +33,9 @@
    <string>Event Widget</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
+   <property name="spacing" >
+    <number>3</number>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout" >
      <item row="0" column="0" >
@@ -101,7 +105,7 @@
       </widget>
      </item>
      <item row="2" column="0" >
-      <widget class="QLabel" name="mpLabelDelay_2" >
+      <widget class="QLabel" name="mpLabelDelay" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
@@ -144,7 +148,7 @@
       </widget>
      </item>
      <item row="3" column="0" >
-      <widget class="QLabel" name="mpLabelDelay" >
+      <widget class="QLabel" name="mpLabelDelayExpression" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
          <horstretch>0</horstretch>
@@ -178,7 +182,7 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="mpLine2_2" >
+    <widget class="Line" name="mpLine1" >
      <property name="frameShape" >
       <enum>QFrame::HLine</enum>
      </property>
@@ -192,7 +196,14 @@
      <item row="1" column="0" >
       <layout class="QHBoxLayout" >
        <item>
-        <widget class="Q3ListBox" name="mpLBTarget" />
+        <widget class="QListWidget" name="mpLBTarget" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" >

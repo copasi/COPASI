@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.54 $ -->
+<!--   $Revision: 1.55 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2009/04/24 23:11:21 $ -->
+<!--   $Date: 2009/04/27 14:43:59 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -41,15 +41,15 @@
               <xs:element
                 name="Function"
                 type="cFUNCTION"
-                maxOccurs="unbounded" />
+                maxOccurs="unbounded"/>
             </xs:sequence>
           </xs:complexType>
           <xs:unique
             name="FunctionName">
             <xs:selector
-              xpath="Function" />
+              xpath="Function"/>
             <xs:field
-              xpath="@name" />
+              xpath="@name"/>
           </xs:unique>
         </xs:element>
         <xs:element
@@ -70,16 +70,16 @@
                   <xs:element
                     name="MiriamAnnotation"
                     type="cMIRIAM"
-                    minOccurs="0" />
+                    minOccurs="0"/>
                   <xs:element
                     name="Comment"
                     type="cCOMMENT"
                     id="copasi.Model.Comment"
-                    minOccurs="0" />
+                    minOccurs="0"/>
                   <xs:element
                     name="InitialExpression"
                     type="sEXPRESSION"
-                    minOccurs="0" />
+                    minOccurs="0"/>
                   <xs:element
                     name="ListOfCompartments"
                     id="copasi.Model.ListOfCompartments"
@@ -99,15 +99,15 @@
                                   <xs:element
                                     name="MiriamAnnotation"
                                     type="cMIRIAM"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                   <xs:element
                                     name="Expression"
                                     type="sEXPRESSION"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                   <xs:element
                                     name="InitialExpression"
                                     type="sEXPRESSION"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                 </xs:sequence>
                               </xs:extension>
                             </xs:complexContent>
@@ -118,9 +118,9 @@
                     <xs:unique
                       name="CompartmentName">
                       <xs:selector
-                        xpath="Compartment" />
+                        xpath="Compartment"/>
                       <xs:field
-                        xpath="@name" />
+                        xpath="@name"/>
                     </xs:unique>
                   </xs:element>
                   <xs:element
@@ -142,20 +142,20 @@
                                   <xs:element
                                     name="MiriamAnnotation"
                                     type="cMIRIAM"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                   <xs:element
                                     name="Expression"
                                     type="sEXPRESSION"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                   <xs:element
                                     name="InitialExpression"
                                     type="sEXPRESSION"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                 </xs:sequence>
                                 <xs:attribute
                                   name="compartment"
                                   type="cCOMPARTMENT_KEYREF"
-                                  use="required" />
+                                  use="required"/>
                               </xs:extension>
                             </xs:complexContent>
                           </xs:complexType>
@@ -165,11 +165,11 @@
                     <xs:unique
                       name="MetaboliteName">
                       <xs:selector
-                        xpath="Metabolite" />
+                        xpath="Metabolite"/>
                       <xs:field
-                        xpath="@name" />
+                        xpath="@name"/>
                       <xs:field
-                        xpath="@compartment" />
+                        xpath="@compartment"/>
                     </xs:unique>
                   </xs:element>
                   <xs:element
@@ -191,15 +191,15 @@
                                   <xs:element
                                     name="MiriamAnnotation"
                                     type="cMIRIAM"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                   <xs:element
                                     name="Expression"
                                     type="sEXPRESSION"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                   <xs:element
                                     name="InitialExpression"
                                     type="sEXPRESSION"
-                                    minOccurs="0" />
+                                    minOccurs="0"/>
                                 </xs:sequence>
                               </xs:extension>
                             </xs:complexContent>
@@ -210,9 +210,9 @@
                     <xs:unique
                       name="ModelValueName">
                       <xs:selector
-                        xpath="ModelValue" />
+                        xpath="ModelValue"/>
                       <xs:field
-                        xpath="@name" />
+                        xpath="@name"/>
                     </xs:unique>
                   </xs:element>
                   <xs:element
@@ -231,7 +231,7 @@
                               <xs:element
                                 name="MiriamAnnotation"
                                 type="cMIRIAM"
-                                minOccurs="0" />
+                                minOccurs="0"/>
                               <xs:element
                                 name="ListOfSubstrates"
                                 minOccurs="0">
@@ -242,15 +242,15 @@
                                       name="Substrate"
                                       type="cREACTION_ELEMENT"
                                       id="copasi.Model.Reaction.Substrate"
-                                      maxOccurs="unbounded" />
+                                      maxOccurs="unbounded"/>
                                   </xs:sequence>
                                 </xs:complexType>
                                 <xs:unique
                                   name="SubstrateName">
                                   <xs:selector
-                                    xpath="Substrate" />
+                                    xpath="Substrate"/>
                                   <xs:field
-                                    xpath="@metabolite" />
+                                    xpath="@metabolite"/>
                                 </xs:unique>
                               </xs:element>
                               <xs:element
@@ -264,15 +264,15 @@
                                       name="Product"
                                       type="cREACTION_ELEMENT"
                                       id="copasi.Model.Reaction.Product"
-                                      maxOccurs="unbounded" />
+                                      maxOccurs="unbounded"/>
                                   </xs:sequence>
                                 </xs:complexType>
                                 <xs:unique
                                   name="ProductName">
                                   <xs:selector
-                                    xpath="Product" />
+                                    xpath="Product"/>
                                   <xs:field
-                                    xpath="@metabolite" />
+                                    xpath="@metabolite"/>
                                 </xs:unique>
                               </xs:element>
                               <xs:element
@@ -286,15 +286,15 @@
                                       name="Modifier"
                                       type="cREACTION_ELEMENT"
                                       id="copasi.Model.Reaction.Modifier"
-                                      maxOccurs="unbounded" />
+                                      maxOccurs="unbounded"/>
                                   </xs:sequence>
                                 </xs:complexType>
                                 <xs:unique
                                   name="ModifierName">
                                   <xs:selector
-                                    xpath="Modifier" />
+                                    xpath="Modifier"/>
                                   <xs:field
-                                    xpath="@metabolite" />
+                                    xpath="@metabolite"/>
                                 </xs:unique>
                               </xs:element>
                               <xs:element
@@ -308,43 +308,43 @@
                                       name="Constant"
                                       type="cCONSTANT"
                                       id="copasi.Model.Reaction.Constant"
-                                      maxOccurs="unbounded" />
+                                      maxOccurs="unbounded"/>
                                   </xs:sequence>
                                 </xs:complexType>
                                 <xs:unique
                                   name="ConstantName">
                                   <xs:selector
-                                    xpath="Constant" />
+                                    xpath="Constant"/>
                                   <xs:field
-                                    xpath="@name" />
+                                    xpath="@name"/>
                                 </xs:unique>
                               </xs:element>
                               <xs:element
                                 name="KineticLaw"
                                 type="cFUNCTION_CALL"
-                                minOccurs="0" />
+                                minOccurs="0"/>
                             </xs:sequence>
                             <xs:attribute
                               name="key"
                               type="cREACTION_KEY"
                               use="required"
-                              id="copasi.Model.Reaction.key" />
+                              id="copasi.Model.Reaction.key"/>
                             <xs:attribute
                               name="name"
                               type="cNAME"
                               use="required"
-                              id="copasi.Model.Reaction.name" />
+                              id="copasi.Model.Reaction.name"/>
                             <xs:attribute
                               name="compartment"
                               type="cCOMPARTMENT_KEYREF"
                               use="optional"
                               default="Compartment_00"
-                              id="copasi.Model.Reaction.compartment" />
+                              id="copasi.Model.Reaction.compartment"/>
                             <xs:attribute
                               name="reversible"
                               type="xs:boolean"
                               use="required"
-                              id="copasi.Model.Reaction.reversible" />
+                              id="copasi.Model.Reaction.reversible"/>
                           </xs:complexType>
                         </xs:element>
                       </xs:sequence>
@@ -352,11 +352,11 @@
                     <xs:unique
                       name="ReactionName">
                       <xs:selector
-                        xpath="Reaction" />
+                        xpath="Reaction"/>
                       <xs:field
-                        xpath="@name" />
+                        xpath="@name"/>
                       <xs:field
-                        xpath="@compartment" />
+                        xpath="@compartment"/>
                     </xs:unique>
                   </xs:element>
                   <xs:element
@@ -375,13 +375,13 @@
                               <xs:element
                                 name="MiriamAnnotation"
                                 type="cMIRIAM"
-                                minOccurs="0" />
+                                minOccurs="0"/>
                               <xs:element
                                 name="TriggerExpression"
-                                type="sEXPRESSION" />
+                                type="sEXPRESSION"/>
                               <xs:element
                                 name="DelayExpression"
-                                type="sEXPRESSION" />
+                                type="sEXPRESSION"/>
                               <xs:element
                                 name="ListOfAssignments"
                                 id="copasi.Model.ListOfEventAssignments">
@@ -396,12 +396,12 @@
                                         <xs:sequence>
                                           <xs:element
                                             name="Expression"
-                                            type="sEXPRESSION" />
+                                            type="sEXPRESSION"/>
                                         </xs:sequence>
                                         <xs:attribute
                                           name="targetkey"
                                           type="cEVENT_ASSIGNMENT_TARGET_KEYREF"
-                                          use="required" />
+                                          use="required"/>
                                       </xs:complexType>
                                     </xs:element>
                                   </xs:sequence>
@@ -409,9 +409,9 @@
                                 <xs:unique
                                   name="AssignmentTarget">
                                   <xs:selector
-                                    xpath="Assignment" />
+                                    xpath="Assignment"/>
                                   <xs:field
-                                    xpath="@targetkey" />
+                                    xpath="@targetkey"/>
                                 </xs:unique>
                               </xs:element>
                             </xs:sequence>
@@ -419,17 +419,17 @@
                               name="key"
                               type="cEVENT_KEY"
                               use="required"
-                              id="copasi.Model.Event.key" />
+                              id="copasi.Model.Event.key"/>
                             <xs:attribute
                               name="name"
                               type="cNAME"
                               use="required"
-                              id="copasi.Model.Event.name" />
+                              id="copasi.Model.Event.name"/>
                             <xs:attribute
-                              name="delayCalculation"
+                              name="delayAssignment"
                               type="xs:boolean"
                               use="required"
-                              id="copasi.Model.Event.delayCalculation" />
+                              id="copasi.Model.Event.delayCalculation"/>
                           </xs:complexType>
                         </xs:element>
                       </xs:sequence>
@@ -437,9 +437,9 @@
                     <xs:unique
                       name="EventName">
                       <xs:selector
-                        xpath="Event" />
+                        xpath="Event"/>
                       <xs:field
-                        xpath="@name" />
+                        xpath="@name"/>
                     </xs:unique>
                   </xs:element>
                   <xs:element
@@ -458,12 +458,12 @@
                               name="key"
                               type="cSTATE_VARIABLE_KEY"
                               use="optional"
-                              id="copasi.STATE_TEMPLATE.StateTemplateVariable.key" />
+                              id="copasi.STATE_TEMPLATE.StateTemplateVariable.key"/>
                             <xs:attribute
                               name="objectReference"
                               type="cKEYREF"
                               use="required"
-                              id="copasi.STATE_TEMPLATE.StateTemplateVariable.objectReference" />
+                              id="copasi.STATE_TEMPLATE.StateTemplateVariable.objectReference"/>
                           </xs:complexType>
                         </xs:element>
                       </xs:sequence>
@@ -471,9 +471,9 @@
                     <xs:unique
                       name="StateTemplateVariableObjectReference">
                       <xs:selector
-                        xpath="StateTemplateVariable" />
+                        xpath="StateTemplateVariable"/>
                       <xs:field
-                        xpath="@objectReference" />
+                        xpath="@objectReference"/>
                     </xs:unique>
                   </xs:element>
                   <xs:element
@@ -483,7 +483,7 @@
                     <xs:complexType>
                       <xs:simpleContent>
                         <xs:extension
-                          base="cSTATE_TYPE" />
+                          base="cSTATE_TYPE"/>
                       </xs:simpleContent>
                     </xs:complexType>
                   </xs:element>
@@ -502,23 +502,23 @@
                     <xs:restriction
                       base="xs:string">
                       <xs:enumeration
-                        value="d" />
+                        value="d"/>
                       <xs:enumeration
-                        value="h" />
+                        value="h"/>
                       <xs:enumeration
-                        value="min" />
+                        value="min"/>
                       <xs:enumeration
-                        value="s" />
+                        value="s"/>
                       <xs:enumeration
-                        value="ms" />
+                        value="ms"/>
                       <xs:enumeration
-                        value="µs" />
+                        value="µs"/>
                       <xs:enumeration
-                        value="ns" />
+                        value="ns"/>
                       <xs:enumeration
-                        value="ps" />
+                        value="ps"/>
                       <xs:enumeration
-                        value="fs" />
+                        value="fs"/>
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>
@@ -530,19 +530,19 @@
                     <xs:restriction
                       base="xs:string">
                       <xs:enumeration
-                        value="m³" />
+                        value="m³"/>
                       <xs:enumeration
-                        value="l" />
+                        value="l"/>
                       <xs:enumeration
-                        value="ml" />
+                        value="ml"/>
                       <xs:enumeration
-                        value="µl" />
+                        value="µl"/>
                       <xs:enumeration
-                        value="nl" />
+                        value="nl"/>
                       <xs:enumeration
-                        value="pl" />
+                        value="pl"/>
                       <xs:enumeration
-                        value="fl" />
+                        value="fl"/>
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>
@@ -554,19 +554,19 @@
                     <xs:restriction
                       base="xs:string">
                       <xs:enumeration
-                        value="mol" />
+                        value="mol"/>
                       <xs:enumeration
-                        value="mmol" />
+                        value="mmol"/>
                       <xs:enumeration
-                        value="µmol" />
+                        value="µmol"/>
                       <xs:enumeration
-                        value="nmol" />
+                        value="nmol"/>
                       <xs:enumeration
-                        value="pmol" />
+                        value="pmol"/>
                       <xs:enumeration
-                        value="fmol" />
+                        value="fmol"/>
                       <xs:enumeration
-                        value="#" />
+                        value="#"/>
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>
@@ -578,9 +578,9 @@
                     <xs:restriction
                       base="xs:string">
                       <xs:enumeration
-                        value="deterministic" />
+                        value="deterministic"/>
                       <xs:enumeration
-                        value="stochastic" />
+                        value="stochastic"/>
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>
@@ -607,21 +607,21 @@
                     <xs:element
                       name="Report"
                       type="cREPORT_INSTANTIATION"
-                      minOccurs="0" />
+                      minOccurs="0"/>
                     <xs:element
                       name="Problem">
                       <xs:complexType>
                         <xs:complexContent>
                           <xs:extension
-                            base="cPARAMETER_LIST" />
+                            base="cPARAMETER_LIST"/>
                         </xs:complexContent>
                       </xs:complexType>
                       <xs:unique
                         name="ProblemParameterName">
                         <xs:selector
-                          xpath="*" />
+                          xpath="*"/>
                         <xs:field
-                          xpath="@name" />
+                          xpath="@name"/>
                       </xs:unique>
                     </xs:element>
                     <xs:element
@@ -633,45 +633,45 @@
                             <xs:attribute
                               name="name"
                               type="cNAME"
-                              use="required" />
+                              use="required"/>
                             <xs:attribute
                               name="type"
                               type="xs:string"
-                              use="required" />
+                              use="required"/>
                           </xs:extension>
                         </xs:complexContent>
                       </xs:complexType>
                       <xs:unique
                         name="MethodParameterName">
                         <xs:selector
-                          xpath="Parameter" />
+                          xpath="Parameter"/>
                         <xs:field
-                          xpath="@name" />
+                          xpath="@name"/>
                       </xs:unique>
                     </xs:element>
                   </xs:sequence>
                   <xs:attribute
                     name="key"
                     type="cTASK_KEY"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="name"
                     type="cNAME"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="type"
                     type="cTASK_TYPE"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="scheduled"
                     type="xs:boolean"
                     use="optional"
-                    default="false" />
+                    default="false"/>
                   <xs:attribute
                     name="updateModel"
                     type="xs:boolean"
                     use="optional"
-                    default="false" />
+                    default="false"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -696,7 +696,7 @@
                     <xs:element
                       name="Comment"
                       type="cCOMMENT"
-                      minOccurs="0" />
+                      minOccurs="0"/>
                     <xs:choice>
                       <xs:element
                         name="Table">
@@ -706,53 +706,53 @@
                               name="Object"
                               type="cOBJECT"
                               minOccurs="0"
-                              maxOccurs="unbounded" />
+                              maxOccurs="unbounded"/>
                           </xs:sequence>
                           <xs:attribute
                             name="printTitle"
                             type="xs:boolean"
                             use="optional"
-                            default="true" />
+                            default="true"/>
                         </xs:complexType>
                       </xs:element>
                       <xs:sequence>
                         <xs:element
                           name="Header"
                           type="cREPORT_SECTION"
-                          minOccurs="0" />
+                          minOccurs="0"/>
                         <xs:element
                           name="Body"
                           type="cREPORT_SECTION"
-                          minOccurs="0" />
+                          minOccurs="0"/>
                         <xs:element
                           name="Footer"
                           type="cREPORT_SECTION"
-                          minOccurs="0" />
+                          minOccurs="0"/>
                       </xs:sequence>
                     </xs:choice>
                   </xs:sequence>
                   <xs:attribute
                     name="key"
                     type="cREPORT_KEY"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="name"
                     type="cNAME"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="taskType"
                     type="cTASK_TYPE"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="separator"
                     type="xs:string"
                     use="optional"
-                    default=" &#x09;" />
+                    default=" 	"/>
                   <xs:attribute
                     name="precision"
                     type="xs:unsignedInt"
                     use="optional"
-                    default="6" />
+                    default="6"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -760,9 +760,9 @@
           <xs:unique
             name="ReportName">
             <xs:selector
-              xpath="Rpeort" />
+              xpath="Rpeort"/>
             <xs:field
-              xpath="@name" />
+              xpath="@name"/>
           </xs:unique>
         </xs:element>
         <xs:element
@@ -791,7 +791,7 @@
                               <xs:element
                                 name="PlotItem"
                                 type="cPLOTITEM"
-                                maxOccurs="unbounded" />
+                                maxOccurs="unbounded"/>
                             </xs:sequence>
                           </xs:complexType>
                         </xs:element>
@@ -799,7 +799,7 @@
                       <xs:attribute
                         name="name"
                         type="cNAME"
-                        use="required" />
+                        use="required"/>
                       <xs:attribute
                         name="type"
                         use="required">
@@ -807,9 +807,9 @@
                           <xs:restriction
                             base="xs:string">
                             <xs:enumeration
-                              value="Plot2D" />
+                              value="Plot2D"/>
                             <xs:enumeration
-                              value="SimWiz" />
+                              value="SimWiz"/>
                           </xs:restriction>
                         </xs:simpleType>
                       </xs:attribute>
@@ -817,7 +817,7 @@
                         name="active"
                         type="xs:boolean"
                         use="optional"
-                        default="true" />
+                        default="true"/>
                     </xs:extension>
                   </xs:complexContent>
                 </xs:complexType>
@@ -850,16 +850,16 @@
                         <xs:attribute
                           name="key"
                           type="cSLIDER_KEY"
-                          use="required" />
+                          use="required"/>
                         <xs:attribute
                           name="associatedEntityKey"
                           type="cKEYREF"
-                          use="required" />
+                          use="required"/>
                         <xs:attribute
                           name="objectCN"
                           type="xs:string"
                           use="required"
-                          id="copasi.GUI.ListOfSliders.Sliders.objectCN" />
+                          id="copasi.GUI.ListOfSliders.Sliders.objectCN"/>
                         <xs:attribute
                           name="objectType"
                           use="required"
@@ -868,13 +868,13 @@
                             <xs:restriction
                               base="xs:string">
                               <xs:enumeration
-                                value="float" />
+                                value="float"/>
                               <xs:enumeration
-                                value="unsignedFloat" />
+                                value="unsignedFloat"/>
                               <xs:enumeration
-                                value="integer" />
+                                value="integer"/>
                               <xs:enumeration
-                                value="unsignedInteger" />
+                                value="unsignedInteger"/>
                             </xs:restriction>
                           </xs:simpleType>
                         </xs:attribute>
@@ -882,27 +882,27 @@
                           name="objectValue"
                           type="xs:double"
                           use="required"
-                          id="copasi.GUI.ListOfSliders.Sliders.objectValue" />
+                          id="copasi.GUI.ListOfSliders.Sliders.objectValue"/>
                         <xs:attribute
                           name="minValue"
                           type="xs:double"
                           use="required"
-                          id="copasi.GUI.ListOfSliders.Sliders.minValue" />
+                          id="copasi.GUI.ListOfSliders.Sliders.minValue"/>
                         <xs:attribute
                           name="maxValue"
                           type="xs:double"
                           use="required"
-                          id="copasi.GUI.ListOfSliders.Sliders.maxValue" />
+                          id="copasi.GUI.ListOfSliders.Sliders.maxValue"/>
                         <xs:attribute
                           name="tickNumber"
                           type="xs:positiveInteger"
                           use="optional"
-                          default="1000" />
+                          default="1000"/>
                         <xs:attribute
                           name="tickFactor"
                           type="xs:positiveInteger"
                           use="optional"
-                          default="100" />
+                          default="100"/>
                         <xs:attribute
                           name="scaling"
                           use="optional"
@@ -911,9 +911,9 @@
                             <xs:restriction
                               base="xs:string">
                               <xs:enumeration
-                                value="linear" />
+                                value="linear"/>
                               <xs:enumeration
-                                value="logarithmic" />
+                                value="logarithmic"/>
                             </xs:restriction>
                           </xs:simpleType>
                         </xs:attribute>
@@ -924,19 +924,19 @@
                     name="updateRanges"
                     type="xs:boolean"
                     use="optional"
-                    default="true" />
+                    default="true"/>
                   <xs:attribute
                     name="autoExecuteTask"
                     type="xs:boolean"
                     use="optional"
-                    default="true" />
+                    default="true"/>
                 </xs:complexType>
                 <xs:unique
                   name="SliderObject">
                   <xs:selector
-                    xpath="Slider" />
+                    xpath="Slider"/>
                   <xs:field
-                    xpath="@objectCN" />
+                    xpath="@objectCN"/>
                 </xs:unique>
               </xs:element>
             </xs:sequence>
@@ -960,40 +960,40 @@
                   <xs:attribute
                     name="SBMLid"
                     type="cSBMLid"
-                    use="required" />
+                    use="required"/>
                   <xs:attribute
                     name="COPASIkey"
                     type="cKEYREF"
-                    use="required" />
+                    use="required"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
             <xs:attribute
               name="file"
               type="xs:string"
-              use="required" />
+              use="required"/>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
       <xs:attribute
         name="versionMajor"
         type="xs:integer"
-        use="required" />
+        use="required"/>
       <xs:attribute
         name="versionMinor"
         type="xs:integer"
-        use="required" />
+        use="required"/>
       <xs:attribute
         name="versionDevel"
         type="xs:integer"
-        use="required" />
+        use="required"/>
     </xs:complexType>
     <xs:unique
       name="ModelStateVariableReference">
       <xs:selector
-        xpath="Model|Model/*/*" />
+        xpath="Model|Model/*/*"/>
       <xs:field
-        xpath="@stateVariable" />
+        xpath="@stateVariable"/>
     </xs:unique>
   </xs:element>
   <xs:complexType
@@ -1002,7 +1002,7 @@
     <xs:sequence>
       <xs:any
         namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        processContents="skip" />
+        processContents="skip"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType
@@ -1012,7 +1012,7 @@
       <xs:any
         namespace="http://www.w3.org/1999/xhtml"
         processContents="skip"
-        maxOccurs="unbounded" />
+        maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType
@@ -1023,11 +1023,11 @@
         <xs:attribute
           name="key"
           type="cCOMPARTMENT_KEY"
-          use="required" />
+          use="required"/>
         <xs:attribute
           name="simulationType"
           type="sSIMULATION_TYPE_COMPARTMENT"
-          use="required" />
+          use="required"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
@@ -1037,15 +1037,15 @@
     <xs:attribute
       name="key"
       type="cCONSTANT_KEY"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="name"
       type="cNAME"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="value"
       type="xs:double"
-      use="required" />
+      use="required"/>
   </xs:complexType>
   <xs:complexType
     name="cREACTION_ELEMENT"
@@ -1054,12 +1054,12 @@
       name="metabolite"
       type="cMETABOLITE_KEYREF"
       use="required"
-      id="copasi.REACTION_ELEMENT.metabolite" />
+      id="copasi.REACTION_ELEMENT.metabolite"/>
     <xs:attribute
       name="stoichiometry"
       type="xs:double"
       use="required"
-      id="copasi.REACTION_ELEMENT.stoichiometry" />
+      id="copasi.REACTION_ELEMENT.stoichiometry"/>
   </xs:complexType>
   <xs:complexType
     name="cFUNCTION"
@@ -1068,10 +1068,10 @@
       <xs:element
         name="MiriamAnnotation"
         type="cMIRIAM"
-        minOccurs="0" />
+        minOccurs="0"/>
       <xs:element
         name="Expression"
-        type="sEXPRESSION" />
+        type="sEXPRESSION"/>
       <xs:element
         name="ListOfParameterDescriptions"
         id="copasi.FUNCTION.ListOfParameterDescriptions"
@@ -1083,22 +1083,22 @@
               name="ParameterDescription"
               type="cFUNCTION_PARAMETER"
               id="copasi.FUNCTION.ParameterDescription"
-              maxOccurs="unbounded" />
+              maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
         <xs:unique
           name="ParameterDescriptionName">
           <xs:selector
-            xpath="ParameterDescription" />
+            xpath="ParameterDescription"/>
           <xs:field
-            xpath="@name" />
+            xpath="@name"/>
         </xs:unique>
         <xs:unique
           name="ParameterDescriptionOrder">
           <xs:selector
-            xpath="ParameterDescription" />
+            xpath="ParameterDescription"/>
           <xs:field
-            xpath="@order" />
+            xpath="@order"/>
         </xs:unique>
       </xs:element>
     </xs:sequence>
@@ -1106,12 +1106,12 @@
       name="key"
       type="cFUNCTION_KEY"
       use="required"
-      id="copasi.FUNCTION.key" />
+      id="copasi.FUNCTION.key"/>
     <xs:attribute
       name="name"
       type="cNAME"
       use="required"
-      id="copasi.FUNCTION.name" />
+      id="copasi.FUNCTION.name"/>
     <xs:attribute
       name="type"
       use="required"
@@ -1120,15 +1120,15 @@
         <xs:restriction
           base="xs:string">
           <xs:enumeration
-            value="Function" />
+            value="Function"/>
           <xs:enumeration
-            value="Expression" />
+            value="Expression"/>
           <xs:enumeration
-            value="MassAction" />
+            value="MassAction"/>
           <xs:enumeration
-            value="PreDefined" />
+            value="PreDefined"/>
           <xs:enumeration
-            value="UserDefined" />
+            value="UserDefined"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -1140,11 +1140,11 @@
         <xs:restriction
           base="xs:string">
           <xs:enumeration
-            value="true" />
+            value="true"/>
           <xs:enumeration
-            value="false" />
+            value="false"/>
           <xs:enumeration
-            value="unspecified" />
+            value="unspecified"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -1152,7 +1152,7 @@
       name="sbmlid"
       type="xs:string"
       use="optional"
-      id="copasi.FUNCTION.sbmlid" />
+      id="copasi.FUNCTION.sbmlid"/>
   </xs:complexType>
   <xs:complexType
     name="cFUNCTION_PARAMETER"
@@ -1161,17 +1161,17 @@
       name="key"
       type="cFUNCTION_PARAMETER_KEY"
       use="required"
-      id="copasi.FUNCTION_PARAMETER.key" />
+      id="copasi.FUNCTION_PARAMETER.key"/>
     <xs:attribute
       name="name"
       type="cNAME"
       use="required"
-      id="copasi.FUNCTION_PARAMETER.name" />
+      id="copasi.FUNCTION_PARAMETER.name"/>
     <xs:attribute
       name="order"
       type="xs:nonNegativeInteger"
       use="required"
-      id="copasi.FUNCTION_PARAMETER.order" />
+      id="copasi.FUNCTION_PARAMETER.order"/>
     <xs:attribute
       name="role"
       use="optional"
@@ -1181,19 +1181,19 @@
         <xs:restriction
           base="xs:string">
           <xs:enumeration
-            value="substrate" />
+            value="substrate"/>
           <xs:enumeration
-            value="product" />
+            value="product"/>
           <xs:enumeration
-            value="modifier" />
+            value="modifier"/>
           <xs:enumeration
-            value="constant" />
+            value="constant"/>
           <xs:enumeration
-            value="volume" />
+            value="volume"/>
           <xs:enumeration
-            value="time" />
+            value="time"/>
           <xs:enumeration
-            value="variable" />
+            value="variable"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -1202,7 +1202,7 @@
       type="xs:nonNegativeInteger"
       use="optional"
       default="1"
-      id="copasi.FUNCTION_PARAMETER.minOccurs" />
+      id="copasi.FUNCTION_PARAMETER.minOccurs"/>
     <xs:attribute
       name="maxOccurs"
       use="optional"
@@ -1214,12 +1214,12 @@
             <xs:restriction
               base="xs:string">
               <xs:enumeration
-                value="unbounded" />
+                value="unbounded"/>
             </xs:restriction>
           </xs:simpleType>
           <xs:simpleType>
             <xs:restriction
-              base="xs:nonNegativeInteger" />
+              base="xs:nonNegativeInteger"/>
           </xs:simpleType>
         </xs:union>
       </xs:simpleType>
@@ -1240,15 +1240,15 @@
               name="CallParameter"
               type="cFUNCTION_CALL_PARAMETER"
               id="copasi.FUNCTION_CALL.ListOfCallParameters.CallParameter"
-              maxOccurs="unbounded" />
+              maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
         <xs:unique
           name="CallParameterName">
           <xs:selector
-            xpath="CallParameter" />
+            xpath="CallParameter"/>
           <xs:field
-            xpath="@functionParameter" />
+            xpath="@functionParameter"/>
         </xs:unique>
       </xs:element>
     </xs:sequence>
@@ -1256,7 +1256,7 @@
       name="function"
       type="cFUNCTION_KEYREF"
       use="required"
-      id="copasi.FUNCTION_CALL.function" />
+      id="copasi.FUNCTION_CALL.function"/>
   </xs:complexType>
   <xs:complexType
     name="cFUNCTION_CALL_PARAMETER"
@@ -1271,7 +1271,7 @@
             name="reference"
             type="cKEYREF"
             use="required"
-            id="copasi.FUNCTION_CALL_PARAMETER.SourceParameter.reference" />
+            id="copasi.FUNCTION_CALL_PARAMETER.SourceParameter.reference"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -1279,7 +1279,7 @@
       name="functionParameter"
       type="cFUNCTION_PARAMETER_KEYREF"
       use="required"
-      id="copasi.FUNCTION_CALL_PARAMETER.functionParameter" />
+      id="copasi.FUNCTION_CALL_PARAMETER.functionParameter"/>
   </xs:complexType>
   <xs:complexType
     name="cMETABOLITE">
@@ -1289,11 +1289,11 @@
         <xs:attribute
           name="key"
           type="cMETABOLITE_KEY"
-          use="required" />
+          use="required"/>
         <xs:attribute
           name="simulationType"
           type="sSIMULATION_TYPE_METABOLITE"
-          use="required" />
+          use="required"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
@@ -1305,11 +1305,11 @@
         <xs:attribute
           name="key"
           type="cMODEL_KEY"
-          use="required" />
+          use="required"/>
         <xs:attribute
           name="simulationType"
           type="sSIMULATION_TYPE_MODEL"
-          default="time" />
+          default="time"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
@@ -1321,11 +1321,11 @@
         <xs:attribute
           name="key"
           type="cMODELVALUE_KEY"
-          use="required" />
+          use="required"/>
         <xs:attribute
           name="simulationType"
           type="sSIMULATION_TYPE_MODELVALUE"
-          use="required" />
+          use="required"/>
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
@@ -1335,27 +1335,27 @@
     <xs:attribute
       name="key"
       type="cKEY"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="name"
       type="cNAME"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="simulationType"
       type="sSIMULATION_TYPE"
-      use="optional" />
+      use="optional"/>
   </xs:complexType>
   <xs:complexType
     name="cOBJECT">
     <xs:attribute
       name="cn"
       type="xs:string"
-      use="required" />
+      use="required"/>
   </xs:complexType>
   <xs:simpleType
     name="cSTATE">
     <xs:list
-      itemType="xs:double" />
+      itemType="xs:double"/>
   </xs:simpleType>
   <xs:complexType
     name="cSTATE_TYPE">
@@ -1366,7 +1366,7 @@
           name="type"
           type="xs:string"
           use="optional"
-          default="initialState" />
+          default="initialState"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -1375,7 +1375,7 @@
     <xs:attribute
       name="name"
       type="cNAME"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="type"
       use="required">
@@ -1383,32 +1383,32 @@
         <xs:restriction
           base="xs:string">
           <xs:enumeration
-            value="float" />
+            value="float"/>
           <xs:enumeration
-            value="unsignedFloat" />
+            value="unsignedFloat"/>
           <xs:enumeration
-            value="integer" />
+            value="integer"/>
           <xs:enumeration
-            value="unsignedInteger" />
+            value="unsignedInteger"/>
           <xs:enumeration
-            value="bool" />
+            value="bool"/>
           <xs:enumeration
-            value="group" />
+            value="group"/>
           <xs:enumeration
-            value="string" />
+            value="string"/>
           <xs:enumeration
-            value="cn" />
+            value="cn"/>
           <xs:enumeration
-            value="key" />
+            value="key"/>
           <xs:enumeration
-            value="file" />
+            value="file"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
     <xs:attribute
       name="value"
       type="xs:string"
-      use="required" />
+      use="required"/>
   </xs:complexType>
   <xs:complexType
     name="cPARAMETER_LIST">
@@ -1424,14 +1424,14 @@
               <xs:attribute
                 name="name"
                 type="cNAME"
-                use="required" />
+                use="required"/>
             </xs:extension>
           </xs:complexContent>
         </xs:complexType>
       </xs:element>
       <xs:element
         name="Parameter"
-        type="cPARAMETER" />
+        type="cPARAMETER"/>
     </xs:choice>
   </xs:complexType>
   <xs:complexType
@@ -1440,13 +1440,13 @@
       maxOccurs="unbounded">
       <xs:element
         name="Object"
-        type="cOBJECT" />
+        type="cOBJECT"/>
       <xs:element
         name="html"
-        type="cCOMMENT" />
+        type="cCOMMENT"/>
       <xs:element
         name="Report"
-        type="cREPORT_KEYREF" />
+        type="cREPORT_KEYREF"/>
     </xs:choice>
   </xs:complexType>
   <xs:complexType
@@ -1454,16 +1454,16 @@
     <xs:attribute
       name="reference"
       type="cREPORT_KEYREF"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="target"
       type="xs:anyURI"
-      use="required" />
+      use="required"/>
     <xs:attribute
       name="append"
       type="xs:boolean"
       use="optional"
-      default="false" />
+      default="false"/>
   </xs:complexType>
   <xs:complexType
     name="cPLOTITEM">
@@ -1485,11 +1485,11 @@
                         <xs:attribute
                           name="min"
                           type="xs:double"
-                          use="optional" />
+                          use="optional"/>
                         <xs:attribute
                           name="max"
                           type="xs:double"
-                          use="optional" />
+                          use="optional"/>
                       </xs:extension>
                     </xs:complexContent>
                   </xs:complexType>
@@ -1501,7 +1501,7 @@
         <xs:attribute
           name="name"
           type="cNAME"
-          use="required" />
+          use="required"/>
         <xs:attribute
           name="type"
           use="required">
@@ -1509,11 +1509,11 @@
             <xs:restriction
               base="xs:string">
               <xs:enumeration
-                value="Unset" />
+                value="Unset"/>
               <xs:enumeration
-                value="Curve2D" />
+                value="Curve2D"/>
               <xs:enumeration
-                value="Histogram1DItem" />
+                value="Histogram1DItem"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
@@ -1526,7 +1526,7 @@
     <xs:restriction
       base="xs:ID">
       <xs:pattern
-        value="[_a-zA-Z]+_\d+" />
+        value="[_a-zA-Z]+_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1535,7 +1535,7 @@
     <xs:restriction
       base="xs:ID">
       <xs:pattern
-        value="[_a-zA-Z][_a-zA-Z0-9]*" />
+        value="[_a-zA-Z][_a-zA-Z0-9]*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1544,7 +1544,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Model_\d+" />
+        value="Model_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1553,7 +1553,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Compartment_\d+" />
+        value="Compartment_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1562,7 +1562,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Metabolite_\d+" />
+        value="Metabolite_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1571,7 +1571,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="ModelValue_\d+" />
+        value="ModelValue_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1580,7 +1580,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Reaction_\d+" />
+        value="Reaction_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1589,7 +1589,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Event_\d+" />
+        value="Event_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1599,7 +1599,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Function_\d+" />
+        value="Function_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1608,7 +1608,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="FunctionParameter_\d+" />
+        value="FunctionParameter_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1616,7 +1616,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Parameter_\d+" />
+        value="Parameter_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1624,7 +1624,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="StateVariable_\d+" />
+        value="StateVariable_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1632,7 +1632,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Report_\d+" />
+        value="Report_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1640,7 +1640,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Task_\d+" />
+        value="Task_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1648,7 +1648,7 @@
     <xs:restriction
       base="cKEY">
       <xs:pattern
-        value="Slider_\d+" />
+        value="Slider_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1657,7 +1657,7 @@
     <xs:restriction
       base="xs:IDREF">
       <xs:pattern
-        value="[_a-zA-Z]+_\d+" />
+        value="[_a-zA-Z]+_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1666,7 +1666,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Model_\d+" />
+        value="Model_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1675,7 +1675,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Compartment_\d+" />
+        value="Compartment_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1684,7 +1684,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Metabolite_\d+" />
+        value="Metabolite_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1693,7 +1693,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="(Metabolite|Compartment|ModelValue)_\d+" />
+        value="(Metabolite|Compartment|ModelValue)_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1702,7 +1702,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Reaction_\d+" />
+        value="Reaction_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1711,7 +1711,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Function_\d+" />
+        value="Function_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1720,7 +1720,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="FunctionParameter_\d+" />
+        value="FunctionParameter_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1728,7 +1728,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Parameter_\d+" />
+        value="Parameter_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1736,7 +1736,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="StateVariable_\d+" />
+        value="StateVariable_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1744,7 +1744,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Report_\d+" />
+        value="Report_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1752,7 +1752,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Task_\d+" />
+        value="Task_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1760,7 +1760,7 @@
     <xs:restriction
       base="cKEYREF">
       <xs:pattern
-        value="Slider_\d+" />
+        value="Slider_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1768,27 +1768,27 @@
     <xs:restriction
       base="xs:string">
       <xs:enumeration
-        value="steadyState" />
+        value="steadyState"/>
       <xs:enumeration
-        value="timeCourse" />
+        value="timeCourse"/>
       <xs:enumeration
-        value="scan" />
+        value="scan"/>
       <xs:enumeration
-        value="fluxMode" />
+        value="fluxMode"/>
       <xs:enumeration
-        value="optimization" />
+        value="optimization"/>
       <xs:enumeration
-        value="parameterFitting" />
+        value="parameterFitting"/>
       <xs:enumeration
-        value="metabolicControlAnalysis" />
+        value="metabolicControlAnalysis"/>
       <xs:enumeration
-        value="timeScaleSeparation" />
+        value="timeScaleSeparation"/>
       <xs:enumeration
-        value="lyapunovExponents" />
+        value="lyapunovExponents"/>
       <xs:enumeration
-        value="sensitivities" />
+        value="sensitivities"/>
       <xs:enumeration
-        value="moieties" />
+        value="moieties"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1797,7 +1797,7 @@
     <xs:restriction
       base="xs:string">
       <xs:pattern
-        value="[\S ]+" />
+        value="[\S ]+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1806,7 +1806,7 @@
     <xs:restriction
       base="xs:string">
       <xs:whiteSpace
-        value="preserve" />
+        value="preserve"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1814,15 +1814,15 @@
     <xs:restriction
       base="xs:string">
       <xs:enumeration
-        value="time" />
+        value="time"/>
       <xs:enumeration
-        value="reactions" />
+        value="reactions"/>
       <xs:enumeration
-        value="ode" />
+        value="ode"/>
       <xs:enumeration
-        value="assignment" />
+        value="assignment"/>
       <xs:enumeration
-        value="fixed" />
+        value="fixed"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1830,7 +1830,7 @@
     <xs:restriction
       base="sSIMULATION_TYPE">
       <xs:pattern
-        value="ode|assignment|fixed" />
+        value="ode|assignment|fixed"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1838,7 +1838,7 @@
     <xs:restriction
       base="sSIMULATION_TYPE">
       <xs:pattern
-        value="reactions|ode|assignment|fixed" />
+        value="reactions|ode|assignment|fixed"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1846,7 +1846,7 @@
     <xs:restriction
       base="sSIMULATION_TYPE">
       <xs:pattern
-        value="time" />
+        value="time"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
@@ -1854,7 +1854,7 @@
     <xs:restriction
       base="sSIMULATION_TYPE">
       <xs:pattern
-        value="ode|assignment|fixed" />
+        value="ode|assignment|fixed"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

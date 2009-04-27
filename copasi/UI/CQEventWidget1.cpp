@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/27 14:13:01 $
+//   $Author: shoops $
+//   $Date: 2009/04/27 14:43:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,15 +148,11 @@ void CQEventWidget1::init()
   slotApplyDelay(true);
 
   // SIGNAL-SLOT connections
-
-  connect(mpLineEditName, SIGNAL(edited()), this, SLOT(slotNameChanged()));
-
   connect(mpExpressionTrigger->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionTriggerValid(bool)));
   connect(mpExpressionDelay->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionDelayValid(bool)));
   connect(mpExpressionEA->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionEAValid(bool)));
   connect(mpBtnDelayNone, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
-
-  connect(mpLBTarget, SIGNAL(activated(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
+  connect(mpLBTarget, SIGNAL(currentRowChanged(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
 
   mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mExpressionDelayValid = true;
@@ -228,9 +224,9 @@ void CQEventWidget1::slotAddTarget()
   if (pME == NULL) return;
 
   mAssignments.push_back(CEventAssignment(pME->getKey()));
-  mpLBTarget->insertItem(FROM_UTF8(pME->getObjectDisplayName()));
+  mpLBTarget->addItem(FROM_UTF8(pME->getObjectDisplayName()));
 
-  mpLBTarget->setCurrentItem(mAssignments.size() - 1);
+  mpLBTarget->setCurrentRow(mAssignments.size() - 1);
 }
 
 /*! Slot to remove the active target from the appearance
@@ -241,11 +237,11 @@ void CQEventWidget1::slotDeleteTarget()
   if (mCurrentTarget > mAssignments.size() - 1) return;
 
   mAssignments.erase(mAssignments.begin() + mCurrentTarget);
-  mpLBTarget->removeItem(mCurrentTarget);
+  delete mpLBTarget->takeItem(mCurrentTarget);
 
   mCurrentTarget = C_INVALID_INDEX;
 
-  mpLBTarget->setCurrentItem(std::max<unsigned C_INT32>(mCurrentTarget, mAssignments.size() - 1));
+  mpLBTarget->setCurrentRow(std::max<unsigned C_INT32>(mCurrentTarget, mAssignments.size() - 1));
 }
 
 /*! Load all values with respect to a chosen saved event */
@@ -269,14 +265,14 @@ bool CQEventWidget1::loadFromEvent()
       mpBtnDelayNone->setChecked(true);
       slotApplyDelay(true);
     }
-  else if (mpEvent->getDelayCalculation())
+  else if (mpEvent->getDelayAssignment())
     {
-      mpBtnDelayCalculation->setChecked(true);
+      mpBtnDelayAssignment->setChecked(true);
       slotApplyDelay(false);
     }
   else
     {
-      mpBtnDelayAssignment->setChecked(true);
+      mpBtnDelayCalculation->setChecked(true);
       slotApplyDelay(false);
     }
 
@@ -325,7 +321,7 @@ bool CQEventWidget1::loadFromEvent()
 
   // fill the list box and the expression widget with correct assignments
   mpLBTarget->clear();
-  mpLBTarget->insertStringList(Targets);
+  mpLBTarget->insertItems(0, Targets);
 
   int NewTarget = mCurrentTarget;
 
@@ -335,7 +331,7 @@ bool CQEventWidget1::loadFromEvent()
       NewTarget = 0;
     }
 
-  mpLBTarget->setCurrentItem(NewTarget);
+  mpLBTarget->setCurrentRow(NewTarget);
 
   mChanged = false;
 
@@ -382,9 +378,9 @@ void CQEventWidget1::saveToEvent()
           mChanged = true;
         }
 
-      if (mpEvent->getDelayCalculation() != mpBtnDelayCalculation->isChecked())
+      if (mpEvent->getDelayAssignment() != mpBtnDelayAssignment->isChecked())
         {
-          mpEvent->setDelayCalculation(mpBtnDelayCalculation->isChecked());
+          mpEvent->setDelayAssignment(mpBtnDelayAssignment->isChecked());
           mChanged = true;
         }
     }
@@ -423,7 +419,7 @@ void CQEventWidget1::saveToEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
   C_INT32 DeleteCount = mAssignments.size() - OldAssignments.size();
-  std::vector<std::string > ToBeDeleted;
+  std::vector< std::string > ToBeDeleted;
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
     {
@@ -443,8 +439,8 @@ void CQEventWidget1::saveToEvent()
     }
 
   // Delete the assignments marked to be deleted.
-  std::vector<std::string >::const_iterator itDelete = ToBeDeleted.begin();
-  std::vector<std::string >::const_iterator endDelete = ToBeDeleted.end();
+  std::vector< std::string >::const_iterator itDelete = ToBeDeleted.begin();
+  std::vector< std::string >::const_iterator endDelete = ToBeDeleted.end();
 
   for (; itDelete != endDelete; ++itDelete)
     {
@@ -516,11 +512,11 @@ bool CQEventWidget1::leave()
 /// Slot to select an object from the existing ones -only- for target.
 void CQEventWidget1::slotSelectObject()
 {
+  if (mCurrentTarget == C_INVALID_INDEX)
+    return slotAddTarget();
+
   CCopasiSimpleSelectionTree::ObjectClasses Classes =
     CCopasiSimpleSelectionTree::Variables;
-
-  QString oldText = mpLBTarget->currentText();
-  QString newText = mpLBTarget->currentText();
 
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
@@ -537,7 +533,7 @@ void CQEventWidget1::slotSelectObject()
   CEventAssignment NewTarget(pME->getKey());
   NewTarget.setExpression(mAssignments[mCurrentTarget].getExpression());
 
-  mpLBTarget->insertItem(FROM_UTF8(pME->getObjectDisplayName()), mCurrentTarget);
+  mpLBTarget->insertItem(mCurrentTarget, FROM_UTF8(pME->getObjectDisplayName()));
   mAssignments.insert(mAssignments.begin() + mCurrentTarget, NewTarget);
 
   mCurrentTarget++;

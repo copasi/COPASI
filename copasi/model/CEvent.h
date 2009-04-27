@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/27 00:02:36 $
+//   $Date: 2009/04/27 14:43:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,13 +179,13 @@ public:
    * Set whether the calculation or the assignment shall be delayed
    * @param
    */
-  void setDelayCalculation(const bool & delayCalculation);
+  void setDelayAssignment(const bool & delayCalculation);
 
   /**
    * Retrieve whether to delay the calculation ot the assignment.
    * @return const bool & delayCalculation
    */
-  const bool & getDelayCalculation() const;
+  const bool & getDelayAssignment() const;
 
   /**
    * Set the expression of trigger from a string. The return value indicates if
@@ -291,7 +291,7 @@ private:
    * A Boolean flag indicating whether the calculation or the assignment should be delayed
    * in the case that a delay is present.
    */
-  bool mDelayCalculation;
+  bool mDelayAssignment;
 
   /**
    * Pointer to the Trigger Expression of the event
