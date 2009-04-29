@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:14:47 $
+//   $Date: 2009/04/29 21:24:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,18 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     mRegisteredObjectCN(data.substr(1, data.length() - 2))
 {mPrecedence = PRECEDENCE_NUMBER;}
 
+CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
+    CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), ""),
+    mpValue(pValue),
+    mRegisteredObjectCN("")
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+
+  std::ostringstream Pointer;
+  Pointer << pValue;
+  mData = Pointer.str();
+}
+
 CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
     CEvaluationNode(src),
     mpValue(src.mpValue),
@@ -56,28 +68,41 @@ CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
 bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
-  const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
-
-  if (!pExpression) return false;
-
-  const CCopasiObject * pObject =
-    pExpression->getNodeObject(mRegisteredObjectCN);
-
-  if (pObject)
-    mpValue = (C_FLOAT64 *) pObject->getValuePointer();
-  else
-    mpValue = NULL;
-
-  if (mpValue == NULL)
+  switch ((int) subType(mType))
     {
-      mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      mpValue = &mValue;
-      return false;
+      case CN:
+      {
+        const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
+
+        if (!pExpression) return false;
+
+        const CCopasiObject * pObject =
+          pExpression->getNodeObject(mRegisteredObjectCN);
+
+        if (pObject)
+          mpValue = (C_FLOAT64 *) pObject->getValuePointer();
+        else
+          mpValue = NULL;
+
+        if (mpValue == NULL)
+          {
+            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mpValue = &mValue;
+            return false;
+          }
+
+        if (!pObject->isValueDbl()) return false;
+
+        mData = "<" + mRegisteredObjectCN + ">";
+      }
+      break;
+
+      case POINTER:
+        break;
+
+      case INVALID:
+        break;
     }
-
-  if (!pObject->isValueDbl()) return false;
-
-  mData = "<" + mRegisteredObjectCN + ">";
 
   return (getChild() == NULL); // We must not have any children.
 }
@@ -88,7 +113,9 @@ CEvaluationNode::Data CEvaluationNodeObject::getData() const
 bool CEvaluationNodeObject::setData(const Data & data)
 {
   mData = data;
-  mRegisteredObjectCN = data.substr(1, data.length() - 2);
+
+  if ((int) subType(mType) == (int) CN)
+    mRegisteredObjectCN = data.substr(1, data.length() - 2);
 
   return true;
 }
@@ -141,7 +168,7 @@ CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& nod
     {
       case AST_NAME_TIME:
       case AST_NAME:
-        pNode = new CEvaluationNodeObject(ANY, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
+        pNode = new CEvaluationNodeObject(CN, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
         break;
       default:
         break;

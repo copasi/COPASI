@@ -173,7 +173,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 
 \<([^\\\>]|\\.)*\>  %{
   BEGIN(sOPERATOR); 
-  mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY,
+  mpNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN,
                                      yytext);
   COMMON_ACTION;
   return TOKEN_NUMBER;

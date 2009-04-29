@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.228 $
+//   $Revision: 1.229 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/25 22:13:14 $
+//   $Date: 2009/04/29 21:24:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3852,7 +3852,7 @@ CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNod
 
       if (pos == replacementMap.end()) fatalError();
 
-      pResultNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pos->second + ">");
+      pResultNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pos->second + ">");
     }
   else
     {
@@ -4478,7 +4478,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
 
           if (multiplication == false)
             {
-              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
               CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
               pOperatorNode->addChild(pVolumeNode);
@@ -5870,7 +5870,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                       if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
                         {
                           // divide the expression by the volume
-                          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+                          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
                           CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
                           pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
                           pOperatorNode->addChild(pVolumeNode);
@@ -6601,7 +6601,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
           if (multiplication == false)
             {
-              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
               CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
               pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
               pOperatorNode->addChild(pVolumeNode);

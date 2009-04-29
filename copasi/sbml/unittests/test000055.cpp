@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000055.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/20 10:39:43 $
+//   $Author: shoops $
+//   $Date: 2009/04/29 21:24:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,9 +188,11 @@ void test000055::test_bug1004()
   // find model value that corresponds to parameter1
   CModelValue *pMV1 = NULL, *pMV2 = NULL, *pMV3 = NULL, *pMV4 = NULL, *pMV5 = NULL;
   unsigned int i, iMax = pModel->getModelValues().size();
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       CModelValue* pTmpMV = pModel->getModelValues()[i];
+
       if (pTmpMV->getSBMLId() == pParameter1->getId())
         {
           pMV1 = pTmpMV;
@@ -212,24 +214,25 @@ void test000055::test_bug1004()
           pMV5 = pTmpMV;
         }
     }
+
   CPPUNIT_ASSERT(pMV1 != NULL);
   CPPUNIT_ASSERT(pMV2 != NULL);
   CPPUNIT_ASSERT(pMV3 != NULL);
   CPPUNIT_ASSERT(pMV4 != NULL);
   CPPUNIT_ASSERT(pMV5 != NULL);
-  CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV3->getCN() + ",Reference=Value>");
+  CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV3->getCN() + ",Reference=Value>");
   CExpression* pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV1->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV2->getCN() + ",Reference=Value>");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV2->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV3->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV5->getCN() + ",Reference=Value>");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV5->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV4->setExpressionPtr(pExpr);
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pMV4->getCN() + ",Reference=Value>");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pMV4->getCN() + ",Reference=Value>");
   pExpr = new CExpression;
   pExpr->setRoot(pObjectNode);
   pMV2->setExpressionPtr(pExpr);
@@ -406,4 +409,4 @@ const char* test000055::MODEL_STRING =
   "    </listOfRules>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;

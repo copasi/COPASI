@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/04/29 08:32:11 $
+//   $Author: shoops $
+//   $Date: 2009/04/29 21:24:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1204,7 +1204,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
 
               if (division == false)
                 {
-                  CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+                  CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
                   CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
                   pOperatorNode->addChild(pOrigNode->copyBranch());
                   pOperatorNode->addChild(pVolumeNode);
@@ -2991,7 +2991,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
                   if (division == false)
                     {
-                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getValueReference()->getCN() + ">");
+                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
                       CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
                       pOperatorNode->addChild(pOrigNode->copyBranch());
                       pOperatorNode->addChild(pVolumeNode);
@@ -3311,7 +3311,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
               cn = "<" + pObject->getCN() + ">";
             }
 
-          pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, cn));
+          pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, cn));
         }
 
       pResult = pFunctionCall;
@@ -4293,7 +4293,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
   std::vector<CEvaluationNode*> multiplicants;
   const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(arguments[0][0]);
   assert(pObject != NULL);
-  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Value>"));
+  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ",Reference=Value>"));
   std::vector<std::string>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
 
   while (it != endit)
@@ -4315,14 +4315,14 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 
           if (num == 1)
             {
-              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
             }
           else
             {
               std::ostringstream os;
               os << num;
               CEvaluationNodeOperator* pOperator = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
-              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
               pOperator->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str()));
               multiplicants.push_back(pOperator);
             }
@@ -4486,11 +4486,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialConcentration")
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
                         }
                     }
                   else
@@ -4536,7 +4536,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       // copyBranch should be save here since object nodes can't
                       // have children
                       pResult->addChild(pOrigNode->copyBranch());
-                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
+                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
                     }
                   else
                     {
@@ -4553,11 +4553,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialParticleNumber")
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
                         }
 
                       pResult = pTmpNode;

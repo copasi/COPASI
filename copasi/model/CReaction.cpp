@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.183 $
+//   $Revision: 1.184 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:17:54 $
+//   $Date: 2009/04/29 21:24:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1560,7 +1560,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
   return pObjectNode;
 }
 
