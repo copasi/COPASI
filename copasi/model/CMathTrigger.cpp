@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 00:32:11 $
+//   $Date: 2009/04/29 12:37:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,6 +74,7 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression)
   mTriggerExpression.setRoot(NULL);
   mActivateExpression.setRoot(NULL);
   mpRoot = NULL;
+  mEqualityModifier = true;
 
   bool success = compile(pRoot);
 
@@ -248,7 +249,7 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
 
       CRoot * pRootFinder = new CRoot();
       pRootFinder->mRoot.setRoot(pNode);
-      pRootFinder->mEquality = true;
+      pRootFinder->mEquality = effectiveEquality(true);
       mRootFinders.add(pRootFinder, true);
 
       pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
@@ -257,15 +258,33 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
 
       pRootFinder = new CRoot();
       pRootFinder->mRoot.setRoot(pNode);
-      pRootFinder->mEquality = true;
+      pRootFinder->mEquality = effectiveEquality(true);
       mRootFinders.add(pRootFinder, true);
 
       // The trigger expression is:
       // (RootFinder[0].mRoot >= 0 && RootFinder[0].mActive) ||
       // (RootFinder[1].mRoot >= 0 && RootFinder[1].mActive)
       pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+      mTriggerNodes.push(pNode);
 
-      // TODO Build the expression
+      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+      mTriggerNodes.top()->addChild(pNode);
+      mTriggerNodes.push(pNode);
+
+      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
+      mTriggerNodes.top()->addChild(pNode);
+      mTriggerNodes.push(pNode);
+
+      // TODO Add RootFinder[0].mRoot
+
+      pNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0");
+      mTriggerNodes.top()->addChild(pNode);
+
+      mTriggerNodes.pop();
+
+      // TODO Add RootFinder[0].mActive
+
+      mTriggerNodes.pop();
 
       if (!mTriggerNodes.empty())
         {
@@ -320,4 +339,12 @@ bool CMathTrigger::compileGT(const CEvaluationNode * pSource)
 bool CMathTrigger::compileNOT(const CEvaluationNode * pSource)
 {
   return false;
+}
+
+bool CMathTrigger::effectiveEquality(const bool & equality) const
+{
+  if (mEqualityModifier)
+    return equality;
+  else
+    return !equality;
 }

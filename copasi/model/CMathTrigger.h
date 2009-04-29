@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 00:32:11 $
+//   $Date: 2009/04/29 12:37:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,8 @@ private:
   bool compileGE(const CEvaluationNode * pSource);
   bool compileNOT(const CEvaluationNode * pSource);
 
+  bool effectiveEquality(const bool & equality) const;
+
   // Attributes
 private:
   /**
@@ -154,6 +156,11 @@ private:
    * The stack of root nodes
    */
   std::stack< CEvaluationNode * > mRootNodes;
+
+  /**
+   * Indicates how to modify the equality
+   */
+  bool mEqualityModifier;
 };
 
 #endif // COPASI_CMathTrigger
