@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000078.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:11 $
+//   $Date: 2009/04/29 11:26:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeNumber.h"
 #include "copasi/function/CEvaluationNodeVariable.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CEvaluationTree.h"
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/function/CKinFunction.h"
 #include "copasi/function/CEvaluationTree.h"
@@ -52,6 +54,7 @@ void test000078::tearDown()
 void test000078::test_l2v4_import_unordered_functions()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+
   try
     {
       CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
@@ -61,6 +64,7 @@ void test000078::test_l2v4_import_unordered_functions()
       // there should not be any exceptions
       CPPUNIT_ASSERT(false);
     }
+
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::Mol);
@@ -879,4 +883,4 @@ const char* test000078::MODEL_STRING1 =
   "  </listOfReactions>\n"
   "  </model>\n"
   "</sbml>\n"
-;
+  ;

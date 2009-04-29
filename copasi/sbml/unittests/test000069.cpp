@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000069.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2009/04/29 11:26:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@
 #include "copasi/model/CReaction.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeVariable.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CEvaluationTree.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
@@ -267,11 +269,13 @@ void test000069::test_bug1069()
   std::map<std::string, const Rule*> ruleMap;
   unsigned int i, iMax = pSBMLModel->getListOfRules()->size();
   const Rule* pRule = NULL;
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       pRule = pSBMLModel->getRule(i);
       ruleMap.insert(std::pair<std::string, const Rule*>(pRule->getVariable(), pRule));
     }
+
   // check the rules
   std::map<std::string, const Rule*>::const_iterator pos = ruleMap.find("parameter_1");
   CPPUNIT_ASSERT(pos != ruleMap.end());
@@ -737,4 +741,4 @@ const char* test000069::MODEL_STRING1 =
   "    </InitialState>\n"
   "  </Model>\n"
   "</COPASI>\n"
-;
+  ;

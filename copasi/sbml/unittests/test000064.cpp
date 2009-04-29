@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/03 09:50:33 $
+//   $Date: 2009/04/29 11:26:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -490,11 +490,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -639,11 +639,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -772,11 +772,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -905,11 +905,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -1442,11 +1442,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -1579,11 +1579,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -1732,11 +1732,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -1885,11 +1885,11 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   // check that there is no delay
   const CExpression* pExpression = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpression == NULL);
-  CPPUNIT_ASSERT(pEvent->getNumAssignments() == 1);
+  CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
   // check the event assignment
-  std::string key = pEvent->getAssignmentObjectKey(0);
+  std::string key = pEvent->getAssignments()[0]->getTargetKey();
   CPPUNIT_ASSERT(key == pA->getKey());
-  pExpression = pEvent->getAssignmentExpressionPtr(0);
+  pExpression = pEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
   pNode = pExpression->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
@@ -1982,6 +1982,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -1994,6 +1995,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2099,6 +2101,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2111,6 +2114,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2138,6 +2142,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -2149,6 +2154,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
       pParameter1 = pModel->getParameter(1);
       CPPUNIT_ASSERT(pParameter1 != NULL);
     }
+
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
@@ -2161,6 +2167,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
   CPPUNIT_ASSERT(pRule1 != NULL);
+
   if (pRule1->getVariable() == pSpecies1->getId())
     {
       pRule2 = pRule1;
@@ -2170,6 +2177,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
     {
       pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
     }
+
   // check the rule for the compartment
   const ASTNode* pMath = pRule1->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
@@ -2258,6 +2266,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2270,6 +2279,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2375,6 +2385,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2387,6 +2398,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2414,6 +2426,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -2425,6 +2438,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
       pParameter1 = pModel->getParameter(1);
       CPPUNIT_ASSERT(pParameter1 != NULL);
     }
+
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
@@ -2437,6 +2451,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
   CPPUNIT_ASSERT(pRule1 != NULL);
+
   if (pRule1->getVariable() == pSpecies1->getId())
     {
       pRule2 = pRule1;
@@ -2446,6 +2461,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
     {
       pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
     }
+
   // check the rule for the compartment
   const ASTNode* pMath = pRule1->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
@@ -2533,6 +2549,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2545,6 +2562,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2656,6 +2674,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2668,6 +2687,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2695,6 +2715,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -2706,6 +2727,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
       pParameter1 = pModel->getParameter(1);
       CPPUNIT_ASSERT(pParameter1 != NULL);
     }
+
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
@@ -2718,6 +2740,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
   CPPUNIT_ASSERT(pRule1 != NULL);
+
   if (pRule1->getVariable() == pSpecies1->getId())
     {
       pRule2 = pRule1;
@@ -2727,6 +2750,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
     {
       pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
     }
+
   // check the rule for the compartment
   const ASTNode* pMath = pRule1->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
@@ -2809,6 +2833,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2821,6 +2846,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2932,6 +2958,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -2944,6 +2971,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -2971,6 +2999,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -2982,6 +3011,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
       pParameter1 = pModel->getParameter(1);
       CPPUNIT_ASSERT(pParameter1 != NULL);
     }
+
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
   CPPUNIT_ASSERT(pModel->getNumSpecies() == 2);
@@ -2994,6 +3024,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   AssignmentRule* pRule1 = dynamic_cast<AssignmentRule*>(pModel->getRule(0));
   AssignmentRule* pRule2 = NULL;
   CPPUNIT_ASSERT(pRule1 != NULL);
+
   if (pRule1->getVariable() == pSpecies1->getId())
     {
       pRule2 = pRule1;
@@ -3003,6 +3034,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
     {
       pRule2 = dynamic_cast<AssignmentRule*>(pModel->getRule(1));
     }
+
   // check the rule for the compartment
   const ASTNode* pMath = pRule1->getMath();
   CPPUNIT_ASSERT(pMath != NULL);
@@ -3085,6 +3117,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -3097,6 +3130,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -3248,6 +3282,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -3260,6 +3295,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -3287,6 +3323,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -3296,6 +3333,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       pParameter2 = pParameter1;
       pParameter1 = pModel->getParameter(1);
     }
+
   CPPUNIT_ASSERT(pParameter2 != NULL);
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
@@ -3443,6 +3481,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -3455,6 +3494,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -3605,6 +3645,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -3617,6 +3658,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -3644,6 +3686,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -3653,6 +3696,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       pParameter2 = pParameter1;
       pParameter1 = pModel->getParameter(1);
     }
+
   CPPUNIT_ASSERT(pParameter2 != NULL);
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
@@ -3800,6 +3844,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -3812,6 +3857,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -3970,6 +4016,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -3982,6 +4029,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -4009,6 +4057,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -4018,6 +4067,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       pParameter2 = pParameter1;
       pParameter1 = pModel->getParameter(1);
     }
+
   CPPUNIT_ASSERT(pParameter2 != NULL);
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");
@@ -4157,6 +4207,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -4169,6 +4220,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -4327,6 +4379,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the units
   UnitDefinition* pUDef = pModel->getUnitDefinition("time");
   Unit* pUnit = NULL;
+
   // since second is the default time unit, it does not have to be exported and
   // might be NULL
   if (pUDef != NULL)
@@ -4339,6 +4392,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       CPPUNIT_ASSERT(pUnit->getExponent() == 1);
       CPPUNIT_ASSERT(fabs((pUnit->getMultiplier() - 1.0) / 1.0) < 1e-6);
     }
+
   pUDef = pModel->getUnitDefinition("substance");
   CPPUNIT_ASSERT(pUDef != NULL);
   CPPUNIT_ASSERT(pUDef->getNumUnits() == 1);
@@ -4366,6 +4420,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   Parameter* pParameter1 = pModel->getParameter(0);
   CPPUNIT_ASSERT(pParameter1 != NULL);
   Parameter* pParameter2 = NULL;
+
   if (pParameter1->getName() == "K")
     {
       pParameter2 = pModel->getParameter(1);
@@ -4375,6 +4430,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
       pParameter2 = pParameter1;
       pParameter1 = pModel->getParameter(1);
     }
+
   CPPUNIT_ASSERT(pParameter2 != NULL);
   CPPUNIT_ASSERT(pParameter1->getName() == "K");
   CPPUNIT_ASSERT(pParameter2->getName() == "P");

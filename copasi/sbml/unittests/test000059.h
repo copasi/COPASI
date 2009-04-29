@@ -1,10 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.h,v $
-//   $Revision: 1.5 $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Author: gauges $
+//   $Date: 2009/04/29 11:26:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,6 +81,7 @@ protected:
   static const char* MODEL_STRING19;
   static const char* MODEL_STRING20;
   static const char* MODEL_STRING21;
+  static const char* MODEL_STRING22;
   static CCopasiDataModel* pCOPASIDATAMODEL;
 
 public:

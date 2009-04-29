@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/03/03 09:50:33 $
+//   $Date: 2009/04/29 11:26:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,8 @@ void test000075::test_import_time_dependent_function_definition()
   const CMetab* pCSpecies1 = NULL;
   const CMetab* pCSpecies2 = NULL;
   unsigned int i, iMax = pCModel->getMetabolites().size();
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (pCModel->getMetabolites()[i]->getObjectName() == std::string("species_1"))
         {
@@ -101,6 +102,7 @@ void test000075::test_import_time_dependent_function_definition()
           pCSpecies2 = pCModel->getMetabolites()[i];
         }
     }
+
   CPPUNIT_ASSERT(pCSpecies1 != NULL);
   CPPUNIT_ASSERT(pCSpecies1->getStatus() == CModelEntity::ASSIGNMENT);
   const CExpression* pCExpression = pCSpecies1->getExpressionPtr();
@@ -163,7 +165,8 @@ void test000075::test_import_time_dependent_function_definition()
   const CModelValue* pCModelValue4 = NULL;
   const CModelValue* pCModelValue5 = NULL;
   iMax = pCModel->getModelValues().size();
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (pCModel->getModelValues()[i]->getObjectName() == std::string("parameter_1"))
         {
@@ -182,6 +185,7 @@ void test000075::test_import_time_dependent_function_definition()
           pCModelValue5 = pCModel->getModelValues()[i];
         }
     }
+
   CPPUNIT_ASSERT(pCModelValue1 != NULL);
   CPPUNIT_ASSERT(pCModelValue1->getStatus() == CModelEntity::ASSIGNMENT);
   pCExpression = pCModelValue1->getExpressionPtr();
@@ -367,8 +371,8 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(CEvaluationNode::type(pCChild2->getType()) == CEvaluationNode::NUMBER);
 
   // event assignment
-  CPPUNIT_ASSERT(pCEvent->getNumAssignments() == 1);
-  pCExpression = pCEvent->getAssignmentExpressionPtr(0);
+  CPPUNIT_ASSERT(pCEvent->getAssignments().size() == 1);
+  pCExpression = pCEvent->getAssignments()[0]->getExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
@@ -440,7 +444,8 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(iMax == 2);
   const FunctionDefinition* pFunctionDefinition1 = NULL;
   const FunctionDefinition* pFunctionDefinition2 = NULL;
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (pModel->getFunctionDefinition(i)->getId() == std::string("functionDefinition_1"))
         {
@@ -451,6 +456,7 @@ void test000075::test_import_time_dependent_function_definition()
           pFunctionDefinition2 = pModel->getFunctionDefinition(i);
         }
     }
+
   CPPUNIT_ASSERT(pFunctionDefinition1 != NULL);
   CPPUNIT_ASSERT(pFunctionDefinition1->getNumArguments() == 1);
   const ASTNode* pRoot = pFunctionDefinition1->getMath();
@@ -482,7 +488,8 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(iMax == 2);
   const InitialAssignment* pInitialAssignment1 = NULL;
   const InitialAssignment* pInitialAssignment2 = NULL;
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (pModel->getInitialAssignment(i)->getSymbol() == std::string("parameter_4"))
         {
@@ -493,6 +500,7 @@ void test000075::test_import_time_dependent_function_definition()
           pInitialAssignment2 = pModel->getInitialAssignment(i);
         }
     }
+
   CPPUNIT_ASSERT(pInitialAssignment1 != NULL);
   pRoot = pInitialAssignment1->getMath();
   CPPUNIT_ASSERT(pRoot->getType() == AST_FUNCTION);
@@ -510,7 +518,8 @@ void test000075::test_import_time_dependent_function_definition()
   // rules
   iMax = pModel->getListOfRules()->size();
   CPPUNIT_ASSERT(iMax == 4);
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       // only check the expression
       // in this test we don't care if the variable is correct and if the rule

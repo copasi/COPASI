@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000061.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/20 10:41:10 $
+//   $Date: 2009/04/29 11:26:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CExpression.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
@@ -62,6 +63,7 @@ void test000061::test_bug_1044()
   CPPUNIT_ASSERT(pDocument == NULL);
   // export the model to SBML
   bool exception = false;
+
   try
     {
       CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 1).empty() == true);
@@ -70,6 +72,7 @@ void test000061::test_bug_1044()
     {
       exception = true;
     }
+
   CPPUNIT_ASSERT(exception == true);
   CPPUNIT_ASSERT(pDataModel->getCurrentSBMLDocument() == NULL);
   // check if the correct error message has been created.
@@ -102,4 +105,4 @@ const char* test000061::MODEL_STRING1 =
   "    </InitialState>"
   "  </Model>"
   "</COPASI>"
-;
+  ;
