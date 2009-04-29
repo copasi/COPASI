@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionDB.i,v $ 
-//   $Revision: 1.5 $ 
+//   $Revision: 1.6 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/01/07 18:51:30 $ 
+//   $Author: gauges $ 
+//   $Date: 2009/04/29 08:27:17 $ 
 // End CVS Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -23,6 +23,12 @@
 
 %include "function/CFunctionDB.h"
 
+%delobject CFunctionDB::addAndAdaptName;
+
+// TODO
+// actually the add function destorys the object as well if the second argument
+// is true
+// I will have to find a fix for that.
 
 %extend CFunctionDB
 {
