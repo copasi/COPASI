@@ -114,6 +114,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CMathTrigger.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CMetab.cpp"
 				>
 			</File>
@@ -204,6 +208,10 @@
 			</File>
 			<File
 				RelativePath=".\CMathModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CMathTrigger.h"
 				>
 			</File>
 			<File
