@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Author: gauges $
+//   $Date: 2009/04/29 08:04:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -556,6 +556,11 @@ protected:
    * meta ids used in the model.
    */
   void collectIds(Model* pModel, std::map<std::string, const SBase*>& ids, std::map<std::string, const SBase*>& metaIds);
+
+  /**
+   * This method goes through the given datamodel and collects all SBML ids.
+   */
+  void collectIds(const CCopasiDataModel& dataModel, std::map<std::string, const SBase*>& idMap);
 
   /**
     * This converts an CEvaluationNode based tree to an ASTNode tree.

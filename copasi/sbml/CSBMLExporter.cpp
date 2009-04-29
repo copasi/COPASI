@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/25 22:13:14 $
+//   $Author: gauges $
+//   $Date: 2009/04/29 08:04:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2131,6 +2131,9 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   if (this->mpSBMLDocument->getModel() == NULL)
     {
+      // there might still be COPASI object that have an SBML id, we have to
+      // collect those as well
+      CSBMLExporter::collectIds(dataModel, this->mIdMap);
       std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
       this->mpSBMLDocument->createModel(id);
       this->mIdMap.insert(std::pair<const std::string, const SBase*>(id, this->mpSBMLDocument->getModel()));
@@ -6914,4 +6917,94 @@ void CSBMLExporter::restore_local_parameters(ASTNode* pOrigNode, const CCopasiDa
           ++i;
         }
     }
+}
+
+/**
+ * This method goes through the given datamodel and collects all SBML ids.
+ */
+void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::string, const SBase*>& idMap)
+{
+  unsigned int i, iMax = const_cast<CCopasiDataModel&>(dataModel).getFunctionList()->loadedFunctions().size();
+  std::string id;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      const CEvaluationTree* pFun = const_cast<CCopasiDataModel&>(dataModel).getFunctionList()->loadedFunctions()[i];
+      id = pFun->getSBMLId();
+
+      if (!id.empty())
+        {
+          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+        }
+    }
+
+  const CModel* pModel = dataModel.getModel();
+
+  iMax = pModel->getCompartments().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      const CCompartment* pObj = pModel->getCompartments()[i];
+      id = pObj->getSBMLId();
+
+      if (!id.empty())
+        {
+          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+        }
+    }
+
+  iMax = pModel->getMetabolites().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      const CMetab* pObj = pModel->getMetabolites()[i];
+      id = pObj->getSBMLId();
+
+      if (!id.empty())
+        {
+          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+        }
+    }
+
+  iMax = pModel->getModelValues().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      const CModelValue* pObj = pModel->getModelValues()[i];
+      id = pObj->getSBMLId();
+
+      if (!id.empty())
+        {
+          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+        }
+    }
+
+  iMax = pModel->getReactions().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      const CReaction* pObj = pModel->getReactions()[i];
+      id = pObj->getSBMLId();
+
+      if (!id.empty())
+        {
+          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+        }
+    }
+
+#ifdef COPASI_DEBUG
+  iMax = pModel->getEvents().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      const CEvent* pObj = pModel->getEvents()[i];
+      id = pObj->getSBMLId();
+
+      if (!id.empty())
+        {
+          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+        }
+    }
+
+#endif /* COPASI_DEBUG */
 }
