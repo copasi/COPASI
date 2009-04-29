@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/04/29 08:04:06 $
+//   $Date: 2009/04/29 08:32:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -6924,12 +6924,12 @@ void CSBMLExporter::restore_local_parameters(ASTNode* pOrigNode, const CCopasiDa
  */
 void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::string, const SBase*>& idMap)
 {
-  unsigned int i, iMax = const_cast<CCopasiDataModel&>(dataModel).getFunctionList()->loadedFunctions().size();
+  unsigned int i, iMax = CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
   std::string id;
 
   for (i = 0; i < iMax; ++i)
     {
-      const CEvaluationTree* pFun = const_cast<CCopasiDataModel&>(dataModel).getFunctionList()->loadedFunctions()[i];
+      const CEvaluationTree* pFun = CCopasiRootContainer::getFunctionList()->loadedFunctions()[i];
       id = pFun->getSBMLId();
 
       if (!id.empty())
