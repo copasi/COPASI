@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/28 17:57:25 $
+//   $Date: 2009/04/29 00:32:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ private:
     virtual ~CRoot();
 
     // Attributes
-  private:
+  public:
     /**
      * This expression calculates the root
      */
@@ -95,17 +95,17 @@ public:
   bool compile(const CExpression * pTriggerExpression);
 
 private:
-  bool compile(const CEvaluationNode * pNode);
-  bool compileAND(const CEvaluationNode * pNode);
-  bool compileOR(const CEvaluationNode * pNode);
-  bool compileXOR(const CEvaluationNode * pNode);
-  bool compileEQ(const CEvaluationNode * pNode);
-  bool compileNE(const CEvaluationNode * pNode);
-  bool compileLT(const CEvaluationNode * pNode);
-  bool compileLE(const CEvaluationNode * pNode);
-  bool compileGT(const CEvaluationNode * pNode);
-  bool compileGE(const CEvaluationNode * pNode);
-  bool compileNOT(const CEvaluationNode * pNode);
+  bool compile(const CEvaluationNode * pSource);
+  bool compileAND(const CEvaluationNode * pSource);
+  bool compileOR(const CEvaluationNode * pSource);
+  bool compileXOR(const CEvaluationNode * pSource);
+  bool compileEQ(const CEvaluationNode * pSource);
+  bool compileNE(const CEvaluationNode * pSource);
+  bool compileLT(const CEvaluationNode * pSource);
+  bool compileLE(const CEvaluationNode * pSource);
+  bool compileGT(const CEvaluationNode * pSource);
+  bool compileGE(const CEvaluationNode * pSource);
+  bool compileNOT(const CEvaluationNode * pSource);
 
   // Attributes
 private:
@@ -128,7 +128,7 @@ private:
   /**
    * A vector containing the root expression.
    */
-  CCopasiVector< CRoot > mRoots;
+  CCopasiVector< CRoot > mRootFinders;
 
   /**
    * A pointer to the Boolean trigger expression to be compiled
