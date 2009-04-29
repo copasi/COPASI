@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 15:44:34 $
+//   $Author: gauges $
+//   $Date: 2009/04/29 11:08:01 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -20,6 +20,7 @@
 #include <set>
 #include <math.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #define COPASI_MAIN
 
