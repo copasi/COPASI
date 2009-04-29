@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 12:37:16 $
+//   $Date: 2009/04/29 21:25:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 class CMathTrigger : public CCopasiContainer
 {
 private:
-  class CRoot : public CCopasiContainer
+  class CRootFinder : public CCopasiContainer
   {
     // Operations
   public:
@@ -32,20 +32,25 @@ private:
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CRoot(const CCopasiContainer * pParent = NULL);
+    CRootFinder(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
      * @param "const CRoot &" src
      * @param "const CCopasiContainer * pParent (default: NULL)
      */
-    CRoot(const CRoot & src,
-          const CCopasiContainer * pParent = NULL);
+    CRootFinder(const CRootFinder & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
-    virtual ~CRoot();
+    virtual ~CRootFinder();
+
+    /**
+     * Initialize the contained object references.
+     */
+    void initObjects();
 
     // Attributes
   public:
@@ -130,7 +135,7 @@ private:
   /**
    * A vector containing the root expression.
    */
-  CCopasiVector< CRoot > mRootFinders;
+  CCopasiVector< CRootFinder > mRootFinders;
 
   /**
    * A pointer to the Boolean trigger expression to be compiled
@@ -150,7 +155,7 @@ private:
   /**
    * The currently processed root finding structure
    */
-  CRoot * mpRoot;
+  CRootFinder * mpRoot;
 
   /**
    * The stack of root nodes

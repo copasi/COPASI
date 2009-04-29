@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 12:37:16 $
+//   $Date: 2009/04/29 21:25:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,23 +15,27 @@
 
 #include "CMathTrigger.h"
 #include "function/CEvaluationNode.h"
+#include "report/CCopasiObjectReference.h"
 
-CMathTrigger::CRoot::CRoot(const CCopasiContainer * pParent) :
+CMathTrigger::CRootFinder::CRootFinder(const CCopasiContainer * pParent) :
     CCopasiContainer("Root", pParent),
     mRoot("Expression", this),
     mActive(0.0),
     mEquality(false)
 {}
 
-CMathTrigger::CRoot::CRoot(const CMathTrigger::CRoot & src,
-                           const CCopasiContainer * pParent) :
+CMathTrigger::CRootFinder::CRootFinder(const CMathTrigger::CRootFinder & src,
+                                       const CCopasiContainer * pParent) :
     CCopasiContainer(src, pParent),
     mRoot(src.mRoot, this),
     mActive(src.mActive),
     mEquality(src.mEquality)
 {}
 
-CMathTrigger::CRoot::~CRoot()
+CMathTrigger::CRootFinder::~CRootFinder()
+{}
+
+void CMathTrigger::CRootFinder::initObjects()
 {}
 
 CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
@@ -247,7 +251,7 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
       pNode->addChild(pLeft->copyBranch());
       pNode->addChild(pRight->copyBranch());
 
-      CRoot * pRootFinder = new CRoot();
+      CRootFinder * pRootFinder = new CRootFinder();
       pRootFinder->mRoot.setRoot(pNode);
       pRootFinder->mEquality = effectiveEquality(true);
       mRootFinders.add(pRootFinder, true);
@@ -256,7 +260,7 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
       pNode->addChild(pRight->copyBranch());
       pNode->addChild(pLeft->copyBranch());
 
-      pRootFinder = new CRoot();
+      pRootFinder = new CRootFinder();
       pRootFinder->mRoot.setRoot(pNode);
       pRootFinder->mEquality = effectiveEquality(true);
       mRootFinders.add(pRootFinder, true);
@@ -275,16 +279,41 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
       mTriggerNodes.top()->addChild(pNode);
       mTriggerNodes.push(pNode);
 
-      // TODO Add RootFinder[0].mRoot
+      pNode = new CEvaluationNodeObject((C_FLOAT64 *) mRootFinders[0]->mRoot.getObject(std::string("Function=Expression,Reference=Value"))->getValuePointer());
+      mTriggerNodes.top()->addChild(pNode);
 
       pNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0");
       mTriggerNodes.top()->addChild(pNode);
 
-      mTriggerNodes.pop();
+      mTriggerNodes.pop(); // GE
 
-      // TODO Add RootFinder[0].mActive
+      pNode = new CEvaluationNodeObject(&mRootFinders[0]->mActive);
+      mTriggerNodes.top()->addChild(pNode);
 
-      mTriggerNodes.pop();
+      mTriggerNodes.pop(); // AND
+
+      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+      mTriggerNodes.top()->addChild(pNode);
+      mTriggerNodes.push(pNode);
+
+      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
+      mTriggerNodes.top()->addChild(pNode);
+      mTriggerNodes.push(pNode);
+
+      pNode = new CEvaluationNodeObject((C_FLOAT64 *) mRootFinders[1]->mRoot.getObject(std::string("Function=Expression,Reference=Value"))->getValuePointer());
+      mTriggerNodes.top()->addChild(pNode);
+
+      pNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0");
+      mTriggerNodes.top()->addChild(pNode);
+
+      mTriggerNodes.pop(); // GE
+
+      pNode = new CEvaluationNodeObject(&mRootFinders[1]->mActive);
+      mTriggerNodes.top()->addChild(pNode);
+
+      mTriggerNodes.pop(); // AND
+
+      mTriggerNodes.pop(); // OR
 
       if (!mTriggerNodes.empty())
         {
