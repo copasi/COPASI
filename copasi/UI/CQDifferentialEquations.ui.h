@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQDifferentialEquations.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Author: ssahle $
+//   $Date: 2009/04/30 13:16:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,16 +34,16 @@
 #include <qregexp.h>
 #include "Qt3Support/Q3ScrollView"
 
+#ifdef HAVE_MML
+# include "mml/qtmmlwidget.h"
+#endif // HAVE_MML
+
 #include "model/CMMLOutput.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "qtUtilities.h"
 #include "utilities/utility.h"
 #include "tex/CMathMLToTeX.h"
 #include "report/CCopasiRootContainer.h"
-
-#ifdef HAVE_MML
-# include "mml/qtmmlwidget.h"
-#endif // HAVE_MML
 
 #include "CopasiFileDialog.h"
 
@@ -86,25 +86,27 @@ void CQDifferentialEquations::slotUpdateWidget()
   mml.str("");
 
   bool expand, expandAll;
+
   switch (comboBoxFunctions->currentItem())
     {
-    case 0:
-      expand = false;
-      expandAll = false;
-      break;
+      case 0:
+        expand = false;
+        expandAll = false;
+        break;
 
-    case 1:
-      expand = true;
-      expandAll = false;
-      break;
+      case 1:
+        expand = true;
+        expandAll = false;
+        break;
 
-    default:
-      expand = true;
-      expandAll = true;
-      break;
+      default:
+        expand = true;
+        expandAll = true;
+        break;
     };
 
   bool parameterAsNumbers = false;
+
   if (comboBoxParameters->currentItem() == 0)
     parameterAsNumbers = true;
 
@@ -112,6 +114,7 @@ void CQDifferentialEquations::slotUpdateWidget()
   CMMLOutput::writeDifferentialEquations(mml, (*CCopasiRootContainer::getDatamodelList())[0]->getModel(), parameterAsNumbers, expand, expandAll);
 
   QWidget* tmp = dynamic_cast<QWidget*>(parent());
+
   if (tmp) tmp->setCursor(Qt::WaitCursor);
 
   mpMMLWidget->setContent(FROM_UTF8(mml.str()));

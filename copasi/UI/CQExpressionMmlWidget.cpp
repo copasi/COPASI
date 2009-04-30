@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:20 $
+//   $Author: ssahle $
+//   $Date: 2009/04/30 13:22:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,10 +11,9 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <qvariant.h>
-
 #include "CQExpressionMmlWidget.h"
-#include "mml/qtmmlwidget.h"
+
+#include <qvariant.h>
 #include "CQExpressionWidget.h"
 #include "utilities/CCopasiException.h"
 #include "CQMmlScrollView.h"

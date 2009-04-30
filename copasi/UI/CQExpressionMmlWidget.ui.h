@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: ssahle $
+//   $Date: 2009/04/30 13:17:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,13 +25,13 @@
 
 #include "CQMessageBox.h"
 
+// #ifdef HAVE_MML
+// # include "mml/qtmmlwidget.h"
+// #endif // HAVE_MML
+
 #include "qtUtilities.h" // for UTF8
 
 #include "CopasiFileDialog.h"
-
-#ifdef HAVE_MML
-# include "mml/qtmmlwidget.h"
-#endif // HAVE_MML
 
 #include "tex/CMathMLToTeX.h"
 
