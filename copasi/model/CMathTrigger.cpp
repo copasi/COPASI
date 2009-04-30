@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 21:25:09 $
+//   $Date: 2009/04/30 12:20:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,9 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression)
 
   assert(mTriggerNodes.empty());
   assert(mActivateNodes.empty());
+  assert(mEqualityModifier);
+
+  // TODO Compile all expressions
 
   return success;
 }
@@ -342,7 +345,26 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
 
 bool CMathTrigger::compileNE(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  // We treat this as NOT and EQ.
+  // For this we create a modified copy of the current node.
+
+  CEvaluationNode * pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+  CEvaluationNode * pEqNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
+  pEqNode->addChild(pLeft->copyBranch());
+  pEqNode->addChild(pRight->copyBranch());
+  pNotNode->addChild(pEqNode);
+
+  success &= compileNOT(pNotNode);
+
+  // Delete the temporary
+  delete pNotNode;
+
+  return success;
 }
 
 bool CMathTrigger::compileLE(const CEvaluationNode * pSource)
