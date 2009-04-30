@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.166 $
+//   $Revision: 1.167 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/04/30 13:14:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,10 @@
 #include <Q3GridLayout>
 #include <Q3VBoxLayout>
 
+#ifdef HAVE_MML
+# include "mml/qtmmlwidget.h"
+#endif // HAVE_MML
+
 #include <sstream>
 #include <stdlib.h>
 #include <algorithm>
@@ -58,10 +62,6 @@
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
 #include "parametertable.h" // just for the table item widgets
-
-#ifdef HAVE_MML
-# include "mml/qtmmlwidget.h"
-#endif // HAVE_MML
 
 #include "tex/CMathMLToTeX.h"
 
