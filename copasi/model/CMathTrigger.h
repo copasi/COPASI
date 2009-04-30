@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 21:25:09 $
+//   $Date: 2009/04/30 19:09:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,6 +113,10 @@ private:
   bool compileNOT(const CEvaluationNode * pSource);
 
   bool effectiveEquality(const bool & equality) const;
+  void pushNodes(CEvaluationNode * pTriggerNode, CEvaluationNode * pActivateNode);
+  void popNodes();
+  void addNodes(CEvaluationNode * pTriggerNode,
+                CEvaluationNode * pActivateNode);
 
   // Attributes
 private:

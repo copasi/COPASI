@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/30 12:20:13 $
+//   $Date: 2009/04/30 19:09:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,23 +180,115 @@ bool CMathTrigger::compile(const CEvaluationNode * pNode)
 
 bool CMathTrigger::compileAND(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  // We need to add AND to the trigger expression and NOT AND to the activate expression
+  CEvaluationNode * pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+
+  if (!mActivateNodes.empty())
+    {
+      mActivateNodes.top()->addChild(pNode);
+    }
+
+  mActivateNodes.push(pNode);
+
+  pushNodes(new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND"),
+            new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND"));
+
+  success &= compile(pLeft);
+  success &= compile(pRight);
+
+  popNodes();
+
+  pNode = mActivateNodes.top();
+  mActivateNodes.pop();
+
+  if (mActivateNodes.empty())
+    {
+      mActivateExpression.setRoot(pNode);
+    }
+
+  return success;
 }
 
 bool CMathTrigger::compileOR(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  // We need to add OR to the trigger expression and NOT OR to the activate expression
+  CEvaluationNode * pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+
+  if (!mActivateNodes.empty())
+    {
+      mActivateNodes.top()->addChild(pNode);
+    }
+
+  mActivateNodes.push(pNode);
+
+  pushNodes(new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR"),
+            new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR"));
+
+  success &= compile(pLeft);
+  success &= compile(pRight);
+
+  popNodes();
+
+  pNode = mActivateNodes.top();
+  mActivateNodes.pop();
+
+  if (mActivateNodes.empty())
+    {
+      mActivateExpression.setRoot(pNode);
+    }
+
+  return success;
 }
 
 bool CMathTrigger::compileXOR(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  // We need to add XOR to the trigger expression and NOT XOR to the activate expression
+  CEvaluationNode * pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+
+  if (!mActivateNodes.empty())
+    {
+      mActivateNodes.top()->addChild(pNode);
+    }
+
+  mActivateNodes.push(pNode);
+
+  pushNodes(new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR"),
+            new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR"));
+
+  success &= compile(pLeft);
+  success &= compile(pRight);
+
+  popNodes();
+
+  pNode = mActivateNodes.top();
+  mActivateNodes.pop();
+
+  if (mActivateNodes.empty())
+    {
+      mActivateExpression.setRoot(pNode);
+    }
+
+  return success;
 }
 
 bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
 {
   bool success = true;
-  CEvaluationNode * pNode;
 
   const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
   const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
@@ -206,47 +298,18 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
     {
       // Boolean
       // We need to add an equality to the trigger expression.
-      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
-
-      if (!mTriggerNodes.empty())
-        {
-          mTriggerNodes.top()->addChild(pNode);
-        }
-
-      mTriggerNodes.push(pNode);
-
       // We need to add an inequality to the activate expression
-      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::NE, "NE");
-
-      if (!mActivateNodes.empty())
-        {
-          mActivateNodes.top()->addChild(pNode);
-        }
-
-      mActivateNodes.push(pNode);
+      pushNodes(new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ"),
+                new CEvaluationNodeLogical(CEvaluationNodeLogical::NE, "NE"));
 
       success &= compile(pLeft);
       success &= compile(pRight);
 
-      pNode = mTriggerNodes.top();
-      mTriggerNodes.pop();
-
-      if (mTriggerNodes.empty())
-        {
-          mTriggerExpression.setRoot(pNode);
-        }
-
-      pNode = mActivateNodes.top();
-      mActivateNodes.pop();
-
-      if (mActivateNodes.empty())
-        {
-          mActivateExpression.setRoot(pNode);
-        }
+      popNodes();
     }
   else
     {
-      assert(mRootNodes.empty());
+      CEvaluationNode * pNode;
 
       // double
       // We need to create 2 root finding structures
@@ -254,19 +317,19 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
       pNode->addChild(pLeft->copyBranch());
       pNode->addChild(pRight->copyBranch());
 
-      CRootFinder * pRootFinder = new CRootFinder();
-      pRootFinder->mRoot.setRoot(pNode);
-      pRootFinder->mEquality = effectiveEquality(true);
-      mRootFinders.add(pRootFinder, true);
+      CRootFinder * pRootFinderLeft = new CRootFinder();
+      pRootFinderLeft->mRoot.setRoot(pNode);
+      pRootFinderLeft->mEquality = effectiveEquality(true);
+      mRootFinders.add(pRootFinderLeft, true);
 
       pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
       pNode->addChild(pRight->copyBranch());
       pNode->addChild(pLeft->copyBranch());
 
-      pRootFinder = new CRootFinder();
-      pRootFinder->mRoot.setRoot(pNode);
-      pRootFinder->mEquality = effectiveEquality(true);
-      mRootFinders.add(pRootFinder, true);
+      CRootFinder * pRootFinderRight = new CRootFinder();
+      pRootFinderRight->mRoot.setRoot(pNode);
+      pRootFinderRight->mEquality = effectiveEquality(true);
+      mRootFinders.add(pRootFinderRight, true);
 
       // The trigger expression is:
       // (RootFinder[0].mRoot >= 0 && RootFinder[0].mActive) ||
@@ -282,7 +345,8 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
       mTriggerNodes.top()->addChild(pNode);
       mTriggerNodes.push(pNode);
 
-      pNode = new CEvaluationNodeObject((C_FLOAT64 *) mRootFinders[0]->mRoot.getObject(std::string("Function=Expression,Reference=Value"))->getValuePointer());
+      pNode =
+        new CEvaluationNodeObject((C_FLOAT64 *) pRootFinderLeft->mRoot.getObject(std::string("Reference=Value"))->getValuePointer());
       mTriggerNodes.top()->addChild(pNode);
 
       pNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0");
@@ -290,7 +354,7 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
 
       mTriggerNodes.pop(); // GE
 
-      pNode = new CEvaluationNodeObject(&mRootFinders[0]->mActive);
+      pNode = new CEvaluationNodeObject(&pRootFinderLeft->mActive);
       mTriggerNodes.top()->addChild(pNode);
 
       mTriggerNodes.pop(); // AND
@@ -303,7 +367,8 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
       mTriggerNodes.top()->addChild(pNode);
       mTriggerNodes.push(pNode);
 
-      pNode = new CEvaluationNodeObject((C_FLOAT64 *) mRootFinders[1]->mRoot.getObject(std::string("Function=Expression,Reference=Value"))->getValuePointer());
+      pNode =
+        new CEvaluationNodeObject((C_FLOAT64 *) pRootFinderRight->mRoot.getObject(std::string("Reference=Value"))->getValuePointer());
       mTriggerNodes.top()->addChild(pNode);
 
       pNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0");
@@ -311,33 +376,16 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource)
 
       mTriggerNodes.pop(); // GE
 
-      pNode = new CEvaluationNodeObject(&mRootFinders[1]->mActive);
+      pNode = new CEvaluationNodeObject(&pRootFinderRight->mActive);
       mTriggerNodes.top()->addChild(pNode);
 
       mTriggerNodes.pop(); // AND
 
+      pNode = mTriggerNodes.top(); // OR
       mTriggerNodes.pop(); // OR
 
-      if (!mTriggerNodes.empty())
-        {
-          mTriggerNodes.top()->addChild(pNode);
-        }
-      else
-        {
-          mTriggerExpression.setRoot(pNode);
-        }
-
-      // The activate expression is always true
-      pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
-
-      if (!mActivateNodes.empty())
-        {
-          mActivateNodes.top()->addChild(pNode);
-        }
-      else
-        {
-          mActivateExpression.setRoot(pNode);
-        }
+      // The activate expression is always true;
+      addNodes(pNode, new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE"));
     }
 
   return success;
@@ -369,17 +417,57 @@ bool CMathTrigger::compileNE(const CEvaluationNode * pSource)
 
 bool CMathTrigger::compileLE(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  CEvaluationNode * pNode;
+
+  // We need to create a root finding structures
+  pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+  pNode->addChild(pRight->copyBranch());
+  pNode->addChild(pLeft->copyBranch());
+
+  CRootFinder * pRootFinder = new CRootFinder();
+  pRootFinder->mRoot.setRoot(pNode);
+  pRootFinder->mEquality = effectiveEquality(true);
+  mRootFinders.add(pRootFinder, true);
+
+  // The trigger expression is pRootFinder->mRoot >= 0.0
+  CEvaluationNode * pTriggerNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
+  mTriggerNodes.push(pTriggerNode);
+
+  pNode =
+    new CEvaluationNodeObject((C_FLOAT64 *) pRootFinder->mRoot.getObject(std::string("Reference=Value"))->getValuePointer());
+  mTriggerNodes.top()->addChild(pNode);
+
+  pNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0");
+  mTriggerNodes.top()->addChild(pNode);
+
+  mTriggerNodes.pop(); // GE
+
+  return success;
 }
 
 bool CMathTrigger::compileLT(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  return success;
 }
 
 bool CMathTrigger::compileGE(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  return success;
 }
 
 bool CMathTrigger::compileGT(const CEvaluationNode * pSource)
@@ -389,7 +477,22 @@ bool CMathTrigger::compileGT(const CEvaluationNode * pSource)
 
 bool CMathTrigger::compileNOT(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+
+  pushNodes(new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT"),
+            new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT"));
+
+  mEqualityModifier = !mEqualityModifier;
+
+  success &= compile(pLeft);
+
+  popNodes();
+
+  mEqualityModifier = !mEqualityModifier;
+
+  return success;
 }
 
 bool CMathTrigger::effectiveEquality(const bool & equality) const
@@ -398,4 +501,63 @@ bool CMathTrigger::effectiveEquality(const bool & equality) const
     return equality;
   else
     return !equality;
+}
+
+void CMathTrigger::pushNodes(CEvaluationNode * pTriggerNode,
+                             CEvaluationNode * pActivateNode)
+{
+  if (!mTriggerNodes.empty())
+    {
+      mTriggerNodes.top()->addChild(pTriggerNode);
+    }
+
+  mTriggerNodes.push(pTriggerNode);
+
+  if (!mActivateNodes.empty())
+    {
+      mActivateNodes.top()->addChild(pActivateNode);
+    }
+
+  mActivateNodes.push(pActivateNode);
+}
+
+void CMathTrigger::popNodes()
+{
+  CEvaluationNode * pNode = mTriggerNodes.top();
+  mTriggerNodes.pop();
+
+  if (mTriggerNodes.empty())
+    {
+      mTriggerExpression.setRoot(pNode);
+    }
+
+  pNode = mActivateNodes.top();
+  mActivateNodes.pop();
+
+  if (mActivateNodes.empty())
+    {
+      mActivateExpression.setRoot(pNode);
+    }
+}
+
+void CMathTrigger::addNodes(CEvaluationNode * pTriggerNode,
+                            CEvaluationNode * pActivateNode)
+{
+  if (!mTriggerNodes.empty())
+    {
+      mTriggerNodes.top()->addChild(pTriggerNode);
+    }
+  else
+    {
+      mTriggerExpression.setRoot(pTriggerNode);
+    }
+
+  if (!mActivateNodes.empty())
+    {
+      mActivateNodes.top()->addChild(pActivateNode);
+    }
+  else
+    {
+      mActivateExpression.setRoot(pActivateNode);
+    }
 }
