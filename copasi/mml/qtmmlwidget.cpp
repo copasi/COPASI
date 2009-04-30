@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/04/30 13:10:43 $
+//   $Date: 2009/04/30 14:57:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ struct Mml
   enum FormType {PrefixForm, InfixForm, PostfixForm };
   enum ColAlign {ColAlignLeft, ColAlignCenter, ColAlignRight };
   enum RowAlign {RowAlignTop, RowAlignCenter, RowAlignBottom,
-                  RowAlignAxis, RowAlignBaseline
+                 RowAlignAxis, RowAlignBaseline
                 };
   enum FrameType {FrameNone, FrameSolid, FrameDashed };
 
@@ -4943,7 +4943,11 @@ void MmlMtableNode::paintSymbol(QPainter *p) const
   int col_offset = 0;
   int i;
 
-  for (i = 0; i < m_cell_size_data.numCols() - 1; ++i)
+  // This can create a problem if m_cell_size_data.numCols() = 0
+  int imax =
+    (m_cell_size_data.numCols() == 0) ? 0 : m_cell_size_data.numCols() - 1;
+
+  for (i = 0; i < imax; ++i)
     {
       FrameType f = columnlines(i);
       col_offset += m_cell_size_data.col_widths[i];
@@ -4965,7 +4969,11 @@ void MmlMtableNode::paintSymbol(QPainter *p) const
 
   int row_offset = 0;
 
-  for (i = 0; i < m_cell_size_data.numRows() - 1; ++i)
+  // This can create a problem if m_cell_size_data.numRows() = 0
+  imax =
+    (m_cell_size_data.numRows() == 0) ? 0 : m_cell_size_data.numRows() - 1;
+
+  for (i = 0; i < imax; ++i)
     {
       FrameType f = rowlines(i);
       row_offset += m_cell_size_data.row_heights[i];
