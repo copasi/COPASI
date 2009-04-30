@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Author: ssahle $
+//   $Date: 2009/04/30 13:15:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@ CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* name, Qt::WFlags f
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
 #ifdef HAVE_MML
-  mpMmlWidget = new QtMmlWidget(viewport(), "mpMmlWidget");
+  mpMmlWidget = new QtMmlWidget(viewport() /*, "mpMmlWidget"*/);
   mpMmlWidget->setMinimumSize(QSize(0, 0));
   mpMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
   mpMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
