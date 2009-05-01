@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/30 19:09:06 $
+//   $Date: 2009/05/01 20:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,17 @@ private:
      */
     void initObjects();
 
+    /**
+     * Compile the root finder
+     */
+    bool compile();
+
+    /**
+     * Activate the root finder if the charge expression is true;
+     * Charge expression: mRoot.mValue <= 0 && !mActive
+     */
+    void charge();
+
     // Attributes
   public:
     /**
@@ -60,15 +71,15 @@ private:
     CMathExpression mRoot;
 
     /**
+     * This indicates whether the root is checked for equality
+     */
+    bool mEquality;
+
+    /**
      * Indicates whether the trigger is active
      */
     // TODO This should be a bool but the CExpressionTree only handles double
     C_FLOAT64 mActive;
-
-    /**
-     * This indicates whether the root is checked for equality
-     */
-    bool mEquality;
   };
 
   // Operations

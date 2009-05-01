@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/30 19:09:06 $
+//   $Date: 2009/05/01 20:58:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,23 +20,44 @@
 CMathTrigger::CRootFinder::CRootFinder(const CCopasiContainer * pParent) :
     CCopasiContainer("Root", pParent),
     mRoot("Expression", this),
-    mActive(0.0),
-    mEquality(false)
-{}
+    mEquality(false),
+    mActive(0.0)
+{
+  initObjects();
+}
 
 CMathTrigger::CRootFinder::CRootFinder(const CMathTrigger::CRootFinder & src,
                                        const CCopasiContainer * pParent) :
     CCopasiContainer(src, pParent),
     mRoot(src.mRoot, this),
-    mActive(src.mActive),
-    mEquality(src.mEquality)
-{}
+    mEquality(src.mEquality),
+    mActive(src.mActive)
+{
+  initObjects();
+}
 
 CMathTrigger::CRootFinder::~CRootFinder()
 {}
 
 void CMathTrigger::CRootFinder::initObjects()
-{}
+{
+  C_FLOAT64 * mpRootValue =
+    (C_FLOAT64 *)mRoot.getObject(std::string("Reference=Value"))->getValuePointer();
+}
+
+bool CMathTrigger::CRootFinder::compile()
+{
+  // TODO Implement me!
+
+  return false;
+}
+
+void CMathTrigger::CRootFinder::charge()
+{
+  // TODO Implement me!
+
+  return;
+}
 
 CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
     CCopasiContainer("MathTrigger", pParent),
@@ -472,7 +493,12 @@ bool CMathTrigger::compileGE(const CEvaluationNode * pSource)
 
 bool CMathTrigger::compileGT(const CEvaluationNode * pSource)
 {
-  return false;
+  bool success = true;
+
+  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pSource->getChild());
+  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
+
+  return success;
 }
 
 bool CMathTrigger::compileNOT(const CEvaluationNode * pSource)
