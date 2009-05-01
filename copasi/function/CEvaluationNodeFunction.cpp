@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:57 $
+//   $Author: shoops $
+//   $Date: 2009/05/01 19:23:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,13 +29,38 @@
 
 CRandom * CEvaluationNodeFunction::mpRandom = NULL;
 
+// static
 C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound,
     const C_FLOAT64 & upperBound)
-{return lowerBound + mpRandom->getRandomOO() * (upperBound - lowerBound);}
+{return lowerBound + mpRandom->getRandomOO() *(upperBound - lowerBound);}
 
+// static
 C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean,
     const C_FLOAT64 & sd)
 {return mpRandom->getRandomNormal(mean, sd);}
+
+// static
+C_FLOAT64 CEvaluationNodeFunction::fire(const C_FLOAT64 & root,
+                                        const C_FLOAT64 & active)
+{
+  return (root >= 0) && (active >= 0);
+}
+
+// static
+C_FLOAT64 CEvaluationNodeFunction::equality(const C_FLOAT64 & fireX,
+    const C_FLOAT64 & equalX,
+    const C_FLOAT64 & fireY,
+    const C_FLOAT64 & equalY)
+{
+  bool FireX = (fireX > 0);
+  bool EqualX = (equalX > 0);
+  bool FireY = (fireY > 0);
+  bool EqualY = (equalY > 0);
+
+  bool Equal = (FireX && EqualX && !FireY) || (FireY && EqualY && !FireX) || (FireX && FireY);
+
+  return Equal ? 1.0 : 2.0;
+}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -43,174 +68,184 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::FUNCTION | subType), data),
+    CEvaluationNode((Type)(CEvaluationNode::FUNCTION | subType), data),
     mpFunction(NULL),
     mpFunction2(NULL),
-    mpLeft(NULL),
-    mpRight(NULL)
+    mpArg1(NULL),
+    mpArg2(NULL),
+    mpArg3(NULL),
+    mpArg4(NULL)
 {
   switch (subType)
     {
-    case LOG:
-      mpFunction = log;
-      break;
+      case LOG:
+        mpFunction = log;
+        break;
 
-    case LOG10:
-      mpFunction = log10;
-      break;
+      case LOG10:
+        mpFunction = log10;
+        break;
 
-    case EXP:
-      mpFunction = exp;
-      break;
+      case EXP:
+        mpFunction = exp;
+        break;
 
-    case SIN:
-      mpFunction = sin;
-      break;
+      case SIN:
+        mpFunction = sin;
+        break;
 
-    case COS:
-      mpFunction = cos;
-      break;
+      case COS:
+        mpFunction = cos;
+        break;
 
-    case TAN:
-      mpFunction = tan;
-      break;
+      case TAN:
+        mpFunction = tan;
+        break;
 
-    case SEC:
-      mpFunction = sec;
-      break;
+      case SEC:
+        mpFunction = sec;
+        break;
 
-    case CSC:
-      mpFunction = csc;
-      break;
+      case CSC:
+        mpFunction = csc;
+        break;
 
-    case COT:
-      mpFunction = cot;
-      break;
+      case COT:
+        mpFunction = cot;
+        break;
 
-    case SINH:
-      mpFunction = sinh;
-      break;
+      case SINH:
+        mpFunction = sinh;
+        break;
 
-    case COSH:
-      mpFunction = cosh;
-      break;
+      case COSH:
+        mpFunction = cosh;
+        break;
 
-    case TANH:
-      mpFunction = tanh;
-      break;
+      case TANH:
+        mpFunction = tanh;
+        break;
 
-    case SECH:
-      mpFunction = sech;
-      break;
+      case SECH:
+        mpFunction = sech;
+        break;
 
-    case CSCH:
-      mpFunction = csch;
-      break;
+      case CSCH:
+        mpFunction = csch;
+        break;
 
-    case COTH:
-      mpFunction = coth;
-      break;
+      case COTH:
+        mpFunction = coth;
+        break;
 
-    case ARCSIN:
-      mpFunction = asin;
-      break;
+      case ARCSIN:
+        mpFunction = asin;
+        break;
 
-    case ARCCOS:
-      mpFunction = acos;
-      break;
+      case ARCCOS:
+        mpFunction = acos;
+        break;
 
-    case ARCTAN:
-      mpFunction = atan;
-      break;
+      case ARCTAN:
+        mpFunction = atan;
+        break;
 
-    case ARCSEC:
-      mpFunction = arcsec;
-      break;
+      case ARCSEC:
+        mpFunction = arcsec;
+        break;
 
-    case ARCCSC:
-      mpFunction = arccsc;
-      break;
+      case ARCCSC:
+        mpFunction = arccsc;
+        break;
 
-    case ARCCOT:
-      mpFunction = arccot;
-      break;
+      case ARCCOT:
+        mpFunction = arccot;
+        break;
 
-    case ARCSINH:
-      mpFunction = asinh;
-      break;
+      case ARCSINH:
+        mpFunction = asinh;
+        break;
 
-    case ARCCOSH:
-      mpFunction = acosh;
-      break;
+      case ARCCOSH:
+        mpFunction = acosh;
+        break;
 
-    case ARCTANH:
-      mpFunction = atanh;
-      break;
+      case ARCTANH:
+        mpFunction = atanh;
+        break;
 
-    case ARCSECH:
-      mpFunction = asech;
-      break;
+      case ARCSECH:
+        mpFunction = asech;
+        break;
 
-    case ARCCSCH:
-      mpFunction = acsch;
-      break;
+      case ARCCSCH:
+        mpFunction = acsch;
+        break;
 
-    case ARCCOTH:
-      mpFunction = acoth;
-      break;
+      case ARCCOTH:
+        mpFunction = acoth;
+        break;
 
-    case SQRT:
-      mpFunction = sqrt;
-      break;
+      case SQRT:
+        mpFunction = sqrt;
+        break;
 
-    case ABS:
-      mpFunction = fabs;
-      break;
+      case ABS:
+        mpFunction = fabs;
+        break;
 
-    case FLOOR:
-      mpFunction = floor;
-      break;
+      case FLOOR:
+        mpFunction = floor;
+        break;
 
-    case CEIL:
-      mpFunction = ceil;
-      break;
+      case CEIL:
+        mpFunction = ceil;
+        break;
 
-    case FACTORIAL:
-      mpFunction = factorial;
-      break;
+      case FACTORIAL:
+        mpFunction = factorial;
+        break;
 
-    case MINUS:
-      mpFunction = minus;
-      break;
+      case MINUS:
+        mpFunction = minus;
+        break;
 
-    case PLUS:
-      mpFunction = plus;
-      break;
+      case PLUS:
+        mpFunction = plus;
+        break;
 
-    case NOT:
-      mpFunction = copasiNot;
-      break;
+      case NOT:
+        mpFunction = copasiNot;
+        break;
 
-    case RUNIFORM:
-      mpFunction2 = runiform;
-      if (!mpRandom)
-        mpRandom = CRandom::createGenerator();
-      break;
+      case RUNIFORM:
+        mpFunction2 = runiform;
 
-    case RNORMAL:
-      mpFunction2 = rnormal;
-      if (!mpRandom)
-        mpRandom = CRandom::createGenerator();
-      break;
+        if (!mpRandom)
+          mpRandom = CRandom::createGenerator();
 
-      //    case DELAY:
-      //      mpFunction2 = delay;
-      //      break;
+        break;
 
-    default:
-      mpFunction = NULL;
-      fatalError();
-      break;
+      case RNORMAL:
+        mpFunction2 = rnormal;
+
+        if (!mpRandom)
+          mpRandom = CRandom::createGenerator();
+
+        break;
+
+      case FIRE:
+        mpFunction2 = fire;
+        break;
+
+      case EQUALITY:
+        mpFunction4 = equality;
+        break;
+
+      default:
+        mpFunction = NULL;
+        fatalError();
+        break;
     }
 
   mPrecedence = PRECEDENCE_FUNCTION;
@@ -225,63 +260,77 @@ CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
 bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
-  mpLeft = static_cast<CEvaluationNode *>(getChild());
-  if (mpLeft == NULL) return false;
+  mpArg1 = static_cast<CEvaluationNode *>(getChild());
+
+  if (mpArg1 == NULL) return false;
 
   if (mpFunction)
-    return (mpLeft->getSibling() == NULL); // We must have only one child
+    return (mpArg1->getSibling() == NULL); // We must have only one child
 
-  mpRight = static_cast<CEvaluationNode *>(mpLeft->getSibling());
-  if (mpRight == NULL) return false;
+  mpArg2 = static_cast<CEvaluationNode *>(mpArg1->getSibling());
 
-  return (mpRight->getSibling() == NULL); // We must have only two children
+  if (mpArg2 == NULL) return false;
+
+  if (mpFunction2)
+    return (mpArg2->getSibling() == NULL); // We must have exactly 1 children
+
+  // equality
+  mpArg3 = static_cast<CEvaluationNode *>(mpArg2->getSibling());
+
+  if (mpArg3 == NULL) return false;
+
+  mpArg4 = static_cast<CEvaluationNode *>(mpArg3->getSibling());
+
+  if (mpArg4 == NULL) return false;
+
+  return (mpArg4->getSibling() == NULL); // We must have exactly 4 children
 }
 
 std::string CEvaluationNodeFunction::getInfix() const
-  {
-    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      switch (mType & 0x00FFFFFF)
-        {
+{
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+    switch (mType & 0x00FFFFFF)
+      {
         case MINUS:
         case PLUS:
-          return handleSign(mpLeft->getInfix());
+          return handleSign(mpArg1->getInfix());
 
         case RUNIFORM:
         case RNORMAL:
           //       case DELAY:
-          return mData + "(" + mpLeft->getInfix() + "," + mpRight->getInfix() + ")";
+          return mData + "(" + mpArg1->getInfix() + "," + mpArg2->getInfix() + ")";
 
         default:
-          return mData + "(" + mpLeft->getInfix() + ")";
-        }
-    else
-      return "@";
-  }
+          return mData + "(" + mpArg1->getInfix() + ")";
+      }
+  else
+    return "@";
+}
 
 std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pTree) const
-  {
-    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      switch (mType & 0x00FFFFFF)
-        {
+{
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+    switch (mType & 0x00FFFFFF)
+      {
         case MINUS:
         case PLUS:
-          return handleSign(mpLeft->getDisplayString(pTree));
+          return handleSign(mpArg1->getDisplayString(pTree));
 
         default:
-          return mData + "(" + mpLeft->getDisplayString(pTree) + ")";
-        }
-    else
-      return "@";
-  }
+          return mData + "(" + mpArg1->getDisplayString(pTree) + ")";
+      }
+  else
+    return "@";
+}
 
 std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree * pTree) const
-  {
-    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      {
-        std::string data = "";
+{
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+    {
+      std::string data = "";
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case LOG:
             data = "log";
             break;
@@ -395,41 +444,42 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           default:
             data = "@";
             break;
-          }
+        }
 
-        switch (mType & 0x00FFFFFF)
-          {
+      switch (mType & 0x00FFFFFF)
+        {
           case MINUS:
-            return "(" + data + mpLeft->getDisplay_C_String(pTree) + ")";
+            return "(" + data + mpArg1->getDisplay_C_String(pTree) + ")";
             break;
 
           case PLUS:
             //return handleSign(mpLeft->getDisplay_C_String(pTree));
-            return mpLeft->getDisplay_C_String(pTree);
+            return mpArg1->getDisplay_C_String(pTree);
             break;
 
           case RUNIFORM:
           case RNORMAL:
-            return data + "(" + mpLeft->getDisplay_C_String(pTree) + "," + mpRight->getDisplay_C_String(pTree) + ")";
+            return data + "(" + mpArg1->getDisplay_C_String(pTree) + "," + mpArg2->getDisplay_C_String(pTree) + ")";
 
           default:
-            return data + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
-          }
-      }
-    //else
-    return "@";
-  }
+            return data + "(" + mpArg1->getDisplay_C_String(pTree) + ")";
+        }
+    }
+
+  //else
+  return "@";
+}
 
 std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree * pTree) const
-  {
-    std::string data = "";
+{
+  std::string data = "";
 
-    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      {
-        data = mData;
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+    {
+      data = mData;
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case LOG:
           case LOG10:
           case EXP:
@@ -477,40 +527,42 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           default:
             data = "ILLEGAL FUNCTION";
             break;
-          }
+        }
 
-        switch (mType & 0x00FFFFFF)
-          {
+      switch (mType & 0x00FFFFFF)
+        {
           case MINUS:
-            return "(" + data + mpLeft->getDisplay_MMD_String(pTree) + ")";
+            return "(" + data + mpArg1->getDisplay_MMD_String(pTree) + ")";
             break;
 
           case PLUS:
             //return handleSign(mpLeft->getDisplay_MMD_String(pTree));
-            return mpLeft->getDisplay_MMD_String(pTree);
+            return mpArg1->getDisplay_MMD_String(pTree);
             break;
 
           case RUNIFORM:
           case RNORMAL:
-            return data + "(" + mpLeft->getDisplay_MMD_String(pTree) + "," + mpRight->getDisplay_MMD_String(pTree) + ")";
+            return data + "(" + mpArg1->getDisplay_MMD_String(pTree) + "," + mpArg2->getDisplay_MMD_String(pTree) + ")";
 
           default:
-            return data + "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
-          }
-      }
-    //else
-    return "@";
-  }
+            return data + "(" + mpArg1->getDisplay_MMD_String(pTree) + ")";
+        }
+    }
+
+  //else
+  return "@";
+}
 
 std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree * pTree) const
-  {
-    std::string data = "";
-    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      {
-        data = mData;
+{
+  std::string data = "";
 
-        switch ((SubType)CEvaluationNode::subType(this->getType()))
-          {
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+    {
+      data = mData;
+
+      switch ((SubType)CEvaluationNode::subType(this->getType()))
+        {
           case LOG:
           case LOG10:
           case EXP:
@@ -559,37 +611,38 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
           default:
             data = "@"; //TODO
             break;
-          }
+        }
 
-        switch (mType & 0x00FFFFFF)
-          {
+      switch (mType & 0x00FFFFFF)
+        {
           case MINUS:
-            return "(" + data + mpLeft->getDisplay_XPP_String(pTree) + ")";
+            return "(" + data + mpArg1->getDisplay_XPP_String(pTree) + ")";
             break;
 
           case PLUS:
-            return mpLeft->getDisplay_XPP_String(pTree);
+            return mpArg1->getDisplay_XPP_String(pTree);
             break;
 
           case RUNIFORM:
           case RNORMAL:
-            return data + "(" + mpLeft->getDisplay_XPP_String(pTree) + "," + mpRight->getDisplay_XPP_String(pTree) + ")";
+            return data + "(" + mpArg1->getDisplay_XPP_String(pTree) + "," + mpArg2->getDisplay_XPP_String(pTree) + ")";
 
           default:
-            return data + "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
-          }
-      }
-    else
-      return "@"; //TODO
+            return data + "(" + mpArg1->getDisplay_XPP_String(pTree) + ")";
+        }
+    }
+  else
+    return "@"; //TODO
 
-    return ""; //should never be reached, only because of warning
-  }
+  return ""; //should never be reached, only because of warning
+}
 
 CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& node)
 {
   ASTNodeType_t type = node.getType();
   SubType subType;
   std::string data = "";
+
   if (type == AST_FUNCTION_ROOT)
     {
       ConverterASTNode tmpNode(node);
@@ -602,144 +655,146 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       CEvaluationNode::replaceLog(&tmpNode);
       return CEvaluationTree::convertASTNode(tmpNode);
     }
+
   switch (type)
     {
-    case AST_FUNCTION_ABS:
-      subType = ABS;
-      data = "abs";
-      break;
-    case AST_FUNCTION_ARCCOS:
-      subType = ARCCOS;
-      data = "acos";
-      break;
-    case AST_FUNCTION_ARCCOSH:
-      subType = ARCCOSH;
-      data = "arccosh";
-      break;
-    case AST_FUNCTION_ARCCOT:
-      subType = ARCCOT;
-      data = "arccot";
-      break;
-    case AST_FUNCTION_ARCCOTH:
-      subType = ARCCOTH;
-      data = "arccoth";
-      break;
-    case AST_FUNCTION_ARCCSC:
-      subType = ARCCSC;
-      data = "arccsc";
-      break;
-    case AST_FUNCTION_ARCCSCH:
-      subType = ARCCSCH;
-      data = "arccsch";
-      break;
-    case AST_FUNCTION_ARCSEC:
-      subType = ARCSEC;
-      data = "arcsec";
-      break;
-    case AST_FUNCTION_ARCSECH:
-      subType = ARCSECH;
-      data = "arcsech";
-      break;
-    case AST_FUNCTION_ARCSIN:
-      subType = ARCSIN;
-      data = "asin";
-      break;
-    case AST_FUNCTION_ARCSINH:
-      subType = ARCSINH;
-      data = "arcsinh";
-      break;
-    case AST_FUNCTION_ARCTAN:
-      subType = ARCTAN;
-      data = "atan";
-      break;
-    case AST_FUNCTION_ARCTANH:
-      subType = ARCTANH;
-      data = "arctanh";
-      break;
-    case AST_FUNCTION_CEILING:
-      subType = CEIL;
-      data = "ceil";
-      break;
-    case AST_FUNCTION_COS:
-      subType = COS;
-      data = "cos";
-      break;
-    case AST_FUNCTION_COSH:
-      subType = COSH;
-      data = "cosh";
-      break;
-    case AST_FUNCTION_COT:
-      subType = COT;
-      data = "cot";
-      break;
-    case AST_FUNCTION_COTH:
-      subType = COTH;
-      data = "coth";
-      break;
-    case AST_FUNCTION_CSC:
-      subType = CSC;
-      data = "csc";
-      break;
-    case AST_FUNCTION_CSCH:
-      subType = CSCH;
-      data = "csch";
-      break;
-    case AST_FUNCTION_EXP:
-      subType = EXP;
-      data = "exp";
-      break;
-    case AST_FUNCTION_FACTORIAL:
-      subType = FACTORIAL;
-      data = "factorial";
-      break;
-    case AST_FUNCTION_FLOOR:
-      subType = FLOOR;
-      data = "floor";
-      break;
-    case AST_FUNCTION_LN:
-      subType = LOG;
-      data = "log";
-      break;
-    case AST_FUNCTION_LOG:
-      subType = LOG10;
-      data = "log10";
-      break;
-    case AST_FUNCTION_SEC:
-      subType = SEC;
-      data = "sec";
-      break;
-    case AST_FUNCTION_SECH:
-      subType = SECH;
-      data = "sech";
-      break;
-    case AST_FUNCTION_SIN:
-      subType = SIN;
-      data = "sin";
-      break;
-    case AST_FUNCTION_SINH:
-      subType = SINH;
-      data = "sinh";
-      break;
-    case AST_FUNCTION_TAN:
-      subType = TAN;
-      data = "tan";
-      break;
-    case AST_FUNCTION_TANH:
-      subType = TANH;
-      data = "tanh";
-      break;
-    case AST_LOGICAL_NOT:
-      subType = NOT;
-      data = "not";
-      break;
-      //    case AST_FUNCTION_DELAY:
-      //      subType = DELAY;
-      //      data = "delay";
-      //      break;
-    default:
-      subType = INVALID;
-      break;
+      case AST_FUNCTION_ABS:
+        subType = ABS;
+        data = "abs";
+        break;
+      case AST_FUNCTION_ARCCOS:
+        subType = ARCCOS;
+        data = "acos";
+        break;
+      case AST_FUNCTION_ARCCOSH:
+        subType = ARCCOSH;
+        data = "arccosh";
+        break;
+      case AST_FUNCTION_ARCCOT:
+        subType = ARCCOT;
+        data = "arccot";
+        break;
+      case AST_FUNCTION_ARCCOTH:
+        subType = ARCCOTH;
+        data = "arccoth";
+        break;
+      case AST_FUNCTION_ARCCSC:
+        subType = ARCCSC;
+        data = "arccsc";
+        break;
+      case AST_FUNCTION_ARCCSCH:
+        subType = ARCCSCH;
+        data = "arccsch";
+        break;
+      case AST_FUNCTION_ARCSEC:
+        subType = ARCSEC;
+        data = "arcsec";
+        break;
+      case AST_FUNCTION_ARCSECH:
+        subType = ARCSECH;
+        data = "arcsech";
+        break;
+      case AST_FUNCTION_ARCSIN:
+        subType = ARCSIN;
+        data = "asin";
+        break;
+      case AST_FUNCTION_ARCSINH:
+        subType = ARCSINH;
+        data = "arcsinh";
+        break;
+      case AST_FUNCTION_ARCTAN:
+        subType = ARCTAN;
+        data = "atan";
+        break;
+      case AST_FUNCTION_ARCTANH:
+        subType = ARCTANH;
+        data = "arctanh";
+        break;
+      case AST_FUNCTION_CEILING:
+        subType = CEIL;
+        data = "ceil";
+        break;
+      case AST_FUNCTION_COS:
+        subType = COS;
+        data = "cos";
+        break;
+      case AST_FUNCTION_COSH:
+        subType = COSH;
+        data = "cosh";
+        break;
+      case AST_FUNCTION_COT:
+        subType = COT;
+        data = "cot";
+        break;
+      case AST_FUNCTION_COTH:
+        subType = COTH;
+        data = "coth";
+        break;
+      case AST_FUNCTION_CSC:
+        subType = CSC;
+        data = "csc";
+        break;
+      case AST_FUNCTION_CSCH:
+        subType = CSCH;
+        data = "csch";
+        break;
+      case AST_FUNCTION_EXP:
+        subType = EXP;
+        data = "exp";
+        break;
+      case AST_FUNCTION_FACTORIAL:
+        subType = FACTORIAL;
+        data = "factorial";
+        break;
+      case AST_FUNCTION_FLOOR:
+        subType = FLOOR;
+        data = "floor";
+        break;
+      case AST_FUNCTION_LN:
+        subType = LOG;
+        data = "log";
+        break;
+      case AST_FUNCTION_LOG:
+        subType = LOG10;
+        data = "log10";
+        break;
+      case AST_FUNCTION_SEC:
+        subType = SEC;
+        data = "sec";
+        break;
+      case AST_FUNCTION_SECH:
+        subType = SECH;
+        data = "sech";
+        break;
+      case AST_FUNCTION_SIN:
+        subType = SIN;
+        data = "sin";
+        break;
+      case AST_FUNCTION_SINH:
+        subType = SINH;
+        data = "sinh";
+        break;
+      case AST_FUNCTION_TAN:
+        subType = TAN;
+        data = "tan";
+        break;
+      case AST_FUNCTION_TANH:
+        subType = TANH;
+        data = "tanh";
+        break;
+      case AST_LOGICAL_NOT:
+        subType = NOT;
+        data = "not";
+        break;
+        //    case AST_FUNCTION_DELAY:
+        //      subType = DELAY;
+        //      data = "delay";
+        //      break;
+      default:
+        subType = INVALID;
+        break;
     }
+
   // all functions have one child
   // convert child and add the converted node as child
   // to the current node.
@@ -756,7 +811,8 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       convertedNode->addChild(convertedChildNode);
       return convertedNode;
   }
-  else*/ if       (subType !=       INVALID)
+
+  else*/ if (subType !=       INVALID)
     {
       CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
@@ -769,15 +825,17 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       // throw an eception
       fatalError();
     }
+
   return NULL;
 }
 
 ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) const
-  {
-    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
-    ASTNode* node = new ASTNode();
-    switch (subType)
-      {
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+
+  switch (subType)
+    {
       case INVALID:
         break;
       case LOG:
@@ -893,150 +951,160 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         //        break;
       case RUNIFORM:
       case RNORMAL:
+      case FIRE:
+      case EQUALITY:
         // :TODO: Bug 894: Implement me.
         fatalError();
         break;
-      }
-    // for all but INVALID and DELAY one child has to be converted
-    /*
-       if(subType == DELAY)
-       {
-           const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-           node->addChild(child->toAST());
-           child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
-           node->addChild(child->toAST());
-       }
-       else*/ if       (subType !=       INVALID)
-      {
-        // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
-        // where libsbml does not handle the case correctly that a root
-        // function can have one or two children (MathML.cpp in function
-        // writeFunctionRoot)
-        if (subType == SQRT)
-          {
-            // add a degree node of value 2 as the first child
-            ASTNode* pDegreeNode = new ASTNode();
-            pDegreeNode->setType(AST_INTEGER);
-            pDegreeNode->setValue(2);
-            node->addChild(pDegreeNode);
-          }
-        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        node->addChild(child->toAST(pDataModel));
-      }
-    return node;
-  }
+    }
+
+  // for all but INVALID and DELAY one child has to be converted
+  /*
+     if(subType == DELAY)
+     {
+         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+         node->addChild(child->toAST());
+         child = dynamic_cast<const CEvaluationNode*>(this->getChild()->getSibling());
+         node->addChild(child->toAST());
+     }
+
+     else*/ if (subType !=       INVALID)
+    {
+      // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
+      // where libsbml does not handle the case correctly that a root
+      // function can have one or two children (MathML.cpp in function
+      // writeFunctionRoot)
+      if (subType == SQRT)
+        {
+          // add a degree node of value 2 as the first child
+          ASTNode* pDegreeNode = new ASTNode();
+          pDegreeNode->setType(AST_INTEGER);
+          pDegreeNode->setValue(2);
+          node->addChild(pDegreeNode);
+        }
+
+      const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+
+      node->addChild(child->toAST(pDataModel));
+    }
+
+  return node;
+}
 
 CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvaluationNode*>& children) const
-  {
-    assert(children.size() > 0);
-    CEvaluationNode* child1 = children[0];
-    switch (mType & 0x00FFFFFF)
-      {
+{
+  assert(children.size() > 0);
+  CEvaluationNode* child1 = children[0];
+
+  switch (mType & 0x00FFFFFF)
+    {
       case MINUS:
-        {
-          switch (CEvaluationNode::type(child1->getType()))
-            {
+      {
+        switch (CEvaluationNode::type(child1->getType()))
+          {
             case CEvaluationNode::OPERATOR:
-              {
-                switch (CEvaluationNode::subType(child1->getType()))
-                  {
+            {
+              switch (CEvaluationNode::subType(child1->getType()))
+                {
                   case CEvaluationNodeOperator::DIVIDE:
-                    {// -(a/b) -> (-a)/b
-                      // want to recognize a fraction in a sum easily
-                      CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::DIVIDE), "/");
-                      CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
-                      CEvaluationNode *newchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
-                      CEvaluationNode *grandchild = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
-                      newnode->addChild(newchild1, NULL);
-                      newnode->addChild(newchild2, newchild1);
-                      newchild1->addChild(grandchild, NULL);
-                      delete child1;
-                      return newnode;
-                    }
-                  case CEvaluationNodeOperator::PLUS:
-                    {// -(a+b) -> (-a)+(-b)
-                      // negativity should be property of product
-                      CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::PLUS), "+");
-                      CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
-                      CEvaluationNode *newchild2 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
-                      CEvaluationNode *grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
-                      CEvaluationNode *grandchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
-                      newnode->addChild(newchild1, NULL);
-                      newnode->addChild(newchild2, newchild1);
-                      newchild1->addChild(grandchild1, NULL);
-                      newchild2->addChild(grandchild2, NULL);
-                      delete child1;
-                      return newnode;
-                    }
-                  default:        // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
-                    {
-                      CEvaluationNode *newnode = copyNode(children);
-                      return newnode;
-                    }
-                  }
-              }
-            case CEvaluationNode::FUNCTION:
-              {
-                if (child1->getData() == "-")
-                  {// -(-a) -> a
-                    CEvaluationNode *newnode = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                  {// -(a/b) -> (-a)/b
+                    // want to recognize a fraction in a sum easily
+                    CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::DIVIDE), "/");
+                    CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                    CEvaluationNode *newchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                    CEvaluationNode *grandchild = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                    newnode->addChild(newchild1, NULL);
+                    newnode->addChild(newchild2, newchild1);
+                    newchild1->addChild(grandchild, NULL);
                     delete child1;
                     return newnode;
                   }
-                // default: copy
-                CEvaluationNode *newnode = copyNode(children);
-                return newnode;
-              }
-            case CEvaluationNode::NUMBER:
-              {
-                std::stringstream tmp;
-                tmp << child1->value() * (-1.0);
-                CEvaluationNode* newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
-                delete child1;
-                return newnode;
-              }
-            default:         //cases VARIABLE, CONSTANT..
-              {
-                CEvaluationNode *newnode = copyNode(children);
-                return newnode;
-              }
+                  case CEvaluationNodeOperator::PLUS:
+                  {// -(a+b) -> (-a)+(-b)
+                    // negativity should be property of product
+                    CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::PLUS), "+");
+                    CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                    CEvaluationNode *newchild2 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                    CEvaluationNode *grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                    CEvaluationNode *grandchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                    newnode->addChild(newchild1, NULL);
+                    newnode->addChild(newchild2, newchild1);
+                    newchild1->addChild(grandchild1, NULL);
+                    newchild2->addChild(grandchild2, NULL);
+                    delete child1;
+                    return newnode;
+                  }
+                  default:        // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
+                  {
+                    CEvaluationNode *newnode = copyNode(children);
+                    return newnode;
+                  }
+                }
             }
-        }
-      case SQRT:
-        {// write as ^0.5
-          CEvaluationNode* newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::POWER), "^");
-          CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), "0.5");
-          newnode->addChild(child1, NULL);
-          newnode->addChild(newchild2, child1);
-          return newnode;
-        }
-      default:
-        {
-          CEvaluationNode *newnode = copyNode(children);
-          return newnode;
-        }
+            case CEvaluationNode::FUNCTION:
+            {
+              if (child1->getData() == "-")
+                {// -(-a) -> a
+                  CEvaluationNode *newnode = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                  delete child1;
+                  return newnode;
+                }
+
+              // default: copy
+              CEvaluationNode *newnode = copyNode(children);
+              return newnode;
+            }
+            case CEvaluationNode::NUMBER:
+            {
+              std::stringstream tmp;
+              tmp << child1->value() *(-1.0);
+              CEvaluationNode* newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
+              delete child1;
+              return newnode;
+            }
+            default:         //cases VARIABLE, CONSTANT..
+            {
+              CEvaluationNode *newnode = copyNode(children);
+              return newnode;
+            }
+          }
       }
-  }
+      case SQRT:
+      {// write as ^0.5
+        CEvaluationNode* newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::POWER), "^");
+        CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), "0.5");
+        newnode->addChild(child1, NULL);
+        newnode->addChild(newchild2, child1);
+        return newnode;
+      }
+      default:
+      {
+        CEvaluationNode *newnode = copyNode(children);
+        return newnode;
+      }
+    }
+}
 
 std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
-  {
-    Data Result = mData;
+{
+  Data Result = mData;
 
-    Type T = mpLeft->getType();
-    if ((T & 0xFF000000) == OPERATOR)
-      {
-        Result += "(" + str + ")";
-      }
-    else
-      Result += str;
+  Type T = mpArg1->getType();
 
-    return Result;
-  }
+  if ((T & 0xFF000000) == OPERATOR)
+    {
+      Result += "(" + str + ")";
+    }
+  else
+    Result += str;
+
+  return Result;
+}
 
 CEvaluationNode * CEvaluationNodeFunction::getLeft()
-{return mpLeft;}
+{return mpArg1;}
 const CEvaluationNode * CEvaluationNodeFunction::getLeft() const
-  {return mpLeft;}
+{return mpArg1;}
 
 #include "utilities/copasimathml.h"
 
@@ -1044,15 +1112,15 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
     const std::vector<std::vector<std::string> > & env,
     bool expand,
     unsigned C_INT32 l) const
-  {
-    std::string data = "";
-    std::string ldata = "";
-    std::string rdata = "";
-    bool flag = false;
-    bool flag1 = false;
+{
+  std::string data = "";
+  std::string ldata = "";
+  std::string rdata = "";
+  bool flag = false;
+  bool flag1 = false;
 
-    switch (mType & 0x00FFFFFF)
-      {
+  switch (mType & 0x00FFFFFF)
+    {
       case INVALID:
         data = "@";
         break;
@@ -1158,28 +1226,28 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
       case NOT:
         data = "!";
         break;
-      }
+    }
 
-    const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
+  const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
 
-    flag = ((mpLeft->getType() == (CEvaluationNode::NUMBER))
-            || (mpLeft->getType() == (CEvaluationNode::VARIABLE))
-            || (mpLeft->getType() == (CEvaluationNode::CONSTANT)
-));
+  flag = ((mpArg1->getType() == (CEvaluationNode::NUMBER))
+          || (mpArg1->getType() == (CEvaluationNode::VARIABLE))
+          || (mpArg1->getType() == (CEvaluationNode::CONSTANT)
+             ));
 
-    out << SPC(l) << "<mrow>" << std::endl;
+  out << SPC(l) << "<mrow>" << std::endl;
 
-    switch (mType & 0x00FFFFFF)
-      {
+  switch (mType & 0x00FFFFFF)
+    {
       case PLUS:
 
-        flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
-                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                || (((mpLeft->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand));
+        flag = ((mpArg1->getType() == (CEvaluationNode::OPERATOR | PLUS))
+                || (mpArg1->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                || (((mpArg1->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand));
 
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 1);
+        mpArg1->writeMathML(out, env, expand, l + 1);
 
         if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
@@ -1193,7 +1261,9 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
             flag1 = ((T & 0xFF000000) == OPERATOR &&
                      this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()));
+
             if (flag1) out << SPC(l + 1) << "<mfenced>" << std::endl;
+
             if (flag1) out << SPC(l + 1) << "<mrow>" << std::endl;
           }
 
@@ -1201,11 +1271,12 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         if (!flag) out << SPC(l + 2) << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 2);
+        mpArg1->writeMathML(out, env, expand, l + 2);
 
         if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
 
         if (flag1) out << SPC(l + 1) << "</mrow>" << std::endl;
+
         if (flag1) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
         break;
@@ -1214,7 +1285,7 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 1);
+        mpArg1->writeMathML(out, env, expand, l + 1);
 
         if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
@@ -1227,7 +1298,7 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         out << SPC(l + 1) << ldata << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 1);
+        mpArg1->writeMathML(out, env, expand, l + 1);
 
         out << SPC(l + 1) << rdata << std::endl;
 
@@ -1238,7 +1309,7 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
         out << SPC(l + 1) << "<msup>" << std::endl;
         out << SPC(l + 2) << "<mo> e  </mo>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 2);
+        mpArg1->writeMathML(out, env, expand, l + 2);
 
         out << SPC(l + 1) << "</msup>" << std::endl;
 
@@ -1251,9 +1322,10 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
         out << SPC(l + 2) << "<mn>" << "10" << "</mn>" << std::endl;
 
         out << SPC(l + 1) << "</msub>" << std::endl;
+
         if (!flag) out << SPC(l + 2) << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 2);
+        mpArg1->writeMathML(out, env, expand, l + 2);
 
         if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
 
@@ -1265,14 +1337,14 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 1);
+        mpArg1->writeMathML(out, env, expand, l + 1);
 
         if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
         break;
-      }
+    }
 
-    out << SPC(l) << "</mrow>" << std::endl;
+  out << SPC(l) << "</mrow>" << std::endl;
 
-    return;
-  }
+  return;
+}

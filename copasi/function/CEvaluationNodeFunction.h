@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:14:47 $
+//   $Date: 2009/05/01 19:23:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,8 +86,9 @@ public:
     PLUS = 0x00000021,
     NOT = 0x00000022,
     RUNIFORM = 0x00000023,
-    RNORMAL = 0x00000024 /*,
-    DELAY = 0x00000025*/
+    RNORMAL = 0x00000024,
+    FIRE = 0x00000025,
+    EQUALITY = 0x00000026
   };
 
   // Operations
@@ -123,10 +124,15 @@ public:
    */
   virtual inline const C_FLOAT64 & value() const
   {
+    if (mpFunction)
+      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction)(mpArg1->value());
+
     if (mpFunction2)
-      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction2)(mpLeft->value(), mpRight->value());
-    else
-      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction)(mpLeft->value());
+      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction2)(mpArg1->value(), mpArg2->value());
+
+    if (mpFunction4)
+      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction4)(mpArg1->value(), mpArg2->value(),
+             mpArg3->value(), mpArg4->value());
   }
 
   /**
@@ -278,16 +284,30 @@ private:
   static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
                            const C_FLOAT64 & sd);
 
+  static C_FLOAT64 fire(const C_FLOAT64 & root,
+                        const C_FLOAT64 & active);
+
+  static C_FLOAT64 equality(const C_FLOAT64 & fireX,
+                            const C_FLOAT64 & equalX,
+                            const C_FLOAT64 & fireY,
+                            const C_FLOAT64 & equalY);
+
   // Attributes
 private:
-  C_FLOAT64(*mpFunction)(C_FLOAT64 value1);
+  C_FLOAT64(*mpFunction)(C_FLOAT64 arg1);
 
-  C_FLOAT64(*mpFunction2)(const C_FLOAT64 & value1,
-                          const C_FLOAT64 & value2);
+  C_FLOAT64(*mpFunction2)(const C_FLOAT64 & arg1,
+                          const C_FLOAT64 & arg2);
 
-  CEvaluationNode * mpLeft;
+  C_FLOAT64(*mpFunction4)(const C_FLOAT64 & arg1,
+                          const C_FLOAT64 & arg2,
+                          const C_FLOAT64 & arg3,
+                          const C_FLOAT64 & arg4);
 
-  CEvaluationNode * mpRight;
+  CEvaluationNode * mpArg1;
+  CEvaluationNode * mpArg2;
+  CEvaluationNode * mpArg3;
+  CEvaluationNode * mpArg4;
 
   static CRandom * mpRandom;
 };
