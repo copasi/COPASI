@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/04 12:06:15 $
+//   $Date: 2009/05/04 12:28:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,6 @@
 
 #include <qvariant.h>
 #include "CQArrayAnnotationsWidget.h"
-//#include "StateSubwidget.ui.h"
 
 #include <qfileinfo.h>
 #include <qlineedit.h>
