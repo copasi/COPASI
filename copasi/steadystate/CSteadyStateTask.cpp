@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:27:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -401,7 +401,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Species" << "\t";
   os << "Concentration";
 
-  std::string Units = pModel->getConcentrationUnits();
+  std::string Units = pModel->getConcentrationUnitsDisplayString();
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -409,7 +409,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Concentration Rate";
-  Units = pModel->getConcentrationRateUnits();
+  Units = pModel->getConcentrationRateUnitsDisplayString();
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -419,7 +419,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Particle Number" << "\t";
 
   os << "Particle Number Rate";
-  Units = pModel->getFrequencyUnits();
+  Units = pModel->getFrequencyUnitsDisplayString();
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -427,7 +427,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Transition Time";
-  Units = pModel->getTimeUnits();
+  Units = pModel->getTimeUnitsDisplayString();
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -456,7 +456,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "Reaction" << "\t";
 
   os << "Flux";
-  Units = pModel->getQuantityRateUnits();
+  Units = pModel->getQuantityRateUnitsDisplayString();
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -464,7 +464,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << "\t";
 
   os << "Particle Flux";
-  Units = pModel->getFrequencyUnits();;
+  Units = pModel->getFrequencyUnitsDisplayString();;
 
   if (Units != "")
     os << " (" << Units << ")";
