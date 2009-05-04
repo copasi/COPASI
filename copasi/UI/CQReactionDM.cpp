@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 15:24:00 $
+//   $Date: 2009/05/04 16:38:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
             QString RateUnits;
 
             if (pModel)
-              RateUnits = FROM_UTF8(pModel->getQuantityRateUnits());
+              RateUnits = FROM_UTF8(pModel->getQuantityRateUnitsDisplayString());
 
             if (!RateUnits.isEmpty())
               RateUnits = "\n(" + RateUnits + ")";
@@ -146,7 +146,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
             QString FrequencyUnits;
 
             if (pModel)
-              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnits());
+              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
 
             if (!FrequencyUnits.isEmpty())
               FrequencyUnits = "\n(" + FrequencyUnits + ")";
