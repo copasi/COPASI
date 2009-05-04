@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.195 $
+#   $Revision: 1.196 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/04/27 00:03:17 $
+#   $Author: aekamal $
+#   $Date: 2009/05/04 15:24:00 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.195 $ $Author: shoops $ $Date: 2009/04/27 00:03:17 $
+# $Revision: 1.196 $ $Author: aekamal $ $Date: 2009/05/04 15:24:00 $
 ######################################################################
 
 LIB = UI
@@ -41,7 +41,6 @@ HEADERS	+= \
 	ChemEqValidator.h \
 	CMCAResultWidget.h \
 	CReportDefinitionSelect.h \
-	CompartmentsWidget.h \
 	CopasiFileDialog.h \
 	CopasiSlider.h \
 	CopasiTableWidget.h \
@@ -52,6 +51,10 @@ HEADERS	+= \
 	CQArrayAnnotationsWidget.h \
 	CQBarChart.h \
 	CQBaseDataModel.h \
+	CQComboDelegate.h \
+	CQCompartmentDM.h \
+	CQCompartmentsWidget.h \		
+	CQDateTimeEditDelegate.h \
 	CQDateTimeEditTableItem.h \
 	CQEventsWidget.h \
 	CQExpressionWidget.h \
@@ -112,7 +115,6 @@ SOURCES	+= \
 	CCopasiSimpleSelectionTree.cpp \
 	CMCAResultWidget.cpp \
 	CReportDefinitionSelect.cpp \
-	CompartmentsWidget.cpp \
 	CopasiFileDialog.cpp \
 	CopasiSlider.cpp \
 	CopasiTableWidget.cpp \
@@ -123,6 +125,10 @@ SOURCES	+= \
 	CQArrayAnnotationsWidget.cpp \
 	CQBarChart.cpp \
 	CQBaseDataModel.cpp \
+	CQComboDelegate.cpp \	
+	CQCompartmentDM.cpp \
+	CQCompartmentsWidget.cpp \			
+	CQDateTimeEditDelegate.cpp \
 	CQDateTimeEditTableItem.cpp \
 	CQEventsWidget.cpp \
 	CQExpressionWidget.cpp \
@@ -177,6 +183,10 @@ SOURCES	+= \
   HEADERS -= TSSWidget.h
   SOURCES -= TSSWidget.cpp
 }
+
+
+FORMS += CQReactionsWidget.ui
+FORMS += CQCompartmentsWidget.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQCompartment.ui

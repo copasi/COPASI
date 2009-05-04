@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQBiologicalDescriptionDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/28 18:25:17 $
+//   $Date: 2009/05/04 15:19:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,29 +17,29 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "UI/CQBaseDataModel.h"
 
-#define COL_RELATIONSHIP                   0
-#define COL_RESOURCE_BD                    1
-#define COL_ID_BD                          2
-#define TOTAL_COLS_BIOLOGICAL_DESCRIPTIONS 3
+#define COL_RELATIONSHIP                   1
+#define COL_RESOURCE_BD                    2
+#define COL_ID_BD                          3
+#define TOTAL_COLS_BIOLOGICAL_DESCRIPTIONS 4
 
 class CQBiologicalDescriptionDM : public CQBaseDataModel
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole);
+public:
+  CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
+  int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  QVariant data(const QModelIndex &index, int role) const;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const;
+  bool setData(const QModelIndex &index, const QVariant &value,
+               int role = Qt::EditRole);
 
-  protected:
-    bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-    bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
-    CMIRIAMInfo* mpMIRIAMInfo;
-  };
+protected:
+  bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+  CMIRIAMInfo* mpMIRIAMInfo;
+};
 
 #endif //CQBiologicalDescriptionDM_H

@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQComboDelegate.cpp,v $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQComboDelegate.cpp,v $
 //   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/02/23 05:12:36 $
+//   $Date: 2009/05/04 15:24:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,30 +25,43 @@ CQComboDelegate::CQComboDelegate(const QStringList *pComboItems, QObject *parent
 QWidget *CQComboDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem & C_UNUSED(option),
                                        const QModelIndex & C_UNUSED(index)) const
-  {
-    QComboBox *editor = new QComboBox(parent);
-    editor->addItems(*mpComboItems);
-    return editor;
-  }
+{
+  QComboBox *editor = new QComboBox(parent);
+  editor->addItems(*mpComboItems);
+  return editor;
+}
 
 void CQComboDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
-  {
-    QString value = index.model()->data(index, Qt::EditRole).toString();
-    QComboBox *comboBox = static_cast<QComboBox*>(editor);
-    comboBox->setCurrentItem(comboBox->findText(value));
-  }
+{
+  QString value = index.model()->data(index, Qt::EditRole).toString();
+  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+  comboBox->setCurrentItem(comboBox->findText(value));
+}
 
 void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
-  {
-    QComboBox *comboBox = static_cast<QComboBox*>(editor);
-    QVariant value(comboBox->currentText());
-    model->setData(index, value, Qt::EditRole);
-  }
+{
+  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+  QVariant value(comboBox->currentText());
+  model->setData(index, value, Qt::EditRole);
+}
 
 void CQComboDelegate::updateEditorGeometry(QWidget *editor,
     const QStyleOptionViewItem &option, const QModelIndex & C_UNUSED(index)) const
-  {
-    editor->setGeometry(option.rect);
-  }
+{
+  editor->setGeometry(option.rect);
+}
+
+CQIndexComboDelegate::CQIndexComboDelegate(const QStringList *pComboItems, QObject *parent)
+    : CQComboDelegate(pComboItems, parent)
+{
+}
+
+void CQIndexComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                        const QModelIndex &index) const
+{
+  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+  QVariant value(comboBox->currentIndex());
+  model->setData(index, value, Qt::EditRole);
+}

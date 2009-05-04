@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/19 19:05:11 $
+//   $Date: 2009/05/04 15:19:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,6 +90,7 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
       (*itPDM)->setSortCaseSensitivity(Qt::CaseInsensitive);
 
       (*it)->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      (*it)->verticalHeader()->hide();
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
               this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
     }
@@ -145,6 +146,10 @@ void CQMiriamWidget::deleteSelectedAuthor()
   if (!mpTblAuthors->selectionModel()->selectedIndexes().empty())
     {
       int delRow = mpTblAuthors->selectionModel()->selectedIndexes().value(0).row();
+
+      if (mpCreatorDM->isDefaultRow(delRow))
+        return;
+
       QString givenName = mpTblAuthors->model()->data(mpTblAuthors->selectionModel()->selectedIndexes().value(COL_GIVEN_NAME)).toString();
       QString familyName = mpTblAuthors->model()->data(mpTblAuthors->selectionModel()->selectedIndexes().value(COL_FAMILY_NAME)).toString();
       QString msg = "Do you want to delete author '";
@@ -175,6 +180,10 @@ void CQMiriamWidget::deleteSelectedReference()
   if (!mpTblReferences->selectionModel()->selectedIndexes().empty())
     {
       int delRow = mpTblReferences->selectionModel()->selectedIndexes().value(0).row();
+
+      if (mpReferenceDM->isDefaultRow(delRow))
+        return;
+
       QString resource = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_RESOURCE_REFERENCE)).toString();
       QString Id = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_ID_REFERENCE)).toString();
       QString msg = "Do you want to delete Reference '";
@@ -205,6 +214,10 @@ void CQMiriamWidget::deleteSelectedBiologicalDescription()
   if (!mpTblDescription->selectionModel()->selectedIndexes().empty())
     {
       int delRow = mpTblDescription->selectionModel()->selectedIndexes().value(0).row();
+
+      if (mpBiologicalDescriptionDM->isDefaultRow(delRow))
+        return;
+
       QString resource = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_RESOURCE_BD)).toString();
       QString Id = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_ID_BD)).toString();
       QString msg = "Do you want to delete Description '";
@@ -235,6 +248,10 @@ void CQMiriamWidget::deleteSelectedModified()
   if (!mpTblModified->selectionModel()->selectedIndexes().empty())
     {
       int delRow = mpTblModified->selectionModel()->selectedIndexes().value(0).row();
+
+      if (mpModifiedDM->isDefaultRow(delRow))
+        return;
+
       QString dateModified = mpTblModified->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_DATE_MODIFIED)).toString();
       QString msg = "Do you want to delete Date/Time Modified '";
 
@@ -250,24 +267,6 @@ void CQMiriamWidget::deleteSelectedModified()
 
       if (ret == QMessageBox::Yes)
         {mpModifiedDM->removeRow(delRow);}
-    }
-}
-
-void CQMiriamWidget::slotBtnNewClicked()
-{
-  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
-
-  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
-
-  for (; it != end && itDM != endDM; it++, itDM++)
-    {
-      if ((*it)->hasFocus())
-        {
-          if (!(*itDM)->isLastDefaultRow() && (*itDM)->insertRow())
-            (*it)->resizeColumnsToContents();
-        }
     }
 }
 
@@ -287,7 +286,6 @@ void CQMiriamWidget::slotBtnClearClicked()
       if (ret == QMessageBox::Yes)
         {
           mpCreatorDM->clear();
-          mpCreatorDM->insertRow();
         }
     }
   else if (mpTblReferences->hasFocus())
@@ -298,7 +296,6 @@ void CQMiriamWidget::slotBtnClearClicked()
       if (ret == QMessageBox::Yes)
         {
           mpReferenceDM->clear();
-          mpReferenceDM->insertRow();
         }
     }
   else if (mpTblDescription->hasFocus())
@@ -309,7 +306,6 @@ void CQMiriamWidget::slotBtnClearClicked()
       if (ret == QMessageBox::Yes)
         {
           mpBiologicalDescriptionDM->clear();
-          mpBiologicalDescriptionDM->insertRow();
         }
     }
   else if (mpTblModified->hasFocus())
@@ -320,7 +316,6 @@ void CQMiriamWidget::slotBtnClearClicked()
       if (ret == QMessageBox::Yes)
         {
           mpModifiedDM->clear();
-          mpModifiedDM->insertRow();
         }
     }
 }
@@ -382,7 +377,6 @@ bool CQMiriamWidget::enter(const std::string & key)
       (*itPDM)->setSourceModel(*itDM);
       (*it)->setModel(NULL);
       (*it)->setModel(*itPDM);
-      (*itDM)->insertRow();
       (*it)->resizeColumnsToContents();
     }
 
@@ -403,17 +397,6 @@ bool CQMiriamWidget::enter(const std::string & key)
 
 bool CQMiriamWidget::leave()
 {
-  std::vector<QTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<QTableView*>::const_iterator end = mWidgets.end();
-
-  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
-
-  for (; it != end && itDM != endDM; it++, itDM++)
-    {
-      (*itDM)->removeLastRowIfEmpty();
-    }
-
   mpMIRIAMInfo->save();
   protectedNotify(ListViews::MIRIAM, ListViews::CHANGE, mpMIRIAMInfo->getKey());
   return true;
@@ -447,24 +430,11 @@ void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
     slotBtnDeleteClicked();
 }
 
-void CQMiriamWidget::dataChanged(const QModelIndex& topLeft, const QModelIndex& C_UNUSED(bottomRight))
+void CQMiriamWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft), const QModelIndex& C_UNUSED(bottomRight))
 {
   std::vector<QTableView*>::const_iterator it = mWidgets.begin();
   std::vector<QTableView*>::const_iterator end = mWidgets.end();
 
-  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
-
-  for (; it != end && itDM != endDM; it++, itDM++)
-    {
-      if ((*itDM) == topLeft.model())
-        {
-          if (topLeft.row() == ((*itDM)->rowCount() - 1))
-            //If edit was done on last row, insert a new empty row.
-            {
-              if (!(*itDM)->isLastDefaultRow() && (*itDM)->insertRow())
-                (*it)->resizeColumnsToContents();
-            }
-        }
-    }
+  for (; it != end; it++)
+    (*it)->resizeColumnsToContents();
 }

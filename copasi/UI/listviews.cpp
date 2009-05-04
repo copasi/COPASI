@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.264 $
+//   $Revision: 1.265 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: aekamal $
+//   $Date: 2009/05/04 15:24:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"
 
-#include "CompartmentsWidget.h"
+#include "CQCompartmentsWidget.h"
 #include "CQCompartment.h"
 #ifdef COPASI_DEBUG
 #include "CQEventsWidget.h"
@@ -350,7 +350,7 @@ void ListViews::setupFolders()
 void ListViews::ConstructNodeWidgets()
 {
   // create the model widgets
-  if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
+  if (!compartmentsWidget) compartmentsWidget = new CQCompartmentsWidget(this);
 
   compartmentsWidget->hide();
 

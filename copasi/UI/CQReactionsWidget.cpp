@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/19 19:04:43 $
+//   $Date: 2009/05/04 15:24:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,13 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
   mpProxyModel->setFilterKeyColumn(COL_NAME);
 
   mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpTblReactions->verticalHeader()->hide();
+
+  setFramework(mFramework);
 
   // Connect the table widget
+  connect(mpReactionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+          this, SLOT(slotNotifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)));
   connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -80,6 +85,9 @@ void CQReactionsWidget::deleteSelectedReaction()
     {return;}
 
   int delRow = mpTblReactions->selectionModel()->selectedIndexes().value(0).row();
+
+  if (mpReactionDM->isDefaultRow(delRow))
+    return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -226,15 +234,6 @@ void CQReactionsWidget::deleteSelectedReaction()
     }
 }
 
-void CQReactionsWidget::slotBtnNewClicked()
-{
-  if (!mpReactionDM->isLastDefaultRow() && mpReactionDM->insertRow())
-    {
-      mpTblReactions->resizeColumnsToContents();
-      protectedNotify(ListViews::REACTION, ListViews::ADD, "");;
-    }
-}
-
 void CQReactionsWidget::slotBtnClearClicked()
 {
 
@@ -245,7 +244,6 @@ void CQReactionsWidget::slotBtnClearClicked()
     {
       mpReactionDM->clear();
       protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
-      mpReactionDM->insertRow();
     }
 }
 
@@ -256,7 +254,6 @@ bool CQReactionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListV
 
 bool CQReactionsWidget::leave()
 {
-  mpReactionDM->removeLastRowIfEmpty();
   return true;
 }
 
@@ -266,31 +263,31 @@ bool CQReactionsWidget::enter(const std::string & C_UNUSED(key))
   //Set Model for the TableView
   mpTblReactions->setModel(NULL);
   mpTblReactions->setModel(mpProxyModel);
-  mpReactionDM->insertRow();
   mpTblReactions->resizeColumnsToContents();
+  setFramework(mFramework);
 
   return true;
 }
 
-void CQReactionsWidget::dataChanged(const QModelIndex& topLeft,
+void CQReactionsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
                                     const QModelIndex& C_UNUSED(bottomRight))
 {
-  if (mpReactionDM == topLeft.model())
-    {
-      if (topLeft.row() == (mpReactionDM->rowCount() - 1))
-        //If edit was done on last row, insert a new empty row.
-        {
-          if (!mpReactionDM->isLastDefaultRow() && mpReactionDM->insertRow())
-            mpTblReactions->resizeColumnsToContents();
-        }
-    }
-
-  protectedNotify(ListViews::REACTION, ListViews::CHANGE, "");
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpTblReactions->resizeColumnsToContents();
+  setFramework(mFramework);
 }
 
-void CQReactionsWidget::slotDoubleClicked(const QModelIndex index)
+void CQReactionsWidget::slotNotifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  protectedNotify(objectType, action, key);
+}
+
+void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
+{
+  QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
+
+  if (mpReactionDM->isDefaultRow(index))
+    return;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -313,6 +310,24 @@ void CQReactionsWidget::keyPressEvent(QKeyEvent* ev)
 
 void CQReactionsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+}
+
+void CQReactionsWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+
+  switch (mFramework)
+    {
+      case 0:
+        mpTblReactions->showColumn(COL_FLUX);
+        mpTblReactions->hideColumn(COL_PARTICLE_FLUX);
+        break;
+
+      case 1:
+        mpTblReactions->hideColumn(COL_FLUX);
+        mpTblReactions->showColumn(COL_PARTICLE_FLUX);
+        break;
+    }
 }

@@ -86,10 +86,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CMIRIAMResource.h"
-				>
-			</File>
-			<File
 				RelativePath="CModelMIRIAMInfo.cpp"
 				>
 			</File>

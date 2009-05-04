@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.151 $
+//   $Revision: 1.152 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/05 17:23:47 $
+//   $Date: 2009/05/04 15:24:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ class CCopasiObject;
 
 class DataModelGUI;
 class CQCompartment;
-class CompartmentsWidget;
+class CQCompartmentsWidget;
 class CQDifferentialEquations;
 #ifdef COPASI_DEBUG
 class CQEventsWidget;
@@ -94,178 +94,178 @@ class CQLayoutsWidget;
 //*********************************************************************************
 
 class FolderListItem : public Q3ListViewItem
-  {
-  public:
-    FolderListItem(Q3ListView *parent, const IndexedNode *f, bool recurs = true);
-    FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs = true);
-    void createSubFolders();
-    void deleteSubFolders();
+{
+public:
+  FolderListItem(Q3ListView *parent, const IndexedNode *f, bool recurs = true);
+  FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs = true);
+  void createSubFolders();
+  void deleteSubFolders();
 
-    bool setFolder(const IndexedNode * folder);
-    const IndexedNode * getFolder() const;
-    QString key(int, bool) const;
+  bool setFolder(const IndexedNode * folder);
+  const IndexedNode * getFolder() const;
+  QString key(int, bool) const;
 
-  protected:
-    const IndexedNode *mpFolder;
-    QString mSortKey;
-  };
+protected:
+  const IndexedNode *mpFolder;
+  QString mSortKey;
+};
 
 //********************************************************************************
 
 class ListViews : public QSplitter
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-    friend class CopasiUI3Window;
+  friend class CopasiUI3Window;
 
-  public:
-    ListViews(QWidget *parent = 0, const char *name = 0);
-    ~ListViews();
+public:
+  ListViews(QWidget *parent = 0, const char *name = 0);
+  ~ListViews();
 
 #ifdef DELETE
 #undef DELETE
 #endif
-    // CHANGE does not include RENAME
-    enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-    enum ObjectType {METABOLITE = 0
-                                  , COMPARTMENT
-                     , REACTION
-                     , FUNCTION
-                     , MODEL
-                     , STATE
-                     , REPORT
-                     , PLOT
-                     , MODELVALUE
-                     , EVENT
-                     , MIRIAM
-                     , LAYOUT
-                    };
+  // CHANGE does not include RENAME
+  enum Action {CHANGE = 0, ADD, DELETE, RENAME};
+  enum ObjectType {METABOLITE = 0
+                                , COMPARTMENT
+                   , REACTION
+                   , FUNCTION
+                   , MODEL
+                   , STATE
+                   , REPORT
+                   , PLOT
+                   , MODELVALUE
+                   , EVENT
+                   , MIRIAM
+                   , LAYOUT
+                  };
 
-    static void setDataModel(DataModelGUI* dm);
-    static DataModelGUI* getDataModel() {return dataModel;};
-    static bool notify(ObjectType objectType, Action action, const std::string & key = "");
-    static bool commit();
-    void switchToOtherWidget(C_INT32 id, const std::string & key);
-    static void switchAllListViewsToWidget(C_INT32 id, const std::string & key);
+  static void setDataModel(DataModelGUI* dm);
+  static DataModelGUI* getDataModel() {return dataModel;};
+  static bool notify(ObjectType objectType, Action action, const std::string & key = "");
+  static bool commit();
+  void switchToOtherWidget(C_INT32 id, const std::string & key);
+  static void switchAllListViewsToWidget(C_INT32 id, const std::string & key);
 
-    void storeCurrentItem();
-    void restoreCurrentItem();
-    static void storeCurrentItemInAllListViews();
-    static void restoreCurrentItemInAllListViews();
-    CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
+  void storeCurrentItem();
+  void restoreCurrentItem();
+  static void storeCurrentItemInAllListViews();
+  static void restoreCurrentItemInAllListViews();
+  CopasiWidget* findWidgetFromId(const C_INT32 & id) const;
 
-    // return current widget - added 02.07.08
-    CopasiWidget* getCurrentWidget();
+  // return current widget - added 02.07.08
+  CopasiWidget* getCurrentWidget();
 
-  private:
-    CMathModel *mpMathModel;
+private:
+  CMathModel *mpMathModel;
 
-    CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
+  CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
 
-    void ConstructNodeWidgets();
-    void setupFolders();
+  void ConstructNodeWidgets();
+  void setupFolders();
 
-    void setTheRightPixmap(Q3ListViewItem* lvi);
+  void setTheRightPixmap(Q3ListViewItem* lvi);
 
-    FolderListItem* findListViewItem(C_INT32 id, std::string key); //should always return a valid item
+  FolderListItem* findListViewItem(C_INT32 id, std::string key); //should always return a valid item
 
-  private slots:
-    void slotFolderChanged(Q3ListViewItem*);
+private slots:
+  void slotFolderChanged(Q3ListViewItem*);
 
-  private:
-    static DataModelGUI* dataModel;
-    static std::vector< Refresh * > mUpdateVector;
-    static std::set< const CCopasiObject * > mChangedObjects;
-    static int mFramework;
+private:
+  static DataModelGUI* dataModel;
+  static std::vector< Refresh * > mUpdateVector;
+  static std::set< const CCopasiObject * > mChangedObjects;
+  static int mFramework;
 
-    Q3ListViewItem* lastSelection;
-    CopasiWidget* currentWidget;
-    std::string lastKey;
+  Q3ListViewItem* lastSelection;
+  CopasiWidget* currentWidget;
+  std::string lastKey;
 
-    std::string mSaveObjectKey;
-    C_INT32 mSaveFolderID;
+  std::string mSaveObjectKey;
+  C_INT32 mSaveFolderID;
 
-    static std::set<ListViews *> mListOfListViews;
-    bool attach();
-    bool detach();
+  static std::set<ListViews *> mListOfListViews;
+  bool attach();
+  bool detach();
 
-    bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
-    static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
-    static bool updateAllListviews(C_INT32 id);
+  bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
+  static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
+  static bool updateAllListviews(C_INT32 id);
 
-    void notifyChildWidgets(ObjectType objectType,
-                            Action action,
-                            const std::string & key);
+  void notifyChildWidgets(ObjectType objectType,
+                          Action action,
+                          const std::string & key);
 
-    static void notifyAllChildWidgets(ObjectType objectType,
-                                      Action action,
-                                      const std::string & key);
+  static void notifyAllChildWidgets(ObjectType objectType,
+                                    Action action,
+                                    const std::string & key);
 
-    static void refreshInitialValues();
-    static void buildChangedObjects();
+  static void refreshInitialValues();
+  static void buildChangedObjects();
 
-    void setChildWidgetsFramework(int framework);
+  void setChildWidgetsFramework(int framework);
 
-    static void setFramework(int framework);
+  static void setFramework(int framework);
 
-    void updateBiologicalDescriptionContents();
-    static void updateMIRIAMResourceContents();
+  void updateBiologicalDescriptionContents();
+  static void updateMIRIAMResourceContents();
 
-    //the widgets
-    Q3ListView *folders;
+  //the widgets
+  Q3ListView *folders;
 
-    CMCAResultWidget* mpCMCAResultWidget;
-    CQMCAWidget* mpCQMCAWidget;
-    CompartmentsWidget *compartmentsWidget;
-    CTabWidget *compartmentsWidget1;
-    CQSplashWidget *defaultWidget;
-    CQDifferentialEquations *differentialEquations;
+  CMCAResultWidget* mpCMCAResultWidget;
+  CQMCAWidget* mpCQMCAWidget;
+  CQCompartmentsWidget *compartmentsWidget;
+  CTabWidget *compartmentsWidget1;
+  CQSplashWidget *defaultWidget;
+  CQDifferentialEquations *differentialEquations;
 #ifdef COPASI_DEBUG
-    CQEventsWidget *eventsWidget;
-    CQEventWidget1 *eventWidget1;
+  CQEventsWidget *eventsWidget;
+  CQEventWidget1 *eventWidget1;
 #endif // COPASI_DEBUG
-    FunctionWidget *functionWidget;
-    CTabWidget *functionWidget1;
-    CQLyapWidget *lyapWidget;
-    CQLyapResultWidget *lyapResultWidget;
-    MetabolitesWidget *metabolitesWidget;
-    CTabWidget *metabolitesWidget1;
-    CTabWidget *modelWidget;
-    ModelValuesWidget *modelValuesWidget;
-    CTabWidget *mpModelValueWidget;
-    CQEFMWidget *modesWidget;
-    CQMoietiesTaskResult *mpMoietiesTaskResult;
-    CQMoietiesTaskWidget *mpMoietiesTaskWidget;
-    CQOptimizationWidget *optimizationWidget;
-    CQOptimizationResult *optResultWidget;
-    CQFittingWidget *paramFittingWidget;
-    CQFittingResult *mpFittingResultWidget;
-    ParametersWidget *parametersWidget;
-    PlotWidget *plotWidget;
-    PlotWidget1 *plotWidget1;
-    CQReactionsWidget *reactionsWidget;
-    CTabWidget *reactionsWidget1;
-    ScanWidget *scanWidget;
-    SensitivitiesWidget *sensWidget;
-    CQSensResultWidget *sensResultWidget;
-    StateWidget *stateWidget;
-    SteadyStateWidget *steadystateWidget;
-    TableDefinition *tableDefinition;
-    CQReportDefinition *tableDefinition1;
+  FunctionWidget *functionWidget;
+  CTabWidget *functionWidget1;
+  CQLyapWidget *lyapWidget;
+  CQLyapResultWidget *lyapResultWidget;
+  MetabolitesWidget *metabolitesWidget;
+  CTabWidget *metabolitesWidget1;
+  CTabWidget *modelWidget;
+  ModelValuesWidget *modelValuesWidget;
+  CTabWidget *mpModelValueWidget;
+  CQEFMWidget *modesWidget;
+  CQMoietiesTaskResult *mpMoietiesTaskResult;
+  CQMoietiesTaskWidget *mpMoietiesTaskWidget;
+  CQOptimizationWidget *optimizationWidget;
+  CQOptimizationResult *optResultWidget;
+  CQFittingWidget *paramFittingWidget;
+  CQFittingResult *mpFittingResultWidget;
+  ParametersWidget *parametersWidget;
+  PlotWidget *plotWidget;
+  PlotWidget1 *plotWidget1;
+  CQReactionsWidget *reactionsWidget;
+  CTabWidget *reactionsWidget1;
+  ScanWidget *scanWidget;
+  SensitivitiesWidget *sensWidget;
+  CQSensResultWidget *sensResultWidget;
+  StateWidget *stateWidget;
+  SteadyStateWidget *steadystateWidget;
+  TableDefinition *tableDefinition;
+  CQReportDefinition *tableDefinition1;
 #ifdef COPASI_TSS
-    TSSWidget *tssWidget;
+  TSSWidget *tssWidget;
 #endif // COPASI_TSS
-    TimeSeriesWidget *timeSeriesWidget;
-    CQTrajectoryWidget *trajectoryWidget;
+  TimeSeriesWidget *timeSeriesWidget;
+  CQTrajectoryWidget *trajectoryWidget;
 #ifdef COPASI_TSSA
-    CQTSSAWidget *tssaWidget;
-    CQTSSAResultWidget *tssaResultWidget;
+  CQTSSAWidget *tssaWidget;
+  CQTSSAResultWidget *tssaResultWidget;
 #endif // COPASI_DEBUG
 #ifdef COPASI_DEBUG
-    CQUpdatesWidget *mpUpdatesWidget;
+  CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
-    CQLayoutsWidget * mpLayoutsWidget;
-    CQMathMatrixWidget * mpMathMatrixWidget;
-  };
+  CQLayoutsWidget * mpLayoutsWidget;
+  CQMathMatrixWidget * mpMathMatrixWidget;
+};
 
 #endif

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/03/16 14:52:35 $
+//   $Date: 2009/05/04 15:19:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@ CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpMIRIAMInfo->getModifications().size();
+  return mpMIRIAMInfo->getModifications().size() + 1;
 }
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -41,18 +41,30 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      switch (index.column())
+      if (isDefaultRow(index))
         {
-          case COL_DATE_MODIFIED:
-            QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
+          if (index.column() == COL_ROW_NUMBER)
+            return QVariant(index.row() + 1);
+          else
+            return QVariant(QString(""));
+        }
+      else
+        {
+          switch (index.column())
+            {
+              case COL_ROW_NUMBER:
+                return QVariant(index.row() + 1);
+              case COL_DATE_MODIFIED:
+                QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
 
-            if (dt.isValid())
-              {
-                if (role == Qt::DisplayRole)
-                  return QVariant(dt.toString(Qt::TextDate));
-                else
-                  return QVariant(dt.toString(Qt::ISODate));
-              }
+                if (dt.isValid())
+                  {
+                    if (role == Qt::DisplayRole)
+                      return QVariant(dt.toString(Qt::TextDate));
+                    else
+                      return QVariant(dt.toString(Qt::ISODate));
+                  }
+            }
         }
     }
 
@@ -69,6 +81,8 @@ QVariant CQModifiedDM::headerData(int section, Qt::Orientation orientation,
     {
       switch (section)
         {
+          case COL_ROW_NUMBER:
+            return QVariant(QString("#"));
           case COL_DATE_MODIFIED:
             return QVariant(QString("Date and Time Modified"));
           default:
@@ -84,6 +98,14 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
 {
   if (index.isValid() && role == Qt::EditRole)
     {
+      if (isDefaultRow(index))
+        {
+          if (index.data() != value)
+            insertRow();
+          else
+            return false;
+        }
+
       switch (index.column())
         {
           case COL_DATE_MODIFIED:
@@ -114,6 +136,9 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
 
 bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex&)
 {
+  if (rows <= 0)
+    return true;
+
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)

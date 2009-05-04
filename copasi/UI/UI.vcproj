@@ -166,7 +166,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQComboDelegate.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQCompartment.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQCompartmentDM.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQCompartmentsWidget.cpp"
 				>
 			</File>
 			<File
@@ -176,6 +188,13 @@
 			<File
 				RelativePath="CQCopasiLayoutWidget.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\CQDateTimeEditDelegate.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQDifferentialEquations.cpp"
 			</File>
 			<File
 				RelativePath=".\CQDateTimeEditTableItem.cpp"
@@ -903,11 +922,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQComboDelegate.h"
+				>
+			</File>
+			<File
 				RelativePath="CQCompartment.h"
 				>
 			</File>
 			<File
+				RelativePath="CQCompartment.ui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQCompartmentDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQCompartmentsWidget.h"
+				>
+			</File>
+			<File
 				RelativePath="CQCopasiLayoutWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQDateTimeEditDelegate.h"
 				>
 			</File>
 			<File
@@ -1294,6 +1333,10 @@
 		</File>
 		<File
 			RelativePath="CQCompartment.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQCompartmentsWidget.ui"
 			>
 		</File>
 		<File
