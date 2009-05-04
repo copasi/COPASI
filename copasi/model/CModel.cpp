@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.357 $
+//   $Revision: 1.358 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:00:18 $
+//   $Author: aekamal $
+//   $Date: 2009/05/04 15:18:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2599,12 +2599,24 @@ CCompartment* CModel::createCompartment(const std::string & name,
   return cpt;
 }
 
+bool CModel::removeCompartment(const unsigned C_INT32 index,
+                               const bool & recursive)
+{
+  const CCompartment * pCompartment = getCompartments()[index];
+  return removeCompartment(pCompartment, recursive);
+}
+
 bool CModel::removeCompartment(const std::string & key,
                                const bool & recursive)
 {
   CCompartment *pCompartment =
     dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  return removeCompartment(pCompartment, recursive);
+}
 
+bool CModel::removeCompartment(const CCompartment * pCompartment,
+                               const bool & recursive)
+{
   if (!pCompartment)
     return false;
 

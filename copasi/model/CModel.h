@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.168 $
+//   $Revision: 1.169 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:00:18 $
+//   $Author: aekamal $
+//   $Date: 2009/05/04 15:18:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -892,7 +892,15 @@ public:
                                   const C_FLOAT64 & volume = 1.0);
 
   /** Remove a Compartment from the model */
+  bool removeCompartment(const unsigned C_INT32 index,
+                         const bool & recursive = true);
+
+  /** Remove a Compartment from the model */
   bool removeCompartment(const std::string & key,
+                         const bool & recursive = true);
+
+  /** Remove a Compartment from the model */
+  bool removeCompartment(const CCompartment * pCompartment,
                          const bool & recursive = true);
 
   /**
