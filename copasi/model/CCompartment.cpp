@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 14:51:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,8 @@
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "Compartment"),
-    mMetabolites("Metabolites", this)
+    mMetabolites("Metabolites", this),
+    mDimensionality(3)
 {
   initObjects();
 
@@ -56,7 +57,8 @@ CCompartment::CCompartment(const std::string & name,
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    mMetabolites(src.mMetabolites, this)
+    mMetabolites(src.mMetabolites, this),
+    mDimensionality(src.mDimensionality)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
   CONSTRUCTOR_TRACE;
@@ -71,47 +73,50 @@ CCompartment::~CCompartment()
 
 // virtual
 std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) const
-  {
-    if (mpModel == NULL) return "";
+{
+  if (mpModel == NULL) return "";
 
-    const std::string & Name = pObject->getObjectName();
+  const std::string & Name = pObject->getObjectName();
 
-    if (Name == "InitialVolume" ||
-        Name == "Volume")
-      return mpModel->getVolumeUnitName();
-    else if (Name == "Rate")
-      return mpModel->getVolumeUnitName() + "/" + mpModel->getTimeUnitName();
+  if (Name == "InitialVolume" ||
+      Name == "Volume")
+    return mpModel->getVolumeUnitName();
+  else if (Name == "Rate")
+    return mpModel->getVolumeUnitName() + "/" + mpModel->getTimeUnitName();
 
-    return "";
-  }
+  return "";
+}
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}
 
 std::set< const CCopasiObject * > CCompartment::getDeletedObjects() const
-  {
-    std::set< const CCopasiObject * > Deleted = CModelEntity::getDeletedObjects();
+{
+  std::set< const CCopasiObject * > Deleted = CModelEntity::getDeletedObjects();
 
-    // We need to add all metabolites
-    CCopasiVector< CMetab >::const_iterator it = mMetabolites.begin();
-    CCopasiVector< CMetab >::const_iterator end = mMetabolites.end();
+  // We need to add all metabolites
+  CCopasiVector< CMetab >::const_iterator it = mMetabolites.begin();
+  CCopasiVector< CMetab >::const_iterator end = mMetabolites.end();
 
-    for (;it != end; ++it)
-      Deleted.insert(*it);
+  for (; it != end; ++it)
+    Deleted.insert(*it);
 
-    return Deleted;
-  }
+  return Deleted;
+}
 
 C_INT32 CCompartment::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   std::string tmp;
+
   if ((Fail = configbuffer.getVariable("Compartment", "string",
                                        (void *) & tmp,
                                        CReadConfig::SEARCH)))
     return Fail;
+
   setObjectName(tmp);
 
   C_FLOAT64 tmpdbl;
+
   if ((Fail = configbuffer.getVariable("Volume", "C_FLOAT64",
                                        (void *) & tmpdbl)))
     return Fail;
@@ -125,13 +130,14 @@ CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 {return mMetabolites;}
 
 const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
-  {return mMetabolites;}
+{return mMetabolites;}
 
 /* Note: the metabolite stored in mMetabolites has definitely mpCompartment set.
    In the case the compartment is part of a model also mpModel is set. */
 bool CCompartment::createMetabolite(const CMetab & metabolite)
 {
   CMetab * pMetab = new CMetab(metabolite);
+
   if (addMetabolite(pMetab)) return true;
 
   delete pMetab;
@@ -156,6 +162,20 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
     }
 
   return success;
+}
+
+bool CCompartment::setDimensionality(unsigned C_INT32 dim)
+{
+  if (dim > 3)
+    return false;
+
+  mDimensionality = dim;
+  return true;
+}
+
+unsigned C_INT32 CCompartment::getDimensionality() const
+{
+  return mDimensionality;
 }
 
 void CCompartment::initObjects()
