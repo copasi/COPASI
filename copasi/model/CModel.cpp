@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.356 $
+//   $Revision: 1.357 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/04/24 13:29:40 $
+//   $Date: 2009/05/04 12:00:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,12 @@
 const char * CModel::VolumeUnitNames[] =
   {"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
+const char * CModel::AreaUnitNames[] =
+  {"dimensionless", "m\xc2\xb2", "dm\xc2\xb2", "cm\xc2\xb2", "mm\xc2\xb2", "\xc2\xb5m\xc2\xb2", "nm\xc2\xb2", "pm\xc2\xb2", "fm\xc2\xb2", NULL};
+
+const char * CModel::LengthUnitNames[] =
+  {"dimensionless", "m", "dm", "cm", "mm", "\xc2\xb5m", "nm", "pm", "fm", NULL};
+
 const char * CModel::TimeUnitNames[] =
   {"dimensionless", "d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
@@ -92,6 +98,8 @@ CModel::CModel(CCopasiContainer* pParent):
     mStateTemplate(*this, this->mInitialState, this->mCurrentState),
     mComments(),
     mVolumeUnit(ml),
+    mAreaUnit(m2),
+    mLengthUnit(m),
     mTimeUnit(s),
     mQuantityUnit(mMol),
     mType(deterministic),
@@ -2015,6 +2023,61 @@ CModel::VolumeUnit CModel::getVolumeUnitEnum() const
 
 //****
 
+bool CModel::setAreaUnit(const std::string & name)
+{
+  int unit = toEnum(name.c_str(), AreaUnitNames);
+
+  if (-1 == unit)
+    return setAreaUnit(m2);
+  else
+    return setAreaUnit((CModel::AreaUnit) unit);
+}
+
+bool CModel::setAreaUnit(const CModel::AreaUnit & unit)
+{
+  mAreaUnit = unit;
+  return true;
+}
+
+std::string CModel::getAreaUnitName() const
+{
+  return AreaUnitNames[mAreaUnit];
+}
+
+CModel::AreaUnit CModel::getAreaUnitEnum() const
+{
+  return mAreaUnit;
+}
+
+//****
+bool CModel::setLengthUnit(const std::string & name)
+{
+  int unit = toEnum(name.c_str(), LengthUnitNames);
+
+  if (-1 == unit)
+    return setLengthUnit(m);
+  else
+    return setLengthUnit((CModel::LengthUnit) unit);
+}
+
+bool CModel::setLengthUnit(const CModel::LengthUnit & unit)
+{
+  mLengthUnit = unit;
+  return true;
+}
+
+std::string CModel::getLengthUnitName() const
+{
+  return LengthUnitNames[mLengthUnit];
+}
+
+CModel::LengthUnit CModel::getLengthUnitEnum() const
+{
+  return mLengthUnit;
+}
+
+//****
+
 bool CModel::setTimeUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), TimeUnitNames);
@@ -3752,7 +3815,7 @@ std::string CModel::printParameterOverview()
 
       for (i = 0; i < imax; ++i)
         oss << comps[i]->getObjectName() << " \t" << comps[i]->getInitialValue()
-        << " " << model->getVolumeUnits() << "\n";
+        << " " << model->getVolumeUnitsDisplayString() << "\n";
 
       oss << "\n";
     }
@@ -3768,7 +3831,7 @@ std::string CModel::printParameterOverview()
       for (i = 0; i < imax; ++i)
         oss << CMetabNameInterface::getDisplayName(model, *metabs[i]) << " \t"
         << metabs[i]->getInitialConcentration() << " "
-        << model->getConcentrationUnits() << "\n";
+        << model->getConcentrationUnitsDisplayString() << "\n";
 
       oss << "\n";
     }
@@ -3849,7 +3912,7 @@ std::string CModel::printParameterOverview()
   return oss.str();
 }
 
-std::string CModel::getTimeUnits() const
+std::string CModel::getTimeUnitsDisplayString() const
 {
   if (mTimeUnit == dimensionlessTime)
     return "";
@@ -3857,7 +3920,7 @@ std::string CModel::getTimeUnits() const
   return TimeUnitNames[mTimeUnit];
 }
 
-std::string CModel::getFrequencyUnits() const
+std::string CModel::getFrequencyUnitsDisplayString() const
 {
   if (mTimeUnit == dimensionlessTime)
     return "";
@@ -3865,7 +3928,7 @@ std::string CModel::getFrequencyUnits() const
   return std::string("1/") + TimeUnitNames[mTimeUnit];
 }
 
-std::string CModel::getVolumeUnits() const
+std::string CModel::getVolumeUnitsDisplayString() const
 {
   if (mVolumeUnit == dimensionlessVolume)
     return "";
@@ -3873,7 +3936,7 @@ std::string CModel::getVolumeUnits() const
   return VolumeUnitNames[mVolumeUnit];
 }
 
-std::string CModel::getVolumeRateUnits() const
+std::string CModel::getVolumeRateUnitsDisplayString() const
 {
   if (mVolumeUnit == dimensionlessVolume)
     {
@@ -3889,7 +3952,7 @@ std::string CModel::getVolumeRateUnits() const
   return std::string(VolumeUnitNames[mVolumeUnit]) + "/" + TimeUnitNames[mTimeUnit];
 }
 
-std::string CModel::getConcentrationUnits() const
+std::string CModel::getConcentrationUnitsDisplayString() const
 {
   std::string Units;
 
@@ -3909,7 +3972,7 @@ std::string CModel::getConcentrationUnits() const
   return Units + "/" + VolumeUnitNames[mVolumeUnit];
 }
 
-std::string CModel::getConcentrationRateUnits() const
+std::string CModel::getConcentrationRateUnitsDisplayString() const
 {
   std::string Units;
 
@@ -3949,7 +4012,7 @@ std::string CModel::getConcentrationRateUnits() const
   return Units + "/(" + VolumeUnitNames[mVolumeUnit] + "*" + TimeUnitNames[mTimeUnit] + ")";
 }
 
-std::string CModel::getQuantityRateUnits() const
+std::string CModel::getQuantityRateUnitsDisplayString() const
 {
   std::string Units;
 

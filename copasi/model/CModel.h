@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.167 $
+//   $Revision: 1.168 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:17:54 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:00:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,26 @@ public:
    * String representation of valid volume units
    */
   static const char * VolumeUnitNames[];
+
+  /**
+   * Enum of valid area units
+   */
+  enum AreaUnit {dimensionlessArea = 0, m2, dm2, cm2, mm2, microm2, nm2, pm2, fm2};
+
+  /**
+   * String representation of valid area units
+   */
+  static const char * AreaUnitNames[];
+
+  /**
+   * Enum of valid length units
+   */
+  enum LengthUnit {dimensionlessLength = 0, m, dm, cm, mm, microm, nm, pm, fm};
+
+  /**
+   * String representation of valid length units
+   */
+  static const char * LengthUnitNames[];
 
   /**
    *  Enum of valid time units
@@ -657,6 +677,58 @@ public:
   CModel::VolumeUnit getVolumeUnitEnum() const;
 
   /**
+   * Set the unit for areas.
+   * @param const std::string & name
+   * @return bool success
+   */
+  bool setAreaUnit(const std::string & name);
+
+  /**
+   * Set the unit for areas.
+   * @param const CModel::AreaUnit & unit
+   * @return bool success
+   */
+  bool setAreaUnit(const CModel::AreaUnit & unit);
+
+  /**
+   * Get the unit for areas
+   * @return std::string areaUnit
+   */
+  std::string getAreaUnitName() const;
+
+  /**
+   * Get the unit for areas
+   * @return CModel::AreaUnit areaUnit
+   */
+  CModel::AreaUnit getAreaUnitEnum() const;
+
+  /**
+   * Set the unit for lengths.
+   * @param const std::string & name
+   * @return bool success
+   */
+  bool setLengthUnit(const std::string & name);
+
+  /**
+   * Set the unit for lengths.
+   * @param const CModel::LengthUnit & unit
+   * @return bool success
+   */
+  bool setLengthUnit(const CModel::LengthUnit & unit);
+
+  /**
+   * Get the unit for lengths
+   * @return std::string lengthUnit
+   */
+  std::string getLengthUnitName() const;
+
+  /**
+   * Get the unit for lengths
+   * @return CModel::LengthUnit lengthUnit
+   */
+  CModel::LengthUnit getLengthUnitEnum() const;
+
+  /**
    * Set the unit for time. If COPASI recognizes
    * the unit the conversion factors are set accordingly
    * and true is returned.
@@ -968,43 +1040,56 @@ public:
    * Retrieve the time units
    * @return std::string timeUnits
    */
-  std::string getTimeUnits() const;
+  std::string getTimeUnitsDisplayString() const;
 
   /**
    * Retrieve the frequency units
    * @return std::string frequencyUnits
    */
-  std::string getFrequencyUnits() const;
+  std::string getFrequencyUnitsDisplayString() const;
 
   /**
    * Retrieve the volume units
    * @return std::string volumeUnits
    */
-  std::string getVolumeUnits() const;
+  std::string getVolumeUnitsDisplayString() const;
+
+  /**
+   * Retrieve the area units
+   * @return std::string volumeUnits
+   */
+
+  std::string getAreaUnitsDisplayString() const;
+
+  /**
+   * Retrieve the volume units
+   * @return std::string volumeUnits
+   */
+  std::string getLengthUnitsDisplayString() const;
 
   /**
    * Retrieve the volume rate units
    * @return std::string volumeRateUnits
    */
-  std::string getVolumeRateUnits() const;
+  std::string getVolumeRateUnitsDisplayString() const;
 
   /**
    * Retrieve the concentration units
    * @return std::string concentrationUnits
    */
-  std::string getConcentrationUnits() const;
+  std::string getConcentrationUnitsDisplayString() const;
 
   /**
    * Retrieve the concentration rate units
    * @return std::string concentrationRateUnits
    */
-  std::string getConcentrationRateUnits() const;
+  std::string getConcentrationRateUnitsDisplayString() const;
 
   /**
    * Retrieve the quantity rate units
    * @return std::string quantityRateUnits
    */
-  std::string getQuantityRateUnits() const;
+  std::string getQuantityRateUnitsDisplayString() const;
 
 private:
 
@@ -1106,6 +1191,16 @@ private:
    * The volume unit used in the Model
    */
   VolumeUnit mVolumeUnit;
+
+  /**
+   * The volume unit used in the Model
+   */
+  AreaUnit mAreaUnit;
+
+  /**
+   * The volume unit used in the Model
+   */
+  LengthUnit mLengthUnit;
 
   /**
    * The time unit used in the Model

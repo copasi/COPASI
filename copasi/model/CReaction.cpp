@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.184 $
+//   $Revision: 1.185 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/29 21:24:40 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:00:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,9 +117,9 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
   const std::string & Name = pObject->getObjectName();
 
   if (Name == "ParticleFlux")
-    return pModel->getFrequencyUnits();
+    return pModel->getFrequencyUnitsDisplayString();
   else if (Name == "Flux")
-    return pModel->getQuantityRateUnits();
+    return pModel->getQuantityRateUnitsDisplayString();
 
   return "";
 }
