@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Author: aekamal $
+//   $Date: 2009/05/04 15:18:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
   mpValTable = new CQCurrentValueTable(mpInfoBox);
   // Create OpenGL widget
   mpGLViewport = new CQGLViewport(mpSplitter, "Network layout");
+
   if (pLayout != NULL)
     {
       CLDimensions dim = pLayout->getDimensions();
@@ -83,6 +84,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout, const char *name):
       CLPoint c2(dim.getWidth(), dim.getHeight());
       mpGLViewport->createGraph(mpLayout); // create local data structures
     }
+
   mpSplitter->setResizeMode(mpInfoBox, QSplitter::KeepSize);
 
   mpFrame = new Q3Frame(mpMainBox);
@@ -166,6 +168,7 @@ void CQLayoutMainWindow::parameterTableValueChanged(int row)
 {
   std::string key = this->mpValTable->getKeyForRow(row);
   bool value = this->mpValTable->getValueForRow(row);
+
   if (value == true)
     {
       this->addItemInAnimation(key);
@@ -174,6 +177,7 @@ void CQLayoutMainWindow::parameterTableValueChanged(int row)
     {
       this->removeItemInAnimation(key);
     }
+
   // redraw the layout if we are in animation mode
   if (this->mpGLViewport->isCircleMode())
     {
@@ -202,21 +206,25 @@ void CQLayoutMainWindow::setAnimationRunning(bool animationRunningP)
 C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
 {
   C_FLOAT64 minNodeSize = 10.0;
+
   if (mpVisParameters != NULL)
     {
 
       minNodeSize = mpVisParameters->mMinNodeSize;
     }
+
   return minNodeSize;
 }
 
 C_FLOAT64 CQLayoutMainWindow::getMaxNodeSize()
 {
   C_FLOAT64 maxNodeSize = 100.0;
+
   if (mpVisParameters != NULL)
     {
       maxNodeSize = mpVisParameters->mMaxNodeSize;
     }
+
   return maxNodeSize;
 }
 
@@ -297,7 +305,7 @@ void CQLayoutMainWindow::createActions()
   //   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
 
   mpCloseAction = new QAction("Close Window", this);
-  mpCloseAction->setShortcut(Qt::CTRL + Qt::Key_Q);
+  mpCloseAction->setShortcut(Qt::CTRL + Qt::Key_W);
   mpCloseAction->setStatusTip("Close Layout Window");
   connect(mpCloseAction, SIGNAL(activated()), this, SLOT(closeApplication()));
 
@@ -424,6 +432,7 @@ void CQLayoutMainWindow::loadSBMLFile()
   // std::cout << "load SBMLfile" << std::endl;
   CListOfLayouts *pLayoutList;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   if ((*CCopasiRootContainer::getDatamodelList())[0] != NULL)
     {
       pLayoutList = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
@@ -432,9 +441,11 @@ void CQLayoutMainWindow::loadSBMLFile()
     pLayoutList = NULL;
 
   mpGLViewport = new CQGLViewport(mpSplitter);
+
   if (pLayoutList != NULL)
     {
       CLayout * pLayout;
+
       if (pLayoutList->size() > 0)
         {
           pLayout = (*pLayoutList)[0];
@@ -451,6 +462,7 @@ void CQLayoutMainWindow::mapLabelsToCircles()
   if (mpGLViewport->getPainter() != NULL)
     {
       mpGLViewport->getPainter()->mapLabelsToCircles();
+
       if (mpGLViewport->getPainter()->getNumberOfSteps() > 0)
         showStep(this->mpTimeSlider->value());
     }
@@ -481,6 +493,7 @@ void CQLayoutMainWindow::changeFontSize()
 void CQLayoutMainWindow::loadData()
 {
   bool successfulP = mpGLViewport->getPainter()->createDataSets();
+
   if (successfulP)
     {
       // set the number of steps in the control widget and place the current
@@ -494,11 +507,13 @@ void CQLayoutMainWindow::loadData()
       this->mpControlWidget->setNumSteps(maxVal);
       mpGLViewport->getPainter()->updateGL();
       CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
+
       if (pPainter->getNumberOfSteps() > 1)
         {
           this->mpParaPanel->enableParameterChoice();
           this->mpParaPanel->enableStepNumberChoice();
           this->mpParaPanel->enableModeChoice();
+
           if (pPainter->isCircleMode())
             {
               showStep(this->mpTimeSlider->value());
@@ -520,6 +535,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   C_FLOAT64 val;
   mpValTable->setNumRows(dataSet.getNumberOfElements());
   mpValTable->setNumCols(2);
+
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
       name = this->mpGLViewport->getPainter()->getNameForNodeKey(key);
@@ -534,26 +550,29 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
+
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
       name = mpGLViewport->getPainter()->getNameForNodeKey(key);
       val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
+
       if (mpValTable->numRows() > i)
         {
           mpValTable->updateRowInTable(i, val);
         }
+
       i++;
     }
 }
 
 // adds the item given by s to the list of items to animate (no change, if it is already present)
-void CQLayoutMainWindow::addItemInAnimation (std::string key)
+void CQLayoutMainWindow::addItemInAnimation(std::string key)
 {
   mpGLViewport->getPainter()->setItemAnimated(key, true);
 }
 
 // removes the item given by s from the list of items to animate (no change, if it is not present in the list)
-void CQLayoutMainWindow::removeItemInAnimation (std::string key)
+void CQLayoutMainWindow::removeItemInAnimation(std::string key)
 {
   mpGLViewport->getPainter()->setItemAnimated(key, false);
 }
@@ -567,6 +586,7 @@ void CQLayoutMainWindow::startAnimation()
 {
   if (!this->mDataPresent)
     this->loadData(); // look for data
+
   if (this->mDataPresent)
     {// only if time series data present
       this->mpVisParameters->mAnimationRunning = true;
@@ -578,9 +598,9 @@ void CQLayoutMainWindow::startAnimation()
     }
   else
     {
-      CQMessageBox::warning (this, "Missing Data",
-                             "No data found: \nYou first have to create a time course.",
-                             QMessageBox::Ok, QMessageBox::Ok);
+      CQMessageBox::warning(this, "Missing Data",
+                            "No data found: \nYou first have to create a time course.",
+                            QMessageBox::Ok, QMessageBox::Ok);
     }
 }
 
@@ -588,6 +608,7 @@ void CQLayoutMainWindow::saveImage()
 {
   QImage img = mpGLViewport->getPainter()->getImage();
   QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
+
   if (!filename.isNull())
     {
       img.save(filename, "PNG");
@@ -624,6 +645,7 @@ void CQLayoutMainWindow::showStep(double i)
   mpGLViewport->getPainter()->updateGL();
   mpParaPanel->setStepNumber(static_cast<int>(i));
   CDataEntity* srcData = mpGLViewport->getPainter()->getDataSetAt(static_cast<int>(i));
+
   if (srcData)
     {
       updateValueTable(*srcData);
@@ -726,9 +748,9 @@ QIconSet CQLayoutMainWindow::createStartIcon()
   img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
-  for (x = 0;x < w;x++)
+  for (x = 0; x < w; x++)
     {
-      for (y = 0;y < h;y++)
+      for (y = 0; y < h; y++)
         {
           img.setPixel(x, y, 0);
         }
@@ -736,12 +758,14 @@ QIconSet CQLayoutMainWindow::createStartIcon()
 
   C_INT32 delta = 0;
   img.setColor(1, qRgb(255, 0, 0));
-  for (x = 3;x < w - 3;x++)
+
+  for (x = 3; x < w - 3; x++)
     {
-      for (y = 3 + delta;y < h - 3 - delta;y++)
+      for (y = 3 + delta; y < h - 3 - delta; y++)
         {
           img.setPixel(x, y, 1);
         }
+
       if (fmod((double) x, 2.0) == 0)
         delta++;
     }
@@ -762,9 +786,9 @@ QIconSet CQLayoutMainWindow::createStopIcon()
   img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
-  for (x = 0;x < w;x++)
+  for (x = 0; x < w; x++)
     {
-      for (y = 0;y < h;y++)
+      for (y = 0; y < h; y++)
         {
           img.setPixel(x, y, 0);
         }
@@ -772,9 +796,10 @@ QIconSet CQLayoutMainWindow::createStopIcon()
 
   C_INT32 delta = 4;
   img.setColor(1, qRgb(255, 0, 0));
-  for (x = (delta - 1);x <= (w - delta);x++)
+
+  for (x = (delta - 1); x <= (w - delta); x++)
     {
-      for (y = (delta - 1);y <= (h - delta);y++)
+      for (y = (delta - 1); y <= (h - delta); y++)
         {
           img.setPixel(x, y, 1);
         }
@@ -811,6 +836,7 @@ void CQLayoutMainWindow::slotActivated(int index)
   this->setZoomFactor(item.latin1());
   // update menu items
   int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
+
   if (index >= 0 && index < 15)
     {
       unsigned int id = ids[index];
@@ -912,7 +938,8 @@ void CQLayoutMainWindow::slotZoomIn()
   int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
   int checkedItem = 0;
   unsigned int i, iMax = 15;
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (this->mpZoomMenu->isItemChecked(ids[i]))
         {
@@ -920,6 +947,7 @@ void CQLayoutMainWindow::slotZoomIn()
           break;
         }
     }
+
   if (checkedItem != 14)
     {
       slotZoomItemActivated(ids[++checkedItem]);
@@ -931,7 +959,8 @@ void CQLayoutMainWindow::slotZoomOut()
   int ids[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100, 150, 200, 300, 400, 500};
   int checkedItem = 0;
   unsigned int i, iMax = 15;
-  for (i = 0;i < iMax;++i)
+
+  for (i = 0; i < iMax; ++i)
     {
       if (this->mpZoomMenu->isItemChecked(ids[i]))
         {
@@ -939,6 +968,7 @@ void CQLayoutMainWindow::slotZoomOut()
           break;
         }
     }
+
   if (checkedItem != 0)
     {
       slotZoomItemActivated(ids[--checkedItem]);
@@ -981,6 +1011,7 @@ void CQLayoutMainWindow::backwardAnimation()
   this->mpTimeSlider->setValue(0.0);
   this->mpParaPanel->setStepNumber(0);
   connect(mpTimeSlider, SIGNAL(valueChanged(double)), this, SLOT(showStep(double)));
+
   if (this->mpControlWidget->isPlaying())
     {
       this->startAnimation();
@@ -993,6 +1024,7 @@ void CQLayoutMainWindow::stepForwardAnimation()
   // go to last step and redisplay
   C_INT32 currentStep = this->getCurrentStep();
   ++currentStep;
+
   if (currentStep < this->mpGLViewport->getPainter()->getNumberOfSteps())
     {
       this->pauseAnimation();
@@ -1008,6 +1040,7 @@ void CQLayoutMainWindow::stepBackwardAnimation()
 {
   // lower step by one if possible and redisplay
   C_INT32 currentStep = this->getCurrentStep();
+
   if (currentStep > 0)
     {
       --currentStep;
@@ -1024,53 +1057,62 @@ void CQLayoutMainWindow::slotViewActivated(int id)
 {
   switch (id)
     {
-    case 1001:
-      if (!this->mpViewMenu->isItemChecked(id))
-        {
-          this->mpParaPanel->show();
-        }
-      else
-        {
-          this->mpParaPanel->hide();
-        }
-      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-      break;
-    case 1002:
-      if (!this->mpViewMenu->isItemChecked(id))
-        {
-          this->mpValTable->show();
-        }
-      else
-        {
-          this->mpValTable->hide();
-        }
-      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-      break;
-    case 1003:
-      if (!this->mpViewMenu->isItemChecked(id))
-        {
-          this->mpFrame->show();
-        }
-      else
-        {
-          this->mpFrame->hide();
-        }
-      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-      break;
-    case 1004:
-      if (!this->mpViewMenu->isItemChecked(id))
-        {
-          this->mpToolbar->show();
-        }
-      else
-        {
-          this->mpToolbar->hide();
-        }
-      this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
-      break;
-    default:
-      break;
+      case 1001:
+
+        if (!this->mpViewMenu->isItemChecked(id))
+          {
+            this->mpParaPanel->show();
+          }
+        else
+          {
+            this->mpParaPanel->hide();
+          }
+
+        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+        break;
+      case 1002:
+
+        if (!this->mpViewMenu->isItemChecked(id))
+          {
+            this->mpValTable->show();
+          }
+        else
+          {
+            this->mpValTable->hide();
+          }
+
+        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+        break;
+      case 1003:
+
+        if (!this->mpViewMenu->isItemChecked(id))
+          {
+            this->mpFrame->show();
+          }
+        else
+          {
+            this->mpFrame->hide();
+          }
+
+        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+        break;
+      case 1004:
+
+        if (!this->mpViewMenu->isItemChecked(id))
+          {
+            this->mpToolbar->show();
+          }
+        else
+          {
+            this->mpToolbar->hide();
+          }
+
+        this->mpViewMenu->setItemChecked(id, !this->mpViewMenu->isItemChecked(id));
+        break;
+      default:
+        break;
     }
+
   // if all object in the info box are hidden, we hide the info box
   if (this->mpViewMenu->isItemChecked(1001) == FALSE && this->mpViewMenu->isItemChecked(1002) == FALSE /*&& this->mpViewMenu->isItemChecked(1003) == FALSE*/)
     {
