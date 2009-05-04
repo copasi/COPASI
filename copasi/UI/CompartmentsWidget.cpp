@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-//   $Revision: 1.124 $
+//   $Revision: 1.125 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:09:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ void CompartmentsWidget::updateHeaderUnits()
   QString ValueUnits;
 
   if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getVolumeUnits());
+    ValueUnits = FROM_UTF8(pModel->getVolumeUnitsDisplayString());
 
   if (!ValueUnits.isEmpty())
     ValueUnits = "\n(" + ValueUnits + ")";
@@ -120,7 +120,7 @@ void CompartmentsWidget::updateHeaderUnits()
   QString RateUnits;
 
   if (pModel)
-    RateUnits = FROM_UTF8(pModel->getVolumeRateUnits());
+    RateUnits = FROM_UTF8(pModel->getVolumeRateUnitsDisplayString());
 
   if (!RateUnits.isEmpty())
     RateUnits = "\n(" + RateUnits + ")";
@@ -137,12 +137,13 @@ void CompartmentsWidget::updateHeaderUnits()
       if (ValueUnits == RateUnits)
         ExpressionUnits = ValueUnits;
       else
-        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnits()) + " or " + FROM_UTF8(pModel->getVolumeRateUnits()) + ")";
+        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnitsDisplayString())
+                          + " or " + FROM_UTF8(pModel->getVolumeRateUnitsDisplayString()) + ")";
     }
   else if (!ValueUnits.isEmpty())
-    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnits()) + " or 1)";
+    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getVolumeUnitsDisplayString()) + " or 1)";
   else if (!RateUnits.isEmpty())
-    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getVolumeRateUnits()) + ")";
+    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getVolumeRateUnitsDisplayString()) + ")";
 
   tableHeader->setLabel(COL_EXPRESSION, "Expression" + ExpressionUnits);
 }

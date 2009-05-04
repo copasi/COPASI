@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.156 $
+//   $Revision: 1.157 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:07:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ void MetabolitesWidget::updateHeaderUnits()
   QString ValueUnits;
 
   if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getConcentrationUnits());
+    ValueUnits = FROM_UTF8(pModel->getConcentrationUnitsDisplayString());
 
   if (!ValueUnits.isEmpty())
     ValueUnits = "\n(" + ValueUnits + ")";
@@ -128,7 +128,7 @@ void MetabolitesWidget::updateHeaderUnits()
   QString RateUnits;
 
   if (pModel)
-    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
 
   if (!RateUnits.isEmpty())
     RateUnits = "\n(" + RateUnits + ")";
@@ -136,7 +136,7 @@ void MetabolitesWidget::updateHeaderUnits()
   QString FrequencyUnits;
 
   if (pModel)
-    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnits());
+    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
 
   if (!FrequencyUnits.isEmpty())
     FrequencyUnits = "\n(" + FrequencyUnits + ")";
@@ -155,12 +155,13 @@ void MetabolitesWidget::updateHeaderUnits()
       if (ValueUnits == RateUnits)
         ExpressionUnits = ValueUnits;
       else
-        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnits()) + " or " + FROM_UTF8(pModel->getConcentrationRateUnits()) + ")";
+        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnitsDisplayString())
+                          + " or " + FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString()) + ")";
     }
   else if (!ValueUnits.isEmpty())
-    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnits()) + " or 1)";
+    ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnitsDisplayString()) + " or 1)";
   else if (!RateUnits.isEmpty())
-    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getConcentrationRateUnits()) + ")";
+    ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString()) + ")";
 
   tableHeader->setLabel(COL_EXPRESSION, "Expression" + ExpressionUnits);
 }

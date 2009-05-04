@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:08:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -284,7 +284,7 @@ void CQCompartment::slotTypeChanged(int type)
       case CModelEntity::ASSIGNMENT:
 
         if (pModel)
-          Units = FROM_UTF8(pModel->getVolumeUnits());
+          Units = FROM_UTF8(pModel->getVolumeUnitsDisplayString());
 
         if (!Units.isEmpty())
           Units = " (" + Units + ")";
@@ -303,7 +303,7 @@ void CQCompartment::slotTypeChanged(int type)
       case CModelEntity::ODE:
 
         if (pModel)
-          Units = FROM_UTF8(pModel->getVolumeRateUnits());
+          Units = FROM_UTF8(pModel->getVolumeRateUnitsDisplayString());
 
         if (!Units.isEmpty())
           Units = " (" + Units + ")";
@@ -445,7 +445,7 @@ void CQCompartment::load()
   QString ValueUnits;
 
   if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getVolumeUnits());
+    ValueUnits = FROM_UTF8(pModel->getVolumeUnitsDisplayString());
 
   if (!ValueUnits.isEmpty())
     ValueUnits = " (" + ValueUnits + ")";
@@ -453,7 +453,7 @@ void CQCompartment::load()
   QString RateUnits;
 
   if (pModel)
-    RateUnits = FROM_UTF8(pModel->getVolumeRateUnits());
+    RateUnits = FROM_UTF8(pModel->getVolumeRateUnitsDisplayString());
 
   if (!RateUnits.isEmpty())
     RateUnits = " (" + RateUnits + ")";

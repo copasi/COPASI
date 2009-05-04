@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ void CQMetabolite::init()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   int Width = fontMetrics().width("Concentration (" +
-                                  FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getConcentrationUnits()) +
+                                  FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getConcentrationUnitsDisplayString()) +
                                   ")");
   mpLblValue->setMinimumWidth(Width);
 
@@ -497,14 +497,14 @@ void CQMetabolite::load()
   QString TimeUnits;
 
   if (pModel)
-    TimeUnits = FROM_UTF8(pModel->getTimeUnits());
+    TimeUnits = FROM_UTF8(pModel->getTimeUnitsDisplayString());
 
   if (!TimeUnits.isEmpty())
     TimeUnits = " (" + TimeUnits + ")";
 
   // Update the labels to reflect the model units
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnits()) + ")");
+  mpLblTransitionTime->setText("Transition Time (" + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getTimeUnitsDisplayString()) + ")");
 
   // Name
   mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
@@ -817,7 +817,7 @@ void CQMetabolite::setFramework(int framework)
   QString ValueUnits;
 
   if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getConcentrationUnits());
+    ValueUnits = FROM_UTF8(pModel->getConcentrationUnitsDisplayString());
 
   if (!ValueUnits.isEmpty())
     ValueUnits = " (" + ValueUnits + ")";
@@ -825,7 +825,7 @@ void CQMetabolite::setFramework(int framework)
   QString RateUnits;
 
   if (pModel)
-    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
 
   if (!RateUnits.isEmpty())
     RateUnits = " (" + RateUnits + ")";
@@ -833,7 +833,7 @@ void CQMetabolite::setFramework(int framework)
   QString FrequencyUnits;
 
   if (pModel)
-    FrequencyUnits = FROM_UTF8(pModel->getConcentrationRateUnits());
+    FrequencyUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
 
   if (!FrequencyUnits.isEmpty())
     FrequencyUnits = " (" + FrequencyUnits + ")";

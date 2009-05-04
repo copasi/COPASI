@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:06:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,37 +289,37 @@ void StateSubwidget::showUnits()
 
   // Update the column titles
 
-  QString TimeUnits = FROM_UTF8(mpModel->getTimeUnits());
+  QString TimeUnits = FROM_UTF8(mpModel->getTimeUnitsDisplayString());
 
   if (!TimeUnits.isEmpty())
     TimeUnits = "\n(" + TimeUnits + ")";
 
-  QString FrequencyUnits = FROM_UTF8(mpModel->getFrequencyUnits());
+  QString FrequencyUnits = FROM_UTF8(mpModel->getFrequencyUnitsDisplayString());
 
   if (!FrequencyUnits.isEmpty())
     FrequencyUnits = "\n(" + FrequencyUnits + ")";
 
-  QString ConcentrationUnits = FROM_UTF8(mpModel->getConcentrationUnits());
+  QString ConcentrationUnits = FROM_UTF8(mpModel->getConcentrationUnitsDisplayString());
 
   if (!ConcentrationUnits.isEmpty())
     ConcentrationUnits = "\n(" + ConcentrationUnits + ")";
 
-  QString ConcentrationRateUnits = FROM_UTF8(mpModel->getConcentrationRateUnits());
+  QString ConcentrationRateUnits = FROM_UTF8(mpModel->getConcentrationRateUnitsDisplayString());
 
   if (!ConcentrationRateUnits.isEmpty())
     ConcentrationRateUnits = "\n(" + ConcentrationRateUnits + ")";
 
-  QString VolumeUnits = FROM_UTF8(mpModel->getVolumeUnits());
+  QString VolumeUnits = FROM_UTF8(mpModel->getVolumeUnitsDisplayString());
 
   if (!VolumeUnits.isEmpty())
     VolumeUnits = "\n(" + VolumeUnits + ")";
 
-  QString VolumeRateUnits = FROM_UTF8(mpModel->getVolumeRateUnits());
+  QString VolumeRateUnits = FROM_UTF8(mpModel->getVolumeRateUnitsDisplayString());
 
   if (!VolumeRateUnits.isEmpty())
     VolumeRateUnits = "\n(" + VolumeRateUnits + ")";
 
-  QString QuantityRateUnits = FROM_UTF8(mpModel->getQuantityRateUnits());
+  QString QuantityRateUnits = FROM_UTF8(mpModel->getQuantityRateUnitsDisplayString());
 
   if (!QuantityRateUnits.isEmpty())
     QuantityRateUnits = "\n(" + QuantityRateUnits + ")";

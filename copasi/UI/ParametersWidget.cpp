@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:07:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -303,13 +303,13 @@ bool ParametersWidget::loadFromModel()
 
   //Time
   mTimeItem = new CParameterListItem(listView, "Initial Time");
-  unit = FROM_UTF8(model->getTimeUnits());
+  unit = FROM_UTF8(model->getTimeUnitsDisplayString());
   new CParameterListItem(mTimeItem, "Model",
                          model, model->getInitialTime(), unit);
 
   //Compartments
   mCompItem = new CParameterListItem(listView, "Initial Volumes");
-  unit = FROM_UTF8(model->getVolumeUnits());
+  unit = FROM_UTF8(model->getVolumeUnitsDisplayString());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
 
@@ -325,7 +325,7 @@ bool ParametersWidget::loadFromModel()
     {
       case 0:
         mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
-        unit = FROM_UTF8(model->getConcentrationUnits());
+        unit = FROM_UTF8(model->getConcentrationUnitsDisplayString());
 
         for (i = 0; i < imax; ++i)
           new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),

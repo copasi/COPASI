@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.201 $
+//   $Revision: 1.202 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/04 12:06:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -920,7 +920,7 @@ void ReactionsWidget1::setFramework(int framework)
       case 0:
 
         if (pModel)
-          Units = FROM_UTF8(pModel->getQuantityRateUnits());
+          Units = FROM_UTF8(pModel->getQuantityRateUnitsDisplayString());
 
         if (!Units.isEmpty())
           Units = " (" + Units + ")";
@@ -935,7 +935,7 @@ void ReactionsWidget1::setFramework(int framework)
       case 1:
 
         if (pModel)
-          Units = FROM_UTF8(pModel->getFrequencyUnits());
+          Units = FROM_UTF8(pModel->getFrequencyUnitsDisplayString());
 
         if (!Units.isEmpty())
           Units = " (" + Units + ")";
