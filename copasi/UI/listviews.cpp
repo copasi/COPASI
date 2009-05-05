@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.265 $
+//   $Revision: 1.266 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/04 15:24:00 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 23:57:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1465,4 +1465,24 @@ void ListViews::refreshInitialValues()
 
   for (; it != end; ++it)
     (**it)();
+}
+
+CQTrajectoryWidget* ListViews::getTrajectoryWidget()
+{
+  return trajectoryWidget;
+}
+
+SteadyStateWidget* ListViews::getSteadyStateWidget()
+{
+  return steadystateWidget;
+}
+
+ScanWidget* ListViews::getScanWidget()
+{
+  return scanWidget;
+}
+
+CQMCAWidget* ListViews::getMCAWidget()
+{
+  return mpCQMCAWidget;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.152 $
+//   $Revision: 1.153 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/04 15:24:00 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 23:57:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,6 +156,13 @@ public:
 
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
+
+  //TODO these are convenience methods used by SliderDialog. They should be
+  //replaced by something more generic when the listviews is updated for QT4
+  CQTrajectoryWidget* getTrajectoryWidget();
+  SteadyStateWidget* getSteadyStateWidget();
+  ScanWidget* getScanWidget();
+  CQMCAWidget* getMCAWidget();
 
 private:
   CMathModel *mpMathModel;

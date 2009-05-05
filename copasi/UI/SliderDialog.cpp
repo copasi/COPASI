@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 23:57:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,9 +65,10 @@
 #include "model/CModel.h"
 
 C_INT32 SliderDialog::numMappings = 7;
-C_INT32 SliderDialog::folderMappings[][2] = {
-      {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
-    };
+C_INT32 SliderDialog::folderMappings[][2] =
+{
+  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
+};
 
 //C_INT32 SliderDialog::numKnownTasks = 4;
 //C_INT32 SliderDialog::[] = {21, 23, 24, 31};
@@ -161,6 +162,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
 void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 {
   CopasiSlider* pSlider = findCopasiSliderAtPosition(e->pos());
+
   if (pSlider)
     {
       contextMenu->setItemEnabled(contextMenu->idAt(0), false);
@@ -174,12 +176,14 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
       contextMenu->setItemEnabled(contextMenu->idAt(1), false);
       contextMenu->setItemEnabled(contextMenu->idAt(2), false);
     }
+
   contextMenu->popup(e->globalPos());
 }
 
 void SliderDialog::setCurrentSlider(CopasiSlider* pSlider)
 {
   currSlider = pSlider;
+
   if (currSlider)
     {
       currSlider->setFocus();
@@ -190,11 +194,13 @@ CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
 {
   QWidget* pWidget = childAt(p);
   CopasiSlider* pSlider = NULL;
+
   while (pWidget && pWidget != this && !pSlider)
     {
       pSlider = dynamic_cast<CopasiSlider*>(pWidget);
       pWidget = (QWidget*)pWidget->parent();
     }
+
   return pSlider;
 }
 
@@ -210,6 +216,7 @@ void SliderDialog::createNewSlider()
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       CSlider* pCSlider = pSettingsDialog->getSlider();
+
       if (pCSlider)
         {
           if (equivalentSliderExists(pCSlider))
@@ -239,15 +246,18 @@ void SliderDialog::removeSlider()
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI()->pSliderList;
       unsigned int i, maxCount = pSliderList->size();
-      for (i = 0; i < maxCount;++i)
+
+      for (i = 0; i < maxCount; ++i)
         {
           CSlider* pTmpSlider = (*pSliderList)[i];
+
           if (pTmpSlider == currSlider->getCSlider())
             {
               pSliderList->remove(i);
               break;
             }
         }
+
       deleteSlider(currSlider);
       currSlider = NULL;
     }
@@ -260,14 +270,17 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
       std::vector<QWidget*>* v = &sliderMap[currentFolderId];
       std::vector<QWidget*>::iterator it = v->begin();
       std::vector<QWidget*>::iterator end = v->end();
+
       while (it != end)
         {
           if (*it == pSlider)
             {
               break;
             }
+
           ++it;
         }
+
       assert(it != end);
       v->erase(it);
       ((Q3VBoxLayout*)sliderBox->layout())->remove(pSlider);
@@ -282,13 +295,16 @@ void SliderDialog::editSlider()
   pSettingsDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   // set the list of sliders that is already known
   CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(currentFolderId);
+
   if (!object) return;
+
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
   pSettingsDialog->setDefinedSliders(*pVector);
 
   //pSettingsDialog->disableObjectChoosing(true);
 
   pSettingsDialog->setSlider(currSlider->getCSlider());
+
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       addSlider(pSettingsDialog->getSlider());
@@ -300,6 +316,7 @@ void SliderDialog::editSlider()
         }
         */
     }
+
   delete pSettingsDialog;
   delete pVector;
 }
@@ -312,11 +329,13 @@ SliderDialog::~SliderDialog()
   delete sliderBox;
   delete scrollView;
   unsigned int i, j, maxWidgets, maxVectors = sliderMap.size();
-  for (i = 0; i < maxVectors;++i)
+
+  for (i = 0; i < maxVectors; ++i)
     {
       std::vector<QWidget*> v = sliderMap[i];
       maxWidgets = v.size();
-      for (j = 0; j < maxWidgets;++j)
+
+      for (j = 0; j < maxWidgets; ++j)
         {
           pdelete(v[j]);
         }
@@ -332,11 +351,14 @@ void SliderDialog::addSlider(CSlider* pSlider)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
   assert(pGUI);
+
   if (!equivalentSliderExists(pSlider))
     {
       pGUI->pSliderList->add(pSlider, true);
     }
+
   CopasiSlider* tmp = findCopasiSliderForCSlider(pSlider);
+
   if (!tmp)
     {
       setCurrentSlider(new CopasiSlider(pSlider, sliderBox));
@@ -365,15 +387,18 @@ CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
   assert(pGUI);
   unsigned i, maxCount = pGUI->pSliderList->size();
-  for (i = 0; i < maxCount;++i)
+
+  for (i = 0; i < maxCount; ++i)
     {
       CSlider* pTmpSlider = (*(pGUI->pSliderList))[i];
+
       if (pTmpSlider->getSliderObject() == pCSlider->getSliderObject() && pTmpSlider->getAssociatedEntityKey() == pCSlider->getAssociatedEntityKey())
         {
           pResult = pTmpSlider;
           break;
         }
     }
+
   return pResult;
 }
 
@@ -383,23 +408,29 @@ CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
   std::vector<QWidget*> v = sliderMap[currentFolderId];
   unsigned int i, maxCount = v.size();
   CopasiSlider* pTmpSlider;
-  for (i = 0; i < maxCount;++i)
+
+  for (i = 0; i < maxCount; ++i)
     {
       pTmpSlider = dynamic_cast<CopasiSlider*>(v[i]);
+
       if (!pTmpSlider) break;
+
       if (pTmpSlider->getCSlider() == pCSlider)
         {
           pResult = pTmpSlider;
           break;
         }
     }
+
   return pResult;
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)
 {
   id = mapFolderId2EntryId(id);
+
   if (id == currentFolderId) return;
+
   if (id == -1)
     {
       setEnabled(false);
@@ -419,6 +450,7 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
 void SliderDialog::fillSliderBox()
 {
   std::vector<QWidget*> v = sliderMap[currentFolderId];
+
   if (currentFolderId != -1)
     {
       std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
@@ -430,23 +462,29 @@ void SliderDialog::fillSliderBox()
 
       // add CopasiSlider for all CSliders that don't have one.
       bool issueWarning = false;
-      for (i = 0; i < maxSliders;++i)
+
+      for (i = 0; i < maxSliders; ++i)
         {
           bool found = false;
+
           if (!(*pVector)[i]->compile())
             {
               issueWarning = true;
             }
+
           for (j = 0; j < maxWidgets; j++)
             {
               CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
+
               if (!pTmpSlider) break;
+
               if (pTmpSlider->getCSlider() == (*pVector)[i])
                 {
                   found = true;
                   break;
                 }
             }
+
           if (!found)
             {
               setCurrentSlider(new CopasiSlider((*pVector)[i], sliderBox));
@@ -460,20 +498,25 @@ void SliderDialog::fillSliderBox()
               sliderMap[currentFolderId].push_back(currSlider);
             }
         }
+
       // delete CopasiSliders which have no correponding CSlider
-      for (j = 0; j < maxWidgets;++j)
+      for (j = 0; j < maxWidgets; ++j)
         {
           bool found = false;
+
           for (i = 0; i < maxSliders; i++)
             {
               CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
+
               if (!pTmpSlider) break;
+
               if (pTmpSlider->getCSlider() == (*pVector)[i])
                 {
                   found = true;
                   break;
                 }
             }
+
           if (!found)
             {
               CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
@@ -481,6 +524,7 @@ void SliderDialog::fillSliderBox()
               deleteSlider(pTmpSlider);
             }
         }
+
       if (issueWarning)
         {
           CQMessageBox::information(NULL, "Invalid Slider",
@@ -490,36 +534,42 @@ void SliderDialog::fillSliderBox()
 
       delete pVector;
     }
+
   v = sliderMap[currentFolderId];
   unsigned int i, maxCount = v.size();
-  for (i = maxCount; i != 0;--i)
+
+  for (i = maxCount; i != 0; --i)
     {
       QWidget* widget = v[i - 1];
       widget->setHidden(true);
       ((Q3VBoxLayout*)sliderBox->layout())->insertWidget(0, widget);
       setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
+
       if (currSlider)
         {
           currSlider->updateSliderData();
         }
+
       widget->setHidden(false);
     }
 }
 
 C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
-  {
-    C_INT32 id = -1;
-    int counter;
-    for (counter = 0; counter < SliderDialog::numMappings;++counter)
-      {
-        if (SliderDialog::folderMappings[counter][0] == folderId)
-          {
-            id = SliderDialog::folderMappings[counter][1];
-            break;
-          }
-      }
-    return id;
-  }
+{
+  C_INT32 id = -1;
+  int counter;
+
+  for (counter = 0; counter < SliderDialog::numMappings; ++counter)
+    {
+      if (SliderDialog::folderMappings[counter][0] == folderId)
+        {
+          id = SliderDialog::folderMappings[counter][1];
+          break;
+        }
+    }
+
+  return id;
+}
 
 void SliderDialog::runTask()
 {
@@ -536,6 +586,7 @@ void SliderDialog::runTask()
 void SliderDialog::sliderValueChanged()
 {
   mSliderValueChanged = true;
+
   if ((!mSliderPressed) && autoRunCheckBox->isChecked())
     {
       //runTask();
@@ -550,6 +601,7 @@ void SliderDialog::sliderReleased()
       runTask();
       mSliderValueChanged = false;
     }
+
   mSliderPressed = false;
 }
 
@@ -563,8 +615,8 @@ void SliderDialog::runTimeCourse()
   if (pParentWindow)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      pParentWindow->getTrajectoryWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]->getKey());
-      pParentWindow->getTrajectoryWidget()->runTask();
+      pParentWindow->getMainWidget()->getTrajectoryWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]->getKey());
+      pParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
     }
 }
 
@@ -572,7 +624,7 @@ void SliderDialog::runSteadyStateTask()
 {
   if (pParentWindow)
     {
-      pParentWindow->getSteadyStateWidget()->runTask();
+      pParentWindow->getMainWidget()->getSteadyStateWidget()->runTask();
     }
 }
 
@@ -581,8 +633,8 @@ void SliderDialog::runScanTask()
   if (pParentWindow)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      pParentWindow->getScanWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]->getKey());
-      pParentWindow->getScanWidget()->runTask();
+      pParentWindow->getMainWidget()->getScanWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]->getKey());
+      pParentWindow->getMainWidget()->getScanWidget()->runTask();
     }
 }
 
@@ -591,14 +643,15 @@ void SliderDialog::runMCATask()
   if (pParentWindow)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      pParentWindow->getMCAWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]->getKey());
-      pParentWindow->getMCAWidget()->runTask();
+      pParentWindow->getMainWidget()->getMCAWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]->getKey());
+      pParentWindow->getMainWidget()->getMCAWidget()->runTask();
     }
 }
 
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
+
   if (pParentWindow)
     {
       pParentWindow->slotShowSliders(false);
@@ -610,24 +663,26 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   switch (folderId)
     {
-    case 21:
-      task = dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
-      break;
-    case 23:
-      task = dynamic_cast<CTrajectoryTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]);
-      break;
-    case 24:
-      task = dynamic_cast<CMCATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]);
-      break;
-    case 31:
-      task = dynamic_cast<CScanTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]);
-      break;
-    default:
-      task = NULL;
-      break;
+      case 21:
+        task = dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
+        break;
+      case 23:
+        task = dynamic_cast<CTrajectoryTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]);
+        break;
+      case 24:
+        task = dynamic_cast<CMCATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]);
+        break;
+      case 31:
+        task = dynamic_cast<CScanTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]);
+        break;
+      default:
+        task = NULL;
+        break;
     }
+
   return task;
 }
 
@@ -638,9 +693,11 @@ void SliderDialog::updateAllSliders()
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
   std::vector<QWidget*> v = sliderMap[currentFolderId];
   unsigned int i, maxCount = v.size();
-  for (i = 0; i < maxCount;++i)
+
+  for (i = 0; i < maxCount; ++i)
     {
       CopasiSlider* pCopasiSlider = dynamic_cast<CopasiSlider*>(v[i]);
+
       if (pCopasiSlider)
         {
           pCopasiSlider->updateValue(autoModify);
@@ -661,52 +718,58 @@ void SliderDialog::editSlider(CopasiSlider* slider)
 }
 
 std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const
-  {
-    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-    assert(pDataModel != NULL);
-    SCopasiXMLGUI* pGUI = pDataModel->getGUI();
-    assert(pGUI);
-    bool sliderDeleted = false;
-    CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
-    assert(pSliderList);
-    // go through the list in reverse so that items can be deleted
-    unsigned int i, iMax = pSliderList->size();
-    bool issueWarning = false;
-    for (i = iMax;i > 0;--i)
-      {
-        CSlider* pSlider = (*pSliderList)[i - 1];
-        if (sliderObjectChanged(pSlider))
-          {
-            if (!sliderDeleted)
-              {
-                CQMessageBox::information(NULL, "Missing slider objects",
-                                          "One or more objects that had sliders defined have been deleted. Sliders will therefore be deleted as well.",
-                                          QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-              }
-            pSliderList->remove(i - 1);
-            sliderDeleted = true;
-          }
-        else
-          {
-            if (pSlider->getAssociatedEntityKey() == pDataModel->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
-              {
-                if (!pSlider->compile())
-                  {
-                    issueWarning = true;
-                  }
-                pVector->insert(pVector->begin(), pSlider);
-              }
-          }
-      }
-    return pVector;
-  }
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  SCopasiXMLGUI* pGUI = pDataModel->getGUI();
+  assert(pGUI);
+  bool sliderDeleted = false;
+  CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
+  assert(pSliderList);
+  // go through the list in reverse so that items can be deleted
+  unsigned int i, iMax = pSliderList->size();
+  bool issueWarning = false;
+
+  for (i = iMax; i > 0; --i)
+    {
+      CSlider* pSlider = (*pSliderList)[i - 1];
+
+      if (sliderObjectChanged(pSlider))
+        {
+          if (!sliderDeleted)
+            {
+              CQMessageBox::information(NULL, "Missing slider objects",
+                                        "One or more objects that had sliders defined have been deleted. Sliders will therefore be deleted as well.",
+                                        QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+            }
+
+          pSliderList->remove(i - 1);
+          sliderDeleted = true;
+        }
+      else
+        {
+          if (pSlider->getAssociatedEntityKey() == pDataModel->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
+            {
+              if (!pSlider->compile())
+                {
+                  issueWarning = true;
+                }
+
+              pVector->insert(pVector->begin(), pSlider);
+            }
+        }
+    }
+
+  return pVector;
+}
 
 void SliderDialog::clearSliderBox()
 {
   std::vector<QWidget*> v = sliderMap[currentFolderId];
   unsigned int i, maxCount = v.size();
-  for (i = 0; i < maxCount;++i)
+
+  for (i = 0; i < maxCount; ++i)
     {
       QWidget* widget = v[i];
       widget->setHidden(true);
@@ -717,7 +780,9 @@ void SliderDialog::clearSliderBox()
 std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
 {
   CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(currentFolderId);
+
   if (!object) return NULL;
+
   std::vector<CSlider*>* pVector = new std::vector<CSlider*>();
   pVector = getCSlidersForObject(object, pVector);
   return pVector;
@@ -726,12 +791,14 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
 bool SliderDialog::eventFilter(QObject*, QEvent* event)
 {
   QMouseEvent* pQME = dynamic_cast<QMouseEvent*>(event);
+
   if (pQME && pQME->type() == QEvent::MouseButtonPress && pQME->button() == Qt::LeftButton)
     {
       CopasiSlider* pSlider = findCopasiSliderAtPosition(mapFromGlobal(pQME->globalPos()));
       assert(pSlider);
       setCurrentSlider(pSlider);
     }
+
   return false;
 }
 
@@ -746,13 +813,13 @@ void SliderDialog::setDefault()
 }
 
 bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
-  {
-    assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-    std::vector<CCopasiContainer*> listOfContainers;
-    listOfContainers.push_back(pModel);
-    return !pSlider->compile(listOfContainers);
-  }
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  std::vector<CCopasiContainer*> listOfContainers;
+  listOfContainers.push_back(pModel);
+  return !pSlider->compile(listOfContainers);
+}
 
 void SliderDialog::setParentWindow(CopasiUI3Window* pPW)
 {

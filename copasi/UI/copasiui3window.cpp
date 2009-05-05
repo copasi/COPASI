@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.250 $
+//   $Revision: 1.251 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 23:57:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,7 +212,7 @@ CopasiUI3Window * CopasiUI3Window::create()
  *  for more information about these flags.
  */
 CopasiUI3Window::CopasiUI3Window():
-    Q3MainWindow(),
+    QMainWindow(),
     dataModel(NULL),
     listViews(NULL),
     mpSliders(NULL),
@@ -380,40 +380,42 @@ void CopasiUI3Window::createActions()
 
 void CopasiUI3Window::createToolBar()
 {
-  Q3ToolBar *tbMain = new Q3ToolBar(this, "MainToolBar");
+  QToolBar * tb = addToolBar("MainToolBar");
 
   //new
   //   QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
-  mpaNew->addTo(tbMain);
+  tb->addAction(mpaNew);
 
   //open
   //   QWhatsThis::add(toolb, "Click this button to open a <em>new file</em>. <br>You can also select the <b>Open</b> command from the <b>File</b> menu.</p>");
-  mpaOpen->addTo(tbMain);
+  tb->addAction(mpaOpen);
 
   //save
   //   QWhatsThis::add(msave_button, "<p>Click this button to save the file you are editing. You will be prompted for a file name.\nYou can also select the <b>Save</b> command from the <b>File</b> menu.</p>");
-  mpaSave->addTo(tbMain);
+  tb->addAction(mpaSave);
 
   // capture
-  mpaCapture->addTo(tbMain);
+  tb->addAction(mpaCapture);
 
   // add a toobar toggle button to display/hide slider dialog
   //   QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
-  mpaSliders->addTo(tbMain);
+  tb->addAction(mpaSliders);
 
-  mpaCheckModel->addTo(tbMain);
+  tb->addAction(mpaCheckModel);
 
-  mpaApplyInitialState->addTo(tbMain);
-  mpaUpdateInitialState->addTo(tbMain);
+  tb->addAction(mpaApplyInitialState);
+  tb->addAction(mpaUpdateInitialState);
 
-  mpaUpdateMIRIAM->addTo(tbMain);
-  tbMain->addSeparator();
+  tb->addAction(mpaUpdateMIRIAM);
 
-  mpBoxSelectFramework = new QComboBox(tbMain);
+  tb->addSeparator();
+
+  mpBoxSelectFramework = new QComboBox(tb);
   mpBoxSelectFramework->insertItem("Concentrations");
   mpBoxSelectFramework->insertItem("Particle Numbers");
+  tb->addWidget(mpBoxSelectFramework);
 
-  tbMain->setCloseMode(Q3DockWindow::Never);
+  //tbMain->setCloseMode(Q3DockWindow::Never);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
 
@@ -1505,24 +1507,9 @@ void CopasiUI3Window::listViewsFolderChanged(Q3ListViewItem* item)
 //   this->slotFileSave();
 //}
 
-CQTrajectoryWidget* CopasiUI3Window::getTrajectoryWidget()
+ListViews* CopasiUI3Window::getMainWidget()
 {
-  return listViews->trajectoryWidget;
-}
-
-SteadyStateWidget* CopasiUI3Window::getSteadyStateWidget()
-{
-  return listViews->steadystateWidget;
-}
-
-ScanWidget* CopasiUI3Window::getScanWidget()
-{
-  return listViews->scanWidget;
-}
-
-CQMCAWidget* CopasiUI3Window::getMCAWidget()
-{
-  return listViews->mpCQMCAWidget;
+  return listViews;
 }
 
 void CopasiUI3Window::checkPendingMessages()
