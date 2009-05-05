@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 01:09:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   if (!name)
     setName("ModelWidget");
+
   setCaption(trUtf8("ModelWidget"));
   ModelWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 4, "ModelWidgetLayout");
 
@@ -79,6 +80,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   ComboBox1->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBox1->sizePolicy().hasHeightForWidth()));
   ModelWidgetLayout->addWidget(ComboBox1, 2, 1);
 
+  //Volume Units
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Volume unit"));
   TextLabel3->setAlignment(int(Qt::AlignVCenter
@@ -88,14 +90,37 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   ComboBox2->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBox2->sizePolicy().hasHeightForWidth()));
   ModelWidgetLayout->addWidget(ComboBox2, 3, 1);
 
+#ifdef COPASI_EXTUNIT
+  //Area units
+  TextLabelArea = new QLabel(this, "TextLabelArea");
+  TextLabelArea->setText(trUtf8("Area unit"));
+  TextLabelArea->setAlignment(int(Qt::AlignVCenter
+                                  | Qt::AlignRight));
+  ModelWidgetLayout->addWidget(TextLabelArea, 4, 0);
+  ComboBoxArea = new QComboBox(false, this, "ComboBoxArea");
+  ComboBoxArea->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBoxArea->sizePolicy().hasHeightForWidth()));
+  ModelWidgetLayout->addWidget(ComboBoxArea, 4, 1);
+
+  //Length units
+  TextLabelLength = new QLabel(this, "TextLabelLength");
+  TextLabelLength->setText(trUtf8("Length unit"));
+  TextLabelLength->setAlignment(int(Qt::AlignVCenter
+                                    | Qt::AlignRight));
+  ModelWidgetLayout->addWidget(TextLabelLength, 5, 0);
+  ComboBoxLength = new QComboBox(false, this, "ComboBoxLength");
+  ComboBoxLength->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBoxLength->sizePolicy().hasHeightForWidth()));
+  ModelWidgetLayout->addWidget(ComboBoxLength, 5, 1);
+#endif
+
+  //Quantity units
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Quantity unit"));
   TextLabel4->setAlignment(int(Qt::AlignVCenter
                                | Qt::AlignRight));
-  ModelWidgetLayout->addWidget(TextLabel4, 4, 0);
+  ModelWidgetLayout->addWidget(TextLabel4, 6, 0);
   ComboBox3 = new QComboBox(false, this, "ComboBox3");
   ComboBox3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBox3->sizePolicy().hasHeightForWidth()));
-  ModelWidgetLayout->addWidget(ComboBox3, 4, 1);
+  ModelWidgetLayout->addWidget(ComboBox3, 6, 1);
 
   mpLblModelType = new QLabel(this, "mpLblModelType");
   mpLblModelType->setText(trUtf8("Rate Law Interpretation"));
@@ -109,35 +134,35 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   mpLblInitial = new QLabel(this, "mpLblInitial");
   mpLblInitial->setText("Initial");
   mpLblInitial->setAlignment(int(Qt::AlignVCenter | Qt::AlignLeft));
-  ModelWidgetLayout->addWidget(mpLblInitial, 5, 1);
+  ModelWidgetLayout->addWidget(mpLblInitial, 7, 1);
 
   mpLblCurrent = new QLabel(this, "mpLblCurrent");
   mpLblCurrent->setText("Current");
   mpLblCurrent->setAlignment(int(Qt::AlignVCenter | Qt::AlignLeft));
-  ModelWidgetLayout->addWidget(mpLblCurrent, 5, 2);
+  ModelWidgetLayout->addWidget(mpLblCurrent, 7, 2);
 
   mpLblTime = new QLabel(this, "mpLblTime");
   mpLblTime->setText("Time (s)");
   mpLblTime->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
-  ModelWidgetLayout->addWidget(mpLblTime, 6, 0);
+  ModelWidgetLayout->addWidget(mpLblTime, 8, 0);
 
   mpInitialTime = new QLineEdit(this, "mpInitialTime");
-  ModelWidgetLayout->addWidget(mpInitialTime, 6, 1);
+  ModelWidgetLayout->addWidget(mpInitialTime, 8, 1);
 
   mpCurrentTime = new QLineEdit(this, "mpCurrentTime");
   mpCurrentTime->setEnabled(false);
-  ModelWidgetLayout->addMultiCellWidget(mpCurrentTime, 6, 6, 2, 3);
+  ModelWidgetLayout->addMultiCellWidget(mpCurrentTime, 8, 8, 2, 3);
 
   Q3Frame * Line1 = new Q3Frame(this, "Line1");
   Line1->setFrameShape(Q3Frame::HLine);
-  ModelWidgetLayout->addMultiCellWidget(Line1, 7, 7, 0, 3);
+  ModelWidgetLayout->addMultiCellWidget(Line1, 9, 9, 0, 3);
 
   // textBrowser = new QTextBrowser (this, "Text Browser");
   // ModelWidgetLayout->addMultiCellWidget(textBrowser, 8, 8, 1, 2);
 
   mpEditComment = new Q3TextEdit(this, "Edit Comment");
   mpEditComment->setTextFormat(Qt::RichText);
-  ModelWidgetLayout->addMultiCellWidget(mpEditComment, 8, 8, 1, 3);
+  ModelWidgetLayout->addMultiCellWidget(mpEditComment, 10, 10, 1, 3);
   mpEditComment->setText("");
   // editComments->hide();
 
@@ -150,7 +175,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, Qt::WFlags fl)
   spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
   showMarkupLayout->addWidget(mpToggleMarkup);
   showMarkupLayout->addItem(spacer);
-  ModelWidgetLayout->addLayout(showMarkupLayout, 8, 0);
+  ModelWidgetLayout->addLayout(showMarkupLayout, 10, 0);
 
   Layout5 = new Q3HBoxLayout(0, 0, 6, "Layout5");
 
@@ -164,7 +189,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 
   // preliminary
 
-  ModelWidgetLayout->addMultiCellLayout(Layout5, 10, 10, 0, 3);
+  ModelWidgetLayout->addMultiCellLayout(Layout5, 12, 12, 0, 3);
 
   // signals and slots connections
   connect(mpToggleMarkup, SIGNAL(clicked()), this, SLOT(toggleEditorBox()));
@@ -222,36 +247,68 @@ bool ModelWidget::loadModel(CModel *model)
   QStringList comboEntries;
 
   unsigned int temp1;
+
   for (temp1 = 0; model->TimeUnitNames[temp1] /*!= ""*/; temp1++)
     {
       comboEntries.push_front(QString::fromUtf8(model->TimeUnitNames[temp1]));
     }
+
   ComboBox1->insertStringList(comboEntries, -1);
   ComboBox1->setCurrentText(FROM_UTF8(model->getTimeUnitName()));
 
   mpLblTime->setText("Time (" + ComboBox1->currentText() + ")");
 
   QStringList comboEntries1;
+
   for (temp1 = 0; CModel::VolumeUnitNames[temp1]  /*!= ""*/; temp1++)
     {
       comboEntries1.push_front(QString::fromUtf8(CModel::VolumeUnitNames[temp1]));
     }
+
   ComboBox2->insertStringList(comboEntries1, -1);
   ComboBox2->setCurrentText(FROM_UTF8(model->getVolumeUnitName()));
 
   QStringList comboEntries2;
+
   for (temp1 = 0; CModel::QuantityUnitNames[temp1] /*!= ""*/; temp1++)
     {
       comboEntries2.push_front(QString::fromUtf8(CModel::QuantityUnitNames[temp1]));
     }
+
   ComboBox3->insertStringList(comboEntries2, -1);
   ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnitName()));
 
+#ifdef COPASI_EXTUNIT
+  QStringList comboEntriesArea;
+
+  for (temp1 = 0; CModel::AreaUnitNames[temp1]  /*!= ""*/; temp1++)
+    {
+      comboEntriesArea.push_front(QString::fromUtf8(CModel::AreaUnitNames[temp1]));
+    }
+
+  ComboBoxArea->clear();
+  ComboBoxArea->insertStringList(comboEntriesArea, -1);
+  ComboBoxArea->setCurrentText(FROM_UTF8(model->getAreaUnitName()));
+
+  QStringList comboEntriesLength;
+
+  for (temp1 = 0; CModel::LengthUnitNames[temp1]  /*!= ""*/; temp1++)
+    {
+      comboEntriesLength.push_front(QString::fromUtf8(CModel::LengthUnitNames[temp1]));
+    }
+
+  ComboBoxLength->clear();
+  ComboBoxLength->insertStringList(comboEntriesLength, -1);
+  ComboBoxLength->setCurrentText(FROM_UTF8(model->getLengthUnitName()));
+#endif
+
   QStringList ModelTypes;
+
   for (temp1 = 0; CModel::ModelTypeNames[temp1] /*!= ""*/; temp1++)
     {
       ModelTypes.push_back(QString::fromUtf8(CModel::ModelTypeNames[temp1]));
     }
+
   mpBoxModelType->insertStringList(ModelTypes, -1);
   mpBoxModelType->setCurrentItem(model->getModelType());
 
@@ -284,15 +341,18 @@ bool ModelWidget::saveToModel()
 
       // remove leading whitepsaces
       std::string::size_type pos = Richtext.find_first_not_of("\x0a\x0d\t ");
+
       if (pos != 0) Richtext.erase(0, pos);
 
       // remove trailing whitepsace
       pos = Richtext.find_last_not_of("\x0a\x0d\t ");
+
       if (pos < Richtext.length())
         Richtext = Richtext.substr(0, pos + 1);
 
       // Fix <hr> to <hr /> to have proper xhtml.
       pos = 0;
+
       while ((pos = Richtext.find("<hr>", pos)) != std::string::npos)
         {
           pos += 3;
@@ -338,6 +398,22 @@ bool ModelWidget::saveToModel()
       model->setVolumeUnit(TO_UTF8(ComboBox2->currentText()));
       changed = true;
     }
+
+#ifdef COPASI_EXTUNIT
+
+  if (TO_UTF8(ComboBoxArea->currentText()) != model->getAreaUnitName())
+    {
+      model->setAreaUnit(TO_UTF8(ComboBoxArea->currentText()));
+      changed = true;
+    }
+
+  if (TO_UTF8(ComboBoxLength->currentText()) != model->getLengthUnitName())
+    {
+      model->setLengthUnit(TO_UTF8(ComboBoxLength->currentText()));
+      changed = true;
+    }
+
+#endif
 
   if (TO_UTF8(ComboBox3->currentText()) != model->getQuantityUnitName())
     {
@@ -387,13 +463,14 @@ bool ModelWidget::update(ListViews::ObjectType objectType,
 
   switch (objectType)
     {
-    case ListViews::MODEL:
-      enter(key);
-      break;
+      case ListViews::MODEL:
+        enter(key);
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
+
   return true;
 }
 

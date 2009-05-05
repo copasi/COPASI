@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.196 $
+//   $Revision: 1.197 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/27 14:43:59 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 01:09:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1358,6 +1358,10 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
   CModel::TimeUnit TimeUnit;
   const char * volumeUnit;
   CModel::VolumeUnit VolumeUnit;
+  const char * areaUnit;
+  CModel::AreaUnit AreaUnit;
+  const char * lengthUnit;
+  CModel::LengthUnit LengthUnit;
   const char * quantityUnit;
   CModel::QuantityUnit QuantityUnit;
   const char * StateVariable;
@@ -1395,6 +1399,20 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
         if (VolumeUnit == -1) fatalError();
 
+        //the next 2 attributes are introduced in Build 31, they have a default for
+        //reading older cps files
+        areaUnit = mParser.getAttributeValue("areaUnit", papszAttrs, "m\xc2\xb2");
+        AreaUnit =
+          (CModel::AreaUnit)toEnum(areaUnit, CModel::AreaUnitNames);
+
+        if (AreaUnit == -1) AreaUnit = CModel::m2; //TODO warning
+
+        lengthUnit = mParser.getAttributeValue("lengthUnit", papszAttrs, "m");
+        LengthUnit =
+          (CModel::LengthUnit)toEnum(lengthUnit, CModel::LengthUnitNames);
+
+        if (LengthUnit == -1) LengthUnit = CModel::m; //TODO warning
+
         quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
         QuantityUnit =
           (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitNames);
@@ -1418,6 +1436,8 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mCommon.pModel->setTitle(Name);
         mCommon.pModel->setTimeUnit(TimeUnit);
         mCommon.pModel->setVolumeUnit(VolumeUnit);
+        mCommon.pModel->setAreaUnit(AreaUnit);
+        mCommon.pModel->setLengthUnit(LengthUnit);
         mCommon.pModel->setQuantityUnit(QuantityUnit);
         mCommon.pModel->setModelType(ModelType);
         return;

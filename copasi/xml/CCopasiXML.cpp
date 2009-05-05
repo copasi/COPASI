@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.116 $
+//   $Revision: 1.117 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/27 14:43:59 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 01:09:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -368,6 +368,8 @@ bool CCopasiXML::saveModel()
   Attributes.add("name", mpModel->getObjectName());
   Attributes.add("timeUnit", mpModel->getTimeUnitName());
   Attributes.add("volumeUnit", mpModel->getVolumeUnitName());
+  Attributes.add("areaUnit", mpModel->getAreaUnitName());
+  Attributes.add("lengthUnit", mpModel->getLengthUnitName());
   Attributes.add("quantityUnit", mpModel->getQuantityUnitName());
   Attributes.add("type", CModel::ModelTypeNames[mpModel->getModelType()]);
 

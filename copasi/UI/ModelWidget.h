@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 01:09:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,55 +47,59 @@ class QPushButton;
 class CModel;
 
 class ModelWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    ModelWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~ModelWidget();
+public:
+  ModelWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~ModelWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
+  virtual bool enter(const std::string & key = "");
 
-  protected slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
+protected slots:
+  virtual void slotBtnCancelClicked();
+  virtual void slotBtnOKClicked();
 
-  public slots:
-    virtual void toggleEditorBox();
+public slots:
+  virtual void toggleEditorBox();
 
-  protected:
-    bool loadModel(CModel *model);
-    bool saveToModel();
-    std::string objKey;
-    QString mOldComment;
+protected:
+  bool loadModel(CModel *model);
+  bool saveToModel();
+  std::string objKey;
+  QString mOldComment;
 
-    Q3GridLayout* ModelWidgetLayout;
-    Q3HBoxLayout* Layout5;
-    Q3VBoxLayout* showMarkupLayout;
-    QSpacerItem* spacer;
-    QLineEdit* LineEdit;
-    // QTextBrowser* textBrowser;
-    Q3TextEdit* mpEditComment;
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QLabel* TextLabel3;
-    QLabel* TextLabel4;
-    QLabel* mpLblModelType;
-    QLabel* mpLblInitial;
-    QLabel* mpLblCurrent;
-    QLabel* mpLblTime;
-    QLineEdit *mpInitialTime;
-    QLineEdit *mpCurrentTime;
-    QPushButton* mpToggleMarkup;
-    QComboBox* ComboBox1;
-    QComboBox* ComboBox2;
-    QComboBox* ComboBox3;
-    QComboBox* mpBoxModelType;
+  Q3GridLayout* ModelWidgetLayout;
+  Q3HBoxLayout* Layout5;
+  Q3VBoxLayout* showMarkupLayout;
+  QSpacerItem* spacer;
+  QLineEdit* LineEdit;
+  // QTextBrowser* textBrowser;
+  Q3TextEdit* mpEditComment;
+  QLabel* TextLabel1;
+  QLabel* TextLabel2;
+  QLabel* TextLabel3;
+  QLabel* TextLabel4;
+  QLabel* TextLabelArea;
+  QLabel* TextLabelLength;
+  QLabel* mpLblModelType;
+  QLabel* mpLblInitial;
+  QLabel* mpLblCurrent;
+  QLabel* mpLblTime;
+  QLineEdit *mpInitialTime;
+  QLineEdit *mpCurrentTime;
+  QPushButton* mpToggleMarkup;
+  QComboBox* ComboBox1;
+  QComboBox* ComboBox2;
+  QComboBox* ComboBox3;
+  QComboBox* ComboBoxArea;
+  QComboBox* ComboBoxLength;
+  QComboBox* mpBoxModelType;
 
-    QPushButton* commitChanges;
-    QPushButton* cancelChanges;
-  };
+  QPushButton* commitChanges;
+  QPushButton* cancelChanges;
+};
 
 #endif // MODELWIDGET_H
