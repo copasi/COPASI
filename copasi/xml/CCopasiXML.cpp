@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.117 $
+//   $Revision: 1.118 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/05 01:09:02 $
+//   $Date: 2009/05/05 12:18:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,6 +408,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("simulationType", "");
+      Attributes.add("dimensionality", "");
 
       unsigned C_INT32 i, imax = mpModel->getCompartments().size();
 
@@ -419,6 +420,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pComp->getObjectName());
           CModelEntity::Status SimulationType = pComp->getStatus();
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
+          Attributes.setValue(3, pComp->getDimensionality());
 
           startSaveElement("Compartment", Attributes);
 

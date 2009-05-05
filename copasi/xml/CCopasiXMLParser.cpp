@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.197 $
+//   $Revision: 1.198 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/05 01:09:02 $
+//   $Date: 2009/05/05 12:18:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1917,6 +1917,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 {
   const char * Name;
   const char * simulationType;
+  const char * Dimensionality;
   CModelEntity::Status SimulationType;
 
   mpCurrentHandler = NULL;
@@ -1934,12 +1935,14 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
         Name = mParser.getAttributeValue("name", papszAttrs);
         simulationType = mParser.getAttributeValue("simulationType", papszAttrs, "fixed");
         SimulationType = (CModelEntity::Status)toEnum(simulationType, CModelEntity::XMLStatus);
+        Dimensionality = mParser.getAttributeValue("dimensionality", papszAttrs, "3");
 
         mpCompartment = new CCompartment();
         mCommon.KeyMap.addFix(mKey, mpCompartment);
 
         mpCompartment->setObjectName(Name);
         mpCompartment->setStatus(SimulationType);
+        mpCompartment->setDimensionality(atoi(Dimensionality));
 
         mCommon.pModel->getCompartments().add(mpCompartment, true);
         return;
