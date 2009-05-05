@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/04 12:08:58 $
+//   $Date: 2009/05/05 13:52:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,14 @@ void CQCompartment::init()
 
   mInitialExpressionValid = false;
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
+
+#ifdef COPASI_EXTUNIT
+  mpLblDim->show();
+  mpComboBoxDim->show();
+#else
+  mpLblDim->hide();
+  mpComboBoxDim->hide();
+#endif
 }
 
 /*!
@@ -466,6 +474,10 @@ void CQCompartment::load()
   // Name
   mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
 
+  //Dimensionality
+  mpComboBoxDim->setCurrentIndex(mpCompartment->getDimensionality());
+  //this assumes the indices of the entries in the combobox correspond 1to1 to the values of dimensionality
+
   // Simulation Type
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()]));
 
@@ -535,6 +547,17 @@ void CQCompartment::save()
           mChanged = true;
         }
     }
+
+#ifdef COPASI_EXTUNIT
+
+  //Dimensionality
+  if (mpCompartment->getDimensionality() != mpComboBoxDim->currentIndex()) //this makes assumptions about the order of entries in the combo box!
+    {
+      mpCompartment->setDimensionality(mpComboBoxDim->currentIndex());
+      mChanged = true;
+    }
+
+#endif
 
   // Type
   if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()])
