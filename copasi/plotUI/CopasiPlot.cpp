@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:18:35 $
+//   $Author: ssahle $
+//   $Date: 2009/05/05 15:03:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -304,6 +304,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               {
                 case 0:           //curve
                   pCurve->setStyle(QwtPlotCurve::Lines);
+                  pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
                   break;
                 case 1:           //points
                   pCurve->setStyle(QwtPlotCurve::Dots);
