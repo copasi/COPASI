@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/05 13:52:35 $
+//   $Date: 2009/05/05 14:01:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,7 +442,7 @@ void CQCompartment::load()
   if (mpCompartment == NULL) return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  //CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 
   const CModel * pModel = NULL;
 
@@ -551,7 +551,7 @@ void CQCompartment::save()
 #ifdef COPASI_EXTUNIT
 
   //Dimensionality
-  if (mpCompartment->getDimensionality() != mpComboBoxDim->currentIndex()) //this makes assumptions about the order of entries in the combo box!
+  if ((C_INT32)mpCompartment->getDimensionality() != mpComboBoxDim->currentIndex()) //this makes assumptions about the order of entries in the combo box!
     {
       mpCompartment->setDimensionality(mpComboBoxDim->currentIndex());
       mChanged = true;
