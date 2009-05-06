@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.253 $
+//   $Revision: 1.254 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/06 16:26:05 $
+//   $Date: 2009/05/06 16:35:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include <qtimer>
 #include <qcombobox>
 #include <qtoolbar>
+#include <qtextedit>
 
 #include <vector>
 #include <sstream>
@@ -1546,7 +1547,7 @@ void CopasiUI3Window::slotCheckModel()
   // MA.writeReport(ss, true, false);
   MA.writeReport(ss, true, true);
 
-  Q3TextEdit* pTE = new Q3TextEdit(FROM_UTF8(ss.str()));
+  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
   pTE->setReadOnly(true);
   pTE->resize(512, 640);
   pTE->show();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/06 16:26:05 $
+//   $Date: 2009/05/06 16:35:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ class ObjectBrowserDialog;
 class QComboBox;
 class CMIRIAMResources;
 class CMIRIAMResourceObject;
+class QCustomEvent;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
