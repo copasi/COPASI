@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/06 16:02:00 $
+//   $Date: 2009/05/06 16:26:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,6 @@
 #include <string>
 
 #include <qmainwindow>
-#include <QCloseEvent>
 
 #ifdef COPASI_SBW_INTEGRATION
 #include <qapplication.h>

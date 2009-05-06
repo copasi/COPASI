@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.252 $
+//   $Revision: 1.253 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/06 16:02:00 $
+//   $Date: 2009/05/06 16:26:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,30 +15,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-//#include <qapplication.h>
-//#include <qlayout.h>
-//#include <qtoolbutton.h>
-//#include <q3whatsthis.h>
-//#include <q3popupmenu.h>
 #include <qmenubar>
-//#include <qapplication.h>
-//#include <qmessagebox.h>
-//#include <qregexp.h>
-//#include <qimage.h>
-//#include <qpixmap.h>
-//#include <qbitmap.h>
 #include <qtimer>
-//#include <qlabel.h>
-//#include <q3hbox.h>
-//#include <q3scrollview.h>
-//#include <qaction.h>
-//#include <q3textedit.h>
 #include <qcombobox>
 #include <qtoolbar>
-
-//Added by qt3to4:
-#include <QCloseEvent>
-//#include <qfile.h>
 
 #include <vector>
 #include <sstream>
@@ -60,8 +40,8 @@ extern const char * CopasiLicense;
 #include "CQMessageBox.h"
 #include "CQPreferenceDialog.h"
 #include "CQSBMLFileDialog.h"
-#include "SteadyStateWidget.h"
 #include "copasi/UI/qtUtilities.h"
+#include "copasiWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -1275,12 +1255,14 @@ void CopasiUI3Window::slotExportMathModel()
       tmp = tmp.remove(QRegExp("\\.$"));
 
       if (!tmp.endsWith(".c") && !tmp.endsWith(".") && !tmp.endsWith(".mmd") && !tmp.endsWith(".ode"))
-        if (newFilter == "C Files (*.c)")
-          tmp += ".c";
-        else if (newFilter == "Berkeley Madonna Files (*.mmd)")
-          tmp += ".mmd";
-        else if (newFilter == "XPPAUT (*.ode)")
-          tmp += ".ode";
+        {
+          if (newFilter == "C Files (*.c)")
+            tmp += ".c";
+          else if (newFilter == "Berkeley Madonna Files (*.mmd)")
+            tmp += ".mmd";
+          else if (newFilter == "XPPAUT (*.ode)")
+            tmp += ".ode";
+        }
 
       if (tmp.endsWith(".c") && newFilter != "C Files (*.c)") newFilter = "C Files (*.c)";
 
