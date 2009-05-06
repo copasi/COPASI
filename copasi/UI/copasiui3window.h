@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/05 23:57:16 $
+//   $Date: 2009/05/06 16:02:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,17 +17,10 @@
 
 #include <string>
 
-#include <qmainwindow.h>
-#include <qdialog.h>
-#include <qtoolbar.h>
-#include "qvariant.h"
-//Added by qt3to4:
-#include <QLabel>
-#include <Q3PopupMenu>
+#include <qmainwindow>
 #include <QCloseEvent>
 
 #ifdef COPASI_SBW_INTEGRATION
-
 #include <qapplication.h>
 #include <qevent.h>
 
@@ -44,19 +37,11 @@ class SBWListener;
 
 #include "../MIRIAM/CMIRIAMResource.h"
 
-class QToolButton;
+//class QToolButton;
 class Q3ListViewItem;
 class ListViews;
 class DataModelGUI;
 class SliderDialog;
-class CQTrajectoryWidget;
-class SteadyStateWidget;
-class ScanWidget;
-class CQMCAWidget;
-class QPushButton;
-class QLabel;
-class Q3HBox;
-class Q3ScrollView;
 class QAction;
 class ObjectBrowserDialog;
 class QComboBox;
@@ -75,23 +60,22 @@ class CopasiUI3Window : public QMainWindow
 public:
   static CopasiUI3Window * create();
   ~CopasiUI3Window();
-  //void enable_object_browser_menu();
-  //void disable_object_browser_menu();
+
   DataModelGUI* getDataModel();
-  //void saveFile();
 
   ListViews* getMainWidget();
 
   void checkPendingMessages();
   void suspendAutoSave(const bool & suspend);
-  void importSBMLFromString(const std::string & sbmlDocumentText);
-  std::string exportSBMLToString();
 
-protected:
-  CopasiUI3Window();
-  DataModelGUI* dataModel; // to keep track of the data model..
-  ListViews *listViews;
-  QComboBox * mpBoxSelectFramework;
+  /**
+   * This is used to import an sbml file from a std::string in the gui
+   * it does all the necessaray GUI stuff like asking to save the old
+   * document, displaying messages, etc.
+   */
+  void importSBMLFromString(const std::string & sbmlDocumentText);
+
+  std::string exportSBMLToString();
 
 public slots:
   void slotShowSliders(bool flag);
@@ -102,7 +86,6 @@ public slots:
    */
   void slotObjectBrowserDialogWasClosed();
 
-  void slotPreferences();
   void autoSave();
 
 protected slots:
@@ -121,6 +104,7 @@ protected slots:
   void license();
   void aboutQt();
   void slotQuit();
+  void slotPreferences();
   void slotConvertToIrreversible();
   void closeEvent(QCloseEvent* e);
   void listViewsFolderChanged(Q3ListViewItem* item);
@@ -132,11 +116,12 @@ protected slots:
   void slotUpdateInitialState();
   void slotFrameworkChanged(int index);
   void slotCapture();
-  // handle the custom events
-  void customEvent(QCustomEvent *);
-  // start an analyzer when selected from the SBW menu
-  void startSBWAnalyzer(int nId);
   void slotUpdateMIRIAM();
+
+  // SBW: handle the custom events
+  void customEvent(QCustomEvent *);
+  // SBW: start an analyzer when selected from the SBW menu
+  void startSBWAnalyzer(int nId);
 
   /**
    * This should only be called via signal by the corresponding QAction mpaObjectBrowser.
@@ -145,14 +130,22 @@ protected slots:
   void slotShowObjectBrowserDialog(bool flag);
 
 private:
-  int newFlag;
-  QString FixedTitle;
-  //QToolButton * msave_button;
-  //QPopupMenu * tools;
+  CopasiUI3Window();
 
   void createActions();
   void createToolBar();
   void createMenuBar();
+
+  void CleanUp();
+
+  void updateTitle();
+
+  DataModelGUI* dataModel; // to keep track of the data model..
+  ListViews *listViews;
+  QComboBox * mpBoxSelectFramework;
+
+  int newFlag;
+  QString FixedTitle;
 
   QAction* mpaNew;
   QAction* mpaOpen;
@@ -163,6 +156,7 @@ private:
   QAction* mpaImportSBML;
   QAction* mpaExportSBML;
   QAction* mpaExportODE;
+  QAction* mpaQuit;
   QAction* mpaObjectBrowser;
   QAction* mpaSliders;
   QAction* mpaCheckModel;
@@ -171,25 +165,22 @@ private:
   QAction *mpaCapture;
   QAction* mpaUpdateMIRIAM;
 
-  void CleanUp();
-
   SliderDialog* mpSliders;
   ObjectBrowserDialog * mpObjectBrowser;
 
   bool mSaveAsRequired;
-  void updateTitle();
   QTimer *mpAutoSaveTimer;
   bool mSuspendAutoSave;
 
-  Q3PopupMenu * mpMenuRecentFiles;
-  Q3PopupMenu * mpMenuExamples;
-
+  //menus
+  QMenu * mpMenuRecentFiles;
+  QMenu * mpMenuExamples;
   void refreshRecentFileMenu();
 
-  Q3PopupMenu * mpMenuRecentSBMLFiles;
+  QMenu * mpMenuRecentSBMLFiles;
   void refreshRecentSBMLFileMenu();
 
-  Q3PopupMenu * mpTools;
+  QMenu * mpTools;
 
   CMIRIAMResources * mpMIRIAMResources;
 
@@ -286,7 +277,7 @@ private:
   /**
    * The SBW menu
    */
-  Q3PopupMenu * mpMenuSBW;
+  QMenu * mpMenuSBW;
 
   /**
    * The id of the SBW menu
@@ -299,6 +290,7 @@ private:
   bool mIgnoreSBWShutdownEvent;
 
 #endif // COPASI_SBW_INTEGRATION
+
 #ifdef COPASI_LICENSE_COM
   bool checkRegistration();
 #endif // COPASI_LICENSE_COM

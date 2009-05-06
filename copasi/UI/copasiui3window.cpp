@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.251 $
+//   $Revision: 1.252 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/05/05 23:57:16 $
+//   $Date: 2009/05/06 16:02:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,29 +15,30 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qapplication.h>
-#include <qlayout.h>
-#include <qtoolbutton.h>
-#include <q3whatsthis.h>
-#include <q3popupmenu.h>
-#include <qmenubar.h>
-#include <qapplication.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <qbitmap.h>
-#include <qtimer.h>
-#include <qlabel.h>
-#include <q3hbox.h>
-#include <q3scrollview.h>
-#include <qaction.h>
-#include <q3textedit.h>
-#include <qcombobox.h>
+//#include <qapplication.h>
+//#include <qlayout.h>
+//#include <qtoolbutton.h>
+//#include <q3whatsthis.h>
+//#include <q3popupmenu.h>
+#include <qmenubar>
+//#include <qapplication.h>
+//#include <qmessagebox.h>
+//#include <qregexp.h>
+//#include <qimage.h>
+//#include <qpixmap.h>
+//#include <qbitmap.h>
+#include <qtimer>
+//#include <qlabel.h>
+//#include <q3hbox.h>
+//#include <q3scrollview.h>
+//#include <qaction.h>
+//#include <q3textedit.h>
+#include <qcombobox>
+#include <qtoolbar>
 
 //Added by qt3to4:
 #include <QCloseEvent>
-#include <qfile.h>
+//#include <qfile.h>
 
 #include <vector>
 #include <sstream>
@@ -166,18 +167,6 @@ static const unsigned char image0_data[] =
   0xae, 0x42, 0x60, 0x82
 };
 
-// This is a hack to enable the menus under Darwin on PowerPC (Bug 841)
-#ifdef Darwin
-# define resetMenus \
-  {\
-    QMessageBox * pMessage = new QMessageBox(this); \
-    pMessage->show(); \
-    delete pMessage; \
-  }
-#else
-# define resetMenus
-#endif // DARWIN
-
 CopasiUI3Window * CopasiUI3Window::create()
 {
   CopasiUI3Window * pWindow = new CopasiUI3Window;
@@ -215,6 +204,8 @@ CopasiUI3Window::CopasiUI3Window():
     QMainWindow(),
     dataModel(NULL),
     listViews(NULL),
+    mpBoxSelectFramework(NULL),
+    newFlag(0),
     mpSliders(NULL),
     mpObjectBrowser(NULL),
     mSaveAsRequired(true),
@@ -242,7 +233,6 @@ CopasiUI3Window::CopasiUI3Window():
   setWindowIcon(image0);
 
   // Set the window caption/title
-  newFlag = 0;
   FixedTitle = "COPASI ";
 #ifdef COPASI_LICENSE_COM
   FixedTitle += "(commercial) ";
@@ -253,7 +243,6 @@ CopasiUI3Window::CopasiUI3Window():
   createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
-  //mbObject_browser_open = false;
 
   mpaSave->setEnabled(false);
   mpaSaveAs->setEnabled(false);
@@ -274,12 +263,14 @@ CopasiUI3Window::CopasiUI3Window():
   listViews->show();
   this->setCentralWidget(listViews);
 
+  //create sliders window
   this->mpSliders = new SliderDialog(NULL);
   this->mpSliders->setParentWindow(this);
   C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->getFolder()->getId();
   this->mpSliders->setCurrentFolderId(id);
   this->mpSliders->resize(350, 250);
 
+  //look at commandline
   if (!COptions::compareValue("ImportSBML", std::string("")))
     {
       // Import the SBML File
@@ -325,6 +316,9 @@ CopasiUI3Window::~CopasiUI3Window()
 
 void CopasiUI3Window::createActions()
 {
+  //TODO: use the QKeySequence standard shortcuts
+  //TODO: add tool tips, status tips etc.
+
   mpaNew = new QAction(QPixmap(filenew), "&New", Qt::CTRL + Qt::Key_N, this, "new");
   connect(mpaNew, SIGNAL(activated()), this, SLOT(newDoc()));
 
@@ -351,6 +345,9 @@ void CopasiUI3Window::createActions()
 
   mpaExportODE = new QAction(QPixmap(filesave), "Export ODEs...", Qt::CTRL + Qt::Key_M, this, "exportode");
   connect(mpaExportODE, SIGNAL(activated()), this, SLOT(slotExportMathModel()));
+
+  mpaQuit = new QAction("&Quit", Qt::CTRL + Qt::Key_Q, this, "quitcopasi");
+  connect(mpaQuit, SIGNAL(activated()), this, SLOT(slotQuit()));
 
   mpaSliders = new QAction(QPixmap(toggleSliderDialog), "Show sliders", 0, this, "showsliders");
   mpaSliders->setToggleAction(true);
@@ -382,32 +379,15 @@ void CopasiUI3Window::createToolBar()
 {
   QToolBar * tb = addToolBar("MainToolBar");
 
-  //new
-  //   QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
   tb->addAction(mpaNew);
-
-  //open
-  //   QWhatsThis::add(toolb, "Click this button to open a <em>new file</em>. <br>You can also select the <b>Open</b> command from the <b>File</b> menu.</p>");
   tb->addAction(mpaOpen);
-
-  //save
-  //   QWhatsThis::add(msave_button, "<p>Click this button to save the file you are editing. You will be prompted for a file name.\nYou can also select the <b>Save</b> command from the <b>File</b> menu.</p>");
   tb->addAction(mpaSave);
-
-  // capture
   tb->addAction(mpaCapture);
-
-  // add a toobar toggle button to display/hide slider dialog
-  //   QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
   tb->addAction(mpaSliders);
-
   tb->addAction(mpaCheckModel);
-
   tb->addAction(mpaApplyInitialState);
   tb->addAction(mpaUpdateInitialState);
-
   tb->addAction(mpaUpdateMIRIAM);
-
   tb->addSeparator();
 
   mpBoxSelectFramework = new QComboBox(tb);
@@ -418,114 +398,61 @@ void CopasiUI3Window::createToolBar()
   //tbMain->setCloseMode(Q3DockWindow::Never);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
-
-  //What's this
-  /*  toolb = QWhatsThis::whatsThisButton(tbMain);
-    QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
-                    "It enables the user to ask for help "
-                    "about widgets on the screen.");*/
 }
 
 void CopasiUI3Window::createMenuBar()
 {
-  const char* toolTip[7];
 
-  toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
-               "You can also select the <b>New</b> command "
-               "from the <b>File</b> menu.</p>";
+  QMenu * pFileMenu = menuBar()->addMenu("&File");
 
-  toolTip[1] = "Click this button to open a <em>file</em>. <br>"
-               "You can also select the <b>Open</b> command "
-               "from the <b>File</b> menu.</p>";
+  pFileMenu->addAction(mpaNew);
+  pFileMenu->addAction(mpaOpen);
 
-  toolTip[2] = "Click this button to open a <em>file</em>. <br>"
-               "You can also select the <b>Open</b> command "
-               "from the <b>File</b> menu.</p>";
+  mpMenuExamples = pFileMenu->addMenu("Examples");
+  mpMenuExamples->addAction(mpaOpenCopasiFiles);
+  mpMenuExamples->addAction(mpaOpenSBMLFiles);
 
-  toolTip[3] = "<p>Click this button to save the file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Save</b> command "
-               "from the <b>File</b> menu.</p>";
+  pFileMenu->addAction(mpaSave);
+  pFileMenu->addAction(mpaSaveAs);
 
-  toolTip[4] = "<p>Click this button to save the file you are editing "
-               "under a new name. You will be prompted for a file name.\n"
-               "You can also select the <b>Save As</b> command "
-               "from the <b>File</b> menu.</p>";
+  pFileMenu->addSeparator();
 
-  toolTip[5] = "<p>Click this button to import a SBML file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Import SBML</b> command "
-               "from the <b>File</b> menu.</p>";
+  pFileMenu->addAction(mpaImportSBML);
+  pFileMenu->addAction(mpaExportSBML);
+  pFileMenu->addAction(mpaExportODE);
 
-  toolTip[6] = "<p>Click this button to export a SBML file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Export SBML</b> command "
-               "from the <b>File</b> menu.</p>";
+  pFileMenu->addSeparator();
 
-  toolTip[7] = "<p>Click this button to export the ODEs of the Mathematical Model. "
-               "You will be prompted for a file name.\n"
-               "You can also select the <b>Export </b> command "
-               "from the <b>File</b> menu.</p>";
-
-  Q3PopupMenu * pFileMenu = new Q3PopupMenu(this);
-  menuBar()->insertItem("&File", pFileMenu);
-
-  mpaNew->addTo(pFileMenu);
-  mpaOpen->addTo(pFileMenu);
-
-  mpMenuExamples = new Q3PopupMenu(this);
-  pFileMenu->insertItem("Examples", mpMenuExamples);
-  mpaOpenCopasiFiles->addTo(mpMenuExamples);
-  mpaOpenSBMLFiles->addTo(mpMenuExamples);
-
-  mpaSave->addTo(pFileMenu);
-  mpaSaveAs->addTo(pFileMenu);
-
-  pFileMenu->insertSeparator();
-
-  mpaImportSBML->addTo(pFileMenu);
-  mpaExportSBML->addTo(pFileMenu);
-  mpaExportODE->addTo(pFileMenu);
-
-  pFileMenu->insertSeparator();
-
-  mpMenuRecentFiles = new Q3PopupMenu(this);
-  pFileMenu->insertItem("Recent Files", mpMenuRecentFiles);
+  mpMenuRecentFiles = pFileMenu->addMenu("Recent Files");
   refreshRecentFileMenu();
 
-  mpMenuRecentSBMLFiles = new Q3PopupMenu(this);
-  pFileMenu->insertItem("Recent SBML Files", mpMenuRecentSBMLFiles);
+  mpMenuRecentSBMLFiles = pFileMenu->addMenu("Recent SBML Files");
   refreshRecentSBMLFileMenu();
 
-  pFileMenu->insertSeparator();
+  pFileMenu->addSeparator();
 
-  pFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), Qt::CTRL + Qt::Key_Q);
+  pFileMenu->addAction(mpaQuit);
 
   //****** tools menu **************
 
-  mpTools = new Q3PopupMenu(this);
-  menuBar()->insertItem("&Tools", mpTools);
+  mpTools = menuBar()->addMenu("&Tools");
 
-  //tools->insertSeparator();
-  //tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
+  mpTools->addAction(mpaApplyInitialState);
+  mpTools->addAction(mpaUpdateInitialState);
+  mpTools->addAction(mpaSliders);
+  mpTools->addAction(mpaCapture);
 
-  mpTools->insertSeparator();
-  mpaApplyInitialState->addTo(mpTools);
-  mpaUpdateInitialState->addTo(mpTools);
-  mpaSliders->addTo(mpTools);
-  mpaCapture->addTo(mpTools);
-
-  mpTools->insertSeparator();
+  mpTools->addSeparator();
 #ifdef COPASI_DEBUG
-  mpaObjectBrowser->addTo(mpTools);
+  mpTools->addAction(mpaObjectBrowser);
 #endif // COPASI_DEBUG
 
-  mpaCheckModel->addTo(mpTools);
+  mpTools->addAction(mpaCheckModel);
   mpTools->insertItem("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
 
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
-  mpMenuSBW = new Q3PopupMenu(this);
+  mpMenuSBW = new QMenu(this);
   mIdMenuSBW = mpTools->insertItem("&SBW", mpMenuSBW);
   mpTools->setItemVisible(mIdMenuSBW, false);
   connect(mpMenuSBW, SIGNAL(activated(int)) , this, SLOT(startSBWAnalyzer(int)));
@@ -541,10 +468,9 @@ void CopasiUI3Window::createMenuBar()
 
   //*******  help menu *****************
 
-  menuBar()->insertSeparator();
+  menuBar()->addSeparator();
 
-  Q3PopupMenu * help = new Q3PopupMenu(this);
-  menuBar()->insertItem("&Help", help);
+  QMenu * help = menuBar()->addMenu("&Help");
 
   help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
   help->insertSeparator();
@@ -555,13 +481,8 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("What's &This", this, SLOT(whatsThis()), Qt::SHIFT + Qt::Key_F1);
 }
 
-/***************CopasiUI3Window::slotFileSaveAs()******
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on the save as
- **              option in the menu File
- *******************************************************************************************/
+//***** Slots ***************************
+
 bool CopasiUI3Window::slotFileSaveAs(QString str)
 {
   bool success = true;
@@ -612,7 +533,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
             }
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
 
       refreshRecentFileMenu();
     }
@@ -622,14 +543,6 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
   return success;
 }
 
-/***************CopasiUI3Window::newDoc()******
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on the new as
- **              option in the menu File
- **
- *******************************************************************************************/
 void CopasiUI3Window::newDoc()
 {
   if (newFlag == 0)
@@ -684,13 +597,6 @@ void CopasiUI3Window::newDoc()
   mSaveAsRequired = true;
 }
 
-/***************CopasiUI3Window::slotFileOpen()******
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on Open
- **              option in the menu File
- *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen(QString file)
 {
   bool success = true;
@@ -757,7 +663,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
           success = false;
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
 
       if (!success)
         {
@@ -816,39 +722,18 @@ void CopasiUI3Window::slotFileOpen(QString file)
     }
 }
 
-/***************CopasiUI3Window::slotFileExamplesCopasiFiles()******
- **
- ** Parameters:- QString file. Example file.
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on
- **              Files->Examples->COPASI Files
- *******************************************************************************************/
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
 {
   CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
   slotFileOpen(file);
 }
 
-/***************CopasiUI3Window::slotFileExamplesSBMLFiles()******
- **
- ** Parameters:- QString file. Example file.
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on Open
- **              Files->Examples->SBML Files
- *******************************************************************************************/
 void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 {
   CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
   slotImportSBML(file);
 }
 
-/***************CopasiUI3Window::slotFileSave()*****************
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on the save as
- **              option in the menu File and it is used to save the document information
- *******************************************************************************************/
 bool CopasiUI3Window::slotFileSave()
 {
   //  ListViews::commit(); --> remove to the line after checking the following condition (07.04.08)
@@ -922,7 +807,7 @@ bool CopasiUI3Window::slotFileSave()
             }
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
     }
 
   refreshRecentFileMenu();
@@ -1017,24 +902,9 @@ void CopasiUI3Window::CleanUp()
   CDirEntry::remove(tempDir);
 }
 
-/***************CopasiUI3Window::slotFilePrint()******
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is called when the users clicks on the print as
- **              option in the menu File and is used to send the document ro
- **              printing
- *******************************************************************************************/
 void CopasiUI3Window::slotFilePrint()
 {}
 
-/***************CopasiUI3Window::about()******
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is just to display the message
- **
- *******************************************************************************************/
 void CopasiUI3Window::about()
 {
   QString text =
@@ -1051,12 +921,6 @@ void CopasiUI3Window::license()
   aboutDialog->exec();
 }
 
-/***************CopasiUI3Window::aboutQt()******
- **
- ** Parameters:- Void
- ** Returns  :- void
- ** Description:- This method is help about the QT application
- *******************************************************************************************/
 void CopasiUI3Window::aboutQt()
 {
   QMessageBox::aboutQt(this, "Qt");
@@ -1155,7 +1019,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
           success = false;
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
 
       if (!success)
         {
@@ -1259,7 +1123,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
           success = false;
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
 
       if (!success)
         {
@@ -1350,13 +1214,13 @@ void CopasiUI3Window::slotExportSBML()
         {
           success = false;
           setCursor(oldCursor);
-          resetMenus;
+
           //CQMessageBox::critical(this, QString("File Error"),
           //                       QString("Error. Could not export file ") + tmp + QString("!"),
           //                       QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
 
       /*
       if (!success)
@@ -1446,7 +1310,7 @@ void CopasiUI3Window::slotExportMathModel()
             }
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
     }
 }
 
@@ -1481,18 +1345,6 @@ void CopasiUI3Window::slotShowSliders(bool flag)
   this->mpSliders->setHidden(!flag);
 }
 
-// void CopasiUI3Window::enable_object_browser_menu()
-// {
-//   //mpFileMenu->setItemEnabled(nobject_browser, true);
-//   mbObject_browser_open = false;
-//}
-
-// void CopasiUI3Window::disable_object_browser_menu()
-// {
-//   //mpFileMenu->setItemEnabled(nobject_browser, false);
-//   mbObject_browser_open = true;
-//}
-
 DataModelGUI* CopasiUI3Window::getDataModel()
 {return dataModel;}
 
@@ -1501,11 +1353,6 @@ void CopasiUI3Window::listViewsFolderChanged(Q3ListViewItem* item)
   C_INT32 id = ((FolderListItem*)item)->getFolder()->getId();
   this->mpSliders->setCurrentFolderId(id);
 }
-
-// void CopasiUI3Window::saveFile()
-// {
-//   this->slotFileSave();
-//}
 
 ListViews* CopasiUI3Window::getMainWidget()
 {
@@ -1685,13 +1532,13 @@ std::string CopasiUI3Window::exportSBMLToString()
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor); resetMenus;
+          setCursor(oldCursor);
           CQMessageBox::critical(this, QString("File Error"),
                                  QString("Error. Could not do SBML export!"),
                                  QMessageBox::Ok, QMessageBox::Ok);
         }
 
-      setCursor(oldCursor); resetMenus;
+      setCursor(oldCursor);
 
       if (!success)
         {
