@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.126 $
+//   $Revision: 1.127 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:53 $
+//   $Author: gauges $
+//   $Date: 2009/05/07 19:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,7 @@ const MESSAGES Messages[] =
   {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the 'hasOnlySubstanceUnits' flag set is not allowed."},
   {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
   {MCSBML + 22, "SBML (22): Current versions of COPASI only supports three dimensional compartments. '%s' will be considered to be three dimensional."},
-  {MCSBML + 23, "SBML (23): Compartment '%s' has spatial dimensions of 0, setting dimensions to 3.\nConsidering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set."},
+  {MCSBML + 23, "SBML (23): Compartment '%s' has spatial dimensions of 0, setting dimensions to 3.\nConsidering all species in that compartment to have \"hasOnlySubstanceUnits\" flag set."}, // OBSOLETE
   {MCSBML + 24, "SBML (24): Units for some compartments were ignored. Units might be displayed incorrectly.\nCompartments: %s"},
   {MCSBML + 25, "SBML (25): Units for some species were ignored. Units might be displayed incorrectly.\nSpecies: %s"},
   {MCSBML + 26, "SBML (26): Units for some parameters were ignored. Units might be displayed incorrectly.\nParameters: %s"},
@@ -231,6 +231,7 @@ const MESSAGES Messages[] =
   {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
   {MCSBML + 75, "SBML (75): Invalid id RDF/XML found and corrected."},
   {MCSBML + 76, "SBML (76): Unable to resolve dependencies for the following function definitions:\n%s."},
+  {MCSBML + 77, "SBML (77): Event \"%s\" is defined to calculate the event assignments after the delay. This can not be expressed in SBML Level %s Version %s. Exporting to this version of SBML will change the semantics of the model."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

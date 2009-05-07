@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.231 $
+//   $Revision: 1.232 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 15:08:14 $
+//   $Date: 2009/05/07 19:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -6960,6 +6960,26 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       pExpression->setTree(*pTmpNode);
       delete pTmpNode;
       pCOPASIEvent->setDelayExpressionPtr(pExpression);
+
+      // check for useValuesFromTriggerTime
+      if ((this->mLevel == 2 && this->mVersion >= 4) || this->mLevel > 2)
+        {
+          // it has exactly the same meaning as the delayAssignment flag in
+          // COPASI, just a different name
+          pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
+        }
+      else
+        {
+          // SBML version prior to L2V4 didn't have the flag and the default
+          // behavior was the same as if the flag was set to true
+          pCOPASIEvent->setDelayAssignment(true);
+        }
+    }
+  else
+    {
+      // actually the flag does not have any meaning without a delay, but we set
+      // it anyway to the default value
+      pCOPASIEvent->setDelayAssignment(true);
     }
 
   // the check if the time units are correct has already been made elsewhere

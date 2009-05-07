@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 15:28:52 $
+//   $Date: 2009/05/07 19:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2904,6 +2904,20 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
           pSBMLEvent->setDelay(pDelay);
           delete pNode;
           delete pDelay;
+
+          if ((this->mSBMLLevel == 2 && this->mSBMLVersion >= 4) || this->mSBMLLevel > 2)
+            {
+              pSBMLEvent->setUseValuesFromTriggerTime(event.getDelayAssignment());
+            }
+          else
+            {
+              // if the delayAssignment is set to false, we have a problem
+              // because the model semantic changes on export
+              if (event.getDelayAssignment() == false)
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 77, event.getObjectName().c_str(), this->mSBMLLevel, this->mSBMLVersion);
+                }
+            }
         }
       else
         {
