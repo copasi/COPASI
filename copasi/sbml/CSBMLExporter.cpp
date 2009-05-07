@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/29 21:24:41 $
+//   $Author: gauges $
+//   $Date: 2009/05/07 15:28:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,8 @@ CSBMLExporter::~CSBMLExporter()
  */
 void CSBMLExporter::createUnits(const CCopasiDataModel& dataModel)
 {
+  createLengthUnit(dataModel);
+  createAreaUnit(dataModel);
   createVolumeUnit(dataModel);
   createTimeUnit(dataModel);
   createSubstanceUnit(dataModel);
@@ -296,6 +298,144 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
 }
 
 /**
+ * Creates the length unit for the SBML model.
+ */
+void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
+{
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
+
+  UnitDefinition uDef("length");
+  uDef.setId("length");
+  Unit unit;
+
+  switch (dataModel.getModel()->getLengthUnitEnum())
+    {
+      case CModel::m:
+        unit = Unit(UNIT_KIND_METRE, 1, 0);
+        break;
+      case CModel::dm:
+        unit = Unit(UNIT_KIND_METRE, 1, -1);
+        break;
+      case CModel::cm:
+        unit = Unit(UNIT_KIND_METRE, 1, -2);
+        break;
+      case CModel::mm:
+        unit = Unit(UNIT_KIND_METRE, 1, -3);
+        break;
+      case CModel::microm:
+        unit = Unit(UNIT_KIND_METRE, 1, -6);
+        break;
+      case CModel::nm:
+        unit = Unit(UNIT_KIND_METRE, 1, -9);
+        break;
+      case CModel::pm:
+        unit = Unit(UNIT_KIND_METRE, 1, -12);
+        break;
+      case CModel::fm:
+        unit = Unit(UNIT_KIND_METRE, 1, -15);
+        break;
+      case CModel::dimensionlessLength:
+        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        break;
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi length unit.");
+        break;
+    }
+
+  uDef.addUnit(&unit);
+  Model* pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("length");
+
+  if (pUdef != NULL)
+    {
+      // check if it is the same unit as the existing one if there is one
+      // if yes, return, else replace the existing one
+      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
+        {
+          (*pUdef) = uDef;
+        }
+    }
+  else
+    {
+      // only add it if it is not the default unit definition anyway
+      if (unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
+        {
+          // set the unit definition
+          pSBMLModel->addUnitDefinition(&uDef);
+        }
+    }
+}
+
+/**
+ * Creates the area unit for the SBML model.
+ */
+void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
+{
+  if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
+
+  UnitDefinition uDef("area");
+  uDef.setId("area");
+  Unit unit;
+
+  switch (dataModel.getModel()->getAreaUnitEnum())
+    {
+      case CModel::m:
+        unit = Unit(UNIT_KIND_METRE, 2, 0);
+        break;
+      case CModel::dm:
+        unit = Unit(UNIT_KIND_METRE, 2, -1);
+        break;
+      case CModel::cm:
+        unit = Unit(UNIT_KIND_METRE, 2, -2);
+        break;
+      case CModel::mm:
+        unit = Unit(UNIT_KIND_METRE, 2, -3);
+        break;
+      case CModel::microm:
+        unit = Unit(UNIT_KIND_METRE, 2, -6);
+        break;
+      case CModel::nm:
+        unit = Unit(UNIT_KIND_METRE, 2, -9);
+        break;
+      case CModel::pm:
+        unit = Unit(UNIT_KIND_METRE, 2, -12);
+        break;
+      case CModel::fm:
+        unit = Unit(UNIT_KIND_METRE, 2, -15);
+        break;
+      case CModel::dimensionlessLength:
+        unit = Unit(UNIT_KIND_DIMENSIONLESS, 1, 0);
+        break;
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi area unit.");
+        break;
+    }
+
+  uDef.addUnit(&unit);
+  Model* pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("area");
+
+  if (pUdef != NULL)
+    {
+      // check if it is the same unit as the existing one if there is one
+      // if yes, return, else replace the existing one
+      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
+        {
+          (*pUdef) = uDef;
+        }
+    }
+  else
+    {
+      // only add it if it is not the default unit definition anyway
+      if (unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 2 || unit.getMultiplier() != 1.0)
+        {
+          // set the unit definition
+          pSBMLModel->addUnitDefinition(&uDef);
+        }
+    }
+}
+
+/**
  * Creates the compartments for the model.
  */
 void CSBMLExporter::createCompartments(CCopasiDataModel& dataModel)
@@ -343,6 +483,7 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLCompartment));
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
   pSBMLCompartment->setName(compartment.getObjectName().c_str());
+  pSBMLCompartment->setSpatialDimensions(compartment.getDimensionality());
   double value = compartment.getInitialValue();
 
   // if the value is NaN, unset the initial volume
@@ -362,24 +503,38 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
 
   if (status == CModelEntity::ASSIGNMENT)
     {
-      this->mVariableVolumes = true;
-      this->mAssignmentVector.push_back(&compartment);
-      pSBMLCompartment->setConstant(false);
-      removeInitialAssignment(pSBMLCompartment->getId());
-    }
-  else if (status == CModelEntity::ODE)
-    {
-      this->mVariableVolumes = true;
-      this->mODEVector.push_back(&compartment);
-      pSBMLCompartment->setConstant(false);
-
-      if (compartment.getInitialExpression() != "")
+      if (compartment.getDimensionality() != 0)
         {
-          this->mInitialAssignmentVector.push_back(&compartment);
+          this->mVariableVolumes = true;
+          this->mAssignmentVector.push_back(&compartment);
+          pSBMLCompartment->setConstant(false);
+          removeInitialAssignment(pSBMLCompartment->getId());
         }
       else
         {
-          removeInitialAssignment(pSBMLCompartment->getId());
+          fatalError();
+        }
+    }
+  else if (status == CModelEntity::ODE)
+    {
+      if (compartment.getDimensionality() != 0)
+        {
+          this->mVariableVolumes = true;
+          this->mODEVector.push_back(&compartment);
+          pSBMLCompartment->setConstant(false);
+
+          if (compartment.getInitialExpression() != "")
+            {
+              this->mInitialAssignmentVector.push_back(&compartment);
+            }
+          else
+            {
+              removeInitialAssignment(pSBMLCompartment->getId());
+            }
+        }
+      else
+        {
+          fatalError();
         }
     }
   else
@@ -402,14 +557,21 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       // fill initial assignment set
       if (compartment.getInitialExpression() != "")
         {
-          // only set the flag if the initial assignments would actually be
-          // exported.
-          if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
+          if (compartment.getDimensionality() != 0)
             {
-              this->mVariableVolumes = true;
-            }
+              // only set the flag if the initial assignments would actually be
+              // exported.
+              if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
+                {
+                  this->mVariableVolumes = true;
+                }
 
-          this->mInitialAssignmentVector.push_back(&compartment);
+              this->mInitialAssignmentVector.push_back(&compartment);
+            }
+          else
+            {
+              fatalError();
+            }
         }
       else
         {

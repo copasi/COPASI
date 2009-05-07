@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/04/29 08:04:06 $
+//   $Date: 2009/05/07 15:28:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,6 +151,16 @@ protected:
    * Creates the time unit for the SBML model.
    */
   void createTimeUnit(const CCopasiDataModel& dataModel);
+
+  /**
+   * Creates the volume unit for the SBML model.
+   */
+  void createLengthUnit(const CCopasiDataModel& dataModel);
+
+  /**
+   * Creates the volume unit for the SBML model.
+   */
+  void createAreaUnit(const CCopasiDataModel& dataModel);
 
   /**
    * Creates the volume unit for the SBML model.
