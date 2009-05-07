@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.127 $
+//   $Revision: 1.128 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 19:07:14 $
+//   $Date: 2009/05/07 19:25:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,7 +231,7 @@ const MESSAGES Messages[] =
   {MCSBML + 74, "SBML (74): Invalid id \"%s\" found in an expression."},
   {MCSBML + 75, "SBML (75): Invalid id RDF/XML found and corrected."},
   {MCSBML + 76, "SBML (76): Unable to resolve dependencies for the following function definitions:\n%s."},
-  {MCSBML + 77, "SBML (77): Event \"%s\" is defined to calculate the event assignments after the delay. This can not be expressed in SBML Level %s Version %s. Exporting to this version of SBML will change the semantics of the model."},
+  {MCSBML + 77, "SBML (77): Event \"%s\" is defined to calculate the event assignments after the delay. This can not be expressed in SBML Level %d Version %d. Exporting to this version of SBML will change the semantics of the model."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
