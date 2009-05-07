@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.230 $
+//   $Revision: 1.231 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 10:45:50 $
+//   $Date: 2009/05/07 15:08:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create an empty model and set the title. */
   this->mpCopasiModel = new CModel(mpDataModel);
   copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
+  this->mpCopasiModel->setLengthUnit(CModel::m);
+  this->mpCopasiModel->setAreaUnit(CModel::m2);
   this->mpCopasiModel->setVolumeUnit(CModel::l);
   this->mpCopasiModel->setTimeUnit(CModel::s);
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
@@ -172,9 +174,37 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                   this->mpCopasiModel->setVolumeUnit(vUnit.first);
                 }
             }
-          else if ((unitId == "area") || (unitId == "length"))
+          else if ((unitId == "area"))
             {
-              /* do nothing, but do not throw an exception either */
+              std::pair<CModel::AreaUnit, bool> vUnit = this->handleAreaUnit(uDef);
+
+              if (vUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to litre
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "area", "square meter");
+                  this->mpCopasiModel->setAreaUnit(CModel::m2);
+                }
+              else
+                {
+                  this->mpCopasiModel->setAreaUnit(vUnit.first);
+                }
+            }
+          else if ((unitId == "length"))
+            {
+              std::pair<CModel::LengthUnit, bool> vUnit = this->handleLengthUnit(uDef);
+
+              if (vUnit.second == false)
+                {
+                  // the unit could not be handled, give an error message and
+                  // set the units to litre
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "length", "meter");
+                  this->mpCopasiModel->setLengthUnit(CModel::m);
+                }
+              else
+                {
+                  this->mpCopasiModel->setLengthUnit(vUnit.first);
+                }
             }
         }
     }
@@ -759,6 +789,13 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       std::string cU = sbmlCompartment->getUnits();
     }
 
+  unsigned int dimensionality = sbmlCompartment->getSpatialDimensions();
+
+  if (dimensionality > 3)
+    {
+      fatalError();
+    }
+
   std::string name = sbmlCompartment->getName();
 
   if (name == "")
@@ -790,6 +827,9 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     {
       copasiCompartment->setSBMLId(sbmlCompartment->getId());
     }
+
+  // set the dimension of the compartment
+  copasiCompartment->setDimensionality(dimensionality);
 
   //DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlCompartment, copasiCompartment);
@@ -2285,6 +2325,286 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
     }
 
   return std::make_pair(tUnit, result);
+}
+
+/**
+ * Returns the copasi LengthUnit corresponding to the given SBML length
+ *  UnitDefinition.
+ */
+std::pair<CModel::LengthUnit, bool>
+SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
+{
+  bool result = false;
+  CModel::LengthUnit lUnit = CModel::m;
+
+  if (uDef == NULL)
+    {
+      //DebugFile << "Argument to handleLengthUnit is NULL pointer." << std::endl;
+      fatalError();
+    }
+
+  if (uDef->getNumUnits() == 1)
+    {
+      const Unit* u = uDef->getUnit(0);
+
+      if (u == NULL)
+        {
+          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
+          fatalError();
+        }
+
+      if ((u->getKind() == UNIT_KIND_METRE))
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int) round(tmp);
+                  multiplier = 1;
+                }
+            }
+
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              ((scale % 3) == 0 || scale == -1 || scale == -2) &&
+              (scale < 1) &&
+              (scale > -16))
+            {
+              switch (scale)
+                {
+                  case 0:
+                    lUnit = CModel::m;
+                    result = true;
+                    break;
+                  case - 1:
+                    lUnit = CModel::dm;
+                    result = true;
+                    break;
+                  case - 2:
+                    lUnit = CModel::cm;
+                    result = true;
+                    break;
+                  case - 3:
+                    lUnit = CModel::mm;
+                    result = true;
+                    break;
+                  case - 6:
+                    lUnit = CModel::microm;
+                    result = true;
+                    break;
+                  case - 9:
+                    lUnit = CModel::nm;
+                    result = true;
+                    break;
+                  case - 12:
+                    lUnit = CModel::pm;
+                    result = true;
+                    break;
+                  case - 15:
+                    lUnit = CModel::fm;
+                    result = true;
+                    break;
+                  default:
+                    //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
+                    fatalError();
+                    break;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              scale == 0)
+            {
+              result = true;
+              lUnit = CModel::dimensionlessLength;
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else
+        {
+          result = false;
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return std::make_pair(lUnit, result);
+}
+
+/**
+ * Returns the copasi AreaUnit corresponding to the given SBML area
+ *  UnitDefinition.
+ */
+std::pair<CModel::AreaUnit, bool>
+SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
+{
+  bool result = false;
+  CModel::AreaUnit aUnit = CModel::m2;
+
+  if (uDef == NULL)
+    {
+      //DebugFile << "Argument to handleLengthUnit is NULL pointer." << std::endl;
+      fatalError();
+    }
+
+  if (uDef->getNumUnits() == 1)
+    {
+      const Unit* u = uDef->getUnit(0);
+
+      if (u == NULL)
+        {
+          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
+          fatalError();
+        }
+
+      if ((u->getKind() == UNIT_KIND_METRE) && u->getExponent() == 2)
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int) round(tmp);
+                  multiplier = 1;
+                }
+            }
+
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              ((scale % 3) == 0 || scale == -1 || scale == -2) &&
+              (scale < 1) &&
+              (scale > -16))
+            {
+              switch (scale)
+                {
+                  case 0:
+                    aUnit = CModel::m2;
+                    result = true;
+                    break;
+                  case - 1:
+                    aUnit = CModel::dm2;
+                    result = true;
+                    break;
+                  case - 2:
+                    aUnit = CModel::cm2;
+                    result = true;
+                    break;
+                  case - 3:
+                    aUnit = CModel::mm2;
+                    result = true;
+                    break;
+                  case - 6:
+                    aUnit = CModel::microm2;
+                    result = true;
+                    break;
+                  case - 9:
+                    aUnit = CModel::nm2;
+                    result = true;
+                    break;
+                  case - 12:
+                    aUnit = CModel::pm2;
+                    result = true;
+                    break;
+                  case - 15:
+                    aUnit = CModel::fm2;
+                    result = true;
+                    break;
+                  default:
+                    //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
+                    fatalError();
+                    break;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
+        {
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+
+          if (multiplier != 1)
+            {
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
+
+              if (areApproximatelyEqual(tmp, round(tmp)))
+                {
+                  scale += (int)round(tmp);
+                  multiplier = 1;
+                }
+            }
+
+          if ((u->getExponent() == 1) &&
+              areApproximatelyEqual(multiplier, 1.0) &&
+              scale == 0)
+            {
+              result = true;
+              aUnit = CModel::dimensionlessArea;
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else
+        {
+          result = false;
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return std::make_pair(aUnit, result);
 }
 
 /**
@@ -4929,34 +5249,26 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   const Species* pSpecies;
   const Reaction* pReaction;
   const KineticLaw* pKineticLaw;
+  UnitDefinition* pDimensionlessUnits = getSBMLUnitDefinitionForId("dimensionless", pSBMLModel);
+  UnitDefinition* pLengthUnits = getSBMLUnitDefinitionForId("length", pSBMLModel);
+  UnitDefinition* pAreaUnits = getSBMLUnitDefinitionForId("area", pSBMLModel);
   UnitDefinition* pVolumeUnits = getSBMLUnitDefinitionForId("volume", pSBMLModel);
   UnitDefinition* pTimeUnits = getSBMLUnitDefinitionForId("time", pSBMLModel);
   UnitDefinition* pSubstanceUnits = getSBMLUnitDefinitionForId("substance", pSBMLModel);
-  std::string lastUnit = "";
-  bool inconsistentUnits = false;
+  std::string lastVolumeUnit = "";
+  std::string lastAreaUnit = "";
+  std::string lastLengthUnit = "";
+  std::string lastDimensionlessUnit = "";
+  bool inconsistentVolumeUnits = false;
+  bool inconsistentAreaUnits = false;
+  bool inconsistentLengthUnits = false;
+  bool inconsistentDimensionlessUnits = false;
 
   for (i = 0; i < iMax; ++i)
     {
       pCompartment = pSBMLModel->getCompartment(i);
 
-      if (pCompartment->getSpatialDimensions() != 3)
-        {
-          if (pCompartment->getSpatialDimensions() == 0)
-            {
-              // MCSBML + 23, ERROR, compartment id
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 23, pCompartment->getId().c_str());
-            }
-          else
-            {
-              // this can not have a dimension we know in copasi
-              // warn the user
-              // MCSBML + 22, compartment id
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 22, pCompartment->getId().c_str());
-            }
-
-          lastUnit = "volume";
-        }
-      else
+      if (pCompartment->getSpatialDimensions() == 3)
         {
           if (pCompartment->isSetUnits())
             {
@@ -4974,19 +5286,19 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   nonDefaultCompartments.push_back(pCompartment->getId());
                 }
 
-              if (lastUnit == "")
+              if (lastVolumeUnit == "")
                 {
-                  lastUnit = unitId;
+                  lastVolumeUnit = unitId;
                 }
-              else if (unitId != lastUnit)
+              else if (unitId != lastVolumeUnit)
                 {
                   // check if the two units have identical definitions
-                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
                   assert(pUdef2 != NULL);
 
                   if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
                     {
-                      inconsistentUnits = true;
+                      inconsistentVolumeUnits = true;
                     }
 
                   delete pUdef2;
@@ -4994,18 +5306,146 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastUnit == "")
+          else if (lastVolumeUnit == "")
             {
-              lastUnit = "volume";
+              lastVolumeUnit = "volume";
+            }
+        }
+      else if (pCompartment->getSpatialDimensions() == 2)
+        {
+          if (pCompartment->isSetUnits())
+            {
+              std::string unitId = pCompartment->getUnits();
+              UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+
+              if (pUdef1 == NULL)
+                {
+                  // error message
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                }
+
+              if (unitId != "area" && !areSBMLUnitDefinitionsIdentical(pAreaUnits, pUdef1))
+                {
+                  nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+
+              if (lastAreaUnit == "")
+                {
+                  lastAreaUnit = unitId;
+                }
+              else if (unitId != lastAreaUnit)
+                {
+                  // check if the two units have identical definitions
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
+                  assert(pUdef2 != NULL);
+
+                  if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                    {
+                      inconsistentAreaUnits = true;
+                    }
+
+                  delete pUdef2;
+                }
+
+              delete pUdef1;
+            }
+          else if (lastAreaUnit == "")
+            {
+              lastAreaUnit = "area";
+            }
+        }
+      else if (pCompartment->getSpatialDimensions() == 1)
+        {
+          if (pCompartment->isSetUnits())
+            {
+              std::string unitId = pCompartment->getUnits();
+              UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+
+              if (pUdef1 == NULL)
+                {
+                  // error message
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                }
+
+              if (unitId != "length" && !areSBMLUnitDefinitionsIdentical(pLengthUnits, pUdef1))
+                {
+                  nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+
+              if (lastLengthUnit == "")
+                {
+                  lastLengthUnit = unitId;
+                }
+              else if (unitId != lastLengthUnit)
+                {
+                  // check if the two units have identical definitions
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
+                  assert(pUdef2 != NULL);
+
+                  if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                    {
+                      inconsistentLengthUnits = true;
+                    }
+
+                  delete pUdef2;
+                }
+
+              delete pUdef1;
+            }
+          else if (lastLengthUnit == "")
+            {
+              lastLengthUnit = "length";
+            }
+        }
+      else if (pCompartment->getSpatialDimensions() == 0)
+        {
+          if (pCompartment->isSetUnits())
+            {
+              std::string unitId = pCompartment->getUnits();
+              UnitDefinition* pUdef1 = getSBMLUnitDefinitionForId(unitId, pSBMLModel);
+
+              if (pUdef1 == NULL)
+                {
+                  // error message
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                }
+
+              if (unitId != "dimensionless" && !areSBMLUnitDefinitionsIdentical(pDimensionlessUnits, pUdef1))
+                {
+                  nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+
+              if (lastDimensionlessUnit == "")
+                {
+                  lastDimensionlessUnit = unitId;
+                }
+              else if (unitId != lastDimensionlessUnit)
+                {
+                  // check if the two units have identical definitions
+                  UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastDimensionlessUnit, pSBMLModel);
+                  assert(pUdef2 != NULL);
+
+                  if (!areSBMLUnitDefinitionsIdentical(pUdef1, pUdef2))
+                    {
+                      inconsistentDimensionlessUnits = true;
+                    }
+
+                  delete pUdef2;
+                }
+
+              delete pUdef1;
+            }
+          else if (lastDimensionlessUnit == "")
+            {
+              lastDimensionlessUnit = "dimensionless";
             }
         }
     }
 
-  if (!inconsistentUnits && lastUnit != "" && lastUnit != "volume")
+  if (!inconsistentVolumeUnits && lastVolumeUnit != "" && lastVolumeUnit != "volume")
     {
       // try to set the default volume unit to the unit defined by lastUnit
-      //const UnitDefinition* pUdef = pSBMLModel->getUnitDefinition(lastUnit);
-      const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
+      const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
       assert(pUdef != NULL);
       std::pair<CModel::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
 
@@ -5018,11 +5458,51 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
       else
         {
-          inconsistentUnits = true;
+          inconsistentVolumeUnits = true;
         }
     }
 
-  if (inconsistentUnits)
+  if (!inconsistentAreaUnits && lastAreaUnit != "" && lastAreaUnit != "area")
+    {
+      // try to set the default area unit to the unit defined by lastAreaUnit
+      const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
+      assert(pUdef != NULL);
+      std::pair<CModel::AreaUnit, bool> area = this->handleAreaUnit(pUdef);
+
+      if (area.second == true)
+        {
+          // set the default area unit
+          pCopasiModel->setAreaUnit(area.first);
+          delete pAreaUnits;
+          pAreaUnits = dynamic_cast<UnitDefinition*>(pUdef->clone());
+        }
+      else
+        {
+          inconsistentAreaUnits = true;
+        }
+    }
+
+  if (!inconsistentLengthUnits && lastLengthUnit != "" && lastLengthUnit != "length")
+    {
+      // try to set the default length unit to the unit defined by lastLengthUnit
+      const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
+      assert(pUdef != NULL);
+      std::pair<CModel::LengthUnit, bool> length = this->handleLengthUnit(pUdef);
+
+      if (length.second == true)
+        {
+          // set the default length unit
+          pCopasiModel->setLengthUnit(length.first);
+          delete pLengthUnits;
+          pLengthUnits = dynamic_cast<UnitDefinition*>(pUdef->clone());
+        }
+      else
+        {
+          inconsistentLengthUnits = true;
+        }
+    }
+
+  if (inconsistentVolumeUnits || inconsistentAreaUnits || inconsistentLengthUnits || inconsistentDimensionlessUnits)
     {
       // warn about inconsistent units and that they have been ignored and
       // report the actual units used
@@ -5040,8 +5520,8 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
     }
 
-  inconsistentUnits = false;
-  lastUnit = "";
+  bool inconsistentUnits = false;
+  std::string lastUnit = "";
   iMax = pSBMLModel->getNumSpecies();
 
   for (i = 0; i < iMax; ++i)
@@ -5468,7 +5948,7 @@ Unit* SBMLImporter::convertSBMLCubicmetresToLitres(const Unit* pU)
 }
 
 /**
- * This funktion normalizes the multiplier to be within the range 1.0 <=
+ * This function normalizes the multiplier to be within the range 1.0 <=
  * multiplier < 10.0.
  */
 void SBMLImporter::normalizeSBMLUnit(Unit* pU)
@@ -5526,16 +6006,16 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
         }
       else if (unitId == "area")
         {
-          pUnitDefinition = new UnitDefinition("area");
+          pUnitDefinition = new UnitDefinition("dummy_area");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_METRE);
           pUnit->setExponent(2);
           pUnit->setMultiplier(1.0);
           pUnit->setScale(0);
         }
-      else if (unitId == "length")
+      else if (unitId == "length" || unitId == "metre")
         {
-          pUnitDefinition = new UnitDefinition("length");
+          pUnitDefinition = new UnitDefinition("dummy_length");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_METRE);
           pUnit->setExponent(1);
@@ -5619,15 +6099,6 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
           pUnitDefinition = new UnitDefinition("dummy_katal");
           Unit* pUnit = pUnitDefinition->createUnit();
           pUnit->setKind(UNIT_KIND_KATAL);
-          pUnit->setExponent(1);
-          pUnit->setMultiplier(1.0);
-          pUnit->setScale(0);
-        }
-      else if (unitId == "metre")
-        {
-          pUnitDefinition = new UnitDefinition("dummy_metre");
-          Unit* pUnit = pUnitDefinition->createUnit();
-          pUnit->setKind(UNIT_KIND_METRE);
           pUnit->setExponent(1);
           pUnit->setMultiplier(1.0);
           pUnit->setScale(0);

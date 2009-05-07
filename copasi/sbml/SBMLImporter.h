@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Author: gauges $
+//   $Date: 2009/05/07 15:08:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,6 +235,18 @@ protected:
    * With the node multiplied by the volume of the species compartment.
   void replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, const std::map<Species*, Compartment*>& substanceOnlySpecies);
    */
+
+  /**
+   * Returns the copasi LengthUnit corresponding to the given SBML length
+   *  UnitDefinition.
+   */
+  std::pair<CModel::LengthUnit, bool> handleLengthUnit(const UnitDefinition* uDef);
+
+  /**
+   * Returns the copasi AreaUnit corresponding to the given SBML area
+   *  UnitDefinition.
+   */
+  std::pair<CModel::AreaUnit, bool> handleAreaUnit(const UnitDefinition* uDef);
 
   /**
    * Returns the copasi VolumeUnit corresponding to the given SBML Volume
