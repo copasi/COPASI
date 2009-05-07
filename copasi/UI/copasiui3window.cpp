@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.254 $
+//   $Revision: 1.255 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/06 16:35:09 $
+//   $Author: gauges $
+//   $Date: 2009/05/07 10:12:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,11 +15,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qmenubar>
-#include <qtimer>
-#include <qcombobox>
-#include <qtoolbar>
-#include <qtextedit>
+#include <QMenuBar>
+#include <QTimer>
+#include <QComboBox>
+#include <QToolBar>
+#include <QTextEdit>
 
 #include <vector>
 #include <sstream>

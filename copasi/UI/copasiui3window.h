@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/06 16:35:09 $
+//   $Author: gauges $
+//   $Date: 2009/05/07 10:12:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,11 +17,11 @@
 
 #include <string>
 
-#include <qmainwindow>
+#include <QMainWindow>
 
 #ifdef COPASI_SBW_INTEGRATION
-#include <qapplication.h>
-#include <qevent.h>
+#include <QApplication>
+#include <QEvent>
 
 #define WIN32_LEAN_AND_MEAN
 #include <SBW/SBW.h>
