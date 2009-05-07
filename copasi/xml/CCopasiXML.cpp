@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.118 $
+//   $Revision: 1.119 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 12:18:49 $
+//   $Author: shoops $
+//   $Date: 2009/05/07 13:31:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -748,7 +748,7 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pEvent->getKey());
           Attributes.setValue(1, pEvent->getObjectName());
-          Attributes.setValue(2, pEvent->getDelayAssignment());
+          Attributes.setValue(2, pEvent->getDelayAssignment() ? "true" : "false");
 
           startSaveElement("Event", Attributes);
 

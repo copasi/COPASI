@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.198 $
+//   $Revision: 1.199 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 12:18:49 $
+//   $Author: shoops $
+//   $Date: 2009/05/07 13:31:19 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2841,13 +2841,15 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
       case TriggerExpression:
 
         if (strcmp(pszName, "TriggerExpression"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "TriggerExpression", mParser.getCurrentLineNumber());
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                           pszName, "TriggerExpression", mParser.getCurrentLineNumber());
+          }
 
         {
           unsigned C_INT32 Size = CCopasiMessage::size();
 
-          if (!mCommon.pEvent->setTriggerExpression(mCommon.CharacterData)) fatalError();
+          mCommon.pEvent->setTriggerExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.
@@ -2863,8 +2865,10 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
       case DelayExpression:
 
         if (strcmp(pszName, "DelayExpression"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "DelayExpression", mParser.getCurrentLineNumber());
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                           pszName, "DelayExpression", mParser.getCurrentLineNumber());
+          }
 
         {
           unsigned C_INT32 Size = CCopasiMessage::size();
