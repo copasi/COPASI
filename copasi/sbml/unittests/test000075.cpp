@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000075.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/04/29 11:26:01 $
+//   $Date: 2009/05/07 10:47:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,7 +264,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
-  CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
+  CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Initial Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   CPPUNIT_ASSERT(pCModelValue5 != NULL);
@@ -292,7 +292,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, *pCObjectName);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject->isReference() == true);
-  CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
+  CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Initial Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   CPPUNIT_ASSERT(pCModel->getReactions().size() == 1);
