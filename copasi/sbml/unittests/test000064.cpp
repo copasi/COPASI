@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/04/29 11:26:01 $
+//   $Date: 2009/05/07 18:34:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3107,7 +3107,8 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // check the resulting SBML model
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING109);
-  CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
+  bool result = load_cps_model_from_stream(iss, *pDataModel);
+  CPPUNIT_ASSERT(result == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);
   SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -3235,7 +3236,7 @@ const char* test000064::MODEL_STRING109 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\" >\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -3243,7 +3244,7 @@ const char* test000064::MODEL_STRING109 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
   "            </Expression>\n"
@@ -3434,7 +3435,7 @@ const char* test000064::MODEL_STRING110 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -3442,7 +3443,7 @@ const char* test000064::MODEL_STRING110 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
   "            </Expression>\n"
@@ -3598,7 +3599,7 @@ const char* test000064::MODEL_STRING111 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -3606,7 +3607,7 @@ const char* test000064::MODEL_STRING111 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
   "            </Expression>\n"
@@ -3797,7 +3798,7 @@ const char* test000064::MODEL_STRING112 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -3805,7 +3806,7 @@ const char* test000064::MODEL_STRING112 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;\n"
   "            </Expression>\n"
@@ -3969,7 +3970,7 @@ const char* test000064::MODEL_STRING113 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -3977,7 +3978,7 @@ const char* test000064::MODEL_STRING113 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "            </Expression>\n"
@@ -4160,7 +4161,7 @@ const char* test000064::MODEL_STRING114 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -4168,7 +4169,7 @@ const char* test000064::MODEL_STRING114 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "            </Expression>\n"
@@ -4332,7 +4333,7 @@ const char* test000064::MODEL_STRING115 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -4340,7 +4341,7 @@ const char* test000064::MODEL_STRING115 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "            </Expression>\n"
@@ -4523,7 +4524,7 @@ const char* test000064::MODEL_STRING116 =
   "      </ModelValue>\n"
   "    </ListOfModelValues>\n"
   "    <ListOfEvents>\n"
-  "      <Event key=\"Event_0\" name=\"event\">\n"
+  "      <Event key=\"Event_0\" name=\"event\" delayAssignment=\"true\">\n"
   "        <TriggerExpression>\n"
   "          &lt;CN=Root,Model=New Model,Reference=Time&gt; gt 2.0\n"
   "        </TriggerExpression>\n"
@@ -4531,7 +4532,7 @@ const char* test000064::MODEL_STRING116 =
   "          4.0\n"
   "        </DelayExpression>\n"
   "        <ListOfAssignments>\n"
-  "          <Assignment targetkey=\"Metabolite_0\">\n"
+  "          <Assignment targetKey=\"Metabolite_0\">\n"
   "            <Expression>\n"
   "              &lt;CN=Root,Model=New Model,Vector=Values[K],Reference=Value&gt;/&lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=Volume&gt;\n"
   "            </Expression>\n"
