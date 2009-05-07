@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/07 13:31:19 $
+//   $Date: 2009/05/07 17:24:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,6 +213,7 @@ void CEvent::setTriggerExpressionPtr(CExpression * pExpression)
   if (pExpression)
     {
       mpTriggerExpression = pExpression;
+      pExpression->setObjectParent(this);
       mpTriggerExpression->compile();
     }
 }
@@ -240,7 +241,7 @@ CExpression* CEvent::getTriggerExpressionPtr()
 bool CEvent::setDelayExpression(const std::string & expression)
 {
   if (mpDelayExpression == NULL)
-    mpDelayExpression = new CExpression("DelayExpression");
+    mpDelayExpression = new CExpression("DelayExpression", this);
 
   return mpDelayExpression->setInfix(expression);
 }
@@ -252,6 +253,7 @@ void CEvent::setDelayExpressionPtr(CExpression * pExpression)
   if (pExpression)
     {
       mpDelayExpression = pExpression;
+      this->mpDelayExpression->setObjectParent(this);
       mpDelayExpression->compile();
     }
 }
