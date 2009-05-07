@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/27 14:43:59 $
+//   $Author: gauges $
+//   $Date: 2009/05/07 10:45:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,7 +198,7 @@ std::string CEvent::getObjectDisplayName(bool regular, bool richtext) const
 bool CEvent::setTriggerExpression(const std::string & expression)
 {
   if (mpTriggerExpression == NULL)
-    mpTriggerExpression = new CExpression("TriggerExpression");
+    mpTriggerExpression = new CExpression("TriggerExpression", this);
 
   return mpTriggerExpression->setInfix(expression);
 }
@@ -210,6 +210,7 @@ void CEvent::setTriggerExpressionPtr(CExpression * pExpression)
   if (pExpression)
     {
       mpTriggerExpression = pExpression;
+      pExpression->setObjectParent(this);
       mpTriggerExpression->compile();
     }
 }
@@ -237,7 +238,7 @@ CExpression* CEvent::getTriggerExpressionPtr()
 bool CEvent::setDelayExpression(const std::string & expression)
 {
   if (mpDelayExpression == NULL)
-    mpDelayExpression = new CExpression("DelayExpression");
+    mpDelayExpression = new CExpression("DelayExpression", this);
 
   return mpDelayExpression->setInfix(expression);
 }
@@ -249,6 +250,7 @@ void CEvent::setDelayExpressionPtr(CExpression * pExpression)
   if (pExpression)
     {
       mpDelayExpression = pExpression;
+      this->mpDelayExpression->setObjectParent(this);
       mpDelayExpression->compile();
     }
 }
