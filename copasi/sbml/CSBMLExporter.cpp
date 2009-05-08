@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 19:07:14 $
+//   $Date: 2009/05/08 14:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1344,34 +1344,38 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
           if (dynamic_cast<const Species*>(pos->second)->getHasOnlySubstanceUnits() == true)
             {
               const CCompartment* pCompartment = pMetab->getCompartment();
-              bool division = false;
 
-              // first we check if this is a division with the compartment volume
-              // if so, we just drop the division, otherwise we multiply with the
-              // compartment volume
-              if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
-                  (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+              if (pCompartment->getDimensionality() != 0)
                 {
-                  const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
+                  bool division = false;
 
-                  if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                  // first we check if this is a division with the compartment volume
+                  // if so, we just drop the division, otherwise we multiply with the
+                  // compartment volume
+                  if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
                     {
+                      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
 
-                      CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
-                      delete pOrigNode;
-                      pOrigNode = pTmpNode;
-                      division = true;
+                      if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                        {
+
+                          CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+                          delete pOrigNode;
+                          pOrigNode = pTmpNode;
+                          division = true;
+                        }
                     }
-                }
 
-              if (division == false)
-                {
-                  CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                  CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                  pOperatorNode->addChild(pOrigNode->copyBranch());
-                  pOperatorNode->addChild(pVolumeNode);
-                  delete pOrigNode;
-                  pOrigNode = pOperatorNode;
+                  if (division == false)
+                    {
+                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
+                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                      pOperatorNode->addChild(pOrigNode->copyBranch());
+                      pOperatorNode->addChild(pVolumeNode);
+                      delete pOrigNode;
+                      pOrigNode = pOperatorNode;
+                    }
                 }
             }
         }
@@ -3145,34 +3149,38 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
               if (dynamic_cast<const Species*>(pos->second)->getHasOnlySubstanceUnits() == true)
                 {
                   const CCompartment* pCompartment = pMetab->getCompartment();
-                  bool division = false;
 
-                  // first we check if this is a division with the compartment volume
-                  // if so, we just drop the division, otherwise we multiply with the
-                  // compartment volume
-                  if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
-                      (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
+                  if (pCompartment->getDimensionality() != 0)
                     {
-                      const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
+                      bool division = false;
 
-                      if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                      // first we check if this is a division with the compartment volume
+                      // if so, we just drop the division, otherwise we multiply with the
+                      // compartment volume
+                      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
+                          (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::DIVIDE)
                         {
+                          const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
 
-                          CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
-                          delete pOrigNode;
-                          pOrigNode = pTmpNode;
-                          division = true;
+                          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                            {
+
+                              CEvaluationNode* pTmpNode = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
+                              delete pOrigNode;
+                              pOrigNode = pTmpNode;
+                              division = true;
+                            }
                         }
-                    }
 
-                  if (division == false)
-                    {
-                      CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-                      CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                      pOperatorNode->addChild(pOrigNode->copyBranch());
-                      pOperatorNode->addChild(pVolumeNode);
-                      delete pOrigNode;
-                      pOrigNode = pOperatorNode;
+                      if (division == false)
+                        {
+                          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
+                          CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                          pOperatorNode->addChild(pOrigNode->copyBranch());
+                          pOperatorNode->addChild(pVolumeNode);
+                          delete pOrigNode;
+                          pOrigNode = pOperatorNode;
+                        }
                     }
                 }
             }
@@ -3328,35 +3336,39 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
       if (reaction.getCompartmentNumber() == 1)
         {
           const CCompartment& compartment = (reaction.getChemEq().getSubstrates().size() != 0) ? (*reaction.getChemEq().getSubstrates()[0]->getMetabolite()->getCompartment()) : (*reaction.getChemEq().getProducts()[0]->getMetabolite()->getCompartment());
-          // check if the importer has added a division by the volume
-          // if so remove it instead of multiplying again
-          ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
 
-          if (pTNode)
+          if (compartment.getDimensionality() != 0)
             {
-              if (pTNode->getNumChildren() == 0)
-                {
-                  fatalError();
-                }
+              // check if the importer has added a division by the volume
+              // if so remove it instead of multiplying again
+              ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
 
-              if (pTNode->getNumChildren() == 1)
+              if (pTNode)
                 {
-                  ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
-                  delete pTNode;
-                  pTNode = pTmp;
-                }
+                  if (pTNode->getNumChildren() == 0)
+                    {
+                      fatalError();
+                    }
 
-              delete pNode;
-              pNode = pTNode;
-            }
-          else
-            {
-              pTNode = new ASTNode(AST_TIMES);
-              ASTNode* pVNode = new ASTNode(AST_NAME);
-              pVNode->setName(compartment.getSBMLId().c_str());
-              pTNode->addChild(pVNode);
-              pTNode->addChild(pNode);
-              pNode = pTNode;
+                  if (pTNode->getNumChildren() == 1)
+                    {
+                      ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
+                      delete pTNode;
+                      pTNode = pTmp;
+                    }
+
+                  delete pNode;
+                  pNode = pTNode;
+                }
+              else
+                {
+                  pTNode = new ASTNode(AST_TIMES);
+                  ASTNode* pVNode = new ASTNode(AST_NAME);
+                  pVNode->setName(compartment.getSBMLId().c_str());
+                  pTNode->addChild(pVNode);
+                  pTNode->addChild(pNode);
+                  pNode = pTNode;
+                }
             }
         }
 
@@ -4724,19 +4736,23 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                     {
                       // multiply by the volume as well
                       const CCompartment* pCompartment = pMetab->getCompartment();
-                      CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
-                      pTmpNode->addChild(pResult);
 
-                      if (pObject->getObjectName() == "InitialParticleNumber")
+                      if (pCompartment->getDimensionality() != 0)
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
-                        }
-                      else
-                        {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
-                        }
+                          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+                          pTmpNode->addChild(pResult);
 
-                      pResult = pTmpNode;
+                          if (pObject->getObjectName() == "InitialParticleNumber")
+                            {
+                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
+                            }
+                          else
+                            {
+                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
+                            }
+
+                          pResult = pTmpNode;
+                        }
                     }
                 }
               else

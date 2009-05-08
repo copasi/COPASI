@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.232 $
+//   $Revision: 1.233 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 19:07:14 $
+//   $Date: 2009/05/08 14:00:39 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1248,47 +1248,52 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, Model* p
           */
           if (singleCompartment)
             {
+
               if (compartment != NULL)
                 {
-                  // check if the root node is a multiplication node and it's first child
-                  // is a compartment node, if so, drop those two and make the second child
-                  // new new root node
-                  ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
-
-                  if (tmpNode1)
+                  // only divide if it is not a 0-dimensional compartment
+                  if (compartment->getDimensionality() != 0)
                     {
-                      delete node;
-                      node = tmpNode1;
+                      // check if the root node is a multiplication node and it's first child
+                      // is a compartment node, if so, drop those two and make the second child
+                      // new new root node
+                      ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
 
-                      if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
+                      if (tmpNode1)
                         {
-                          delete tmpNode1;
-                          fatalError();
-                        }
-                    }
-                  else
-                    {
-                      tmpNode1 = new ConverterASTNode();
-                      tmpNode1->setType(AST_DIVIDE);
-                      tmpNode1->addChild(node);
-                      ConverterASTNode* tmpNode2 = new ConverterASTNode();
-                      tmpNode2->setType(AST_NAME);
-                      tmpNode2->setName(compartment->getSBMLId().c_str());
-                      tmpNode1->addChild(tmpNode2);
-                      node = tmpNode1;
-                      std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(const_cast<CCompartment*>(compartment));
-                      assert(pos != copasi2sbmlmap.end());
-                      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
-                      assert(pSBMLCompartment != NULL);
+                          delete node;
+                          node = tmpNode1;
 
-                      if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
-                        {
-                          // we have to check if all species used in the reaction
-                          // have the hasOnlySubstance flag set
-
-                          if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
+                          if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
                             {
-                              this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
+                              delete tmpNode1;
+                              fatalError();
+                            }
+                        }
+                      else
+                        {
+                          tmpNode1 = new ConverterASTNode();
+                          tmpNode1->setType(AST_DIVIDE);
+                          tmpNode1->addChild(node);
+                          ConverterASTNode* tmpNode2 = new ConverterASTNode();
+                          tmpNode2->setType(AST_NAME);
+                          tmpNode2->setName(compartment->getSBMLId().c_str());
+                          tmpNode1->addChild(tmpNode2);
+                          node = tmpNode1;
+                          std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(const_cast<CCompartment*>(compartment));
+                          assert(pos != copasi2sbmlmap.end());
+                          Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+                          assert(pSBMLCompartment != NULL);
+
+                          if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
+                            {
+                              // we have to check if all species used in the reaction
+                              // have the hasOnlySubstance flag set
+
+                              if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
+                                {
+                                  this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
+                                }
                             }
                         }
                     }
@@ -4769,7 +4774,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
       const CCompartment* pCompartment = static_cast<CMetab*>(pME)->getCompartment();
       assert(pCompartment != NULL);
 
-      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
         {
           // divide the expression by the volume
           // check if the top level node is a multiplication and one
@@ -5263,6 +5268,9 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   bool inconsistentAreaUnits = false;
   bool inconsistentLengthUnits = false;
   bool inconsistentDimensionlessUnits = false;
+  bool defaultVolumeUsed = false;
+  bool defaultAreaUsed = false;
+  bool defaultLengthUsed = false;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -5284,6 +5292,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (unitId != "volume" && !areSBMLUnitDefinitionsIdentical(pVolumeUnits, pUdef1))
                 {
                   nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+              else if (unitId == "volume")
+                {
+                  defaultVolumeUsed = true;
                 }
 
               if (lastVolumeUnit == "")
@@ -5309,6 +5321,22 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           else if (lastVolumeUnit == "")
             {
               lastVolumeUnit = "volume";
+              defaultVolumeUsed = true;
+            }
+          else
+            {
+              defaultVolumeUsed = true;
+              // compare the default volume unit to the lastVolumeUnit
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
+              assert(pUdef2 != NULL);
+
+              if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pUdef2))
+                {
+                  inconsistentVolumeUnits = true;
+                }
+
+              delete pUdef2;
+              lastVolumeUnit = "volume";
             }
         }
       else if (pCompartment->getSpatialDimensions() == 2)
@@ -5327,6 +5355,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (unitId != "area" && !areSBMLUnitDefinitionsIdentical(pAreaUnits, pUdef1))
                 {
                   nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+              else if (unitId == "area")
+                {
+                  defaultAreaUsed = true;
                 }
 
               if (lastAreaUnit == "")
@@ -5352,6 +5384,22 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           else if (lastAreaUnit == "")
             {
               lastAreaUnit = "area";
+              defaultAreaUsed = true;
+            }
+          else
+            {
+              defaultAreaUsed = true;
+              // compare the default area unit to the lastAreaUnit
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
+              assert(pUdef2 != NULL);
+
+              if (!areSBMLUnitDefinitionsIdentical(pAreaUnits, pUdef2))
+                {
+                  inconsistentAreaUnits = true;
+                }
+
+              delete pUdef2;
+              lastAreaUnit = "area";
             }
         }
       else if (pCompartment->getSpatialDimensions() == 1)
@@ -5370,6 +5418,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               if (unitId != "length" && !areSBMLUnitDefinitionsIdentical(pLengthUnits, pUdef1))
                 {
                   nonDefaultCompartments.push_back(pCompartment->getId());
+                }
+              else if (unitId == "length")
+                {
+                  defaultLengthUsed = true;
                 }
 
               if (lastLengthUnit == "")
@@ -5394,6 +5446,22 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
             }
           else if (lastLengthUnit == "")
             {
+              lastLengthUnit = "length";
+              defaultLengthUsed = true;
+            }
+          else
+            {
+              defaultLengthUsed = true;
+              // compare the default length unit to the lastLengthUnit
+              UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
+              assert(pUdef2 != NULL);
+
+              if (!areSBMLUnitDefinitionsIdentical(pLengthUnits, pUdef2))
+                {
+                  inconsistentLengthUnits = true;
+                }
+
+              delete pUdef2;
               lastLengthUnit = "length";
             }
         }
@@ -5460,6 +5528,8 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         {
           inconsistentVolumeUnits = true;
         }
+
+      delete pUdef;
     }
 
   if (!inconsistentAreaUnits && lastAreaUnit != "" && lastAreaUnit != "area")
@@ -5480,6 +5550,8 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         {
           inconsistentAreaUnits = true;
         }
+
+      delete pUdef;
     }
 
   if (!inconsistentLengthUnits && lastLengthUnit != "" && lastLengthUnit != "length")
@@ -5500,6 +5572,8 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         {
           inconsistentLengthUnits = true;
         }
+
+      delete pUdef;
     }
 
   if (inconsistentVolumeUnits || inconsistentAreaUnits || inconsistentLengthUnits || inconsistentDimensionlessUnits)
@@ -5518,10 +5592,107 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
       std::string s = os.str();
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
+      // check if the default units have been used for any of the compartments
+      // if so, the models has to use the defaults, otherwise we can just
+      // choose one
+      std::pair<CModel::LengthUnit, bool> length = std::pair<CModel::LengthUnit, bool>(CModel::dimensionlessLength, false);
+      const UnitDefinition* pUdef = NULL;
+
+      if (defaultLengthUsed)
+        {
+          pUdef = SBMLImporter::getSBMLUnitDefinitionForId("length", pSBMLModel);
+          assert(pUdef != NULL);
+          length = this->handleLengthUnit(pUdef);
+        }
+      else
+        {
+          if (lastLengthUnit != "")
+            {
+              pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
+              assert(pUdef != NULL);
+              length = this->handleLengthUnit(pUdef);
+            }
+        }
+
+      if (length.second == true)
+        {
+          // set the default length unit
+          pCopasiModel->setLengthUnit(length.first);
+          delete pLengthUnits;
+          pLengthUnits = dynamic_cast<UnitDefinition*>(pUdef->clone());
+        }
+
+      if (pUdef)
+        {
+          delete pUdef;
+        }
+
+      std::pair<CModel::AreaUnit, bool> area = std::pair<CModel::AreaUnit, bool>(CModel::dimensionlessArea, false);
+
+      if (defaultAreaUsed)
+        {
+          pUdef = SBMLImporter::getSBMLUnitDefinitionForId("area", pSBMLModel);
+          assert(pUdef != NULL);
+          area = this->handleAreaUnit(pUdef);
+        }
+      else
+        {
+          if (lastAreaUnit != "")
+            {
+              pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
+              assert(pUdef != NULL);
+              area = this->handleAreaUnit(pUdef);
+            }
+        }
+
+      if (area.second == true)
+        {
+          // set the default area unit
+          pCopasiModel->setAreaUnit(area.first);
+          delete pAreaUnits;
+          pAreaUnits = dynamic_cast<UnitDefinition*>(pUdef->clone());
+        }
+
+      if (pUdef)
+        {
+          delete pUdef;
+        }
+
+      std::pair<CModel::VolumeUnit, bool> volume = std::pair<CModel::VolumeUnit, bool>(CModel::dimensionlessVolume, false);
+
+      if (defaultVolumeUsed)
+        {
+          pUdef = SBMLImporter::getSBMLUnitDefinitionForId("volume", pSBMLModel);
+          assert(pUdef != NULL);
+          volume = this->handleVolumeUnit(pUdef);
+        }
+      else
+        {
+          if (lastVolumeUnit != "")
+            {
+              pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
+              assert(pUdef != NULL);
+              volume = this->handleVolumeUnit(pUdef);
+            }
+        }
+
+      if (volume.second == true)
+        {
+          // set the default length unit
+          pCopasiModel->setVolumeUnit(volume.first);
+          delete pVolumeUnits;
+          pVolumeUnits = dynamic_cast<UnitDefinition*>(pUdef->clone());
+        }
+
+      if (pUdef)
+        {
+          delete pUdef;
+        }
     }
 
   bool inconsistentUnits = false;
   std::string lastUnit = "";
+
   iMax = pSBMLModel->getNumSpecies();
 
   for (i = 0; i < iMax; ++i)
@@ -5694,21 +5865,23 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
   if (!inconsistentUnits && lastUnit != "" && lastUnit != "substance")
     {
-      // try to set the default substance unit to the unit defined by lastUnit
+      // we have to check if lastUnit is different from the global substance
+      // unit
+      // if it differs, we have to issue a warning because we can't just set
+      // another global substance unit since this would change the units for
+      // the kinetic laws
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
+      const UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId("substance", pSBMLModel);
+      assert(pUdef2 != NULL);
       assert(pUdef != NULL);
-      std::pair<CModel::QuantityUnit, bool> quantity = this->handleSubstanceUnit(pUdef);
-      delete pUdef;
 
-      if (quantity.second == true)
+      if (!areSBMLUnitDefinitionsIdentical(pUdef, pUdef2))
         {
-          // set the default volume unit
-          pCopasiModel->setQuantityUnit(quantity.first);
+          // warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 78 , "substance", "substance", "substance");
         }
-      else
-        {
-          inconsistentUnits = true;
-        }
+
+      delete pUdef2;
     }
 
   if (inconsistentUnits)
@@ -5742,21 +5915,23 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
   if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
     {
-      // try to set the default time units
+      // we have to check if lastUnit is different from the global substance
+      // unit
+      // if it differs, we have to issue a warning because we can't just set
+      // another global substance unit since this would change the units for
+      // the kinetic laws
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
+      const UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId("time", pSBMLModel);
+      assert(pUdef2 != NULL);
       assert(pUdef != NULL);
-      std::pair<CModel::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
-      delete pUdef;
 
-      if (time.second == true)
+      if (!areSBMLUnitDefinitionsIdentical(pUdef, pUdef2))
         {
-          // set the default volume unit
-          pCopasiModel->setTimeUnit(time.first);
+          // warning
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 78 , "time", "time", "time");
         }
-      else
-        {
-          inconsistentTimeUnits = true;
-        }
+
+      delete pUdef2;
     }
 
   if (inconsistentTimeUnits)
@@ -6313,12 +6488,6 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                   const ASTNode* pMath = pInitialAssignment->getMath();
                   assert(pMath != NULL);
                   ConverterASTNode tmpNode(*pMath);
-                  /**
-                   * Removed because this no longer works for variable volumes
-                  // replace all the nodes that represent species with the
-                  // hasOnlySubstanceUnits flag set with the node divided by the volume
-                  replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
-                  */
                   this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlMap);
                   // replace the object names
                   this->replaceObjectNames(&tmpNode, copasi2sbmlMap, true);
@@ -6338,7 +6507,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                       const CCompartment* pCompartment = pMetab->getCompartment();
                       assert(pCompartment != NULL);
 
-                      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true)
+                      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
                         {
                           // divide the expression by the volume
                           CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
@@ -6553,7 +6722,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
               ++it;
             }
 
-          if (it != endit)
+          if (it != endit && it->second->getSpatialDimensions() != 0)
             {
               ASTNode* pChild2 = pNode->getChild(1);
 
@@ -6584,7 +6753,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pNode)
           ++it;
         }
 
-      if (it != endit)
+      if (it != endit && it->second->getSpatialDimensions() != 0)
         {
           ConverterASTNode* pChild1 = new ConverterASTNode();
           pChild1->setType(AST_NAME);
@@ -7071,32 +7240,36 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           assert(pMetab != NULL);
           const CCompartment* pCompartment = pMetab->getCompartment();
 
-          if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
-              (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
+          if (pCompartment->getDimensionality() != 0)
             {
-              const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
-              const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
 
-              if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+              if (CEvaluationNode::type(pExpression->getRoot()->getType()) == CEvaluationNode::OPERATOR &&
+                  (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpression->getRoot()->getType()) == CEvaluationNodeOperator::MULTIPLY)
                 {
+                  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(pExpression->getRoot()->getChild());
+                  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
 
-                  pExpression->setRoot(pChild2->copyBranch());
-                  multiplication = true;
+                  if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild1)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                    {
+
+                      pExpression->setRoot(pChild2->copyBranch());
+                      multiplication = true;
+                    }
+                  else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+                    {
+                      pExpression->setRoot(pChild1->copyBranch());
+                      multiplication = true;
+                    }
                 }
-              else if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild2)->getData() == std::string("<" + pCompartment->getValueReference()->getCN() + ">"))
+
+              if (multiplication == false)
                 {
-                  pExpression->setRoot(pChild1->copyBranch());
-                  multiplication = true;
+                  CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
+                  CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+                  pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
+                  pOperatorNode->addChild(pVolumeNode);
+                  pExpression->setRoot(pOperatorNode);
                 }
-            }
-
-          if (multiplication == false)
-            {
-              CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pCompartment->getValueReference()->getCN() + ">");
-              CEvaluationNodeOperator* pOperatorNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-              pOperatorNode->addChild(pExpression->getRoot()->copyBranch());
-              pOperatorNode->addChild(pVolumeNode);
-              pExpression->setRoot(pOperatorNode);
             }
         }
 
