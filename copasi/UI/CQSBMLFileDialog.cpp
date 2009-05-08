@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/04/17 06:27:40 $
+//   $Author: ssahle $
+//   $Date: 2009/05/08 12:43:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,8 +32,8 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSBMLFile
   QString Filter = "Level 1 Version 2 (*.xml);;"
                    "Level 2 Version 1 (*.xml);;"
                    "Level 2 Version 2 (*.xml);;"
-                   "Level 2 Version 3 (*.xml)";
-  "Level 2 Version 4 (*.xml)";
+                   "Level 2 Version 3 (*.xml);;"
+                   "Level 2 Version 4 (*.xml)";
 
   QString SelectedFilter = "Level 2 Version 3 (*.xml)";
 
