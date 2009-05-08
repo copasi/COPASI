@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.233 $
+//   $Revision: 1.234 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 14:00:39 $
+//   $Date: 2009/05/08 15:55:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2355,10 +2355,10 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          fatalError();
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
         }
 
-      if ((u->getKind() == UNIT_KIND_METRE))
+      if ((u->getKind() == UNIT_KIND_METRE || u->getKind() == UNIT_KIND_METER) && u->getExponent() == 1)
         {
           double multiplier = u->getMultiplier();
           int scale = u->getScale();
@@ -2377,8 +2377,7 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
                 }
             }
 
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
+          if (areApproximatelyEqual(multiplier, 1.0) &&
               ((scale % 3) == 0 || scale == -1 || scale == -2) &&
               (scale < 1) &&
               (scale > -16))
@@ -2419,7 +2418,7 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    fatalError();
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
                     break;
                 }
             }
@@ -2456,17 +2455,17 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
             }
           else
             {
-              result = false;
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
             }
         }
       else
         {
-          result = false;
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
         }
     }
   else
     {
-      result = false;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
     }
 
   return std::make_pair(lUnit, result);
@@ -2495,10 +2494,10 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          fatalError();
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
         }
 
-      if ((u->getKind() == UNIT_KIND_METRE) && u->getExponent() == 2)
+      if ((u->getKind() == UNIT_KIND_METRE || u->getKind() == UNIT_KIND_METER) && u->getExponent() == 2)
         {
           double multiplier = u->getMultiplier();
           int scale = u->getScale();
@@ -2517,8 +2516,7 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
                 }
             }
 
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
+          if (areApproximatelyEqual(multiplier, 1.0) &&
               ((scale % 3) == 0 || scale == -1 || scale == -2) &&
               (scale < 1) &&
               (scale > -16))
@@ -2559,7 +2557,7 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    fatalError();
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
                     break;
                 }
             }
@@ -2596,17 +2594,17 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
             }
           else
             {
-              result = false;
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
             }
         }
       else
         {
-          result = false;
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
         }
     }
   else
     {
-      result = false;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
     }
 
   return std::make_pair(aUnit, result);
@@ -2637,10 +2635,10 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          fatalError();
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
         }
 
-      if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
+      if (((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE)) && u->getExponent() == 1)
         {
           double multiplier = u->getMultiplier();
           int scale = u->getScale();
@@ -2659,8 +2657,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                 }
             }
 
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
+          if (areApproximatelyEqual(multiplier, 1.0) &&
               ((scale % 3) == 0) &&
               (scale < 1) &&
               (scale > -16))
@@ -2693,7 +2690,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    fatalError();
+                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
                     break;
                 }
             }
@@ -2702,83 +2699,80 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
               result = false;
             }
         }
-      else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
+      else if (((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE)) && u->getExponent() == 3)
         {
-          if (u->getExponent() == 3)
+          double multiplier = u->getMultiplier();
+          int scale = u->getScale();
+
+          if (multiplier != 1)
             {
-              double multiplier = u->getMultiplier();
-              int scale = u->getScale();
+              // check if the multiplier is a multiple of 10
+              // so that we might be able to convert it to a scale that makes
+              // sense
+              double tmp = log10(multiplier);
 
-              if (multiplier != 1)
+              if (areApproximatelyEqual(tmp, round(tmp)))
                 {
-                  // check if the multiplier is a multiple of 10
-                  // so that we might be able to convert it to a scale that makes
-                  // sense
-                  double tmp = log10(multiplier);
-
-                  if (areApproximatelyEqual(tmp, round(tmp)))
-                    {
-                      scale += (int)round(tmp);
-                      multiplier = 1;
-                    }
+                  scale += (int)round(tmp);
+                  multiplier = 1;
                 }
+            }
 
-              if (areApproximatelyEqual(multiplier, 1.0) &&
-                  (scale == 0))
-                {
-                  vUnit = CModel::m3;
-                  result = true;
-                }
-              else
-                {
-                  // try to convert to liter
-                  Unit* pLitreUnit = convertSBMLCubicmetresToLitres(u);
-
-                  if (pLitreUnit != NULL &&
-                      pLitreUnit->getExponent() == 1 &&
-                      (pLitreUnit->getScale() % 3 == 0) &&
-                      (pLitreUnit->getScale() < 1) &&
-                      (pLitreUnit->getScale() > -16) &&
-                      areApproximatelyEqual(pLitreUnit->getMultiplier(), 1.0))
-                    {
-                      switch (pLitreUnit->getScale())
-                        {
-                          case 0:
-                            vUnit = CModel::l;
-                            result = true;
-                            break;
-                          case - 3:
-                            vUnit = CModel::ml;
-                            result = true;
-                            break;
-                          case - 6:
-                            vUnit = CModel::microl;
-                            result = true;
-                            break;
-                          case - 9:
-                            vUnit = CModel::nl;
-                            result = true;
-                            break;
-                          case - 12:
-                            vUnit = CModel::pl;
-                            result = true;
-                            break;
-                          case - 15:
-                            vUnit = CModel::fl;
-                            result = true;
-                            break;
-                          default:
-                            CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
-                            break;
-                        }
-                    }
-
-                  delete pLitreUnit;
-                }
+          if (areApproximatelyEqual(multiplier, 1.0) &&
+              (scale == 0))
+            {
+              vUnit = CModel::m3;
+              result = true;
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+              // try to convert to liter
+              Unit* pLitreUnit = convertSBMLCubicmetresToLitres(u);
+
+              if (pLitreUnit != NULL &&
+                  pLitreUnit->getExponent() == 1 &&
+                  (pLitreUnit->getScale() % 3 == 0) &&
+                  (pLitreUnit->getScale() < 1) &&
+                  (pLitreUnit->getScale() > -16) &&
+                  areApproximatelyEqual(pLitreUnit->getMultiplier(), 1.0))
+                {
+                  switch (pLitreUnit->getScale())
+                    {
+                      case 0:
+                        vUnit = CModel::l;
+                        result = true;
+                        break;
+                      case - 3:
+                        vUnit = CModel::ml;
+                        result = true;
+                        break;
+                      case - 6:
+                        vUnit = CModel::microl;
+                        result = true;
+                        break;
+                      case - 9:
+                        vUnit = CModel::nl;
+                        result = true;
+                        break;
+                      case - 12:
+                        vUnit = CModel::pl;
+                        result = true;
+                        break;
+                      case - 15:
+                        vUnit = CModel::fl;
+                        result = true;
+                        break;
+                      default:
+                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
+                        break;
+                    }
+                }
+              else
+                {
+                  result = false;
+                }
+
+              delete pLitreUnit;
             }
         }
       else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
@@ -2809,17 +2803,17 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              result = false;
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
             }
         }
       else
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
         }
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, uDef->getId().c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
     }
 
   return std::make_pair(vUnit, result);
@@ -5625,6 +5619,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (pUdef)
         {
           delete pUdef;
+          pUdef = NULL;
         }
 
       std::pair<CModel::AreaUnit, bool> area = std::pair<CModel::AreaUnit, bool>(CModel::dimensionlessArea, false);
@@ -5656,6 +5651,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (pUdef)
         {
           delete pUdef;
+          pUdef = NULL;
         }
 
       std::pair<CModel::VolumeUnit, bool> volume = std::pair<CModel::VolumeUnit, bool>(CModel::dimensionlessVolume, false);
@@ -5687,6 +5683,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (pUdef)
         {
           delete pUdef;
+          pUdef = NULL;
         }
     }
 

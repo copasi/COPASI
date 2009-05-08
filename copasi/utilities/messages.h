@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.129 $
+//   $Revision: 1.130 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 14:00:38 $
+//   $Date: 2009/05/08 15:55:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,7 @@ const MESSAGES Messages[] =
   {MCSBML + 51, "SBML (51): The species \"%s\" is defined by a rate rule and its compartments volume is variable. COPASI will probably interpret this incorrectly."},
   {MCSBML + 52, "SBML (52): The species \"%s\" is defined by a rate expression and its compartments volume is variable. The way COPASI interprets this is differently from the way SBML does."},
   {MCSBML + 53, "SBML (53): The time units of kinetic laws in some reactions were ignored. Units might be displayed incorrectly.\nReactions: %s"},
-  {MCSBML + 54, "SBML (54): Error while importing volume unit with id \"%s\"."},
+  {MCSBML + 54, "SBML (54): Error while importing %s unit with id \"%s\"."},
   {MCSBML + 55, "SBML (55): Could not find unit definition for unit with id \"%s\" used in \"%s\" attribute of %s with id \"%s\"."},
   {MCSBML + 56, "SBML (56): There was a problem with the kinetic law in reaction \"%s\". Make sure the math element is not empty."},
   {MCSBML + 57, "SBML (57): %s defined for object with id \"%s\", but the corresponding object could not be found. Ignoring assignment."},
