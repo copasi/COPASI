@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.234 $
+//   $Revision: 1.235 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 15:55:46 $
+//   $Date: 2009/05/08 18:59:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2051,7 +2051,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    fatalError();
+                    result = false;
                     break;
                 }
             }
@@ -2256,7 +2256,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                         break;
                       default:
                         //DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
-                        fatalError();
+                        result = false;
                         break;
                     }
                 }
@@ -2418,7 +2418,7 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
+                    result = false;
                     break;
                 }
             }
@@ -2455,17 +2455,17 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
+              result = false;
             }
         }
       else
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
+          result = false;
         }
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
+      result = false;
     }
 
   return std::make_pair(lUnit, result);
@@ -2557,7 +2557,7 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
+                    result = false;
                     break;
                 }
             }
@@ -2594,17 +2594,17 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
+              result = false;
             }
         }
       else
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
+          result = false;
         }
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
+      result = false;
     }
 
   return std::make_pair(aUnit, result);
@@ -2690,7 +2690,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                     break;
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
+                    result = false;
                     break;
                 }
             }
@@ -2763,7 +2763,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                         result = true;
                         break;
                       default:
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
+                        result = false;
                         break;
                     }
                 }
@@ -2803,17 +2803,17 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
+              result = false;
             }
         }
       else
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
+          result = false;
         }
     }
   else
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
+      result = false;
     }
 
   return std::make_pair(vUnit, result);
@@ -5282,6 +5282,17 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   // error message
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
                 }
+              else
+                {
+                  std::pair<CModel::VolumeUnit, bool> result = this->handleVolumeUnit(pUdef1);
+
+                  if (result.second == false)
+                    {
+                      // we did not recognize the unit
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "volume", "the 3 dimensional  compartment", pCompartment->getId().c_str());
+                      continue;
+                    }
+                }
 
               if (unitId != "volume" && !areSBMLUnitDefinitionsIdentical(pVolumeUnits, pUdef1))
                 {
@@ -5345,6 +5356,17 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   // error message
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
                 }
+              else
+                {
+                  std::pair<CModel::AreaUnit, bool> result = this->handleAreaUnit(pUdef1);
+
+                  if (result.second == false)
+                    {
+                      // we did not recognize the unit
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "area", "the 2 dimensional compartment", pCompartment->getId().c_str());
+                      continue;
+                    }
+                }
 
               if (unitId != "area" && !areSBMLUnitDefinitionsIdentical(pAreaUnits, pUdef1))
                 {
@@ -5407,6 +5429,17 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 {
                   // error message
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                }
+              else
+                {
+                  std::pair<CModel::LengthUnit, bool> result = this->handleLengthUnit(pUdef1);
+
+                  if (result.second == false)
+                    {
+                      // we did not recognize the unit
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "length", "the 1 dimensional compartment", pCompartment->getId().c_str());
+                      continue;
+                    }
                 }
 
               if (unitId != "length" && !areSBMLUnitDefinitionsIdentical(pLengthUnits, pUdef1))
@@ -5702,7 +5735,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           if (pSpecies->isSetSpatialSizeUnits() == true)
             {
               // check if the spatialSizeUnits is consistent with the
-              // pVolumeUnits
+              // pVolumeUnits, pAreaUnits, pLengthUnits or pDimensionlessUnits
+              // first we need to find the compartment
+              pCompartment = pSBMLModel->getCompartment(pSpecies->getCompartment());
+              assert(pCompartment != NULL);
               std::string spatialSizeUnits = pSpecies->getSpatialSizeUnits();
               UnitDefinition* pTmpUdef2 = getSBMLUnitDefinitionForId(spatialSizeUnits, pSBMLModel);
 
@@ -5712,9 +5748,42 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, spatialSizeUnits.c_str(), "spatialSizeUnits", "species", pSpecies->getId().c_str());
                 }
 
-              if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
+              switch (pCompartment->getSpatialDimensions())
                 {
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                  case 0:
+
+                    if (!areSBMLUnitDefinitionsIdentical(pDimensionlessUnits, pTmpUdef2))
+                      {
+                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                      }
+
+                    break;
+                  case 1:
+
+                    if (!areSBMLUnitDefinitionsIdentical(pLengthUnits, pTmpUdef2))
+                      {
+                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                      }
+
+                    break;
+                  case 2:
+
+                    if (!areSBMLUnitDefinitionsIdentical(pAreaUnits, pTmpUdef2))
+                      {
+                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                      }
+
+                    break;
+                  case 3:
+
+                    if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
+                      {
+                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                      }
+
+                    break;
+                  default:
+                    fatalError();
                 }
 
               delete pTmpUdef2;
@@ -5730,6 +5799,18 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
             {
               // error message
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "species", pSpecies->getId().c_str());
+            }
+
+          else
+            {
+              std::pair<CModel::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
+
+              if (result.second == false)
+                {
+                  // we did not recognize the unit
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "substance", "species", pSpecies->getId().c_str());
+                  continue;
+                }
             }
 
           if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
@@ -5787,6 +5868,19 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
                 }
 
+              else
+                {
+                  std::pair<CModel::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
+
+                  if (result.second == false)
+                    {
+                      // we did not recognize the unit
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "substance", "the kinetic law in reaction", pReaction->getId().c_str());
+
+                      continue;
+                    }
+                }
+
               if (unitId != "substance" && !areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pUdef1))
                 {
                   nonDefaultKineticSubstance.push_back(pReaction->getId());
@@ -5826,6 +5920,18 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 {
                   // error message
                   CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+                }
+              else
+                {
+                  std::pair<CModel::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
+
+                  if (result.second == false)
+                    {
+                      // we did not recognize the unit
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "time", "the kinetic law in reaction", pReaction->getId().c_str());
+
+                      continue;
+                    }
                 }
 
               if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
@@ -5969,7 +6075,20 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           if (pUdef1 == NULL)
             {
               // error message
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "time units", "the event", pEvent->getId().c_str());
+            }
+
+          else
+            {
+              std::pair<CModel::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
+
+              if (result.second == false)
+                {
+                  // we did not recognize the unit
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "time", "the event", pEvent->getId().c_str());
+
+                  continue;
+                }
             }
 
           if (unitId != "time" && !areSBMLUnitDefinitionsIdentical(pTimeUnits, pUdef1))
