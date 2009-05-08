@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000082.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 08:15:45 $
+//   $Date: 2009/05/08 15:56:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,11 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/extensions/HelperMacros.h>
+
+/**
+ * Test for event import/export and especially the handling of the
+ * delayAssignment flag and the corresponding flag in SBML.
+ */
 
 class CCopasiDataModel;
 
