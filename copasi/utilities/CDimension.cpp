@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
- $Revision: 1.8 $
+ $Revision: 1.9 $
  $Name:  $
- $Author: shoops $
- $Date: 2009/04/21 16:20:53 $
+ $Author: ssahle $
+ $Date: 2009/05/08 22:38:18 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 #include "model/CChemEq.h"
 
 CDimension::CDimension()
-    : mD1(0), mD2(0), mD3(0),
+    : mD1(0), mD2(0), mD3(0), mD4(0), mD5(0),
     mUnknown(true),
     mContradiction(false)
 {}
@@ -48,13 +48,16 @@ bool CDimension::isContradiction() const
   return mContradiction;
 }
 
-void CDimension::setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const C_FLOAT64 & d3)
+void CDimension::setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const C_FLOAT64 & d3,
+                              const C_FLOAT64 & d4, const C_FLOAT64 & d5)
 {
   mUnknown = false;
   mContradiction = false;
   mD1 = d1;
   mD2 = d2;
   mD3 = d3;
+  mD4 = d4;
+  mD5 = d5;
 }
 
 //static
@@ -81,6 +84,8 @@ std::string CDimension::getDisplayString(const CCopasiDataModel* pDataModel) con
   std::string vol = /*FROM_UTF8*/(pDataModel->getModel()->getVolumeUnitName());
   std::string time = /*FROM_UTF8*/(pDataModel->getModel()->getTimeUnitName());
   std::string quan = /*FROM_UTF8*/(pDataModel->getModel()->getQuantityUnitName());
+  std::string area = /*FROM_UTF8*/(pDataModel->getModel()->getAreaUnitName());
+  std::string len = /*FROM_UTF8*/(pDataModel->getModel()->getLengthUnitName());
 
   std::string tmp;
 
@@ -100,6 +105,18 @@ std::string CDimension::getDisplayString(const CCopasiDataModel* pDataModel) con
 
   s1 += tmp;
 
+  tmp = constructDisplayElement(area, mD4);
+
+  if ((s1 != "") && (tmp != "")) s1 += "*";
+
+  s1 += tmp;
+
+  tmp = constructDisplayElement(len, mD5);
+
+  if ((s1 != "") && (tmp != "")) s1 += "*";
+
+  s1 += tmp;
+
   //negative exponents
   std::string s2;
   bool parflag = false;
@@ -113,6 +130,20 @@ std::string CDimension::getDisplayString(const CCopasiDataModel* pDataModel) con
   s2 += tmp;
 
   tmp = constructDisplayElement(time, -mD3);
+
+  if ((s2 != "") && (tmp != ""))
+    {s2 += "*"; parflag = true;}
+
+  s2 += tmp;
+
+  tmp = constructDisplayElement(area, -mD4);
+
+  if ((s2 != "") && (tmp != ""))
+    {s2 += "*"; parflag = true;}
+
+  s2 += tmp;
+
+  tmp = constructDisplayElement(len, -mD5);
 
   if ((s2 != "") && (tmp != ""))
     {s2 += "*"; parflag = true;}
@@ -140,7 +171,9 @@ bool CDimension::operator==(const CDimension & rhs) const
          && (mContradiction == rhs.mContradiction)
          && (mD1 == rhs.mD1)
          && (mD2 == rhs.mD2)
-         && (mD3 == rhs.mD3);
+         && (mD3 == rhs.mD3)
+         && (mD4 == rhs.mD4)
+         && (mD5 == rhs.mD5);
 }
 
 CDimension CDimension::operator+(const CDimension & rhs) const
@@ -152,7 +185,7 @@ CDimension CDimension::operator+(const CDimension & rhs) const
   else if (isUnknown() || rhs.isUnknown())
     result.setUnknown();
   else
-    result.setDimension(mD1 + rhs.mD1, mD2 + rhs.mD2, mD3 + rhs.mD3);
+    result.setDimension(mD1 + rhs.mD1, mD2 + rhs.mD2, mD3 + rhs.mD3, mD4 + rhs.mD4, mD5 + rhs.mD5);
 
   return result;
 }
@@ -166,7 +199,7 @@ CDimension CDimension::operator-(const CDimension & rhs) const
   else if (isUnknown() || rhs.isUnknown())
     result.setUnknown();
   else
-    result.setDimension(mD1 - rhs.mD1, mD2 - rhs.mD2, mD3 - rhs.mD3);
+    result.setDimension(mD1 - rhs.mD1, mD2 - rhs.mD2, mD3 - rhs.mD3, mD4 - rhs.mD4, mD5 - rhs.mD5);
 
   return result;
 }
@@ -180,7 +213,7 @@ CDimension CDimension::operator*(const C_FLOAT64 & rhs) const
   else if (isUnknown())
     result.setUnknown();
   else
-    result.setDimension(mD1 * rhs, mD2 * rhs, mD3 * rhs);
+    result.setDimension(mD1 * rhs, mD2 * rhs, mD3 * rhs, mD4 * rhs, mD5 * rhs);
 
   return result;
 }
@@ -221,13 +254,15 @@ std::string CDimension::print(const CCopasiDataModel* pDataModel) const
   std::ostringstream os;
 
   if (this->mUnknown) os << "Dim: unknown";
-  else if (this->mContradiction) os << "Dim: conctradiction";
-  else os << "Dim: (" << this->mD1 << ", " << this->mD2 << ", " << this->mD3 << ")  " << this->getDisplayString(pDataModel);
+  else if (this->mContradiction) os << "Dim: contradiction";
+  else os << "Dim: (" << this->mD1 << ", " << this->mD2 << ", " << this->mD3
+    << ", " << this->mD4 << ", " << this->mD5 << ")  "
+    << this->getDisplayString(pDataModel);
 
   return os.str();;
 }
 
-void CDimension::fixDimensionless(bool d1, bool d2, bool d3)
+void CDimension::fixDimensionless(bool d1, bool d2, bool d3, bool d4, bool d5)
 {
   if (d1)
     mD1 = 0;
@@ -237,18 +272,24 @@ void CDimension::fixDimensionless(bool d1, bool d2, bool d3)
 
   if (d3)
     mD3 = 0;
+
+  if (d4)
+    mD4 = 0;
+
+  if (d5)
+    mD5 = 0;
 }
 
 //*************************************************************************
 
 #include "function/CFunction.h"
 
-CFindDimensions::CFindDimensions(const CFunction* function, bool d1, bool d2, bool d3)
+CFindDimensions::CFindDimensions(const CFunction* function, bool d1, bool d2, bool d3, bool d4, bool d5)
     : mpFunction(function),
     mRootDimension(),
     mUseHeuristics(false),
     mM1(-1.0), mM2(-1.0),
-    mD1(d1), mD2(d2), mD3(d3)
+    mD1(d1), mD2(d2), mD3(d3), mD4(d4), mD5(d5)
 {
   setupDimensions();
 }
@@ -268,15 +309,15 @@ void CFindDimensions::setupDimensions()
           case CFunctionParameter::SUBSTRATE:
           case CFunctionParameter::PRODUCT:
           case CFunctionParameter::MODIFIER:
-            mDimensions[i].setDimension(1, -1, 0); //concentration
+            mDimensions[i].setDimension(1, -1, 0, 0, 0); //concentration
             break;
 
           case CFunctionParameter::VOLUME:
-            mDimensions[i].setDimension(0, 1, 0); //volume
+            mDimensions[i].setUnknown(); // TODO Dimension(0, 1, 0); //volume
             break;
 
           case CFunctionParameter::TIME:
-            mDimensions[i].setDimension(0, 0, 1); //time
+            mDimensions[i].setDimension(0, 0, 1, 0, 0); //time
             break;
 
           default:
@@ -284,7 +325,7 @@ void CFindDimensions::setupDimensions()
             break;
         }
 
-      mDimensions[i].fixDimensionless(mD1, mD2, mD3);
+      mDimensions[i].fixDimensionless(mD1, mD2, mD3, mD4, mD5);
     }
 }
 
@@ -307,11 +348,11 @@ void CFindDimensions::findDimensions(CDimension rootDim)
 void CFindDimensions::findDimensions(bool isMulticompartment)
 {
   if (isMulticompartment)
-    mRootDimension.setDimension(1, 0, -1); //amount of subs/time
+    mRootDimension.setDimension(1, 0, -1, 0, 0); //amount of subs/time
   else
-    mRootDimension.setDimension(1, -1, -1); //conc/time
+    mRootDimension.setDimension(1, -1, -1, 0, 0); //TODO !!! conc/time
 
-  mRootDimension.fixDimensionless(mD1, mD2, mD3);
+  mRootDimension.fixDimensionless(mD1, mD2, mD3, mD4, mD5);
 
   findDimensions();
 }
@@ -392,10 +433,10 @@ void CFindDimensions::findDimensionsMassAction()
 {
   if (mM1 < 0) return;
 
-  CDimension conc; conc.setDimension(1.0, -1.0, 0.0);
+  CDimension conc; conc.setDimension(1.0, -1.0, 0.0, 0, 0); //TODO!!!
 
-  mRootDimension.fixDimensionless(mD1, mD2, mD3);
-  conc.fixDimensionless(mD1, mD2, mD3);
+  mRootDimension.fixDimensionless(mD1, mD2, mD3, mD4, mD5);
+  conc.fixDimensionless(mD1, mD2, mD3, mD4, mD5);
 
   if (mDimensions[0].isUnknown())
     {
@@ -607,7 +648,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
     {
       //heuristics!
       if (mUseHeuristics && (numnode->value() == 1.0))
-        result.setDimension(0, 0, 0);
+        result.setDimension(0, 0, 0, 0, 0);
     }
 
   return result;

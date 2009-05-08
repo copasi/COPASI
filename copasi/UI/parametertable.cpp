@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: ssahle $
+//   $Date: 2009/05/08 22:38:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,7 +184,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   //first get the units strings
   CFindDimensions units(ri.getFunction(), model.getQuantityUnitEnum() == CModel::dimensionlessQuantity,
                         model.getVolumeUnitEnum() == CModel::dimensionlessVolume,
-                        model.getTimeUnitEnum() == CModel::dimensionlessTime);
+                        model.getTimeUnitEnum() == CModel::dimensionlessTime,
+                        model.getAreaUnitEnum() == CModel::dimensionlessArea,
+                        model.getLengthUnitEnum() == CModel::dimensionlessLength
+                       );
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));

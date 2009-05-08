@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
- $Revision: 1.8 $
+ $Revision: 1.9 $
  $Name:  $
- $Author: shoops $
- $Date: 2009/04/21 16:20:53 $
+ $Author: ssahle $
+ $Date: 2009/05/08 22:38:18 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,9 +28,9 @@ class CCopasiDataModel;
  * CDimension class.
  * The class describes the dimension of a value, usually a CFunctionParameter.
  *
- * The dimension is given as a triple of real numbers: (amount of substance, volume, time).
+ * The dimension is given as a quintuple of real numbers: (amount of substance, volume, time, area, length).
  * It can also be "unknown" or "contradiction". The actual unit can be constructed from the
- * dimension and the three basic units from the CModel class (which is done in the
+ * dimension and the 5 basic units from the CModel class (which is done in the
  * getDisplayString() method).
  */
 class CDimension
@@ -45,7 +45,8 @@ public:
   void setContradiction();
   bool isContradiction() const;
 
-  void setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const C_FLOAT64 & d3);
+  void setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const C_FLOAT64 & d3,
+                    const C_FLOAT64 & d4, const C_FLOAT64 & d5);
 
   std::string getDisplayString(const CCopasiDataModel* pDataModel) const;
   std::string getDebugString() const;
@@ -60,9 +61,9 @@ public:
   /**
    * If one of the base units is dimensionless, the corresponding exponent is
    * adjusted to be 0.0.
-   * d1,d2,d3 indicate whether the base units are dimensionless
+   * d1,d2,d3, d4, d5 indicate whether the base units are dimensionless
    */
-  void fixDimensionless(bool d1, bool d2, bool d3);
+  void fixDimensionless(bool d1, bool d2, bool d3, bool d4, bool d5);
 
   /**
    * insert operator
@@ -72,12 +73,16 @@ public:
 
 private:
 
-  /// exponent of quantity base unit
+  ///exponent of quantity base unit
   C_FLOAT64 mD1;
   ///exponent of volume base unit
   C_FLOAT64 mD2;
   ///exponent of time base unit
   C_FLOAT64 mD3;
+  ///exponent of area base unit
+  C_FLOAT64 mD4;
+  ///exponent of length base unit
+  C_FLOAT64 mD5;
 
   bool mUnknown;
   bool mContradiction;
@@ -111,9 +116,9 @@ public:
 
   /**
    * construct the class for a given function.
-   * d1,d2,d3 indicate if the base unit (for quantity, volume, time) is dimensionless
+   * d1,d2,d3, d4, d5 indicate if the base unit (for quantity, volume, time, area, length) is dimensionless
    */
-  CFindDimensions(const CFunction* function, bool d1, bool d2, bool d3);
+  CFindDimensions(const CFunction* function, bool d1, bool d2, bool d3, bool d4, bool d5);
 
   /**
    * initialize the known dimensions (from the parameter roles) and
@@ -169,6 +174,8 @@ private:
   bool mD1;
   bool mD2;
   bool mD3;
+  bool mD4;
+  bool mD5;
 
   ///find dim for all parameters
   void findDimensions();

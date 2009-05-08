@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.358 $
+//   $Revision: 1.359 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/04 15:18:07 $
+//   $Author: ssahle $
+//   $Date: 2009/05/08 22:38:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -3880,7 +3880,9 @@ std::string CModel::printParameterOverview()
           //calculate units
           CFindDimensions units(reac->getFunction(), getQuantityUnitEnum() == dimensionlessQuantity,
                                 getVolumeUnitEnum() == dimensionlessVolume,
-                                getTimeUnitEnum() == dimensionlessTime);
+                                getTimeUnitEnum() == dimensionlessTime,
+                                getAreaUnitEnum() == dimensionlessArea,
+                                getLengthUnitEnum() == dimensionlessLength);
           units.setUseHeuristics(true);
           units.setChemicalEquation(&reac->getChemEq());
           units.findDimensions(reac->getCompartmentNumber() > 1);
