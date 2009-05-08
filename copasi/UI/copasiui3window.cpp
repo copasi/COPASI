@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.255 $
+//   $Revision: 1.256 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/05/07 10:12:05 $
+//   $Author: ssahle $
+//   $Date: 2009/05/08 12:45:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,6 +57,7 @@ extern const char * CopasiLicense;
 #include "sbml/SBMLIncompatibility.h"
 #include "MIRIAM/CConstants.h"
 #include "copasi/utilities/CVersion.h"
+#include "model/CModelExpansion.h"
 
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
@@ -353,6 +354,9 @@ void CopasiUI3Window::createActions()
   mpaCapture = new QAction(QPixmap(photo), "Capture the main window", 0, this, "capture");
   connect(mpaCapture, SIGNAL(activated()), this, SLOT(slotCapture()));
 
+  mpaExpandModel = new QAction("Create array of compartments (debug version)", 0, this, "expandmodel");
+  connect(mpaExpandModel, SIGNAL(activated()), this, SLOT(slotExpandModel()));
+
   //     QAction* mpaObjectBrowser;
 }
 
@@ -426,6 +430,8 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addSeparator();
 #ifdef COPASI_DEBUG
   mpTools->addAction(mpaObjectBrowser);
+  mpTools->addAction(mpaExpandModel);
+  mpTools->addSeparator();
 #endif // COPASI_DEBUG
 
   mpTools->addAction(mpaCheckModel);
@@ -1671,6 +1677,15 @@ void CopasiUI3Window::slotCapture()
     }
 
   pixmap.save(fileName, "PNG");
+}
+
+void CopasiUI3Window::slotExpandModel()
+{
+  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModelExpansion me(pModel);
+  me.simpleCall();
+
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 #ifdef COPASI_LICENSE_COM
