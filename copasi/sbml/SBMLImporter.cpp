@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.235 $
+//   $Revision: 1.236 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 18:59:27 $
+//   $Date: 2009/05/11 13:36:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -5290,6 +5290,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                     {
                       // we did not recognize the unit
                       CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "volume", "the 3 dimensional  compartment", pCompartment->getId().c_str());
+                      delete pUdef1;
                       continue;
                     }
                 }
@@ -5507,7 +5508,8 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               if (unitId != "dimensionless" && !areSBMLUnitDefinitionsIdentical(pDimensionlessUnits, pUdef1))
                 {
-                  nonDefaultCompartments.push_back(pCompartment->getId());
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 79, "dimensionless", "the 0 dimensional compartment", pCompartment->getId().c_str());
+                  continue;
                 }
 
               if (lastDimensionlessUnit == "")

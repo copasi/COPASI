@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000083.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 15:54:06 $
+//   $Date: 2009/05/11 13:36:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,7 @@ void test000083::test_import_compartment_units_1()
       CPPUNIT_ASSERT(message.getNumber() != MCSBML + 24);
       // make sure all units were imported
       CPPUNIT_ASSERT(message.getNumber() != MCSBML + 55);
+      CPPUNIT_ASSERT(message.getNumber() != MCSBML + 79);
       ++i;
     }
 }
@@ -93,18 +94,53 @@ void test000083::test_import_compartment_units_2()
 void test000083::test_import_compartment_units_3()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
+  unsigned int found66 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 66)
+        {
+          ++found66;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
+  CPPUNIT_ASSERT(found66 == 1);
 }
 
 void test000083::test_import_compartment_units_4()
@@ -119,6 +155,7 @@ void test000083::test_import_compartment_units_4()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -136,45 +173,114 @@ void test000083::test_import_compartment_units_4()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_5()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::nl);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_6()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::nl);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
+  unsigned int found66 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 66)
+        {
+          ++found66;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
+  CPPUNIT_ASSERT(found66 == 1);
 }
 
 void test000083::test_import_compartment_units_7()
@@ -189,6 +295,7 @@ void test000083::test_import_compartment_units_7()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -206,11 +313,18 @@ void test000083::test_import_compartment_units_7()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_8()
@@ -225,6 +339,7 @@ void test000083::test_import_compartment_units_8()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -242,11 +357,18 @@ void test000083::test_import_compartment_units_8()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_9()
@@ -261,6 +383,7 @@ void test000083::test_import_compartment_units_9()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -278,11 +401,18 @@ void test000083::test_import_compartment_units_9()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_10()
@@ -297,6 +427,7 @@ void test000083::test_import_compartment_units_10()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -314,45 +445,106 @@ void test000083::test_import_compartment_units_10()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_11()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING11));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING11));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_12()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING12));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING12));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_13()
@@ -373,6 +565,7 @@ void test000083::test_import_compartment_units_13()
       CPPUNIT_ASSERT(message.getNumber() != MCSBML + 24);
       // make sure all units were imported
       CPPUNIT_ASSERT(message.getNumber() != MCSBML + 55);
+      CPPUNIT_ASSERT(message.getNumber() != MCSBML + 79);
       ++i;
     }
 }
@@ -380,69 +573,177 @@ void test000083::test_import_compartment_units_13()
 void test000083::test_import_compartment_units_14()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING14));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING14));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_15()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING15));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING15));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_16()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING16));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING16));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_17()
 {
   CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING17));
+  CModel* pModel = pDataModel->getModel();
+  CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
+  CPPUNIT_ASSERT(pModel != NULL);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
+  // make sure there is no warning about inconsistent units
+  unsigned int i = 0, iMax = CCopasiMessage::size();
+  unsigned int found24 = 0;
+  unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
-  try
+  while (i < iMax)
     {
-      CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING17));
-    }
-  catch (...)
-    {
-      return;
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+
+      // check for messages about inconsistent units
+      if (message.getNumber() == MCSBML + 24)
+        {
+          ++found24;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 55)
+        {
+          ++found55;
+        }
+
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
+      ++i;
     }
 
-  // we expect an exception, so we should not end up here
-  CPPUNIT_ASSERT(false);
+  CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 1);
 }
 
 void test000083::test_import_compartment_units_18()
@@ -457,6 +758,7 @@ void test000083::test_import_compartment_units_18()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -474,11 +776,18 @@ void test000083::test_import_compartment_units_18()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_19()
@@ -493,6 +802,7 @@ void test000083::test_import_compartment_units_19()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -510,11 +820,18 @@ void test000083::test_import_compartment_units_19()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_20()
@@ -529,6 +846,7 @@ void test000083::test_import_compartment_units_20()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -546,11 +864,18 @@ void test000083::test_import_compartment_units_20()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
   CPPUNIT_ASSERT(found24 == 1);
+  CPPUNIT_ASSERT(found79 == 0);
 }
 
 void test000083::test_import_compartment_units_21()
@@ -565,6 +890,7 @@ void test000083::test_import_compartment_units_21()
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
   unsigned int found55 = 0;
+  unsigned int found79 = 0;
 
   while (i < iMax)
     {
@@ -582,10 +908,17 @@ void test000083::test_import_compartment_units_21()
           ++found55;
         }
 
+      // check for import errors
+      if (message.getNumber() == MCSBML + 79)
+        {
+          ++found79;
+        }
+
       ++i;
     }
 
   CPPUNIT_ASSERT(found55 == 0);
+  CPPUNIT_ASSERT(found79 == 0);
   CPPUNIT_ASSERT(found24 == 1);
 }
 
@@ -884,7 +1217,7 @@ const char* test000083::MODEL_STRING14 =
   "    <listOfUnitDefinitions>"
   "      <unitDefinition id=\"my_volume\">"
   "        <listOfUnits>"
-  "          <unit kind=\"metre\" scale=\"0\" exponent\"2\" />"
+  "          <unit kind=\"metre\" scale=\"0\" exponent=\"2\" />"
   "        </listOfUnits>"
   "      </unitDefinition>"
   "    </listOfUnitDefinitions>"
