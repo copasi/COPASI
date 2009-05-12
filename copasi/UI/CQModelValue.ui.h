@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/05/12 16:46:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -413,7 +413,6 @@ void CQModelValue::load()
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
-  slotTypeChanged(mpComboBoxType->currentItem());
 
   // Update Expression Widget
   mpExpressionEMW->updateWidget();
@@ -423,6 +422,9 @@ void CQModelValue::load()
 
   // Update Initial Expression Widget
   mpInitialExpressionEMW->updateWidget();
+
+  // Type dependent display of values
+  slotTypeChanged(mpComboBoxType->currentItem());
 
   // Use Initial Expression
   if (mpModelValue->getStatus() == CModelEntity::ASSIGNMENT ||
@@ -447,7 +449,7 @@ void CQModelValue::save()
 {
   if (mpModelValue == NULL) return;
 
-  // set name of quantitiy
+  // set name of quantity
   if (mpModelValue->getObjectName() != TO_UTF8(mpEditName->text()))
     {
       if (!mpModelValue->setObjectName(TO_UTF8(mpEditName->text())))  // the new name is rejected as it has been used

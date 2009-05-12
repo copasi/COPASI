@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/05/12 16:46:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,9 @@ public:
    */
   void setExpressionType(const ExpressionType & expressionType);
 
-  void setBoolean(bool isBoolean) {mpValidator->setBoolean(isBoolean);};
+  void setBoolean(bool isBoolean);
+
+  bool isValid();
 
 protected slots:
   void slotCursorPositionChanged(int para, int pos);
@@ -160,17 +162,9 @@ protected slots:
    */
   void slotTextChanged();
 
-  //void slotLostFocus();
-  //void slotReturnPressed();
-  //void slotTextChanged(const QString & text);
-
 public slots:
   void doKeyboardAction(Q3TextEdit::KeyboardAction action);
   void slotSelectObject();
-
-  //void slotForceUpdate();
-
-  //virtual void setText(const QString & text);
 
 signals:
   void valid(bool valid);

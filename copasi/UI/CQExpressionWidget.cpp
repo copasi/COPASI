@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 13:57:35 $
+//   $Date: 2009/05/12 16:46:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -472,6 +472,16 @@ CExpression *CQExpressionWidget::getExpression()
 void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
 {
   mObjectClasses = expressionType;
+}
+
+void CQExpressionWidget::setBoolean(bool isBoolean)
+{
+  mpValidator->setBoolean(isBoolean);
+};
+
+bool CQExpressionWidget::isValid()
+{
+  return mpValidator->revalidate() == QValidator::Acceptable;
 }
 
 void CQExpressionWidget::slotSelectObject()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQCompartment.ui.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 14:01:32 $
+//   $Author: shoops $
+//   $Date: 2009/05/12 16:46:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -481,9 +481,6 @@ void CQCompartment::load()
   // Simulation Type
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()]));
 
-  // Type dependent display of values
-  slotTypeChanged(mpComboBoxType->currentItem());
-
   // Initial Volume
   mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
 
@@ -495,12 +492,14 @@ void CQCompartment::load()
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getExpression());
-  slotTypeChanged(mpComboBoxType->currentItem());
   mpExpressionEMW->updateWidget();
 
   // Initial Expression
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getInitialExpression());
   mpInitialExpressionEMW->updateWidget();
+
+  // Type dependent display of values
+  slotTypeChanged(mpComboBoxType->currentItem());
 
   // Use Initial Expression
   if (mpCompartment->getStatus() == CModelEntity::ASSIGNMENT ||

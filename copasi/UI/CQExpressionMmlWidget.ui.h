@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/30 13:17:49 $
+//   $Author: shoops $
+//   $Date: 2009/05/12 16:46:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,12 +50,11 @@ void CQExpressionMmlWidget::updateWidget()
 {
 #ifdef HAVE_MML
 
-  // Since the mathematical  expression is already validated, then we can go easily further
-
   std::ostringstream mml;
   std::vector<std::vector<std::string> > params;
 
-  if (mpExpressionWidget->text().isEmpty())
+  if (mpExpressionWidget->text().isEmpty() ||
+      !mpExpressionWidget->isValid())
     mpWidgetStackExpressionMml->raiseWidget(mpExpressionPage);
   else
     {

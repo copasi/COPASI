@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:08:33 $
+//   $Author: shoops $
+//   $Date: 2009/05/12 16:46:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -421,6 +421,7 @@ bool CQMetabolite::enter(const std::string & key)
 
 bool CQMetabolite::leave()
 {
+  // This is now always enabled, i.e., a save is always performed!
   if (mpBtnCommit->isEnabled())
     {
       if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()] != CModelEntity::FIXED &&
@@ -538,20 +539,19 @@ void CQMetabolite::load()
 
   mInitialNumberLastChanged = true;
 
-  // Type dependent display of values
-  slotTypeChanged(mpComboBoxType->currentItem());
-
   // Transistion Time
   mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime()));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getExpression());
-  slotTypeChanged(mpComboBoxType->currentItem());
   mpExpressionEMW->updateWidget();
 
   // Initial Expression
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getInitialExpression());
   mpInitialExpressionEMW->updateWidget();
+
+  // Type dependent display of values
+  slotTypeChanged(mpComboBoxType->currentItem());
 
   // Use Initial Expression
   if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT ||
