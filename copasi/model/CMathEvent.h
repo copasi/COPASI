@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/27 19:03:34 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,11 @@
 // We have not yet a stack machine for expression thus we use the old AST
 #define CMathExpression CExpression
 
+#include "copasi/model/CMathTrigger.h"
 #include "copasi/function/CExpression.h"
+
+class CEvent;
+class CEventAssignment;
 
 class CMathEvent : public CCopasiContainer
 {
@@ -44,6 +48,14 @@ private:
      * Destructor
      */
     ~CAssignment();
+
+    /**
+     * Compile the root finder
+     * @param const CEventAssignment * pEvent
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     */
+    bool compile(const CEventAssignment * pAssignment,
+                 std::vector< CCopasiContainer * > listOfContainer);
 
     // Attributes
   private:
@@ -79,12 +91,38 @@ public:
    */
   ~CMathEvent();
 
+  /**
+   * Compile the root finder
+   * @param const CEvent * pEvent
+   * @param std::vector< CCopasiContainer * > listOfContainer
+   */
+  bool compile(const CEvent * pEvent,
+               std::vector< CCopasiContainer * > listOfContainer);
+
+  /**
+   * Apply all needed refreshes so that the delay expression are
+   * correctly calculated.
+   */
+  void applyDelayRefreshes();
+
+  /**
+   * Apply all needed refreshes so that the assignment expressions are
+   * correctly calculated.
+   */
+  void applyValueRefreshes();
+
+  /**
+   * Apply all needed refreshes to update all values depending on the
+   * assignment targets.
+   */
+  void applyDependentRefreshes();
+
   // Attributes
 private:
   /**
    * Trigger expression.
    */
-  CMathExpression mTrigger;
+  CMathTrigger mTrigger;
 
   /**
    * Boolean value indicating the status of the trigger
@@ -115,6 +153,24 @@ private:
    * List of assignments
    */
   CCopasiVector< CAssignment > mAssignments;
+
+  /**
+   * A sequence of refresh calls needed to prepare
+   * to calculate the delay value.
+   */
+  std::vector< Refresh * > mDelayValueRefreshes;
+
+  /**
+   * A sequence of refresh calls needed to prepare
+   * to calculate the current values of the assignments.
+   */
+  std::vector< Refresh * > mAssignmentValueRefreshes;
+
+  /**
+   * A sequence of refresh calls needed to calculate all
+   * values which depend on the target values of the assignments.
+   */
+  std::vector< Refresh * > mDependentValueRefreshes;
 };
 
 #endif // COPASI_CMathEvent

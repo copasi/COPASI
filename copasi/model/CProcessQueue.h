@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:27:21 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,7 +154,7 @@ private:
     inline CMathEvent * getEvent() const {return mpEvent;}
 
     // Attributes
-  private:
+  public:
     /**
      * The target of the execution.
      */

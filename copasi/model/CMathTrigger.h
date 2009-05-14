@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/01 20:58:28 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,8 +54,27 @@ private:
 
     /**
      * Compile the root finder
+     * @param std::vector< CCopasiContainer * > listOfContainer
      */
-    bool compile();
+    bool compile(std::vector< CCopasiContainer * > listOfContainer);
+
+    /**
+     * Retrieve the expression evaluating the truth value
+     * CEvalutionNode * trueExpression
+     */
+    CEvaluationNode * getTrueExpression() const;
+
+    /**
+     * Retrieve the expression evaluating the fire value
+     * CEvalutionNode * fireExpression
+     */
+    CEvaluationNode * getFireExpression() const;
+
+    /**
+     * Retrieve the expression evaluating the equality value
+     * CEvalutionNode * equalityExpression
+     */
+    CEvaluationNode * getEqualityExpression() const;
 
     /**
      * Activate the root finder if the charge expression is true;
@@ -69,6 +88,11 @@ private:
      * This expression calculates the root
      */
     CMathExpression mRoot;
+
+    /**
+     * A pointer to the value of the root expression
+     */
+    C_FLOAT64 * mpRootValue;
 
     /**
      * This indicates whether the root is checked for equality
@@ -106,46 +130,85 @@ public:
   /**
    * Compile the trigger
    * @param const CExpression * pTriggerExpression
+   * @param std::vector< CCopasiContainer * > listOfContainer
    * @return bool success
    */
-  bool compile(const CExpression * pTriggerExpression);
+  bool compile(const CExpression * pTriggerExpression,
+               std::vector< CCopasiContainer * > listOfContainer);
 
 private:
-  bool compile(const CEvaluationNode * pSource);
-  bool compileAND(const CEvaluationNode * pSource);
-  bool compileOR(const CEvaluationNode * pSource);
-  bool compileXOR(const CEvaluationNode * pSource);
-  bool compileEQ(const CEvaluationNode * pSource);
-  bool compileNE(const CEvaluationNode * pSource);
-  bool compileLT(const CEvaluationNode * pSource);
-  bool compileLE(const CEvaluationNode * pSource);
-  bool compileGT(const CEvaluationNode * pSource);
-  bool compileGE(const CEvaluationNode * pSource);
-  bool compileNOT(const CEvaluationNode * pSource);
+  bool compile(const CEvaluationNode * pSource,
+               CEvaluationNode * pFireExpression,
+               CEvaluationNode * pEqualityExpression);
+  bool compileAND(const CEvaluationNode * pSource,
+                  CEvaluationNode * pFireExpression,
+                  CEvaluationNode * pEqualityExpression);
+  bool compileOR(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileXOR(const CEvaluationNode * pSource,
+                  CEvaluationNode * pFireExpression,
+                  CEvaluationNode * pEqualityExpression);
+  bool compileEQ(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileNE(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileLT(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileLE(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileGT(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileGE(const CEvaluationNode * pSource,
+                 CEvaluationNode * pFireExpression,
+                 CEvaluationNode * pEqualityExpression);
+  bool compileNOT(const CEvaluationNode * pSource,
+                  CEvaluationNode * pFireExpression,
+                  CEvaluationNode * pEqualityExpression);
 
-  bool effectiveEquality(const bool & equality) const;
-  void pushNodes(CEvaluationNode * pTriggerNode, CEvaluationNode * pActivateNode);
+  void pushNodes(CEvaluationNode * pActiveNode,
+                 CEvaluationNode * pTrueNode);
   void popNodes();
-  void addNodes(CEvaluationNode * pTriggerNode,
-                CEvaluationNode * pActivateNode);
+  void addNodes(CEvaluationNode * pActiveNode,
+                CEvaluationNode * pTrueNode);
+
+  static
+  CEvaluationNode * getEqualityExpression(CEvaluationNode * pFireExpressionLeft,
+                                          CEvaluationNode * pEqualityExpressionLeft,
+                                          CEvaluationNode * pFireExpressionRight,
+                                          CEvaluationNode * pEqualityExpressionRight);
+
+  CEvaluationNode * getFireExpression() const;
 
   // Attributes
 private:
   /**
+   * This expression evaluates whether
+   * the trigger is active.
+   */
+  CMathExpression mActiveExpression;
+
+  /**
+   * This expression evaluates whether
+   * the trigger value is true.
+   */
+  CMathExpression mTrueExpression;
+
+  /**
    * This expression evaluates the boolean operators to determine whether
    * the trigger fires.
    */
-  CMathExpression mTriggerExpression;
+  CMathExpression mFireExpression;
 
   /**
-   * Indicates whether the trigger is active.
+   * This expression evaluates whether the check us for equality.
    */
-  bool mActive;
-
-  /**
-   * This expression evaluates whether the trigger is reactivated.
-   */
-  CMathExpression mActivateExpression;
+  CMathExpression mEqualityExpression;
 
   /**
    * A vector containing the root expression.
@@ -153,34 +216,27 @@ private:
   CCopasiVector< CRootFinder > mRootFinders;
 
   /**
-   * A pointer to the Boolean trigger expression to be compiled
+   * The stack of nodes used to build the expression to
+   * determine whether a trigger is active
    */
-  CExpression * mpExpression;
+  std::stack< CEvaluationNode * > mActiveNodes;
 
   /**
-   * The stack of trigger nodes
+   * The stack of nodes used to build the expression to
+   * determine whether a trigger is true.
    */
-  std::stack< CEvaluationNode * > mTriggerNodes;
+  std::stack< CEvaluationNode * > mTrueNodes;
 
   /**
-   * The stack of activate nodes
+   * The stack of nodes used to build the fire expression
    */
-  std::stack< CEvaluationNode * > mActivateNodes;
+  std::stack< CEvaluationNode * > mFireNodes;
 
   /**
-   * The currently processed root finding structure
+   * The stack of nodes used to build the expression to
+   * determine whether the check is for equality
    */
-  CRootFinder * mpRoot;
-
-  /**
-   * The stack of root nodes
-   */
-  std::stack< CEvaluationNode * > mRootNodes;
-
-  /**
-   * Indicates how to modify the equality
-   */
-  bool mEqualityModifier;
+  std::stack< CEvaluationNode * > mEqualityNodes;
 };
 
 #endif // COPASI_CMathTrigger

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:27:21 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,26 +21,37 @@
 
 class CModel;
 
-class CMathModel
+class CMathModel : public CCopasiContainer
 {
   // Operations
 public:
   /**
-   * Default constructor.
+   * Default constructor
+   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CMathModel();
+  CMathModel(const CCopasiContainer * pParent = NULL);
 
   /**
-   * Destructor.
+   * Copy constructor
+   * @param "const CMathModel &" src
+   * @param "const CCopasiContainer * pParent (default: NULL)
    */
-  ~CMathModel();
+  CMathModel(const CMathModel & src,
+             const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Destructor
+   */
+  virtual ~CMathModel();
 
   /**
    * Compile the mathematical model based on given the model.
-   * @param CModel & model
+   * @param CModel * pModel
+   * @param std::vector< CCopasiContainer * > listOfContainer
    * @return bool success
    */
-  bool compile(CModel & model);
+  bool compile(CModel * pModel,
+               std::vector< CCopasiContainer * > listOfContainer);
 
   /**
    * Prepare the mathematical model for simulation.
@@ -55,16 +66,32 @@ public:
   bool applyEvent(CMathEvent * pEvent);
 
   /**
-   * Change the event status for the events which have value 1
+   * Change the root status for the roots which have value 1
    * @param CVector< C_INT > & events
    */
-  void changeEventStatus(CVector< C_INT > & events);
+  void changeRootStatus(CVector< C_INT > & roots);
 
   /**
-   * Evaluate all trigger values for the current state of the model
+   * Evaluate all root values for the current state of the model
    * @param CVector< double > & triggerValues
    */
-  void evaluateTrigger(CVector< double > & triggerValues);
+  void evaluateRoots(CVector< double > & rootValues);
+
+  /**
+   * Build a list of refresh calls needed to assure that required objects
+   * are up to date.
+   * @param const std::set< const CCopasiObject * > & requiredObjects
+   * @return std::vector< Refresh * > refreshList
+   */
+  std::vector< Refresh * > buildRequiredRefreshList(const std::set< const CCopasiObject * > & requiredObjects) const;
+
+  /**
+   * Build a list of refresh calls needed to assure that all objects
+   * depending on the changed objects are up to date.
+   * @param const std::set< const CCopasiObject * > & changedObjects
+   * @return std::vector< Refresh * > refreshList
+   */
+  std::vector< Refresh * > buildDependendRefreshList(const std::set< const CCopasiObject * > & changedObjects) const;
 
   // Attributes
 private:
@@ -81,7 +108,7 @@ private:
   /**
    * List of events
    */
-  std::vector< CMathEvent > mEvents;
+  CCopasiVector< CMathEvent > mEvents;
 };
 
 #endif // COPASI_CMathModel

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/07 17:24:25 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "report/CCopasiRootContainer.h"
 #include "function/CExpression.h"
 
 // The default constructor is intentionally not implemented.
@@ -37,6 +37,7 @@ CEventAssignment::CEventAssignment(const std::string & targetKey,
                                    const CCopasiContainer * pParent) :
     CCopasiContainer(targetKey, pParent, "EventAssignment"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
+    mpTarget(NULL),
     mpExpression(NULL)
 {}
 
@@ -44,6 +45,7 @@ CEventAssignment::CEventAssignment(const CEventAssignment & src,
                                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
+    mpTarget(src.mpTarget),
     mpExpression(NULL)
 {
   setExpression(src.getExpression());
@@ -54,9 +56,51 @@ CEventAssignment::~CEventAssignment()
   pdelete(mpExpression);
 }
 
+bool CEventAssignment::compile(std::vector< CCopasiContainer * > listOfContainer)
+{
+  bool success = true;
+
+  mpTarget = NULL;
+
+  CModelEntity * pEntity =
+    dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(getObjectName()));
+
+  // The entity type must not be an ASSIGNMENT
+  if (pEntity != NULL &&
+      pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+    {
+      // We need use the virtual method getValueObject to retrieve the
+      // target value from the model entity
+      mpTarget = pEntity->getValueObject();
+    }
+
+  if (mpTarget == NULL)
+    {
+      success = false;
+    }
+
+  if (mpExpression != NULL)
+    {
+      success &= mpExpression->compile(listOfContainer);
+      setDirectDependencies(mpExpression->getDirectDependencies());
+    }
+  else
+    {
+      success = false;
+      setDirectDependencies(std::set< const CCopasiObject * >());
+    }
+
+  return success;
+}
+
 const std::string & CEventAssignment::getKey() const
 {
   return mKey;
+}
+
+const CCopasiObject * CEventAssignment::getTargetObject() const
+{
+  return mpTarget;
 }
 
 const std::string & CEventAssignment::getTargetKey() const
@@ -142,12 +186,36 @@ const std::string & CEvent::getKey() const
   return mKey;
 }
 
-bool CEvent::compile()
+bool CEvent::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   bool success = true;
 
-  // TODO We need build the list of direct dependencies to assure the events are deleted
-  // whenever an object used in an expression or assignment is deleted.
+  // Clear the old direct dependencies.
+  clearDirectDependencies();
+
+  // Compile the trigger expression
+  if (mpTriggerExpression != NULL)
+    {
+      success &= mpTriggerExpression->compile(listOfContainer);
+      addDirectDependency(mpTriggerExpression);
+    }
+
+  // Compile the delay expression
+  if (mpDelayExpression != NULL)
+    {
+      success &= mpDelayExpression->compile(listOfContainer);
+      addDirectDependency(mpDelayExpression);
+    }
+
+  // Compile the assignments
+  CCopasiVectorN< CEventAssignment >::iterator itAssignment = mAssignments.begin();
+  CCopasiVectorN< CEventAssignment >::iterator endAssignment = mAssignments.end();
+
+  for (; itAssignment != endAssignment; ++itAssignment)
+    {
+      success &= (*itAssignment)->compile(listOfContainer);
+      addDirectDependency(*itAssignment);
+    }
 
   return success;
 }

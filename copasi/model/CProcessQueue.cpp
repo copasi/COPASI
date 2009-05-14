@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 19:27:21 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -395,11 +395,19 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   bool success = true;
 
   iterator it = assignments.first;
-  destroyEventId(it->first.getEventId());
+  unsigned C_INT32 EventIdOld = it->first.getEventId();
+  unsigned C_INT32 EventIdNew = 0;
+
+  if (it->second.mpExpression != NULL)
+    {
+      it->second.mpEvent->applyValueRefreshes();
+      EventIdNew = createEventId();
+    }
 
   for (; it != assignments.second; ++it)
-    it->second.process(0);
+    it->second.process(EventIdNew);
 
+  destroyEventId(EventIdOld);
   mAssignments.erase(assignments.first, assignments.second);
 
   mExecutionCounter++;

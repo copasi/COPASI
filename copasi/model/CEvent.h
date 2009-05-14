@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/27 14:43:59 $
+//   $Date: 2009/05/14 18:49:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,13 @@ public:
   ~CEventAssignment();
 
   /**
+   * Compile the event assignment.
+   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @return bool success
+   */
+  bool compile(std::vector< CCopasiContainer * > listOfContainer);
+
+  /**
    * Retrieve the key
    * @return const std::string & key
    */
@@ -68,6 +75,12 @@ public:
    * @return const std::string & targetKey
    */
   const std::string & getTargetKey() const;
+
+  /**
+   * Retrieve a pointer to the target object.
+   * @return const CCopasiObject * targetObject
+   */
+  const CCopasiObject * getTargetObject() const;
 
   /**
    * Set the expression from an infix string. The return value indicates if
@@ -107,6 +120,11 @@ private:
    * The key
    */
   std::string mKey;
+
+  /**
+   * The target object
+   */
+  const CCopasiObject * mpTarget;
 
   /**
    * The expression to calculate the new value
@@ -161,8 +179,10 @@ public:
 
   /**
    * Compile the event.
+   * @param std::vector< CCopasiContainer * > listOfContainer
+   * @return bool success
    */
-  bool compile();
+  bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
   /**
    * Sets the SBMLId.
@@ -182,7 +202,7 @@ public:
   void setDelayAssignment(const bool & delayCalculation);
 
   /**
-   * Retrieve whether to delay the calculation ot the assignment.
+   * Retrieve whether to delay the calculation of the assignment.
    * @return const bool & delayCalculation
    */
   const bool & getDelayAssignment() const;
@@ -234,19 +254,19 @@ public:
   void setDelayExpressionPtr(CExpression* pExpression);
 
   /**
-   * Retrieve the expression of delay as a string.
+   * Retrieve the expression of the delay as a string.
    * @return std::string expression
    */
   std::string getDelayExpression() const;
 
   /**
-   * Retrieve the pointer to the expression of delay.
+   * Retrieve the pointer to the expression of the delay.
    * @return CExpression* pExpression
    */
   CExpression* getDelayExpressionPtr();
 
   /**
-   * Retrieve the pointer to the expression of delay.
+   * Retrieve the pointer to the expression of the delay.
    * @return CExpression* pExpression
    */
   const CExpression* getDelayExpressionPtr() const;
