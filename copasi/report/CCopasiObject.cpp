@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:15 $
+//   $Date: 2009/05/14 18:49:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,12 +73,12 @@ CCopasiObject::CCopasiObject(const std::string & name,
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
-mObjectName(src.mObjectName),
-mObjectType(src.mObjectType),
-mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
-mObjectFlag(src.mObjectFlag),
-mpUpdateMethod(&this->mDefaultUpdateMethod),
-mpRefresh(NULL)
+    mObjectName(src.mObjectName),
+    mObjectType(src.mObjectType),
+    mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+    mObjectFlag(src.mObjectFlag),
+    mpUpdateMethod(&this->mDefaultUpdateMethod),
+    mpRefresh(NULL)
 {if (mpObjectParent != NULL) mpObjectParent->add(this);}
 
 CCopasiObject::~CCopasiObject()
@@ -95,44 +95,45 @@ CCopasiObject::~CCopasiObject()
 void CCopasiObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
 CCopasiObjectName CCopasiObject::getCN() const
-  {
-    CCopasiObjectName CN;
-    // if the object has a parent and if the object is not a datamodel,
-    // we add the name of the parent to the common name
-    if (isDataModel())
-      CN = (std::string) "CN=Root";
-    else if (mpObjectParent)
-      {
-        std::stringstream tmp;
-        tmp << mpObjectParent->getCN();
+{
+  CCopasiObjectName CN;
 
-        if (mpObjectParent->isNameVector())
-          tmp << "[" << CCopasiObjectName::escape(mObjectName) << "]";
-        else if (mpObjectParent->isVector())
-          tmp << "[" << static_cast<const CCopasiVector< CCopasiObject > *>(mpObjectParent)->getIndex(this) << "]";
-        else
-          tmp << "," << CCopasiObjectName::escape(mObjectType)
-          << "=" << CCopasiObjectName::escape(mObjectName);
+  // if the object has a parent and if the object is not a datamodel,
+  // we add the name of the parent to the common name
+  if (isDataModel())
+    CN = (std::string) "CN=Root";
+  else if (mpObjectParent)
+    {
+      std::stringstream tmp;
+      tmp << mpObjectParent->getCN();
 
-        CN = tmp.str();
-      }
-    else
-      {
-        CN = CCopasiObjectName::escape(mObjectType)
-             + "=" + CCopasiObjectName::escape(mObjectName);
-      }
+      if (mpObjectParent->isNameVector())
+        tmp << "[" << CCopasiObjectName::escape(mObjectName) << "]";
+      else if (mpObjectParent->isVector())
+        tmp << "[" << static_cast<const CCopasiVector< CCopasiObject > *>(mpObjectParent)->getIndex(this) << "]";
+      else
+        tmp << "," << CCopasiObjectName::escape(mObjectType)
+        << "=" << CCopasiObjectName::escape(mObjectName);
 
-    return CN;
-  }
+      CN = tmp.str();
+    }
+  else
+    {
+      CN = CCopasiObjectName::escape(mObjectType)
+           + "=" + CCopasiObjectName::escape(mObjectName);
+    }
+
+  return CN;
+}
 
 const CCopasiObject *
 CCopasiObject::getObject(const CCopasiObjectName & cn) const
-  {
-    if (cn == "")
-      return this;
-    else  //a CCopasiObject has no child objects
-      return NULL;
-  }
+{
+  if (cn == "")
+    return this;
+  else  //a CCopasiObject has no child objects
+    return NULL;
+}
 
 bool CCopasiObject::setObjectName(const std::string & name)
 {
@@ -157,7 +158,7 @@ bool CCopasiObject::setObjectName(const std::string & name)
       //we may know that this is not necessary
     }
   else
-  {mObjectName = Name;}
+    {mObjectName = Name;}
 
   if (mpObjectParent)
     {
@@ -170,39 +171,43 @@ bool CCopasiObject::setObjectName(const std::string & name)
 
 /*virtual*/
 std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool richtext /*=false*/) const
-  {
-    std::string ret = "";
+{
+  std::string ret = "";
 
-    if (mpObjectParent)
+  if (mpObjectParent)
+    {
+      ret = mpObjectParent->getObjectDisplayName(regular, richtext);
+
+      if (ret == "(CN)Root") ret = "";
+
+      if (ret.substr(0, 7) == "(Model)") ret = "";
+    }
+
+  if (ret.length() >= 2)
+    if ((ret.substr(ret.length() - 2) == "[]") && (!isReference()))
       {
-        ret = mpObjectParent->getObjectDisplayName(regular, richtext);
-        if (ret == "(CN)Root") ret = "";
-        if (ret.substr(0, 7) == "(Model)") ret = "";
+        ret.insert(ret.length() - 1, getObjectName());
+
+        if (isNameVector() || isVector() || getObjectType() == "ParameterGroup")
+          ret += "[]";
+
+        return ret;
       }
 
-    if (ret.length() >= 2)
-      if ((ret.substr(ret.length() - 2) == "[]") && (!isReference()))
-        {
-          ret.insert(ret.length() - 1, getObjectName());
-          if (isNameVector() || isVector() || getObjectType() == "ParameterGroup")
-            ret += "[]";
-          return ret;
-        }
+  if ((ret.length() != 0) && (ret[ret.length() - 1] != '.'))
+    ret += ".";
 
-    if ((ret.length() != 0) && (ret[ret.length() - 1] != '.'))
-      ret += ".";
+  if (isNameVector() || isVector() || getObjectType() == "ParameterGroup")
+    ret += getObjectName() + "[]";
+  else if (isReference()
+           || getObjectType() == "Parameter"
+           || getObjectType() == getObjectName())
+    ret += getObjectName();
+  else
+    ret += "(" + getObjectType() + ")" + getObjectName();
 
-    if (isNameVector() || isVector() || getObjectType() == "ParameterGroup")
-      ret += getObjectName() + "[]";
-    else if (isReference()
-             || getObjectType() == "Parameter"
-             || getObjectType() == getObjectName())
-      ret += getObjectName();
-    else
-      ret += "(" + getObjectType() + ")" + getObjectName();
-
-    return ret;
-  }
+  return ret;
+}
 
 const std::string & CCopasiObject::getObjectName() const {return mObjectName;}
 
@@ -219,23 +224,29 @@ CCopasiContainer * CCopasiObject::getObjectParent() const {return mpObjectParent
 
 CCopasiContainer *
 CCopasiObject::getObjectAncestor(const std::string & type) const
-  {
-    CCopasiContainer * p = getObjectParent();
+{
+  CCopasiContainer * p = getObjectParent();
 
-    while (p)
-      {
-        if (p->getObjectType() == type) return p;
-        p = p->getObjectParent();
-      }
+  while (p)
+    {
+      if (p->getObjectType() == type) return p;
 
-    return NULL;
-  }
+      p = p->getObjectParent();
+    }
+
+  return NULL;
+}
+
+void CCopasiObject::clearDirectDependencies()
+{
+  mDependencies.clear();
+}
 
 void CCopasiObject::setDirectDependencies(const std::set< const CCopasiObject * > & directDependencies)
 {mDependencies = directDependencies;}
 
 const std::set< const CCopasiObject * > & CCopasiObject::getDirectDependencies() const
-  {return mDependencies;}
+{return mDependencies;}
 
 void CCopasiObject::addDirectDependency(const CCopasiObject * pObject)
 {
@@ -244,68 +255,68 @@ void CCopasiObject::addDirectDependency(const CCopasiObject * pObject)
 }
 
 void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & dependencies) const
-  {
-    std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
-    std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
+{
+  std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
+  std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
 
-    std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
+  std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
 
-    for (; it != end; ++it)
-      {
-        // Dual purpose insert
-        Inserted = dependencies.insert(*it);
+  for (; it != end; ++it)
+    {
+      // Dual purpose insert
+      Inserted = dependencies.insert(*it);
 
-        // The direct dependency *it was among the dependencies
-        // we assume also its dependencies have been added already.
-        if (!Inserted.second) continue;
+      // The direct dependency *it was among the dependencies
+      // we assume also its dependencies have been added already.
+      if (!Inserted.second) continue;
 
-        // Add all the dependencies of the direct dependency *it.
-        (*it)->getAllDependencies(dependencies);
-      }
-  }
+      // Add all the dependencies of the direct dependency *it.
+      (*it)->getAllDependencies(dependencies);
+    }
+}
 
 bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > & candidates) const
-  {
-    std::set< const CCopasiObject * > verified;
-    return hasCircularDependencies(candidates, verified);
-  }
+{
+  std::set< const CCopasiObject * > verified;
+  return hasCircularDependencies(candidates, verified);
+}
 
 bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & candidates,
     std::set< const CCopasiObject * > & verified) const
-  {
-    bool hasCircularDependencies = false;
+{
+  bool hasCircularDependencies = false;
 
-    if (verified.count(this) != 0)
-      return hasCircularDependencies;
-
-    std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
-    std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
-
-    std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
-
-    // Dual purpose insert
-    Inserted = candidates.insert(this);
-
-    // Check whether the insert was successful, if not
-    // the object "this" was among the candidates. Thus we have a detected
-    // a circular dependency
-    if (Inserted.second)
-      {
-        for (; it != end && !hasCircularDependencies; ++it)
-          hasCircularDependencies = (*it)->hasCircularDependencies(candidates, verified);
-
-        // Remove the inserted object this from the candidates to avoid any
-        // side effects.
-        candidates.erase(this);
-      }
-    else
-      hasCircularDependencies = true;
-
-    // The element has been checked and does not need to be checked again.
-    verified.insert(this);
-
+  if (verified.count(this) != 0)
     return hasCircularDependencies;
-  }
+
+  std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
+  std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
+
+  std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
+
+  // Dual purpose insert
+  Inserted = candidates.insert(this);
+
+  // Check whether the insert was successful, if not
+  // the object "this" was among the candidates. Thus we have a detected
+  // a circular dependency
+  if (Inserted.second)
+    {
+      for (; it != end && !hasCircularDependencies; ++it)
+        hasCircularDependencies = (*it)->hasCircularDependencies(candidates, verified);
+
+      // Remove the inserted object this from the candidates to avoid any
+      // side effects.
+      candidates.erase(this);
+    }
+  else
+    hasCircularDependencies = true;
+
+  // The element has been checked and does not need to be checked again.
+  verified.insert(this);
+
+  return hasCircularDependencies;
+}
 
 //static
 std::vector< Refresh * >
@@ -319,7 +330,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
   std::set< const CCopasiObject * >::const_iterator endSet = objects.end();
   std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
 
-  assert (objects.count(NULL) == 0);
+  assert(objects.count(NULL) == 0);
 
   // Check whether we have any circular dependencies
   for (itSet = objects.begin(); itSet != endSet; ++itSet)
@@ -351,6 +362,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
   // Build the list of all up to date objects
   std::set< const CCopasiObject * > UpToDateSet;
+
   for (itSet = uptoDateObjects.begin(), endSet = uptoDateObjects.end(); itSet != endSet; ++itSet)
     {
       // At least the object itself is up to date.
@@ -415,66 +427,66 @@ bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs
 }
 
 void * CCopasiObject::getValuePointer() const
-  {
-    return NULL;
-  }
+{
+  return NULL;
+}
 
 const CCopasiObject * CCopasiObject::getValueObject() const
-  {
-    return NULL;
-  }
+{
+  return NULL;
+}
 
 bool CCopasiObject::isContainer() const
-  {return (0 < (mObjectFlag & Container));}
+{return (0 < (mObjectFlag & Container));}
 
 bool CCopasiObject::isVector() const
-  {return (0 < (mObjectFlag & Vector));}
+{return (0 < (mObjectFlag & Vector));}
 
 bool CCopasiObject::isMatrix() const
-  {return (0 < (mObjectFlag & Matrix));}
+{return (0 < (mObjectFlag & Matrix));}
 
 bool CCopasiObject::isNameVector() const
-  {return (0 < (mObjectFlag & NameVector));}
+{return (0 < (mObjectFlag & NameVector));}
 
 bool CCopasiObject::isReference() const
-  {return (0 < (mObjectFlag & Reference));}
+{return (0 < (mObjectFlag & Reference));}
 
 bool CCopasiObject::isValueBool() const
-  {return (0 < (mObjectFlag & ValueBool));}
+{return (0 < (mObjectFlag & ValueBool));}
 
 bool CCopasiObject::isValueInt() const
-  {return (0 < (mObjectFlag & ValueInt));}
+{return (0 < (mObjectFlag & ValueInt));}
 
 bool CCopasiObject::isValueDbl() const
-  {return (0 < (mObjectFlag & ValueDbl));}
+{return (0 < (mObjectFlag & ValueDbl));}
 
 bool CCopasiObject::isNonUniqueName() const
-  {return (0 < (mObjectFlag & NonUniqueName));}
+{return (0 < (mObjectFlag & NonUniqueName));}
 
 bool CCopasiObject::isStaticString() const
-  {return (0 < (mObjectFlag & StaticString));}
+{return (0 < (mObjectFlag & StaticString));}
 
 bool CCopasiObject::isValueString() const
-  {return (0 < (mObjectFlag & ValueString));}
+{return (0 < (mObjectFlag & ValueString));}
 
 bool CCopasiObject::isSeparator() const
-  {return (0 < (mObjectFlag & Separator));}
+{return (0 < (mObjectFlag & Separator));}
 
 bool CCopasiObject::isArray() const
-  {return (0 < (mObjectFlag & Array));}
+{return (0 < (mObjectFlag & Array));}
 
 bool CCopasiObject::isDataModel() const
-  {return (0 < (mObjectFlag & DataModel));}
+{return (0 < (mObjectFlag & DataModel));}
 
 bool CCopasiObject::isRoot() const
-  {return (0 < (mObjectFlag & Root));}
+{return (0 < (mObjectFlag & Root));}
 
 const std::string & CCopasiObject::getKey() const
-  {
-    static std::string DefaultKey("");
-    //std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
-    return DefaultKey;
-  }
+{
+  static std::string DefaultKey("");
+  //std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
+  return DefaultKey;
+}
 
 void CCopasiObject::setObjectValue(const C_FLOAT64 & value)
 {(*mpUpdateMethod)(value);}
@@ -486,25 +498,25 @@ void CCopasiObject::setObjectValue(const bool & value)
 {(*mpUpdateMethod)(value);}
 
 UpdateMethod * CCopasiObject::getUpdateMethod() const
-  {return mpUpdateMethod;}
+{return mpUpdateMethod;}
 
 bool CCopasiObject::hasUpdateMethod() const
-  {return mpUpdateMethod != &mDefaultUpdateMethod;}
+{return mpUpdateMethod != &mDefaultUpdateMethod;}
 
 void CCopasiObject::clearRefresh()
 {pdelete(mpRefresh);}
 
 Refresh * CCopasiObject::getRefresh() const
-  {return mpRefresh;}
+{return mpRefresh;}
 
 // virtual
 std::string CCopasiObject::getUnits() const
-  {
-    if (mpObjectParent != NULL)
-      return mpObjectParent->getChildObjectUnits(this);
+{
+  if (mpObjectParent != NULL)
+    return mpObjectParent->getChildObjectUnits(this);
 
-    return "";
-  }
+  return "";
+}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {
@@ -548,16 +560,16 @@ CCopasiDataModel* CCopasiObject::getObjectDataModel()
  * is returned.
  */
 const CCopasiDataModel* CCopasiObject::getObjectDataModel() const
-  {
-    const CCopasiObject * pObject = this;
+{
+  const CCopasiObject * pObject = this;
 
-    while (pObject != NULL)
-      {
-        if (pObject->isDataModel())
-          return static_cast<const CCopasiDataModel *>(pObject);
+  while (pObject != NULL)
+    {
+      if (pObject->isDataModel())
+        return static_cast<const CCopasiDataModel *>(pObject);
 
-        pObject = pObject->getObjectParent();
-      }
+      pObject = pObject->getObjectParent();
+    }
 
-    return NULL;
-  }
+  return NULL;
+}
