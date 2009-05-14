@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:31 $
+//   $Date: 2009/05/14 18:47:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,10 +120,13 @@ void DataModelGUI::populateData()
   while (!in.eof())
     {
       str1 = "";
+
       while (!in.fail())
         {
           in.get(c);
+
           if (delimiter.find(c) != std::string::npos) break;
+
           str1 += c;
         }
 
@@ -148,16 +151,19 @@ void DataModelGUI::updateCompartments()
   parent->removeChildren();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel() == NULL) return;
+
   const CCopasiVectorN< CCompartment > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getCompartments();
   C_INT32 j, jmax = objects.size();
   CCompartment *obj;
+
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
       parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
+                       FROM_UTF8(obj->getObjectName()),
+                       obj->getKey());
     }
 }
 
@@ -171,12 +177,13 @@ void DataModelGUI::updateMetabolites()
   const CCopasiVector< CMetab > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites();
   C_INT32 j, jmax = objects.size();
   CMetab *metab;
+
   for (j = 0; j < jmax; j++)
     {
       metab = objects[j];
       parent->addChild(-1,
-                        FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
-                        metab->getKey());
+                       FROM_UTF8(CMetabNameInterface::getDisplayName((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), *metab)),
+                       metab->getKey());
     }
 }
 
@@ -190,13 +197,14 @@ void DataModelGUI::updateReactions()
   const CCopasiVectorN< CReaction > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions();
   C_INT32 j, jmax = objects.size();
   CReaction *obj;
+
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
       obj->compile();
       parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
+                       FROM_UTF8(obj->getObjectName()),
+                       obj->getKey());
     }
 }
 
@@ -210,12 +218,13 @@ void DataModelGUI::updateModelValues()
   const CCopasiVectorN< CModelValue > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getModelValues();
   C_INT32 j, jmax = objects.size();
   CModelValue *obj;
+
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
       parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
+                       FROM_UTF8(obj->getObjectName()),
+                       obj->getKey());
     }
 }
 
@@ -229,12 +238,13 @@ void DataModelGUI::updateFunctions()
   const CCopasiVectorN< CEvaluationTree > & objects = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   C_INT32 j, jmax = objects.size();
   CFunction *obj;
+
   for (j = 0; j < jmax; j++)
     {
       if ((obj = dynamic_cast<CFunction *>(objects[j])))
         parent->addChild(-1,
-                          FROM_UTF8(obj->getObjectName()),
-                          obj->getKey());
+                         FROM_UTF8(obj->getObjectName()),
+                         obj->getKey());
     }
 }
 
@@ -245,16 +255,18 @@ void DataModelGUI::updateEvents()
   parent->removeChildren();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CCopasiVectorN< CEvent > & objects = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents();
+  const CCopasiVectorN< CEvent > & objects =
+    (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents();
+
   C_INT32 j, jmax = objects.size();
   CEvent *obj;
+
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      obj->compile();
       parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
+                       FROM_UTF8(obj->getObjectName()),
+                       obj->getKey());
     }
 }
 
@@ -268,12 +280,13 @@ void DataModelGUI::updateReportDefinitions()
   const CCopasiVector< CReportDefinition >* objects = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
   C_INT32 j, jmax = objects->size();
   CReportDefinition *obj;
+
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
       parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->getKey());
+                       FROM_UTF8(obj->getObjectName()),
+                       obj->getKey());
     }
 }
 
@@ -289,22 +302,23 @@ void DataModelGUI::updatePlots()
   //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;
   C_INT32 j, jmax = pDataModel->getPlotDefinitionList()->size();
   CPlotSpecification *obj;
+
   for (j = 0; j < jmax; j++)
     {
       obj = (*pDataModel->getPlotDefinitionList())[j];
       parent->addChild(-1,
-                        FROM_UTF8(obj->getObjectName()),
-                        obj->CCopasiParameter::getKey());
+                       FROM_UTF8(obj->getObjectName()),
+                       obj->CCopasiParameter::getKey());
     }
 }
 
 //*****************************************************************
 
 const IndexedNode * DataModelGUI::getRootNode() const
-  {return mTree.getRoot();}
+{return mTree.getRoot();}
 
 const IndexedNode * DataModelGUI::getNode(const int & id) const
-  {return mTree.findNodeFromId(id);}
+{return mTree.findNodeFromId(id);}
 //  {return const_cast<IndexedTree *>(&mTree)->findNodeFromId(id);}
 
 //*****************************************************************
@@ -312,6 +326,7 @@ const IndexedNode * DataModelGUI::getNode(const int & id) const
 bool DataModelGUI::createModel()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   if (!(*CCopasiRootContainer::getDatamodelList())[0]->newModel(NULL, NULL)) return false;
 
   mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
@@ -381,6 +396,7 @@ bool DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
 {
   CProgressBar* tmpBar = new CProgressBar();
   bool success = false;
+
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -405,6 +421,7 @@ bool DataModelGUI::importSBML(const std::string & fileName)
 {
   CProgressBar* tmpBar = new CProgressBar();
   bool success = false;
+
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -438,6 +455,7 @@ std::string DataModelGUI::exportSBMLToString()
 {
   CProgressBar* tmpBar = new CProgressBar();
   std::string str;
+
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -458,6 +476,7 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, 
 {
   CProgressBar* tmpBar = new CProgressBar();
   bool success = false;
+
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -509,4 +528,4 @@ void DataModelGUI::setQApp(QApplication* app)
 {mpApp = app;}
 
 QApplication* DataModelGUI::getQApp() const
-  {return mpApp;}
+{return mpApp;}
