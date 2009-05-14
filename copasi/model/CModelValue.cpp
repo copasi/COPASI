@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/03 17:21:48 $
+//   $Author: shoops $
+//   $Date: 2009/05/14 18:44:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,25 +40,25 @@
 
 //static
 const std::string CModelEntity::StatusName[] =
-  {
-    "fixed",
-    "assignment",
-    "reactions",
-    "ode",
-    "time",
-    ""
-  };
+{
+  "fixed",
+  "assignment",
+  "reactions",
+  "ode",
+  "time",
+  ""
+};
 
 //static
 const char * CModelEntity::XMLStatus[] =
-  {
-    "fixed",
-    "assignment",
-    "reactions",
-    "ode",
-    "time",
-    NULL
-  };
+{
+  "fixed",
+  "assignment",
+  "reactions",
+  "ode",
+  "time",
+  NULL
+};
 
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
 // of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
@@ -108,7 +108,9 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   initObjects();
 
   if (mpExpression != NULL) this->mpExpression->setObjectParent(this);
+
   if (mpInitialExpression != NULL) this->mpInitialExpression->setObjectParent(this);
+
   setStatus(src.mStatus);
 
   *mpValueData = *src.mpValueData;
@@ -140,7 +142,7 @@ const std::string & CModelEntity::getKey() const {return mKey;}
 const C_FLOAT64 & CModelEntity::getValue() const {return *mpValueAccess;}
 
 const C_FLOAT64 & CModelEntity::getInitialValue() const
-  {return *mpIValue;}
+{return *mpIValue;}
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
@@ -155,26 +157,26 @@ bool CModelEntity::compile()
 
   switch (mStatus)
     {
-    case ASSIGNMENT:
-      success &= mpExpression->compile(listOfContainer);
-      mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      case ASSIGNMENT:
+        success &= mpExpression->compile(listOfContainer);
+        mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
-      pdelete(mpInitialExpression);
-      pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
-      mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
-      mpInitialExpression->setObjectName("InitialExpression");
-      mpInitialExpression->setObjectParent(this);
-      break;
+        pdelete(mpInitialExpression);
+        pDataModel = getObjectDataModel();
+        assert(pDataModel != NULL);
+        mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
+        mpInitialExpression->setObjectName("InitialExpression");
+        mpInitialExpression->setObjectParent(this);
+        break;
 
-    case ODE:
-      mpValueReference->addDirectDependency(this);
+      case ODE:
+        mpValueReference->addDirectDependency(this);
 
-      success &= mpExpression->compile(listOfContainer);
-      mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+        success &= mpExpression->compile(listOfContainer);
+        mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
-    default:
-      break;
+      default:
+        break;
     }
 
   // Here we handle initial expressions for all types.
@@ -201,16 +203,16 @@ void CModelEntity::calculate()
 {
   switch (mStatus)
     {
-    case ASSIGNMENT:
-      *mpValueData = mpExpression->calcValue();
-      break;
+      case ASSIGNMENT:
+        *mpValueData = mpExpression->calcValue();
+        break;
 
-    case ODE:
-      mRate = mpExpression->calcValue();
-      break;
+      case ODE:
+        mRate = mpExpression->calcValue();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
 }
 
@@ -237,13 +239,13 @@ bool CModelEntity::setExpression(const std::string & expression)
 }
 
 std::string CModelEntity::getExpression() const
-  {
-    if (isFixed() || mpExpression == NULL)
-      return "";
+{
+  if (isFixed() || mpExpression == NULL)
+    return "";
 
-    mpExpression->updateInfix();
-    return mpExpression->getInfix();
-  }
+  mpExpression->updateInfix();
+  return mpExpression->getInfix();
+}
 
 CExpression* CModelEntity::getExpressionPtr()
 {
@@ -251,13 +253,14 @@ CExpression* CModelEntity::getExpressionPtr()
 }
 
 const CExpression* CModelEntity::getExpressionPtr() const
-  {
-    return mpExpression;
-  }
+{
+  return mpExpression;
+}
 
 bool CModelEntity::setExpressionPtr(CExpression* pExpression)
 {
   if (pExpression == mpExpression) return false;
+
   if (isFixed()) return false;
 
   if (mpExpression)
@@ -265,8 +268,10 @@ bool CModelEntity::setExpressionPtr(CExpression* pExpression)
 
   mpExpression = pExpression;
   mpExpression->setObjectParent(this);
+
   if (mpModel)
     mpModel->setCompileFlag(true);
+
   return compile();
 }
 
@@ -276,13 +281,14 @@ CExpression* CModelEntity::getInitialExpressionPtr()
 }
 
 const CExpression* CModelEntity::getInitialExpressionPtr() const
-  {
-    return mpInitialExpression;
-  }
+{
+  return mpInitialExpression;
+}
 
 bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
   if (pExpression == mpInitialExpression) return false;
+
   if (mStatus == ASSIGNMENT) return false;
 
   if (mpModel)
@@ -317,30 +323,30 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
 }
 
 std::string CModelEntity::getInitialExpression() const
-  {
-    if (mStatus == ASSIGNMENT || mpInitialExpression == NULL)
-      return "";
+{
+  if (mStatus == ASSIGNMENT || mpInitialExpression == NULL)
+    return "";
 
-    mpInitialExpression->updateInfix();
-    return mpInitialExpression->getInfix();
-  }
+  mpInitialExpression->updateInfix();
+  return mpInitialExpression->getInfix();
+}
 
 /**
  * Return rate of production of this entity
  */
 const C_FLOAT64 & CModelEntity::getRate() const
-  {
-    return mRate;
-  }
+{
+  return mRate;
+}
 
 CCopasiObject * CModelEntity::getInitialValueReference() const
-  {return mpIValueReference;}
+{return mpIValueReference;}
 
 CCopasiObject * CModelEntity::getValueReference() const
-  {return mpValueReference;}
+{return mpValueReference;}
 
 CCopasiObject * CModelEntity::getRateReference() const
-  {return mpRateReference;}
+{return mpRateReference;}
 
 //***********
 
@@ -400,66 +406,78 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       mpRateReference->setDirectDependencies(NoDependencies);
       mpRateReference->clearRefresh();
       CCopasiDataModel* pDataModel = NULL;
+
       switch (mStatus)
         {
-        case ASSIGNMENT:
-          if (mpExpression == NULL)
-            mpExpression = new CExpression("Expression", this);
+          case ASSIGNMENT:
 
-          pdelete(mpInitialExpression);
-          pDataModel = getObjectDataModel();
-          mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
-          mpInitialExpression->setObjectName("InitialExpression");
-          mpInitialExpression->setObjectParent(this);
+            if (mpExpression == NULL)
+              mpExpression = new CExpression("Expression", this);
 
-          mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
-          mpValueReference->setRefresh(this, &CModelEntity::calculate);
+            pdelete(mpInitialExpression);
+            pDataModel = getObjectDataModel();
+            mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
+            mpInitialExpression->setObjectName("InitialExpression");
+            mpInitialExpression->setObjectParent(this);
 
-          mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+            mpValueReference->setRefresh(this, &CModelEntity::calculate);
 
-          mUsed = true;
-          mCalculatedOnce = false;
-          break;
+            mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-        case ODE:
-          if (mpExpression == NULL)
-            mpExpression = new CExpression("Expression", this);
+            mUsed = true;
+            mCalculatedOnce = false;
+            break;
 
-          mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
-          mpRateReference->setRefresh(this, &CModelEntity::calculate);
+          case ODE:
 
-          mUsed = true;
-          mCalculatedOnce = false;
-          break;
+            if (mpExpression == NULL)
+              mpExpression = new CExpression("Expression", this);
 
-        case REACTIONS:
-          pdelete(mpExpression);
+            mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+            mpRateReference->setRefresh(this, &CModelEntity::calculate);
 
-          mUsed = true;
-          mCalculatedOnce = false;
-          break;
+            mUsed = true;
+            mCalculatedOnce = false;
+            break;
 
-        case TIME:
-          pdelete(mpExpression);
+          case REACTIONS:
+            pdelete(mpExpression);
 
-          mUsed = true;
-          mCalculatedOnce = false;
-          break;
+            mUsed = true;
+            mCalculatedOnce = false;
+            break;
 
-        case FIXED:
-          pdelete(mpExpression);
+          case TIME:
+            pdelete(mpExpression);
 
-          mRate = 0.0;
+            mUsed = true;
+            mCalculatedOnce = false;
+            break;
 
-          mUsed = false;
-          mCalculatedOnce = false;
-          break;
+          case FIXED:
+            pdelete(mpExpression);
+
+            mRate = 0.0;
+
+            mUsed = false;
+            mCalculatedOnce = false;
+            break;
         }
     }
 }
 
+// virtual
+const CCopasiObject * CModelEntity::getValueObject() const
+{
+  return mpValueReference;
+}
+
+// virtual
 void * CModelEntity::getValuePointer() const
-{return const_cast<C_FLOAT64 *>(mpValueAccess);}
+{
+  return const_cast<C_FLOAT64 *>(mpValueAccess);
+}
 
 void CModelEntity::initObjects()
 {
@@ -500,13 +518,16 @@ void CModelEntity::initObjects()
 void CModelEntity::setInitialValuePtr(C_FLOAT64 * pInitialValue)
 {
   mpIValue = pInitialValue;
+
   if (!mpIValue) mpIValue = new C_FLOAT64;
+
   mpIValueReference->setReference(*mpIValue);
 }
 
 void CModelEntity::setValuePtr(C_FLOAT64 * pValue)
 {
   mpValueData = pValue;
+
   if (!mpValueData) mpValueData = new C_FLOAT64;
 
   if (mStatus == FIXED)
@@ -556,16 +577,16 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
 }
 
 std::set< const CCopasiObject * > CModelEntity::getDeletedObjects() const
-  {
-    std::set< const CCopasiObject * > Deleted;
+{
+  std::set< const CCopasiObject * > Deleted;
 
-    Deleted.insert(this);
-    Deleted.insert(mpIValueReference);
-    Deleted.insert(mpValueReference);
-    Deleted.insert(mpRateReference);
+  Deleted.insert(this);
+  Deleted.insert(mpIValueReference);
+  Deleted.insert(mpValueReference);
+  Deleted.insert(mpRateReference);
 
-    return Deleted;
-  }
+  return Deleted;
+}
 
 void CModelEntity::setSBMLId(const std::string& id)
 {
@@ -573,21 +594,21 @@ void CModelEntity::setSBMLId(const std::string& id)
 }
 
 const std::string& CModelEntity::getSBMLId() const
-  {
-    return this->mSBMLId;
-  }
+{
+  return this->mSBMLId;
+}
 
 void CModelEntity::setUsed(const bool & used)
 {mUsed = used;}
 
 const bool & CModelEntity::isUsed() const
-  {return mUsed;}
+{return mUsed;}
 
 void CModelEntity::setCalculatedOnce(const bool & calculatedOnce)
 {mCalculatedOnce = calculatedOnce;}
 
 const bool & CModelEntity::isCalculatedOnce() const
-  {return mCalculatedOnce;}
+{return mCalculatedOnce;}
 
 void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation,
                                        const std::string & oldId)
@@ -597,7 +618,7 @@ void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation,
 }
 
 const std::string & CModelEntity::getMiriamAnnotation() const
-  {return mMiriamAnnotation;}
+{return mMiriamAnnotation;}
 
 //********************************************************************+
 

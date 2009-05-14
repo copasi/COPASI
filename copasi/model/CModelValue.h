@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Date: 2009/05/14 18:44:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,368 +39,373 @@ class CExpression;
  * In addition, the CMetab objects can also be subject to reactions, and conservation rules.
  */
 class CModelEntity : public CCopasiContainer
+{
+protected:
+  /**
+   *  Key of the model entity. It is stored here, but constructed in the derived classes.
+   */
+  std::string mKey;
+
+  /**
+   * The id of the corresponding parameter in an SBML file.
+   * This value is either set upon importing an SBML file,
+   * or when the object is first exported to an SBML file.
+   */
+  std::string mSBMLId;
+
+public:
+  /**
+   *  The valid states for metabolites
+   */
+  enum Status
   {
-  protected:
-    /**
-     *  Key of the model entity. It is stored here, but constructed in the derived classes.
-     */
-    std::string mKey;
-
-    /**
-     * The id of the corresponding parameter in an SBML file.
-     * This value is either set upon importing an SBML file,
-     * or when the object is first exported to an SBML file.
-     */
-    std::string mSBMLId;
-
-  public:
-    /**
-     *  The valid states for metabolites
-     */
-    enum Status
-    {
-      FIXED = 0, //the entity is constant (for species even if they are part of a reaction)
-      ASSIGNMENT, //the entity is changed by an assignment rule
-      REACTIONS, //applies only for species, the species concentration is changed by reactions
-      //      DEPENDENT, //applies only for species, the species concentration is determined by conservation rules
-      //      UNUSED,
-      ODE, //the entity is changed by an ordinary differential equation
-      TIME
-    };
-
-    /**
-     * String representation of the states
-     */
-    static const std::string StatusName[];
-
-    /**
-     * XML representation of the states
-     */
-    static const char * XMLStatus[];
-
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CModelEntity(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL,
-                 const std::string & type = "ModelEntity",
-                 const unsigned C_INT32 & flag = CCopasiObject::Container | CCopasiObject::ValueDbl);
-
-    /**
-     * Copy constructor
-     * @param const CModelValue & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CModelEntity(const CModelEntity & src,
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Destructor.
-     */
-    ~CModelEntity();
-
-    /**
-     * Retrieve the key
-     * @return std::string key
-     */
-    virtual const std::string & getKey() const;
-
-    /**
-     * Retrieve the status of the entity.
-     * @return const CModelEntity::Status & status
-     */
-    const CModelEntity::Status & getStatus() const;
-
-    /**
-     * Compile the model value. This is only needed for status ASIGNMENT and ODE.
-     * @return bool success
-     */
-    virtual bool compile();
-
-    /**
-     * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
-     */
-    virtual void calculate();
-
-    /**
-     * Check whether the entity is FIXED or not.
-     * @return bool isFixed
-     */
-    inline bool isFixed() const {return mStatus == FIXED;}
-
-    /**
-     * Retrieve the value
-     */
-    const C_FLOAT64 & getValue() const;
-
-    /**
-     * Retrieve the initial value
-     */
-    const C_FLOAT64 & getInitialValue() const;
-
-    /**
-     * Refresh the initial value
-     */
-    virtual void refreshInitialValue();
-
-    /**
-     * Return rate of production of this entity
-     */
-    const C_FLOAT64 & getRate() const;
-
-    /**
-     * Set the status
-     * @param const CModelEntity::Status & status
-     */
-    virtual void setStatus(const CModelEntity::Status & status);
-
-    /**
-     * Set the value
-     * @param const C_FLOAT64 & value
-     */
-    virtual void setValue(const C_FLOAT64 & value);
-
-    /**
-     * Set the initial value
-     * @param const C_FLOAT64 & initialValue
-     */
-    virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-    /**
-     * Set the rate (dmValue/dt)
-     * @param "const C_FLOAT64 &" rate
-     */
-    void setRate(const C_FLOAT64 & rate);
-
-    /**
-     * Retrieve a pointer to the value;
-     */
-    virtual void * getValuePointer() const;
-
-    /**
-     * Set the object parent
-     * @param const CCopasiContainer * pParent
-     * @return bool success
-     */
-    virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-    /**
-     * Retrieve the list of deleted numeric child objects;
-     * @return std::set< const CCopasiObject * > deletedObjects
-     */
-    virtual std::set< const CCopasiObject * > getDeletedObjects() const;
-
-    /**
-     * Sets the SBMLId.
-     */
-    void setSBMLId(const std::string& id);
-
-    /**
-     * Returns a reference to the SBML Id.
-     */
-    const std::string& getSBMLId() const;
-
-    /**
-     * Set the pointer to the initial value
-     * @param C_FLOAT64 * pInitialValue
-     */
-    void setInitialValuePtr(C_FLOAT64 * pInitialValue);
-
-    /**
-     * Set the pointer to the value
-     * @param C_FLOAT64 * pValue
-     */
-    void setValuePtr(C_FLOAT64 * pValue);
-
-    /**
-     * Set the expression for non FIXED model values
-     * @param CExpression*
-     * @return bool success
-     */
-    bool setExpressionPtr(CExpression* pExpression);
-
-    /**
-     * Retrieve the pointer to the expression for non FIXED model values.
-     * @return CExpression*
-     */
-    const CExpression* getExpressionPtr() const;
-
-    /**
-     * Retrieve the pointer to the expression for non FIXED model values.
-     * @return CExpression*
-     */
-    CExpression* getExpressionPtr();
-
-    /**
-     * Set the expression for non FIXED model values
-     * @param CExpression*
-     * @return bool success
-     */
-    bool setInitialExpressionPtr(CExpression* pExpression);
-
-    /**
-     * Retrieve the pointer to the expression for non FIXED model values.
-     * @return CExpression*
-     */
-    const CExpression* getInitialExpressionPtr() const;
-
-    /**
-     * Retrieve the pointer to the expression for non FIXED model values.
-     * @return CExpression*
-     */
-    CExpression* getInitialExpressionPtr();
-
-    /**
-     * Set the expression for non FIXED model values
-     * @param const std::string & expression
-     * @return bool success
-     */
-    bool setExpression(const std::string & expression);
-
-    /**
-     * Retrieve the expression for non FIXED model values.
-     * @return std::string expression
-     */
-    std::string getExpression() const;
-
-    /**
-     * Set the expression for ODE or REACTION model values
-     * @param const std::string & expression
-     * @return bool success
-     */
-    bool setInitialExpression(const std::string & expression);
-
-    /**
-     * Retrieve the expression for ODE or REACTION model values.
-     * @return std::string expression
-     */
-    std::string getInitialExpression() const;
-
-    /**
-     * Set whether the model entity is used during simulation
-     * @param const bool & used
-     */
-    void setUsed(const bool & used);
-
-    /**
-     * Retrieve whether the model value is used during simulation
-     * @return const bool & used
-     */
-    const bool & isUsed() const;
-
-    /**
-     * Set whether the model entity is calculated once prior to simulation
-     * @param const bool & calculatedOnce
-     */
-    void setCalculatedOnce(const bool & calculatedOnce);
-
-    /**
-     * Retrieve whether the model value is calculated once prior to simulation
-     * @return const bool & calculatedOnce
-     */
-    const bool & isCalculatedOnce() const;
-
-    /**
-     * Retrieve object referencing the initial value
-     * @return CCopasiObject * initialValueReference
-     */
-    CCopasiObject * getInitialValueReference() const;
-
-    /**
-     * Retrieve object referencing the value
-     * @return CCopasiObject * valueReference
-     */
-    CCopasiObject * getValueReference() const;
-
-    /**
-     * Retrieve object referencing the rate
-     * @return CCopasiObject * rateReference
-     */
-    CCopasiObject * getRateReference() const;
-
-    /**
-     * Set the RDF/XML representation of the MIRIAM annotation
-     * @param const std::string & miriamAnnotation
-     * @param const std::string & oldId
-     */
-    void setMiriamAnnotation(const std::string & miriamAnnotation,
-                             const std::string & oldId);
-
-    /**
-     * Retrieve the RDF/XML representation of the MIRIAM annotation
-     * @return const std::string & miriamAnnotation
-     */
-    const std::string & getMiriamAnnotation() const;
-
-  protected:
-    /**
-     * Pointer to the value of the model entity.
-     */
-    C_FLOAT64 * mpValueData;
-
-    /**
-     * Pointer to access the data value of the model entity..
-     * This is mpIValue for fixed and mpValueData otherwise.
-     */
-    C_FLOAT64 * mpValueAccess;
-
-    /**
-     * Pointer to the initial value of the model entity.
-     */
-    C_FLOAT64 * mpIValue;
-
-    /**
-     * Rate of change/time.
-     */
-    C_FLOAT64 mRate;
-
-    /**
-     * The infix expression for objects of type ASSIGNMENT or ODE
-     */
-    CExpression * mpExpression;
-
-    /**
-     * Optional initial expression
-     */
-    CExpression * mpInitialExpression;
-
-  private:
-    /**
-     *  Status of the model entity.
-     */
-    Status mStatus;
-
-    /**
-     * Indicates whether the model value is used, i.e., must be
-     * calculated during the simulation
-     */
-    bool mUsed;
-
-    /**
-     * Indicates whether the model value is only calculated once, i.e., must be
-     * calculated prior to the simulation
-     */
-    bool mCalculatedOnce;
-
-    /**
-     * The RDF/XML representation of the MIRIAM annotation
-     */
-    std::string mMiriamAnnotation;
-
-  protected:
-    CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
-    CCopasiObjectReference<C_FLOAT64> *mpValueReference;
-    CCopasiObjectReference<C_FLOAT64> *mpRateReference;
-    CModel * mpModel;
-
-  private:
-    /**
-     * Initialize the contained CCopasiObjects
-     */
-    void initObjects();
+    FIXED = 0, //the entity is constant (for species even if they are part of a reaction)
+    ASSIGNMENT, //the entity is changed by an assignment rule
+    REACTIONS, //applies only for species, the species concentration is changed by reactions
+    //      DEPENDENT, //applies only for species, the species concentration is determined by conservation rules
+    //      UNUSED,
+    ODE, //the entity is changed by an ordinary differential equation
+    TIME
   };
+
+  /**
+   * String representation of the states
+   */
+  static const std::string StatusName[];
+
+  /**
+   * XML representation of the states
+   */
+  static const char * XMLStatus[];
+
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CModelEntity(const std::string & name = "NoName",
+               const CCopasiContainer * pParent = NULL,
+               const std::string & type = "ModelEntity",
+               const unsigned C_INT32 & flag = CCopasiObject::Container | CCopasiObject::ValueDbl);
+
+  /**
+   * Copy constructor
+   * @param const CModelValue & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CModelEntity(const CModelEntity & src,
+               const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Destructor.
+   */
+  ~CModelEntity();
+
+  /**
+   * Retrieve the key
+   * @return std::string key
+   */
+  virtual const std::string & getKey() const;
+
+  /**
+   * Retrieve the status of the entity.
+   * @return const CModelEntity::Status & status
+   */
+  const CModelEntity::Status & getStatus() const;
+
+  /**
+   * Compile the model value. This is only needed for status ASIGNMENT and ODE.
+   * @return bool success
+   */
+  virtual bool compile();
+
+  /**
+   * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
+   */
+  virtual void calculate();
+
+  /**
+   * Check whether the entity is FIXED or not.
+   * @return bool isFixed
+   */
+  inline bool isFixed() const {return mStatus == FIXED;}
+
+  /**
+   * Retrieve the value
+   */
+  const C_FLOAT64 & getValue() const;
+
+  /**
+   * Retrieve the initial value
+   */
+  const C_FLOAT64 & getInitialValue() const;
+
+  /**
+   * Refresh the initial value
+   */
+  virtual void refreshInitialValue();
+
+  /**
+   * Return rate of production of this entity
+   */
+  const C_FLOAT64 & getRate() const;
+
+  /**
+   * Set the status
+   * @param const CModelEntity::Status & status
+   */
+  virtual void setStatus(const CModelEntity::Status & status);
+
+  /**
+   * Set the value
+   * @param const C_FLOAT64 & value
+   */
+  virtual void setValue(const C_FLOAT64 & value);
+
+  /**
+   * Set the initial value
+   * @param const C_FLOAT64 & initialValue
+   */
+  virtual void setInitialValue(const C_FLOAT64 & initialValue);
+
+  /**
+   * Set the rate (dmValue/dt)
+   * @param "const C_FLOAT64 &" rate
+   */
+  void setRate(const C_FLOAT64 & rate);
+
+  /**
+   * Retrieve the object representing the value;
+   */
+  virtual const CCopasiObject * getValueObject() const;
+
+  /**
+   * Retrieve a pointer to the value;
+   */
+  virtual void * getValuePointer() const;
+
+  /**
+   * Set the object parent
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+  /**
+   * Retrieve the list of deleted numeric child objects;
+   * @return std::set< const CCopasiObject * > deletedObjects
+   */
+  virtual std::set< const CCopasiObject * > getDeletedObjects() const;
+
+  /**
+   * Sets the SBMLId.
+   */
+  void setSBMLId(const std::string& id);
+
+  /**
+   * Returns a reference to the SBML Id.
+   */
+  const std::string& getSBMLId() const;
+
+  /**
+   * Set the pointer to the initial value
+   * @param C_FLOAT64 * pInitialValue
+   */
+  void setInitialValuePtr(C_FLOAT64 * pInitialValue);
+
+  /**
+   * Set the pointer to the value
+   * @param C_FLOAT64 * pValue
+   */
+  void setValuePtr(C_FLOAT64 * pValue);
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param CExpression*
+   * @return bool success
+   */
+  bool setExpressionPtr(CExpression* pExpression);
+
+  /**
+   * Retrieve the pointer to the expression for non FIXED model values.
+   * @return CExpression*
+   */
+  const CExpression* getExpressionPtr() const;
+
+  /**
+   * Retrieve the pointer to the expression for non FIXED model values.
+   * @return CExpression*
+   */
+  CExpression* getExpressionPtr();
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param CExpression*
+   * @return bool success
+   */
+  bool setInitialExpressionPtr(CExpression* pExpression);
+
+  /**
+   * Retrieve the pointer to the expression for non FIXED model values.
+   * @return CExpression*
+   */
+  const CExpression* getInitialExpressionPtr() const;
+
+  /**
+   * Retrieve the pointer to the expression for non FIXED model values.
+   * @return CExpression*
+   */
+  CExpression* getInitialExpressionPtr();
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setExpression(const std::string & expression);
+
+  /**
+   * Retrieve the expression for non FIXED model values.
+   * @return std::string expression
+   */
+  std::string getExpression() const;
+
+  /**
+   * Set the expression for ODE or REACTION model values
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setInitialExpression(const std::string & expression);
+
+  /**
+   * Retrieve the expression for ODE or REACTION model values.
+   * @return std::string expression
+   */
+  std::string getInitialExpression() const;
+
+  /**
+   * Set whether the model entity is used during simulation
+   * @param const bool & used
+   */
+  void setUsed(const bool & used);
+
+  /**
+   * Retrieve whether the model value is used during simulation
+   * @return const bool & used
+   */
+  const bool & isUsed() const;
+
+  /**
+   * Set whether the model entity is calculated once prior to simulation
+   * @param const bool & calculatedOnce
+   */
+  void setCalculatedOnce(const bool & calculatedOnce);
+
+  /**
+   * Retrieve whether the model value is calculated once prior to simulation
+   * @return const bool & calculatedOnce
+   */
+  const bool & isCalculatedOnce() const;
+
+  /**
+   * Retrieve object referencing the initial value
+   * @return CCopasiObject * initialValueReference
+   */
+  CCopasiObject * getInitialValueReference() const;
+
+  /**
+   * Retrieve object referencing the value
+   * @return CCopasiObject * valueReference
+   */
+  CCopasiObject * getValueReference() const;
+
+  /**
+   * Retrieve object referencing the rate
+   * @return CCopasiObject * rateReference
+   */
+  CCopasiObject * getRateReference() const;
+
+  /**
+   * Set the RDF/XML representation of the MIRIAM annotation
+   * @param const std::string & miriamAnnotation
+   * @param const std::string & oldId
+   */
+  void setMiriamAnnotation(const std::string & miriamAnnotation,
+                           const std::string & oldId);
+
+  /**
+   * Retrieve the RDF/XML representation of the MIRIAM annotation
+   * @return const std::string & miriamAnnotation
+   */
+  const std::string & getMiriamAnnotation() const;
+
+protected:
+  /**
+   * Pointer to the value of the model entity.
+   */
+  C_FLOAT64 * mpValueData;
+
+  /**
+   * Pointer to access the data value of the model entity..
+   * This is mpIValue for fixed and mpValueData otherwise.
+   */
+  C_FLOAT64 * mpValueAccess;
+
+  /**
+   * Pointer to the initial value of the model entity.
+   */
+  C_FLOAT64 * mpIValue;
+
+  /**
+   * Rate of change/time.
+   */
+  C_FLOAT64 mRate;
+
+  /**
+   * The infix expression for objects of type ASSIGNMENT or ODE
+   */
+  CExpression * mpExpression;
+
+  /**
+   * Optional initial expression
+   */
+  CExpression * mpInitialExpression;
+
+private:
+  /**
+   *  Status of the model entity.
+   */
+  Status mStatus;
+
+  /**
+   * Indicates whether the model value is used, i.e., must be
+   * calculated during the simulation
+   */
+  bool mUsed;
+
+  /**
+   * Indicates whether the model value is only calculated once, i.e., must be
+   * calculated prior to the simulation
+   */
+  bool mCalculatedOnce;
+
+  /**
+   * The RDF/XML representation of the MIRIAM annotation
+   */
+  std::string mMiriamAnnotation;
+
+protected:
+  CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
+  CCopasiObjectReference<C_FLOAT64> *mpValueReference;
+  CCopasiObjectReference<C_FLOAT64> *mpRateReference;
+  CModel * mpModel;
+
+private:
+  /**
+   * Initialize the contained CCopasiObjects
+   */
+  void initObjects();
+};
 
 /*
 Table of possible CModelEntity objects with different Status
@@ -454,39 +459,39 @@ TIME                    implemented
  * It correspondents to global parameters in SBML
  */
 class CModelValue : public CModelEntity
-  {
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CModelValue(const std::string & name = "NoName",
-                const CCopasiContainer * pParent = NULL);
+{
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CModelValue(const std::string & name = "NoName",
+              const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param const CModelValue & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CModelValue(const CModelValue & src,
-                const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param const CModelValue & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CModelValue(const CModelValue & src,
+              const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Destructor.
-     */
-    ~CModelValue();
+  /**
+   *  Destructor.
+   */
+  ~CModelValue();
 
-    /**
-     * insert operator
-     */
-    friend std::ostream & operator<<(std::ostream &os, const CModelValue & d);
+  /**
+   * insert operator
+   */
+  friend std::ostream & operator<<(std::ostream &os, const CModelValue & d);
 
-  private:
-    /**
-     * Initialize the contained CCopasiObjects
-     */
-    void initObjects();
-  };
+private:
+  /**
+   * Initialize the contained CCopasiObjects
+   */
+  void initObjects();
+};
 
 #endif

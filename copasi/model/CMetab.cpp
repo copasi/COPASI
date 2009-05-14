@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:00:18 $
+//   $Author: shoops $
+//   $Date: 2009/05/14 18:44:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -746,9 +746,15 @@ void CMetab::refreshConcentrationRate()
     / mpCompartment->getValue();
 }
 
+// virtual
+const CCopasiObject * CMetab::getValueObject() const
+{
+  return mpConcReference;
+}
+
+// virtual
 void * CMetab::getValuePointer() const
 {
-  //std::cout << "CMetab::getValuePointer();" << std::endl;
   return const_cast<C_FLOAT64 *>(&mConc);
 }
 

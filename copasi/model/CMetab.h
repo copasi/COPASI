@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:00:14 $
+//   $Date: 2009/05/14 18:44:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,340 +41,347 @@ class CModel;
 
 /** @dia:pos 80.8289,51.5961 */
 class CMetab : public CModelEntity
-  {
-    friend void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite);
+{
+  friend void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite);
 
-  public:
+public:
 
-    /**
-     * Converts the concentration to number
-     * @param const C_FLOAT64 & concentration
-     * @param const CCompartment & compartment
-     * @param const CModel & model
-     * @return C_FLOAT64 number
-     */
-    static C_FLOAT64 convertToNumber(const C_FLOAT64 & concentration,
-                                     const CCompartment & compartment,
-                                     const CModel & model);
+  /**
+   * Converts the concentration to number
+   * @param const C_FLOAT64 & concentration
+   * @param const CCompartment & compartment
+   * @param const CModel & model
+   * @return C_FLOAT64 number
+   */
+  static C_FLOAT64 convertToNumber(const C_FLOAT64 & concentration,
+                                   const CCompartment & compartment,
+                                   const CModel & model);
 
-    /**
-     * Converts the number to concentration
-     * @param const C_FLOAT64 & number
-     * @param const CCompartment & compartment
-     * @param const CModel & model
-     * @return C_FLOAT64 concentration
-     */
-    static C_FLOAT64 convertToConcentration(const C_FLOAT64 & number,
-                                            const CCompartment & compartment,
-                                            const CModel & model);
+  /**
+   * Converts the number to concentration
+   * @param const C_FLOAT64 & number
+   * @param const CCompartment & compartment
+   * @param const CModel & model
+   * @return C_FLOAT64 concentration
+   */
+  static C_FLOAT64 convertToConcentration(const C_FLOAT64 & number,
+                                          const CCompartment & compartment,
+                                          const CModel & model);
 
-    // Attributes
-  private:
-    /**
-     *  Concentration of the metabolite as double.
-     */
-    C_FLOAT64 mConc;
+  // Attributes
+private:
+  /**
+   *  Concentration of the metabolite as double.
+   */
+  C_FLOAT64 mConc;
 
-    /**
-     *  Initial concentration of the metabolite as double
-     */
-    C_FLOAT64 mIConc;
+  /**
+   *  Initial concentration of the metabolite as double
+   */
+  C_FLOAT64 mIConc;
 
-    /**
-     * The rate of concentration change
-     */
-    C_FLOAT64 mConcRate;
+  /**
+   * The rate of concentration change
+   */
+  C_FLOAT64 mConcRate;
 
-    /**
-     *  Transition time of the metabolite
-     */
-    C_FLOAT64 mTT;
+  /**
+   *  Transition time of the metabolite
+   */
+  C_FLOAT64 mTT;
 
-    /**
-     *  pointer to the compartment the metabolite is located in.
-     *  The metab needs to know about volumes.
-     */
-    const CCompartment * mpCompartment;
+  /**
+   *  pointer to the compartment the metabolite is located in.
+   *  The metab needs to know about volumes.
+   */
+  const CCompartment * mpCompartment;
 
-    /**
-     * If dependent the moiety the metabolite is calculated from
-     */
-    const CMoiety * mpMoiety;
+  /**
+   * If dependent the moiety the metabolite is calculated from
+   */
+  const CMoiety * mpMoiety;
 
-    std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > mRateVector;
+  std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > mRateVector;
 
-  protected:
-    CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
-    CCopasiObjectReference<C_FLOAT64> *mpConcReference;
-    CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
-    CCopasiObjectReference<C_FLOAT64> *mpTTReference;
+protected:
+  CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
+  CCopasiObjectReference<C_FLOAT64> *mpConcReference;
+  CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
+  CCopasiObjectReference<C_FLOAT64> *mpTTReference;
 
-    // Operations
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMetab(const std::string & name = "NoName",
-           const CCopasiContainer * pParent = NULL);
+  // Operations
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMetab(const std::string & name = "NoName",
+         const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param const CMetab & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMetab(const CMetab & src,
-           const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param const CMetab & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMetab(const CMetab & src,
+         const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Destructor.
-     */
-    ~CMetab();
+  /**
+   *  Destructor.
+   */
+  ~CMetab();
 
-    /**
-     * Retrieve the units of the child object.
-     * @return std::string units
-     */
-    virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  /**
+   * Retrieve the units of the child object.
+   * @return std::string units
+   */
+  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
-    virtual void * getValuePointer() const;
-    //TODO: discuss if it should be concentration or particle number...
+  /**
+   * Retrieve the object representing the value;
+   */
+  virtual const CCopasiObject * getValueObject() const;
 
-    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
+  /**
+   * Retrieve a pointer to the value;
+   */
+  virtual void * getValuePointer() const;
 
-    /**
-     *  Cleanup
-     */
-    void cleanup();
-    void initCompartment(const CCompartment * pCompartment = NULL);
+  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
-    /**
-     *  Assignment operator.
-     */
-    CMetab & operator=(const CMetabOld & rhs);
+  /**
+   *  Cleanup
+   */
+  void cleanup();
+  void initCompartment(const CCompartment * pCompartment = NULL);
 
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */
-    C_INT32 load(CReadConfig & configbuffer);
+  /**
+   *  Assignment operator.
+   */
+  CMetab & operator=(const CMetabOld & rhs);
 
-    /**
-     * Sets the parent of the metabolite;
-     * @param const CCopasiContainer * pParent
-     * @return bool success
-     */
-    virtual bool setObjectParent(const CCopasiContainer * pParent);
+  /**
+   *  Loads an object with data coming from a CReadConfig object.
+   *  (CReadConfig object reads an input stream)
+   *  @param pconfigbuffer reference to a CReadConfig object.
+   *  @return Fail
+   */
+  C_INT32 load(CReadConfig & configbuffer);
 
-    /**
-     *
-     */
-    virtual void setStatus(const CModelEntity::Status & status);
+  /**
+   * Sets the parent of the metabolite;
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
 
-    /**
-     * Compile the model value.
-     * @return bool success
-     */
-    virtual bool compile();
+  /**
+   *
+   */
+  virtual void setStatus(const CModelEntity::Status & status);
 
-    /**
-     * Compile the initial particle number and initial concentration dependencies.
-     * @param const bool & updateConcentration (default: true)
-     * @return bool success
-     */
-    bool compileInitialValueDependencies(const bool & updateConcentration = true);
+  /**
+   * Compile the model value.
+   * @return bool success
+   */
+  virtual bool compile();
 
-    /**
-     * Check whether changing the initial concentration is allowed
-     * @return bool allowed
-     */
-    bool isInitialConcentrationChangeAllowed();
+  /**
+   * Compile the initial particle number and initial concentration dependencies.
+   * @param const bool & updateConcentration (default: true)
+   * @return bool success
+   */
+  bool compileInitialValueDependencies(const bool & updateConcentration = true);
 
-    /**
-     * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
-     */
-    virtual void calculate();
+  /**
+   * Check whether changing the initial concentration is allowed
+   * @return bool allowed
+   */
+  bool isInitialConcentrationChangeAllowed();
 
-    /**
-     * Retrieve the list of deleted numeric child objects;
-     * @return std::set< const CCopasiObject * > deletedObjects
-     */
-    virtual std::set< const CCopasiObject * > getDeletedObjects() const;
+  /**
+   * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
+   */
+  virtual void calculate();
 
-    /**
-     *
-     */
-    void setConcentration(const C_FLOAT64 concentration);
+  /**
+   * Retrieve the list of deleted numeric child objects;
+   * @return std::set< const CCopasiObject * > deletedObjects
+   */
+  virtual std::set< const CCopasiObject * > getDeletedObjects() const;
 
-    /**
-     *
-     */
-    const C_FLOAT64 & getConcentration() const;
+  /**
+   *
+   */
+  void setConcentration(const C_FLOAT64 concentration);
 
-    /**
-     *
-     */
-    void setInitialConcentration(const C_FLOAT64 & initialConcentration);
+  /**
+   *
+   */
+  const C_FLOAT64 & getConcentration() const;
 
-    /**
-     *
-     */
-    const C_FLOAT64 & getInitialConcentration() const;
+  /**
+   *
+   */
+  void setInitialConcentration(const C_FLOAT64 & initialConcentration);
 
-    /**
-     * Retrieve object referencing the initial concentration
-     * @return CCopasiObject * initialConcentrationReference
-     */
-    CCopasiObject * getInitialConcentrationReference() const;
+  /**
+   *
+   */
+  const C_FLOAT64 & getInitialConcentration() const;
 
-    /**
-     * Retrieve object referencing the concentration
-     * @return CCopasiObject * concentrationReference
-     */
-    CCopasiObject * getConcentrationReference() const;
+  /**
+   * Retrieve object referencing the initial concentration
+   * @return CCopasiObject * initialConcentrationReference
+   */
+  CCopasiObject * getInitialConcentrationReference() const;
 
-    /**
-     * Refresh the initial value
-     */
-    virtual void refreshInitialValue();
+  /**
+   * Retrieve object referencing the concentration
+   * @return CCopasiObject * concentrationReference
+   */
+  CCopasiObject * getConcentrationReference() const;
 
-    void refreshInitialConcentration();
+  /**
+   * Refresh the initial value
+   */
+  virtual void refreshInitialValue();
 
-    void refreshConcentration();
+  void refreshInitialConcentration();
 
-    void refreshNumber();
+  void refreshConcentration();
 
-    /**
-     *
-     */
-    const CCompartment * getCompartment() const;
+  void refreshNumber();
 
-    /**
-     *
-     */
-    const CModel * getModel() const;
+  /**
+   *
+   */
+  const CCompartment * getCompartment() const;
 
-    /**
-     *  Set transition time
-     *  @param "const C_FLOAT64 &" transitionTime
-     */
-    void setTransitionTime(const C_FLOAT64 & transitionTime);
+  /**
+   *
+   */
+  const CModel * getModel() const;
 
-    /**
-     *  Retrieves the transition time
-     *  @return "const C_FLOAT64 &" transitionTime
-     */
-    const C_FLOAT64 & getTransitionTime() const;
+  /**
+   *  Set transition time
+   *  @param "const C_FLOAT64 &" transitionTime
+   */
+  void setTransitionTime(const C_FLOAT64 & transitionTime);
 
-    /**
-     * Return rate of production of this metaboLite
-     */
-    C_FLOAT64 getConcentrationRate() const;
+  /**
+   *  Retrieves the transition time
+   *  @return "const C_FLOAT64 &" transitionTime
+   */
+  const C_FLOAT64 & getTransitionTime() const;
 
-    /**
-     * Calculate the concentration rate.
-     */
-    void refreshConcentrationRate();
+  /**
+   * Return rate of production of this metaboLite
+   */
+  C_FLOAT64 getConcentrationRate() const;
 
-    /**
-     * Calculate the particle rate.
-     */
-    void refreshRate();
+  /**
+   * Calculate the concentration rate.
+   */
+  void refreshConcentrationRate();
 
-    /**
-     * Calculate the transition time.
-     */
-    void refreshTransitionTime();
+  /**
+   * Calculate the particle rate.
+   */
+  void refreshRate();
 
-    /**
-     * Set whether the metabolite is dependent, i.e., calculated
-     * by a moiety
-     * @param const CMoiety * pMoiety
-     */
-    void setDependentOn(const CMoiety * pMoiety);
+  /**
+   * Calculate the transition time.
+   */
+  void refreshTransitionTime();
 
-    /**
-     * Retrieve whether the metabolite dependent
-     * @return bool dependent
-     */
-    bool isDependent() const;
+  /**
+   * Set whether the metabolite is dependent, i.e., calculated
+   * by a moiety
+   * @param const CMoiety * pMoiety
+   */
+  void setDependentOn(const CMoiety * pMoiety);
 
-    /**
-     * ostream operator
-     */
-    friend std::ostream & operator<<(std::ostream &os, const CMetab & d);
+  /**
+   * Retrieve whether the metabolite dependent
+   * @return bool dependent
+   */
+  bool isDependent() const;
 
-  private:
-    /**
-     * Initialize the contained CCopasiObjects
-     */
-    void initObjects();
-  };
+  /**
+   * ostream operator
+   */
+  friend std::ostream & operator<<(std::ostream &os, const CMetab & d);
+
+private:
+  /**
+   * Initialize the contained CCopasiObjects
+   */
+  void initObjects();
+};
 
 class CMetabOld : public CCopasiContainer
-  {
-    friend class CMetab;
+{
+  friend class CMetab;
 
-    // Attributes
+  // Attributes
 
-  private:
-    /**
-     *  Concentration of the metabolite.
-     */
-    C_FLOAT64 mIConc;
+private:
+  /**
+   *  Concentration of the metabolite.
+   */
+  C_FLOAT64 mIConc;
 
-    /**
-     *  Status of the metabolite.
-     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     */
-    CMetab::Status mStatus;
+  /**
+   *  Status of the metabolite.
+   *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+   */
+  CMetab::Status mStatus;
 
-    /**
-     *  Index of the compartment the metabolite is located in.
-     */
-    C_INT32 mCompartment;
+  /**
+   *  Index of the compartment the metabolite is located in.
+   */
+  C_INT32 mCompartment;
 
-    // Operations
+  // Operations
 
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMetabOld(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NULL);
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMetabOld(const std::string & name = "NoName",
+            const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Copy constructor
-     * @param const CMetabOld & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMetabOld(const CMetabOld & src,
-              const CCopasiContainer * pParent = NULL);
+  /**
+   * Copy constructor
+   * @param const CMetabOld & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMetabOld(const CMetabOld & src,
+            const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Destructor.
-     */
-    ~CMetabOld();
+  /**
+   *  Destructor.
+   */
+  ~CMetabOld();
 
-    /**
-     *  cleanup()
-     */
-    void cleanup();
+  /**
+   *  cleanup()
+   */
+  void cleanup();
 
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */
-    C_INT32 load(CReadConfig & configbuffer);
+  /**
+   *  Loads an object with data coming from a CReadConfig object.
+   *  (CReadConfig object reads an input stream)
+   *  @param pconfigbuffer reference to a CReadConfig object.
+   *  @return Fail
+   */
+  C_INT32 load(CReadConfig & configbuffer);
 
-    C_INT32 getIndex() const;
-  };
+  C_INT32 getIndex() const;
+};
 
 #endif // COPASI_CMetab
