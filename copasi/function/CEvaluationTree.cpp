@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:15 $
+//   $Date: 2009/05/14 18:42:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,34 +49,34 @@ CEvaluationTree::create(CEvaluationTree::Type type)
 
   switch (type)
     {
-    case Function:
-      pNew = new CFunction();
-      break;
+      case Function:
+        pNew = new CFunction();
+        break;
 
-    case MassAction:
-      pNew = new CMassAction();
-      break;
+      case MassAction:
+        pNew = new CMassAction();
+        break;
 
-    case PreDefined:
-      pNew = new CKinFunction();
-      pNew->setType(PreDefined);
-      break;
+      case PreDefined:
+        pNew = new CKinFunction();
+        pNew->setType(PreDefined);
+        break;
 
-    case UserDefined:
-      pNew = new CKinFunction();
-      break;
+      case UserDefined:
+        pNew = new CKinFunction();
+        break;
 
-    case Expression:
-      pNew = new CExpression();
-      break;
+      case Expression:
+        pNew = new CExpression();
+        break;
 
-    case Boolean:
-      pNew = new CExpression();
-      static_cast< CExpression * >(pNew)->setBoolean(true);
-      break;
+      case Boolean:
+        pNew = new CExpression();
+        static_cast< CExpression * >(pNew)->setBoolean(true);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   return pNew;
@@ -89,26 +89,26 @@ CEvaluationTree::copy(const CEvaluationTree & src)
 
   switch (src.getType())
     {
-    case Function:
-      pNew = new CFunction(*static_cast<const CFunction *>(&src));
-      break;
+      case Function:
+        pNew = new CFunction(*static_cast<const CFunction *>(&src));
+        break;
 
-    case MassAction:
-      pNew = new CMassAction(*static_cast<const CMassAction *>(&src));
-      break;
+      case MassAction:
+        pNew = new CMassAction(*static_cast<const CMassAction *>(&src));
+        break;
 
-    case PreDefined:
-    case UserDefined:
-      pNew = new CKinFunction(*static_cast<const CKinFunction *>(&src));
-      break;
+      case PreDefined:
+      case UserDefined:
+        pNew = new CKinFunction(*static_cast<const CKinFunction *>(&src));
+        break;
 
-    case Expression:
-    case Boolean:
-      pNew = new CExpression(*static_cast<const CExpression *>(&src));
-      break;
+      case Expression:
+      case Boolean:
+        pNew = new CExpression(*static_cast<const CExpression *>(&src));
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   return pNew;
@@ -161,13 +161,13 @@ CEvaluationTree::~CEvaluationTree()
 }
 
 const CEvaluationTree::Type & CEvaluationTree::getType() const
-  {return mType;}
+{return mType;}
 
 void CEvaluationTree::setType(const CEvaluationTree::Type & type)
 {mType = type;}
 
 const std::string & CEvaluationTree::getKey() const
-  {return mKey;}
+{return mKey;}
 
 bool CEvaluationTree::setInfix(const std::string & infix)
 {
@@ -186,23 +186,24 @@ const std::string & CEvaluationTree::getInfix() const
 {return mInfix;}
 
 std::string::size_type CEvaluationTree::getErrorPosition() const
-  {return mErrorPosition;}
+{return mErrorPosition;}
 
 const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
-  {
-    if (!mpNodeList)
-      const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >;
-    return *mpNodeList;
-  }
+{
+  if (!mpNodeList)
+    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >;
+
+  return *mpNodeList;
+}
 
 unsigned C_INT32 CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
 {return C_INVALID_INDEX;}
 
 const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*index*/) const
-  {
-    static C_FLOAT64 Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    return Value;
-  }
+{
+  static C_FLOAT64 Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  return Value;
+}
 
 bool CEvaluationTree::parse()
 {
@@ -214,6 +215,7 @@ bool CEvaluationTree::parse()
   mpRoot = NULL;
 
   if (mType == MassAction) return true;
+
   if (mInfix == "")
     {
       mpNodeList = new std::vector< CEvaluationNode * >;
@@ -257,7 +259,7 @@ bool CEvaluationTree::compile()
 {return compileNodes();}
 
 bool CEvaluationTree::isUsable() const
-  {return mUsable;}
+{return mUsable;}
 
 bool CEvaluationTree::compileNodes()
 {
@@ -265,6 +267,7 @@ bool CEvaluationTree::compileNodes()
 
   if (mInfix == "")
     return mUsable = true;
+
   if (mpNodeList == NULL)
     return mUsable = false;
 
@@ -292,7 +295,7 @@ bool CEvaluationTree::compileNodes()
       for (it = mpNodeList->begin(); it != end; ++it)
         switch ((*it)->getType() & 0xFF000000)
           {
-          case CEvaluationNode::OBJECT:
+            case CEvaluationNode::OBJECT:
             {
               if (mType == Expression &&
                   (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
@@ -300,12 +303,12 @@ bool CEvaluationTree::compileNodes()
             }
             break;
 
-          case CEvaluationNode::CALL:
-            mDependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
-            break;
+            case CEvaluationNode::CALL:
+              mDependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
+              break;
 
-          default:
-            break;
+            default:
+              break;
           }
     }
 
@@ -315,6 +318,7 @@ bool CEvaluationTree::compileNodes()
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 {
   if (pRootNode == NULL) return false;
+
   if (mpNodeList != NULL)
     CEvaluationLexer::freeNodeList(mpNodeList);
 
@@ -328,6 +332,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 bool CEvaluationTree::updateTree()
 {
   if (!mpRoot || !mpNodeList) return false;
+
   mpNodeList->clear();
   CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
   CCopasiTree<CEvaluationNode>::iterator end = NULL;
@@ -350,115 +355,117 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
   CEvaluationNode* pResultNode = NULL;
   ASTNodeType_t nodeType = node.getType();
   CCopasiMessage Message;
+
   switch (nodeType)
     {
-    case AST_LAMBDA:
-      // this nodetype will never be handled directly
-      break;
-    case AST_PLUS:
-    case AST_MINUS:
-    case AST_TIMES:
-    case AST_DIVIDE:
-    case AST_POWER:
-    case AST_FUNCTION_POWER:
-      // create a CEvaluationNodeOperator
-      pResultNode = CEvaluationNodeOperator::createNodeFromASTTree(node);
-      break;
-    case AST_INTEGER:
-    case AST_REAL:
-    case AST_REAL_E:
-    case AST_RATIONAL:
-      // create a CEvaluationNodeNumber
-      pResultNode = CEvaluationNodeNumber::createNodeFromASTTree(node);
-      break;
-    case AST_NAME:
-    case AST_NAME_TIME:
-      // create a CEvaluationNodeObject
-      pResultNode = CEvaluationNodeObject::createNodeFromASTTree(node);
-      break;
-    case AST_CONSTANT_E:
-    case AST_CONSTANT_PI:
-    case AST_CONSTANT_FALSE:
-    case AST_CONSTANT_TRUE:
-      // create a CEvaluationNodeConstant
-      pResultNode = CEvaluationNodeConstant::createNodeFromASTTree(node);
-      break;
-    case AST_FUNCTION:
-    case AST_FUNCTION_DELAY:
-      // create a function call node
-      pResultNode = CEvaluationNodeCall::createNodeFromASTTree(node);
-      break;
-    case AST_FUNCTION_ABS:
-    case AST_FUNCTION_ARCCOS:
-    case AST_FUNCTION_ARCCOSH:
-    case AST_FUNCTION_ARCCOT:
-    case AST_FUNCTION_ARCCOTH:
-    case AST_FUNCTION_ARCCSC:
-    case AST_FUNCTION_ARCCSCH:
-    case AST_FUNCTION_ARCSEC:
-    case AST_FUNCTION_ARCSECH:
-    case AST_FUNCTION_ARCSIN:
-    case AST_FUNCTION_ARCSINH:
-    case AST_FUNCTION_ARCTAN:
-    case AST_FUNCTION_ARCTANH:
-    case AST_FUNCTION_CEILING:
-    case AST_FUNCTION_COS:
-    case AST_FUNCTION_COSH:
-    case AST_FUNCTION_COT:
-    case AST_FUNCTION_COTH:
-    case AST_FUNCTION_CSC:
-    case AST_FUNCTION_CSCH:
-    case AST_FUNCTION_EXP:
-    case AST_FUNCTION_FACTORIAL:
-    case AST_FUNCTION_FLOOR:
-    case AST_FUNCTION_LN:
-    case AST_FUNCTION_LOG:
-    case AST_FUNCTION_ROOT:
-    case AST_FUNCTION_SEC:
-    case AST_FUNCTION_SECH:
-    case AST_FUNCTION_SIN:
-    case AST_FUNCTION_SINH:
-    case AST_FUNCTION_TAN:
-    case AST_FUNCTION_TANH:
-    case AST_LOGICAL_NOT:
-      //case AST_FUNCTION_DELAY:
-      // create a CEvaluationNodeFunction
-      pResultNode = CEvaluationNodeFunction::createNodeFromASTTree(node);
-      break;
+      case AST_LAMBDA:
+        // this nodetype will never be handled directly
+        break;
+      case AST_PLUS:
+      case AST_MINUS:
+      case AST_TIMES:
+      case AST_DIVIDE:
+      case AST_POWER:
+      case AST_FUNCTION_POWER:
+        // create a CEvaluationNodeOperator
+        pResultNode = CEvaluationNodeOperator::createNodeFromASTTree(node);
+        break;
+      case AST_INTEGER:
+      case AST_REAL:
+      case AST_REAL_E:
+      case AST_RATIONAL:
+        // create a CEvaluationNodeNumber
+        pResultNode = CEvaluationNodeNumber::createNodeFromASTTree(node);
+        break;
+      case AST_NAME:
+      case AST_NAME_TIME:
+        // create a CEvaluationNodeObject
+        pResultNode = CEvaluationNodeObject::createNodeFromASTTree(node);
+        break;
+      case AST_CONSTANT_E:
+      case AST_CONSTANT_PI:
+      case AST_CONSTANT_FALSE:
+      case AST_CONSTANT_TRUE:
+        // create a CEvaluationNodeConstant
+        pResultNode = CEvaluationNodeConstant::createNodeFromASTTree(node);
+        break;
+      case AST_FUNCTION:
+      case AST_FUNCTION_DELAY:
+        // create a function call node
+        pResultNode = CEvaluationNodeCall::createNodeFromASTTree(node);
+        break;
+      case AST_FUNCTION_ABS:
+      case AST_FUNCTION_ARCCOS:
+      case AST_FUNCTION_ARCCOSH:
+      case AST_FUNCTION_ARCCOT:
+      case AST_FUNCTION_ARCCOTH:
+      case AST_FUNCTION_ARCCSC:
+      case AST_FUNCTION_ARCCSCH:
+      case AST_FUNCTION_ARCSEC:
+      case AST_FUNCTION_ARCSECH:
+      case AST_FUNCTION_ARCSIN:
+      case AST_FUNCTION_ARCSINH:
+      case AST_FUNCTION_ARCTAN:
+      case AST_FUNCTION_ARCTANH:
+      case AST_FUNCTION_CEILING:
+      case AST_FUNCTION_COS:
+      case AST_FUNCTION_COSH:
+      case AST_FUNCTION_COT:
+      case AST_FUNCTION_COTH:
+      case AST_FUNCTION_CSC:
+      case AST_FUNCTION_CSCH:
+      case AST_FUNCTION_EXP:
+      case AST_FUNCTION_FACTORIAL:
+      case AST_FUNCTION_FLOOR:
+      case AST_FUNCTION_LN:
+      case AST_FUNCTION_LOG:
+      case AST_FUNCTION_ROOT:
+      case AST_FUNCTION_SEC:
+      case AST_FUNCTION_SECH:
+      case AST_FUNCTION_SIN:
+      case AST_FUNCTION_SINH:
+      case AST_FUNCTION_TAN:
+      case AST_FUNCTION_TANH:
+      case AST_LOGICAL_NOT:
+        //case AST_FUNCTION_DELAY:
+        // create a CEvaluationNodeFunction
+        pResultNode = CEvaluationNodeFunction::createNodeFromASTTree(node);
+        break;
 
-    case AST_LOGICAL_AND:
-    case AST_LOGICAL_OR:
-    case AST_LOGICAL_XOR:
-    case AST_RELATIONAL_EQ:
-    case AST_RELATIONAL_GEQ:
-    case AST_RELATIONAL_GT:
-    case AST_RELATIONAL_LEQ:
-    case AST_RELATIONAL_LT:
-    case AST_RELATIONAL_NEQ:
-      pResultNode = CEvaluationNodeLogical::createNodeFromASTTree(node);
-      break;
-    case AST_FUNCTION_PIECEWISE:
-      pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
-      break;
-      //case AST_FUNCTION_DELAY:
-      //  pResultNode=new CEvaluationNodeCall();
-      // create an unsupported element error
-      // Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
-      //                          node.getName());
-      //break;
-    case AST_UNKNOWN:
-      // create an unknown element error
-      Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
+      case AST_LOGICAL_AND:
+      case AST_LOGICAL_OR:
+      case AST_LOGICAL_XOR:
+      case AST_RELATIONAL_EQ:
+      case AST_RELATIONAL_GEQ:
+      case AST_RELATIONAL_GT:
+      case AST_RELATIONAL_LEQ:
+      case AST_RELATIONAL_LT:
+      case AST_RELATIONAL_NEQ:
+        pResultNode = CEvaluationNodeLogical::createNodeFromASTTree(node);
+        break;
+      case AST_FUNCTION_PIECEWISE:
+        pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
+        break;
+        //case AST_FUNCTION_DELAY:
+        //  pResultNode=new CEvaluationNodeCall();
+        // create an unsupported element error
+        // Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 1,
+        //                          node.getName());
+        //break;
+      case AST_UNKNOWN:
+        // create an unknown element error
+        Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
 
-      break;
+        break;
     }
+
   return pResultNode;
 }
 
 const CEvaluationNode* CEvaluationTree::getRoot() const
-  {
-    return this->mpRoot;
-  }
+{
+  return this->mpRoot;
+}
 
 CEvaluationNode* CEvaluationTree::getRoot()
 {
@@ -476,10 +483,20 @@ void CEvaluationTree::initObjects()
   pObject->setDirectDependencies(Self);
 }
 
+std::set< const CCopasiObject * > CEvaluationTree::getDeletedObjects() const
+{
+  std::set< const CCopasiObject * > Deleted;
+
+  Deleted.insert(this);
+  Deleted.insert(getObject(CCopasiObjectName("Reference=Value")));
+
+  return Deleted;
+}
+
 ASTNode* CEvaluationTree::toAST(const CCopasiDataModel* pDataModel) const
-  {
-    return this->mpRoot->toAST(pDataModel);
-  }
+{
+  return this->mpRoot->toAST(pDataModel);
+}
 
 void CEvaluationTree::setSBMLId(const std::string& id)
 {
@@ -487,9 +504,9 @@ void CEvaluationTree::setSBMLId(const std::string& id)
 }
 
 const std::string& CEvaluationTree::getSBMLId() const
-  {
-    return this->mSBMLId;
-  }
+{
+  return this->mSBMLId;
+}
 
 bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * > & list,
     const unsigned C_INT32 & added)
@@ -529,50 +546,51 @@ bool CEvaluationTree::completeEvaluationTreeList(std::vector< CEvaluationTree * 
 }
 
 bool CEvaluationTree::hasCircularDependency() const
-  {
-    std::set< std::string > List;
+{
+  std::set< std::string > List;
 
-    return calls(List);
-  }
+  return calls(List);
+}
 
 bool CEvaluationTree::dependsOnTree(const std::string & name) const
-  {
-    if (!mpNodeList) return false;
+{
+  if (!mpNodeList) return false;
 
-    std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
-    std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
+  std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
 
-    for (; it != end; ++it)
-      if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
-          (*it)->getData() == name)
-        return true;
+  for (; it != end; ++it)
+    if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+        (*it)->getData() == name)
+      return true;
 
-    return false;
-  }
+  return false;
+}
 
 bool CEvaluationTree::calls(std::set< std::string > & list) const
-  {
-    if (!mpNodeList) return false;
+{
+  if (!mpNodeList) return false;
 
-    std::pair<std::set< std::string >::iterator, bool> Result = list.insert(getObjectName());
-    if (!Result.second) return true;
+  std::pair<std::set< std::string >::iterator, bool> Result = list.insert(getObjectName());
 
-    bool Calls = false;
-    std::vector< CEvaluationNode * >::iterator it;
-    std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+  if (!Result.second) return true;
 
-    for (it = mpNodeList->begin(); it != end; ++it)
-      if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
-          dynamic_cast<CEvaluationNodeCall *>(*it)->calls(list))
-        {
-          Calls = true;
-          break;
-        }
+  bool Calls = false;
+  std::vector< CEvaluationNode * >::iterator it;
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
-    list.erase(Result.first);
+  for (it = mpNodeList->begin(); it != end; ++it)
+    if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+        dynamic_cast<CEvaluationNodeCall *>(*it)->calls(list))
+      {
+        Calls = true;
+        break;
+      }
 
-    return Calls;
-  }
+  list.erase(Result.first);
+
+  return Calls;
+}
 
 void CEvaluationTree::setMiriamAnnotation(const std::string & miriamAnnotation,
     const std::string & oldId)
@@ -582,4 +600,4 @@ void CEvaluationTree::setMiriamAnnotation(const std::string & miriamAnnotation,
 }
 
 const std::string & CEvaluationTree::getMiriamAnnotation() const
-  {return mMiriamAnnotation;}
+{return mMiriamAnnotation;}
