@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/12 16:46:57 $
+//   $Date: 2009/05/14 17:50:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,9 @@
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : Q3SyntaxHighlighter(ew)
+{}
+
+CQExpressionHighlighter::~CQExpressionHighlighter()
 {}
 
 int CQExpressionHighlighter::highlightParagraph(const QString & text, int /* endStateOfLastPara */)
@@ -102,11 +105,20 @@ CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * n
   */
 QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
 {
-  if (const_cast< CExpression * >(&mExpression)->setInfix(TO_UTF8(input)) &&
-      const_cast< CExpression * >(&mExpression)->compile())
+  // The input is the display version of the infix string.
+  // We must first convert the display string to infix.
+
+  CQExpressionWidget * pExpressionWidget =
+    static_cast< CQExpressionWidget * >(parent());
+
+  if (pExpressionWidget != NULL)
     {
-      QString Input = mpLineEdit->text();
-      return CQValidator< Q3TextEdit >::validate(Input, pos);
+      if (const_cast< CExpression * >(&mExpression)->setInfix(pExpressionWidget->getExpression()) &&
+          const_cast< CExpression * >(&mExpression)->compile())
+        {
+          QString Input = mpLineEdit->text();
+          return CQValidator< Q3TextEdit >::validate(input, pos);
+        }
     }
 
   setColor(Invalid);
@@ -126,6 +138,7 @@ CExpression *CQValidatorExpression::getExpression()
 
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool isBoolean)
     : Q3TextEdit(parent, name),
+    mpValidator(NULL),
     mOldPar(0),
     mOldPos(0),
     mObjectClasses(TransientExpression),
@@ -156,6 +169,9 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name, bool
   connect(this, SIGNAL(textChanged()),
           this, SLOT(slotTextChanged()));
 }
+
+CQExpressionWidget::~CQExpressionWidget()
+{}
 
 void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 {
@@ -204,8 +220,8 @@ void CQExpressionWidget::slotSelectionChanged()
 void CQExpressionWidget::slotTextChanged()
 {
   int pos = 0;
-  QString Expression = FROM_UTF8(getExpression());
-  emit valid(mpValidator->validate(Expression, pos) == QValidator::Acceptable);
+  QString Input = text();
+  emit valid(mpValidator->validate(Input, pos) == QValidator::Acceptable);
 }
 
 void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)

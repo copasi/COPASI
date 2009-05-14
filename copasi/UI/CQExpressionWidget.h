@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/12 16:46:57 $
+//   $Date: 2009/05/14 17:50:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ class CQExpressionHighlighter: public Q3SyntaxHighlighter
 {
 public:
   CQExpressionHighlighter(CQExpressionWidget* ew);
-  ~CQExpressionHighlighter() {};
+  ~CQExpressionHighlighter();
 
   virtual int highlightParagraph(const QString & text, int endStateOfLastPara);
 };
@@ -77,6 +77,8 @@ class CQExpressionWidget: public Q3TextEdit
   Q_OBJECT
 public:
   CQExpressionWidget(QWidget * parent = 0, const char * name = 0, bool isBoolean = false);
+
+  ~CQExpressionWidget();
 
   CQValidatorExpression * mpValidator;
 
