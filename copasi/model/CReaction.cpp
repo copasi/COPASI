@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.185 $
+//   $Revision: 1.186 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:00:18 $
+//   $Author: shoops $
+//   $Date: 2009/05/14 18:45:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -866,6 +866,16 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
   Deleted.insert(this);
   Deleted.insert(mpFluxReference);
   Deleted.insert(mpParticleFluxReference);
+
+  // We need to add all local reaction parameters
+  CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
+
+  for (; it != end ; ++it)
+    {
+      if (isLocalParameter((*it)->getObjectName()))
+        Deleted.insert((*it)->getObject(CCopasiObjectName("Reference=Value")));
+    }
 
   return Deleted;
 }
