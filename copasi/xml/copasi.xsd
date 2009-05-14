@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.55 $ -->
+<!--   $Revision: 1.56 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2009/04/27 14:43:59 $ -->
+<!--   $Date: 2009/05/14 21:42:17 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -384,7 +384,8 @@
                                 type="sEXPRESSION"/>
                               <xs:element
                                 name="ListOfAssignments"
-                                id="copasi.Model.ListOfEventAssignments">
+                                id="copasi.Model.ListOfEventAssignments"
+                                minOccurs="0">
                                 <xs:complexType
                                   mixed="true">
                                   <xs:sequence>
@@ -1789,6 +1790,8 @@
         value="sensitivities"/>
       <xs:enumeration
         value="moieties"/>
+      <xs:enumeration 
+        value="timeScaleSeparationAnalysis"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType
