@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.169 $
+//   $Revision: 1.170 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/04 15:18:07 $
+//   $Author: shoops $
+//   $Date: 2009/05/14 18:48:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -834,53 +834,76 @@ public:
   /**
    * Appends pointers to all model objects, which are dependent on the candidates
    * to appropriate lists.
-   * @param std::set< const CCopasiObject * > candidates
+   * @param const std::set< const CCopasiObject * > & candidates
    * @param std::set< const CCopasiObject * > & dependentReactions
    * @param std::set< const CCopasiObject * > & dependentMetabolites
    * @param std::set< const CCopasiObject * > & dependentCompartments
    * @param std::set< const CCopasiObject * > & dependentModelValues
+   * @param std::set< const CCopasiObject * > & dependentEvents
+   * @return bool objectsAppended
    */
-  void appendDependentModelObjects(std::set< const CCopasiObject * > candidates,
+  bool appendDependentModelObjects(const std::set< const CCopasiObject * > & candidates,
                                    std::set< const CCopasiObject * > & dependentReactions,
                                    std::set< const CCopasiObject * > & dependentMetabolites,
                                    std::set< const CCopasiObject * > & dependentCompartments,
-                                   std::set< const CCopasiObject * > & dependentModelValues) const;
+                                   std::set< const CCopasiObject * > & dependentModelValues,
+                                   std::set< const CCopasiObject * > & dependentEvents) const;
 
   /**
    * Appends pointers to reactions which are dependent on the candidates to the
    * list.
    * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentReactions
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
    */
-  void appendDependentReactions(std::set< const CCopasiObject * > candidates,
-                                std::set< const CCopasiObject * > & dependentReactions) const;
+  bool appendDependentReactions(std::set< const CCopasiObject * > candidates,
+                                std::set< const CCopasiObject * > & dependents) const;
 
   /**
    * Appends pointers to metabolites which are dependent on the candidates to the
    * list.
    * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentMetabolites
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
    */
-  void appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
-                                  std::set< const CCopasiObject * > & dependentMetabolites) const;
+  bool appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
+                                  std::set< const CCopasiObject * > & dependents) const;
 
   /**
    * Appends pointers to compartments which are dependent on the candidates to the
    * list.
    * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentCompartments
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
    */
-  void appendDependentCompartments(std::set< const CCopasiObject * > candidates,
-                                   std::set< const CCopasiObject * > & dependentCompartments) const;
+  bool appendDependentCompartments(std::set< const CCopasiObject * > candidates,
+                                   std::set< const CCopasiObject * > & dependents) const;
 
   /**
    * Appends a pointers to model values which are dependent on the candidates to the
    * list.
    * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentModelValues
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
    */
-  void appendDependentModelValues(std::set< const CCopasiObject * > candidates,
-                                  std::set< const CCopasiObject * > & dependentModelValues) const;
+  bool appendDependentModelValues(std::set< const CCopasiObject * > candidates,
+                                  std::set< const CCopasiObject * > & dependents) const;
+
+  /**
+   * Appends a pointers to events which are dependent on the candidates to the
+   * list.
+   * @param std::set< const CCopasiObject * > candidates
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
+   */
+  bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
+                             std::set< const CCopasiObject * > & dependents) const;
+
+  /**
+   * Remove all model objects which depend on the deleted objects
+   * @param const std::set<const CCopasiObject*> & deletedObjects
+   */
+  void removeDependentModelObjects(const std::set<const CCopasiObject*> & deletedObjects);
 
   /**
    * Add a compartment to the model
@@ -1167,6 +1190,12 @@ private:
    * Determine whether the model is autonomous
    */
   void determineIsAutonomous();
+
+  /**
+   * Compile the events
+   * @return bool success
+   */
+  bool compileEvents();
 
 #ifdef COPASI_DEBUG
 public:

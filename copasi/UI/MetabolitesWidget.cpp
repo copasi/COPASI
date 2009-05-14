@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-//   $Revision: 1.157 $
+//   $Revision: 1.158 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 12:07:49 $
+//   $Author: shoops $
+//   $Date: 2009/05/14 18:48:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -416,139 +416,37 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
   if (keys.size() == 0)
     return;
 
-  QString metaboliteList = "Are you sure you want to delete listed SPECIES ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above SPECIES and will be deleted -\n";
-  QString effectedMetabList = "Following METABOLITE(S) reference above SPECIES and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above SPECIES and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above SPECIES and will be deleted -\n";
-
-  bool compartmentFound = false;
-  bool metabFound = false;
-  bool reacFound = false;
-  bool valueFound = false;
+  QString ObjectType = "species";
+  QString Objects;
+  std::set< const CCopasiObject * > DeletedObjects;
 
   unsigned C_INT32 i, imax = keys.size();
 
-  for (i = 0; i < imax; i++) //all compartments
+  for (i = 0; i < imax; i++)
     {
       CMetab* pMetab =
         dynamic_cast< CMetab *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
 
-      metaboliteList.append(FROM_UTF8(pMetab->getObjectName()));
-      metaboliteList.append(", ");
+      if (pMetab == NULL)
+        continue;
 
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
+      Objects.append(FROM_UTF8(pMetab->getObjectName()) + ", ");
 
-      pModel->appendDependentModelObjects(pMetab->getDeletedObjects(),
-                                          Reactions, Metabolites, Compartments, Values);
+      std::set< const CCopasiObject * > AdditionalObjects =
+        pMetab->getDeletedObjects();
 
-      if (Reactions.size() > 0)
-        {
-          reacFound = true;
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+      std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
+      std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
 
-          for (it = Reactions.begin(); it != itEnd; ++it)
-            {
-              effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
-              effectedReacList.append(", ");
-            }
-
-          effectedReacList.remove(effectedReacList.length() - 2, 2);
-          effectedReacList.append("  ---> ");
-          effectedReacList.append(FROM_UTF8(pMetab->getObjectName()));
-          effectedReacList.append("\n");
-        }
-
-      if (Metabolites.size() > 0)
-        {
-          metabFound = true;
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
-
-          for (it = Metabolites.begin(); it != itEnd; ++it)
-            {
-              effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
-              effectedMetabList.append(", ");
-            }
-
-          effectedMetabList.remove(effectedMetabList.length() - 2, 2);
-          effectedMetabList.append("  ---> ");
-          effectedMetabList.append(FROM_UTF8(pMetab->getObjectName()));
-          effectedMetabList.append("\n");
-        }
-
-      if (Values.size() > 0)
-        {
-          valueFound = true;
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
-
-          for (it = Values.begin(); it != itEnd; ++it)
-            {
-              effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
-              effectedValueList.append(", ");
-            }
-
-          effectedValueList.remove(effectedValueList.length() - 2, 2);
-          effectedValueList.append("  ---> ");
-          effectedValueList.append(FROM_UTF8(pMetab->getObjectName()));
-          effectedValueList.append("\n");
-        }
-
-      if (Compartments.size() > 0)
-        {
-          compartmentFound = true;
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
-
-          for (it = Compartments.begin(); it != itEnd; ++it)
-            {
-              effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
-              effectedCompartmentList.append(", ");
-            }
-
-          effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
-          effectedCompartmentList.append("  ---> ");
-          effectedCompartmentList.append(FROM_UTF8(pMetab->getObjectName()));
-          effectedCompartmentList.append("\n");
-        }
+      for (; itDeleted != endDeleted; ++itDeleted)
+        DeletedObjects.insert(*itDeleted);
     }
 
-  metaboliteList.remove(metaboliteList.length() - 2, 2);
+  Objects.remove(Objects.length() - 2, 2);
 
-  QString msg = metaboliteList;
-
-  if (compartmentFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedCompartmentList);
-    }
-
-  if (metabFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedMetabList);
-    }
-
-  if (reacFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedReacList);
-    }
-
-  if (valueFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedValueList);
-    }
-
-  C_INT32 choice = 0;
-
-  if (metabFound || reacFound || valueFound || compartmentFound)
-    choice = CQMessageBox::question(this,
-                                    "CONFIRM DELETE",
-                                    msg,
-                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(NULL, pModel, ObjectType,
+                                Objects, DeletedObjects);
 
   switch (choice)
     {

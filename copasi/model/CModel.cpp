@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.359 $
+//   $Revision: 1.360 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/08 22:38:18 $
+//   $Author: shoops $
+//   $Date: 2009/05/14 18:48:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2210,19 +2210,27 @@ const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
 
 //**********************************************************************
 
-void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > DeletedObjects,
+bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * > & deletedObjects,
     std::set< const CCopasiObject * > & dependentReactions,
     std::set< const CCopasiObject * > & dependentMetabolites,
     std::set< const CCopasiObject * > & dependentCompartments,
-    std::set< const CCopasiObject * > & dependentModelValues) const
+    std::set< const CCopasiObject * > & dependentModelValues,
+    std::set< const CCopasiObject * > & dependentEvents) const
 {
-  unsigned C_INT32 NumberDeleted = 0;
+  // We need a local copy since we recursively add deleted objects.
+  std::set< const CCopasiObject * > DeletedObjects = deletedObjects;
 
-  while (DeletedObjects.size() != NumberDeleted)
+  bool ObjectsAppended = false;
+  bool DeleteObjects = DeletedObjects.size() > 0;
+
+  // This is this implemented recursively. Since deleting a container may result
+  // in the deletion of objects not dependent on the original set of deleted objects.
+
+  while (DeleteObjects)
     {
-      NumberDeleted = DeletedObjects.size();
+      DeleteObjects = false;
 
-      appendDependentReactions(DeletedObjects, dependentReactions);
+      DeleteObjects |= appendDependentReactions(DeletedObjects, dependentReactions);
 
       if (dependentReactions.size() > 0)
         {
@@ -2242,7 +2250,7 @@ void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > Delet
               }
         }
 
-      appendDependentMetabolites(DeletedObjects, dependentMetabolites);
+      DeleteObjects |= appendDependentMetabolites(DeletedObjects, dependentMetabolites);
 
       if (dependentMetabolites.size() > 0)
         {
@@ -2262,7 +2270,7 @@ void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > Delet
               }
         }
 
-      appendDependentModelValues(DeletedObjects, dependentModelValues);
+      DeleteObjects |= appendDependentModelValues(DeletedObjects, dependentModelValues);
 
       if (dependentModelValues.size() > 0)
         {
@@ -2282,7 +2290,7 @@ void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > Delet
               }
         }
 
-      appendDependentCompartments(DeletedObjects, dependentCompartments);
+      DeleteObjects |= appendDependentCompartments(DeletedObjects, dependentCompartments);
 
       if (dependentCompartments.size() > 0)
         {
@@ -2301,15 +2309,39 @@ void CModel::appendDependentModelObjects(std::set< const CCopasiObject * > Delet
                   DeletedObjects.insert(*itDeleted);
               }
         }
+
+      DeleteObjects |= appendDependentEvents(DeletedObjects, dependentEvents);
+
+      if (dependentEvents.size() > 0)
+        {
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentEvents.end();
+
+          for (it = dependentEvents.begin(); it != itEnd; ++it)
+            if (DeletedObjects.find(*it) == DeletedObjects.end())
+              {
+                std::set< const CCopasiObject * > AdditionalObjects =
+                  static_cast< const CCompartment * >(*it)->getDeletedObjects();
+
+                std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
+                std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
+
+                for (; itDeleted != endDeleted; ++itDeleted)
+                  DeletedObjects.insert(*itDeleted);
+              }
+        }
+
+      ObjectsAppended |= DeleteObjects;
     }
 
-  return;
+  return ObjectsAppended;
 }
 
-void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
-                                      std::set< const CCopasiObject * > & dependentReactions) const
+bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
+                                      std::set< const CCopasiObject * > & dependents) const
 {
   const_cast< CModel * >(this)->compileIfNecessary(NULL);
+
+  size_t Size = dependents.size();
 
   CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
   CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
@@ -2338,7 +2370,7 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
 
         if ((*it)->dependsOn(candidates))
           {
-            dependentReactions.insert((*it));
+            dependents.insert((*it));
             continue;
           }
 
@@ -2350,7 +2382,7 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
           if (candidates.find(*itSet) == candidates.end() &&
               (*itSet)->dependsOn(candidates))
             {
-              dependentReactions.insert((*it));
+              dependents.insert((*it));
               break;
             }
 
@@ -2361,13 +2393,15 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
           candidates.insert(*itIgnored);
       }
 
-  return;
+  return Size < dependents.size();
 }
 
-void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
-                                        std::set< const CCopasiObject * > & dependentMetabolites) const
+bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
+                                        std::set< const CCopasiObject * > & dependents) const
 {
   const_cast< CModel * >(this)->compileIfNecessary(NULL);
+
+  size_t Size = dependents.size();
 
   CCopasiVectorN< CCompartment >::const_iterator itComp = mCompartments.begin();
   CCopasiVectorN< CCompartment >::const_iterator endComp = mCompartments.end();
@@ -2385,13 +2419,13 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
 
       for (; it != end; ++it)
         if (candidates.find((*it)->getCompartment()) != candidates.end())
-          dependentMetabolites.insert((*it));
+          dependents.insert((*it));
         else if (candidates.find(*it) == candidates.end())
           {
             if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
                 (*it)->dependsOn(candidates))
               {
-                dependentMetabolites.insert((*it));
+                dependents.insert((*it));
                 continue;
               }
 
@@ -2411,19 +2445,21 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
               if (candidates.find(*itSet) == candidates.end() &&
                   (*itSet)->dependsOn(candidates))
                 {
-                  dependentMetabolites.insert((*it));
+                  dependents.insert((*it));
                   break;
                 }
           }
     }
 
-  return;
+  return Size < dependents.size();
 }
 
-void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candidates,
-    std::set< const CCopasiObject * > & dependentCompartments) const
+bool CModel::appendDependentCompartments(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependents) const
 {
   const_cast< CModel * >(this)->compileIfNecessary(NULL);
+
+  size_t Size = dependents.size();
 
   CCopasiVectorN< CCompartment >::const_iterator it = mCompartments.begin();
   CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
@@ -2436,7 +2472,7 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
       {
         if ((*it)->dependsOn(candidates))
           {
-            dependentCompartments.insert((*it));
+            dependents.insert((*it));
             continue;
           }
 
@@ -2448,18 +2484,20 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
           if (candidates.find(*itSet) == candidates.end() &&
               (*itSet)->dependsOn(candidates))
             {
-              dependentCompartments.insert((*it));
+              dependents.insert((*it));
               break;
             }
       }
 
-  return;
+  return Size < dependents.size();
 }
 
-void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candidates,
-                                        std::set< const CCopasiObject * > & dependentModelValues) const
+bool CModel::appendDependentModelValues(std::set< const CCopasiObject * > candidates,
+                                        std::set< const CCopasiObject * > & dependents) const
 {
   const_cast< CModel * >(this)->compileIfNecessary(NULL);
+
+  size_t Size = dependents.size();
 
   CCopasiVectorN< CModelValue >::const_iterator it = mValues.begin();
   CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
@@ -2472,7 +2510,7 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
       {
         if ((*it)->dependsOn(candidates))
           {
-            dependentModelValues.insert((*it));
+            dependents.insert((*it));
             continue;
           }
 
@@ -2484,12 +2522,37 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
           if (candidates.find(*itSet) == candidates.end() &&
               (*itSet)->dependsOn(candidates))
             {
-              dependentModelValues.insert((*it));
+              dependents.insert((*it));
               break;
             }
       }
 
-  return;
+  return Size < dependents.size();
+}
+
+bool CModel::appendDependentEvents(std::set< const CCopasiObject * > candidates,
+                                   std::set< const CCopasiObject * > & dependents) const
+{
+  const_cast< CModel * >(this)->compileIfNecessary(NULL);
+
+  size_t Size = dependents.size();
+
+  CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
+  CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
+
+  std::set< const CCopasiObject * >::const_iterator itSet;
+  std::set< const CCopasiObject * >::const_iterator endSet;
+
+  for (; it != end; ++it)
+    if (candidates.find(*it) == candidates.end())
+      {
+        if ((*it)->dependsOn(candidates))
+          {
+            dependents.insert((*it));
+          }
+      }
+
+  return Size < dependents.size();
 }
 
 //**********************************************************************
@@ -2541,28 +2604,7 @@ bool CModel::removeMetabolite(const std::string & key,
 
   if (recursive)
     {
-      /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * >::const_iterator it, end;
-
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-
-      appendDependentModelObjects(pMetabolite->getDeletedObjects(),
-                                  Reactions, Metabolites, Compartments, Values);
-
-      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      for (it = Values.begin(), end = Values.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+      removeDependentModelObjects(pMetabolite->getDeletedObjects());
     }
 
   /* Assure that all references are removed */
@@ -2622,28 +2664,7 @@ bool CModel::removeCompartment(const CCompartment * pCompartment,
 
   if (recursive)
     {
-      /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * >::const_iterator it, end;
-
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-
-      appendDependentModelObjects(pCompartment->getDeletedObjects(),
-                                  Reactions, Metabolites, Compartments, Values);
-
-      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      for (it = Values.begin(), end = Values.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+      removeDependentModelObjects(pCompartment->getDeletedObjects());
     }
 
   //Check if Compartment with that name exists
@@ -2700,28 +2721,7 @@ bool CModel::removeReaction(const CReaction * pReaction,
 
   if (recursive)
     {
-      /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * >::const_iterator it, end;
-
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-
-      appendDependentModelObjects(pReaction->getDeletedObjects(),
-                                  Reactions, Metabolites, Compartments, Values);
-
-      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      for (it = Values.begin(), end = Values.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+      removeDependentModelObjects(pReaction->getDeletedObjects());
     }
 
   //Check if Reaction exists
@@ -2750,31 +2750,10 @@ bool CModel::removeLocalReactionParameter(const std::string & key,
 
   if (recursive)
     {
-      /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * >::const_iterator it, end;
-
       std::set< const CCopasiObject * > DeletedObjects;
       DeletedObjects.insert(pParameter->getObject(CCopasiObjectName("Reference=Value")));
 
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-
-      appendDependentModelObjects(DeletedObjects,
-                                  Reactions, Metabolites, Compartments, Values);
-
-      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      for (it = Values.begin(), end = Values.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+      removeDependentModelObjects(DeletedObjects);
     }
 
   return true;
@@ -2802,6 +2781,36 @@ CModelValue* CModel::createModelValue(const std::string & name,
   return cmv;
 }
 
+void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & deletedObjects)
+{
+  std::set<const CCopasiObject*> Reactions;
+  std::set<const CCopasiObject*> Metabolites;
+  std::set<const CCopasiObject*> Values;
+  std::set<const CCopasiObject*> Compartments;
+  std::set<const CCopasiObject*> Events;
+
+  appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events);
+
+  std::set<const CCopasiObject*>::const_iterator it, end;
+
+  for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
+    removeReaction((*it)->getKey(), false);
+
+  for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
+    removeMetabolite((*it)->getKey(), false);
+
+  for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
+    removeCompartment((*it)->getKey(), false);
+
+  for (it = Values.begin(), end = Values.end(); it != end; ++it)
+    removeModelValue((*it)->getKey(), false);
+
+  for (it = Events.begin(), end = Events.end(); it != end; ++it)
+    removeEvent((*it)->getKey(), false);
+
+  return;
+}
+
 bool CModel::removeModelValue(const std::string & key,
                               const bool & recursive)
 {
@@ -2813,28 +2822,7 @@ bool CModel::removeModelValue(const std::string & key,
 
   if (recursive)
     {
-      /* Before deleting  delete all the objects that are dependent */
-      std::set< const CCopasiObject * >::const_iterator it, end;
-
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-
-      appendDependentModelObjects(pModelValue->getDeletedObjects(),
-                                  Reactions, Metabolites, Compartments, Values);
-
-      for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      for (it = Values.begin(), end = Values.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+      removeDependentModelObjects(pModelValue->getDeletedObjects());
     }
 
   //Check if Value with that name exists
@@ -3537,6 +3525,7 @@ void CModel::determineIsAutonomous()
       appendDependentMetabolites(getDeletedObjects(), TimeDependent);
       appendDependentCompartments(getDeletedObjects(), TimeDependent);
       appendDependentModelValues(getDeletedObjects(), TimeDependent);
+      appendDependentEvents(getDeletedObjects(), TimeDependent);
 
       mIsAutonomous = (TimeDependent.begin() == TimeDependent.end());
     }
@@ -3544,6 +3533,23 @@ void CModel::determineIsAutonomous()
   // An autonomous models always start simulation at T = 0
   if (mIsAutonomous)
     setInitialValue(0.0);
+}
+
+bool CModel::compileEvents()
+{
+  bool success = true;
+
+  std::vector< CCopasiContainer * > ListOfContainer;
+
+  CCopasiVectorN< CEvent >::iterator it = mEvents.begin();
+  CCopasiVectorN< CEvent >::iterator end = mEvents.end();
+
+  for (; it != end; ++ it)
+    {
+      success &= (*it)->compile(ListOfContainer);
+    }
+
+  return success;
 }
 
 const std::vector< Refresh * > & CModel::getListOfInitialRefreshes() const

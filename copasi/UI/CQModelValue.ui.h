@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/12 16:46:57 $
+//   $Date: 2009/05/14 18:48:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,140 +85,17 @@ void CQModelValue::slotBtnDelete()
   if (pModel == NULL)
     return;
 
-  /*
-  std::set< const CCopasiObject * > DeletedObjects;
-  unsigned C_INT32 NumberDeleted = 0;
-  */
+  if (mpModelValue == NULL)
+    return;
 
-  QString valueList = "Are you sure you want to delete listed MODEL VALUE(S) ?\n";
-  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above MODEL VALUE(S) and will be deleted -\n";
-  QString effectedMetabList = "Following SPECIES reference above MODEL VALUE(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above MODEL VALUE(S) and will be deleted -\n";
-  QString effectedValueList = "Following MODEL VALUE(S) reference above MODEL VALUE(S) and will be deleted -\n";
-
-  bool compartmentFound = false;
-  bool metabFound = false;
-  bool reacFound = false;
-  bool valueFound = false;
-
-  valueList.append(FROM_UTF8(mpModelValue->getObjectName()));
-  valueList.append(", ");
-
-  std::set< const CCopasiObject * > Reactions;
-  std::set< const CCopasiObject * > Metabolites;
-  std::set< const CCopasiObject * > Values;
-  std::set< const CCopasiObject * > Compartments;
-
-  pModel->appendDependentModelObjects(mpModelValue->getDeletedObjects(),
-                                      Reactions, Metabolites, Compartments, Values);
-
-  if (Reactions.size() > 0)
-    {
-      reacFound = true;
-      std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
-
-      for (it = Reactions.begin(); it != itEnd; ++it)
-        {
-          effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedReacList.append(", ");
-        }
-
-      effectedReacList.remove(effectedReacList.length() - 2, 2);
-      effectedReacList.append("  ---> ");
-      effectedReacList.append(FROM_UTF8(mpModelValue->getObjectName()));
-      effectedReacList.append("\n");
-    }
-
-  if (Metabolites.size() > 0)
-    {
-      metabFound = true;
-      std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
-
-      for (it = Metabolites.begin(); it != itEnd; ++it)
-        {
-          effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedMetabList.append(", ");
-        }
-
-      effectedMetabList.remove(effectedMetabList.length() - 2, 2);
-      effectedMetabList.append("  ---> ");
-      effectedMetabList.append(FROM_UTF8(mpModelValue->getObjectName()));
-      effectedMetabList.append("\n");
-    }
-
-  if (Values.size() > 0)
-    {
-      valueFound = true;
-      std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
-
-      for (it = Values.begin(); it != itEnd; ++it)
-        {
-          effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedValueList.append(", ");
-        }
-
-      effectedValueList.remove(effectedValueList.length() - 2, 2);
-      effectedValueList.append("  ---> ");
-      effectedValueList.append(FROM_UTF8(mpModelValue->getObjectName()));
-      effectedValueList.append("\n");
-    }
-
-  if (Compartments.size() > 0)
-    {
-      compartmentFound = true;
-      std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
-
-      for (it = Compartments.begin(); it != itEnd; ++it)
-        {
-          effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
-          effectedCompartmentList.append(", ");
-        }
-
-      effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
-      effectedCompartmentList.append("  ---> ");
-      effectedCompartmentList.append(FROM_UTF8(mpModelValue->getObjectName()));
-      effectedCompartmentList.append("\n");
-    }
-
-  valueList.remove(valueList.length() - 2, 2);
-
-  QString msg = valueList;
-
-  if (compartmentFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedCompartmentList);
-    }
-
-  if (metabFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedMetabList);
-    }
-
-  if (reacFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedReacList);
-    }
-
-  if (valueFound)
-    {
-      msg.append("\n \n");
-      msg.append(effectedValueList);
-    }
-
-  C_INT32 choice = 0;
-
-  if (metabFound || reacFound || valueFound || compartmentFound)
-    choice = CQMessageBox::question(this,
-                                    "CONFIRM DELETE",
-                                    msg,
-                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, pModel, "species",
+                                FROM_UTF8(mpModelValue->getObjectName()),
+                                mpModelValue->getDeletedObjects());
 
   switch (choice)
     {
-      case QMessageBox::Ok:  // Yes or Enter
+      case QMessageBox::Ok:
       {
         unsigned C_INT32 index =
           static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
@@ -239,7 +116,7 @@ void CQModelValue::slotBtnDelete()
         break;
       }
 
-      default:  // No or Escape
+      default:
         break;
     }
 }

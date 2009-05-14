@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:14:47 $
+//   $Date: 2009/05/14 18:48:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -345,9 +345,11 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
   return ret;
 }
 
-void CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > candidates,
+bool CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > candidates,
     std::set< const CCopasiObject * > & dependentFunctions) const
 {
+  size_t Size = dependentFunctions.size();
+
   CCopasiVectorN< CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
   CCopasiVectorN< CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
 
@@ -356,7 +358,7 @@ void CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > can
         (*it)->dependsOn(candidates))
       dependentFunctions.insert((*it));
 
-  return;
+  return Size < dependentFunctions.size();
 }
 
 std::set<std::string>
@@ -397,9 +399,10 @@ std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pMo
       std::set< const CCopasiObject * > Metabolites;
       std::set< const CCopasiObject * > Values;
       std::set< const CCopasiObject * > Compartments;
+      std::set< const CCopasiObject * > Events;
 
       pModel->appendDependentModelObjects(Function,
-                                          Reactions, Metabolites, Compartments, Values);
+                                          Reactions, Metabolites, Compartments, Values, Events);
 
       if (Reactions.size() != 0)
         {
@@ -420,6 +423,12 @@ std::vector< CEvaluationTree * > CFunctionDB::getUsedFunctions(const CModel* pMo
         }
 
       if (Compartments.size() != 0)
+        {
+          UsedFunctions.push_back(*it);
+          continue;
+        }
+
+      if (Events.size() != 0)
         {
           UsedFunctions.push_back(*it);
           continue;
