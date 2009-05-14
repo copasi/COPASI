@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.196 $
+#   $Revision: 1.197 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/05/04 15:24:00 $
+#   $Author: shoops $
+#   $Date: 2009/05/14 16:12:01 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.196 $ $Author: aekamal $ $Date: 2009/05/04 15:24:00 $
+# $Revision: 1.197 $ $Author: shoops $ $Date: 2009/05/14 16:12:01 $
 ######################################################################
 
 LIB = UI
@@ -184,11 +184,8 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
-
-FORMS += CQReactionsWidget.ui
-FORMS += CQCompartmentsWidget.ui
-
 # FORMS3 += CMCAResultSubwidget.ui
+FORMS += CQCompartmentsWidget.ui
 # FORMS3 += CQCompartment.ui
 # FORMS3 += CQDifferentialEquations.ui
 FORMS3 += CQEFMWidget.ui
