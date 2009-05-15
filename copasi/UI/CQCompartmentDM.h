@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 16:38:08 $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,14 +17,14 @@
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
 
-#define COL_NAME         1
-#define COL_TYPE         2
-#define COL_IVOLUME      3
-#define COL_VOLUME       4
-#define COL_RATE         5
-#define COL_IEXPRESSION  6
-#define COL_EXPRESSION   7
-#define TOTAL_COLS_COMPARTMENTS 8
+#define COL_NAME_COMPARTMENTS         1
+#define COL_TYPE_COMPARTMENTS         2
+#define COL_IVOLUME                   3
+#define COL_VOLUME                    4
+#define COL_RATE                      5
+#define COL_IEXPRESSION_COMPARTMENTS  6
+#define COL_EXPRESSION_COMPARTMENTS   7
+#define TOTAL_COLS_COMPARTMENTS       8
 
 class CQCompartmentDM : public CQBaseDataModel
 {

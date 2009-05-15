@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,11 +38,11 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModel->setFilterKeyColumn(COL_NAME);
+  mpProxyModel->setFilterKeyColumn(COL_NAME_COMPARTMENTS);
 
   //Setting values for Types comboBox
   mpTypeDelegate = new CQIndexComboDelegate(&mpCompartmentDM->getTypes(), this);
-  mpTblCompartments->setItemDelegateForColumn(COL_TYPE, mpTypeDelegate);
+  mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 
   mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblCompartments->verticalHeader()->hide();
@@ -85,9 +85,10 @@ void CQCompartmentsWidget::deleteSelectedCompartment()
   if (mpTblCompartments->selectionModel()->selectedIndexes().empty())
     {return;}
 
-  int delRow = mpTblCompartments->selectionModel()->selectedIndexes().value(0).row();
+  QModelIndex &i = mpProxyModel->mapToSource(mpTblCompartments->selectionModel()->selectedIndexes().value(0));
+  int delRow = i.row();
 
-  if (mpCompartmentDM->isDefaultRow(delRow))
+  if (mpCompartmentDM->isDefaultRow(i))
     return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModel->setFilterKeyColumn(COL_NAME);
+  mpProxyModel->setFilterKeyColumn(COL_NAME_REACTIONS);
 
   mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblReactions->verticalHeader()->hide();
@@ -84,9 +84,10 @@ void CQReactionsWidget::deleteSelectedReaction()
   if (mpTblReactions->selectionModel()->selectedIndexes().empty())
     {return;}
 
-  int delRow = mpTblReactions->selectionModel()->selectedIndexes().value(0).row();
+  QModelIndex &i = mpProxyModel->mapToSource(mpTblReactions->selectionModel()->selectedIndexes().value(0));
+  int delRow = i.row();
 
-  if (mpReactionDM->isDefaultRow(delRow))
+  if (mpReactionDM->isDefaultRow(i))
     return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);

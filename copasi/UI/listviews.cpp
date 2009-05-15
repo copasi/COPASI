@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.266 $
+//   $Revision: 1.267 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 23:57:16 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@
 #endif // HAVE_MML
 #include "CQLyapWidget.h"
 #include "CQLyapResultWidget.h"
-#include "MetabolitesWidget.h"
+#include "CQSpeciesWidget.h"
 #include "CQMetabolite.h"
 #include "ModelWidget.h"
 #include "ModelValuesWidget.h"
@@ -394,7 +394,7 @@ void ListViews::ConstructNodeWidgets()
 
   lyapResultWidget->hide();
 
-  if (!metabolitesWidget) metabolitesWidget = new MetabolitesWidget(this);
+  if (!metabolitesWidget) metabolitesWidget = new CQSpeciesWidget(this);
 
   metabolitesWidget->hide();
 

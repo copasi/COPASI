@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.153 $
+//   $Revision: 1.154 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 23:57:16 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ class FunctionWidget1;
 class FunctionWidget;
 class CMathModel;
 class CQMetabolite;
-class MetabolitesWidget;
+class CQSpeciesWidget;
 class CQEFMWidget;
 //class ModelWidget;
 class ModelValuesWidget;
@@ -235,7 +235,7 @@ private:
   CTabWidget *functionWidget1;
   CQLyapWidget *lyapWidget;
   CQLyapResultWidget *lyapResultWidget;
-  MetabolitesWidget *metabolitesWidget;
+  CQSpeciesWidget *metabolitesWidget;
   CTabWidget *metabolitesWidget1;
   CTabWidget *modelWidget;
   ModelValuesWidget *modelValuesWidget;

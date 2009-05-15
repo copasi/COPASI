@@ -106,10 +106,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CompartmentsWidget.cpp"
-				>
-			</File>
-			<File
 				RelativePath="CompartmentsWidget1.cpp"
 				>
 			</File>
@@ -174,15 +170,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQCompartment.ui.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CQCompartmentDM.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\CQCompartmentsWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CQCompartment.ui.h"
 				>
 			</File>
 			<File
@@ -194,11 +190,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQDifferentialEquations.cpp"
+				RelativePath=".\CQDateTimeEditTableItem.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\CQDateTimeEditTableItem.cpp"
+				RelativePath=".\CQDifferentialEquations.cpp"
 				>
 			</File>
 			<File
@@ -494,6 +490,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQSpecieDM.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQSpeciesWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQSplashWidget.cpp"
 				>
 			</File>
@@ -671,10 +675,6 @@
 			</File>
 			<File
 				RelativePath="listviews.cpp"
-				>
-			</File>
-			<File
-				RelativePath="MetabolitesWidget.cpp"
 				>
 			</File>
 			<File
@@ -868,10 +868,6 @@
 			</File>
 			<File
 				RelativePath="CMCAResultWidget.h"
-				>
-			</File>
-			<File
-				RelativePath="CompartmentsWidget.h"
 				>
 			</File>
 			<File
@@ -1071,6 +1067,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQSpecieDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQSpeciesWidget.h"
+				>
+			</File>
+			<File
 				RelativePath="CQSplashWidget.h"
 				>
 			</File>
@@ -1176,10 +1180,6 @@
 			</File>
 			<File
 				RelativePath="listviews.h"
-				>
-			</File>
-			<File
-				RelativePath="MetabolitesWidget.h"
 				>
 			</File>
 			<File
@@ -1462,6 +1462,10 @@
 		</File>
 		<File
 			RelativePath="CQReportDefinition.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQSpeciesWidget.ui"
 			>
 		</File>
 		<File

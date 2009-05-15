@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ Qt::ItemFlags CQReactionDM::flags(const QModelIndex &index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  if (index.column() == COL_NAME || index.column() == COL_EQUATION)
+  if (index.column() == COL_NAME_REACTIONS || index.column() == COL_EQUATION)
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
   else
     return QAbstractItemModel::flags(index);
@@ -65,7 +65,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
-              case COL_NAME:
+              case COL_NAME_REACTIONS:
                 return QVariant(QString("No Name"));
               default:
                 return QVariant(QString(""));
@@ -80,7 +80,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
               case COL_ROW_NUMBER:
                 return QVariant(index.row() + 1);
 
-              case COL_NAME:
+              case COL_NAME_REACTIONS:
                 return QVariant(QString(FROM_UTF8(pRea->getObjectName())));
 
               case COL_EQUATION:
@@ -115,7 +115,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
-          case COL_NAME:
+          case COL_NAME_REACTIONS:
             return QVariant(QString("Name"));
           case COL_EQUATION:
             return QVariant(QString("Equation"));
@@ -182,13 +182,13 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
       CReactionInterface ri((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
       CReaction *pRea = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getReactions()[index.row()];
 
-      if (index.column() == COL_NAME)
+      if (index.column() == COL_NAME_REACTIONS)
         pRea->setObjectName(TO_UTF8(value.toString()));
       else if (index.column() == COL_EQUATION)
         setEquation(pRea, index, value);
 
-      if (defaultRow && this->index(index.row(), COL_NAME).data().toString() == "No Name")
-        pRea->setObjectName(TO_UTF8(createNewName("Reaction", COL_NAME)));
+      if (defaultRow && this->index(index.row(), COL_NAME_REACTIONS).data().toString() == "No Name")
+        pRea->setObjectName(TO_UTF8(createNewName("Reaction", COL_NAME_REACTIONS)));
 
       emit dataChanged(index, index);
     }
@@ -233,7 +233,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
 
   if (DeletedParameters.size() != 0)
     {
-      QString ObjectType = "parameter(s) of reaction " + this->index(index.row(), COL_NAME).data().toString();
+      QString ObjectType = "parameter(s) of reaction " + this->index(index.row(), COL_NAME_REACTIONS).data().toString();
       QString Objects;
 
       std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();

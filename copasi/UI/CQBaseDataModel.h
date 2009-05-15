@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 15:24:00 $
+//   $Date: 2009/05/15 19:36:28 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -34,7 +34,6 @@ public:
   bool removeRow(int position);
   bool clear();
   virtual bool isDefaultRow(const QModelIndex& i) const;
-  virtual bool isDefaultRow(const int row) const;
   QString createNewName(const QString name, const int nameCol);
 
 protected:

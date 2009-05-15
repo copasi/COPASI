@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.197 $
+#   $Revision: 1.198 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/05/14 16:12:01 $
+#   $Author: aekamal $
+#   $Date: 2009/05/15 19:36:28 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.197 $ $Author: shoops $ $Date: 2009/05/14 16:12:01 $
+# $Revision: 1.198 $ $Author: aekamal $ $Date: 2009/05/15 19:36:28 $
 ######################################################################
 
 LIB = UI
@@ -70,6 +70,8 @@ HEADERS	+= \
 	CQSBMLFileDialog.h \
 	CQSensResultWidget.h \
 	CQSortFilterProxyModel.h \
+	CQSpecieDM.h \
+	CQSpeciesWidget.h \
 	CQUpdatesWidget.h \
 	CQValidator.h \
 	CScanContainerWidget.h \
@@ -144,6 +146,8 @@ SOURCES	+= \
 	CQSBMLFileDialog.cpp \
 	CQSensResultWidget.cpp \
 	CQSortFilterProxyModel.cpp \
+	CQSpecieDM.cpp \
+	CQSpeciesWidget.cpp \
 	CQUpdatesWidget.cpp \
 	CQValidator.cpp \
 	CScanContainerWidget.cpp \
@@ -184,8 +188,13 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
-# FORMS3 += CMCAResultSubwidget.ui
+
 FORMS += CQCompartmentsWidget.ui
+FORMS += CQSpeciesWidget.ui
+FORMS += CQReactionsWidget.ui
+
+# FORMS3 += CMCAResultSubwidget.ui
+
 # FORMS3 += CQCompartment.ui
 # FORMS3 += CQDifferentialEquations.ui
 FORMS3 += CQEFMWidget.ui
