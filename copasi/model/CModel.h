@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.170 $
+//   $Revision: 1.171 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:37:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -829,6 +829,10 @@ public:
 
   /* Remove a metabolite from the model */
   bool removeMetabolite(const std::string & key,
+                        const bool & recursive = true);
+  bool removeMetabolite(const unsigned C_INT32 index,
+                        const bool & recursive = true);
+  bool removeMetabolite(const CMetab* pMetabolite,
                         const bool & recursive = true);
 
   /**

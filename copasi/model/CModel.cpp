@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.360 $
+//   $Revision: 1.361 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: aekamal $
+//   $Date: 2009/05/15 19:37:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2593,12 +2593,25 @@ CMetab* CModel::createMetabolite(const std::string & name,
 
   return pMetab;
 }
+
+bool CModel::removeMetabolite(const unsigned C_INT32 index,
+                              const bool & recursive)
+{
+  const CMetab* pMetabolite = getMetabolites()[index];
+  return removeMetabolite(pMetabolite, recursive);
+}
+
 bool CModel::removeMetabolite(const std::string & key,
                               const bool & recursive)
 {
   CMetab* pMetabolite =
-    dynamic_cast<CMetab *>(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  return removeMetabolite(pMetabolite, recursive);
+}
 
+bool CModel::removeMetabolite(const CMetab* pMetabolite,
+                              const bool & recursive)
+{
   if (!pMetabolite)
     return false;
 
@@ -2608,8 +2621,8 @@ bool CModel::removeMetabolite(const std::string & key,
     }
 
   /* Assure that all references are removed */
-  mMetabolites.remove(pMetabolite);
-  mMetabolitesX.remove(pMetabolite);
+  mMetabolites.remove((CMetab *)pMetabolite);
+  mMetabolitesX.remove((CMetab *)pMetabolite);
 
   pdelete(pMetabolite);
 
