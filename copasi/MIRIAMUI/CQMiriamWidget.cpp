@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:39 $
+//   $Author: pwilly $
+//   $Date: 2009/05/18 10:45:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,7 +145,8 @@ void CQMiriamWidget::deleteSelectedAuthor()
 {
   if (!mpTblAuthors->selectionModel()->selectedIndexes().empty())
     {
-      QModelIndex &i = mpCreatorPDM->mapToSource(mpTblAuthors->selectionModel()->selectedIndexes().value(0));
+//      QModelIndex &i = mpCreatorPDM->mapToSource(mpTblAuthors->selectionModel()->selectedIndexes().value(0));
+      QModelIndex i = mpCreatorPDM->mapToSource(mpTblAuthors->selectionModel()->selectedIndexes().value(0));
       int delRow = i.row();
 
       if (mpCreatorDM->isDefaultRow(i))
@@ -180,7 +181,8 @@ void CQMiriamWidget::deleteSelectedReference()
 {
   if (!mpTblReferences->selectionModel()->selectedIndexes().empty())
     {
-      QModelIndex &i = mpReferencePDM->mapToSource(mpTblReferences->selectionModel()->selectedIndexes().value(0));
+//      QModelIndex &i = mpReferencePDM->mapToSource(mpTblReferences->selectionModel()->selectedIndexes().value(0));
+      QModelIndex i = mpReferencePDM->mapToSource(mpTblReferences->selectionModel()->selectedIndexes().value(0));
       int delRow = i.row();
 
       if (mpReferenceDM->isDefaultRow(i))
@@ -215,7 +217,8 @@ void CQMiriamWidget::deleteSelectedBiologicalDescription()
 {
   if (!mpTblDescription->selectionModel()->selectedIndexes().empty())
     {
-      QModelIndex &i = mpBiologicalDescriptionPDM->mapToSource(mpTblDescription->selectionModel()->selectedIndexes().value(0));
+//      QModelIndex &i = mpBiologicalDescriptionPDM->mapToSource(mpTblDescription->selectionModel()->selectedIndexes().value(0));
+      QModelIndex i = mpBiologicalDescriptionPDM->mapToSource(mpTblDescription->selectionModel()->selectedIndexes().value(0));
       int delRow = i.row();
 
       if (mpBiologicalDescriptionDM->isDefaultRow(i))
@@ -250,7 +253,8 @@ void CQMiriamWidget::deleteSelectedModified()
 {
   if (!mpTblModified->selectionModel()->selectedIndexes().empty())
     {
-      QModelIndex &i = mpModifiedPDM->mapToSource(mpTblModified->selectionModel()->selectedIndexes().value(0));
+//      QModelIndex &i = mpModifiedPDM->mapToSource(mpTblModified->selectionModel()->selectedIndexes().value(0);
+      QModelIndex i = mpModifiedPDM->mapToSource(mpTblModified->selectionModel()->selectedIndexes().value(0));
       int delRow = i.row();
 
       if (mpModifiedDM->isDefaultRow(i))
