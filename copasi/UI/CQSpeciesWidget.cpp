@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/15 19:35:32 $
+//   $Author: pwilly $
+//   $Date: 2009/05/18 10:56:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,8 @@ void CQSpeciesWidget::deleteSelectedSpecie()
   if (mpTblSpecies->selectionModel()->selectedIndexes().empty())
     {return;}
 
-  QModelIndex &i = mpProxyModel->mapToSource(mpTblSpecies->selectionModel()->selectedIndexes().value(0));
+//  QModelIndex &i = mpProxyModel->mapToSource(mpTblSpecies->selectionModel()->selectedIndexes().value(0));
+  QModelIndex i = mpProxyModel->mapToSource(mpTblSpecies->selectionModel()->selectedIndexes().value(0));
   int delRow = i.row();
 
   if (mpSpecieDM->isDefaultRow(i))

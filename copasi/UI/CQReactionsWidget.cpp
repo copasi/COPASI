@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Author: pwilly $
+//   $Date: 2009/05/18 10:53:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,7 +84,8 @@ void CQReactionsWidget::deleteSelectedReaction()
   if (mpTblReactions->selectionModel()->selectedIndexes().empty())
     {return;}
 
-  QModelIndex &i = mpProxyModel->mapToSource(mpTblReactions->selectionModel()->selectedIndexes().value(0));
+//  QModelIndex &i = mpProxyModel->mapToSource(mpTblReactions->selectionModel()->selectedIndexes().value(0));
+  QModelIndex i = mpProxyModel->mapToSource(mpTblReactions->selectionModel()->selectedIndexes().value(0));
   int delRow = i.row();
 
   if (mpReactionDM->isDefaultRow(i))
