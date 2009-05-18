@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.208 $
+//   $Revision: 1.209 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/03/18 12:40:35 $
+//   $Date: 2009/05/18 21:18:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,8 @@
 //Added by qt3to4:
 #include <Q3GridLayout>
 #include <Q3HBoxLayout>
+
+#include <QInputDialog>
 
 #include "copasi.h"
 
@@ -213,6 +215,9 @@ bool ScanWidget::loadTask()
 
 bool ScanWidget::slotAddItem()
 {
+  // number of items will be added -> default = 1
+  int totalItems = 1;
+
   int totalRows = -1;
   //+++
   CScanWidgetScan* tmp1;
@@ -253,12 +258,27 @@ bool ScanWidget::slotAddItem()
     {
         //+++
       case CScanProblem::SCAN_LINEAR:
-        tmp1 = new CScanWidgetScan(scrollview);
-        tmp1->initFromScanItem(tmpItem, pDataModel->getModel());
-        scrollview->insertWidget(tmp1);
-        totalRows = scrollview->numRows();
-        scrollview->ensureCellVisible(totalRows - 1, 0);
-        tmp1->lineEditMin->setFocus();
+        bool ok;
+        totalItems = QInputDialog::getInteger(this, tr("Input Dialog"),
+                                              tr("Number of Parameters you will scan:"), totalItems, 0, 100, 1, &ok);
+
+        if (ok)
+          {
+            std::cout << "integer = " << totalItems << std::endl;
+
+            int index = 0;
+
+            for (; index < totalItems; index++)
+              {
+                tmp1 = new CScanWidgetScan(scrollview);
+                tmp1->initFromScanItem(tmpItem, pDataModel->getModel());
+                scrollview->insertWidget(tmp1);
+                totalRows = scrollview->numRows();
+                scrollview->ensureCellVisible(totalRows - 1, 0);
+                tmp1->lineEditMin->setFocus();
+              }
+          }
+
         break;
 
       case CScanProblem::SCAN_REPEAT:
