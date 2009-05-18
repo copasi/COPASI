@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Author: pwilly $
+//   $Date: 2009/05/18 10:51:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,8 @@ void CQCompartmentsWidget::deleteSelectedCompartment()
   if (mpTblCompartments->selectionModel()->selectedIndexes().empty())
     {return;}
 
-  QModelIndex &i = mpProxyModel->mapToSource(mpTblCompartments->selectionModel()->selectedIndexes().value(0));
+//  QModelIndex &i = mpProxyModel->mapToSource(mpTblCompartments->selectionModel()->selectedIndexes().value(0));
+  QModelIndex i = mpProxyModel->mapToSource(mpTblCompartments->selectionModel()->selectedIndexes().value(0));
   int delRow = i.row();
 
   if (mpCompartmentDM->isDefaultRow(i))
