@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.186 $
+//   $Revision: 1.187 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:45:10 $
+//   $Date: 2009/05/19 16:11:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -245,14 +245,14 @@ bool CReaction::setFunction(const std::string & functionName)
 
 bool CReaction::setFunction(CFunction * pFunction)
 {
-  mDependencies.erase(mpFunction);
+  removeDirectDependency(mpFunction);
 
   if (!pFunction)
     mpFunction = CCopasiRootContainer::getUndefinedFunction();
   else
     mpFunction = pFunction;
 
-  mDependencies.insert(mpFunction);
+  addDirectDependency(mpFunction);
 
   mMap.initializeFromFunctionParameters(mpFunction->getVariables());
   initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
@@ -519,14 +519,14 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
 
 void CReaction::compile()
 {
-  mDependencies.clear();
+  clearDirectDependencies();
   std::set< const CCopasiObject * > Dependencies;
 
   CCopasiObject * pObject;
 
   if (mpFunction)
     {
-      mDependencies.insert(mpFunction);
+      addDirectDependency(mpFunction);
 
       unsigned C_INT32 i, j, jmax;
       unsigned C_INT32 imax = mMap.getFunctionParameters().size();
@@ -560,19 +560,19 @@ void CReaction::compile()
   CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
 
   for (; it != end; ++it)
-    mDependencies.insert((*it)->getMetabolite());
+    addDirectDependency((*it)->getMetabolite());
 
   it = mChemEq.getProducts().begin();
   end = mChemEq.getProducts().end();
 
   for (; it != end; ++it)
-    mDependencies.insert((*it)->getMetabolite());
+    addDirectDependency((*it)->getMetabolite());
 
   it = mChemEq.getModifiers().begin();
   end = mChemEq.getModifiers().end();
 
   for (; it != end; ++it)
-    mDependencies.insert((*it)->getMetabolite());
+    addDirectDependency((*it)->getMetabolite());
 
   mpFluxReference->setDirectDependencies(Dependencies);
   mpParticleFluxReference->setDirectDependencies(Dependencies);

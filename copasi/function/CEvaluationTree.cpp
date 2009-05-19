@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:42:59 $
+//   $Date: 2009/05/19 16:11:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ bool CEvaluationTree::isUsable() const
 
 bool CEvaluationTree::compileNodes()
 {
-  mDependencies.clear();
+  clearDirectDependencies();
 
   if (mInfix == "")
     return mUsable = true;
@@ -299,12 +299,12 @@ bool CEvaluationTree::compileNodes()
             {
               if (mType == Expression &&
                   (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
-                mDependencies.insert(pObject);
+                addDirectDependency(pObject);
             }
             break;
 
             case CEvaluationNode::CALL:
-              mDependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
+              addDirectDependency(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
               break;
 
             default:

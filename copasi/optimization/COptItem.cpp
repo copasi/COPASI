@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:21 $
+//   $Date: 2009/05/19 16:11:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,18 +123,18 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN, const CCopasiData
 }
 
 const CCopasiObject * COptItem::getObject() const
-  {return mpObject;}
+{return mpObject;}
 
 const CCopasiObjectName COptItem::getObjectCN() const
-  {return *mpParmObjectCN;}
+{return *mpParmObjectCN;}
 
 std::string COptItem::getObjectDisplayName() const
-  {
-    if (!mpObject && !const_cast<COptItem *>(this)->compile())
-      return "Invalid Optimization Item";
+{
+  if (!mpObject && !const_cast<COptItem *>(this)->compile())
+    return "Invalid Optimization Item";
 
-    return mpObject->getObjectDisplayName();
-  }
+  return mpObject->getObjectDisplayName();
+}
 
 bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound, const CCopasiDataModel* pDataModel)
 {
@@ -167,7 +167,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound, const CCopasi
 }
 
 const std::string COptItem::getLowerBound() const
-  {return *mpParmLowerBound;}
+{return *mpParmLowerBound;}
 
 bool COptItem::setUpperBound(const CCopasiObjectName & upperBound, const CCopasiDataModel* pDataModel)
 {
@@ -200,7 +200,7 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound, const CCopasi
 }
 
 const std::string COptItem::getUpperBound() const
-  {return *mpParmUpperBound;}
+{return *mpParmUpperBound;}
 
 bool COptItem::setStartValue(const C_FLOAT64 & value)
 {
@@ -210,23 +210,24 @@ bool COptItem::setStartValue(const C_FLOAT64 & value)
 }
 
 const C_FLOAT64 & COptItem::getStartValue() const
-  {
-    if (!isnan(*mpParmStartValue))
-      return *mpParmStartValue;
+{
+  if (!isnan(*mpParmStartValue))
+    return *mpParmStartValue;
 
-    if (mpObjectValue == NULL)
-      {
-        const CCopasiDataModel* pDataModel = getObjectDataModel();
-        assert(pDataModel != NULL);
-        const CCopasiObject * pObject = pDataModel->getObject(getObjectCN());
-        if (pObject != NULL)
-          return * (C_FLOAT64 *) pObject->getValuePointer();
+  if (mpObjectValue == NULL)
+    {
+      const CCopasiDataModel* pDataModel = getObjectDataModel();
+      assert(pDataModel != NULL);
+      const CCopasiObject * pObject = pDataModel->getObject(getObjectCN());
 
-        return NaN;
-      }
+      if (pObject != NULL)
+        return *(C_FLOAT64 *) pObject->getValuePointer();
 
-    return *mpObjectValue;
-  }
+      return NaN;
+    }
+
+  return *mpObjectValue;
+}
 
 C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 {
@@ -246,6 +247,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
     {
       if (mpRandom == NULL)
         mpRandom = CRandom::createGenerator();
+
       pRandom = mpRandom;
     }
 
@@ -270,7 +272,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
         }
       else if (mx > 0) // 0 is in the interval (mn, mx)
         {
-          la = log10(mx) + log10( -mn);
+          la = log10(mx) + log10(-mn);
 
           if (la < 3.6) // linear
             RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
@@ -311,18 +313,20 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 }
 
 UpdateMethod * COptItem::getUpdateMethod() const
-  {return mpMethod;}
+{return mpMethod;}
 
 bool COptItem::isValid(const CCopasiDataModel* pDataModel) const
-  {
-    COptItem *pTmp = const_cast<COptItem *>(this);
+{
+  COptItem *pTmp = const_cast<COptItem *>(this);
 
-    if (!pTmp->setObjectCN(getObjectCN(), pDataModel)) return false;
-    if (!pTmp->setLowerBound(getLowerBound(), pDataModel)) return false;
-    if (!pTmp->setUpperBound(getUpperBound(), pDataModel)) return false;
+  if (!pTmp->setObjectCN(getObjectCN(), pDataModel)) return false;
 
-    return true;
-  }
+  if (!pTmp->setLowerBound(getLowerBound(), pDataModel)) return false;
+
+  if (!pTmp->setUpperBound(getUpperBound(), pDataModel)) return false;
+
+  return true;
+}
 
 bool COptItem::isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel)
 {
@@ -332,7 +336,7 @@ bool COptItem::isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pD
 
 bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
-  mDependencies.clear();
+  clearDirectDependencies();
 
   std::string Bound;
 
@@ -344,6 +348,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
                                               getObjectCN())) != NULL &&
       mpObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
+
   if (mpObjectValue == &NaN)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
@@ -356,6 +361,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   mpLowerObject = NULL;
   mpLowerBound = NULL;
   Bound = getLowerBound();
+
   if (Bound == "-inf")
     {
       mLowerBound = - DBL_MAX;
@@ -384,6 +390,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   mpUpperObject = NULL;
   mpUpperBound = NULL;
   Bound = getUpperBound();
+
   if (Bound == "inf")
     {
       mUpperBound = DBL_MAX;
@@ -422,16 +429,18 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 }
 
 C_INT32 COptItem::checkConstraint() const
-  {
-    if (*mpLowerBound > *mpObjectValue) return - 1;
-    if (*mpObjectValue > *mpUpperBound) return 1;
-    return 0;
-  }
+{
+  if (*mpLowerBound > *mpObjectValue) return - 1;
+
+  if (*mpObjectValue > *mpUpperBound) return 1;
+
+  return 0;
+}
 
 C_FLOAT64 COptItem::getConstraintViolation() const
-  {
-    switch (checkConstraint())
-      {
+{
+  switch (checkConstraint())
+    {
       case - 1:
         return *mpLowerBound - *mpObjectValue;
         break;
@@ -443,24 +452,26 @@ C_FLOAT64 COptItem::getConstraintViolation() const
       default:
         return 0.0;
         break;
-      }
-  }
+    }
+}
 
 C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value) const
-  {
-    if (*mpLowerBound > value) return - 1;
-    if (value > *mpUpperBound) return 1;
-    return 0;
-  }
+{
+  if (*mpLowerBound > value) return - 1;
+
+  if (value > *mpUpperBound) return 1;
+
+  return 0;
+}
 
 bool COptItem::checkLowerBound(const C_FLOAT64 & value) const
 {return *mpLowerBound <= value;}
 
 bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
-  {return value <= *mpUpperBound;}
+{return value <= *mpUpperBound;}
 
 const C_FLOAT64 * COptItem::getObjectValue() const
-  {return mpObjectValue;}
+{return mpObjectValue;}
 
 std::ostream &operator<<(std::ostream &os, const COptItem & o)
 {

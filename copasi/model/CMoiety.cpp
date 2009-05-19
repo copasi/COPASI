@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/05/19 16:11:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
   if (!mEquation.size())
     pMetabolite->setDependentOn(this);
   else
-    mDependencies.insert(pMetabolite->mpValueReference);
+    addDirectDependency(pMetabolite->mpValueReference);
 
   mpINumberReference->addDirectDependency(pMetabolite->mpIValueReference);
 
@@ -97,9 +97,9 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 
 void CMoiety::cleanup()
 {
-  mDependencies.clear();
+  clearDirectDependencies();
   mEquation.clear();
-  mpINumberReference->setDirectDependencies(mDependencies);
+  mpINumberReference->setDirectDependencies(getDirectDependencies());
 }
 
 void CMoiety::refreshDependentNumber()
@@ -108,6 +108,7 @@ void CMoiety::refreshDependentNumber()
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin() + 1;
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
+
   for (; it != end; ++it)
     mNumber -= it->first * it->second->getValue();
 
@@ -121,34 +122,36 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 }
 
 const C_FLOAT64 & CMoiety::getDependentNumber() const
-  {return mNumber;}
+{return mNumber;}
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
 
 std::string CMoiety::getDescription(const CModel * model) const
-  {
-    std::string Description;
+{
+  std::string Description;
 
-    std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
-    std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
 
-    for (; it != end; ++it)
-      {
-        if (it != mEquation.begin())
-          {
-            if (it->first < 0.0)
-              Description += " - ";
-            else
-              Description += " + ";
-          }
-        if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
-            fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
-          Description += StringPrint("%g * ", fabs(it->first));
+  for (; it != end; ++it)
+    {
+      if (it != mEquation.begin())
+        {
+          if (it->first < 0.0)
+            Description += " - ";
+          else
+            Description += " + ";
+        }
 
-        Description += CMetabNameInterface::getDisplayName(model, *it->second);
-      }
-    return Description;
-  }
+      if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
+          fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
+        Description += StringPrint("%g * ", fabs(it->first));
+
+      Description += CMetabNameInterface::getDisplayName(model, *it->second);
+    }
+
+  return Description;
+}
 
 void CMoiety::refreshInitialValue()
 {
@@ -156,6 +159,7 @@ void CMoiety::refreshInitialValue()
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
+
   for (; it != end; ++it)
     mINumber += it->first * it->second->getInitialValue();
 
@@ -166,33 +170,33 @@ CCopasiObject * CMoiety::getInitialValueReference() const
 {return mpINumberReference;}
 
 C_FLOAT64 CMoiety::getNumber() const
-  {
-    return mINumber;
-  }
+{
+  return mINumber;
+}
 
 std::string CMoiety::getExpression() const
-  {
-    std::string Infix;
+{
+  std::string Infix;
 
-    std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
-    std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
 
-    for (; it != end; ++it)
-      {
-        if (it != mEquation.begin())
-          {
-            if (it->first < 0.0)
-              Infix += "-";
-            else
-              Infix += "+";
-          }
+  for (; it != end; ++it)
+    {
+      if (it != mEquation.begin())
+        {
+          if (it->first < 0.0)
+            Infix += "-";
+          else
+            Infix += "+";
+        }
 
-        if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
-            fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
-          Infix += StringPrint("%g*", fabs(it->first));
+      if (fabs(it->first) > 1.0 + 100 * DBL_EPSILON ||
+          fabs(it->first) < 1.0 - 100 * DBL_EPSILON)
+        Infix += StringPrint("%g*", fabs(it->first));
 
-        Infix += "<" + it->second->getInitialValueReference()->getCN() + ">";
-      }
+      Infix += "<" + it->second->getInitialValueReference()->getCN() + ">";
+    }
 
-    return Infix;
-  }
+  return Infix;
+}

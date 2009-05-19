@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.361 $
+//   $Revision: 1.362 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/15 19:37:17 $
+//   $Author: shoops $
+//   $Date: 2009/05/19 16:11:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1501,6 +1501,7 @@ bool CModel::buildConstantSequence()
   // not depend on simulated values, i.e., on model entities of type
   // time, ode, reaction
   std::set< const CCopasiObject * > Dependencies;
+  std::set< const CCopasiObject * > Context;
   std::set< const CCopasiObject * >::const_iterator itDepend;
   std::set< const CCopasiObject * >::const_iterator endDepend;
   const CModelEntity * pEntity;
@@ -1516,7 +1517,7 @@ bool CModel::buildConstantSequence()
     {
       Dependencies.clear();
       // We need to add the value and not the object.
-      (*ppEntity)->getValueReference()->getAllDependencies(Dependencies);
+      (*ppEntity)->getValueReference()->getAllDependencies(Dependencies, Context);
 
       itDepend = Dependencies.begin();
       endDepend = Dependencies.end();
@@ -3585,6 +3586,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
   std::set< const CCopasiObject * >::iterator itSet;
   std::set< const CCopasiObject * >::iterator endSet;
   std::set< const CCopasiObject * > Objects;
+  std::set< const CCopasiObject * > Context;
 
   CModelEntity **ppEntity;
   CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
@@ -3715,7 +3717,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   // Check whether we have any circular dependencies
   for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet))
+    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet, Context))
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
 
   // Build the complete set of dependencies
@@ -3726,7 +3728,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
       // Add all its dependencies
       if (InsertedObject.second)
-        (*itSet)->getAllDependencies(DependencySet);
+        (*itSet)->getAllDependencies(DependencySet, Context);
     }
 
   // Remove all objects which do not depend on the changed objects, or do not have a
@@ -3752,7 +3754,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   // Create a properly sorted list.
   std::list< const CCopasiObject * > SortedList =
-    sortObjectsByDependency(DependencySet.begin(), DependencySet.end());
+    sortObjectsByDependency(DependencySet.begin(), DependencySet.end(), Context);
 
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;

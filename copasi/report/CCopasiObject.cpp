@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:18 $
+//   $Date: 2009/05/19 16:11:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,10 +243,15 @@ void CCopasiObject::clearDirectDependencies()
 }
 
 void CCopasiObject::setDirectDependencies(const std::set< const CCopasiObject * > & directDependencies)
-{mDependencies = directDependencies;}
+{
+  mDependencies = directDependencies;
+}
 
-const std::set< const CCopasiObject * > & CCopasiObject::getDirectDependencies() const
-{return mDependencies;}
+const std::set< const CCopasiObject * > &
+CCopasiObject::getDirectDependencies(const std::set< const CCopasiObject * > & /* context */) const
+{
+  return mDependencies;
+}
 
 void CCopasiObject::addDirectDependency(const CCopasiObject * pObject)
 {
@@ -254,10 +259,17 @@ void CCopasiObject::addDirectDependency(const CCopasiObject * pObject)
   return;
 }
 
-void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & dependencies) const
+void CCopasiObject::removeDirectDependency(const CCopasiObject * pObject)
 {
-  std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
-  std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
+  mDependencies.erase(pObject);
+  return;
+}
+
+void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & dependencies,
+                                       const std::set< const CCopasiObject * > & context) const
+{
+  std::set< const CCopasiObject * >::const_iterator it = getDirectDependencies(context).begin();
+  std::set< const CCopasiObject * >::const_iterator end = getDirectDependencies(context).end();
 
   std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
 
@@ -271,26 +283,28 @@ void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & depen
       if (!Inserted.second) continue;
 
       // Add all the dependencies of the direct dependency *it.
-      (*it)->getAllDependencies(dependencies);
+      (*it)->getAllDependencies(dependencies, context);
     }
 }
 
-bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > & candidates) const
+bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > & candidates,
+                              const std::set< const CCopasiObject * > & context) const
 {
   std::set< const CCopasiObject * > verified;
-  return hasCircularDependencies(candidates, verified);
+  return hasCircularDependencies(candidates, verified, context);
 }
 
 bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & candidates,
-    std::set< const CCopasiObject * > & verified) const
+    std::set< const CCopasiObject * > & verified,
+    const std::set< const CCopasiObject * > & context) const
 {
   bool hasCircularDependencies = false;
 
   if (verified.count(this) != 0)
     return hasCircularDependencies;
 
-  std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
-  std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
+  std::set< const CCopasiObject * >::const_iterator it = getDirectDependencies(context).begin();
+  std::set< const CCopasiObject * >::const_iterator end = getDirectDependencies(context).end();
 
   std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
 
@@ -303,7 +317,7 @@ bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & 
   if (Inserted.second)
     {
       for (; it != end && !hasCircularDependencies; ++it)
-        hasCircularDependencies = (*it)->hasCircularDependencies(candidates, verified);
+        hasCircularDependencies = (*it)->hasCircularDependencies(candidates, verified, context);
 
       // Remove the inserted object this from the candidates to avoid any
       // side effects.
@@ -321,7 +335,8 @@ bool CCopasiObject::hasCircularDependencies(std::set< const CCopasiObject * > & 
 //static
 std::vector< Refresh * >
 CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
-                                   const std::set< const CCopasiObject * > & uptoDateObjects)
+                                   const std::set< const CCopasiObject * > & uptoDateObjects,
+                                   const std::set< const CCopasiObject * > & context)
 {
   std::set< const CCopasiObject * > DependencySet;
   std::set< const CCopasiObject * > VerifiedSet;
@@ -334,7 +349,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
   // Check whether we have any circular dependencies
   for (itSet = objects.begin(); itSet != endSet; ++itSet)
-    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet))
+    if ((*itSet)->hasCircularDependencies(DependencySet, VerifiedSet, context))
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
 
   // Build the complete set of dependencies
@@ -345,7 +360,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
       // Add all its dependencies
       if (InsertedObject.second)
-        (*itSet)->getAllDependencies(DependencySet);
+        (*itSet)->getAllDependencies(DependencySet, context);
     }
 
   // Remove all objects which do not have any refresh method as they will
@@ -370,7 +385,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
       // Add all its dependencies too
       if (InsertedObject.second)
-        (*itSet)->getAllDependencies(UpToDateSet);
+        (*itSet)->getAllDependencies(UpToDateSet, context);
     }
 
   // Now remove all objects in the dependency set which are up to date
@@ -379,7 +394,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
   // Create a properly sorted list.
   std::list< const CCopasiObject * > SortedList =
-    sortObjectsByDependency(DependencySet.begin(), DependencySet.end());
+    sortObjectsByDependency(DependencySet.begin(), DependencySet.end(), context);
 
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;
@@ -409,6 +424,7 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
   return UpdateVector;
 }
 
+#ifdef XXXX
 // static
 bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs)
 {
@@ -425,6 +441,7 @@ bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs
 
   return false;
 }
+#endif
 
 void * CCopasiObject::getValuePointer() const
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:44:18 $
+//   $Date: 2009/05/19 16:11:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,18 +28,15 @@
 #include <iostream>
 #include <set>
 
-#include "model/CModelValue.h"
-#include "model/CMoiety.h"
+#include "copasi/report/CCopasiObjectReference.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CMoiety.h"
 
 class CCompartment;
 class CReadConfig;
-//class CWriteConfig;
 class CMetabOld;
 class CModel;
 
-#define METAB_MOIETY 7
-
-/** @dia:pos 80.8289,51.5961 */
 class CMetab : public CModelEntity
 {
   friend void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite);
@@ -382,6 +379,72 @@ public:
   C_INT32 load(CReadConfig & configbuffer);
 
   C_INT32 getIndex() const;
+};
+
+class CConcentrationReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+public:
+  /**
+   * Default constructor
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CConcentrationReference(const CCopasiContainer * pParent,
+                          C_FLOAT64 & reference);
+
+  /**
+   * Copy constructor
+   * @param const CConcentrationReference & src
+   * @param const CCopasiContainer * pParent,
+   */
+  CConcentrationReference(const CConcentrationReference & src,
+                          const CCopasiContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  ~CConcentrationReference();
+
+  /**
+   * Retrieve the list of direct dependencies
+   * @param const std::set< const CCopasiObject * > & context (default empty set)
+   * @return const std::set< const CCopasiObject * > & directDependencies
+   */
+  virtual const std::set< const CCopasiObject * > &
+  getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
+};
+
+class CParticleReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+public:
+  /**
+   * Default constructor
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CParticleReference(const CCopasiContainer * pParent,
+                     C_FLOAT64 & reference);
+
+  /**
+   * Copy constructor
+   * @param const CParticleReference & src
+   * @param const CCopasiContainer * pParent,
+   */
+  CParticleReference(const CParticleReference & src,
+                     const CCopasiContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  ~CParticleReference();
+
+  /**
+   * Retrieve the list of direct dependencies
+   * @param const std::set< const CCopasiObject * > & context (default empty set)
+   * @return const std::set< const CCopasiObject * > & directDependencies
+   */
+  virtual const std::set< const CCopasiObject * > &
+  getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
 };
 
 #endif // COPASI_CMetab
