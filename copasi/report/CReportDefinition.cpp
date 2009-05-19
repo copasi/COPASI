@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:15 $
+//   $Date: 2009/05/19 15:43:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,16 +83,21 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
   std::vector<CRegisteredObjectName>::const_iterator it = mTableVector.begin();
   std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
 
+  CCopasiDataModel* pDataModel = getObjectDataModel();
   CCopasiObject * pObject;
 
   for (; it != end; ++it)
     {
-      pObject = getObjectDataModel()->ObjectFromName(listOfContainer, *it);
+      pObject = pDataModel->ObjectFromName(listOfContainer, *it);
 
-      if (!pObject)
-        CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, it->c_str());
+      if (pObject != NULL)
+        {
+          addTableElement(pObject);
+        }
       else
-        addTableElement(getObjectDataModel()->ObjectFromName(listOfContainer, *it));
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, it->c_str());
+        }
     }
 
   return success;
@@ -114,22 +119,22 @@ bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
 {mTaskType = taskType; return true;}
 
 const CCopasiTask::Type & CReportDefinition::getTaskType() const
-  {return mTaskType;}
+{return mTaskType;}
 
 void CReportDefinition::setSeparator(const CCopasiReportSeparator & Separator)
 {mSeparator = Separator;}
 
 const CCopasiReportSeparator & CReportDefinition::getSeparator() const
-  {return mSeparator;}
+{return mSeparator;}
 
 bool CReportDefinition::getTitle() const
-  {return mbTitle;}
+{return mbTitle;}
 
 void CReportDefinition::setTitle(bool title)
 {mbTitle = title;}
 
 bool CReportDefinition::isTable() const
-  {return mTable;}
+{return mTable;}
 
 void CReportDefinition::setIsTable(bool table)
 {mTable = table;}
@@ -138,14 +143,15 @@ void CReportDefinition::setPrecision(const unsigned C_INT32 & precision)
 {mPrecision = precision;}
 
 const unsigned C_INT32 & CReportDefinition::getPrecision() const
-  {return mPrecision;}
+{return mPrecision;}
 
 const std::string & CReportDefinition::getKey() const
-  {return mKey;}
+{return mKey;}
 
 void CReportDefinition::addTableElement(const CCopasiObject * pObject)
 {
   bool isFirst = false;
+
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
     isFirst = true;
 
@@ -159,6 +165,7 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
     {
       if (mbTitle)
         mHeaderVector.push_back(SeparatorCN);
+
       mBodyVector.push_back(SeparatorCN);
     }
 
@@ -168,6 +175,7 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
       Title =
         pObject->getObjectParent()->getCN();
       Title += ",Reference=Name";
+
       if (mbTitle)
         mHeaderVector.push_back(Title);
 
@@ -180,6 +188,7 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
 
   if (mbTitle)
     mHeaderVector.push_back(Title);
+
   mBodyVector.push_back(pObject->getCN());
 
   return;
