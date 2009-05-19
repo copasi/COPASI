@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/01 19:23:52 $
+//   $Date: 2009/05/19 16:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,9 +86,7 @@ public:
     PLUS = 0x00000021,
     NOT = 0x00000022,
     RUNIFORM = 0x00000023,
-    RNORMAL = 0x00000024,
-    FIRE = 0x00000025,
-    EQUALITY = 0x00000026
+    RNORMAL = 0x00000024
   };
 
   // Operations
@@ -125,14 +123,21 @@ public:
   virtual inline const C_FLOAT64 & value() const
   {
     if (mpFunction)
-      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction)(mpArg1->value());
+      {
+        *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction)(mpArg1->value());
+      }
+    else if (mpFunction2)
+      {
+        *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction2)(mpArg1->value(), mpArg2->value());
+      }
+    else if (mpFunction4)
+      {
+        *const_cast<C_FLOAT64 *>(&mValue) =
+          (*mpFunction4)(mpArg1->value(), mpArg2->value(),
+                         mpArg3->value(), mpArg4->value());
+      }
 
-    if (mpFunction2)
-      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction2)(mpArg1->value(), mpArg2->value());
-
-    if (mpFunction4)
-      return *const_cast<C_FLOAT64 *>(&mValue) = (*mpFunction4)(mpArg1->value(), mpArg2->value(),
-             mpArg3->value(), mpArg4->value());
+    return mValue;
   }
 
   /**

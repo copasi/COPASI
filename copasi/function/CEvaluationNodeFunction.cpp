@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/01 19:23:52 $
+//   $Date: 2009/05/19 16:07:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,14 +232,6 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         if (!mpRandom)
           mpRandom = CRandom::createGenerator();
 
-        break;
-
-      case FIRE:
-        mpFunction2 = fire;
-        break;
-
-      case EQUALITY:
-        mpFunction4 = equality;
         break;
 
       default:
@@ -951,8 +943,6 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         //        break;
       case RUNIFORM:
       case RNORMAL:
-      case FIRE:
-      case EQUALITY:
         // :TODO: Bug 894: Implement me.
         fatalError();
         break;
