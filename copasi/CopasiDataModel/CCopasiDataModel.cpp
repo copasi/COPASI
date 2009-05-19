@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.137 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:12:31 $
+//   $Date: 2009/05/19 15:42:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -288,7 +288,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           pdelete(mpTaskList);
           mpTaskList = XML.getTaskList();
           mpTaskList->setObjectName("TaskList");
-          this->add(mpTaskList, true);
+          add(mpTaskList, true);
           addDefaultTasks();
         }
 
@@ -296,6 +296,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         {
           pdelete(mpReportDefinitionList);
           mpReportDefinitionList = XML.getReportList();
+          add(mpReportDefinitionList, true);
           addDefaultReports();
         }
 
@@ -303,6 +304,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         {
           pdelete(mpPlotDefinitionList);
           mpPlotDefinitionList = XML.getPlotList();
+          add(mpPlotDefinitionList, true);
         }
 
       //TODO: layouts
@@ -310,6 +312,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         {
           pdelete(mpListOfLayouts);
           mpListOfLayouts = XML.getLayoutList();
+          add(mpListOfLayouts, true);
         }
 
       // for debugging create a template layout
@@ -1251,7 +1254,9 @@ const CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopas
       ContainerName = pContainer->getCN();
 
       while (ContainerName.getRemainder() != "")
-        ContainerName = ContainerName.getRemainder();
+        {
+          ContainerName = ContainerName.getRemainder();
+        }
 
       if ((pos = objName.find(ContainerName)) == std::string::npos)
         continue;
@@ -1262,22 +1267,15 @@ const CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopas
         pObject = pContainer->getObject(objName.substr(pos + ContainerName.length() + 1));
     }
 
-  // if not found try to search the parent datamodel
-  if (!pObject)
+  // If we have not found the object in the context we search the whole data model.
+  if (pObject == NULL)
     {
-      const CCopasiDataModel* pDataModel = getObjectDataModel();
-
-      if (pDataModel)
-        pObject = pDataModel->getObject(objName);
+      pObject = getObject(objName);
     }
 
   // if still not found search the function database in the root container
   if (!pObject)
     pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
-
-  // right now, it does not make sense to search the root container
-  //if (!pObject)
-  //  pObject = CCopasiRootContainer::getObject(objName);
 
   return pObject;
 }
