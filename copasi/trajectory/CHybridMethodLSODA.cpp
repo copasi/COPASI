@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2009/05/20 17:34:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,14 +161,12 @@ void CHybridMethodLSODA::initializeParameter()
   addParameter("Absolute Tolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
 
-  addParameter("Adams Max Order",
-               CCopasiParameter::UINT, (unsigned C_INT32) 12);
-
-  addParameter("BDF Max Order",
-               CCopasiParameter::UINT, (unsigned C_INT32) 5);
-
   addParameter("Max Internal Steps (LSODA)",
                CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+
+  // These parameters are no longer supported.
+  removeParameter("Adams Max Order");
+  removeParameter("BDF Max Order");
 }
 
 bool CHybridMethodLSODA::elevateChildren()
@@ -372,8 +370,8 @@ void CHybridMethodLSODA::initMethod(C_FLOAT64 start_time)
 
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
   mIWork[5] = * getValue("Max Internal Steps (LSODA)").pUINT;
-  mIWork[7] = * getValue("Adams Max Order").pUINT;
-  mIWork[8] = * getValue("BDF Max Order").pUINT;
+  mIWork[7] = 12;
+  mIWork[8] = 5;
 
   /***********************************************************************************/
 

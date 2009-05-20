@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:11 $
+//   $Date: 2009/05/20 17:34:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,8 +59,6 @@ void CLyapWolfMethod::initializeParameter()
   assertParameter("Overall time", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
   assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
   assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 
   // Check whether we have an (obsolete) parameter "Use Default Absolute Tolerance"
@@ -83,6 +81,10 @@ void CLyapWolfMethod::initializeParameter()
       setValue("Absolute Tolerance", NewValue);
       removeParameter("Use Default Absolute Tolerance");
     }
+
+  // These parameters are no longer supported.
+  removeParameter("Adams Max Order");
+  removeParameter("BDF Max Order");
 }
 
 bool CLyapWolfMethod::elevateChildren()
@@ -232,8 +234,8 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
   mIWork[5] = * getValue("Max Internal Steps").pUINT;
-  mIWork[7] = * getValue("Adams Max Order").pUINT;
-  mIWork[8] = * getValue("BDF Max Order").pUINT;
+  mIWork[7] = 12;
+  mIWork[8] = 5;
 
   return;
 }

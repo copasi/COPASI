@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2009/05/20 17:34:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,8 +174,6 @@ void CTSSAMethod::initializeIntegrationsParameter()
   assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);
   assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
   assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 
   // Check whether we have a method with the old parameter names
@@ -192,13 +190,11 @@ void CTSSAMethod::initializeIntegrationsParameter()
 
       if ((pParm = getParameter("LSODA.AdamsMaxOrder")) != NULL)
         {
-          setValue("Adams Max Order", *pParm->getValue().pUINT);
           removeParameter("LSODA.AdamsMaxOrder");
         }
 
       if ((pParm = getParameter("LSODA.BDFMaxOrder")) != NULL)
         {
-          setValue("BDF Max Order", *pParm->getValue().pUINT);
           removeParameter("LSODA.BDFMaxOrder");
         }
 
@@ -252,6 +248,10 @@ void CTSSAMethod::initializeIntegrationsParameter()
       setValue("Absolute Tolerance", NewValue);
       removeParameter("Use Default Absolute Tolerance");
     }
+
+  // These parameters are no longer supported.
+  removeParameter("Adams Max Order");
+  removeParameter("BDF Max Order");
 }
 
 bool CTSSAMethod::elevateChildren()
@@ -1915,8 +1915,8 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
   mIWork[5] = * getValue("Max Internal Steps").pUINT;
-  mIWork[7] = * getValue("Adams Max Order").pUINT;
-  mIWork[8] = * getValue("BDF Max Order").pUINT;
+  mIWork[7] = 12;
+  mIWork[8] = 5;
 
   return;
 }
