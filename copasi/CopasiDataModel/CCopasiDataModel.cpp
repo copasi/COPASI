@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.137 $
+//   $Revision: 1.138 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 15:42:24 $
+//   $Date: 2009/05/21 15:22:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -334,7 +334,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
   if (mpModel)
     {
-      mpModel->compileIfNecessary(pProcessReport);
+      mpModel->forceCompile(pProcessReport);
       mpModel->updateInitialValues();
     }
 
