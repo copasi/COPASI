@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/29 21:24:40 $
+//   $Date: 2009/05/21 15:23:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
-    CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), ""),
+    CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), "pointer"),
     mpValue(pValue),
     mRegisteredObjectCN("")
 {
