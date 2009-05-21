@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.11 $
+ $Revision: 1.12 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/01/07 19:36:23 $
+ $Date: 2009/05/21 15:28:13 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,241 +54,242 @@ class CMetab;
 class CRandom;
 
 class CTauLeapMethod : public CTrajectoryMethod
-  {
-    friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
-        CTrajectoryProblem * pProblem);
+{
+  friend CTrajectoryMethod *
+  CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
+      CTrajectoryProblem * pProblem);
 
-    /* PUBLIC METHODS ************************************************************/
+  /* PUBLIC METHODS ************************************************************/
 
-  public:
-    /**
-     * Copy constructor
-     * @param const CTauLeapMethod & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTauLeapMethod(const CTauLeapMethod & src,
-                   const CCopasiContainer * pParent = NULL);
+public:
+  /**
+   * Copy constructor
+   * @param const CTauLeapMethod & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CTauLeapMethod(const CTauLeapMethod & src,
+                 const CCopasiContainer * pParent = NULL);
 
-    /**
-     *   Destructor.
-     */
-    ~CTauLeapMethod();
+  /**
+   *   Destructor.
+   */
+  ~CTauLeapMethod();
 
-    /**
-     * This methods must be called to elevate subgroups to
-     * derived objects. The default implementation does nothing.
-     * @return bool success
-     */
-    virtual bool elevateChildren();
+  /**
+   * This methods must be called to elevate subgroups to
+   * derived objects. The default implementation does nothing.
+   * @return bool success
+   */
+  virtual bool elevateChildren();
 
-    /**
-     *   Creates a CTauLeapMethod adequate for the problem.
-     *   (only regular CTauLeapMethod so far)
-     */
-    static CTauLeapMethod *
-    createTauLeapMethod(CTrajectoryProblem * pProblem = NULL);
+  /**
+   *   Creates a CTauLeapMethod adequate for the problem.
+   *   (only regular CTauLeapMethod so far)
+   */
+  static CTauLeapMethod *
+  createTauLeapMethod(CTrajectoryProblem * pProblem = NULL);
 
-    /**
-     *  This instructs the method to calculate a time step of deltaT
-     *  starting with the current state, i.e., the result of the previous
-     *  step.
-     *  The new state (after deltaT) is expected in the current state.
-     *  The return value is the actual timestep taken.
-     *  @param "const double &" deltaT
-     */
-    virtual void step(const double & deltaT);
+  /**
+   *  This instructs the method to calculate a time step of deltaT
+   *  starting with the current state, i.e., the result of the previous
+   *  step.
+   *  The new state (after deltaT) is expected in the current state.
+   *  The return value is the actual timestep taken.
+   *  @param "const double &" deltaT
+   *  @return Status status
+   */
+  virtual Status step(const double & deltaT);
 
-    /**
-     *  This instructs the method to prepare for integration
-     *  starting with the initialState given.
-     *  @param "const CState *" initialState
-     */
-    virtual void start(const CState * initialState);
+  /**
+   *  This instructs the method to prepare for integration
+   *  starting with the initialState given.
+   *  @param "const CState *" initialState
+   */
+  virtual void start(const CState * initialState);
 
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  /**
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
+  virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
-    /* PROTECTED METHODS *********************************************************/
+  /* PROTECTED METHODS *********************************************************/
 
-  protected:
-    /**
-     * Default constructor.
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTauLeapMethod(const CCopasiContainer * pParent = NULL);
+protected:
+  /**
+   * Default constructor.
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CTauLeapMethod(const CCopasiContainer * pParent = NULL);
 
-    /**
-     * Initializes the solver.
-     */
-    void initMethod();
+  /**
+   * Initializes the solver.
+   */
+  void initMethod();
 
-    /**
-     *   Cleans up memory, etc.
-     */
-    void cleanup();
+  /**
+   *   Cleans up memory, etc.
+   */
+  void cleanup();
 
-    /**
-     *  Simulates the system over the next interval of time. The timestep
-     *  is given as argument.
-     *
-     *  @param  ds A C_FLOAT64 specifying the timestep
-     */
-    void doSingleStep(C_FLOAT64 ds);
+  /**
+   *  Simulates the system over the next interval of time. The timestep
+   *  is given as argument.
+   *
+   *  @param  ds A C_FLOAT64 specifying the timestep
+   */
+  void doSingleStep(C_FLOAT64 ds);
 
-    /**
-     *   Test the model if it is proper to perform stochastic simulations on.
-     *   Several properties are tested (e.g. integer stoichometry, all
-     *   reactions take place in one compartment only, irreversibility...).
-     *
-     *   @param model The model to be checked
-     *   @return 1, if hybrid simulation is possible; <0, if an error occured.
-     */
-    static C_INT32 checkModel(CModel * model);
+  /**
+   *   Test the model if it is proper to perform stochastic simulations on.
+   *   Several properties are tested (e.g. integer stoichometry, all
+   *   reactions take place in one compartment only, irreversibility...).
+   *
+   *   @param model The model to be checked
+   *   @return 1, if hybrid simulation is possible; <0, if an error occured.
+   */
+  static C_INT32 checkModel(CModel * model);
 
-    /**
-     *   Sets up an internal representation of the balances for each reaction.
-     *   This is done in order to be able to deal with fixed metabolites and
-     *   to avoid a time consuming search for the indices of metabolites in the
-     *   model.
-     */
-    void setupBalances();
+  /**
+   *   Sets up an internal representation of the balances for each reaction.
+   *   This is done in order to be able to deal with fixed metabolites and
+   *   to avoid a time consuming search for the indices of metabolites in the
+   *   model.
+   */
+  void setupBalances();
 
-    /**
-     * Calculate the propensities for all reactions
-     */
-    void updatePropensities();
+  /**
+   * Calculate the propensities for all reactions
+   */
+  void updatePropensities();
 
-    /**
-     * Calculate one of the propensities
-     */
-    C_INT32 calculateAmu(C_INT32 reaction_index);
+  /**
+   * Calculate one of the propensities
+   */
+  C_INT32 calculateAmu(C_INT32 reaction_index);
 
-    /**
-     *   Updates the system according to the probabilistic
-     *   number of firings mK[i] of each reaction i
-     */
-    void updateSystem();
+  /**
+   *   Updates the system according to the probabilistic
+   *   number of firings mK[i] of each reaction i
+   */
+  void updateSystem();
 
-    /* VARIABLES *****************************************************************/
+  /* VARIABLES *****************************************************************/
 
-  private:
-    /**
-     * Intialize the method parameter
-     */
-    void initializeParameter();
+private:
+  /**
+   * Intialize the method parameter
+   */
+  void initializeParameter();
 
-  protected:
+protected:
 
-    /**
-     *   Pointer to the model.
-     */
-    CModel * mpModel;
+  /**
+   *   Pointer to the model.
+   */
+  CModel * mpModel;
 
-    /**
-     *   A pointer to the reactions of the model.
-     */
-    const CCopasiVectorNS <CReaction> * mpReactions;
+  /**
+   *   A pointer to the reactions of the model.
+   */
+  const CCopasiVectorNS <CReaction> * mpReactions;
 
-    /**
-     *   Number of reactions.
-     */
-    unsigned C_INT32 mNumReactions;
+  /**
+   *   Number of reactions.
+   */
+  unsigned C_INT32 mNumReactions;
 
-    /**
-     *   A pointer to the metabolites of the model.
-     */
-    CCopasiVector <CMetab> * mpMetabolites;
+  /**
+   *   A pointer to the metabolites of the model.
+   */
+  CCopasiVector <CMetab> * mpMetabolites;
 
-    /**
-     *   Number of variable metabolites.
-     */
-    unsigned C_INT32 mNumNumbers;
+  /**
+   *   Number of variable metabolites.
+   */
+  unsigned C_INT32 mNumNumbers;
 
-    /**
-     *   The propensities of the stochastic reactions.
-     */
-    std::vector <C_FLOAT64> mAmu;
+  /**
+   *   The propensities of the stochastic reactions.
+   */
+  std::vector <C_FLOAT64> mAmu;
 
-    /**
-     *   The sum of propensities.
-     */
-    C_FLOAT64 mA0;
+  /**
+   *   The sum of propensities.
+   */
+  C_FLOAT64 mA0;
 
-    /**
-     *   The k-values of the reactions, that is the
-     *   probabilistic number of firings within one leap.
-     */
-    std::vector <C_INT64> mK;
+  /**
+   *   The k-values of the reactions, that is the
+   *   probabilistic number of firings within one leap.
+   */
+  std::vector <C_INT64> mK;
 
-    /**
-     *   The particle numbers.
-     */
-    std::vector <C_INT64> mNumbers;
+  /**
+   *   The particle numbers.
+   */
+  std::vector <C_INT64> mNumbers;
 
-    /**
-     *   Local representation of the stoichiometry.
-     */
-    std::vector < std::vector <CHybridBalance> > mLocalBalances;
+  /**
+   *   Local representation of the stoichiometry.
+   */
+  std::vector < std::vector <CHybridBalance> > mLocalBalances;
 
-    /**
-     *   Local representation of the substrates.
-     */
-    std::vector < std::vector <CHybridBalance> > mLocalSubstrates;
+  /**
+   *   Local representation of the substrates.
+   */
+  std::vector < std::vector <CHybridBalance> > mLocalSubstrates;
 
-    /**
-     *   The tau value to use.
-     */
-    C_FLOAT64 mTau;
+  /**
+   *   The tau value to use.
+   */
+  C_FLOAT64 mTau;
 
-    /**
-     *   Specifies if the mRandomSeed should be used.
-     *   otherwise a randomly chosen seed is used.
-     */
-    bool mUseRandomSeed;
+  /**
+   *   Specifies if the mRandomSeed should be used.
+   *   otherwise a randomly chosen seed is used.
+   */
+  bool mUseRandomSeed;
 
-    /**
-     *   The random seed to use.
-     */
-    unsigned C_INT32 mRandomSeed;
+  /**
+   *   The random seed to use.
+   */
+  unsigned C_INT32 mRandomSeed;
 
-    /**
-     *   The random number generator.
-     */
-    CRandom * mpRandomGenerator;
+  /**
+   *   The random number generator.
+   */
+  CRandom * mpRandomGenerator;
 
-    /**
-     *   Variables used for the generation of poisson-distr.
-     *   random variables.
-     */
-    C_FLOAT64 sq, alxm, g, oldm;
-    static const C_FLOAT64 cof[6];
+  /**
+   *   Variables used for the generation of poisson-distr.
+   *   random variables.
+   */
+  C_FLOAT64 sq, alxm, g, oldm;
+  static const C_FLOAT64 cof[6];
 
-    /**
-     * indicates if the correction N^2 -> N*(N-1) should be performed
-     */
-    bool mDoCorrection;
+  /**
+   * indicates if the correction N^2 -> N*(N-1) should be performed
+   */
+  bool mDoCorrection;
 
-    /**
-     * Indicates whether the model has global quantities with assignment rules.
-     * If it has, we will use a less efficient way to update the model
-     * state to handle this.
-     */
-    bool mHasAssignments;
+  /**
+   * Indicates whether the model has global quantities with assignment rules.
+   * If it has, we will use a less efficient way to update the model
+   * state to handle this.
+   */
+  bool mHasAssignments;
 
-    /**
-     * tests if the model contains a global value with an assignment rule that is
-     * used in calculations
-     */
-    static bool modelHasAssignments(const CModel* pModel);
+  /**
+   * tests if the model contains a global value with an assignment rule that is
+   * used in calculations
+   */
+  static bool modelHasAssignments(const CModel* pModel);
 
-    /**
-     * index of first metab in a CState
-     */
-    unsigned C_INT32 mFirstMetabIndex;
-  };
+  /**
+   * index of first metab in a CState
+   */
+  unsigned C_INT32 mFirstMetabIndex;
+};
 
 #endif // COPASI_CTauLeapMethod

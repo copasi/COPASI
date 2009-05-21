@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:36:23 $
+//   $Date: 2009/05/21 15:28:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,19 +55,16 @@ bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
 const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
-  {
-    CCopasiMethod::deterministic,
+{
+  CCopasiMethod::deterministic,
+  CCopasiMethod::stochastic,
 #ifdef COPASI_DEBUG
-    CCopasiMethod::LSODAR,
+  CCopasiMethod::tauLeap,
 #endif // COPASI_DEBUG
-    CCopasiMethod::stochastic,
-#ifdef COPASI_DEBUG
-    CCopasiMethod::tauLeap,
-#endif // COPASI_DEBUG
-    CCopasiMethod::hybrid,
-    CCopasiMethod::hybridLSODA,
-    CCopasiMethod::unset
-  };
+  CCopasiMethod::hybrid,
+  CCopasiMethod::hybridLSODA,
+  CCopasiMethod::unset
+};
 
 CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
@@ -86,6 +83,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
@@ -116,6 +114,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
@@ -146,6 +145,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
 
@@ -169,6 +169,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   bool success = mpMethod->isValidProblem(mpProblem);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
@@ -180,6 +181,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTrajectoryProblem->timeSeriesRequested();
+
   if ((pOutputHandler != NULL) &&
       mTimeSeriesRequested &&
       (of & CCopasiTask::TIME_SERIES))
@@ -193,6 +195,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
     }
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+
   return success;
 }
 
@@ -211,20 +214,28 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   const C_FLOAT64 EndTime = *mpCurrentTime + mpTrajectoryProblem->getDuration();
   const C_FLOAT64 StartTime = *mpCurrentTime;
+  C_FLOAT64 CompareEndTime;
 
   C_FLOAT64 StepNumber = (mpTrajectoryProblem->getDuration()) / StepSize;
 
   bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &);
+
   if (StepSize < 0.0)
     {
       LE = &ble;
       L = &bl;
+
+      // It suffices to reach the end time within machine precision
+      CompareEndTime = EndTime - 100 * (fabs(EndTime) * DBL_EPSILON + DBL_MIN);
     }
   else
     {
       LE = &fle;
       L = &fl;
+
+      // It suffices to reach the end time within machine precision
+      CompareEndTime = EndTime + 100 * (fabs(EndTime) * DBL_EPSILON + DBL_MIN);
     }
 
   unsigned C_INT32 StepCounter = 1;
@@ -279,7 +290,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
               output(COutputInterface::DURING);
             }
         }
-      while ((*L)(*mpCurrentTime, EndTime) && flagProceed);
+      while ((*L)(*mpCurrentTime, CompareEndTime) && flagProceed);
     }
 
   catch (int)
@@ -293,6 +304,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
         }
 
       if (mpCallBack) mpCallBack->finish(hProcess);
+
       output(COutputInterface::AFTER);
 
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
@@ -309,6 +321,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
         }
 
       if (mpCallBack) mpCallBack->finish(hProcess);
+
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
@@ -334,55 +347,53 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
   return;
 }
 
-bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
+bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 {
-  C_FLOAT64 CompareTime = nextTime - 100 * (fabs(nextTime) * DBL_EPSILON + DBL_MIN);
+  mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, false);
 
-  if (*mpCurrentTime <= CompareTime)
+  C_FLOAT64 Tolerance = 100 * (fabs(endTime) * DBL_EPSILON + DBL_MIN);
+  C_FLOAT64 NextTime = endTime;
+
+  do
     {
-      do
+      // std::min suffices since events are only supported in forward integration.
+      NextTime = std::min(endTime, mpTrajectoryProblem->getModel()->getProcessQueueExecutionTime());
+
+      switch (mpTrajectoryMethod->step(NextTime - *mpCurrentTime))
         {
-          mpTrajectoryMethod->step(nextTime - *mpCurrentTime);
+          case CTrajectoryMethod::NORMAL:
 
-          if (*mpCurrentTime > CompareTime) break;
+            if (fabs(*mpCurrentTime - endTime) < Tolerance)
+              {
+                mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
+                mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-          /* Here we will do conditional event processing */
+                // Only equality
+                mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, true);
+                return true;
+              }
 
-          /* Currently this is correct since no events are processed. */
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+            // We need to process both equality and inequality
+            mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, true);
+            mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, false);
+            break;
+
+          case CTrajectoryMethod::ROOT:
+            mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
+            mpTrajectoryProblem->getModel()->processRoots(mpTrajectoryMethod->getRoots());
+
+            break;
+
+          case CTrajectoryMethod::FAILURE:
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+
+            return false;
+            break;
         }
-      while (true);
-
-      mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-
-      return true;
     }
+  while (true);
 
-  CompareTime = nextTime + 100 * (fabs(nextTime) * DBL_EPSILON + DBL_MIN);
-  if (*mpCurrentTime >= CompareTime)
-    {
-      do
-        {
-          mpTrajectoryMethod->step(nextTime - *mpCurrentTime);
-
-          if (*mpCurrentTime < CompareTime) break;
-
-          /* Here we will do conditional event processing */
-
-          /* Currently this is correct since no events are processed. */
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
-        }
-      while (true);
-
-      mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-
-      return true;
-    }
-
-  // Current time is approximately nextTime;
-  return false;
+  return true;
 }
 
 bool CTrajectoryTask::restore()
@@ -407,15 +418,17 @@ bool CTrajectoryTask::setMethodType(const int & type)
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
   if (!isValidMethod(Type, ValidMethods)) return false;
+
   if (mpMethod->getSubType() == Type) return true;
 
-  pdelete (mpMethod);
+  pdelete(mpMethod);
   mpMethod =
     CTrajectoryMethod::createTrajectoryMethod(Type,
         (CTrajectoryProblem *) mpProblem);
   this->add(mpMethod, true);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
@@ -428,4 +441,4 @@ CState * CTrajectoryTask::getState()
 {return mpCurrentState;}
 
 const CTimeSeries & CTrajectoryTask::getTimeSeries() const
-  {return mTimeSeries;}
+{return mTimeSeries;}

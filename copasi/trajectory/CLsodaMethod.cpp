@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:16 $
+//   $Date: 2009/05/21 15:28:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,40 +57,40 @@ void CLsodaMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false);
-  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  mpReducedModel =
+    assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
+  mpRelativeTolerance =
+    assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6)->getValue().pUDOUBLE;
+  mpAbsoluteTolerance =
+    assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12)->getValue().pUDOUBLE;
+  mpMaxInternalSteps =
+    assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000)->getValue().pUINT;
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("LSODA.RelativeTolerance")) != NULL)
     {
-      setValue("Relative Tolerance", *pParm->getValue().pUDOUBLE);
+      *mpRelativeTolerance = *pParm->getValue().pUDOUBLE;
       removeParameter("LSODA.RelativeTolerance");
 
       if ((pParm = getParameter("LSODA.AbsoluteTolerance")) != NULL)
         {
-          setValue("Absolute Tolerance", *pParm->getValue().pUDOUBLE);
+          *mpAbsoluteTolerance = *pParm->getValue().pUDOUBLE;
           removeParameter("LSODA.AbsoluteTolerance");
         }
 
       if ((pParm = getParameter("LSODA.AdamsMaxOrder")) != NULL)
         {
-          setValue("Adams Max Order", *pParm->getValue().pUINT);
           removeParameter("LSODA.AdamsMaxOrder");
         }
 
       if ((pParm = getParameter("LSODA.BDFMaxOrder")) != NULL)
         {
-          setValue("BDF Max Order", *pParm->getValue().pUINT);
           removeParameter("LSODA.BDFMaxOrder");
         }
 
       if ((pParm = getParameter("LSODA.MaxStepsInternal")) != NULL)
         {
-          setValue("Max Internal Steps", *pParm->getValue().pUINT);
+          *mpMaxInternalSteps = *pParm->getValue().pUINT;
           removeParameter("LSODA.MaxStepsInternal");
         }
     }
@@ -107,7 +107,7 @@ void CLsodaMethod::initializeParameter()
         }
       else
         {
-          C_FLOAT64 OldValue = *getValue("Absolute Tolerance").pUDOUBLE;
+          C_FLOAT64 OldValue = *mpAbsoluteTolerance;
           CCopasiDataModel* pDataModel = getObjectDataModel();
           assert(pDataModel != NULL);
           CModel * pModel = pDataModel->getModel();
@@ -134,9 +134,13 @@ void CLsodaMethod::initializeParameter()
             }
         }
 
-      setValue("Absolute Tolerance", NewValue);
+      *mpAbsoluteTolerance = NewValue;
       removeParameter("Use Default Absolute Tolerance");
     }
+
+  // These parameters are no longer supported.
+  removeParameter("Adams Max Order");
+  removeParameter("BDF Max Order");
 }
 
 bool CLsodaMethod::elevateChildren()
@@ -145,7 +149,7 @@ bool CLsodaMethod::elevateChildren()
   return true;
 }
 
-void CLsodaMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 {
   if (!mData.dim) //just do nothing if there are no variables
     {
@@ -153,7 +157,7 @@ void CLsodaMethod::step(const double & deltaT)
       mpState->setTime(mTime);
       *mpCurrentState = *mpState;
 
-      return;
+      return NORMAL;
     }
 
   C_FLOAT64 EndTime = mTime + deltaT;
@@ -162,35 +166,77 @@ void CLsodaMethod::step(const double & deltaT)
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
-  mLSODA(&EvalF, //  1. evaluate F
-         &mData.dim, //  2. number of variables
-         mY, //  3. the array of current concentrations
-         &mTime, //  4. the current time
-         &EndTime, //  5. the final time
-         &ITOL, //  6. error control
-         &mRtol, //  7. relative tolerance array
-         mAtol.array(), //  8. absolute tolerance array
-         &mState, //  9. output by overshoot & interpolation
-         &mLsodaStatus, // 10. the state control variable
-         &one, // 11. further options (one)
-         mDWork.array(), // 12. the double work array
-         &DSize, // 13. the double work array size
-         mIWork.array(), // 14. the int work array
-         &ISize, // 15. the int work array size
-         NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of jacobian calculate (2)
-
-  if (mLsodaStatus == -1) mLsodaStatus = 2;
-
-  if ((mLsodaStatus != 1) && (mLsodaStatus != 2) && (mLsodaStatus != -1))
+  if (mRoots.size() > 0)
     {
+      mLSODAR(&EvalF, //  1. evaluate F
+              &mData.dim, //  2. number of variables
+              mY, //  3. the array of current concentrations
+              &mTime, //  4. the current time
+              &EndTime, //  5. the final time
+              &ITOL, //  6. error control
+              &mRtol, //  7. relative tolerance array
+              mAtol.array(), //  8. absolute tolerance array
+              &mState, //  9. output by overshoot & interpolation
+              &mLsodaStatus, // 10. the state control variable
+              &one, // 11. further options (one)
+              mDWork.array(), // 12. the double work array
+              &DSize, // 13. the double work array size
+              mIWork.array(), // 14. the int work array
+              &ISize, // 15. the int work array size
+              NULL, // 16. evaluate J (not given)
+              &mJType, // 17. type of j evaluation 2 internal full matrix
+              &EvalR, // 18. evaluate constraint functions
+              &mNumRoots, // 19. number of constraint functions g(i)
+              mRoots.array()); // 20. integer array of length NG for output of root information
+    }
+  else
+    {
+      mLSODA(&EvalF, //  1. evaluate F
+             &mData.dim, //  2. number of variables
+             mY, //  3. the array of current concentrations
+             &mTime, //  4. the current time
+             &EndTime, //  5. the final time
+             &ITOL, //  6. error control
+             &mRtol, //  7. relative tolerance array
+             mAtol.array(), //  8. absolute tolerance array
+             &mState, //  9. output by overshoot & interpolation
+             &mLsodaStatus, // 10. the state control variable
+             &one, // 11. further options (one)
+             mDWork.array(), // 12. the double work array
+             &DSize, // 13. the double work array size
+             mIWork.array(), // 14. the int work array
+             &ISize, // 15. the int work array size
+             NULL, // 16. evaluate J (not given)
+             &mJType);        // 17. the type of jacobian calculate (2)
+    }
+
+  // Why did we ignore this error?
+  // if (mLsodaStatus == -1) mLsodaStatus = 2;
+
+  // The status of the integrator.
+  Status Status = NORMAL;
+
+  if ((mLsodaStatus <= 0))
+    {
+      Status = FAILURE;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+    }
+
+  // TODO CRITICAL Handle the status correctly
+  // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
+  // the caller as it is not sufficient to rely on the fact that T < TOUT
+
+  if (mLsodaStatus == 3)
+    {
+      // TODO Check whether it is sufficient to switch to 2
+      mLsodaStatus = 1;
+      Status = ROOT;
     }
 
   mpState->setTime(mTime);
   *mpCurrentState = *mpState;
 
-  return;
+  return Status;
 }
 
 void CLsodaMethod::start(const CState * initialState)
@@ -203,7 +249,6 @@ void CLsodaMethod::start(const CState * initialState)
   mState = 1;
   mJType = 2;
   mErrorMsg.str("");
-  mLSODA.setOstream(mErrorMsg);
 
   /* Release previous state and make the initialState the current */
   pdelete(mpState);
@@ -211,28 +256,39 @@ void CLsodaMethod::start(const CState * initialState)
   mY = mpState->beginIndependent();
   mTime = mpState->getTime();
 
-  mReducedModel = * getValue("Integrate Reduced Model").pBOOL;
-  if (mReducedModel)
+  if (*mpReducedModel)
     mData.dim = mpState->getNumIndependent();
   else
     mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
 
   mYdot.resize(mData.dim);
 
-  /* Configure lsoda */
-  mRtol = * getValue("Relative Tolerance").pUDOUBLE;
+  // TODO CRITICAL Retrieve the number of roots.
+  mNumRoots = 0;
+  mRoots.resize(mNumRoots);
 
-  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
-  mAtol = mpModel->initializeAtolVector(*pTolerance, mReducedModel);
+  /* Configure lsoda(r) */
+  mRtol = *mpRelativeTolerance;
 
-  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
+  mAtol = mpModel->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
+
+  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
   mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
-  mIWork[5] = * getValue("Max Internal Steps").pUINT;
-  mIWork[7] = * getValue("Adams Max Order").pUINT;
-  mIWork[8] = * getValue("BDF Max Order").pUINT;
+  mIWork[5] = *mpMaxInternalSteps;
+  mIWork[7] = 12;
+  mIWork[8] = 5;
+
+  if (mRoots.size() > 0)
+    {
+      mLSODAR.setOstream(mErrorMsg);
+    }
+  else
+    {
+      mLSODA.setOstream(mErrorMsg);
+    }
 
   return;
 }
@@ -242,17 +298,27 @@ void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
 
 void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  assert (y == mY);
+  assert(y == mY);
 
   mpState->setTime(*t);
 
   mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues(mReducedModel);
+  mpModel->updateSimulatedValues(*mpReducedModel);
 
-  if (mReducedModel)
+  if (*mpReducedModel)
     mpModel->calculateDerivativesX(ydot);
   else
     mpModel->calculateDerivatives(ydot);
 
   return;
 }
+
+void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
+                         const C_INT * nr, const double * r)
+{static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
+
+void CLsodaMethod::evalR(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */,
+                         const C_INT * /* nr */, const double * /* r */)
+{
+  // TODO CRITICAL Implement me!
+};

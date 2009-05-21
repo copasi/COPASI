@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/20 17:34:28 $
+//   $Date: 2009/05/21 15:28:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,7 +205,7 @@ CHybridMethodLSODA *CHybridMethodLSODA::createHybridMethodLSODA(CTrajectoryProbl
   return method;
 }
 
-void CHybridMethodLSODA::step(const double & deltaT)
+CTrajectoryMethod::Status CHybridMethodLSODA::step(const double & deltaT)
 {
   //outputDebug(std::cout, 0);
   // write the current state to the model
@@ -254,7 +254,7 @@ void CHybridMethodLSODA::step(const double & deltaT)
 
   mpCurrentState->setTime(time);
 
-  return;
+  return NORMAL;
 }
 
 void CHybridMethodLSODA::start(const CState * initialState)

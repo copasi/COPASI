@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:55:35 $
+//   $Author: shoops $
+//   $Date: 2009/05/21 15:28:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,22 +71,23 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
 
   switch (result)
     {
-      // Error: TauLeap simulation impossible
-      /*    case - 3:      // non-integer stoichiometry
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
-      break;
-      case - 2:      // reversible reaction exists
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
-      break;
-      case - 1:      // more than one compartment involved
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
-      break;*/
-      // Everything all right: Hybrid simulation possible
-    case 1:
-    default:
-      method = new CTauLeapMethod();
-      break;
+        // Error: TauLeap simulation impossible
+        /*    case - 3:      // non-integer stoichiometry
+        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
+        break;
+        case - 2:      // reversible reaction exists
+        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
+        break;
+        case - 1:      // more than one compartment involved
+        CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
+        break;*/
+        // Everything all right: Hybrid simulation possible
+      case 1:
+      default:
+        method = new CTauLeapMethod();
+        break;
     }
+
   return method;
 }
 
@@ -152,7 +153,7 @@ bool CTauLeapMethod::elevateChildren()
   return true;
 }
 
-void CTauLeapMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 {
   unsigned C_INT32 i, imax;
 
@@ -166,29 +167,33 @@ void CTauLeapMethod::step(const double & deltaT)
   C_FLOAT64 ds;
 
   ds = mTau;
+
   while ((time + ds) < endTime)
     {
       doSingleStep(ds);
       time += ds;
     }
+
   if (time < endTime)
     {
       doSingleStep(endTime - time);
       time = endTime;
     }
+
   mpCurrentState->setTime(time);
 
   // get back the particle numbers
 
   /* Set the variable metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
+
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
   // MetabolitesX which is not the case if we have metabolites of type ODE.
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
 
-  return;
+  return NORMAL;
 }
 
 void CTauLeapMethod::start(const CState * initialState)
@@ -226,7 +231,7 @@ void CTauLeapMethod::initMethod()
 
   mpReactions = &mpModel->getReactions();
   mNumReactions = mpReactions->size();
-  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolitesX()));
+  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & >(mpModel->getMetabolitesX()));
   mAmu.clear();
   mAmu.resize(mpReactions->size());
   mK.clear();
@@ -242,6 +247,7 @@ void CTauLeapMethod::initMethod()
       mpModel->getMetabolitesX()[i]->setValue(mNumbers[i]);
       mpModel->getMetabolitesX()[i]->refreshConcentration();
     }
+
   //TODO also put fixed variables here
 
   mpModel->updateSimulatedValues(false); //for assignments
@@ -256,6 +262,7 @@ void CTauLeapMethod::initMethod()
   mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
   //std::cout << "TAULEAP.UseRandomSeed: " << mUseRandomSeed << std::endl;
   mRandomSeed = * getValue("Random Seed").pUINT;
+
   //std::cout << "TAULEAP.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
@@ -314,9 +321,11 @@ C_INT32 CTauLeapMethod::checkModel(CModel * model)
         {
           multFloat = mStoi[j][i];
           multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
+
           if ((multFloat - multInt) > INT_EPSILON) return - 3; // INT_EPSILON in CTauLeapMethod.h
         }
     }
+
   return 1; // Model is appropriate for hybrid simulation
 }
 
@@ -332,12 +341,15 @@ void CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   C_FLOAT64 lambda;
 
   updatePropensities();
+
   for (i = 0; i < mNumReactions; i++)
     {
       if ((lambda = mAmu[i] * ds) < 0.0)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
+
       mK[i] = (C_INT64)mpRandomGenerator->getRandomPoisson(mAmu[i] * ds);
     }
+
   updateSystem();
   return;
 }
@@ -363,20 +375,23 @@ void CTauLeapMethod::setupBalances()
     {
       const CCopasiVector <CChemEqElement> * balances =
         &(*mpReactions)[i]->getChemEq().getBalances();
+
       for (j = 0; j < balances->size(); j++)
         {
-          newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
+          newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
+
           if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
             mLocalBalances[i].push_back(newElement); // element is copied for the push_back
         }
 
       balances = &(*mpReactions)[i]->getChemEq().getSubstrates();
+
       for (j = 0; j < balances->size(); j++)
         {
-          newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
+          newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
@@ -444,10 +459,11 @@ C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
           number = mNumbers[substrates[i].mIndex];
           lower_bound = number - num_ident;
           //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
-          substrate_factor = substrate_factor * pow((double) number, (int) (num_ident - 1)); //optimization
+          substrate_factor = substrate_factor * pow((double) number, (int)(num_ident - 1));  //optimization
           //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
           number--; //optimization
+
           while (number > lower_bound)
             {
               amu *= number;
@@ -532,6 +548,7 @@ void CTauLeapMethod::updateSystem()
             }
         }
     }
+
   return;
 }
 
@@ -552,6 +569,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use
   //      CCopasiMessage
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
+
   if (message != "")
     {
       //model not suitable, message describes the problem
@@ -560,6 +578,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   mTau = * getValue("Tau").pDOUBLE;
+
   if (mTau <= 0.0)
     {
       // tau-value is not positive
@@ -574,6 +593,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
 bool CTauLeapMethod::modelHasAssignments(const CModel* pModel)
 {
   C_INT32 i, imax = pModel->getNumModelValues();
+
   for (i = 0; i < imax; ++i)
     {
       if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
@@ -585,6 +605,7 @@ bool CTauLeapMethod::modelHasAssignments(const CModel* pModel)
     }
 
   imax = pModel->getNumMetabs();
+
   for (i = 0; i < imax; ++i)
     {
       if (pModel->getMetabolites()[i]->getStatus() == CModelEntity::ASSIGNMENT)
@@ -596,6 +617,7 @@ bool CTauLeapMethod::modelHasAssignments(const CModel* pModel)
     }
 
   imax = pModel->getCompartments().size();
+
   for (i = 0; i < imax; ++i)
     {
       if (pModel->getCompartments()[i]->getStatus() == CModelEntity::ASSIGNMENT)

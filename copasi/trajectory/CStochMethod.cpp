@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2009/05/21 15:28:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,7 +143,7 @@ bool CStochMethod::elevateChildren()
   return true;
 }
 
-void CStochMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
 {
   // write the current state to the model:
   //mpProblem->getModel()->setState(mpCurrentState); //?
@@ -187,7 +187,7 @@ void CStochMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
-  return;
+  return NORMAL;
 }
 
 void CStochMethod::start(const CState * initialState)

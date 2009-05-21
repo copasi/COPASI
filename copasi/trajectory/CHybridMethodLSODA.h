@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Date: 2009/05/21 15:28:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,8 +167,9 @@ public:
    *  The new state (after deltaT) is expected in the current state.
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
+   *  @return Status status
    */
-  virtual void step(const double & deltaT);
+  virtual Status step(const double & deltaT);
 
   /**
    *  This instructs the method to prepare for integration
