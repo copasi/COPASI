@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/27 14:43:59 $
+//   $Date: 2009/05/21 15:26:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,16 +58,6 @@ void CQEventWidget1::languageChange()
 /*! Slot to save all current values of the active event widget whenever the Commit button is clicked */
 void CQEventWidget1::slotBtnCommitClicked()
 {
-  /*  // check whether no empty expression widget exists
-    if (!checkAllExpressionsOK())
-      {
-        QString msg = "There is at least one empty expression widget. Please check it.";
-
-        CQMessageBox::critical(this, "Unable to save model with empty expression widget", msg,
-                               QMessageBox::Ok | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton, QMessageBox::NoButton);
-        return;
-      }
-  */
   saveToEvent();
   loadFromEvent();
 }
@@ -483,28 +473,19 @@ bool CQEventWidget1::enter(const std::string & key)
 /*! The slot to be done before leaving the active event widget */
 bool CQEventWidget1::leave()
 {
-  // std::cout << "CQEW1::leave" << std::endl;
+  mpExpressionTrigger->updateWidget();
 
-  if (mpBtnCommit->isEnabled())
-    {
-      mpExpressionTrigger->updateWidget();
+  if (!mpBtnDelayNone->isChecked())
+    mpExpressionDelay->updateWidget();
 
-      if (!mpBtnDelayNone->isChecked())
-        mpExpressionDelay->updateWidget();
+  saveToEvent();
 
-      saveToEvent();
-      //  mObjectKeyDisplayName.resize(0);
+  mpBtnAddTarget->setEnabled(true);
 
-      // enable/disable buttons
-      mpBtnAddTarget->setEnabled(true);
-      mpBtnCommit->setEnabled(false);
-      mpBtnRevert->setEnabled(false);
-
-      if (mpLBTarget->count()) // not empty
-        mpBtnDeleteTarget->setEnabled(true);
-      else      // empty
-        mpBtnDeleteTarget->setEnabled(false);
-    }
+  if (mpLBTarget->count())
+    mpBtnDeleteTarget->setEnabled(true);
+  else
+    mpBtnDeleteTarget->setEnabled(false);
 
   return true;
 }
