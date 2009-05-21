@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.145 $
+//   $Revision: 1.146 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/05/21 15:29:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -481,7 +481,7 @@ bool CMetab::compile()
 
               if (itChem != endChem)
                 {
-                  Dependencies.insert((*it)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+                  Dependencies.insert((*it)->getParticleFluxReference());
 
                   std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
                   Insert.first = (*itChem)->getMultiplicity();
@@ -964,6 +964,9 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
 
+// static
+std::set< const CCopasiObject * > CConcentrationReference::EmptyDependencies;
+
 CConcentrationReference::CConcentrationReference(const CCopasiContainer * pParent,
     C_FLOAT64 & reference) :
     CCopasiObjectReference< C_FLOAT64 >("Concentration", pParent, reference)
@@ -994,13 +997,25 @@ CConcentrationReference::getDirectDependencies(const std::set< const CCopasiObje
 
 CParticleReference::CParticleReference(const CCopasiContainer * pParent,
                                        C_FLOAT64 & reference) :
-    CCopasiObjectReference< C_FLOAT64 >("ParticleNumber", pParent, reference)
-{}
+    CCopasiObjectReference< C_FLOAT64 >("ParticleNumber", pParent, reference),
+    mDefaultDependencies()
+{
+  if (pParent != NULL)
+    {
+      mDefaultDependencies.insert(pParent);
+    }
+}
 
 CParticleReference::CParticleReference(const CParticleReference & src,
                                        const CCopasiContainer * pParent) :
-    CCopasiObjectReference< C_FLOAT64 >(src, pParent)
-{}
+    CCopasiObjectReference< C_FLOAT64 >(src, pParent),
+    mDefaultDependencies()
+{
+  if (pParent != NULL)
+    {
+      mDefaultDependencies.insert(pParent);
+    }
+}
 
 CParticleReference::~CParticleReference()
 {}
@@ -1009,8 +1024,6 @@ CParticleReference::~CParticleReference()
 const std::set< const CCopasiObject * > &
 CParticleReference::getDirectDependencies(const std::set< const CCopasiObject * > & context) const
 {
-  static std::set< const CCopasiObject * > Dependencies;
-
   const CMetab * pSpecies = static_cast< const CMetab * >(getObjectParent());
 
   // In an assignment the particles have always dependencies
@@ -1030,8 +1043,19 @@ CParticleReference::getDirectDependencies(const std::set< const CCopasiObject * 
       return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
     }
 
-  // Assure that Dependencies includes species. Multiple inserts are ignored.
-  Dependencies.insert(pSpecies);
+  return mDefaultDependencies;
+}
 
-  return Dependencies;
+// virtual
+bool CParticleReference::setObjectParent(const CCopasiContainer * pParent)
+{
+  bool success = CCopasiObjectReference< C_FLOAT64 >::setObjectParent(pParent);
+  mDefaultDependencies.clear();
+
+  if (pParent != NULL)
+    {
+      mDefaultDependencies.insert(pParent);
+    }
+
+  return success;
 }
