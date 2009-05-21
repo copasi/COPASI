@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/21 16:35:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,9 +23,11 @@
 
 class CMathTrigger : public CCopasiContainer
 {
-private:
+public:
   class CRootFinder : public CCopasiContainer
   {
+    friend class CMathTrigger;
+
     // Operations
   public:
     /**
@@ -88,7 +90,7 @@ private:
     C_FLOAT64 * getRootValuePtr();
 
     // Attributes
-  public:
+  private:
     /**
      * This expression calculates the root
      */
