@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:38:35 $
+//   $Date: 2009/05/21 15:25:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,102 +31,103 @@
 #include "model/CModel.h"
 
 const std::string CCopasiMethod::SubTypeName[] =
-  {
-    "Not set",
-    "Random Search",
-    "Random Search (PVM)",
-    "Simulated Annealing",
-    "Genetic Algorithm",
-    "Evolutionary Programming",
-    "Steepest Descent",
-    "Hybrid GA/SA",
-    "Genetic Algorithm SR",
-    "Hooke & Jeeves",
-    "Levenberg - Marquardt",
-    "Nelder - Mead",
-    "Evolution Strategy (SRES)",
-    "Current Solution Statistics",
-    "Particle Swarm",
-    "Praxis",
-    "Truncated Newton",
-    "Enhanced Newton",
-    "Deterministic (LSODA)",
-    "Deterministic (LSODAR)",
-    "Stochastic (Gibson + Bruck)",
-    "Hybrid (Runge-Kutta)",
-    "Hybrid (LSODA)",
+{
+  "Not set",
+  "Random Search",
+  "Random Search (PVM)",
+  "Simulated Annealing",
+  "Genetic Algorithm",
+  "Evolutionary Programming",
+  "Steepest Descent",
+  "Hybrid GA/SA",
+  "Genetic Algorithm SR",
+  "Hooke & Jeeves",
+  "Levenberg - Marquardt",
+  "Nelder - Mead",
+  "Evolution Strategy (SRES)",
+  "Current Solution Statistics",
+  "Particle Swarm",
+  "Praxis",
+  "Truncated Newton",
+  "Enhanced Newton",
+  "Deterministic (LSODA)",
+  "Deterministic (LSODAR)",
+  "Stochastic (Gibson + Bruck)",
+  "Hybrid (Runge-Kutta)",
+  "Hybrid (LSODA)",
 #ifdef COPASI_TSSA
-    "ILDM (LSODA,Deuflhard)",
-    "ILDM (LSODA,Modified)",
-    "CSP (LSODA)",
+  "ILDM (LSODA,Deuflhard)",
+  "ILDM (LSODA,Modified)",
+  "CSP (LSODA)",
 #endif // COPASI_TSSA
-    "Stochastic (\xcf\x84-Leap)",
-    "MCA Method (Reder)",
-    "Scan Framework",
-    "Wolf Method",
+  "Stochastic (\xcf\x84-Leap)",
+  "MCA Method (Reder)",
+  "Scan Framework",
+  "Wolf Method",
 #ifdef COPASI_TSS
-    "Time Scale Separation Method",
+  "Time Scale Separation Method",
 #endif // COPASI_TSS
-    "Sensitivities Method",
+  "Sensitivities Method",
 #ifdef COPASI_SSA
-    "Stoichiometric Stability Analysis",
+  "Stoichiometric Stability Analysis",
 #endif // COPASI_SSA
-    "EFM Algorithm",
-    "Householder Reduction",
-    ""
-  };
+  "EFM Algorithm",
+  "Householder Reduction",
+  ""
+};
 
 const char* CCopasiMethod::XMLSubType[] =
-  {
-    "NotSet",
-    "RandomSearch",
-    "RandomSearch(PVM)",
-    "SimulatedAnnealing",
-    "GeneticAlgorithm",
-    "EvolutionaryProgram",
-    "SteepestDescent",
-    "HybridGASA",
-    "GeneticAlgorithmSR",
-    "HookeJeeves",
-    "LevenbergMarquardt",
-    "NelderMead",
-    "EvolutionaryStrategySR",
-    "CurrentSolutionStatistics",
-    "ParticleSwarm",
-    "Praxis",
-    "TruncatedNewton",
-    "EnhancedNewton",
-    "Deterministic(LSODA)",
-    "Deterministic(LSODAR)",
-    "Stochastic",
-    "Hybrid",
-    "Hybrid (LSODA)",
+{
+  "NotSet",
+  "RandomSearch",
+  "RandomSearch(PVM)",
+  "SimulatedAnnealing",
+  "GeneticAlgorithm",
+  "EvolutionaryProgram",
+  "SteepestDescent",
+  "HybridGASA",
+  "GeneticAlgorithmSR",
+  "HookeJeeves",
+  "LevenbergMarquardt",
+  "NelderMead",
+  "EvolutionaryStrategySR",
+  "CurrentSolutionStatistics",
+  "ParticleSwarm",
+  "Praxis",
+  "TruncatedNewton",
+  "EnhancedNewton",
+  "Deterministic(LSODA)",
+  "Deterministic(LSODAR)",
+  "Stochastic",
+  "Hybrid",
+  "Hybrid (LSODA)",
 #ifdef COPASI_TSSA
-    "TimeScaleSeparation(ILDM,Deuflhard)",
-    "TimeScaleSeparation(ILDM,Modified)",
-    "TimeScaleSeparation(CSP)",
+  "TimeScaleSeparation(ILDM,Deuflhard)",
+  "TimeScaleSeparation(ILDM,Modified)",
+  "TimeScaleSeparation(CSP)",
 #endif // COPASI_DEBUG
-    "TauLeap",
-    "MCAMethod(Reder)",
-    "ScanFramework",
-    "WolfMethod",
+  "TauLeap",
+  "MCAMethod(Reder)",
+  "ScanFramework",
+  "WolfMethod",
 #ifdef COPASI_TSS
-    "TimeScaleSeparationMethod",
+  "TimeScaleSeparationMethod",
 #endif // COPASI_TSS
-    "SensitivitiesMethod",
+  "SensitivitiesMethod",
 #ifdef COPASI_SSA
-    "StoichiometricStabilityAnalysis",
+  "StoichiometricStabilityAnalysis",
 #endif // COPASI_SSA
-    "EFMAlgorithm",
-    "Householder",
-    NULL
-  };
+  "EFMAlgorithm",
+  "Householder",
+  NULL
+};
 
 //    std::string mType;
 
 CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subTypeName)
 {
   unsigned C_INT32 i = 0;
+
   while (SubTypeName[i] != subTypeName && SubTypeName[i] != "")
     i++;
 
@@ -174,7 +175,7 @@ const CCopasiTask::Type & CCopasiMethod::getType() const {return mType;}
 // void CCopasiMethod::setType(const CCopasiTask::Type & type) {mType = type;}
 
 const CCopasiMethod::SubType & CCopasiMethod::getSubType() const
-  {return mSubType;}
+{return mSubType;}
 
 // void CCopasiMethod::setSubType(const CCopasiMethod::SubType & subType)
 // {mSubType = subType;}
@@ -204,12 +205,6 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
 
-      if (mType == CCopasiTask::timeCourse && mSubType == CCopasiMethod::deterministic)
-        {
-          CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Course with deterministic method (LSODA)");
-          return false;
-        }
-
       if (mType == CCopasiTask::mca)
         {
           CCopasiMessage(CCopasiMessage::WARNING, MCCopasiMethod + 4, "Metabolic Control Analysis");
@@ -223,11 +218,13 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
         }
 
 #ifdef COPASI_TSSA
+
       if (mType == CCopasiTask::tssAnalysis)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
           return false;
         }
+
 #endif // COPASI_TSSA
     }
 
@@ -239,7 +236,7 @@ void CCopasiMethod::load(CReadConfig & /* configBuffer */,
 {fatalError();}
 
 void CCopasiMethod::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o)
 {
@@ -260,4 +257,4 @@ std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o)
 }
 
 void CCopasiMethod::printResult(std::ostream * ostream) const
-  {*ostream << " Not implemented.";}
+{*ostream << " Not implemented.";}
