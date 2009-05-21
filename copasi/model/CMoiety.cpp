@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/05/21 15:30:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,8 +68,12 @@ void CMoiety::initObjects()
   setRefresh(this, &CMoiety::refreshDependentNumber);
 
   mpINumberReference =
-    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("Value", mINumber, CCopasiObject::ValueDbl));
+    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("InitialValue", mINumber, CCopasiObject::ValueDbl));
   mpINumberReference->setRefresh(this, &CMoiety::refreshInitialValue);
+
+  mpNumberReference =
+    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("Value", mNumber, CCopasiObject::ValueDbl));
+  mpNumberReference->setRefresh(this, &CMoiety::refreshValue);
 
   mpDNumberReference =
     static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("DependentValue", mNumber, CCopasiObject::ValueDbl));
@@ -86,6 +90,7 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
     addDirectDependency(pMetabolite->mpValueReference);
 
   mpINumberReference->addDirectDependency(pMetabolite->mpIValueReference);
+  mpNumberReference->addDirectDependency(pMetabolite->mpValueReference);
 
   std::pair<C_FLOAT64, CMetab *> element;
 
@@ -99,7 +104,8 @@ void CMoiety::cleanup()
 {
   clearDirectDependencies();
   mEquation.clear();
-  mpINumberReference->setDirectDependencies(getDirectDependencies());
+  mpINumberReference->clearDirectDependencies();
+  mpNumberReference->clearDirectDependencies();
 }
 
 void CMoiety::refreshDependentNumber()
@@ -172,6 +178,20 @@ CCopasiObject * CMoiety::getInitialValueReference() const
 C_FLOAT64 CMoiety::getNumber() const
 {
   return mINumber;
+}
+
+void CMoiety::refreshValue()
+{
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin();
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
+
+  for (; it != end; ++it)
+    mINumber += it->first * it->second->getValue();
+}
+
+CCopasiObject * CMoiety::getValueReference() const
+{
+  return mpNumberReference;
 }
 
 std::string CMoiety::getExpression() const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/11 23:32:35 $
+//   $Date: 2009/05/21 15:30:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,141 +35,158 @@ class CMetab;
 
 /** @dia:pos 52.0066,117.162 */
 class CMoiety : public CCopasiContainer
-  {
-    // Attributes
-  private:
-    /**
-     * The key of the moiety
-     */
-    std::string mKey; //By G
+{
+  // Attributes
+private:
+  /**
+   * The key of the moiety
+   */
+  std::string mKey; //By G
 
-    /**
-     *  Number of Particles of Moietiy.
-     */
-    C_FLOAT64 mNumber;
+  /**
+   *  Number of Particles of Moietiy.
+   */
+  C_FLOAT64 mNumber;
 
-    /**
-     *  Initial Number of Particles of Moietiy.
-     */
-    C_FLOAT64 mINumber;
+  /**
+   *  Initial Number of Particles of Moietiy.
+   */
+  C_FLOAT64 mINumber;
 
-    /**
-     *  Vector of linear dependent CChemEqElement
-     * @supplierCardinality 0..*
-     */
-    /** @dia:route 7,3; h,41.0337,110.831,46.5202,117.862,52.0066 */
-    // CCopasiVector < CChemEqElement > mEquation;
-    std::vector<std::pair< C_FLOAT64, CMetab * > > mEquation;
+  /**
+   *  Vector of linear dependent CChemEqElement
+   * @supplierCardinality 0..*
+   */
+  /** @dia:route 7,3; h,41.0337,110.831,46.5202,117.862,52.0066 */
+  // CCopasiVector < CChemEqElement > mEquation;
+  std::vector<std::pair< C_FLOAT64, CMetab * > > mEquation;
 
-    /**
-     * A pointer to the object for the total particle number
-     */
-    CCopasiObjectReference<C_FLOAT64> *mpINumberReference;
+  /**
+   * A pointer to the object for the initial total particle number
+   */
+  CCopasiObjectReference<C_FLOAT64> *mpINumberReference;
 
-    /**
-     * A pointer to the object for the dependent particle number
-     */
-    CCopasiObjectReference<C_FLOAT64> *mpDNumberReference;
+  /**
+   * A pointer to the object for the total particle number
+   * This is used during events
+   */
+  CCopasiObjectReference<C_FLOAT64> *mpNumberReference;
 
-    // Operations
-  public:
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMoiety(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NULL);
+  /**
+   * A pointer to the object for the dependent particle number
+   */
+  CCopasiObjectReference<C_FLOAT64> *mpDNumberReference;
 
-    /**
-     * Copy constructor
-     * @param "const CMoiety &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMoiety(const CMoiety & src,
-            const CCopasiContainer * pParent = NULL);
+  // Operations
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: "NoName")
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMoiety(const std::string & name = "NoName",
+          const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Destructor
-     */
-    ~CMoiety();
+  /**
+   * Copy constructor
+   * @param "const CMoiety &" src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CMoiety(const CMoiety & src,
+          const CCopasiContainer * pParent = NULL);
 
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  This saves the data in Gepasi 3.21 file format
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */
-    //    C_INT32 saveOld(CWriteConfig & configBuffer);
+  /**
+   *  Destructor
+   */
+  ~CMoiety();
 
-    /**
-     * Add a metabolite to a moiety
-     * @param C_FLOAT64 value
-     * @param CMetab * metabolite
-     */
-    void add(C_FLOAT64 value, CMetab * metabolite);
+  /**
+   *  Saves the contents of the object to a CWriteConfig object.
+   *  This saves the data in Gepasi 3.21 file format
+   *  @param pconfigbuffer reference to a CWriteConfig object.
+   *  @return Fail
+   */
+  //    C_INT32 saveOld(CWriteConfig & configBuffer);
 
-    /**
-     *
-     */
-    void cleanup();
+  /**
+   * Add a metabolite to a moiety
+   * @param C_FLOAT64 value
+   * @param CMetab * metabolite
+   */
+  void add(C_FLOAT64 value, CMetab * metabolite);
 
-    /**
-     * Refresh the total particle number
-     */
-    void refreshInitialValue();
+  /**
+   *
+   */
+  void cleanup();
 
-    /**
-     * Retrieve the object for the total particle number
-     * @return CCopasiObject * initialValueReference
-     */
-    CCopasiObject * getInitialValueReference() const;
+  /**
+   * Refresh the initial total particle number
+   */
+  void refreshInitialValue();
 
-    /**
-     * get the string representation of the moiety using the CMetabNameInterface
-     */
-    std::string getDescription(const CModel* model) const;
+  /**
+   * Retrieve the object for the total particle number
+   * @return CCopasiObject * initialValueReference
+   */
+  CCopasiObject * getInitialValueReference() const;
 
-    /**
-     * Retrieve and refresh the dependent number;
-     * @return const C_FLOAT64 & dependentNumber
-     */
-    const C_FLOAT64 & dependentNumber();
+  /**
+   * Refresh the total particle number
+   */
+  void refreshValue();
 
-    /**
-     * Retrieve the dependent number;
-     * @return const C_FLOAT64 & dependentNumber
-     */
-    const C_FLOAT64 & getDependentNumber() const;
+  /**
+   * Retrieve the object for the total particle number
+   * @return CCopasiObject * valueReference
+   */
+  CCopasiObject * getValueReference() const;
 
-    /**
-     *
-     */
-    C_FLOAT64 getNumber() const;
+  /**
+   * get the string representation of the moiety using the CMetabNameInterface
+   */
+  std::string getDescription(const CModel* model) const;
 
-    /**
-     *  Returns a string with the name of this compartment.
-     *  @return std::string key
-     */
-    virtual const std::string & getKey() const; //By G
+  /**
+   * Retrieve and refresh the dependent number;
+   * @return const C_FLOAT64 & dependentNumber
+   */
+  const C_FLOAT64 & dependentNumber();
 
-    /**
-     * Refreshes the value of the dependent number
-     */
-    void refreshDependentNumber();
+  /**
+   * Retrieve the dependent number;
+   * @return const C_FLOAT64 & dependentNumber
+   */
+  const C_FLOAT64 & getDependentNumber() const;
 
-    /**
-     * Retrieve the infix expression, which can be used to calculate the
-     * total ammount.
-     * @return std::string expression
-     */
-    std::string getExpression() const;
+  /**
+   *
+   */
+  C_FLOAT64 getNumber() const;
 
-  private:
-    /**
-     * Initialize the contained CCopasiObjects
-     */
-    void initObjects();
-  };
+  /**
+   *  Returns a string with the name of this compartment.
+   *  @return std::string key
+   */
+  virtual const std::string & getKey() const; //By G
+
+  /**
+   * Refreshes the value of the dependent number
+   */
+  void refreshDependentNumber();
+
+  /**
+   * Retrieve the infix expression, which can be used to calculate the
+   * total ammount.
+   * @return std::string expression
+   */
+  std::string getExpression() const;
+
+private:
+  /**
+   * Initialize the contained CCopasiObjects
+   */
+  void initObjects();
+};
 
 #endif // COPASI_CMoiety
