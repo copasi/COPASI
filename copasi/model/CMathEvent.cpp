@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,13 +112,10 @@ bool CMathEvent::compile(const CEvent * pEvent,
 
   mHaveDelay = (mDelay.getInfix() != "");
 
-  if (mHaveDelay)
-    {
-      // Build the list of refresh calls needed to assure that the delay expression
-      // can be calculated.
+  // Build the list of refresh calls needed to assure that the delay expression
+  // can be calculated.
 
-      mDelayValueRefreshes = pMathModel->buildRequiredRefreshList(mDelay.getDirectDependencies());
-    }
+  mDelayValueRefreshes = pMathModel->buildRequiredRefreshList(mDelay.getDirectDependencies());
 
   mDelayAssignment = pEvent->getDelayAssignment();
 
@@ -152,6 +149,18 @@ bool CMathEvent::compile(const CEvent * pEvent,
   return success;
 }
 
+void CMathEvent::processRoot()
+{
+  // We first need ask the trigger whether to fire.
+  bool Fire = mTrigger.fire();
+
+  // If the event fires we need to schedule the event in the process queue
+  if (Fire)
+    {
+      // TODO CRITICAL Implement me!
+    }
+}
+
 void CMathEvent::applyDelayRefreshes()
 {
   std::vector< Refresh * >::const_iterator itRefresh = mDelayValueRefreshes.begin();
@@ -183,4 +192,9 @@ void CMathEvent::applyDependentRefreshes()
     (**itRefresh++)();
 
   return;
+}
+
+CMathTrigger & CMathEvent::getMathTrigger()
+{
+  return mTrigger;
 }

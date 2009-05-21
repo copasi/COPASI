@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,11 +47,9 @@ public:
   /**
    * Compile the mathematical model based on given the model.
    * @param CModel * pModel
-   * @param std::vector< CCopasiContainer * > listOfContainer
    * @return bool success
    */
-  bool compile(CModel * pModel,
-               std::vector< CCopasiContainer * > listOfContainer);
+  bool compile(CModel * pModel);
 
   /**
    * Prepare the mathematical model for simulation.
@@ -60,22 +58,31 @@ public:
   bool initialize();
 
   /**
-   * Apply the events to the model.
-   * bool return success
-   */
-  bool applyEvent(CMathEvent * pEvent);
-
-  /**
-   * Change the root status for the roots which have value 1
-   * @param CVector< C_INT > & events
-   */
-  void changeRootStatus(CVector< C_INT > & roots);
-
-  /**
    * Evaluate all root values for the current state of the model
    * @param CVector< double > & triggerValues
    */
   void evaluateRoots(CVector< double > & rootValues);
+
+  /**
+   * Process events scheduled at the given which a are checked for
+   * equality or not
+   * @param const C_FLOAT64 & time
+   * @param const bool & equality
+   */
+  void processQueue(const C_FLOAT64 & time, const bool & equality);
+
+  /**
+  * Check whether the roots which have value 1 lead to firing of
+  * events and schedule them if needed.
+  * @param const CVector< C_INT > & roots
+  */
+  void processRoots(const CVector< C_INT > & roots);
+
+  /**
+   * Retrieve the next execution time scheduled in the process queue
+   * @return const C_FLOAT64 & processQueueExecutionTime
+   */
+  const C_FLOAT64 & getProcessQueueExecutionTime() const;
 
   /**
    * Build a list of refresh calls needed to assure that required objects
@@ -109,6 +116,22 @@ private:
    * List of events
    */
   CCopasiVector< CMathEvent > mEvents;
+
+  /**
+   * A vector of pointers to the current root finder values
+   */
+  CVector< C_FLOAT64 *> mRootValues;
+
+  /**
+   * The sequence of refresh calls needed to calculate the current
+   * root values.
+   */
+  std::vector< Refresh * > mRootRefreshes;
+
+  /**
+   * A map from the index of a root value to the associated event
+   */
+  CVector< CMathEvent * > mRootIndex2Event;
 };
 
 #endif // COPASI_CMathModel

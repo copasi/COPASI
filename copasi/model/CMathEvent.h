@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,13 @@ public:
                std::vector< CCopasiContainer * > listOfContainer);
 
   /**
+   * At least one of the root finders of the the trigger has found a
+   * root. This methods checks whether the event fires and schedules
+   * the event if needed.
+   */
+  void processRoot();
+
+  /**
    * Apply all needed refreshes so that the delay expression are
    * correctly calculated.
    */
@@ -116,6 +123,12 @@ public:
    * assignment targets.
    */
   void applyDependentRefreshes();
+
+  /**
+   * Retrieve the trigger for this event.
+   * @return CMathTrigger & mathTrigger
+   */
+  CMathTrigger & getMathTrigger();
 
   // Attributes
 private:

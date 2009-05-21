@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,12 @@ private:
      * @return const unsigned C_INT32 & eventId
      */
     inline const unsigned C_INT32 & getEventId() const {return mEventId;}
+
+    /**
+     * Retrieve the execution time.
+     * @return const C_FLOAT64 & executionTime
+     */
+    inline const C_FLOAT64 & getExecutionTime() const {return mExecutionTime;}
 
     // Attributes
   private:
@@ -268,6 +274,18 @@ public:
    * @return const unsigned C_INT32 & eventId;
    */
   const unsigned C_INT32 & createEventId();
+
+  /**
+   * Retrieve the next execution time scheduled in the process queue
+   * @return const C_FLOAT64 & processQueueExecutionTime
+   */
+  const C_FLOAT64 & getProcessQueueExecutionTime() const;
+
+  /**
+   * Checks whether the process queue is empty
+   * @return bool isEmpty
+   */
+  bool isEmpty() const;
 
 private:
   /**

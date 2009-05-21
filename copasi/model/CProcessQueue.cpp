@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
           // for this time and level.
 
           // Update the model.
-          mpMathModel->applyEvent(Assignments.first->second.getEvent());
+          Assignments.first->second.mpEvent->applyDependentRefreshes();
 
           // Note, applying the events may have added new events to the queue.
           // The setting of the equality flag for these events may be either true
@@ -308,9 +308,8 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   if (mSimultaneousAssignments)
     {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
       success = false;
-
-      // TODO: Create an error message
     }
 
   return success;
@@ -392,7 +391,7 @@ bool CProcessQueue::executeCalculations(CProcessQueue::range & calculations)
 
 bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
 {
-  bool success = true;
+  bool success = (mExecutionCounter < mExecutionLimit);
 
   iterator it = assignments.first;
   unsigned C_INT32 EventIdOld = it->first.getEventId();
@@ -436,4 +435,23 @@ const unsigned C_INT32 & CProcessQueue::createEventId()
 void CProcessQueue::destroyEventId(const unsigned C_INT32 & eventId)
 {
   mEventIdSet.erase(eventId);
+}
+
+const C_FLOAT64 & CProcessQueue::getProcessQueueExecutionTime() const
+{
+  static C_FLOAT64 Infinity =
+    std::numeric_limits< C_FLOAT64 >::infinity();
+
+  const C_FLOAT64 & CalculationTime =
+    mCalculations.size() > 0 ? mCalculations.begin()->first.getExecutionTime() : Infinity;
+
+  const C_FLOAT64 & AssignmentTime =
+    mAssignments.size() > 0 ? mAssignments.begin()->first.getExecutionTime() : Infinity;
+
+  return std::min(CalculationTime, AssignmentTime);
+}
+
+bool CProcessQueue::isEmpty() const
+{
+  return (mAssignments.size() == 0) && (mCalculations.size() == 0);
 }

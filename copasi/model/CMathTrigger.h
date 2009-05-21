@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,11 @@ private:
      */
     void charge();
 
+    /**
+     * Retrieve a pointer to the current value of the root.
+     */
+    C_FLOAT64 * getRootValuePtr();
+
     // Attributes
   public:
     /**
@@ -128,6 +133,12 @@ public:
   virtual ~CMathTrigger();
 
   /**
+   * Check whether the fire condition is met.
+   * @return bool fire
+   */
+  bool fire();
+
+  /**
    * Compile the trigger
    * @param const CExpression * pTriggerExpression
    * @param std::vector< CCopasiContainer * > listOfContainer
@@ -136,40 +147,46 @@ public:
   bool compile(const CExpression * pTriggerExpression,
                std::vector< CCopasiContainer * > listOfContainer);
 
+  /**
+   * Retrieve  the list of root finders
+   * @return CCopasiVector< CRootFinder > & rootFinders
+   */
+  CCopasiVector< CRootFinder > & getRootFinders();
+
 private:
   bool compile(const CEvaluationNode * pSource,
-               CEvaluationNode * pFireExpression,
-               CEvaluationNode * pEqualityExpression);
+               CEvaluationNode * & pFireExpression,
+               CEvaluationNode * & pEqualityExpression);
   bool compileAND(const CEvaluationNode * pSource,
-                  CEvaluationNode * pFireExpression,
-                  CEvaluationNode * pEqualityExpression);
+                  CEvaluationNode * & pFireExpression,
+                  CEvaluationNode * & pEqualityExpression);
   bool compileOR(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileXOR(const CEvaluationNode * pSource,
-                  CEvaluationNode * pFireExpression,
-                  CEvaluationNode * pEqualityExpression);
+                  CEvaluationNode * & pFireExpression,
+                  CEvaluationNode * & pEqualityExpression);
   bool compileEQ(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileNE(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileLT(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileLE(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileGT(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileGE(const CEvaluationNode * pSource,
-                 CEvaluationNode * pFireExpression,
-                 CEvaluationNode * pEqualityExpression);
+                 CEvaluationNode * & pFireExpression,
+                 CEvaluationNode * & pEqualityExpression);
   bool compileNOT(const CEvaluationNode * pSource,
-                  CEvaluationNode * pFireExpression,
-                  CEvaluationNode * pEqualityExpression);
+                  CEvaluationNode * & pFireExpression,
+                  CEvaluationNode * & pEqualityExpression);
 
   void pushNodes(CEvaluationNode * pActiveNode,
                  CEvaluationNode * pTrueNode);

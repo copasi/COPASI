@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/05/21 15:34:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@ bool CMathTrigger::CRootFinder::compile(std::vector< CCopasiContainer * > listOf
 
   success &= mRoot.compile(listOfContainer);
 
-  return false;
+  return true;
 }
 
 CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const
@@ -92,6 +92,11 @@ void CMathTrigger::CRootFinder::charge()
   return;
 }
 
+C_FLOAT64 * CMathTrigger::CRootFinder::getRootValuePtr()
+{
+  return mpRootValue;
+}
+
 CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
     CCopasiContainer("MathTrigger", pParent, "MathTrigger"),
     mActiveExpression("ActiveExpression", this),
@@ -113,6 +118,16 @@ CMathTrigger::CMathTrigger(const CMathTrigger & src,
 
 CMathTrigger::~CMathTrigger()
 {}
+
+bool CMathTrigger::fire()
+{
+  // We assume that all root finder are having their current values.
+  bool fire = false;
+
+  // TODO CRITICAL Implement me!
+
+  return fire;
+}
 
 bool CMathTrigger::compile(const CExpression * pTriggerExpression,
                            std::vector< CCopasiContainer * > listOfContainer)
@@ -136,8 +151,8 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression,
   mEqualityExpression.setRoot(NULL);
   mRootFinders.clear();
 
-  CEvaluationNode * pFireExpression;
-  CEvaluationNode * pEqualityExpression;
+  CEvaluationNode * pFireExpression = NULL;
+  CEvaluationNode * pEqualityExpression = NULL;
 
   bool success = compile(pRoot, pFireExpression, pEqualityExpression);
 
@@ -166,9 +181,14 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression,
   return success;
 }
 
+CCopasiVector< CMathTrigger::CRootFinder > & CMathTrigger::getRootFinders()
+{
+  return mRootFinders;
+}
+
 bool CMathTrigger::compile(const CEvaluationNode * pNode,
-                           CEvaluationNode * pFireExpression,
-                           CEvaluationNode * pEqualityExpression)
+                           CEvaluationNode * & pFireExpression,
+                           CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
   const CEvaluationNode::Type & Type = pNode->getType();
@@ -246,8 +266,8 @@ bool CMathTrigger::compile(const CEvaluationNode * pNode,
 }
 
 bool CMathTrigger::compileAND(const CEvaluationNode * pSource,
-                              CEvaluationNode * pFireExpression,
-                              CEvaluationNode * pEqualityExpression)
+                              CEvaluationNode * & pFireExpression,
+                              CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -277,8 +297,8 @@ bool CMathTrigger::compileAND(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileOR(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -308,8 +328,8 @@ bool CMathTrigger::compileOR(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileXOR(const CEvaluationNode * pSource,
-                              CEvaluationNode * pFireExpression,
-                              CEvaluationNode * pEqualityExpression)
+                              CEvaluationNode * & pFireExpression,
+                              CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -339,8 +359,8 @@ bool CMathTrigger::compileXOR(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileEQ(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -352,7 +372,7 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource,
     {
       // We treat x EQ y as (x GE y) EQ (y GE x)
 
-      // TODO create a temporary expression and compile it.
+      // Create a temporary expression and compile it.
       CEvaluationNode * pEQ = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
       CEvaluationNode * pGE = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GEZ");
       pGE->addChild(pLeft->copyBranch());
@@ -395,8 +415,8 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileNE(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -421,8 +441,8 @@ bool CMathTrigger::compileNE(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileLE(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -448,8 +468,8 @@ bool CMathTrigger::compileLE(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileLT(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -475,8 +495,8 @@ bool CMathTrigger::compileLT(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileGE(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -502,8 +522,8 @@ bool CMathTrigger::compileGE(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileGT(const CEvaluationNode * pSource,
-                             CEvaluationNode * pFireExpression,
-                             CEvaluationNode * pEqualityExpression)
+                             CEvaluationNode * & pFireExpression,
+                             CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
@@ -529,8 +549,8 @@ bool CMathTrigger::compileGT(const CEvaluationNode * pSource,
 }
 
 bool CMathTrigger::compileNOT(const CEvaluationNode * pSource,
-                              CEvaluationNode * pFireExpression,
-                              CEvaluationNode * pEqualityExpression)
+                              CEvaluationNode * & pFireExpression,
+                              CEvaluationNode * & pEqualityExpression)
 {
   bool success = true;
 
