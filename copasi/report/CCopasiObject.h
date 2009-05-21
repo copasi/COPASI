@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/05/21 15:24:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -318,11 +318,11 @@ public:
 
   /**
    * Check whether the current object depends on any objects in the candidates.
-   * @param std::set< const CCopasiObject * > & candidates
+   * @param std::set< const CCopasiObject * > candidates
    * @param const std::set< const CCopasiObject * > & context (default: empty set)
    * @return bool dependsOn
    */
-  bool dependsOn(std::set< const CCopasiObject * > & candidates,
+  bool dependsOn(std::set< const CCopasiObject * > candidates,
                  const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
 
   /**

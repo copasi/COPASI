@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/05/21 15:24:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -287,7 +287,7 @@ void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & depen
     }
 }
 
-bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > & candidates,
+bool CCopasiObject::dependsOn(std::set< const CCopasiObject * > candidates,
                               const std::set< const CCopasiObject * > & context) const
 {
   std::set< const CCopasiObject * > verified;
