@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.362 $
+//   $Revision: 1.363 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/05/21 15:33:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,7 @@
 #include "CReactionInterface.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "CMetabNameInterface.h"
+#include "CMathModel.h"
 
 #include "blaswrap.h"
 #include "clapackwrap.h"
@@ -132,7 +133,8 @@ CModel::CModel(CCopasiContainer* pParent):
     mConstantRefreshes(),
     mNonSimulatedRefreshes(),
     mReorderNeeded(false),
-    mIsAutonomous(true)
+    mIsAutonomous(true),
+    mpMathModel(NULL)
 {
   initObjects();
 
@@ -453,6 +455,9 @@ bool CModel::compile()
 
   //update annotations
   updateMatrixAnnotations();
+
+  success &= compileEvents();
+  success &= mpMathModel->compile(this);
 
   if (!success)
     {
@@ -3150,6 +3155,8 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
+
+  mpMathModel = new CMathModel(this);
 }
 
 bool CModel::hasReversibleReaction() const
@@ -4065,4 +4072,21 @@ std::string CModel::getQuantityRateUnitsDisplayString() const
     return Units;
 
   return Units + "/" + TimeUnitNames[mTimeUnit];
+}
+
+/****** Below will be removed when the math model completed ******/
+
+void CModel::processQueue(const C_FLOAT64 & time, const bool & equality)
+{
+  return mpMathModel->processQueue(time, equality);
+}
+
+void CModel::processRoots(const CVector< C_INT > & roots)
+{
+  return mpMathModel->processRoots(roots);
+}
+
+const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const
+{
+  return mpMathModel->getProcessQueueExecutionTime();
 }

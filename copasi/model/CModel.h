@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.171 $
+//   $Revision: 1.172 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/15 19:37:17 $
+//   $Author: shoops $
+//   $Date: 2009/05/21 15:33:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 //class CCompartment;
 class CProcessReport;
 class CArrayAnnotation;
+class CMathModel;
 
 class CModel : public CModelEntity
 {
@@ -1435,6 +1436,38 @@ private:
    * A flag indicating whether the model is autonomous.
    */
   bool mIsAutonomous;
+
+  /****** Below will be removed when the math model completed ******/
+
+  /**
+   * The mathematical model. This is currently part of the model. It is
+   * envisioned that this will be the class all tasks will operate on, since it
+   * eventually will have the all the mathematical relevant information.
+   */
+  CMathModel * mpMathModel;
+
+  // Operations
+public:
+  /**
+   * Process events scheduled at the given which a are checked for
+   * equality or not
+   * @param const C_FLOAT64 & time
+   * @param const bool & equality
+   */
+  void processQueue(const C_FLOAT64 & time, const bool & equality);
+
+  /**
+   * Check whether the roots which have value 1 lead to firing of
+   * events and schedule them if needed.
+   * @param const CVector< C_INT > & roots
+   */
+  void processRoots(const CVector< C_INT > & roots);
+
+  /**
+   * Retrieve the next execution time scheduled in the process queue
+   * @return const C_FLOAT64 & processQueueExecutionTime
+   */
+  const C_FLOAT64 & getProcessQueueExecutionTime() const;
 };
 
 #endif // CModel
