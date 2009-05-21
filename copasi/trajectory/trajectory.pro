@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/trajectory.pro,v $
-#   $Revision: 1.15 $
+#   $Revision: 1.16 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 19:14:19 $
+#   $Date: 2009/05/21 15:27:23 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -16,7 +16,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.15 $ $Author: shoops $ $Date: 2008/12/18 19:14:19 $
+# $Revision: 1.16 $ $Author: shoops $ $Date: 2009/05/21 15:27:23 $
 ######################################################################
 
 LIB = trajectory
@@ -30,7 +30,6 @@ HEADERS += CHybridMethod.h \
            CHybridNextReactionRKMethod.h \
            CHybridNextReactionLSODAMethod.h \
            CLsodaMethod.h \
-           CLsodarMethod.h \
            CStochDirectMethod.h \
            CStochMethod.h \
            CStochNextReactionMethod.h \
@@ -45,7 +44,6 @@ SOURCES += CHybridMethod.cpp \
            CHybridNextReactionRKMethod.cpp \
            CHybridNextReactionLSODAMethod.cpp \
            CLsodaMethod.cpp \
-           CLsodarMethod.cpp \
            CStochDirectMethod.cpp \
            CStochMethod.cpp \
            CStochNextReactionMethod.cpp \
