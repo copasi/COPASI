@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.22 $
+ $Revision: 1.23 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/05/22 19:57:18 $
+ $Date: 2009/05/22 21:07:36 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,6 +148,16 @@ private:
    * A pointer to the model
    */
   CModel * mpModel;
+
+  /**
+   * A Boolean value indication whether we have no ODEs
+   */
+  bool mNoODE;
+
+  /**
+   * A dummy variable if we do not have any ODEs
+   */
+  C_FLOAT64 mDummy;
 
   // Operations
 private:

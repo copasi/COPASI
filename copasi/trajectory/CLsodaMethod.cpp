@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:57:18 $
+//   $Date: 2009/05/22 21:07:36 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,9 +151,8 @@ bool CLsodaMethod::elevateChildren()
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 {
-  if (!mData.dim & !mNumRoots) //just do nothing if there are no variables
+  if (mData.dim == 0 & mNumRoots == 0) //just do nothing if there are no variables
     {
-      // TODO CRITICAL When we have roots we need to add an artificial ODE dx/td = 1
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
       *mpCurrentState = *mpState;
@@ -253,23 +252,37 @@ void CLsodaMethod::start(const CState * initialState)
   /* Release previous state and make the initialState the current */
   pdelete(mpState);
   mpState = new CState(*initialState);
-  mY = mpState->beginIndependent();
   mTime = mpState->getTime();
+
+  mNumRoots = mpModel->getNumRoots();
+  mRoots.resize(mNumRoots);
 
   if (*mpReducedModel)
     mData.dim = mpState->getNumIndependent();
   else
     mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
 
-  mYdot.resize(mData.dim);
+  // TODO CRITICAL When we have roots we need to add an artificial ODE dDummy/dt = 1
+  if (mData.dim == 0 && mNumRoots != 0)
+    {
+      mData.dim = 1;
+      mNoODE = true;
+      mAtol.resize(1);
+      mAtol[0] = *mpAbsoluteTolerance;
+      mDummy = 0;
+      mY = &mDummy;
+    }
+  else
+    {
+      mNoODE = false;
+      mAtol = mpModel->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
+      mY = mpState->beginIndependent();
+    }
 
-  mNumRoots = mpModel->getNumRoots();
-  mRoots.resize(mNumRoots);
+  mYdot.resize(mData.dim);
 
   /* Configure lsoda(r) */
   mRtol = *mpRelativeTolerance;
-
-  mAtol = mpModel->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
 
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
@@ -297,6 +310,13 @@ void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
 
 void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
+  // If we have no ODEs add a constant one.
+  if (mNoODE)
+    {
+      *ydot = 1.0;
+      return;
+    }
+
   assert(y == mY);
 
   mpState->setTime(*t);
@@ -326,7 +346,7 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t , const C_FLOAT64 *  y ,
 
   mpModel->setState(*mpState);
 
-  CVectorCore< C_FLOAT64 > RootValues((unsigned C_INT32) nr, r);
+  CVectorCore< C_FLOAT64 > RootValues(*nr, r);
 
   mpModel->evaluateRoots(RootValues);
 };
