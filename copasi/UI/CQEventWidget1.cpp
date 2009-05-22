@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:26:22 $
+//   $Date: 2009/05/22 20:22:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,7 +408,7 @@ void CQEventWidget1::saveToEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
   CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
-  C_INT32 DeleteCount = mAssignments.size() - OldAssignments.size();
+  C_INT32 DeleteCount = OldAssignments.size() - mAssignments.size();
   std::vector< std::string > ToBeDeleted;
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
