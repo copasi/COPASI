@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,13 +132,11 @@ private:
      * Specific constructor
      * @param C_FLOAT64 * pTarget
      * @param CMathExpression * pExpression
-     * @param CMathExpression * pDelayExpression
      * @param CMathEvent * pEvent
      * @param CProcessQueue & processQueue
      */
     CAction(C_FLOAT64 * pTarget,
             CMathExpression * pExpression,
-            CMathExpression * pDelayExpression,
             CMathEvent * pEvent,
             CProcessQueue * pProcessQueue);
 
@@ -175,11 +173,6 @@ private:
      * The expression to be evaluates if the entry is a calculation.
      */
     CMathExpression * mpExpression;
-
-    /**
-     * The expression to be evaluates if the entry is a calculation.
-     */
-    CMathExpression * mpDelayExpression;
 
     /**
      * The event associated with this action
@@ -241,7 +234,6 @@ public:
    * @param const unsigned C_INT32 & eventId
    * @param C_FLOAT64 * pTarget
    * @param CMathExpression * pExpression
-   * @param CMathExpression * pDelayExpression
    * @param CMathEvent * pEvent
    * @return bool success
    */
@@ -250,15 +242,13 @@ public:
                       const unsigned C_INT32 & eventId,
                       C_FLOAT64 * pTarget,
                       CMathExpression * pExpression,
-                      CMathExpression * pDelayExpression,
                       CMathEvent * pEvent);
 
   /**
-   * Initialize the process queue.
+   * Clear the process queue.
    * @param CMathModel * pMathModel
-   * @return bool success
    */
-  bool initialize(CMathModel * pMathModel);
+  void initialize(CMathModel * pMathModel);
 
   /**
    * Process the queue.
@@ -375,7 +365,7 @@ private:
   std::set< unsigned C_INT32 > mEventIdSet;
 
   /**
-   * A pointer to the model
+   * A pointer to the math model the process queue belongs to.
    */
   CMathModel * mpMathModel;
 };

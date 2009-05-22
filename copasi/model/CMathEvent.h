@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,12 +22,15 @@
 
 class CEvent;
 class CEventAssignment;
+class CProcessQueue;
 
 class CMathEvent : public CCopasiContainer
 {
 private:
   class CAssignment : public CCopasiContainer
   {
+    friend class CMathEvent;
+
     // Operations
   public:
     /**
@@ -103,8 +106,11 @@ public:
    * At least one of the root finders of the the trigger has found a
    * root. This methods checks whether the event fires and schedules
    * the event if needed.
+   * @param const C_FLOAT64 & time
+   * @param CProcessQueue & processQueue
    */
-  void processRoot();
+  void processRoot(const C_FLOAT64 & time,
+                   CProcessQueue & processQueue);
 
   /**
    * Apply all needed refreshes so that the delay expression are

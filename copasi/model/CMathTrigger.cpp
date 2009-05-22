@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,10 +86,29 @@ CEvaluationNode * CMathTrigger::CRootFinder::getEqualityExpression() const
 
 void CMathTrigger::CRootFinder::charge()
 {
-  if (*mpRootValue <= 0.0 && mActive < 1.0)
-    mActive = 1.0;
+  // TODO ALGORITHM We need to experiment with this!
+
+  if ((mActive < 1.0) &&
+      ((*mpRootValue < 0.0) ||
+       ((*mpRootValue <= 0.0) && !mEquality)))
+    {
+      mActive = 1.0;
+    }
 
   return;
+}
+
+void CMathTrigger::CRootFinder::calculateInitialActivity()
+{
+  if ((*mpRootValue < 0.0)
+      || ((*mpRootValue <= 0.0) && !mEquality))
+    {
+      mActive = 1.0;
+    }
+  else
+    {
+      mActive = 0.0;
+    }
 }
 
 C_FLOAT64 * CMathTrigger::CRootFinder::getRootValuePtr()
@@ -122,11 +141,37 @@ CMathTrigger::~CMathTrigger()
 bool CMathTrigger::fire()
 {
   // We assume that all root finder are having their current values.
-  bool fire = false;
 
-  // TODO CRITICAL Implement me!
+  // First we calculate whether the expression fires.
+  bool fire = (mFireExpression.calcValue() > 0);
+
+  // Charge the root finders
+  CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
+  CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
+
+  for (; itRoot != endRoot; ++itRoot)
+    {
+      (*itRoot)->charge();
+    }
 
   return fire;
+}
+
+void CMathTrigger::calculateInitialActivity()
+{
+  // Calculate the initial activity for the root finders
+  CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
+  CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
+
+  for (; itRoot != endRoot; ++itRoot)
+    {
+      (*itRoot)->calculateInitialActivity();
+    }
+}
+
+bool CMathTrigger::calculateEquality()
+{
+  return mEqualityExpression.calcValue();
 }
 
 bool CMathTrigger::compile(const CExpression * pTriggerExpression,

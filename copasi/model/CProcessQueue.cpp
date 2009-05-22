@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,6 @@ CProcessQueue::CAction::CAction() :
     mpTarget(NULL),
     mValue(),
     mpExpression(NULL),
-    mpDelayExpression(NULL),
     mpEvent(NULL),
     mpProcessQueue(NULL)
 {}
@@ -74,7 +73,6 @@ CProcessQueue::CAction::CAction(const CAction & src) :
     mpTarget(src.mpTarget),
     mValue(src.mValue),
     mpExpression(src.mpExpression),
-    mpDelayExpression(src.mpDelayExpression),
     mpEvent(src.mpEvent),
     mpProcessQueue(src.mpProcessQueue)
 {}
@@ -85,20 +83,17 @@ CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
     mpTarget(pTarget),
     mValue(value),
     mpExpression(NULL),
-    mpDelayExpression(NULL),
     mpEvent(pEvent),
     mpProcessQueue(NULL)
 {}
 
 CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
                                 CMathExpression * pExpression,
-                                CMathExpression * pDelayExpression,
                                 CMathEvent * pEvent,
                                 CProcessQueue * pProcessQueue) :
     mpTarget(pTarget),
     mValue(),
     mpExpression(pExpression),
-    mpDelayExpression(pDelayExpression),
     mpEvent(pEvent),
     mpProcessQueue(pProcessQueue)
 {}
@@ -110,14 +105,7 @@ void CProcessQueue::CAction::process(const unsigned C_INT32 & eventId)
 {
   if (mpExpression != NULL)
     {
-      C_FLOAT64 ExecutionTime = mpProcessQueue->mTime;
-
-      if (mpDelayExpression != NULL)
-        {
-          ExecutionTime += mpDelayExpression->calcValue();
-        }
-
-      mpProcessQueue->addAssignment(ExecutionTime,
+      mpProcessQueue->addAssignment(mpProcessQueue->mTime,
                                     mpProcessQueue->mEquality,
                                     eventId,
                                     mpTarget,
@@ -186,7 +174,6 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
                                    const unsigned C_INT32 & eventId,
                                    C_FLOAT64 * pTarget,
                                    CMathExpression * pExpression,
-                                   CMathExpression * pDelayExpression,
                                    CMathEvent * pEvent)
 {
   // It is not possible to proceed backwards in time.
@@ -203,25 +190,23 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
                                       CascadingLevel),
                                       CAction(pTarget,
                                               pExpression,
-                                              pDelayExpression,
                                               pEvent,
                                               this)));
 
   return true;
 }
 
-bool CProcessQueue::initialize(CMathModel * pMathModel)
+void CProcessQueue::initialize(CMathModel * pMathModel)
 {
-  bool success = true;
-
   mpMathModel = pMathModel;
+  assert(mpMathModel != NULL);
 
   mCalculations.clear();
   mAssignments.clear();
   mEventIdSet.clear();
   mSimultaneousAssignments = false;
 
-  return success;
+  return;
 }
 
 bool CProcessQueue::process(const C_FLOAT64 & time,
@@ -397,17 +382,22 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   unsigned C_INT32 EventIdOld = it->first.getEventId();
   unsigned C_INT32 EventIdNew = 0;
 
-  if (it->second.mpExpression != NULL)
-    {
-      it->second.mpEvent->applyValueRefreshes();
-      EventIdNew = createEventId();
-    }
+  // Assure that all values are up to date.
+  it->second.mpEvent->applyValueRefreshes();
+  EventIdNew = createEventId();
 
   for (; it != assignments.second; ++it)
     it->second.process(EventIdNew);
 
   destroyEventId(EventIdOld);
   mAssignments.erase(assignments.first, assignments.second);
+
+  // Update all dependent values.
+  it->second.mpEvent->applyDependentRefreshes();
+
+  // TODO CRITICAL We need to check whether new events have been triggered an add
+  // them to the process queue.
+  mpMathModel->processEvents(mTime);
 
   mExecutionCounter++;
 

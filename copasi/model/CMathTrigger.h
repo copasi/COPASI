@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 16:35:48 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,11 @@ public:
     void charge();
 
     /**
+     * Determine the activity for the initial conditions.
+     */
+    void calculateInitialActivity();
+
+    /**
      * Retrieve a pointer to the current value of the root.
      */
     C_FLOAT64 * getRootValuePtr();
@@ -139,6 +144,18 @@ public:
    * @return bool fire
    */
   bool fire();
+
+  /**
+   * Determine the activity for the initial conditions.
+   */
+  void calculateInitialActivity();
+
+  /**
+   * Calculate whether the current trigger is evaluated for
+   * equality.
+   * @return equality
+   */
+  bool calculateEquality();
 
   /**
    * Compile the trigger

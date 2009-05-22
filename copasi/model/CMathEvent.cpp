@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,8 @@ bool CMathEvent::compile(const CEvent * pEvent,
   return success;
 }
 
-void CMathEvent::processRoot()
+void CMathEvent::processRoot(const C_FLOAT64 & time,
+                             CProcessQueue & processQueue)
 {
   // We first need ask the trigger whether to fire.
   bool Fire = mTrigger.fire();
@@ -157,7 +158,55 @@ void CMathEvent::processRoot()
   // If the event fires we need to schedule the event in the process queue
   if (Fire)
     {
-      // TODO CRITICAL Implement me!
+      bool Equality = mTrigger.calculateEquality();
+
+      unsigned C_INT32 EventId = processQueue.createEventId();
+
+      // Add each assignment to the calculation queue
+      CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
+      CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
+
+      // Determine the execution time of the event.
+      C_FLOAT64 ExecutionTime = time;
+
+      if (mDelay.getInfix() != "")
+        {
+          // We make sure everything is up to date.
+          applyDelayRefreshes();
+
+          ExecutionTime += mDelay.calcValue();
+        }
+
+      // We make sure everything is up to date.
+      applyValueRefreshes();
+
+      for (; itAssignment != endAssignment; ++itAssignment)
+        {
+          if (mDelay.getInfix() == "" || mDelayAssignment)
+            {
+              const C_FLOAT64 & Value =
+                (*itAssignment)->mExpression.calcValue();
+
+              // We can directly calculate the target value and schedule
+              // an assignment for the execution time.
+              processQueue.addAssignment(ExecutionTime,
+                                         Equality,
+                                         EventId,
+                                         (*itAssignment)->mpTarget,
+                                         Value,
+                                         this);
+            }
+          else
+            {
+              // We must delay the calculation of the new target value
+              processQueue.addCalculation(ExecutionTime,
+                                          Equality,
+                                          EventId,
+                                          (*itAssignment)->mpTarget,
+                                          &(*itAssignment)->mExpression,
+                                          this);
+            }
+        }
     }
 }
 

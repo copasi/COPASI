@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,18 +144,7 @@ bool CMathModel::compile(CModel * pModel)
   return success;
 }
 
-bool CMathModel::initialize()
-{
-  bool success = true;
-
-  success &= mProcessQueue.initialize(this);
-
-  // TODO CRITICAL When do we initialize the roots, i.e., calculate their initial state.
-  // This should be done when we apply the initial state.
-  return false;
-}
-
-void CMathModel::evaluateRoots(CVector< double > & rootValues)
+void CMathModel::evaluateRoots(CVectorCore< double > & rootValues)
 {
   // Apply all needed refresh calls to calculate the current root values.
   std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
@@ -185,7 +174,7 @@ void CMathModel::processQueue(const C_FLOAT64 & time, const bool & equality)
   return;
 }
 
-void CMathModel::processRoots(const CVector< C_INT > & roots)
+void CMathModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots)
 {
   assert(roots.size() == mRootIndex2Event.size());
 
@@ -208,16 +197,58 @@ void CMathModel::processRoots(const CVector< C_INT > & roots)
       if (*pRoot > 0 && *ppEvent != pProcessedEvent)
         {
           pProcessedEvent = *ppEvent;
-          pProcessedEvent->processRoot();
+          pProcessedEvent->processRoot(time, mProcessQueue);
         }
     }
 
   return;
 }
 
+void CMathModel::processEvents(const C_FLOAT64 & time)
+{
+  // Now calculate the current root activities
+  CCopasiVector< CMathEvent >::const_iterator itMathEvent = mEvents.begin();
+  CCopasiVector< CMathEvent >::const_iterator endMathEvent = mEvents.end();
+
+  // for each event
+  for (; itMathEvent != endMathEvent; ++itMathEvent)
+    {
+      (*itMathEvent)->processRoot(time, mProcessQueue);
+    }
+}
+
 const C_FLOAT64 & CMathModel::getProcessQueueExecutionTime() const
 {
   return mProcessQueue.getProcessQueueExecutionTime();
+}
+
+void CMathModel::applyInitialValues()
+{
+  // Clear the process queue.
+  mProcessQueue.initialize(this);
+
+  // Prepare the roots, i.e., evaluate them
+  // Apply all needed refresh calls to calculate the current root values.
+  std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mRootRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  // Now calculate the current root activities
+  CCopasiVector< CMathEvent >::const_iterator itMathEvent = mEvents.begin();
+  CCopasiVector< CMathEvent >::const_iterator endMathEvent = mEvents.end();
+
+  // for each event
+  for (; itMathEvent != endMathEvent; ++itMathEvent)
+    {
+      (*itMathEvent)->getMathTrigger().calculateInitialActivity();
+    }
+}
+
+size_t CMathModel::getNumRoots() const
+{
+  return this->mRootValues.size();
 }
 
 std::vector< Refresh * > CMathModel::buildRequiredRefreshList(const std::set< const CCopasiObject * > & requiredObjects) const

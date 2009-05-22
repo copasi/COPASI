@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.172 $
+//   $Revision: 1.173 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:33:53 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1449,6 +1449,12 @@ private:
   // Operations
 public:
   /**
+   * Evaluate all root values for the current state of the model
+   * @param CVectorCore< double > & rootValues
+   */
+  void evaluateRoots(CVectorCore< double > & rootValues);
+
+  /**
    * Process events scheduled at the given which a are checked for
    * equality or not
    * @param const C_FLOAT64 & time
@@ -1459,15 +1465,22 @@ public:
   /**
    * Check whether the roots which have value 1 lead to firing of
    * events and schedule them if needed.
+   * @param const C_FLOAT64 & time
    * @param const CVector< C_INT > & roots
    */
-  void processRoots(const CVector< C_INT > & roots);
+  void processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots);
 
   /**
    * Retrieve the next execution time scheduled in the process queue
    * @return const C_FLOAT64 & processQueueExecutionTime
    */
   const C_FLOAT64 & getProcessQueueExecutionTime() const;
+
+  /**
+   * Retrieve the number of roots used in checking for discontinuities.
+   * @return size_t numRoots
+   */
+  size_t getNumRoots() const;
 };
 
 #endif // CModel

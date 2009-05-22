@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:34:38 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,16 +52,10 @@ public:
   bool compile(CModel * pModel);
 
   /**
-   * Prepare the mathematical model for simulation.
-   * @return bool success
-   */
-  bool initialize();
-
-  /**
    * Evaluate all root values for the current state of the model
-   * @param CVector< double > & triggerValues
+   * @param CVectorCore< double > & rootValues
    */
-  void evaluateRoots(CVector< double > & rootValues);
+  void evaluateRoots(CVectorCore< double > & rootValues);
 
   /**
    * Process events scheduled at the given which a are checked for
@@ -72,17 +66,36 @@ public:
   void processQueue(const C_FLOAT64 & time, const bool & equality);
 
   /**
-  * Check whether the roots which have value 1 lead to firing of
-  * events and schedule them if needed.
-  * @param const CVector< C_INT > & roots
-  */
-  void processRoots(const CVector< C_INT > & roots);
+   * Check whether the roots which have value 1 lead to firing of
+   * events and schedule them if needed.
+   * @param const C_FLOAT64 & time
+   * @param const CVector< C_INT > & roots
+   */
+  void processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots);
+
+  /**
+   * Check whether any event fires and schedule them if needed.
+   * This method is used for discontinuous changes.
+   * @param const C_FLOAT64 & time
+   */
+  void processEvents(const C_FLOAT64 & time);
 
   /**
    * Retrieve the next execution time scheduled in the process queue
    * @return const C_FLOAT64 & processQueueExecutionTime
    */
   const C_FLOAT64 & getProcessQueueExecutionTime() const;
+
+  /**
+   * Initialize all values of the math model with their initial values.
+   */
+  void applyInitialValues();
+
+  /**
+   * Retrieve the number of roots used in checking for discontinuities.
+   * @return size_t numRoots
+   */
+  size_t getNumRoots() const;
 
   /**
    * Build a list of refresh calls needed to assure that required objects

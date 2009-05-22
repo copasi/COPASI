@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.363 $
+//   $Revision: 1.364 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:33:53 $
+//   $Date: 2009/05/22 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1117,6 +1117,8 @@ void CModel::applyInitialValues()
 
   // Update all dependent objects needed for simulation.
   updateSimulatedValues(false);
+
+  mpMathModel->applyInitialValues();
 }
 
 void CModel::clearMoieties()
@@ -4076,17 +4078,27 @@ std::string CModel::getQuantityRateUnitsDisplayString() const
 
 /****** Below will be removed when the math model completed ******/
 
+void CModel::evaluateRoots(CVectorCore< double > & rootValues)
+{
+  return mpMathModel->evaluateRoots(rootValues);
+}
+
 void CModel::processQueue(const C_FLOAT64 & time, const bool & equality)
 {
   return mpMathModel->processQueue(time, equality);
 }
 
-void CModel::processRoots(const CVector< C_INT > & roots)
+void CModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots)
 {
-  return mpMathModel->processRoots(roots);
+  return mpMathModel->processRoots(time, roots);
 }
 
 const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const
 {
   return mpMathModel->getProcessQueueExecutionTime();
+}
+
+size_t CModel::getNumRoots() const
+{
+  return mpMathModel->getNumRoots();
 }
