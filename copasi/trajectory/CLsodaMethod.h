@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.21 $
+ $Revision: 1.22 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/05/21 15:28:13 $
+ $Date: 2009/05/22 19:57:18 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,11 +209,11 @@ public:
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   static void EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                    const C_INT * nr, const double * r);
+                    const C_INT * nr, C_FLOAT64 * r);
   /**
    *  This evaluates the roots
    */
-  void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, const double * r);
+  void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r);
 
 private:
   /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/05/22 19:57:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -227,7 +227,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       L = &bl;
 
       // It suffices to reach the end time within machine precision
-      CompareEndTime = EndTime - 100 * (fabs(EndTime) * DBL_EPSILON + DBL_MIN);
+      CompareEndTime = EndTime + 100 * (fabs(EndTime) * DBL_EPSILON + DBL_MIN);
     }
   else
     {
@@ -235,7 +235,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       L = &fl;
 
       // It suffices to reach the end time within machine precision
-      CompareEndTime = EndTime + 100 * (fabs(EndTime) * DBL_EPSILON + DBL_MIN);
+      CompareEndTime = EndTime - 100 * (fabs(EndTime) * DBL_EPSILON + DBL_MIN);
     }
 
   unsigned C_INT32 StepCounter = 1;
@@ -380,7 +380,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
           case CTrajectoryMethod::ROOT:
             mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-            mpTrajectoryProblem->getModel()->processRoots(mpTrajectoryMethod->getRoots());
+            mpTrajectoryProblem->getModel()->processRoots(*mpCurrentTime,
+                mpTrajectoryMethod->getRoots());
 
             break;
 

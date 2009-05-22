@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/05/22 19:57:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,8 +151,9 @@ bool CLsodaMethod::elevateChildren()
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 {
-  if (!mData.dim) //just do nothing if there are no variables
+  if (!mData.dim & !mNumRoots) //just do nothing if there are no variables
     {
+      // TODO CRITICAL When we have roots we need to add an artificial ODE dx/td = 1
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
       *mpCurrentState = *mpState;
@@ -222,13 +223,12 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
 
-  // TODO CRITICAL Handle the status correctly
   // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
   // the caller as it is not sufficient to rely on the fact that T < TOUT
 
   if (mLsodaStatus == 3)
     {
-      // TODO Check whether it is sufficient to switch to 2
+      // TODO ALGORITHM Check whether it is sufficient to switch to 2
       mLsodaStatus = 1;
       Status = ROOT;
     }
@@ -263,8 +263,7 @@ void CLsodaMethod::start(const CState * initialState)
 
   mYdot.resize(mData.dim);
 
-  // TODO CRITICAL Retrieve the number of roots.
-  mNumRoots = 0;
+  mNumRoots = mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
 
   /* Configure lsoda(r) */
@@ -281,7 +280,7 @@ void CLsodaMethod::start(const CState * initialState)
   mIWork[7] = 12;
   mIWork[8] = 5;
 
-  if (mRoots.size() > 0)
+  if (mNumRoots > 0)
     {
       mLSODAR.setOstream(mErrorMsg);
     }
@@ -314,11 +313,20 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * y
 }
 
 void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * nr, const double * r)
+                         const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodaMethod::evalR(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */,
-                         const C_INT * /* nr */, const double * /* r */)
+void CLsodaMethod::evalR(const C_FLOAT64 *  t , const C_FLOAT64 *  y ,
+                         const C_INT *  nr , C_FLOAT64 * r)
 {
-  // TODO CRITICAL Implement me!
+  assert(y == mY);
+  assert(*nr == (C_INT) mRoots.size());
+
+  mpState->setTime(*t);
+
+  mpModel->setState(*mpState);
+
+  CVectorCore< C_FLOAT64 > RootValues((unsigned C_INT32) nr, r);
+
+  mpModel->evaluateRoots(RootValues);
 };
