@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:35:32 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,7 @@ private:
   QStringList mCompartments;
   CQComboDelegate* mpCompartmentDelegate;
   CQIndexComboDelegate* mpTypeDelegate;
-  void deleteSelectedSpecie();
+  void deleteSelectedSpecies();
 
 protected:
   virtual void keyPressEvent(QKeyEvent* ev);

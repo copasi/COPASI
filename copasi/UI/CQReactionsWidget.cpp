@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/05/18 10:53:34 $
+//   $Author: aekamal $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,47 +76,24 @@ void CQReactionsWidget::languageChange()
 void CQReactionsWidget::slotBtnDeleteClicked()
 {
   if (mpTblReactions->hasFocus())
-    {deleteSelectedReaction();}
+    {deleteSelectedReactions();}
 }
 
-void CQReactionsWidget::deleteSelectedReaction()
+void CQReactionsWidget::deleteSelectedReactions()
 {
-  if (mpTblReactions->selectionModel()->selectedIndexes().empty())
+  QModelIndexList selRows = mpTblReactions->selectionModel()->selectedRows(0);
+
+  if (selRows.empty())
     {return;}
 
-//  QModelIndex &i = mpProxyModel->mapToSource(mpTblReactions->selectionModel()->selectedIndexes().value(0));
-  QModelIndex i = mpProxyModel->mapToSource(mpTblReactions->selectionModel()->selectedIndexes().value(0));
-  int delRow = i.row();
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-  if (mpReactionDM->isDefaultRow(i))
-    return;
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  CReaction * pReaction = pModel->getReactions()[delRow];
-
-  if (pReaction == NULL)
-    return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, pModel, "reaction",
-                                FROM_UTF8(pReaction->getObjectName()),
-                                pReaction->getDeletedObjects());
-
-  if (choice == QMessageBox::Ok)
-    {
-      if (mpTblReactions->hasFocus())
-        {
-          mpReactionDM->removeRow(delRow);
-          protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
-        }
-    }
+  if (mpReactionDM->removeRows(mappedSelRows))
+    protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
 }
 
 void CQReactionsWidget::slotBtnClearClicked()

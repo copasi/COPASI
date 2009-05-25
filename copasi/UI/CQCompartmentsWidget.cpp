@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/05/18 10:51:31 $
+//   $Author: aekamal $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,47 +77,24 @@ void CQCompartmentsWidget::languageChange()
 void CQCompartmentsWidget::slotBtnDeleteClicked()
 {
   if (mpTblCompartments->hasFocus())
-    {deleteSelectedCompartment();}
+    {deleteSelectedCompartments();}
 }
 
-void CQCompartmentsWidget::deleteSelectedCompartment()
+void CQCompartmentsWidget::deleteSelectedCompartments()
 {
-  if (mpTblCompartments->selectionModel()->selectedIndexes().empty())
+  QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows(0);
+
+  if (selRows.empty())
     {return;}
 
-//  QModelIndex &i = mpProxyModel->mapToSource(mpTblCompartments->selectionModel()->selectedIndexes().value(0));
-  QModelIndex i = mpProxyModel->mapToSource(mpTblCompartments->selectionModel()->selectedIndexes().value(0));
-  int delRow = i.row();
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-  if (mpCompartmentDM->isDefaultRow(i))
-    return;
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  CCompartment * pCompartment = pModel->getCompartments()[delRow];
-
-  if (pCompartment == NULL)
-    return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, pModel, "compartment",
-                                FROM_UTF8(pCompartment->getObjectName()),
-                                pCompartment->getDeletedObjects());
-
-  if (choice == QMessageBox::Ok)
-    {
-      if (mpTblCompartments->hasFocus())
-        {
-          mpCompartmentDM->removeRow(delRow);
-          protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");
-        }
-    }
+  if (mpCompartmentDM->removeRows(mappedSelRows))
+    protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");
 }
 
 void CQCompartmentsWidget::slotBtnClearClicked()

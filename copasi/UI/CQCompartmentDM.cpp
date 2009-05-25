@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include "model/CCompartment.h"
 #include "function/CExpression.h"
 
+#include "CQMessageBox.h"
 #include "CQCompartmentDM.h"
 #include "qtUtilities.h"
 
@@ -281,5 +282,50 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  return true;
+}
+
+bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
+{
+  if (rows.isEmpty())
+    return false;
+
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  if (pModel == NULL)
+    return false;
+
+//Build the list of pointers to items to be deleted
+//before actually deleting any item.
+  QList <CCompartment *> pCompartments;
+  QModelIndexList::const_iterator i;
+
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      if (!isDefaultRow(*i) && pModel->getCompartments()[(*i).row()])
+        pCompartments.append(pModel->getCompartments()[(*i).row()]);
+    }
+
+  QList <CCompartment *>::const_iterator j;
+
+  for (j = pCompartments.begin(); j != pCompartments.end(); ++j)
+    {
+      CCompartment * pCompartment = *j;
+
+      unsigned C_INT32 delRow =
+        pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
+
+      if (delRow != C_INVALID_INDEX)
+        {
+          QMessageBox::StandardButton choice =
+            CQMessageBox::confirmDelete(NULL, pModel, "compartment",
+                                        FROM_UTF8(pCompartment->getObjectName()),
+                                        pCompartment->getDeletedObjects());
+
+          if (choice == QMessageBox::Ok)
+            removeRow(delRow);
+        }
+    }
+
   return true;
 }

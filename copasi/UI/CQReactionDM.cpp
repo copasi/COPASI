@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include <QString>
+#include <QList>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -321,5 +322,50 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  return true;
+}
+
+bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
+{
+  if (rows.isEmpty())
+    return false;
+
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  if (pModel == NULL)
+    return false;
+
+//Build the list of pointers to items to be deleted
+//before actually deleting any item.
+  QList <CReaction *> pReactions;
+  QModelIndexList::const_iterator i;
+
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      if (!isDefaultRow(*i) && pModel->getReactions()[(*i).row()])
+        pReactions.append(pModel->getReactions()[(*i).row()]);
+    }
+
+  QList <CReaction *>::const_iterator j;
+
+  for (j = pReactions.begin(); j != pReactions.end(); ++j)
+    {
+      CReaction * pReaction = *j;
+
+      unsigned C_INT32 delRow =
+        pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
+
+      if (delRow != C_INVALID_INDEX)
+        {
+          QMessageBox::StandardButton choice =
+            CQMessageBox::confirmDelete(NULL, pModel, "reaction",
+                                        FROM_UTF8(pReaction->getObjectName()),
+                                        pReaction->getDeletedObjects());
+
+          if (choice == QMessageBox::Ok)
+            removeRow(delRow);
+        }
+    }
+
   return true;
 }

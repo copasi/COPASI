@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 16:38:08 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ private:
   CQCompartmentDM* mpCompartmentDM;
   CQSortFilterProxyModel *mpProxyModel;
   CQIndexComboDelegate* mpTypeDelegate;
-  void deleteSelectedCompartment();
+  void deleteSelectedCompartments();
 
 protected:
   virtual void keyPressEvent(QKeyEvent* ev);

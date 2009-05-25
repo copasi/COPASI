@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 15:19:36 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,10 +63,10 @@ private:
   std::vector< QTableView * > mWidgets;
   std::vector< CQBaseDataModel * > mDMs;
   std::vector< CQSortFilterProxyModel * > mProxyDMs;
-  void deleteSelectedAuthor();
-  void deleteSelectedReference();
-  void deleteSelectedBiologicalDescription();
-  void deleteSelectedModified();
+  void deleteSelectedAuthors();
+  void deleteSelectedReferences();
+  void deleteSelectedBiologicalDescriptions();
+  void deleteSelectedModifieds();
   void keyPressEvent(QKeyEvent* ev);
 
 protected slots:

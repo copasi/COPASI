@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 15:24:00 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ public:
 private:
   CQReactionDM* mpReactionDM;
   CQSortFilterProxyModel *mpProxyModel;
-  void deleteSelectedReaction();
+  void deleteSelectedReactions();
 
 protected:
   virtual void keyPressEvent(QKeyEvent* ev);

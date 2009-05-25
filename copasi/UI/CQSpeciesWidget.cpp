@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/05/18 10:56:36 $
+//   $Author: aekamal $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,47 +84,24 @@ void CQSpeciesWidget::languageChange()
 void CQSpeciesWidget::slotBtnDeleteClicked()
 {
   if (mpTblSpecies->hasFocus())
-    {deleteSelectedSpecie();}
+    {deleteSelectedSpecies();}
 }
 
-void CQSpeciesWidget::deleteSelectedSpecie()
+void CQSpeciesWidget::deleteSelectedSpecies()
 {
-  if (mpTblSpecies->selectionModel()->selectedIndexes().empty())
+  QModelIndexList selRows = mpTblSpecies->selectionModel()->selectedRows(0);
+
+  if (selRows.empty())
     {return;}
 
-//  QModelIndex &i = mpProxyModel->mapToSource(mpTblSpecies->selectionModel()->selectedIndexes().value(0));
-  QModelIndex i = mpProxyModel->mapToSource(mpTblSpecies->selectionModel()->selectedIndexes().value(0));
-  int delRow = i.row();
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-  if (mpSpecieDM->isDefaultRow(i))
-    return;
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  CMetab* pSpecies = pModel->getMetabolites()[delRow];
-
-  if (pSpecies == NULL)
-    return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, pModel, "species",
-                                FROM_UTF8(pSpecies->getObjectName()),
-                                pSpecies->getDeletedObjects());
-
-  if (choice == QMessageBox::Ok)
-    {
-      if (mpTblSpecies->hasFocus())
-        {
-          mpSpecieDM->removeRow(delRow);
-          protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");
-        }
-    }
+  if (mpSpecieDM->removeRows(mappedSelRows))
+    protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
 }
 
 void CQSpeciesWidget::slotBtnClearClicked()

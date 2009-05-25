@@ -1,15 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 15:19:36 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include <QMessageBox>
 
 #include "UI/qtUtilities.h"
 #include "CQReferenceDM.h"
@@ -153,5 +155,73 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  return true;
+}
+
+bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
+{
+  if (rows.isEmpty())
+    return false;
+
+//Build the list of pointers to items to be deleted
+//before actually deleting any item.
+  QList <CReference *> pReferences;
+  QModelIndexList::const_iterator i;
+
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      if (!isDefaultRow(*i) && mpMIRIAMInfo->getReferences()[(*i).row()])
+        pReferences.append(mpMIRIAMInfo->getReferences()[(*i).row()]);
+    }
+
+  bool retVal = false, askEveryItem = true;
+  QMessageBox::StandardButton choice;
+  QList <CReference *>::const_iterator j;
+
+  for (j = pReferences.begin(); j != pReferences.end(); ++j)
+    {
+      CReference * pReference = *j;
+
+      unsigned C_INT32 delRow =
+        mpMIRIAMInfo->getReferences().CCopasiVector< CReference >::getIndex(pReference);
+
+      if (delRow != C_INVALID_INDEX)
+        {
+          if (askEveryItem)
+            {
+              QString resource = data(this->index(delRow, COL_RESOURCE_REFERENCE), Qt::DisplayRole).toString();
+              QString Id = data(this->index(delRow, COL_ID_REFERENCE), Qt::DisplayRole).toString();
+              QString msg = "Do you want to delete Reference '";
+
+              if (!resource.isNull())
+                {
+                  msg.append(resource);
+                }
+
+              if (!Id.isNull())
+                {
+                  msg.append(":");
+                  msg.append(Id);
+                }
+
+              msg.append("'?");
+
+              choice = QMessageBox::question(NULL, tr("Confirm Delete"), msg,
+                                             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll,
+                                             QMessageBox::No);
+            }
+
+          if (choice == QMessageBox::NoToAll)
+            {return retVal;}
+          else if (choice == QMessageBox::Yes)
+            {retVal = removeRow(delRow);}
+          else if (choice == QMessageBox::YesToAll)
+            {
+              askEveryItem = false;
+              retVal = removeRow(delRow);
+            }
+        }
+    }
+
   return true;
 }

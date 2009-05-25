@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/04 15:19:36 $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,8 @@
 // All rights reserved.
 
 #include <QDateTime>
+#include <QMessageBox>
+
 #include "UI/qtUtilities.h"
 #include "CQModifiedDM.h"
 
@@ -148,4 +150,67 @@ bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex&)
 
   endRemoveRows();
   return true;
+}
+
+bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
+{
+  if (rows.isEmpty())
+    return false;
+
+//Build the list of pointers to items to be deleted
+//before actually deleting any item.
+  QList < CModification * > pModifieds;
+  QModelIndexList::const_iterator i;
+
+  for (i = rows.begin(); i != rows.end(); ++i)
+    {
+      if (!isDefaultRow(*i) && mpMIRIAMInfo->getModifications()[(*i).row()])
+        pModifieds.append(mpMIRIAMInfo->getModifications()[(*i).row()]);
+    }
+
+  bool retVal = false, askEveryItem = true;
+  QMessageBox::StandardButton choice;
+  QList <CModification *>::const_iterator j;
+
+  for (j = pModifieds.begin(); j != pModifieds.end(); ++j)
+    {
+      CModification * pModified = *j;
+
+      unsigned C_INT32 delRow =
+        mpMIRIAMInfo->getModifications().CCopasiVector< CModification >::getIndex(pModified);
+
+      if (delRow != C_INVALID_INDEX)
+        {
+          if (askEveryItem)
+            {
+              QString dateModified = data(this->index(delRow, COL_DATE_MODIFIED), Qt::DisplayRole).toString();
+              QString msg = "Do you want to delete Date/Time Modified '";
+
+              if (!dateModified.isNull())
+                {
+                  msg.append(dateModified);
+                }
+
+              msg.append("'?");
+
+              choice = QMessageBox::question(NULL, tr("Confirm Delete"), msg,
+                                             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll,
+                                             QMessageBox::No);
+            }
+
+          if (choice == QMessageBox::NoToAll)
+            {return retVal;}
+          else if (choice == QMessageBox::Yes)
+            {
+              retVal = removeRow(delRow);
+            }
+          else if (choice == QMessageBox::YesToAll)
+            {
+              askEveryItem = false;
+              retVal = removeRow(delRow);
+            }
+        }
+    }
+
+  return retVal;
 }

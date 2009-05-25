@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/05/18 10:45:52 $
+//   $Author: aekamal $
+//   $Date: 2009/05/25 17:31:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,150 +132,79 @@ void CQMiriamWidget::languageChange()
 void CQMiriamWidget::slotBtnDeleteClicked()
 {
   if (mpTblAuthors->hasFocus())
-    {deleteSelectedAuthor();}
+    {deleteSelectedAuthors();}
   else if (mpTblReferences->hasFocus())
-    {deleteSelectedReference();}
+    {deleteSelectedReferences();}
   else if (mpTblModified->hasFocus())
-    {deleteSelectedModified();}
+    {deleteSelectedModifieds();}
   else if (mpTblDescription->hasFocus())
-    {deleteSelectedBiologicalDescription();}
+    {deleteSelectedBiologicalDescriptions();}
 }
 
-void CQMiriamWidget::deleteSelectedAuthor()
+void CQMiriamWidget::deleteSelectedAuthors()
 {
-  if (!mpTblAuthors->selectionModel()->selectedIndexes().empty())
-    {
-//      QModelIndex &i = mpCreatorPDM->mapToSource(mpTblAuthors->selectionModel()->selectedIndexes().value(0));
-      QModelIndex i = mpCreatorPDM->mapToSource(mpTblAuthors->selectionModel()->selectedIndexes().value(0));
-      int delRow = i.row();
+  QModelIndexList selRows = mpTblAuthors->selectionModel()->selectedRows(0);
 
-      if (mpCreatorDM->isDefaultRow(i))
-        return;
+  if (selRows.empty())
+    {return;}
 
-      QString givenName = mpTblAuthors->model()->data(mpTblAuthors->selectionModel()->selectedIndexes().value(COL_GIVEN_NAME)).toString();
-      QString familyName = mpTblAuthors->model()->data(mpTblAuthors->selectionModel()->selectedIndexes().value(COL_FAMILY_NAME)).toString();
-      QString msg = "Do you want to delete author '";
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-      if (!givenName.isNull())
-        {
-          msg.append(givenName);
-        }
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpCreatorPDM->mapToSource(*i));}
 
-      if (!familyName.isNull())
-        {
-          msg.append(" ");
-          msg.append(familyName);
-        }
-
-      msg.append("'?");
-
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-
-      if (ret == QMessageBox::Yes)
-        {mpCreatorDM->removeRow(delRow);}
-    }
+  mpCreatorDM->removeRows(mappedSelRows);
 }
 
-void CQMiriamWidget::deleteSelectedReference()
+void CQMiriamWidget::deleteSelectedReferences()
 {
-  if (!mpTblReferences->selectionModel()->selectedIndexes().empty())
-    {
-//      QModelIndex &i = mpReferencePDM->mapToSource(mpTblReferences->selectionModel()->selectedIndexes().value(0));
-      QModelIndex i = mpReferencePDM->mapToSource(mpTblReferences->selectionModel()->selectedIndexes().value(0));
-      int delRow = i.row();
+  QModelIndexList selRows = mpTblReferences->selectionModel()->selectedRows(0);
 
-      if (mpReferenceDM->isDefaultRow(i))
-        return;
+  if (selRows.empty())
+    {return;}
 
-      QString resource = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_RESOURCE_REFERENCE)).toString();
-      QString Id = mpTblReferences->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_ID_REFERENCE)).toString();
-      QString msg = "Do you want to delete Reference '";
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-      if (!resource.isNull())
-        {
-          msg.append(resource);
-        }
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpReferencePDM->mapToSource(*i));}
 
-      if (!Id.isNull())
-        {
-          msg.append(":");
-          msg.append(Id);
-        }
-
-      msg.append("'?");
-
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-
-      if (ret == QMessageBox::Yes)
-        {mpReferenceDM->removeRow(delRow);}
-    }
+  mpReferenceDM->removeRows(mappedSelRows);
 }
 
-void CQMiriamWidget::deleteSelectedBiologicalDescription()
+void CQMiriamWidget::deleteSelectedBiologicalDescriptions()
 {
-  if (!mpTblDescription->selectionModel()->selectedIndexes().empty())
-    {
-//      QModelIndex &i = mpBiologicalDescriptionPDM->mapToSource(mpTblDescription->selectionModel()->selectedIndexes().value(0));
-      QModelIndex i = mpBiologicalDescriptionPDM->mapToSource(mpTblDescription->selectionModel()->selectedIndexes().value(0));
-      int delRow = i.row();
 
-      if (mpBiologicalDescriptionDM->isDefaultRow(i))
-        return;
+  QModelIndexList selRows = mpTblDescription->selectionModel()->selectedRows(0);
 
-      QString resource = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_RESOURCE_BD)).toString();
-      QString Id = mpTblDescription->model()->data(mpTblDescription->selectionModel()->selectedIndexes().value(COL_ID_BD)).toString();
-      QString msg = "Do you want to delete Description '";
+  if (selRows.empty())
+    {return;}
 
-      if (!resource.isNull())
-        {
-          msg.append(resource);
-        }
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-      if (!Id.isNull())
-        {
-          msg.append(":");
-          msg.append(Id);
-        }
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpBiologicalDescriptionPDM->mapToSource(*i));}
 
-      msg.append("'?");
-
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-
-      if (ret == QMessageBox::Yes)
-        {mpBiologicalDescriptionDM->removeRow(delRow);}
-    }
+  mpBiologicalDescriptionDM->removeRows(mappedSelRows);
 }
 
-void CQMiriamWidget::deleteSelectedModified()
+void CQMiriamWidget::deleteSelectedModifieds()
 {
-  if (!mpTblModified->selectionModel()->selectedIndexes().empty())
-    {
-//      QModelIndex &i = mpModifiedPDM->mapToSource(mpTblModified->selectionModel()->selectedIndexes().value(0);
-      QModelIndex i = mpModifiedPDM->mapToSource(mpTblModified->selectionModel()->selectedIndexes().value(0));
-      int delRow = i.row();
 
-      if (mpModifiedDM->isDefaultRow(i))
-        return;
+  QModelIndexList selRows = mpTblModified->selectionModel()->selectedRows(0);
 
-      QString dateModified = mpTblModified->model()->data(mpTblReferences->selectionModel()->selectedIndexes().value(COL_DATE_MODIFIED)).toString();
-      QString msg = "Do you want to delete Date/Time Modified '";
+  if (selRows.empty())
+    {return;}
 
-      if (!dateModified.isNull())
-        {
-          msg.append(dateModified);
-        }
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-      msg.append("'?");
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpModifiedPDM->mapToSource(*i));}
 
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), msg,
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-
-      if (ret == QMessageBox::Yes)
-        {mpModifiedDM->removeRow(delRow);}
-    }
+  mpModifiedDM->removeRows(mappedSelRows);
 }
 
 void CQMiriamWidget::slotBtnClearClicked()
