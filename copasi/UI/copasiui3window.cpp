@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.256 $
+//   $Revision: 1.257 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/08 12:45:05 $
+//   $Author: pwilly $
+//   $Date: 2009/05/25 11:08:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,6 +225,8 @@ CopasiUI3Window::CopasiUI3Window():
   createActions();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
+
+  setIconSize(QSize(18, 20));
 
   mpaSave->setEnabled(false);
   mpaSaveAs->setEnabled(false);
