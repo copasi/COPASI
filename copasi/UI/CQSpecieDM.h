@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Author: ssahle $
+//   $Date: 2009/05/26 22:51:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ public:
   const QStringList& getTypes();
   void setFlagConc(bool flag);
   const std::vector< unsigned C_INT32 >& getItemToType();
-  bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
+  bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
   bool mFlagConc;
