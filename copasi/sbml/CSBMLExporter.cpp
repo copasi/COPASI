@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/08 14:00:39 $
+//   $Date: 2009/05/27 11:20:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2639,9 +2639,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
 
         while (eventIt != eventEndit)
           {
-#ifdef COPASI_DEBUG
             CSBMLExporter::isEventSBMLCompatible(*eventIt, dataModel, sbmlLevel, sbmlVersion, result);
-#endif // COPASI_DEBUG
             ++eventIt;
           }
 
@@ -2679,7 +2677,6 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
     }
   else
     {
-#ifdef COPASI_DEBUG
       // remove all events from the SBML model
       // and put them in a set
       std::set<Event*> eventSet;
@@ -2732,8 +2729,6 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
           delete *it2;
           ++it2;
         }
-
-#endif // COPASI_DEBUG
     }
 }
 
@@ -2742,7 +2737,6 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   // once events are functional, we create them here
   // don't forget to call replaceSpeciesReferences
   // on all mathematical expressions
-#ifdef COPASI_DEBUG
 
   // first check if we already have a corresponding event from an earlier
   // import or export
@@ -2954,11 +2948,8 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       delete pSBMLEvent;
       this->mCOPASI2SBMLMap.erase(&event);
     }
-
-#endif // COPASI_DEBUG
 }
 
-#ifdef COPASI_DEBUG
 void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
 {
   //  we export all event assignments
@@ -3222,7 +3213,6 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
       ++it;
     }
 }
-#endif // COPASI_DEBUG
 
 void CSBMLExporter::checkForEvents(const CCopasiDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
 {
@@ -6855,7 +6845,6 @@ void CSBMLExporter::setExportCOPASIMIRIAM(bool exportMiriam)
   this->mExportCOPASIMIRIAM = exportMiriam;
 }
 
-#ifdef COPASI_DEBUG
 void CSBMLExporter::isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result)
 {
   if (pEvent == NULL) return;
@@ -6979,7 +6968,6 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(std::string& key, const CExp
         }
     }
 }
-#endif // COPASI_DEBUG
 
 /**
  * Goes through the expression tree and tries to find occurences of local
@@ -7184,7 +7172,6 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
         }
     }
 
-#ifdef COPASI_DEBUG
   iMax = pModel->getEvents().size();
 
   for (i = 0; i < iMax; ++i)
@@ -7197,6 +7184,4 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
           idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
         }
     }
-
-#endif /* COPASI_DEBUG */
 }

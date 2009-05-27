@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 15:08:14 $
+//   $Date: 2009/05/27 11:20:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,7 +145,6 @@ protected:
                                 std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
                                 Model* pSBMLModel);
 
-#ifdef COPASI_DEBUG
   /**
    * Imports all events
    */
@@ -160,7 +159,6 @@ protected:
                    Model* pSBMLModel,
                    CModel* pCopasiModel,
                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
-#endif // COPASI_DEBUG
 
   /**
    * Imports the given RateRule if COPASI supports this kind of RateRule, otherwise a warning is created.

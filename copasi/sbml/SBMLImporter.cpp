@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.236 $
+//   $Revision: 1.237 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/11 13:36:30 $
+//   $Date: 2009/05/27 11:20:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -541,10 +541,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29, idList.c_str());
     }
 
-#ifdef COPASI_DEBUG
   // import all event
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
-#endif // COPASI_DEBUG
 
   this->mpCopasiModel->setCompileFlag();
 
@@ -6059,7 +6057,6 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   // delete the units we created
   delete pSubstanceUnits;
   delete pVolumeUnits;
-#ifdef COPASI_DEBUG
   const Event* pEvent = NULL;
   inconsistentTimeUnits = false;
   iMax = pSBMLModel->getNumEvents();
@@ -6165,7 +6162,6 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
   // delete the units we created
   delete pTimeUnits;
-#endif // COPASI_DEBUG
 }
 
 /**
@@ -7148,7 +7144,6 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* 
         }
     }
 }
-#ifdef COPASI_DEBUG
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   unsigned int i, iMax = pSBMLModel->getNumEvents();
@@ -7502,5 +7497,3 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
       SBMLImporter::findDirectDependencies(pNode->getChild(i), dependencies);
     }
 }
-
-#endif // COPASI_DEBUG

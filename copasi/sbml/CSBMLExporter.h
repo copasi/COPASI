@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/07 15:28:52 $
+//   $Date: 2009/05/27 11:20:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -433,7 +433,6 @@ protected:
    */
   void createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
 
-#ifdef COPASI_DEBUG
   /**
    * This method creates the individual event assignments for the given
    * event.
@@ -451,7 +450,6 @@ protected:
    * compatible.
    */
   static void isEventSBMLCompatible(const CEvent* pEvent, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result);
-#endif // COPASI_DEBUG
 
   /**
    * This method creates an ASTNode tree where all the species specified in
