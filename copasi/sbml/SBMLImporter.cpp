@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.237 $
+//   $Revision: 1.238 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/05/27 11:20:33 $
+//   $Author: shoops $
+//   $Date: 2009/05/28 17:20:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -6951,7 +6951,6 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
             }
 
           std::string miriamString = XMLNode::convertXMLNodeToString(pCOPASIMIRIAMNode);
-          CRDFGraphConverter::SBML2Copasi(miriamString);
 
           switch (pSBMLObject->getTypeCode())
             {
