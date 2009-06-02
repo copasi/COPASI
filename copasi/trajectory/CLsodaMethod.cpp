@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 21:07:36 $
+//   $Date: 2009/06/02 20:52:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,7 +262,7 @@ void CLsodaMethod::start(const CState * initialState)
   else
     mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
 
-  // TODO CRITICAL When we have roots we need to add an artificial ODE dDummy/dt = 1
+  // When we have roots we need to add an artificial ODE dDummy/dt = 1
   if (mData.dim == 0 && mNumRoots != 0)
     {
       mData.dim = 1;
