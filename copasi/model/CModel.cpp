@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.364 $
+//   $Revision: 1.365 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/02 20:55:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2873,6 +2873,24 @@ CEvent* CModel::createEvent(const std::string & name)
       return NULL;
     }
 
+  // Assure that the event order is unique.
+  // We assume that the existing events are ordered consecutively without
+  // gaps.
+  unsigned C_INT32 Order = 0;
+
+  CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
+  CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
+
+  for (; it != end; ++it)
+    {
+      if (Order < (*it)->getOrder())
+        {
+          Order = (*it)->getOrder();
+        }
+    }
+
+  pEvent->setOrder(Order + 1, false);
+
   mCompileIsNecessary = true;
   return pEvent;
 }
@@ -2900,6 +2918,52 @@ bool CModel::removeEvent(const std::string & key,
   mCompileIsNecessary = true;
 
   return true;
+}
+
+void CModel::synchronizeEventOrder(const CEvent * pEvent,
+                                   const unsigned C_INT32 newOrder)
+{
+  const unsigned C_INT32 & OldOrder = pEvent->getOrder();
+
+  // If the OldOrder is the default for newly created events
+  // we do nothing. This assumes that whenever CEvent::setOrder is called
+  // for newly created event we assure that the order is unique.
+  if (OldOrder == C_INVALID_INDEX)
+    {
+      return;
+    }
+
+  CCopasiVectorN< CEvent >::iterator it = mEvents.begin();
+  CCopasiVectorN< CEvent >::iterator end = mEvents.end();
+
+  if (newOrder < OldOrder)
+    {
+      // We need to increase the order of the events which are in the
+      // interval [newOrder, OldOrder)
+      for (; it != end; ++it)
+        {
+          const unsigned C_INT32 & Order = (*it)->getOrder();
+
+          if (newOrder <= Order && Order < OldOrder)
+            {
+              (*it)->setOrder(Order + 1, false);
+            }
+        }
+    }
+  else if (newOrder > OldOrder)
+    {
+      // We need to decrease the order of the events which are in the
+      // interval (OldOrder, newOrder]
+      for (; it != end; ++it)
+        {
+          const unsigned C_INT32 & Order = (*it)->getOrder();
+
+          if (OldOrder < Order && Order <= newOrder)
+            {
+              (*it)->setOrder(Order - 1, false);
+            }
+        }
+    }
 }
 
 //*****************************************************************
@@ -4083,9 +4147,12 @@ void CModel::evaluateRoots(CVectorCore< double > & rootValues)
   return mpMathModel->evaluateRoots(rootValues);
 }
 
-void CModel::processQueue(const C_FLOAT64 & time, const bool & equality)
+void CModel::processQueue(const C_FLOAT64 & time,
+                          const bool & equality,
+                          CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments
+                         )
 {
-  return mpMathModel->processQueue(time, equality);
+  return mpMathModel->processQueue(time, equality, pResolveSimultaneousAssignments);
 }
 
 void CModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots)

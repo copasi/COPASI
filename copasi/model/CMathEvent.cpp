@@ -1,15 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/02 20:55:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include <limits>
 
 #include "copasi.h"
 
@@ -65,8 +67,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pAssignment,
 CMathEvent::CMathEvent(const CCopasiContainer * pParent) :
     CCopasiContainer("MathEvent", pParent, "MathEvent"),
     mTrigger(this),
-    mActive(false),
-    mEquality(false),
+    mOrder(false),
     mHaveDelay(false),
     mDelay("DelayExpression", this),
     mDelayAssignment(true),
@@ -80,8 +81,7 @@ CMathEvent::CMathEvent(const CMathEvent & src,
                        const CCopasiContainer * pParent) :
     CCopasiContainer(src, pParent),
     mTrigger(src.mTrigger, this),
-    mActive(src.mActive),
-    mEquality(src.mEquality),
+    mOrder(src.mOrder),
     mHaveDelay(src.mHaveDelay),
     mDelay(src.mDelay, this),
     mDelayAssignment(src.mDelayAssignment),
@@ -175,6 +175,32 @@ void CMathEvent::processRoot(const C_FLOAT64 & time,
           applyDelayRefreshes();
 
           ExecutionTime += mDelay.calcValue();
+
+          // Events are only allowed in forward integration. Thus the ExecutionTime
+          // must not be less than the time.
+          if (ExecutionTime - time < 0.0)
+            {
+              // We allow small numerical errors.
+              C_FLOAT64 Scale =
+                (fabs(ExecutionTime) + fabs(time)) * 50.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+              // Both are approximately zero
+              if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
+                {
+                  ExecutionTime = time;
+                }
+              // The difference is small compared to the scale
+              else if (fabs(ExecutionTime - time) < Scale)
+                {
+                  ExecutionTime = time;
+                }
+              // The execution time is definitely in the past
+              else
+                {
+                  // Create an error message and throw an exception.
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 2, ExecutionTime, time);
+                }
+            }
         }
 
       // We make sure everything is up to date.
@@ -191,6 +217,7 @@ void CMathEvent::processRoot(const C_FLOAT64 & time,
               // an assignment for the execution time.
               processQueue.addAssignment(ExecutionTime,
                                          Equality,
+                                         mOrder,
                                          EventId,
                                          (*itAssignment)->mpTarget,
                                          Value,
@@ -201,6 +228,7 @@ void CMathEvent::processRoot(const C_FLOAT64 & time,
               // We must delay the calculation of the new target value
               processQueue.addCalculation(ExecutionTime,
                                           Equality,
+                                          mOrder,
                                           EventId,
                                           (*itAssignment)->mpTarget,
                                           &(*itAssignment)->mExpression,
@@ -246,4 +274,9 @@ void CMathEvent::applyDependentRefreshes()
 CMathTrigger & CMathEvent::getMathTrigger()
 {
   return mTrigger;
+}
+
+const unsigned C_INT32 & CMathEvent::getOrder() const
+{
+  return mOrder;
 }

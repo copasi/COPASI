@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/02 20:55:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,6 +136,12 @@ public:
    */
   CMathTrigger & getMathTrigger();
 
+  /**
+   * Retrieve the order in which this event shall be processed
+   * @return const unsigned C_INT32 & order
+   */
+  const unsigned C_INT32 & getOrder() const;
+
   // Attributes
 private:
   /**
@@ -144,14 +150,10 @@ private:
   CMathTrigger mTrigger;
 
   /**
-   * Boolean value indicating the status of the trigger
+   * The order in which the event is processed in case of simultaneous
+   * assignments
    */
-  bool mActive;
-
-  /**
-   * Boolean value indicating whether the trigger checks for equality or inequality.
-   */
-  bool mEquality;
+  unsigned C_INT32 mOrder;
 
   /**
    * Boolean value indicating whether the event involves a delay.

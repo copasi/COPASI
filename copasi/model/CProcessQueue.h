@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/02 20:55:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,11 +46,13 @@ private:
      * Specific constructor
      * @param const C_FLOAT64 & executionTime
      * @param const bool & equality
+     * @param const unsigned C_INT32 & order
      * @param const unsigned C_INT32 & eventId
      * @param const unsigned C_INT32 & cascadingLevel
      */
     CKey(const C_FLOAT64 & executionTime,
          const bool & equality,
+         const unsigned C_INT32 & order,
          const unsigned C_INT32 & eventId,
          const unsigned C_INT32 & cascadingLevel);
 
@@ -95,6 +97,11 @@ private:
      * Equalities have to be handled prior to inequalities
      */
     bool mEquality;
+
+    /**
+     * The order in which simultaneous event assignments are processed.
+     */
+    unsigned C_INT32 mOrder;
 
     /**
      * The event Id is used for creating atomic sets of assignments.
@@ -187,11 +194,16 @@ private:
   };
 
   // Type definitions
-private:
+public:
   typedef std::multimap< CKey, CAction >::iterator iterator;
 
   typedef std::pair < std::multimap< CKey, CAction >::iterator,
   std::multimap< CKey, CAction >::iterator > range;
+
+  typedef range(*resolveSimultaneousAssignments)(const std::multimap< CKey, CAction > & /* assignments */,
+      const C_FLOAT64 & /* time */,
+      const bool & /* equality */,
+      const unsigned C_INT32 & /* cascadingLevel */);
 
   // Operations
 public:
@@ -214,6 +226,7 @@ public:
    * Add an assignment to the process queue.
    * @param const C_FLOAT64 & executionTime
    * @param const bool & equality
+   * @param const unsigned C_INT32 & order
    * @param const unsigned C_INT32 & eventId
    * @param C_FLOAT64 * pTarget
    * @param const C_FLOAT64 & value
@@ -222,6 +235,7 @@ public:
    */
   bool addAssignment(const C_FLOAT64 & executionTime,
                      const bool & equality,
+                     const unsigned C_INT32 & order,
                      const unsigned C_INT32 & eventId,
                      C_FLOAT64 * pTarget,
                      const C_FLOAT64 & value,
@@ -231,6 +245,7 @@ public:
    * Add a calculation to the process queue.
    * @param const C_FLOAT64 & executionTime
    * @param const bool & equality
+   * @param const unsigned C_INT32 & order
    * @param const unsigned C_INT32 & eventId
    * @param C_FLOAT64 * pTarget
    * @param CMathExpression * pExpression
@@ -239,6 +254,7 @@ public:
    */
   bool addCalculation(const C_FLOAT64 & executionTime,
                       const bool & equality,
+                      const unsigned C_INT32 & order,
                       const unsigned C_INT32 & eventId,
                       C_FLOAT64 * pTarget,
                       CMathExpression * pExpression,
@@ -254,10 +270,12 @@ public:
    * Process the queue.
    * @param const C_FLOAT64 & time
    * @param const bool & priorToOutput
+   * @param resolveSimultaneousAssignments pResolveSimultaneousAssignments
    * @return bool success
    */
   bool process(const C_FLOAT64 & time,
-               const bool & priorToOutput);
+               const bool & priorToOutput,
+               resolveSimultaneousAssignments pResolveSimultaneousAssignments);
 
   /**
    * Create a unique eventId
@@ -368,6 +386,11 @@ private:
    * A pointer to the math model the process queue belongs to.
    */
   CMathModel * mpMathModel;
+
+  /**
+   * A pointer to a call back method for resolving simultaneous event assignments
+   */
+  resolveSimultaneousAssignments mpResolveSimultaneousAssignments;
 };
 
 #endif // COPASI_CProcessQueue

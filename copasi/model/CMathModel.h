@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/02 20:55:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,8 +62,11 @@ public:
    * equality or not
    * @param const C_FLOAT64 & time
    * @param const bool & equality
+   * @param CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments
    */
-  void processQueue(const C_FLOAT64 & time, const bool & equality);
+  void processQueue(const C_FLOAT64 & time,
+                    const bool & equality,
+                    CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments);
 
   /**
    * Check whether the roots which have value 1 lead to firing of

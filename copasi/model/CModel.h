@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.173 $
+//   $Revision: 1.174 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/02 20:55:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,15 +23,16 @@
 #include <set>
 #include <string>
 
-#include "model/CState.h"
-#include "model/CReaction.h"
-#include "CEvent.h"
-#include "model/CMoiety.h"
-#include "model/CModelValue.h"
+#include "copasi/model/CState.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CMoiety.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CProcessQueue.h"
 
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/utilities/CVector.h"
+#include "copasi/utilities/CMatrix.h"
+#include "copasi/report/CCopasiContainer.h"
 
 //class CCompartment;
 class CProcessReport;
@@ -966,6 +967,15 @@ public:
                    const bool & recursive = true);
 
   /**
+   * Synchronize the order of other events effected by the change
+   * of the given event
+   * @param const CEvent * pEvent
+   * @param const unsigned C_INT32 newOrder
+   */
+  void synchronizeEventOrder(const CEvent * pEvent,
+                             const unsigned C_INT32 newOrder);
+
+  /**
    * Add a non concentration value to the model
    * @param const std::string &name
    * @param const C_FLOAT64 & value (default 0.0)
@@ -1459,8 +1469,12 @@ public:
    * equality or not
    * @param const C_FLOAT64 & time
    * @param const bool & equality
+   * @param CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments
    */
-  void processQueue(const C_FLOAT64 & time, const bool & equality);
+  void processQueue(const C_FLOAT64 & time,
+                    const bool & equality,
+                    CProcessQueue::resolveSimultaneousAssignments pResolveSimultaneousAssignments
+                   );
 
   /**
    * Check whether the roots which have value 1 lead to firing of
