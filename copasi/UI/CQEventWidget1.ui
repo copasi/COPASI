@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
+<comment>   $Revision: 1.7 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/04/27 14:43:59 $ </comment>
+<comment>   $Date: 2009/06/02 20:55:00 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -19,8 +19,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>465</height>
+    <width>488</width>
+    <height>468</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -47,7 +47,29 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>Event Name</string>
+        <string>Name</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="3" >
+      <widget class="QLineEdit" name="mpLineEditName" />
+     </item>
+     <item row="0" column="4" >
+      <widget class="QLabel" name="mpLabelOrder" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Order</string>
        </property>
        <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -57,8 +79,8 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="3" >
-      <widget class="QLineEdit" name="mpLineEditName" />
+     <item row="0" column="5" >
+      <widget class="QSpinBox" name="mpSpinOrder" />
      </item>
      <item row="1" column="0" >
       <widget class="QLabel" name="mpLabelTrigger" >
@@ -69,17 +91,17 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>Condition Trigger</string>
+        <string>Trigger Epression</string>
        </property>
        <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
        <property name="wordWrap" >
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="3" >
+     <item row="1" column="1" colspan="5" >
       <widget class="CQExpressionMmlWidget" native="1" name="mpExpressionTrigger" >
        <property name="minimumSize" >
         <size>
@@ -105,45 +127,29 @@
       </widget>
      </item>
      <item row="2" column="0" >
-      <widget class="QLabel" name="mpLabelDelay" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QCheckBox" name="mpCheckDelay" >
+       <property name="layoutDirection" >
+        <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text" >
         <string>Delay</string>
        </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="wordWrap" >
-        <bool>false</bool>
-       </property>
       </widget>
      </item>
      <item row="2" column="1" >
-      <widget class="QRadioButton" name="mpBtnDelayNone" >
-       <property name="text" >
-        <string>None</string>
-       </property>
-       <property name="checked" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2" >
       <widget class="QRadioButton" name="mpBtnDelayCalculation" >
        <property name="text" >
         <string>Calculation</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="3" >
+     <item row="2" column="2" >
       <widget class="QRadioButton" name="mpBtnDelayAssignment" >
        <property name="text" >
         <string>Assignment</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -156,17 +162,17 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>Delay Expression</string>
+        <string>Expression</string>
        </property>
        <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
        <property name="wordWrap" >
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="3" >
+     <item row="3" column="1" colspan="5" >
       <widget class="CQExpressionMmlWidget" native="1" name="mpExpressionDelay" >
        <property name="minimumSize" >
         <size>
@@ -415,11 +421,6 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>CQExpressionMmlWidget</class>
    <extends>QWidget</extends>
    <header>CQExpressionMmlWidget.h</header>
@@ -448,7 +449,7 @@
  <tabstops>
   <tabstop>mpLineEditName</tabstop>
   <tabstop>mpExpressionTrigger</tabstop>
-  <tabstop>mpBtnDelayNone</tabstop>
+  <tabstop>mpCheckDelay</tabstop>
   <tabstop>mpBtnDelayCalculation</tabstop>
   <tabstop>mpBtnDelayAssignment</tabstop>
   <tabstop>mpExpressionDelay</tabstop>

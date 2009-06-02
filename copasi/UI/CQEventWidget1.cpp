@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 20:22:34 $
+//   $Date: 2009/06/02 20:55:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,13 +135,13 @@ void CQEventWidget1::slotNameChanged()
 /*! */
 void CQEventWidget1::init()
 {
-  slotApplyDelay(true);
+  slotApplyDelay(false);
 
   // SIGNAL-SLOT connections
   connect(mpExpressionTrigger->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionTriggerValid(bool)));
   connect(mpExpressionDelay->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionDelayValid(bool)));
   connect(mpExpressionEA->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionEAValid(bool)));
-  connect(mpBtnDelayNone, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
+  connect(mpCheckDelay, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
   connect(mpLBTarget, SIGNAL(currentRowChanged(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
 
   mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
@@ -252,18 +252,17 @@ bool CQEventWidget1::loadFromEvent()
 
   if (mpEvent->getDelayExpression() == "")
     {
-      mpBtnDelayNone->setChecked(true);
-      slotApplyDelay(true);
+      mpCheckDelay->setChecked(false);
     }
   else if (mpEvent->getDelayAssignment())
     {
       mpBtnDelayAssignment->setChecked(true);
-      slotApplyDelay(false);
+      mpCheckDelay->setChecked(true);
     }
   else
     {
       mpBtnDelayCalculation->setChecked(true);
-      slotApplyDelay(false);
+      mpCheckDelay->setChecked(true);
     }
 
   // copy assignment from event
@@ -360,7 +359,7 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
-  if (!this->mpBtnDelayNone->isChecked())
+  if (mpCheckDelay->isChecked())
     {
       if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
         {
@@ -475,7 +474,7 @@ bool CQEventWidget1::leave()
 {
   mpExpressionTrigger->updateWidget();
 
-  if (!mpBtnDelayNone->isChecked())
+  if (!mpCheckDelay->isChecked())
     mpExpressionDelay->updateWidget();
 
   saveToEvent();
@@ -555,16 +554,20 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 }
 
 /*! Slot to apply the Delay Expression Widget */
-void CQEventWidget1::slotApplyDelay(bool hide)
+void CQEventWidget1::slotApplyDelay(bool show)
 {
-  if (hide)
+  if (show)
     {
-      mpLabelDelay->hide();
-      mpExpressionDelay->hide();
+      mpBtnDelayAssignment->show();
+      mpBtnDelayCalculation->show();
+      mpLabelDelayExpression->show();
+      mpExpressionDelay->show();
     }
   else
     {
-      mpLabelDelay->show();
-      mpExpressionDelay->show();
+      mpBtnDelayAssignment->hide();
+      mpBtnDelayCalculation->hide();
+      mpLabelDelayExpression->hide();
+      mpExpressionDelay->hide();
     }
 }

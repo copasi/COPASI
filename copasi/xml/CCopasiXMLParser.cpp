@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.199 $
+//   $Revision: 1.200 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/07 13:31:19 $
+//   $Date: 2009/06/02 20:55:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2672,6 +2672,7 @@ void CCopasiXMLParser::ListOfEventsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfEvents", mParser.getCurrentLineNumber());
 
+        mEventOrders.clear();
         break;
 
       case Event:
@@ -2723,6 +2724,28 @@ void CCopasiXMLParser::ListOfEventsElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Event", mParser.getCurrentLineNumber());
 
+        // We need to assure that the order attribute
+        // of the events is unique.
+        {
+          // Multi-purpose insert.
+          std::pair< std::set< unsigned C_INT32 >::iterator, bool > insert =
+            mEventOrders.insert(mCommon.pEvent->getOrder());
+
+          // Check if the insert failed
+          if (!insert.second)
+            {
+              // Create a warning message.
+              CCopasiMessage(CCopasiMessage::WARNING, MCXML + 15,
+                             mCommon.pEvent->getOrder());
+
+              // We correct the order by adding it at the end
+              mCommon.pEvent->setOrder(*mEventOrders.rbegin() + 1, false);
+
+              // Update the set to include the new order.
+              mEventOrders.insert(mCommon.pEvent->getOrder());
+            }
+        }
+
         mCurrentElement = ListOfEvents;
         break;
 
@@ -2751,6 +2774,8 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
   const char * Name;
+  const char * order;
+  unsigned C_INT32 Order;
   bool DelayAssignment;
 
   mpCurrentHandler = NULL;
@@ -2766,12 +2791,15 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
         mKey = mParser.getAttributeValue("key", papszAttrs);
         Name = mParser.getAttributeValue("name", papszAttrs);
+        order = mParser.getAttributeValue("order", papszAttrs, "1");
+        Order = (unsigned C_INT32) atoi(order);
         DelayAssignment =
           mParser.toBool(mParser.getAttributeValue("delayAssignment", papszAttrs));
 
         mCommon.pEvent = new CEvent();
         mCommon.KeyMap.addFix(mKey, mCommon.pEvent);
         mCommon.pEvent->setObjectName(Name);
+        mCommon.pEvent->setOrder(Order, false);
         mCommon.pEvent->setDelayAssignment(DelayAssignment);
 
         mCommon.pModel->getEvents().add(mCommon. pEvent, true);

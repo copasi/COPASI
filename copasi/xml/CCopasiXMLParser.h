@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/24 23:11:21 $
+//   $Date: 2009/06/02 20:55:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1528,6 +1528,11 @@ private:
       ListOfEvents = 0,
       Event
     };
+
+    /**
+     * A set of event orders used to enforce uniqueness
+     */
+    std::set< unsigned C_INT32 > mEventOrders;
 
     // Operations
   public:

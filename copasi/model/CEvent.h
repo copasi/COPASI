@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/06/02 20:55:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,6 +185,18 @@ public:
   bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
   /**
+   * Set the order in which the event is executed for simultaneous events.
+   * @param const unsigned C_INT32 & order
+   * const bool & correctOther = true
+   */
+  void setOrder(const unsigned C_INT32 & order, const bool & correctOther = true);
+
+  /**
+   * Retrieve the order in which the events is executed for simultaneous events
+   */
+  const unsigned C_INT32 & getOrder() const;
+
+  /**
    * Sets the SBMLId.
    * @param const std::string & id
    */
@@ -301,6 +313,11 @@ private:
    *  The key of the event
    */
   std::string mKey;
+
+  /**
+   * The order in which the event is executed for simultaneous events.
+   */
+  unsigned C_INT32 mOrder;
 
   /**
    * A vector assignments expressions which specify the changes made by the event.

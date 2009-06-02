@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:49:40 $
+//   $Date: 2009/06/02 20:55:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,6 +154,7 @@ CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Event"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
+    mOrder(C_INVALID_INDEX),
     mAssignments("ListOfAssignments", this),
     mDelayAssignment(true),
     mpTriggerExpression(NULL),
@@ -166,6 +167,7 @@ CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
+    mOrder(src.mOrder),
     mAssignments(src.mAssignments, this),
     mDelayAssignment(src.mDelayAssignment),
     mpTriggerExpression(src.mpTriggerExpression == NULL ? NULL : new CExpression(*src.mpTriggerExpression)),
@@ -179,6 +181,14 @@ CEvent::~CEvent()
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
   pdelete(mpTriggerExpression);
   pdelete(mpDelayExpression);
+
+  // Call the model to synchronize the events with respect to order
+  CModel * pModel = dynamic_cast<CModel *>(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    {
+      pModel->synchronizeEventOrder(this, C_INVALID_INDEX);
+    }
 }
 
 const std::string & CEvent::getKey() const
@@ -222,6 +232,27 @@ bool CEvent::compile(std::vector< CCopasiContainer * > listOfContainer)
 
 void CEvent::initObjects()
 {}
+
+void CEvent::setOrder(const unsigned C_INT32 & order, const bool & correctOther)
+{
+  if (correctOther)
+    {
+      // Call the model to synchronize the events with respect to order
+      CModel * pModel = dynamic_cast<CModel *>(getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        {
+          pModel->synchronizeEventOrder(this, order);
+        }
+    }
+
+  mOrder = order;
+}
+
+const unsigned C_INT32 & CEvent::getOrder() const
+{
+  return mOrder;
+}
 
 std::ostream & operator<<(std::ostream &os, const CEvent & d)
 {
