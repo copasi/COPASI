@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.257 $
+//   $Revision: 1.258 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/05/25 11:08:34 $
+//   $Author: shoops $
+//   $Date: 2009/06/03 13:44:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1923,7 +1923,7 @@ void CopasiUI3Window::refreshSBWMenu()
       QStringList oSortedNameList;
       QStringList oSortedModuleList;
       QStringList oSortedServiceList;
-      int i;
+      size_t i;
 
       for (i = 0; i < oModules.size(); i++)
         {
@@ -1955,7 +1955,7 @@ void CopasiUI3Window::refreshSBWMenu()
         }
 
       // TODO: this is backwards again, in QT4 sorting was easier
-      for (i = 0; i < oSortedNameList.size(); i++)
+      for (i = 0; i < (size_t) oSortedNameList.size(); i++)
         {
           // find old index
           int nIndex = oNameList.findIndex(oSortedNameList[i]);
