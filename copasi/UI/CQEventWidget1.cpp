@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:00 $
+//   $Date: 2009/06/03 16:41:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,10 +237,19 @@ void CQEventWidget1::slotDeleteTarget()
 /*! Load all values with respect to a chosen saved event */
 bool CQEventWidget1::loadFromEvent()
 {
-  if (!mpEvent) return false;
+  if (mpEvent == NULL) return false;
+
+  const CModel * pModel =
+    dynamic_cast< const CModel * >(mpEvent->getObjectAncestor("Model"));
+
+  if (pModel == NULL) return false;
 
   // *** Name
   mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
+
+  // *** Order
+  mpSpinOrder->setRange(1, pModel->getEvents().size());
+  mpSpinOrder->setValue(mpEvent->getOrder());
 
   // *** Expression of Trigger
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
@@ -330,7 +339,12 @@ bool CQEventWidget1::loadFromEvent()
 /*! The slot to save all current values of the active event widget */
 void CQEventWidget1::saveToEvent()
 {
-  if (!mpEvent) return;
+  if (mpEvent == NULL) return;
+
+  const CModel * pModel =
+    dynamic_cast< const CModel * >(mpEvent->getObjectAncestor("Model"));
+
+  if (pModel == NULL) return;
 
   // set name of event
   if (mpEvent->getObjectName() != TO_UTF8(mpLineEditName->text()))
@@ -351,6 +365,13 @@ void CQEventWidget1::saveToEvent()
           protectedNotify(ListViews::EVENT, ListViews::RENAME, mEventKey);
           mChanged = true;
         }
+    }
+
+  // Order
+  if (mpEvent->getOrder() != (unsigned C_INT32) mpSpinOrder->value())
+    {
+      mpEvent->setOrder(mpSpinOrder->value());
+      mChanged = true;
     }
 
   if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
