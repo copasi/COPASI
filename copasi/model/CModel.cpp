@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.365 $
+//   $Revision: 1.366 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/03 16:41:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2867,12 +2867,6 @@ CEvent* CModel::createEvent(const std::string & name)
 
   CEvent * pEvent = new CEvent(name, this);
 
-  if (!mEvents.add(pEvent, true))
-    {
-      delete pEvent;
-      return NULL;
-    }
-
   // Assure that the event order is unique.
   // We assume that the existing events are ordered consecutively without
   // gaps.
@@ -2890,6 +2884,12 @@ CEvent* CModel::createEvent(const std::string & name)
     }
 
   pEvent->setOrder(Order + 1, false);
+
+  if (!mEvents.add(pEvent, true))
+    {
+      delete pEvent;
+      return NULL;
+    }
 
   mCompileIsNecessary = true;
   return pEvent;
