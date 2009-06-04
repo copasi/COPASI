@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/05/19 16:08:16 $
+   $Date: 2009/06/04 17:14:55 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,6 +120,7 @@ CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & na
     CCopasiObject(name, pParent, "Reference",
                   CCopasiObject::Reference |
                   CCopasiObject::NonUniqueName |
+                  CCopasiObject::ValueDbl |
                   flag),
     mpReference(&reference)
 {
@@ -135,6 +136,7 @@ CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name
     CCopasiObject(name, pParent, "Reference",
                   CCopasiObject::Reference |
                   CCopasiObject::NonUniqueName |
+                  CCopasiObject::ValueInt |
                   flag),
     mpReference(&reference)
 {
@@ -150,6 +152,7 @@ CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
     CCopasiObject(name, pParent, "Reference",
                   CCopasiObject::Reference |
                   CCopasiObject::NonUniqueName |
+                  CCopasiObject::ValueBool |
                   flag),
     mpReference(&reference)
 {
