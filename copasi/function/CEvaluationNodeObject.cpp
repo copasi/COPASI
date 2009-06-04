@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:23:07 $
+//   $Date: 2009/06/04 19:33:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 CEvaluationNodeObject::CEvaluationNodeObject():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
     mpValue(NULL),
+    mpObject(NULL),
     mRegisteredObjectCN("")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
@@ -43,12 +44,14 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type)(CEvaluationNode::OBJECT | subType), data),
     mpValue(NULL),
+    mpObject(NULL),
     mRegisteredObjectCN(data.substr(1, data.length() - 2))
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
     CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), "pointer"),
     mpValue(pValue),
+    mpObject(NULL),
     mRegisteredObjectCN("")
 {
   mPrecedence = PRECEDENCE_NUMBER;
@@ -61,6 +64,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
 CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
     CEvaluationNode(src),
     mpValue(src.mpValue),
+    mpObject(src.mpObject),
     mRegisteredObjectCN(src.mRegisteredObjectCN)
 {}
 
@@ -68,6 +72,8 @@ CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
 bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
+  mpObject = NULL;
+
   switch ((int) subType(mType))
     {
       case CN:
@@ -76,11 +82,11 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
         if (!pExpression) return false;
 
-        const CCopasiObject * pObject =
+        mpObject =
           pExpression->getNodeObject(mRegisteredObjectCN);
 
-        if (pObject)
-          mpValue = (C_FLOAT64 *) pObject->getValuePointer();
+        if (mpObject)
+          mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
         else
           mpValue = NULL;
 
@@ -91,7 +97,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             return false;
           }
 
-        if (!pObject->isValueDbl()) return false;
+        if (!mpObject->isValueDbl()) return false;
 
         mData = "<" + mRegisteredObjectCN + ">";
       }
@@ -240,11 +246,8 @@ const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
 
 void CEvaluationNodeObject::writeMathML(std::ostream & out,
                                         const std::vector<std::vector<std::string> > & /* env */,
-                                        const CCopasiDataModel* pDataModel,
                                         bool /* expand */,
                                         unsigned C_INT32 l) const
 {
-  const CCopasiObject* obj = pDataModel->getObject(mRegisteredObjectCN);
-  out << SPC(l) << CMathMl::getMMLName(obj) << std::endl;
-  //or use mValue instead?
+  out << SPC(l) << CMathMl::getMMLName(mpObject) << std::endl;
 }

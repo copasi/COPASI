@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.16 $
+  $Revision: 1.17 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/04/29 21:24:40 $
+  $Date: 2009/06/04 19:33:18 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,16 +157,20 @@ public:
    */
   virtual void writeMathML(std::ostream & out,
                            const std::vector<std::vector<std::string> > & env,
-                           const CCopasiDataModel* pDataModel,
                            bool expand = true,
                            unsigned C_INT32 l = 0) const;
 
   //Attributes
 private:
   /**
-   * Pointer to the value of the variable.
+   * Pointer to the value of the object.
    */
   const C_FLOAT64 * mpValue;
+
+  /**
+   * Pointer to the object
+   */
+  const CCopasiObject * mpObject;
 
   /**
    * The registered object name to track eventual renaming.
