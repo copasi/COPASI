@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.154 $
+//   $Revision: 1.155 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Date: 2009/06/04 16:09:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@ class CQMetabolite;
 class CQSpeciesWidget;
 class CQEFMWidget;
 //class ModelWidget;
-class ModelValuesWidget;
+class CQGlobalQuantitiesWidget;
 class CQMoietiesTaskResult;
 class CQMoietiesTaskWidget;
 class ParametersWidget;
@@ -223,7 +223,7 @@ private:
 
   CMCAResultWidget* mpCMCAResultWidget;
   CQMCAWidget* mpCQMCAWidget;
-  CQCompartmentsWidget *compartmentsWidget;
+  CQCompartmentsWidget *mpCompartmentsWidget;
   CTabWidget *compartmentsWidget1;
   CQSplashWidget *defaultWidget;
   CQDifferentialEquations *differentialEquations;
@@ -235,10 +235,10 @@ private:
   CTabWidget *functionWidget1;
   CQLyapWidget *lyapWidget;
   CQLyapResultWidget *lyapResultWidget;
-  CQSpeciesWidget *metabolitesWidget;
+  CQSpeciesWidget *mpSpeciesWidget;
   CTabWidget *metabolitesWidget1;
   CTabWidget *modelWidget;
-  ModelValuesWidget *modelValuesWidget;
+  CQGlobalQuantitiesWidget *mpGlobalQuantitiesWidget;
   CTabWidget *mpModelValueWidget;
   CQEFMWidget *modesWidget;
   CQMoietiesTaskResult *mpMoietiesTaskResult;
@@ -250,7 +250,7 @@ private:
   ParametersWidget *parametersWidget;
   PlotWidget *plotWidget;
   PlotWidget1 *plotWidget1;
-  CQReactionsWidget *reactionsWidget;
+  CQReactionsWidget *mpReactionsWidget;
   CTabWidget *reactionsWidget1;
   ScanWidget *scanWidget;
   SensitivitiesWidget *sensWidget;

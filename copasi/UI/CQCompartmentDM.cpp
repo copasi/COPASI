@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/04 16:09:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_NAME_COMPARTMENTS:
                 return QVariant(QString("No Name"));
               case COL_TYPE_COMPARTMENTS:
-                return QVariant(QString("fixed"));
+                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
               case COL_IVOLUME:
                 return QVariant(QString("1"));
               default:
@@ -120,7 +120,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_VOLUME:
                 return QVariant(QString::number(pComp->getValue()));
 
-              case COL_RATE:
+              case COL_RATE_COMPARTMENTS:
                 return QVariant(QString::number(pComp->getRate()));
 
               case COL_IEXPRESSION_COMPARTMENTS:
@@ -196,12 +196,12 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
           case COL_NAME_COMPARTMENTS:
             return QVariant(QString("Name"));
           case COL_TYPE_COMPARTMENTS:
-            return QVariant(QString("Type"));
+            return QVariant(QString("     Type     "));
           case COL_IVOLUME:
             return QVariant("Initial Volume" + ValueUnits);
           case COL_VOLUME:
             return QVariant("Volume" + ValueUnits);
-          case COL_RATE:
+          case COL_RATE_COMPARTMENTS:
             return QVariant("Rate" + RateUnits);
           case COL_IEXPRESSION_COMPARTMENTS:
             return QVariant("Initial Expression" + ValueUnits);

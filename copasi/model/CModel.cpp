@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.366 $
+//   $Revision: 1.367 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/03 16:41:08 $
+//   $Author: aekamal $
+//   $Date: 2009/06/04 16:09:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2832,12 +2832,23 @@ void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & 
   return;
 }
 
+bool CModel::removeModelValue(const unsigned C_INT32 index,
+                              const bool & recursive)
+{
+  const CModelValue * pMV = getModelValues()[index];
+  return removeModelValue(pMV, recursive);
+}
 bool CModel::removeModelValue(const std::string & key,
                               const bool & recursive)
 {
   CModelValue *pModelValue =
     dynamic_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  return removeModelValue(pModelValue, recursive);
+}
 
+bool CModel::removeModelValue(const CModelValue * pModelValue,
+                              const bool & recursive)
+{
   if (!pModelValue)
     return false;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQReferenceDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/04 16:09:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,9 +83,9 @@ QVariant CQReferenceDM::headerData(int section, Qt::Orientation orientation,
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
           case COL_RESOURCE_REFERENCE:
-            return QVariant(QString("Resource"));
+            return QVariant(QString("  Resource  "));
           case COL_ID_REFERENCE:
-            return QVariant(QString("ID"));
+            return QVariant(QString("ID   "));
           case COL_DESCRIPTION:
             return QVariant(QString("Description"));
           default:

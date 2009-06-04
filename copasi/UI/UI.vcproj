@@ -302,6 +302,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQGlobalQuantitiesWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQGlobalQuantityDM.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQLayoutsWidget.cpp"
 				>
 			</File>
@@ -987,6 +995,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQGlobalQuantitiesWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQGlobalQuantityDM.h"
+				>
+			</File>
+			<File
 				RelativePath="CQLyapResultWidget.h"
 				>
 			</File>
@@ -1386,6 +1402,10 @@
 		</File>
 		<File
 			RelativePath="CQFittingWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQGlobalQuantitiesWidget.ui"
 			>
 		</File>
 		<File

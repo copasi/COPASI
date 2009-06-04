@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.267 $
+//   $Revision: 1.268 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Date: 2009/06/04 16:09:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,7 @@
 #include "CQSpeciesWidget.h"
 #include "CQMetabolite.h"
 #include "ModelWidget.h"
-#include "ModelValuesWidget.h"
+#include "CQGlobalQuantitiesWidget.h"
 #include "CQModelValue.h"
 #include "CQEFMWidget.h"
 #include "CQMoietiesTaskResult.h"
@@ -217,7 +217,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
     mpCQMCAWidget(NULL),
-    compartmentsWidget(NULL),
+    mpCompartmentsWidget(NULL),
     compartmentsWidget1(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
@@ -229,10 +229,10 @@ ListViews::ListViews(QWidget *parent, const char *name):
     functionWidget1(NULL),
     lyapWidget(NULL),
     lyapResultWidget(NULL),
-    metabolitesWidget(NULL),
+    mpSpeciesWidget(NULL),
     metabolitesWidget1(NULL),
     modelWidget(NULL),
-    modelValuesWidget(NULL),
+    mpGlobalQuantitiesWidget(NULL),
     mpModelValueWidget(NULL),
     modesWidget(NULL),
     mpMoietiesTaskResult(NULL),
@@ -244,7 +244,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     parametersWidget(NULL),
     plotWidget(NULL),
     plotWidget1(NULL),
-    reactionsWidget(NULL),
+    mpReactionsWidget(NULL),
     reactionsWidget1(NULL),
     scanWidget(NULL),
     sensWidget(NULL),
@@ -350,9 +350,9 @@ void ListViews::setupFolders()
 void ListViews::ConstructNodeWidgets()
 {
   // create the model widgets
-  if (!compartmentsWidget) compartmentsWidget = new CQCompartmentsWidget(this);
+  if (!mpCompartmentsWidget) mpCompartmentsWidget = new CQCompartmentsWidget(this);
 
-  compartmentsWidget->hide();
+  mpCompartmentsWidget->hide();
 
   if (!compartmentsWidget1)
     compartmentsWidget1 = new CTabWidget(QString("Compartment"), new CQCompartment(this), this);
@@ -394,9 +394,9 @@ void ListViews::ConstructNodeWidgets()
 
   lyapResultWidget->hide();
 
-  if (!metabolitesWidget) metabolitesWidget = new CQSpeciesWidget(this);
+  if (!mpSpeciesWidget) mpSpeciesWidget = new CQSpeciesWidget(this);
 
-  metabolitesWidget->hide();
+  mpSpeciesWidget->hide();
 
   if (!metabolitesWidget1)
     metabolitesWidget1 = new CTabWidget(QString("Metabolite"), new CQMetabolite(this), this);
@@ -413,9 +413,9 @@ void ListViews::ConstructNodeWidgets()
 
   mpModelValueWidget->hide();
 
-  if (!modelValuesWidget) modelValuesWidget = new ModelValuesWidget(this);
+  if (!mpGlobalQuantitiesWidget) mpGlobalQuantitiesWidget = new CQGlobalQuantitiesWidget(this);
 
-  modelValuesWidget->hide();
+  mpGlobalQuantitiesWidget->hide();
 
   if (!modesWidget) modesWidget = new CQEFMWidget(this);
 
@@ -467,9 +467,9 @@ void ListViews::ConstructNodeWidgets()
 
   plotWidget1->hide();
 
-  if (!reactionsWidget) reactionsWidget = new CQReactionsWidget(this);
+  if (!mpReactionsWidget) mpReactionsWidget = new CQReactionsWidget(this);
 
-  reactionsWidget->hide();
+  mpReactionsWidget->hide();
 
   if (!reactionsWidget1)
     reactionsWidget1 = new CTabWidget(QString("Reaction"), new ReactionsWidget1(this), this);
@@ -612,16 +612,16 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return modelWidget;
         break;
       case 111:
-        return compartmentsWidget;
+        return mpCompartmentsWidget;
         break;
       case 112:
-        return metabolitesWidget;
+        return mpSpeciesWidget;
         break;
       case 114:
-        return reactionsWidget;
+        return mpReactionsWidget;
         break;
       case 115:
-        return modelValuesWidget;
+        return mpGlobalQuantitiesWidget;
         break;
 #ifdef COPASI_DEBUG
       case 116:

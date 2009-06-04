@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQBiologicalDescriptionDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/04 16:09:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ QVariant CQBiologicalDescriptionDM::headerData(int section, Qt::Orientation orie
           case COL_RELATIONSHIP:
             return QVariant(QString("Relationship"));
           case COL_RESOURCE_BD:
-            return QVariant(QString("Resource"));
+            return QVariant(QString("                 Resource                 "));
           case COL_ID_BD:
             return QVariant(QString("ID"));
           default:

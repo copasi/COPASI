@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/04 16:09:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,12 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
                 if (compartments.size())
                   return QVariant(QString(FROM_UTF8(compartments[0]->getObjectName())));
+                else
+                  return QVariant(QString(""));
               }
+              case COL_TYPE_SPECIES:
+                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
+
               case COL_ICONCENTRATION:
               {
                 if (mFlagConc)
@@ -269,7 +274,7 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
           case COL_COMPARTMENT:
             return QVariant(QString("Compartment"));
           case COL_TYPE_SPECIES:
-            return QVariant(QString("Type"));
+            return QVariant(QString("     Type     "));
           case COL_ICONCENTRATION:
             return QVariant("Initial Concentration" + ValueUnits);
           case COL_INUMBER:

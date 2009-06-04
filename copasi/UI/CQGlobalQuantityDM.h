@@ -1,6 +1,6 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.h,v $
-//   $Revision: 1.4 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.h,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: aekamal $
 //   $Date: 2009/06/04 16:09:42 $
@@ -11,27 +11,27 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#ifndef CQCompartmentDM_H
-#define CQCompartmentDM_H
+#ifndef CQGlobalQuantityDM_H
+#define CQGlobalQuantityDM_H
 
 #include "model/CModel.h"
 #include "CQBaseDataModel.h"
 
-#define COL_NAME_COMPARTMENTS         1
-#define COL_TYPE_COMPARTMENTS         2
-#define COL_IVOLUME                   3
-#define COL_VOLUME                    4
-#define COL_RATE_COMPARTMENTS         5
-#define COL_IEXPRESSION_COMPARTMENTS  6
-#define COL_EXPRESSION_COMPARTMENTS   7
-#define TOTAL_COLS_COMPARTMENTS       8
+#define COL_NAME_GQ         1
+#define COL_TYPE_GQ         2
+#define COL_INITIAL_GQ      3
+#define COL_TRANSIENT_GQ    4
+#define COL_RATE_GQ         5
+#define COL_IEXPRESSION_GQ  6
+#define COL_EXPRESSION_GQ   7
+#define TOTAL_COLS_GQ       8
 
-class CQCompartmentDM : public CQBaseDataModel
+class CQGlobalQuantityDM : public CQBaseDataModel
 {
   Q_OBJECT
 
 public:
-  CQCompartmentDM(QObject *parent = 0);
+  CQGlobalQuantityDM(QObject *parent = 0);
   const QStringList& getTypes();
   const std::vector< unsigned C_INT32 >& getItemToType();
   int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -54,4 +54,4 @@ protected:
   bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
 };
 
-#endif //CQCompartmentDM_H
+#endif //CQGlobalQuantityDM_H

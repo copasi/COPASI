@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.174 $
+//   $Revision: 1.175 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Author: aekamal $
+//   $Date: 2009/06/04 16:09:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -983,7 +983,11 @@ public:
   CModelValue* createModelValue(const std::string & name,
                                 const C_FLOAT64 & value = 0.0);
 
+  bool removeModelValue(const CModelValue * pModelValue,
+                        const bool & recursive = true);
   bool removeModelValue(const std::string & key,
+                        const bool & recursive = true);
+  bool removeModelValue(const unsigned C_INT32 index,
                         const bool & recursive = true);
 
   //*************************

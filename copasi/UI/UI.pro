@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.199 $
+#   $Revision: 1.200 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/05/18 09:51:19 $
+#   $Author: aekamal $
+#   $Date: 2009/06/04 16:09:42 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.199 $ $Author: pwilly $ $Date: 2009/05/18 09:51:19 $
+# $Revision: 1.200 $ $Author: aekamal $ $Date: 2009/06/04 16:09:42 $
 ######################################################################
 
 LIB = UI
@@ -58,6 +58,8 @@ HEADERS	+= \
 	CQDateTimeEditTableItem.h \
 	CQEventsWidget.h \
 	CQExpressionWidget.h \
+	CQGlobalQuantityDM.h \
+	CQGlobalQuantitiesWidget.h \
     CQLayoutsWidget.h \
 	CQLyapResultWidget.h \
 	CQMathMatrixWidget.h \
@@ -134,6 +136,8 @@ SOURCES	+= \
 	CQDateTimeEditTableItem.cpp \
 	CQEventsWidget.cpp \
 	CQExpressionWidget.cpp \
+	CQGlobalQuantityDM.cpp \
+	CQGlobalQuantitiesWidget.cpp \
     CQLayoutsWidget.cpp \
 	CQLyapResultWidget.cpp \
 	CQMathMatrixWidget.cpp \
@@ -192,6 +196,8 @@ SOURCES	+= \
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQSpeciesWidget.ui
 FORMS += CQReactionsWidget.ui
+FORMS += CQGlobalQuantitiesWidget.ui
+
 
 # FORMS3 += CMCAResultSubwidget.ui
 
