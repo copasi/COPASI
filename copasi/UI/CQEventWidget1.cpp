@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/03 16:41:27 $
+//   $Date: 2009/06/04 19:33:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -565,12 +565,12 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
     }
   else
     {
-      mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget].getExpression());
-      mpExpressionEA->updateWidget();
-
       // show the label and widget with respect to expression
       mpLabelEA->show();
       mpExpressionEA->show();
+
+      mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget].getExpression());
+      mpExpressionEA->updateWidget();
     }
 }
 
