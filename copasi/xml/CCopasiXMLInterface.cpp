@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.49 $
+ $Revision: 1.50 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/04/21 16:21:36 $
+ $Date: 2009/06/05 17:53:11 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,35 +186,28 @@ CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
     mValue = 0.0;
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 CCopasiXMLInterface::DBL::DBL(const char * value):
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
 {
   if (!value || !*value) return;
 
-  char * Tail;
-  mValue = strtod(value, & Tail);
+  std::istringstream in;
 
-  if (-mValue < DBL_MIN && mValue < DBL_MIN)
-    mValue = 0.0;
+  in.imbue(std::locale::classic());
+  in.str(value);
 
-  if (!*Tail) return;
+  in >> mValue;
 
-  if (!strcmp(value, "INF"))
-    mValue = DBL_MAX * 2;
-  else if (!strcmp(value, "-INF"))
-    mValue = - DBL_MAX * 2;
-  else mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  if (isnan(mValue))
+    {
+      if (!strcmp(value, "INF"))
+        mValue = std::numeric_limits<C_FLOAT64>::infinity();
+      else if (!strcmp(value, "-INF"))
+        mValue = - std::numeric_limits<C_FLOAT64>::infinity();
+    }
+
+  return;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 CCopasiXMLInterface::DBL::~DBL() {}
 
