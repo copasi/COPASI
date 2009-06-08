@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:24:29 $
+//   $Date: 2009/06/08 19:52:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -366,7 +366,8 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
   // Remove all objects which do not have any refresh method as they will
   // be ignored anyway, i.e., no need to sort them.
   for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet;)
-    if (((*itSet)->getRefresh()) == NULL)
+    if ((*itSet)->getRefresh() == NULL ||
+        (*itSet)->getDirectDependencies(context).size() == 0)
       {
         const CCopasiObject * pObject = *itSet;
         ++itSet;

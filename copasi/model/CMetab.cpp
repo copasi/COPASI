@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.146 $
+//   $Revision: 1.147 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:29:44 $
+//   $Date: 2009/06/08 19:52:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -995,27 +995,18 @@ CConcentrationReference::getDirectDependencies(const std::set< const CCopasiObje
   return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
 }
 
+// static
+std::set< const CCopasiObject * > CParticleReference::EmptyDependencies;
+
 CParticleReference::CParticleReference(const CCopasiContainer * pParent,
                                        C_FLOAT64 & reference) :
-    CCopasiObjectReference< C_FLOAT64 >("ParticleNumber", pParent, reference),
-    mDefaultDependencies()
-{
-  if (pParent != NULL)
-    {
-      mDefaultDependencies.insert(pParent);
-    }
-}
+    CCopasiObjectReference< C_FLOAT64 >("ParticleNumber", pParent, reference)
+{}
 
 CParticleReference::CParticleReference(const CParticleReference & src,
                                        const CCopasiContainer * pParent) :
-    CCopasiObjectReference< C_FLOAT64 >(src, pParent),
-    mDefaultDependencies()
-{
-  if (pParent != NULL)
-    {
-      mDefaultDependencies.insert(pParent);
-    }
-}
+    CCopasiObjectReference< C_FLOAT64 >(src, pParent)
+{}
 
 CParticleReference::~CParticleReference()
 {}
@@ -1043,19 +1034,5 @@ CParticleReference::getDirectDependencies(const std::set< const CCopasiObject * 
       return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
     }
 
-  return mDefaultDependencies;
-}
-
-// virtual
-bool CParticleReference::setObjectParent(const CCopasiContainer * pParent)
-{
-  bool success = CCopasiObjectReference< C_FLOAT64 >::setObjectParent(pParent);
-  mDefaultDependencies.clear();
-
-  if (pParent != NULL)
-    {
-      mDefaultDependencies.insert(pParent);
-    }
-
-  return success;
+  return EmptyDependencies;
 }

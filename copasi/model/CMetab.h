@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:29:44 $
+//   $Date: 2009/06/08 19:52:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -454,18 +454,13 @@ public:
   virtual const std::set< const CCopasiObject * > &
   getDirectDependencies(const std::set< const CCopasiObject * > & context = std::set< const CCopasiObject * >()) const;
 
-  /**
-   * Set the object parent of the particle reference
-   * @param const CCopasiContainer * pParent
-   */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
-
   // Attributes
 private:
   /**
-   * The default list of direct dependencies
+   * The list of direct dependencies when the values is in the changed context,
+   * i.e., it is always empty
    */
-  std::set< const CCopasiObject * > mDefaultDependencies;
+  static std::set< const CCopasiObject * > EmptyDependencies;
 };
 
 #endif // COPASI_CMetab
