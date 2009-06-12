@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.268 $
+//   $Revision: 1.269 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:42 $
+//   $Date: 2009/06/12 19:58:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@
 #include "CQEventsWidget.h"
 #include "CQEventWidget1.h"
 #endif // COAPSI_DEBUG
-#include "FunctionWidget.h"
+#include "CQFunctionsWidget.h"
 #include "FunctionWidget1.h"
 #ifdef HAVE_MML
 # include "CQDifferentialEquations.h"
@@ -225,7 +225,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     eventsWidget(NULL),
     eventWidget1(NULL),
 #endif // COPASI_DEBUG
-    functionWidget(NULL),
+    mpFunctionsWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
     lyapResultWidget(NULL),
@@ -377,9 +377,9 @@ void ListViews::ConstructNodeWidgets()
   eventWidget1->hide();
 #endif // COPASI_DEBUG
 
-  if (!functionWidget) functionWidget = new FunctionWidget(this);
+  if (!mpFunctionsWidget) mpFunctionsWidget = new CQFunctionsWidget(this);
 
-  functionWidget->hide();
+  mpFunctionsWidget->hide();
 
   if (!functionWidget1)
     functionWidget1 = new CTabWidget(QString("Function"), new FunctionWidget1(this), this);
@@ -724,7 +724,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return plotWidget;
         break;
       case 5:
-        return functionWidget;
+        return mpFunctionsWidget;
         break;
     }
 

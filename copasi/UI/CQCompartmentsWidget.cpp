@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/12 19:58:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
 
   mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblCompartments->verticalHeader()->hide();
+  mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
   connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

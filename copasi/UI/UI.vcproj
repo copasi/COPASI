@@ -294,6 +294,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQFunctionDM.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionsWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQFunctionTopWidget.cpp"
 				>
 			</File>
@@ -995,6 +1003,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQFunctionDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQFunctionsWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CQGlobalQuantitiesWidget.h"
 				>
 			</File>
@@ -1402,6 +1418,10 @@
 		</File>
 		<File
 			RelativePath="CQFittingWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQFunctionsWidget.ui"
 			>
 		</File>
 		<File

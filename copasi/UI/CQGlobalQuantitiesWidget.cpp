@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantitiesWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:42 $
+//   $Date: 2009/06/12 19:58:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget* parent, const char* 
 
   mpTblGlobalQuantities->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblGlobalQuantities->verticalHeader()->hide();
+  mpTblGlobalQuantities->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
   connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

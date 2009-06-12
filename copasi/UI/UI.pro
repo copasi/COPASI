@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.200 $
+#   $Revision: 1.201 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2009/06/04 16:09:42 $
+#   $Date: 2009/06/12 19:58:25 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.200 $ $Author: aekamal $ $Date: 2009/06/04 16:09:42 $
+# $Revision: 1.201 $ $Author: aekamal $ $Date: 2009/06/12 19:58:25 $
 ######################################################################
 
 LIB = UI
@@ -58,6 +58,8 @@ HEADERS	+= \
 	CQDateTimeEditTableItem.h \
 	CQEventsWidget.h \
 	CQExpressionWidget.h \
+	CQFunctionDM.h \
+	CQFunctionsWidget.h \
 	CQGlobalQuantityDM.h \
 	CQGlobalQuantitiesWidget.h \
     CQLayoutsWidget.h \
@@ -81,11 +83,8 @@ HEADERS	+= \
 	DataModelGUI.h \
 	DataModel.txt.h \
 	FunctionItemWidget.h \
-	FunctionWidget.h \
 	FunctionWidget1.h \
-	MetabolitesWidget.h \
 	ModelWidget.h \
-	ModelValuesWidget.h \
 	MyLineEdit.h \
 	listviews.h \
 	ObjectBrowserDialog.h \
@@ -136,6 +135,8 @@ SOURCES	+= \
 	CQDateTimeEditTableItem.cpp \
 	CQEventsWidget.cpp \
 	CQExpressionWidget.cpp \
+	CQFunctionDM.cpp \
+	CQFunctionsWidget.cpp \
 	CQGlobalQuantityDM.cpp \
 	CQGlobalQuantitiesWidget.cpp \
     CQLayoutsWidget.cpp \
@@ -158,11 +159,8 @@ SOURCES	+= \
 	CTimeSeriesTable.cpp \
 	DataModelGUI.cpp \
 	FunctionItemWidget.cpp \
-	FunctionWidget.cpp \
 	FunctionWidget1.cpp \
 	listviews.cpp \
-	MetabolitesWidget.cpp \
-	ModelValuesWidget.cpp \
 	ModelWidget.cpp \
 	MyLineEdit.cpp \
 	ObjectBrowserDialog.cpp \
@@ -194,57 +192,56 @@ SOURCES	+= \
 
 
 FORMS += CQCompartmentsWidget.ui
-FORMS += CQSpeciesWidget.ui
-FORMS += CQReactionsWidget.ui
+FORMS += CQEventWidget1.ui
+FORMS += CQFittingItemWidget.ui
+FORMS += CQFittingWidget.ui
+FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
+FORMS += CQOptimizationWidget.ui
+FORMS += CQReactionsWidget.ui
+FORMS += CScanWidgetRandom.ui
+FORMS += CScanWidgetRepeat.ui
+FORMS += CScanWidgetScan.ui
+FORMS += CScanWidgetTask.ui
+FORMS += SensitivitiesWidget.ui
+FORMS += StateSubwidget.ui
+FORMS += SteadyStateWidget.ui
+FORMS += CQSpeciesWidget.ui
+FORMS += CQTrajectoryWidget.ui
+FORMS += CQLyapWidget.ui
+FORMS += CQMCAWidget.ui
 
 
 # FORMS3 += CMCAResultSubwidget.ui
-
 # FORMS3 += CQCompartment.ui
 # FORMS3 += CQDifferentialEquations.ui
 FORMS3 += CQEFMWidget.ui
-FORMS += CQEventWidget1.ui
 # FORMS3 += CQExperimentData.ui
 # FORMS3 += CQExperimentSelection.ui
 # FORMS3 += CQExpressionMmlWidget.ui
 # FORMS3 += CQFileDialogBtnGrp.ui
-FORMS += CQFittingItemWidget.ui
 # FORMS3 += CQFittingResult.ui
 # FORMS3 += CQFittingResultTab1.ui
-FORMS += CQFittingWidget.ui
-FORMS += CQLyapWidget.ui
-FORMS += CQMCAWidget.ui
 # FORMS3 += CQMetabolite.ui
 # FORMS3 += CQModelValue.ui
 # FORMS3 += CQMoietiesTaskResult.ui
 # FORMS3 += CQMoietiesTaskWidget.ui
 FORMS3 += CQOptimizationResult.ui
-FORMS += CQOptimizationWidget.ui
 # FORMS3 += CQPreferenceDialog.ui
 # FORMS3 += CQProgressDialog.ui
 # FORMS3 += CQProgressItem.ui
 # FORMS3 += CQProgressItemBar.ui
 # FORMS3 += CQProgressItemText.ui
-FORMS += CQReactionsWidget.ui
 # FORMS3 += CQReportDefinition.ui
 # FORMS3 += CQSplashWidget.ui
 # FORMS3 += CQStartValueReset.ui
 # FORMS3 += CQTaskBtnWidget.ui
 # FORMS3 += CQTaskHeaderWidget.ui
 # FORMS3 += CQTextDialog.ui
-FORMS += CQTrajectoryWidget.ui
 # FORMS3 += CScanWidgetBreak.ui
-FORMS += CScanWidgetRandom.ui
-FORMS += CScanWidgetRepeat.ui
-FORMS += CScanWidgetScan.ui
-FORMS += CScanWidgetTask.ui
 # FORMS3 += CUpDownSubwidget.ui
 # FORMS3 += DefaultplotDialog.ui
-FORMS += SensitivitiesWidget.ui
 # FORMS3 += SliderSettingsDialog.ui
-FORMS += StateSubwidget.ui
-FORMS += SteadyStateWidget.ui
 # FORMS3 += TimeSeriesSubwidget.ui
 # FORMS3 += objectdebug.ui
 

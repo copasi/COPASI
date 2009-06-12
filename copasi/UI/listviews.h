@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.155 $
+//   $Revision: 1.156 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:42 $
+//   $Date: 2009/06/12 19:58:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ class CQEventsWidget;
 class CQEventWidget1;
 #endif // COPASI_DEBUG
 class FunctionWidget1;
-class FunctionWidget;
+class CQFunctionsWidget;
 class CMathModel;
 class CQMetabolite;
 class CQSpeciesWidget;
@@ -231,7 +231,7 @@ private:
   CQEventsWidget *eventsWidget;
   CQEventWidget1 *eventWidget1;
 #endif // COPASI_DEBUG
-  FunctionWidget *functionWidget;
+  CQFunctionsWidget *mpFunctionsWidget;
   CTabWidget *functionWidget1;
   CQLyapWidget *lyapWidget;
   CQLyapResultWidget *lyapResultWidget;

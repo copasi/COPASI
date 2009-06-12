@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/12 19:58:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
 
   mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblSpecies->verticalHeader()->hide();
+  mpTblSpecies->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
   connect(mpSpecieDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),

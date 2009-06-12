@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/12 19:58:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
 
   mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpTblReactions->verticalHeader()->hide();
+  mpTblReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   setFramework(mFramework);
 
