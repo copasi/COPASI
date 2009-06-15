@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/11/13 13:42:27 $
+//   $Date: 2009/06/15 19:18:38 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +19,8 @@
 #include <fstream>
 #include <sstream>
 #include <time.h>
+#include <cstring>
+#include <stdlib.h>
 
 #include "COptions.h"
 #include "GenericDecode.h"
@@ -82,9 +89,9 @@ bool init(int argc, char *argv[])
     {
       switch (e.get_autothrow_id())
         {
-        case license::autothrow_help:
-          std::cout << "Usage: " << argv[0] << " [options]\n";
-          std::cout << e.what();
+          case license::autothrow_help:
+            std::cout << "Usage: " << argv[0] << " [options]\n";
+            std::cout << e.what();
         }
 
       return false;
@@ -104,6 +111,7 @@ bool init(int argc, char *argv[])
 int create()
 {
   std::string Constant;
+
   if (Options.Type == license::Type_Trial)
     Constant = 'T';
   else
@@ -112,6 +120,7 @@ int create()
   std::stringstream Tmp;
   tm *pDate;
   std::string StartDate;
+
   if (Options.StartDate != "")
     {
       // Check date format:

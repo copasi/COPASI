@@ -1,16 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/FlexibleInt.c,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2007/01/03 14:16:49 $
+   $Date: 2009/06/15 19:18:38 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <memory.h>
 #include <stdio.h>
 #include <math.h>
@@ -80,6 +85,7 @@ void FIcarryOver(FlexibleInt * pX, int base)
   while (pA != pEndA)
     {
       count++;
+
       if (*pA++ != 0)
         lenA = count;
     }
@@ -153,6 +159,7 @@ void FIadd(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base)
   while (pA != pEndA)
     {
       count++;
+
       if (*pA++ != 0)
         lenA = count;
     }
@@ -161,9 +168,11 @@ void FIadd(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base)
   pEndA = pA + lenA;
 
   count = 0;
+
   while (pB != pEndB)
     {
       count++;
+
       if (*pB++ != 0)
         lenB = count;
     }
@@ -216,6 +225,7 @@ void FIminus(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base
   while (pA != pEndA)
     {
       count++;
+
       if (*pA++ != 0)
         lenA = count;
     }
@@ -224,9 +234,11 @@ void FIminus(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int base
   pEndA = pA + lenA;
 
   count = 0;
+
   while (pB != pEndB)
     {
       count++;
+
       if (*pB++ != 0)
         lenB = count;
     }
@@ -283,18 +295,23 @@ void FImultiply(FlexibleInt * pX, FlexibleInt * pY, FlexibleInt * pResult, int b
   while (pA != pEndA)
     {
       count++;
+
       if (*pA++ != 0)
         lenA = count;
     }
+
   pEndA = pX->pVal + lenA;
 
   count = 0;
+
   while (pB != pEndB)
     {
       count++;
+
       if (*pB++ != 0)
         lenB = count;
     }
+
   pEndB = pY->pVal + lenB;
 
   FIinit(&Product, lenA + lenB + 1);
@@ -338,6 +355,7 @@ void FIpower(FlexibleInt *pX, unsigned int power, FlexibleInt *pResult, int base
     return;
 
   *pResult->pVal = 1;
+
   while (power)
     {
       FIcopy(pResult, &Power);
@@ -366,14 +384,17 @@ int FIcompare(FlexibleInt * pX, FlexibleInt * pY)
   while (pA != pEndA)
     {
       count++;
+
       if (*pA++ != 0)
         lenA = count;
     }
 
   count = 0;
+
   while (pB != pEndB)
     {
       count++;
+
       if (*pB++ != 0)
         lenB = count;
     }
@@ -409,6 +430,7 @@ int FIcompare(FlexibleInt * pX, FlexibleInt * pY)
     {
       if (*pEndA < *pEndB)
         return - 1;
+
       if (*pEndA > *pEndB)
         return 1;
 

@@ -1,5 +1,18 @@
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/license.pro,v $ 
+#   $Revision: 1.6 $ 
+#   $Name:  $ 
+#   $Author: shoops $ 
+#   $Date: 2009/06/15 19:18:38 $ 
+# End CVS Header 
+
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2007/01/05 15:06:20 $  
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2009/06/15 19:18:38 $  
 ######################################################################
 
 CONFIG -= qt
@@ -11,7 +24,7 @@ QMAKE_QMAKE = $(QTDIR)/bin/qmake
 DEFINES += LICENSE_CREATE
 INCLUDEPATH += ../../copasi/commercial
 
-unix:QMAKE_LFLAGS += -static
+# unix:QMAKE_LFLAGS += -static
 
 #Input
 HEADERS += COptions.h \
