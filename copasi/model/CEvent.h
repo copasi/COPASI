@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:01 $
+//   $Date: 2009/06/17 19:14:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include <set>
 
 class CExpression;
+class CModel;
 
 class CEventAssignment : public CCopasiContainer
 {
@@ -58,6 +59,13 @@ public:
   ~CEventAssignment();
 
   /**
+   * Set the object parent
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+  /**
    * Compile the event assignment.
    * @param std::vector< CCopasiContainer * > listOfContainer
    * @return bool success
@@ -69,6 +77,13 @@ public:
    * @return const std::string & key
    */
   const std::string & getKey() const;
+
+  /**
+   * Set the key of the target
+   * @param const std::string & targetKey
+   * @return bool success;
+   */
+  bool setTargetKey(const std::string & targetKey);
 
   /**
    * Retrieve the target key
@@ -122,6 +137,11 @@ private:
   std::string mKey;
 
   /**
+   * The parent model
+   */
+  CModel * mpModel;
+
+  /**
    * The target object
    */
   const CCopasiObject * mpTarget;
@@ -164,6 +184,13 @@ public:
    *  Delete
    */
   void cleanup();
+
+  /**
+   * Set the object parent
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
 
   /**
    * Retrieve display name. Special treatment for reaction to
@@ -313,6 +340,11 @@ private:
    *  The key of the event
    */
   std::string mKey;
+
+  /**
+   * The parent model
+   */
+  CModel * mpModel;
 
   /**
    * The order in which the event is executed for simultaneous events.
