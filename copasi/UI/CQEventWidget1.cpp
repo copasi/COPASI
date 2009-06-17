@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/04 19:33:56 $
+//   $Date: 2009/06/17 19:15:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -528,17 +528,11 @@ void CQEventWidget1::slotSelectObject()
 
   if (pME == NULL) return;
 
-  // It is not possible to change the target key of an event assignment therefore we
-  // add a new and delete the old;
-
-  CEventAssignment NewTarget(pME->getKey());
-  NewTarget.setExpression(mAssignments[mCurrentTarget].getExpression());
-
-  mpLBTarget->insertItem(mCurrentTarget, FROM_UTF8(pME->getObjectDisplayName()));
-  mAssignments.insert(mAssignments.begin() + mCurrentTarget, NewTarget);
-
-  mCurrentTarget++;
-  slotDeleteTarget();
+  if (mAssignments[mCurrentTarget].setTargetKey(pME->getKey()))
+    {
+      // If the target key change was successfull we need to update the label.
+      mpLBTarget->item(mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
+    }
 }
 
 /// Slot to actualize the assignment expression widget of event assignment according to the target
