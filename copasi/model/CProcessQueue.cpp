@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/17 01:08:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -324,6 +324,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 CProcessQueue::range CProcessQueue::getCalculations()
 {
   range Calculations;
+
   CKey UpperBound(mTime, mEquality,
                   std::numeric_limits<unsigned C_INT32>::max(),
                   std::numeric_limits<unsigned C_INT32>::max(),
@@ -331,7 +332,8 @@ CProcessQueue::range CProcessQueue::getCalculations()
 
   Calculations.first = mCalculations.begin();
 
-  if (Calculations.first->first < UpperBound)
+  if (Calculations.first != mCalculations.end() &&
+      Calculations.first->first < UpperBound)
     {
       Calculations.second = mCalculations.upper_bound(UpperBound);
     }
@@ -353,7 +355,8 @@ CProcessQueue::range CProcessQueue::getAssignments()
 
   Assignments.first = mAssignments.begin();
 
-  if (Assignments.first->first < UpperBound)
+  if (Assignments.first != mAssignments.end() &&
+      Assignments.first->first < UpperBound)
     {
       Assignments.second = mAssignments.upper_bound(Assignments.first->first);
 
