@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/17 19:16:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@ void CMathTrigger::CRootFinder::initObjects()
     (C_FLOAT64 *)mRoot.getObject(std::string("Reference=Value"))->getValuePointer();
 
   addDirectDependency(&mRoot);
+  setRefresh(&mRoot, &CExpression::refresh);
 }
 
 bool CMathTrigger::CRootFinder::compile(std::vector< CCopasiContainer * > listOfContainer)
@@ -171,7 +172,7 @@ void CMathTrigger::calculateInitialActivity()
 
 bool CMathTrigger::calculateEquality()
 {
-  return mEqualityExpression.calcValue();
+  return mEqualityExpression.calcValue() > 0.0;
 }
 
 bool CMathTrigger::compile(const CExpression * pTriggerExpression,

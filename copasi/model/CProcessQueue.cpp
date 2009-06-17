@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/17 01:08:32 $
+//   $Date: 2009/06/17 19:16:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -261,12 +261,6 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
           // Execute and remove all current assignments.
           success = executeAssignments(Assignments);
 
-          // We have no more calculations and assignments pending at this point
-          // for this time and level.
-
-          // Update the model.
-          Assignments.first->second.mpEvent->applyDependentRefreshes();
-
           // Note, applying the events may have added new events to the queue.
           // The setting of the equality flag for these events may be either true
           // or false.
@@ -418,8 +412,11 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   unsigned C_INT32 EventIdOld = it->first.getEventId();
   unsigned C_INT32 EventIdNew = 0;
 
+  CMathEvent * pEvent = it->second.mpEvent;
+
   // Assure that all values are up to date.
-  it->second.mpEvent->applyValueRefreshes();
+  pEvent->applyValueRefreshes();
+
   EventIdNew = createEventId();
 
   for (; it != assignments.second; ++it)
@@ -429,7 +426,7 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   mAssignments.erase(assignments.first, assignments.second);
 
   // Update all dependent values.
-  it->second.mpEvent->applyDependentRefreshes();
+  pEvent->applyDependentRefreshes();
 
   // We need to check whether new events have been triggered an add
   // them to the process queue.

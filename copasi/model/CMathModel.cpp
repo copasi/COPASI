@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/17 19:16:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,20 +121,8 @@ bool CMathModel::compile(CModel * pModel)
           // Build the mapping from root values indexes to CMathEvents
           *ppRootIndex = *itMathEvent;
 
-          // Get the list of direct dependencies which we need to compile
-          // the refresh sequence
-          std::set< const CCopasiObject * > Dependencies =
-            (*itRootFinder)->getDirectDependencies();
-
-          std::set< const CCopasiObject * >::const_iterator itDependency =
-            Dependencies.begin();
-          std::set< const CCopasiObject * >::const_iterator endDependency =
-            Dependencies.end();
-
-          for (; itDependency != endDependency; ++itDependency)
-            {
-              RootValuesDependencies.insert(*itDependency);
-            }
+          // The root finder needs to be up to date
+          RootValuesDependencies.insert(*itRootFinder);
         }
     }
 
