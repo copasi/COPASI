@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/17 19:16:15 $
+//   $Date: 2009/06/18 17:09:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,6 +94,12 @@ void CMathTrigger::CRootFinder::charge()
        ((*mpRootValue <= 0.0) && !mEquality)))
     {
       mActive = 1.0;
+    }
+  else if ((mActive > 0.0) &&
+           ((*mpRootValue > 0.0) ||
+            ((*mpRootValue >= 0.0) && mEquality)))
+    {
+      mActive = 0.0;
     }
 
   return;
