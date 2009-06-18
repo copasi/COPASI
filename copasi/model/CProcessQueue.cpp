@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/17 19:16:15 $
+//   $Date: 2009/06/18 17:10:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,61 +249,65 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   // The algorithm below will work properly for user ordered events
   // as the queue enforces the proper ordering.
-  if (notEmpty(Assignments))
+  while (success &&
+         notEmpty(Assignments) &&
+         mCascadingLevel != std::numeric_limits<unsigned C_INT32>::max())
     {
-      while (mCascadingLevel != std::numeric_limits<unsigned C_INT32>::max() && success)
+
+      // We switch to the next cascading level so that events triggered by the
+      // execution of assignments are properly scheduled.
+      mCascadingLevel++;
+
+      // Execute and remove all current assignments.
+      success = executeAssignments(Assignments);
+
+      // Note, applying the events may have added new events to the queue.
+      // The setting of the equality flag for these events may be either true
+      // or false.
+
+      // First we handle equalities.
+      mEquality = true;
+
+      // Retrieve the pending calculations.
+      Calculations = getCalculations();
+
+      if (notEmpty(Calculations))
         {
+          // Execute and remove all current calculations.
+          success = executeCalculations(Calculations);
+        }
 
-          // We switch to the next cascading level so that events triggered by the
-          // execution of assignments are properly scheduled.
-          mCascadingLevel++;
+      // Retrieve the pending assignments.
+      Assignments = getAssignments();
 
-          // Execute and remove all current assignments.
-          success = executeAssignments(Assignments);
+      if (notEmpty(Assignments))
+        continue;
 
-          // Note, applying the events may have added new events to the queue.
-          // The setting of the equality flag for these events may be either true
-          // or false.
+      // If we are here there are no more calculations and assignments for equality
+      // for this level.
+      mEquality = false;
 
-          // First we handle equalities.
-          mEquality = true;
+      // Retrieve the pending calculations.
+      Calculations = getCalculations();
 
-          // Retrieve the pending calculations.
-          Calculations = getCalculations();
+      if (notEmpty(Calculations))
+        {
+          // Execute and remove all current calculations.
+          success = executeCalculations(Calculations);
+        }
 
-          if (notEmpty(Calculations))
-            {
-              // Execute and remove all current calculations.
-              success = executeCalculations(Calculations);
-            }
+      // Retrieve the pending assignments.
+      Assignments = getAssignments();
 
-          // Retrieve the pending assignments.
-          Assignments = getAssignments();
-
-          if (notEmpty(Assignments))
-            continue;
-
-          // If we are here there are no more calculations and assignments for equality
-          // for this level.
-          mEquality = false;
-
-          // Retrieve the pending calculations.
-          Calculations = getCalculations();
-
-          if (notEmpty(Calculations))
-            {
-              // Execute and remove all current calculations.
-              success = executeCalculations(Calculations);
-            }
-
-          // Retrieve the pending assignments.
-          Assignments = getAssignments();
-
-          if (notEmpty(Assignments))
-            continue;
-
+      while (!notEmpty(Assignments) &&
+             mCascadingLevel > 0)
+        {
           // If we are here we have no more calculations and assignment for this level.
           mCascadingLevel--;
+
+          // This will only return assignments when we have resolution algorithms for
+          // them.
+          Assignments = getAssignments();
         }
     }
 
@@ -383,6 +387,8 @@ bool CProcessQueue::executeCalculations(CProcessQueue::range & calculations)
   bool success = true;
 
   iterator it = calculations.first;
+  assert(it != mCalculations.end());
+
   unsigned C_INT32 EventIdOld = it->first.getEventId();
   unsigned C_INT32 EventIdNew = createEventId();
 
@@ -409,6 +415,8 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   bool success = (mExecutionCounter < mExecutionLimit);
 
   iterator it = assignments.first;
+  assert(it != mAssignments.end());
+
   unsigned C_INT32 EventIdOld = it->first.getEventId();
   unsigned C_INT32 EventIdNew = 0;
 
