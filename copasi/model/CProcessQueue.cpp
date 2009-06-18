@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/18 17:10:48 $
+//   $Date: 2009/06/18 20:02:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,9 +110,13 @@ CProcessQueue::CAction::~CAction()
 
 void CProcessQueue::CAction::process(const unsigned C_INT32 & eventId)
 {
+  // If the expression pointer is not NULL we have a calculation.
   if (mpExpression != NULL)
     {
-      mpProcessQueue->addAssignment(mpProcessQueue->mTime,
+      // Calculate the execution time for delayed events.
+      C_FLOAT64 ExecutionTime = mpEvent->getExecutionTime(mpProcessQueue->mTime);
+
+      mpProcessQueue->addAssignment(ExecutionTime,
                                     mpProcessQueue->mEquality,
                                     mpEvent->getOrder(),
                                     eventId,
