@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/18 17:09:33 $
+//   $Date: 2009/06/18 20:06:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,9 @@ CEvaluationNode * CMathTrigger::CRootFinder::getEqualityExpression() const
 void CMathTrigger::CRootFinder::charge()
 {
   // TODO ALGORITHM We need to experiment with this!
+
+  // TODO CRITICAL This implementation does not deactivate
+  // checks for inequality
 
   if ((mActive < 1.0) &&
       ((*mpRootValue < 0.0) ||
