@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/18 20:03:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,6 +141,13 @@ public:
    * @return const unsigned C_INT32 & order
    */
   const unsigned C_INT32 & getOrder() const;
+
+  /**
+   * Calculate the execution time
+   * @param const C_FLOAT64 & currentTime
+   * @return C_FLOAT64 executionTime
+   */
+  C_FLOAT64 getExecutionTime(const C_FLOAT64 & currentTime);
 
   // Attributes
 private:

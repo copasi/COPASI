@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/18 20:03:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,74 +166,21 @@ void CMathEvent::processRoot(const C_FLOAT64 & time,
       CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
       CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
 
-      // Determine the execution time of the event.
-      C_FLOAT64 ExecutionTime = time;
+      // Determine the execution time of the calculation of the event.
+      C_FLOAT64 ExecutionTime = getExecutionTime(time);
 
-      if (mDelay.getInfix() != "")
-        {
-          // We make sure everything is up to date.
-          applyDelayRefreshes();
-
-          ExecutionTime += mDelay.calcValue();
-
-          // Events are only allowed in forward integration. Thus the ExecutionTime
-          // must not be less than the time.
-          if (ExecutionTime - time < 0.0)
-            {
-              // We allow small numerical errors.
-              C_FLOAT64 Scale =
-                (fabs(ExecutionTime) + fabs(time)) * 50.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
-
-              // Both are approximately zero
-              if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
-                {
-                  ExecutionTime = time;
-                }
-              // The difference is small compared to the scale
-              else if (fabs(ExecutionTime - time) < Scale)
-                {
-                  ExecutionTime = time;
-                }
-              // The execution time is definitely in the past
-              else
-                {
-                  // Create an error message and throw an exception.
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 2, ExecutionTime, time);
-                }
-            }
-        }
-
-      // We make sure everything is up to date.
-      applyValueRefreshes();
-
+      // We can only add calculations even if the calculation time is the current time.
+      // This is due to the fact that equality and inequality checks are treated differently.
       for (; itAssignment != endAssignment; ++itAssignment)
         {
-          if (mDelay.getInfix() == "" || mDelayAssignment)
-            {
-              const C_FLOAT64 & Value =
-                (*itAssignment)->mExpression.calcValue();
-
-              // We can directly calculate the target value and schedule
-              // an assignment for the execution time.
-              processQueue.addAssignment(ExecutionTime,
-                                         Equality,
-                                         mOrder,
-                                         EventId,
-                                         (*itAssignment)->mpTarget,
-                                         Value,
-                                         this);
-            }
-          else
-            {
-              // We must delay the calculation of the new target value
-              processQueue.addCalculation(ExecutionTime,
-                                          Equality,
-                                          mOrder,
-                                          EventId,
-                                          (*itAssignment)->mpTarget,
-                                          &(*itAssignment)->mExpression,
-                                          this);
-            }
+          // We must delay the calculation of the new target value
+          processQueue.addCalculation(ExecutionTime,
+                                      Equality,
+                                      mOrder,
+                                      EventId,
+                                      (*itAssignment)->mpTarget,
+                                      &(*itAssignment)->mExpression,
+                                      this);
         }
     }
 }
@@ -279,4 +226,46 @@ CMathTrigger & CMathEvent::getMathTrigger()
 const unsigned C_INT32 & CMathEvent::getOrder() const
 {
   return mOrder;
+}
+
+C_FLOAT64 CMathEvent::getExecutionTime(const C_FLOAT64 & currentTime)
+{
+  // Determine the execution time of the event.
+  C_FLOAT64 ExecutionTime = currentTime;
+
+  if (mDelay.getInfix() != "")
+    {
+      // We make sure everything is up to date.
+      applyDelayRefreshes();
+
+      ExecutionTime += mDelay.calcValue();
+
+      // Events are only allowed in forward integration. Thus the ExecutionTime
+      // must not be less than the time.
+      if (ExecutionTime - currentTime < 0.0)
+        {
+          // We allow small numerical errors.
+          C_FLOAT64 Scale =
+            (fabs(ExecutionTime) + fabs(currentTime)) * 50.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+          // Both are approximately zero
+          if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
+            {
+              ExecutionTime = currentTime;
+            }
+          // The difference is small compared to the scale
+          else if (fabs(ExecutionTime - currentTime) < Scale)
+            {
+              ExecutionTime = currentTime;
+            }
+          // The execution time is definitely in the past
+          else
+            {
+              // Create an error message and throw an exception.
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 2, ExecutionTime, currentTime);
+            }
+        }
+    }
+
+  return ExecutionTime;
 }
