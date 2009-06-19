@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/19 08:32:47 $
+//   $Date: 2009/06/19 10:17:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,9 @@
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
 
+#ifdef DEBUG_UI
 #include <QtDebug>
+#endif
 
 // static
 QDir CopasiFileDialog::LastDir;
@@ -131,7 +133,10 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
     {
       QString selectedFilter(fd.selectedNameFilter());
 
-//    std::cout << qPrintable(selectedFilter) << std::endl;
+#ifdef DEBUG_UI
+      qDebug() << selectedFilter;
+#endif
+
       if (selectedFilter.contains("tex")) fd.setDefaultSuffix("tex");
       else if (selectedFilter.contains("mml")) fd.setDefaultSuffix("mml");
       else if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
@@ -140,7 +145,10 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
 
       defaultSuffix.prepend(".");
       selFilter = defaultSuffix;
-      std::cout << "default suffix = " << qPrintable(defaultSuffix) << std::endl;
+
+#ifdef DEBUG_UI
+      qDebug() << "default suffix = " << qPrintable(defaultSuffix);
+#endif
 
 //  fileName = fd.selectedFiles()[0];
       fileName = fd.selectedFiles().value(0);
@@ -153,7 +161,9 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
       fileName.replace(suffix, defaultSuffix);
     }
 
-//  std::cout << qPrintable(fileName) << std::endl;
+#ifdef DEBUG_UI
+  qDebug() << qPrintable(fileName);
+#endif
 
   return fileName;
 }

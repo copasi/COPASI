@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/19 08:05:23 $
+//   $Date: 2009/06/19 10:16:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,15 +297,18 @@ bool CStructureParser::characters(const QString& str)
 
 bool CStructureParser::endElement(const QString&, const QString&, const QString& qName)
 {
+  Q3ValueList<QString>::iterator itL;
+
+#ifdef DEBUG_UI
   std::cout << std::endl << "on End Element of " << TO_UTF8(qName) << std::endl;
 
   std::cout << "BEFORE: List of Uncompleted Tags: " << std::endl;
-  Q3ValueList<QString>::iterator itL;
 
   for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
     std::cout << TO_UTF8(*itL) << std::endl;
 
   std::cout << std::endl;
+#endif
 
   indent.remove((uint)0, 4);
 
@@ -316,8 +319,12 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
     {
       if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
         mListOfUncompletedTags.pop_back();
+
+#ifdef DEBUG_UI
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
+
+#endif
     }
 
   if (qName == "mtr")
@@ -333,24 +340,36 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mrow")
     {
+#ifdef DEBUG_UI
       std::cout << std::endl << "on End Element of mrow, mListOfUncompletedTags = " << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
+#endif
 
       if (mListOfUncompletedTags.last() == "mrow")  // must not be empty
         mListOfUncompletedTags.pop_back();
+
+#ifdef DEBUG_UI
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
 
+#endif
+
       tex += " } ";
 
+#ifdef DEBUG_UI
       std::cout << "on endElement of mrow, tex = " << TO_UTF8(tex) << std::endl;
+#endif
     }
 
   if (qName == "mfenced")
     {
       if (mListOfUncompletedTags.last() == "mfenced") // must be not empty
         mListOfUncompletedTags.pop_back();
+
+#ifdef DEBUG_UI
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
+
+#endif
 
       tex += "\\right)";
 
@@ -363,17 +382,21 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
+#ifdef DEBUG_UI
           std::cout << TO_UTF8(last)
                     << " --> split: "
                     << TO_UTF8(lastUncompletedTags)
                     << " & " << idx << std::endl;
+#endif
           idx++;
 
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
 
+#ifdef DEBUG_UI
           std::cout << "mfenced L" << __LINE__ << std::endl;
           std::cout << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
+#endif
 
           if (lastUncompletedTags.contains("msub") && idx == 2)
             tex += "_";
@@ -386,14 +409,18 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &lastUncompletedTags = strList.first();
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
+#ifdef DEBUG_UI
           std::cout << TO_UTF8(last) << " --> split: " << TO_UTF8(lastUncompletedTags) << " & " << idx << std::endl;
+#endif
           idx++;
 
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
 
+#ifdef DEBUG_UI
           std::cout << "mfenced L" << __LINE__ << std::endl;
           std::cout << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
+#endif
 
           if (lastUncompletedTags.contains("msup") && idx == 2)
             tex += "^";
@@ -404,8 +431,12 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
     {
       if (mListOfUncompletedTags.last().contains("msub")) // must be not empty
         mListOfUncompletedTags.pop_back();
+
+#ifdef DEBUG_UI
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
+
+#endif
 
       // </mfrac> direct after </msub>
       if (mListOfUncompletedTags.last().contains("mfrac"))  // must ne not empty
@@ -416,20 +447,26 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
     {
       if (mListOfUncompletedTags.last().contains("msup")) // must be not empty
         mListOfUncompletedTags.pop_back();
+
+#ifdef DEBUG_UI
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
+
+#endif
 
       // </mfrac> direct after </msup>
       if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
         tex += " }";
     }
 
+#ifdef DEBUG_UI
   std::cout << "AFTER: List of Uncompleted Tags: " << std::endl;
 
   for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
     std::cout << TO_UTF8(*itL) << std::endl;
 
   std::cout << std::endl;
+#endif
 
   return TRUE;
 }
