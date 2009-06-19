@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:12 $
+//   $Author: pwilly $
+//   $Date: 2009/06/19 08:05:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,6 +83,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
         {
           if (needToWriteColumnAllignment)
             texHead += "}";
+
           needToWriteColumnAllignment = false;
         }
     }
@@ -101,7 +102,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "msub")
     {
-      QString &last = mListOfUncompletedTags.last();
+      QString &last = mListOfUncompletedTags.last();  // must be not empty
 
       // <msub> direct after <mfrac>
       if (last.contains("mfrac"))
@@ -129,7 +130,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "msup")
     {
-      QString &last = mListOfUncompletedTags.last();
+      QString &last = mListOfUncompletedTags.last();  // must be not empty
 
       // <msup> direct after <mfrac>
       if (last.contains("mfrac"))
@@ -157,26 +158,28 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "mrow")
     {
-
-      QString &last = mListOfUncompletedTags.last();
-
-      // increase the index
-      if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
+      // increment index, if any
+      if (!mListOfUncompletedTags.isEmpty())
         {
-          QStringList strList = QStringList::split("_", last);
-          QString &lastUncompletedTags = strList.first();
-          QString &idxStr = strList.last();
-          int idx = idxStr.toInt();
-          idx++;
+          QString &last = mListOfUncompletedTags.last();  // can be empty
 
-          // update with incrementally index
-          last = lastUncompletedTags + "_" + QString::number(idx);
+          if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
+            {
+              QStringList strList = QStringList::split("_", last);
+              QString &lastUncompletedTags = strList.first();
+              QString &idxStr = strList.last();
+              int idx = idxStr.toInt();
+              idx++;
 
-          if (lastUncompletedTags.contains("msub") && idx == 2)
-            tex += "_";
+              // update with incrementally index
+              last = lastUncompletedTags + "_" + QString::number(idx);
 
-          if (lastUncompletedTags.contains("msup") && idx == 2)
-            tex += "^";
+              if (lastUncompletedTags.contains("msub") && idx == 2)
+                tex += "_";
+
+              if (lastUncompletedTags.contains("msup") && idx == 2)
+                tex += "^";
+            }
         }
 
       mListOfUncompletedTags.push_back("mrow");
@@ -185,7 +188,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "mi" || qName == "mn")
     {
-      QString &last = mListOfUncompletedTags.last();
+      QString &last = mListOfUncompletedTags.last();  // must be not empty
 
       if (last.contains("mfenced") && (!tex.endsWith("(") && !tex.endsWith("(")))
         {
@@ -195,24 +198,28 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 
   if (qName == "mi" || qName == "mo" || qName == "mn")
     {
-      QString &last = mListOfUncompletedTags.last();
-
-      if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
+      // increment index, if any
+      if (!mListOfUncompletedTags.isEmpty())
         {
-          QStringList strList = QStringList::split("_", last);
-          QString &lastUncompletedTags = strList.first();
-          QString &idxStr = strList.last();
-          int idx = idxStr.toInt();
-          idx++;
+          QString &last = mListOfUncompletedTags.last();  // can be empty
 
-          // update with incrementally index
-          last = lastUncompletedTags + "_" + QString::number(idx);
+          if (last.contains("mfrac") || last.contains("msub") || last.contains("msup"))
+            {
+              QStringList strList = QStringList::split("_", last);
+              QString &lastUncompletedTags = strList.first();
+              QString &idxStr = strList.last();
+              int idx = idxStr.toInt();
+              idx++;
 
-          if (lastUncompletedTags.contains("msub") && idx == 2)
-            tex += "_";
+              // update with incrementally index
+              last = lastUncompletedTags + "_" + QString::number(idx);
 
-          if (lastUncompletedTags.contains("msup") && idx == 2)
-            tex += "^";
+              if (lastUncompletedTags.contains("msub") && idx == 2)
+                tex += "_";
+
+              if (lastUncompletedTags.contains("msup") && idx == 2)
+                tex += "^";
+            }
         }
     }
 
@@ -225,6 +232,7 @@ bool CStructureParser::characters(const QString& str)
   QRegExp rx("\\w");
   QString strAux = str.stripWhiteSpace();
   int pos = rx.search(strAux);
+
   if (pos != -1)
     {
       // handling word character within <mrow> ... </mrow>
@@ -293,8 +301,10 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   std::cout << "BEFORE: List of Uncompleted Tags: " << std::endl;
   Q3ValueList<QString>::iterator itL;
+
   for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
     std::cout << TO_UTF8(*itL) << std::endl;
+
   std::cout << std::endl;
 
   indent.remove((uint)0, 4);
@@ -304,7 +314,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mfrac")
     {
-      if (mListOfUncompletedTags.last().contains("mfrac"))
+      if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
         mListOfUncompletedTags.pop_back();
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
@@ -325,7 +335,7 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
     {
       std::cout << std::endl << "on End Element of mrow, mListOfUncompletedTags = " << TO_UTF8(mListOfUncompletedTags.last()) << std::endl;
 
-      if (mListOfUncompletedTags.last() == "mrow")
+      if (mListOfUncompletedTags.last() == "mrow")  // must not be empty
         mListOfUncompletedTags.pop_back();
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
@@ -337,14 +347,14 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "mfenced")
     {
-      if (mListOfUncompletedTags.last() == "mfenced")
+      if (mListOfUncompletedTags.last() == "mfenced") // must be not empty
         mListOfUncompletedTags.pop_back();
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
 
       tex += "\\right)";
 
-      QString &last = mListOfUncompletedTags.last();
+      QString &last = mListOfUncompletedTags.last();  // must be not empty
 
       // </msub> direct after </mfenced>
       if (last.contains("msub"))
@@ -354,9 +364,9 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
           std::cout << TO_UTF8(last)
-          << " --> split: "
-          << TO_UTF8(lastUncompletedTags)
-          << " & " << idx << std::endl;
+                    << " --> split: "
+                    << TO_UTF8(lastUncompletedTags)
+                    << " & " << idx << std::endl;
           idx++;
 
           // update with incrementally index
@@ -392,42 +402,44 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
 
   if (qName == "msub")
     {
-      if (mListOfUncompletedTags.last().contains("msub"))
+      if (mListOfUncompletedTags.last().contains("msub")) // must be not empty
         mListOfUncompletedTags.pop_back();
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
 
       // </mfrac> direct after </msub>
-      if (mListOfUncompletedTags.last().contains("mfrac"))
+      if (mListOfUncompletedTags.last().contains("mfrac"))  // must ne not empty
         tex += " }";
     }
 
   if (qName == "msup")
     {
-      if (mListOfUncompletedTags.last().contains("msup"))
+      if (mListOfUncompletedTags.last().contains("msup")) // must be not empty
         mListOfUncompletedTags.pop_back();
       else
         std::cout << "WARNING on L" << __LINE__ << std::endl;
 
       // </mfrac> direct after </msup>
-      if (mListOfUncompletedTags.last().contains("mfrac"))
+      if (mListOfUncompletedTags.last().contains("mfrac"))  // must be not empty
         tex += " }";
     }
 
   std::cout << "AFTER: List of Uncompleted Tags: " << std::endl;
+
   for (itL = mListOfUncompletedTags.begin(); itL != mListOfUncompletedTags.end(); ++itL)
     std::cout << TO_UTF8(*itL) << std::endl;
+
   std::cout << std::endl;
 
   return TRUE;
 }
 
-bool CStructureParser::ignorableWhitespace (const QString& /* str */)
+bool CStructureParser::ignorableWhitespace(const QString& /* str */)
 {
   return TRUE;
 }
 
-bool CStructureParser::skippedEntity (const QString& /* str */)
+bool CStructureParser::skippedEntity(const QString& /* str */)
 {
   return TRUE;
 }
