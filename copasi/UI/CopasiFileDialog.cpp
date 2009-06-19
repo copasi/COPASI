@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: pwilly $
+//   $Date: 2009/06/19 08:32:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
+
+#include <QtDebug>
 
 // static
 QDir CopasiFileDialog::LastDir;
@@ -78,13 +80,22 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
     const QString & caption,
     QString * pSelectedFilter)
 {
-  QString newFile = QFileDialog::getSaveFileName(startWith.isNull() ? LastDir.path() : startWith,
-                    filter,
-                    parent,
-                    name,
+  /*
+    QString newFile = QFileDialog::getSaveFileName(startWith.isNull() ? LastDir.path() : startWith,
+                      filter,
+                      parent,
+                      name,
+                      caption,
+                      pSelectedFilter,
+                      true);
+  */
+
+  QString newFile = QFileDialog::getSaveFileName(parent,
                     caption,
-                    pSelectedFilter,
-                    true);
+                    startWith.isNull() ? LastDir.path() : startWith,
+                    filter,
+                    pSelectedFilter);
+
   if (newFile != "")
     LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));
 
@@ -92,43 +103,57 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
 }
 
 // static
-QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selectedFilter,
+QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
     QWidget * parent,
     const char * name,
     const QString & startWith,
     const QString & filter,
     const QString & caption)
 {
-  QString File =
-    CopasiFileDialog::getSaveFileName(parent, name, startWith,
-                                      filter, caption, & selectedFilter);
+  /*
+    NOTE(19.06.2009):
+    We should apply our own QFileDialog without using the static functions.
+    The main reason is that for having more control on it.
+    Alternative: this class should inherit QFileDialog.
+  */
 
-  if (File.isNull()) return "";
+  QFileDialog fd(parent);
+  fd.setAcceptMode(QFileDialog::AcceptSave);
+  fd.setWindowTitle("Save Formula to Disk");
+  fd.setNameFilter(filter);
+  fd.setDirectory(startWith.isNull() ? LastDir.path() : startWith);
+  fd.setFileMode(QFileDialog::AnyFile);
+  fd.setOption(QFileDialog::DontConfirmOverwrite);
 
-  // check the extension and replace the uncorrect extension with the correct one according to the filter
-  QString Filter;
+  QString fileName;
 
-  if (selectedFilter.contains("png"))
-    Filter = "png";
-  else if (selectedFilter.contains("svg"))
-    Filter = "svg";
-  else if (selectedFilter.contains("tex"))
-    Filter = "tex";
-  else if (selectedFilter.contains("mml"))
-    Filter = "mml";
-  else if (selectedFilter.contains("xml"))
-    Filter = "xml";
-
-  if (!File.endsWith("." + Filter))
+  if (fd.exec() == QDialog::Accepted)
     {
-      if (File.contains("."))
-        {
-          int pos = File.find(".");
-          File.truncate(pos);
-        }
+      QString selectedFilter(fd.selectedNameFilter());
 
-      File += "." + Filter;
+//    std::cout << qPrintable(selectedFilter) << std::endl;
+      if (selectedFilter.contains("tex")) fd.setDefaultSuffix("tex");
+      else if (selectedFilter.contains("mml")) fd.setDefaultSuffix("mml");
+      else if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
+
+      QString defaultSuffix = fd.defaultSuffix();
+
+      defaultSuffix.prepend(".");
+      selFilter = defaultSuffix;
+      std::cout << "default suffix = " << qPrintable(defaultSuffix) << std::endl;
+
+//  fileName = fd.selectedFiles()[0];
+      fileName = fd.selectedFiles().value(0);
+      QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(fileName)));
+      /*
+          std::cout << "B " << qPrintable(fileName) << std::endl;
+          std::cout << "B1 " << qPrintable(defaultSuffix) << std::endl;
+          std::cout << "B2 " << qPrintable(selFilter) << std::endl;
+      */
+      fileName.replace(suffix, defaultSuffix);
     }
 
-  return File;
+//  std::cout << qPrintable(fileName) << std::endl;
+
+  return fileName;
 }
