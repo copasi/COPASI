@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/19 08:27:46 $
+//   $Date: 2009/06/19 10:12:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,9 @@
 
 #include "CopasiFileDialog.h"
 
+#ifdef DEBUG_UI
 #include <QtDebug>
+#endif
 
 /*
  *  Constructs a CQDifferentialEquations which is a child of 'parent', with the
@@ -163,8 +165,9 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
 {
   QString latexStr(FROM_UTF8(mml.str()));
 
-//  std::cout << qPrintable
+#ifdef DEBUG_UI
   qDebug() << latexStr;
+#endif
 
   CMathMLToTeX::convert(latexStr);
 
@@ -201,7 +204,9 @@ void CQDifferentialEquations::slotSave()
         return;
     }
 
-  std::cout << "C " << qPrintable(sSelectedFilter) << std::endl;
+#ifdef DEBUG_UI
+  qDebug() << qPrintable(sSelectedFilter);
+#endif
 
   if (sSelectedFilter.contains("tex"))
     saveTeX(outfilename);
