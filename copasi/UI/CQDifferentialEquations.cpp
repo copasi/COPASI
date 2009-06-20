@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/19 10:12:47 $
+//   $Date: 2009/06/20 05:06:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,7 +192,7 @@ void CQDifferentialEquations::slotSave()
             "Save File Dialog",
             QString::null,
 //            "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
-            "MathML (*.mml);;TeX (*.tex);;",
+            "MathML (*.mml);;TeX (*.tex)",
             "Save Formula to Disk");
 
       if (outfilename.isNull()) return;
