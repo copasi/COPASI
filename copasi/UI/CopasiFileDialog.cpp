@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/19 10:17:42 $
+//   $Date: 2009/06/21 21:05:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,32 +137,47 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
       qDebug() << selectedFilter;
 #endif
 
-      if (selectedFilter.contains("tex")) fd.setDefaultSuffix("tex");
-      else if (selectedFilter.contains("mml")) fd.setDefaultSuffix("mml");
-      else if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
+// correlated to 'save formula' on differential equations window
+      if (selectedFilter == "TeX (*.tex)") fd.setDefaultSuffix("tex");
+      else if (selectedFilter == "MathML (*.mml)") fd.setDefaultSuffix("mml");
+
+// correlated to 'save image' on plot window
+      if (selectedFilter == "PNG Files (*.png)") fd.setDefaultSuffix("png");
+      else if (selectedFilter == "SVG Files (*.svg)") fd.setDefaultSuffix("svg");
+
+// correlated to 'save data' on plot window
+//    if (selectedFilter.contains("txt")) fd.setDefaultSuffix("txt");
+
+// correlated to 'export ODE' on main window
+      if (selectedFilter == "C Files (*.c)") fd.setDefaultSuffix("c");
+      else if (selectedFilter == "Berkeley Madonna Files (*.mmd)") fd.setDefaultSuffix("mmd");
+      else if (selectedFilter == "XPPAUT (*.ode)") fd.setDefaultSuffix("ode");
+
+// correlated to 'save as' on main window
+//      if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
 
       QString defaultSuffix = fd.defaultSuffix();
 
       defaultSuffix.prepend(".");
       selFilter = defaultSuffix;
 
-#ifdef DEBUG_UI
-      qDebug() << "default suffix = " << qPrintable(defaultSuffix);
-#endif
+//      selFilter = fd.defaultSuffix();
 
 //  fileName = fd.selectedFiles()[0];
       fileName = fd.selectedFiles().value(0);
       QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(fileName)));
-      /*
-          std::cout << "B " << qPrintable(fileName) << std::endl;
-          std::cout << "B1 " << qPrintable(defaultSuffix) << std::endl;
-          std::cout << "B2 " << qPrintable(selFilter) << std::endl;
-      */
-      fileName.replace(suffix, defaultSuffix);
+
+#ifdef DEBUG_UI
+      qDebug() << "fileName = " << fileName;
+      qDebug() << "suffix = " << suffix;
+      qDebug() << "default suffix = " << selFilter;
+#endif
+
+      fileName.replace(suffix, selFilter);
     }
 
 #ifdef DEBUG_UI
-  qDebug() << qPrintable(fileName);
+  qDebug() << fileName;
 #endif
 
   return fileName;
