@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/04/19 19:05:55 $
+//   $Author: pwilly $
+//   $Date: 2009/06/21 05:31:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,8 @@
 
 // the window containing the plot and buttons for supported operations
 
-#include <q3toolbar.h>
+#include <QToolBar>
+
 #include <qprinter.h>
 #include <qpixmap.h>
 #include <q3picture.h>
@@ -59,55 +60,71 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
 
   // set up the GUI - the toolbar
-  Q3ToolBar * plotTools = new Q3ToolBar(this, "plot operations");
-  plotTools->setLabel("Plot Operations");
-
-  printButton = new QToolButton(plotTools, "print plot");
-  printButton -> setTextLabel("Print Plot");
-  printButton -> setText("Print");
-
-  print2Button = new QToolButton(plotTools, "save image");
-  print2Button -> setTextLabel("Print Image");
-  print2Button -> setText("Save Image");
-
-  saveButton = new QToolButton(plotTools, "save data");
-  saveButton -> setTextLabel("Save Data");
-  saveButton -> setText("Save Data");
-
-  zoomButton = new QToolButton(plotTools, "zoom");
-  zoomButton->setText("Zoom out");
-  zoomButton->setTextLabel("Zoom out");
-  //zoomButton->setToggleButton(true);
-
-  plotTools->addSeparator();
-
-  mpSelectAll = new QToolButton(plotTools, "show all");
-  mpSelectAll->setText("Show All");
-  mpSelectAll->setTextLabel("Show all curves");
-  connect(mpSelectAll, SIGNAL(clicked()), this, SLOT(slotSelectAll()));
-
-  mpDeselectAll = new QToolButton(plotTools, "hide all");
-  mpDeselectAll->setText("Hide All");
-  mpDeselectAll->setTextLabel("Hide all curves");
-  connect(mpDeselectAll, SIGNAL(clicked()), this, SLOT(slotDeselectAll()));
-
-  QAction* closeAct = new QAction(this);
-  closeAct->setShortcut(tr("Ctrl+W"));
-  addAction(closeAct);
-  connect(closeAct, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
-
-  //TODO button icons...
-
-  plotTools->setStretchableWidget(new QWidget(plotTools));
+  createActions();
+  createToolBar();
 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
-  connect(zoomButton, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
-  connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
-  connect(print2Button, SIGNAL(clicked()), this, SLOT(printAsImage()));
-  connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
   //connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
+}
+
+void PlotWindow::createActions()
+{
+  printButton = new QToolButton;
+  printButton -> setTextLabel("Print Plot");
+  printButton -> setText("Print");
+  connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
+
+  print2Button = new QToolButton;
+  print2Button -> setTextLabel("Print Image");
+  print2Button -> setText("Save Image");
+  connect(print2Button, SIGNAL(clicked()), this, SLOT(printAsImage()));
+
+  saveButton = new QToolButton;
+  saveButton -> setTextLabel("Save Data");
+  saveButton -> setText("Save Data");
+  connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
+
+  zoomButton = new QToolButton;
+  zoomButton->setTextLabel("Zoom out");
+  zoomButton->setText("Zoom out");
+  connect(zoomButton, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
+
+  mpSelectAll = new QToolButton;
+  mpSelectAll->setTextLabel("Show all curves");
+  mpSelectAll->setText("Show All");
+  connect(mpSelectAll, SIGNAL(clicked()), this, SLOT(slotSelectAll()));
+
+  mpDeselectAll = new QToolButton;
+  mpDeselectAll->setTextLabel("Hide all curves");
+  mpDeselectAll->setText("Hide All");
+  connect(mpDeselectAll, SIGNAL(clicked()), this, SLOT(slotDeselectAll()));
+}
+
+void PlotWindow::createToolBar()
+{
+  QToolBar * plotTools = addToolBar("plot operations");
+
+  plotTools->addWidget(printButton);
+  plotTools->addWidget(print2Button);
+  plotTools->addWidget(saveButton);
+  plotTools->addWidget(zoomButton);
+
+  plotTools->addSeparator();
+
+  plotTools->addWidget(mpSelectAll);
+  plotTools->addWidget(mpDeselectAll);
+
+  plotTools->addSeparator();
+
+  QAction* closeAct = new QAction("Close", Qt::CTRL + Qt::Key_W, this, "close");
+  connect(closeAct, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
+  plotTools->addAction(closeAct);
+
+  //TODO button icons...
+
+//  plotTools->setStretchableWidget(new QWidget(plotTools));
 }
 
 bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)

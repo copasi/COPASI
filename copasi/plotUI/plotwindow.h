@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/04/19 19:05:55 $
+//   $Author: pwilly $
+//   $Date: 2009/06/21 05:31:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,8 +18,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <q3mainwindow.h>
-#include <qtoolbutton.h>
+#include <QMainWindow>
+#include <QToolButton>
 
 #include "copasi.h"
 #include "UI/CopasiFileDialog.h"
@@ -33,7 +33,7 @@ class CPlotSpec2Vector;
 class CCopasiContainer;
 class COutputHandlerPlot;
 
-class PlotWindow : public Q3MainWindow, public COutputInterface
+class PlotWindow : public QMainWindow, public COutputInterface
 {
   Q_OBJECT
 
@@ -42,6 +42,9 @@ private:
   // points to the plot instance inside this window
   CopasiPlot *mpPlot;
   COutputHandlerPlot *mpHandler;
+
+  void createToolBar();
+  void createActions();
 
 public:
   PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec);
