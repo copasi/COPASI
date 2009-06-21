@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.258 $
+//   $Revision: 1.259 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/03 13:44:34 $
+//   $Author: pwilly $
+//   $Date: 2009/06/21 21:11:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -484,7 +484,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "COPASI Files (*.cps);;All Files (*.*);;",
+                                          str, "COPASI Files (*.cps);;All Files (*.*)",
                                           "Choose a filename to save under");
 
       if (tmp.isNull()) return false;
@@ -597,7 +597,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
   if (file == "")
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
-                                        "COPASI Files (*.gps *.cps);;All Files (*.*);;",
+                                        "COPASI Files (*.gps *.cps);;All Files (*.*)",
                                         "Choose a file");
   else
     newFile = file;
@@ -1058,7 +1058,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml);;All Files (*.*);;",
+                                        QString::null, "XML Files (*.xml);;All Files (*.*)",
                                         "Choose a file");
   else
     SBMLFile = file;
@@ -1655,7 +1655,7 @@ void CopasiUI3Window::slotCapture()
     {
       QString filter;
       fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
-                 QString::null, "PNG Files (*.png);;", "Save to");
+                 QString::null, "PNG Files (*.png)", "Save to");
 
       if (fileName.isEmpty()) return;
 
