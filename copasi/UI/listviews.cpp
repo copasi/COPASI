@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.269 $
+//   $Revision: 1.270 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:25 $
+//   $Date: 2009/06/22 17:16:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1314,13 +1314,14 @@ void ListViews::notifyAllChildWidgets(ObjectType objectType,
 
 void ListViews::setChildWidgetsFramework(int framework)
 {
-  QList <QWidget *> widgets = findChildren<QWidget *>("CopasiWidget");
-  QListIterator<QWidget *> it(widgets); // iterate over the CopasiWidgets
+  QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
+  QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
   CopasiWidget * pCopasiWidget;
 
-  while ((pCopasiWidget = static_cast< CopasiWidget * >(it.next())) != NULL)
+  while (it.hasNext())
     {
-      pCopasiWidget->setFramework(framework);
+      if ((pCopasiWidget = it.next()) != NULL)
+        pCopasiWidget->setFramework(framework);
     }
 }
 
