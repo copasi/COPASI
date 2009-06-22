@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.259 $
+//   $Revision: 1.260 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/21 21:11:07 $
+//   $Date: 2009/06/22 15:47:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1653,26 +1653,13 @@ void CopasiUI3Window::slotCapture()
 
   while (Answer == QMessageBox::No)
     {
-      QString filter;
-      fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
-                 QString::null, "PNG Files (*.png)", "Save to");
+      QString strFilter;
+      fileName = CopasiFileDialog::getSaveFileNameAndFilter(strFilter, this, "Save File Dialog",
+                 QString::null, "PNG Files (*.png)", "Save Capture as PNG file");
 
       if (fileName.isEmpty()) return;
 
       // Checks whether the file exists
-      /*
-            QFileInfo fileInfo(fileName);
-            extensionName = fileInfo.extension();
-
-            if (extensionName != "png")
-              fileName.replace("." + extensionName, ".png");
-
-            fileInfo.setFile(fileName);
-            extensionName = fileInfo.extension();
-
-            if (extensionName == "")
-              fileName += ".png";
-      */
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
