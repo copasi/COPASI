@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/21 05:31:02 $
+//   $Date: 2009/06/22 20:47:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,16 +17,13 @@
 
 // the window containing the plot and buttons for supported operations
 
-#include <QToolBar>
+#include <QtSvg>
 
-#include <qprinter.h>
-#include <qpixmap.h>
-#include <q3picture.h>
-#include <q3filedialog.h>
-#include <qcursor.h>
-#include <qregexp.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include <QToolBar>
+#include <QPrinter>
+#include <QPixmap>
+#include <QPicture>
+#include <QSvgGenerator>
 
 #include "plotwindow.h"
 #include "CopasiPlot.h"
@@ -164,7 +161,7 @@ void PlotWindow::printAsImage()
     {
       QString filter;
       fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
-                 QString::null, "PNG Files (*.png);;SVG Files (*.svg);;", "Save to");
+                 QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
 
       if (fileName.isEmpty()) return;
 
@@ -199,12 +196,12 @@ void PlotWindow::printAsImage()
 
   if (extensionName == "svg") // true
     {
-      Q3Picture pict;
-      painter.begin(&pict);
+      QSvgGenerator generator;
+      generator.setFileName(fileName);
+
+      painter.begin(&generator);
       mpPlot->print(&painter, rect, PrintFilter());
       painter.end();
-
-      pict.save(fileName, "SVG");
     }
 }
 

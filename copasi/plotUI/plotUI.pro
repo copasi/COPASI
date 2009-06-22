@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.5 $
+#   $Revision: 1.6 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/12/18 19:04:22 $
+#   $Author: pwilly $
+#   $Date: 2009/06/22 20:47:04 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2008/12/18 19:04:22 $
+# $Revision: 1.6 $ $Author: pwilly $ $Date: 2009/06/22 20:47:04 $
 ######################################################################
 
 LIB = plotUI
@@ -58,3 +58,6 @@ CONFIG += uic3
 
 #The following line was inserted by qt3to4
 QT +=  
+
+#The following line is for implementing QtSvg module
+QT += svg
