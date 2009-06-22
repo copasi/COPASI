@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.148 $
+#   $Revision: 1.149 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/01/28 03:56:27 $
+#   $Author: pwilly $
+#   $Date: 2009/06/22 21:00:08 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.148 $ $Author: shoops $ $Date: 2009/01/28 03:56:27 $
+# $Revision: 1.149 $ $Author: pwilly $ $Date: 2009/06/22 21:00:08 $
 ######################################################################
 
 TEMPLATE = app
@@ -147,3 +147,7 @@ DISTFILES += CopasiUI.vcproj \
 
 #The following line was inserted by qt3to4
 QT += xml  opengl qt3support 
+
+#The following line is for implementing QtSvg module
+QT += svg
+
