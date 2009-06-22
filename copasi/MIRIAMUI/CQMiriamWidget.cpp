@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:25 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 
 #include <QMessageBox>
 #include <QHeaderView>
+#include <QClipboard>
 
 #include "CQMiriamWidget.h"
 #include "copasi.h"
@@ -46,9 +47,6 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mpModifiedPDM = new CQSortFilterProxyModel();
 
   //Create Required Delegates
-  mpDTEDelegate = new CQDateTimeEditDelegate(this);
-  mpTblModified->setItemDelegateForColumn(COL_DATE_MODIFIED, mpDTEDelegate);
-
   mpResourceDelegate1 = new CQComboDelegate(&mResources, this);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
 
@@ -114,7 +112,6 @@ CQMiriamWidget::~CQMiriamWidget()
   pdelete(mpReferenceDM);
   pdelete(mpBiologicalDescriptionDM);
   pdelete(mpModifiedDM);
-  pdelete(mpDTEDelegate);
   pdelete(mpResourceDelegate1);
   pdelete(mpResourceDelegate2);
   pdelete(mpPredicateDelegate);
@@ -367,6 +364,8 @@ void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
+  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
+    slotCopyEvent();
 }
 
 void CQMiriamWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft), const QModelIndex& C_UNUSED(bottomRight))
@@ -376,4 +375,62 @@ void CQMiriamWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft), const QMo
 
   for (; it != end; it++)
     (*it)->resizeColumnsToContents();
+}
+
+void CQMiriamWidget::slotCopyEvent()
+{
+  CQSortFilterProxyModel* pProxyModel = NULL;
+  CQBaseDataModel* pBaseDM = NULL;
+  QTableView* pTbl = NULL;
+
+  if (mpTblAuthors->hasFocus())
+    {
+      pProxyModel = mpCreatorPDM;
+      pBaseDM = mpCreatorDM;
+      pTbl = mpTblAuthors;
+    }
+  else if (mpTblReferences->hasFocus())
+    {
+      pProxyModel = mpReferencePDM;
+      pBaseDM = mpReferenceDM;
+      pTbl = mpTblReferences;
+    }
+  else if (mpTblModified->hasFocus())
+    {
+      pProxyModel = mpModifiedPDM;
+      pBaseDM = mpModifiedDM;
+      pTbl = mpTblModified;
+    }
+  else if (mpTblDescription->hasFocus())
+    {
+      pProxyModel = mpBiologicalDescriptionPDM;
+      pBaseDM = mpBiologicalDescriptionDM;
+      pTbl = mpTblDescription;
+    }
+
+  QModelIndexList selRows = pTbl->selectionModel()->selectedRows(0);
+
+  if (selRows.empty())
+    {return;}
+
+  QString str;
+  QModelIndexList::const_iterator i;
+
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {
+      for (int x = 0; x < pBaseDM->columnCount(); ++x)
+        {
+          if (!pTbl->isColumnHidden(x))
+            {
+              if (!str.isEmpty())
+                str += "\t";
+
+              str += pBaseDM->index(pProxyModel->mapToSource(*i).row(), x).data().toString();
+            }
+        }
+
+      str += "\n";
+    }
+
+  QApplication::clipboard()->setText(str);
 }

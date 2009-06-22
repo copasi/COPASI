@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:42 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,7 +93,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_COMPARTMENTS:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
               case COL_IVOLUME:
-                return QVariant(QString("1"));
+                return QVariant(1);
               default:
                 return QVariant(QString(""));
             }
@@ -115,13 +115,13 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pComp->getStatus()])));
 
               case COL_IVOLUME:
-                return QVariant(QString::number(pComp->getInitialValue()));
+                return QVariant(pComp->getInitialValue());
 
               case COL_VOLUME:
-                return QVariant(QString::number(pComp->getValue()));
+                return QVariant(pComp->getValue());
 
               case COL_RATE_COMPARTMENTS:
-                return QVariant(QString::number(pComp->getRate()));
+                return QVariant(pComp->getRate());
 
               case COL_IEXPRESSION_COMPARTMENTS:
               {

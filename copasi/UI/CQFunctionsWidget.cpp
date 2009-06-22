@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:25 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -11,6 +11,7 @@
 // All rights reserved.
 
 #include <QHeaderView>
+#include <QClipboard>
 
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -150,6 +151,34 @@ void CQFunctionsWidget::keyPressEvent(QKeyEvent* ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
+  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
+    {
+      QModelIndexList selRows = mpTblFunctions->selectionModel()->selectedRows(0);
+
+      if (selRows.empty())
+        {return;}
+
+      QString str;
+      QModelIndexList::const_iterator i;
+
+      for (i = selRows.begin(); i != selRows.end(); ++i)
+        {
+          for (int x = 0; x < mpFunctionDM->columnCount(); ++x)
+            {
+              if (!mpTblFunctions->isColumnHidden(x))
+                {
+                  if (!str.isEmpty())
+                    str += "\t";
+
+                  str += mpFunctionDM->index(mpProxyModel->mapToSource(*i).row(), x).data().toString();
+                }
+            }
+
+          str += "\n";
+        }
+
+      QApplication::clipboard()->setText(str);
+    }
 }
 
 void CQFunctionsWidget::slotFilterChanged()

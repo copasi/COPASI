@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSortFilterProxyModel.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/04/07 23:14:25 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,9 +30,19 @@ bool CQSortFilterProxyModel::lessThan(const QModelIndex& left, const QModelIndex
       CQBaseDataModel * m = dynamic_cast<CQBaseDataModel *>(sourceModel());
 
       if (m->isDefaultRow(left))
-        return false;
+        {
+          if (sortOrder() == Qt::AscendingOrder)
+            return false;
+          else
+            return true;
+        }
       else if (m->isDefaultRow(right))
-        return true;
+        {
+          if (sortOrder() == Qt::AscendingOrder)
+            return true;
+          else
+            return false;
+        }
     }
 
   return QSortFilterProxyModel::lessThan(left, right);

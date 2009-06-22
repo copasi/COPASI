@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Author: aekamal $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,8 @@
  *  name 'name'.'
  */
 CQMetabolite::CQMetabolite(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+    : CopasiWidget(parent, name),
+    mpMetab(NULL)
 {
   setupUi(this);
 

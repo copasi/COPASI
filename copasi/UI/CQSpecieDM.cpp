@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:42 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,8 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
   if (isDefaultRow(index))
     {
       if (index.column() == COL_NAME_SPECIES || index.column() == COL_COMPARTMENT ||
-          index.column() == COL_TYPE_SPECIES || index.column() == COL_INUMBER)
+          index.column() == COL_TYPE_SPECIES || index.column() == COL_ICONCENTRATION ||
+          index.column() == COL_INUMBER)
         return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
       else
         return QAbstractItemModel::flags(index);
@@ -139,16 +140,16 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ICONCENTRATION:
               {
                 if (mFlagConc)
-                  return QVariant(QString::number(1.0));
+                  return QVariant(1.0);
                 else
-                  return QVariant(QString(""));
+                  return QVariant();
               }
               case COL_INUMBER:
               {
                 if (mFlagConc)
-                  return QVariant(QString(""));
+                  return QVariant();
                 else
-                  return QVariant(QString::number(100.0));
+                  return QVariant(100.0);
               }
               default:
                 return QVariant(QString(""));
@@ -173,22 +174,22 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pSpe->getStatus()])));
 
               case COL_ICONCENTRATION:
-                return QVariant(QString::number(pSpe->getInitialConcentration()));
+                return QVariant(pSpe->getInitialConcentration());
 
               case COL_INUMBER:
-                return QVariant(QString::number(pSpe->getInitialValue()));
+                return QVariant(pSpe->getInitialValue());
 
               case COL_CONCENTRATION:
-                return QVariant(QString::number(pSpe->getConcentration()));
+                return QVariant(pSpe->getConcentration());
 
               case COL_NUMBER:
-                return QVariant(QString::number(pSpe->getValue()));
+                return QVariant(pSpe->getValue());
 
               case COL_CRATE:
-                return QVariant(QString::number(pSpe->getConcentrationRate()));
+                return QVariant(pSpe->getConcentrationRate());
 
               case COL_NRATE:
-                return QVariant(QString::number(pSpe->getRate()));
+                return QVariant(pSpe->getRate());
 
               case COL_IEXPRESSION_SPECIES:
               {
@@ -376,9 +377,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                       Factor *= pCompartment->getInitialValue();
 
                       pSpe->setInitialValue(Factor * this->index(index.row(), COL_INUMBER).data().toDouble());
-
-                      //table->setText(row, COL_NUMBER,
-                      //QString::number(Factor * table->text(row, COL_NUMBER).toDouble()));
+                      pSpe->setValue(Factor * this->index(index.row(), COL_NUMBER).data().toDouble());
                     }
 
                   emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");

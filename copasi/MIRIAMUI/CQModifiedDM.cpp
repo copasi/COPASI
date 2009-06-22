@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQModifiedDM.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,13 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
         {
           if (index.column() == COL_ROW_NUMBER)
             return QVariant(index.row() + 1);
+          else if (index.column() == COL_DATE_MODIFIED)
+            {
+              if (role == Qt::DisplayRole)
+                return QVariant(QDateTime());
+              else
+                return QVariant(QDateTime::currentDateTime());
+            }
           else
             return QVariant(QString(""));
         }
@@ -60,12 +67,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
                 QDateTime dt(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getModifications()[index.row()]->getDate()), Qt::ISODate));
 
                 if (dt.isValid())
-                  {
-                    if (role == Qt::DisplayRole)
-                      return QVariant(dt.toString(Qt::TextDate));
-                    else
-                      return QVariant(dt.toString(Qt::ISODate));
-                  }
+                  return QVariant(dt);
             }
         }
     }
@@ -111,7 +113,7 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
       switch (index.column())
         {
           case COL_DATE_MODIFIED:
-            mpMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toString()));
+            mpMIRIAMInfo->getModifications()[index.row()]->setDate(TO_UTF8(value.toDateTime().toString(Qt::ISODate)));
             break;
         }
 

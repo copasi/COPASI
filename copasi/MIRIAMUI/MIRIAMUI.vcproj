@@ -69,15 +69,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQComboDelegate.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CQCreatorDM.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CQDateTimeEditDelegate.cpp"
 				>
 			</File>
 			<File
@@ -115,15 +107,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQComboDelegate.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CQCreatorDM.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CQDateTimeEditDelegate.h"
 				>
 			</File>
 			<File

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,6 @@
 
 #include "UI/CQSortFilterProxyModel.h"
 #include "UI/CQComboDelegate.h"
-#include "UI/CQDateTimeEditDelegate.h"
 
 #include "ui_CQMiriamWidget.h"
 #include "CQCreatorDM.h"
@@ -53,7 +52,6 @@ private:
   CQSortFilterProxyModel* mpReferencePDM;
   CQSortFilterProxyModel* mpBiologicalDescriptionPDM;
   CQSortFilterProxyModel* mpModifiedPDM;
-  CQDateTimeEditDelegate* mpDTEDelegate;
   CQComboDelegate* mpResourceDelegate1;
   CQComboDelegate* mpResourceDelegate2;
   CQComboDelegate* mpPredicateDelegate;
@@ -75,6 +73,7 @@ protected slots:
   virtual void slotBtnClearClicked();
   virtual void slotCreatedDTChanged(QDateTime newDT);
   virtual void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+  virtual void slotCopyEvent();
 };
 
 #endif // CQMIRIAMWIDGET_H

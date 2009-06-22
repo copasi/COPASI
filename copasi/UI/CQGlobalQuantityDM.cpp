@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:42 $
+//   $Date: 2009/06/22 17:19:07 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -92,7 +92,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_GQ:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
               case COL_INITIAL_GQ:
-                return QVariant(QString::number(0.0));
+                return QVariant(0.0);
               default:
                 return QVariant(QString(""));
             }
@@ -114,13 +114,13 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));
 
               case COL_INITIAL_GQ:
-                return QVariant(QString::number(pGQ->getInitialValue()));
+                return QVariant(pGQ->getInitialValue());
 
               case COL_TRANSIENT_GQ:
-                return QVariant(QString::number(pGQ->getValue()));
+                return QVariant(pGQ->getValue());
 
               case COL_RATE_GQ:
-                return QVariant(QString::number(pGQ->getRate()));
+                return QVariant(pGQ->getRate());
 
               case COL_IEXPRESSION_GQ:
               {
