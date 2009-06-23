@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/22 15:41:53 $
+//   $Date: 2009/06/23 17:48:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,49 +119,49 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
     const QString & caption)
 {
   // Alternative 1: by means of the native static function
+  /*
+    QString selectedFilter = "PNG file (*.png)";
 
-  QString selectedFilter;
+    QString fileName = QFileDialog::getSaveFileName(parent,
+                       caption,
+                       startWith.isNull() ? LastDir.path() : startWith,
+                       filter,
+                       &selectedFilter,
+                       QFileDialog::DontConfirmOverwrite);
 
-  QString fileName = QFileDialog::getSaveFileName(parent,
-                     caption,
-                     startWith.isNull() ? LastDir.path() : startWith,
-                     filter,
-                     &selectedFilter,
-                     QFileDialog::DontConfirmOverwrite);
+  // correlated to 'save formula' on differential equations window
+    if (selectedFilter == "TeX (*.tex)") selFilter = ".tex";
+    else if (selectedFilter == "MathML (*.mml)") selFilter = ".mml";
 
-// correlated to 'save formula' on differential equations window
-  if (selectedFilter == "TeX (*.tex)") selFilter = ".tex";
-  else if (selectedFilter == "MathML (*.mml)") selFilter = ".mml";
+  // correlated to 'save image' on plot window
+    if (selectedFilter == "PNG Files (*.png)") selFilter = ".png";
+    else if (selectedFilter == "SVG Files (*.svg)") selFilter = ".svg";
 
-// correlated to 'save image' on plot window
-  if (selectedFilter == "PNG Files (*.png)") selFilter = ".png";
-  else if (selectedFilter == "SVG Files (*.svg)") selFilter = ".svg";
+  // correlated to 'save data' on plot window
+  //    if (selectedFilter.contains("txt")) fd.setDefaultSuffix("txt");
 
-// correlated to 'save data' on plot window
-//    if (selectedFilter.contains("txt")) fd.setDefaultSuffix("txt");
+  // correlated to 'export ODE' on main window
+    if (selectedFilter == "C Files (*.c)") selFilter = ".c";
+    else if (selectedFilter == "Berkeley Madonna Files (*.mmd)") selFilter = ".mmd";
+    else if (selectedFilter == "XPPAUT (*.ode)") selFilter = ".ode";
 
-// correlated to 'export ODE' on main window
-  if (selectedFilter == "C Files (*.c)") selFilter = ".c";
-  else if (selectedFilter == "Berkeley Madonna Files (*.mmd)") selFilter = ".mmd";
-  else if (selectedFilter == "XPPAUT (*.ode)") selFilter = ".ode";
+  // correlated to 'save as' on main window
+  //      if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
 
-// correlated to 'save as' on main window
-//      if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
-
-  QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(fileName)));
+    QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(fileName)));
 
 #ifdef DEBUG_UI
-  qDebug() << "fileName = " << fileName;
-  qDebug() << "suffix = " << suffix;
-  qDebug() << "default suffix = " << selFilter;
-  qDebug() << "selected Filter = " << selectedFilter;
+    qDebug() << "fileName = " << fileName;
+    qDebug() << "suffix = " << suffix;
+    qDebug() << "default suffix = " << selFilter;
+    qDebug() << "selected Filter = " << selectedFilter;
 #endif
 
-  if (suffix.isEmpty())
-    fileName.append(selFilter);
-  else
-    fileName.replace(suffix, selFilter);
-
+    if (suffix.isEmpty())
+      fileName.append(selFilter);
+    else
+      fileName.replace(suffix, selFilter);
+  */
   // Alternative 2 : use own QFileDialog
 
   /*
@@ -170,68 +170,68 @@ QString CopasiFileDialog::getSaveFileNameAndFilter(QString & selFilter,
     The main reason is that for having more control on it.
     Alternative: this class should inherit QFileDialog.
   */
-  /*
-    QFileDialog fd(parent);
-    fd.setAcceptMode(QFileDialog::AcceptSave);
-    fd.setWindowTitle(caption);
-    fd.setDirectory(startWith.isNull() ? LastDir.path() : startWith);
-    fd.setFileMode(QFileDialog::AnyFile);
-    fd.setOption(QFileDialog::DontConfirmOverwrite);
 
-    fd.setNameFilter(filter);
+  QFileDialog fd(parent);
+  fd.setAcceptMode(QFileDialog::AcceptSave);
+  fd.setWindowTitle(caption);
+  fd.setDirectory(startWith.isNull() ? LastDir.path() : startWith);
+  fd.setFileMode(QFileDialog::AnyFile);
+  fd.setOption(QFileDialog::DontConfirmOverwrite);
 
-    if (filter.count("*.") == 1)
-      fd.setDefaultSuffix(filter);
+  fd.setNameFilter(filter);
 
-    QString fileName;
+  if (filter.count("*.") == 1)
+    fd.setDefaultSuffix(filter);
 
-    if (fd.exec() == QDialog::Accepted)
-      {
-        QString selectedFilter(fd.selectedNameFilter());
+  QString fileName;
 
-#ifdef DEBUG_UI
-        qDebug() << selectedFilter;
-#endif
-
-  // correlated to 'save formula' on differential equations window
-        if (selectedFilter == "TeX (*.tex)") fd.setDefaultSuffix("tex");
-        else if (selectedFilter == "MathML (*.mml)") fd.setDefaultSuffix("mml");
-
-  // correlated to 'save image' on plot window
-        if (selectedFilter == "PNG Files (*.png)") fd.setDefaultSuffix("png");
-        else if (selectedFilter == "SVG Files (*.svg)") fd.setDefaultSuffix("svg");
-
-  // correlated to 'save data' on plot window
-  //    if (selectedFilter.contains("txt")) fd.setDefaultSuffix("txt");
-
-  // correlated to 'export ODE' on main window
-        if (selectedFilter == "C Files (*.c)") fd.setDefaultSuffix("c");
-        else if (selectedFilter == "Berkeley Madonna Files (*.mmd)") fd.setDefaultSuffix("mmd");
-        else if (selectedFilter == "XPPAUT (*.ode)") fd.setDefaultSuffix("ode");
-
-  // correlated to 'save as' on main window
-  //      if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
-
-        QString defaultSuffix = fd.defaultSuffix();
-
-        defaultSuffix.prepend(".");
-        selFilter = defaultSuffix;
-
-  //      selFilter = fd.defaultSuffix();
-
-  //  fileName = fd.selectedFiles()[0];
-        fileName = fd.selectedFiles().value(0);
-        QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(fileName)));
+  if (fd.exec() == QDialog::Accepted)
+    {
+      QString selectedFilter(fd.selectedNameFilter());
 
 #ifdef DEBUG_UI
-        qDebug() << "fileName = " << fileName;
-        qDebug() << "suffix = " << suffix;
-        qDebug() << "default suffix = " << selFilter;
+      qDebug() << selectedFilter;
 #endif
 
-        fileName.replace(suffix, selFilter);
-      }
-  */
+      // correlated to 'save formula' on differential equations window
+      if (selectedFilter == "TeX (*.tex)") fd.setDefaultSuffix("tex");
+      else if (selectedFilter == "MathML (*.mml)") fd.setDefaultSuffix("mml");
+
+      // correlated to 'save image' on plot window
+      if (selectedFilter == "PNG Files (*.png)") fd.setDefaultSuffix("png");
+      else if (selectedFilter == "SVG Files (*.svg)") fd.setDefaultSuffix("svg");
+
+      // correlated to 'save data' on plot window
+      //    if (selectedFilter.contains("txt")) fd.setDefaultSuffix("txt");
+
+      // correlated to 'export ODE' on main window
+      if (selectedFilter == "C Files (*.c)") fd.setDefaultSuffix("c");
+      else if (selectedFilter == "Berkeley Madonna Files (*.mmd)") fd.setDefaultSuffix("mmd");
+      else if (selectedFilter == "XPPAUT (*.ode)") fd.setDefaultSuffix("ode");
+
+      // correlated to 'save as' on main window
+      //      if (selectedFilter.contains("cps")) fd.setDefaultSuffix("cps");
+
+      QString defaultSuffix = fd.defaultSuffix();
+
+      defaultSuffix.prepend(".");
+      selFilter = defaultSuffix;
+
+      //      selFilter = fd.defaultSuffix();
+
+      //  fileName = fd.selectedFiles()[0];
+      fileName = fd.selectedFiles().value(0);
+      QString suffix = FROM_UTF8(CDirEntry::suffix(TO_UTF8(fileName)));
+
+#ifdef DEBUG_UI
+      qDebug() << "fileName = " << fileName;
+      qDebug() << "suffix = " << suffix;
+      qDebug() << "default suffix = " << selFilter;
+#endif
+
+      fileName.replace(suffix, selFilter);
+    }
+
 #ifdef DEBUG_UI
   qDebug() << fileName;
 #endif
