@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/18 20:02:43 $
+//   $Date: 2009/06/24 16:27:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,8 +249,6 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   range Assignments = getAssignments();
 
-  // TODO CRITICAL Handle the 3 mechanism for simultaneous assignments.
-
   // The algorithm below will work properly for user ordered events
   // as the queue enforces the proper ordering.
   while (success &&
@@ -430,6 +428,9 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   pEvent->applyValueRefreshes();
 
   EventIdNew = createEventId();
+
+  // CRITICAL We need to compare the roots before the execution and after
+  // to determine which roots need to be charged.
 
   for (; it != assignments.second; ++it)
     it->second.process(EventIdNew);

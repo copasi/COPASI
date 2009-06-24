@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/17 19:16:15 $
+//   $Date: 2009/06/24 16:27:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,6 +189,8 @@ void CMathModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & r
           pProcessedEvent = *ppEvent;
           pProcessedEvent->processRoot(time, mProcessQueue);
         }
+
+      // CRITICAL We need to charge only the roots which are marked..
     }
 
   return;

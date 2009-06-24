@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/18 20:06:48 $
+//   $Date: 2009/06/24 16:27:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,6 +158,8 @@ bool CMathTrigger::fire()
   // Charge the root finders
   CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
   CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
+
+  // CRITICAL We must only charge roots which have changed status.
 
   for (; itRoot != endRoot; ++itRoot)
     {
