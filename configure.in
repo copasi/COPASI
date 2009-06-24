@@ -306,7 +306,11 @@ if test "x$prefix" = "xNONE"; then
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-
+if test x"${QTDIR}" = x; then
+  QMAKE="qmake" 
+else
+  QMAKE="${QTDIR}/bin/qmake"
+fi
 
 (
 dnl to prevent calling aclocal, automake and configure again
@@ -320,11 +324,11 @@ dnl to prevent calling aclocal, automake and configure again
  cd copasi && \
  echo executing in `pwd`: && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- echo "  qmake $QMAKE_ARG" && \
- $QTDIR/bin/qmake $QMAKE_ARG && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = '$QMAKE'x'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
@@ -339,11 +343,11 @@ dnl to prevent calling aclocal, automake and configure again
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- echo "  qmake $QMAKE_ARG" && \
- $QTDIR/bin/qmake $QMAKE_ARG && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = '$QMAKE'x'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
@@ -353,11 +357,11 @@ dnl to prevent calling aclocal, automake and configure again
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- echo "  qmake $QMAKE_ARG" && \
- $QTDIR/bin/qmake $QMAKE_ARG && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = '$QMAKE'x'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
@@ -367,11 +371,11 @@ dnl to prevent calling aclocal, automake and configure again
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- echo "  qmake $QMAKE_ARG" && \
- $QTDIR/bin/qmake $QMAKE_ARG && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = '$QMAKE'x'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
@@ -381,11 +385,11 @@ cd sbml-testsuite && \
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
- echo "  qmake $QMAKE_ARG" && \
- $QTDIR/bin/qmake $QMAKE_ARG && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
-     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = '$QMAKE'x'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
