@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:27:11 $
+//   $Date: 2009/06/24 12:13:10 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,16 +28,16 @@
 #include "copasi.h"
 #include "CTableauMatrix.h"
 
-CTableauMatrix::CTableauMatrix()
-{
-  CONSTRUCTOR_TRACE;
-  mFirstIrreversible = mLine.end();
-}
+CTableauMatrix::CTableauMatrix():
+    mLine(),
+    mFirstIrreversible(mLine.end())
+{}
 
 CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & stoi,
-                               C_INT32 reversibleNumber)
+                               C_INT32 reversibleNumber):
+    mLine(),
+    mFirstIrreversible(mLine.end())
 {
-  CONSTRUCTOR_TRACE;
   unsigned C_INT32 ReactionCounter = 0;
   unsigned C_INT32 ReactionNumber = stoi.size();
 
@@ -44,6 +49,7 @@ CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & s
                                        reversibleNumber > 0 ? true : false,
                                        ReactionCounter,
                                        ReactionNumber));
+
       if (reversibleNumber == 0)
         {
           mFirstIrreversible = mLine.end();
@@ -54,7 +60,6 @@ CTableauMatrix::CTableauMatrix(const std::vector< std::vector< C_FLOAT64 > > & s
 
 CTableauMatrix::~CTableauMatrix()
 {
-  DESTRUCTOR_TRACE;
   for (std::list< const CTableauLine * >::iterator i = mLine.begin();
        i != mLine.end(); i++)
     pdelete(*i);
@@ -134,7 +139,9 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
       return false;
 
   i = mLine.begin();
+
   /* Check whether the new line scores better than existing lines */
+
   /* If so the existing lines are removed */
   for (i = mLine.begin(); i != mLine.end();)
     if (src->getScore() < (*i)->getScore())
