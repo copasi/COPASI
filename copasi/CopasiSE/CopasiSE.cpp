@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:17 $
+//   $Date: 2009/06/25 12:11:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,11 +88,12 @@ int main(int argc, char *argv[])
   catch (copasi::autoexcept &e)
     {
       writeLogo();
+
       switch (e.get_autothrow_id())
         {
-        case copasi::autothrow_help:
-          std::cerr << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
-          std::cerr << e.what();
+          case copasi::autothrow_help:
+            std::cerr << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
+            std::cerr << e.what();
         }
 
       retcode = 0;
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
 
 #ifdef COPASI_LICENSE_COM
       CRegistration * pRegistration =
-        elevate< CRegistration, CCopasiParameterGroup >(pModel->getConfiguration()->assertGroup("Registration"));
+        elevate< CRegistration, CCopasiParameterGroup >(CCopasiRootContainer::getConfiguration()->assertGroup("Registration"));
 
       bool RegistrationChanged = false;
       std::string RegistrationValue;
@@ -208,6 +209,7 @@ int main(int argc, char *argv[])
       for (i = 0, imax = Functions.size(); i < imax; i++)
         {
           pFunction = dynamic_cast<CFunction *>(Functions[i]);
+
           if (pFunction->getType() != CEvaluationTree::MassAction)
             for (j = 0; j < 100000; j++)
               pFunction->calcValue(Variables);
@@ -239,11 +241,13 @@ int main(int argc, char *argv[])
       COptions::getValue("Validate", Validate);
 
       const COptions::nonOptionType & Files = COptions::getNonOptions();
+
       if (!COptions::compareValue("ImportSBML", std::string("")))
         {
           // Import the SBML File
           std::string ImportSBML;
           COptions::getValue("ImportSBML", ImportSBML);
+
           if (!pDataModel->importSBML(ImportSBML))
             {
               std::cerr << "SBML Import File: " << ImportSBML << std::endl;
@@ -273,12 +277,14 @@ int main(int argc, char *argv[])
               // Export the C code File
               std::string ExportC;
               COptions::getValue("ExportC", ExportC);
+
               if (!pDataModel->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
                 {
                   std::cerr << "C File: " << ExportC << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
                   retcode = 1;
                 }
+
               goto finish;
             }
 
@@ -288,12 +294,14 @@ int main(int argc, char *argv[])
               // Export the Berkeley Madonna File
               std::string ExportBerkeleyMadonna;
               COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
+
               if (!pDataModel->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
                 {
                   std::cerr << "Berkeley Madonna File: " << ExportBerkeleyMadonna << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
                   retcode = 1;
                 }
+
               goto finish;
             }
 
@@ -303,12 +311,14 @@ int main(int argc, char *argv[])
               // Export the Berkeley Madonna File
               std::string ExportXPPAUT;
               COptions::getValue("ExportXPPAUT", ExportXPPAUT);
+
               if (!pDataModel->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
                 {
                   std::cerr << "XPPAUT File: " << ExportXPPAUT << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
                   retcode = 1;
                 }
+
               goto finish;
             }
 
@@ -343,6 +353,7 @@ int main(int argc, char *argv[])
               Argv[1] = Help.c_str();
 
               copasi::COptionParser Parser;
+
               try
                 {
                   Parser.parse(2, (char **) Argv);
@@ -352,15 +363,16 @@ int main(int argc, char *argv[])
                 {
                   switch (e.get_autothrow_id())
                     {
-                    case copasi::autothrow_help:
-                      std::cerr << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
-                      std::cerr << e.what();
+                      case copasi::autothrow_help:
+                        std::cerr << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
+                        std::cerr << e.what();
                     }
                 }
 
               retcode = 1;
               goto finish;
             }
+
           for (; it != end; ++it)
             {
               if (!pDataModel->loadModel(*it, NULL))
@@ -395,6 +407,7 @@ int main(int argc, char *argv[])
                   // Export the C code File
                   std::string ExportC;
                   COptions::getValue("ExportC", ExportC);
+
                   if (!pDataModel->exportMathModel(ExportC, NULL, "C Files (*.c)", true))
                     {
                       std::cerr << "C File: " << ExportC << std::endl;
@@ -414,6 +427,7 @@ int main(int argc, char *argv[])
                   // Export the Berkeley Madonna File
                   std::string ExportBerkeleyMadonna;
                   COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
+
                   if (!pDataModel->exportMathModel(ExportBerkeleyMadonna, NULL, "Berkeley Madonna Files (*.mmd)", true))
                     {
                       std::cerr << "Berkeley Madonna File: " << ExportBerkeleyMadonna << std::endl;
@@ -433,6 +447,7 @@ int main(int argc, char *argv[])
                   // Export the Berkeley Madonna File
                   std::string ExportXPPAUT;
                   COptions::getValue("ExportXPPAUT", ExportXPPAUT);
+
                   if (!pDataModel->exportMathModel(ExportXPPAUT, NULL, "XPPAUT (*.ode)", true))
                     {
                       std::cerr << "XPPAUT File: " << ExportXPPAUT << std::endl;
@@ -497,6 +512,7 @@ int main(int argc, char *argv[])
                 {
                   std::string Save;
                   COptions::getValue("Save", Save);
+
                   if (!pDataModel->saveModel(Save, NULL, true))
                     {
                       std::cerr << "Save File: " << Save << std::endl;
@@ -535,12 +551,12 @@ void writeLogo()
 
   std::cout << "COPASI "
 #ifdef COPASI_LICENSE_COM
-  << "(commercial) "
+            << "(commercial) "
 #endif // COPASI_LICENSE_COM
-  << CVersion::VERSION.getVersion() << std::endl
-  << "The use of this software indicates the acceptance of the attached license." << std::endl
-  << "To view the license please use the option: --license" << std::endl
-  << std::endl;
+            << CVersion::VERSION.getVersion() << std::endl
+            << "The use of this software indicates the acceptance of the attached license." << std::endl
+            << "To view the license please use the option: --license" << std::endl
+            << std::endl;
 }
 
 int validate()
@@ -610,34 +626,35 @@ int exportSBML()
 
   switch (SBMLSchema)
     {
-    case copasi::SBMLSchema_L1V1:
-      Level = 1;
-      Version = 1;
-      break;
+      case copasi::SBMLSchema_L1V1:
+        Level = 1;
+        Version = 1;
+        break;
 
-    case copasi::SBMLSchema_L1V2:
-      Level = 1;
-      Version = 2;
-      break;
+      case copasi::SBMLSchema_L1V2:
+        Level = 1;
+        Version = 2;
+        break;
 
-    case copasi::SBMLSchema_L2V1:
-      Level = 2;
-      Version = 1;
-      break;
+      case copasi::SBMLSchema_L2V1:
+        Level = 2;
+        Version = 1;
+        break;
 
-    case copasi::SBMLSchema_L2V2:
-      Level = 2;
-      Version = 2;
-      break;
+      case copasi::SBMLSchema_L2V2:
+        Level = 2;
+        Version = 2;
+        break;
 
-    case copasi::SBMLSchema_L2V3:
-    default:
-      Level = 2;
-      Version = 3;
-      break;
+      case copasi::SBMLSchema_L2V3:
+      default:
+        Level = 2;
+        Version = 3;
+        break;
     }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
+
   if (!(*CCopasiRootContainer::getDatamodelList())[0]->exportSBML(ExportSBML, true, Level, Version))
     {
       std::cerr << "SBML Export File: " << ExportSBML << std::endl;
