@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/25 12:09:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 
 #include <map>
 #include <set>
+
+#include "copasi/utilities/CVector.h"
 
 // We have not yet a stack machine for expression thus we use the old AST
 #define CMathExpression CExpression
@@ -329,6 +331,12 @@ private:
   bool executeAssignments(range & assignments);
 
   /**
+   * Check whether the executions of assignment lead to newly found roots
+   * @return bool rootsFound
+   */
+  bool rootsFound();
+
+  /**
    * Check whether a range is not empty
    * @param const range & range
    * bool notEmpty
@@ -386,6 +394,31 @@ private:
    * A pointer to the math model the process queue belongs to.
    */
   CMathModel * mpMathModel;
+
+  /**
+   *
+   */
+  CVector< C_INT > mRootsFound;
+
+  /**
+   *
+   */
+  CVector< C_FLOAT64 > mRootValues1;
+
+  /**
+   *
+   */
+  CVector< C_FLOAT64 > mRootValues2;
+
+  /**
+   *
+   */
+  CVector< C_FLOAT64 > * mpRootValuesBefore;
+
+  /**
+   *
+   */
+  CVector< C_FLOAT64 > * mpRootValuesAfter;
 
   /**
    * A pointer to a call back method for resolving simultaneous event assignments

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/24 16:27:05 $
+//   $Date: 2009/06/25 12:09:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,14 +56,14 @@ bool CProcessQueue::CKey::operator < (const CProcessQueue::CKey & rhs) const
   if (mExecutionTime != rhs.mExecutionTime)
     return mExecutionTime < rhs.mExecutionTime;
 
-  if (mOrder != rhs.mOrder)
-    return mOrder < rhs.mOrder;
-
   if (mCascadingLevel != rhs.mCascadingLevel)
     return mCascadingLevel > rhs.mCascadingLevel;
 
   if (mEquality != rhs.mEquality)
     return mEquality;
+
+  if (mOrder != rhs.mOrder)
+    return mOrder < rhs.mOrder;
 
   return mEventId < rhs.mEventId;
 }
@@ -140,6 +140,11 @@ CProcessQueue::CProcessQueue() :
     mCascadingLevel(0),
     mSimultaneousAssignments(false),
     mEventIdSet(),
+    mRootsFound(0),
+    mRootValues1(0),
+    mRootValues2(0),
+    mpRootValuesBefore(&mRootValues1),
+    mpRootValuesAfter(&mRootValues2),
     mpResolveSimultaneousAssignments(NULL)
 {}
 
@@ -153,6 +158,11 @@ CProcessQueue::CProcessQueue(const CProcessQueue & src):
     mCascadingLevel(src.mCascadingLevel),
     mSimultaneousAssignments(src.mSimultaneousAssignments),
     mEventIdSet(src.mEventIdSet),
+    mRootsFound(src.mRootsFound),
+    mRootValues1(src.mRootValues1),
+    mRootValues2(src.mRootValues2),
+    mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? &mRootValues1 : &mRootValues2),
+    mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? &mRootValues1 : &mRootValues2),
     mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments)
 {}
 
@@ -224,6 +234,14 @@ void CProcessQueue::initialize(CMathModel * pMathModel)
   mEventIdSet.clear();
   mSimultaneousAssignments = false;
 
+  unsigned C_INT32 NumRoots = mpMathModel->getNumRoots();
+  mRootsFound.resize(NumRoots);
+  mRootsFound = 0;
+  mRootValues1.resize(NumRoots);
+  mRootValues2.resize(NumRoots);
+  mpRootValuesBefore = &mRootValues1;
+  mpRootValuesAfter = &mRootValues2;
+
   return;
 }
 
@@ -231,6 +249,10 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
                             const bool & priorToOutput,
                             resolveSimultaneousAssignments pResolveSimultaneousAssignments)
 {
+  if (mCalculations.size() == 0 &&
+      mAssignments.size() == 0)
+    return true;
+
   mTime = time;
   mEquality = priorToOutput;
   mpResolveSimultaneousAssignments = pResolveSimultaneousAssignments;
@@ -249,6 +271,12 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   range Assignments = getAssignments();
 
+  if (success &&
+      notEmpty(Assignments))
+    {
+      mpMathModel->evaluateRoots(*mpRootValuesBefore);
+    }
+
   // The algorithm below will work properly for user ordered events
   // as the queue enforces the proper ordering.
   while (success &&
@@ -262,6 +290,13 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
       // Execute and remove all current assignments.
       success = executeAssignments(Assignments);
+
+      // We need to compare the roots before the execution and after
+      // to determine which roots need to be charged.
+      if (rootsFound())
+        {
+          mpMathModel->processRoots(mTime, mRootsFound);
+        }
 
       // Note, applying the events may have added new events to the queue.
       // The setting of the equality flag for these events may be either true
@@ -335,7 +370,23 @@ CProcessQueue::range CProcessQueue::getCalculations()
   if (Calculations.first != mCalculations.end() &&
       Calculations.first->first < UpperBound)
     {
-      Calculations.second = mCalculations.upper_bound(UpperBound);
+      Calculations.second = mCalculations.upper_bound(Calculations.first->first);
+
+      // Check whether we have a second set of assignments with a different ID.
+      if (Calculations.second != mCalculations.end() &&
+          Calculations.second->first < UpperBound)
+        {
+          mSimultaneousAssignments = true;
+
+          // The resolution of simultaneous events is algorithm dependent.
+          // The simulation routine should provide a call back function.
+          if (mpResolveSimultaneousAssignments == NULL)
+            {
+              // TODO CRITICAL Create an error message
+            }
+
+          return (*mpResolveSimultaneousAssignments)(mCalculations, mTime, mEquality, mCascadingLevel);
+        }
     }
   else
     {
@@ -394,6 +445,11 @@ bool CProcessQueue::executeCalculations(CProcessQueue::range & calculations)
   unsigned C_INT32 EventIdOld = it->first.getEventId();
   unsigned C_INT32 EventIdNew = createEventId();
 
+  CMathEvent * pEvent = it->second.mpEvent;
+
+  // Assure that all values are up to date.
+  pEvent->applyValueRefreshes();
+
   for (; it != calculations.second; ++it)
     {
       if (it->first.getEventId() != EventIdOld)
@@ -424,13 +480,7 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
 
   CMathEvent * pEvent = it->second.mpEvent;
 
-  // Assure that all values are up to date.
-  pEvent->applyValueRefreshes();
-
   EventIdNew = createEventId();
-
-  // CRITICAL We need to compare the roots before the execution and after
-  // to determine which roots need to be charged.
 
   for (; it != assignments.second; ++it)
     it->second.process(EventIdNew);
@@ -441,13 +491,48 @@ bool CProcessQueue::executeAssignments(CProcessQueue::range & assignments)
   // Update all dependent values.
   pEvent->applyDependentRefreshes();
 
-  // We need to check whether new events have been triggered an add
-  // them to the process queue.
-  mpMathModel->processEvents(mTime);
-
   mExecutionCounter++;
 
   return success;
+}
+
+bool CProcessQueue::rootsFound()
+{
+  bool rootsFound = false;
+
+  // Calculate the current root values
+  mpMathModel->evaluateRoots(*mpRootValuesAfter);
+
+  // Compare the root values before and after;
+  C_INT * pRootFound = mRootsFound.array();
+  C_INT * pRootEnd = pRootFound + mRootsFound.size();
+  C_FLOAT64 * pValueBefore = mpRootValuesBefore->array();
+  C_FLOAT64 * pValueAfter = mpRootValuesAfter->array();
+
+  for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter)
+    {
+      if (*pValueBefore < 0.0 && *pValueAfter >= 0.0)
+        {
+          *pRootFound = 1;
+          rootsFound = true;
+        }
+      else if (*pValueBefore > 0.0 && *pValueAfter <= 0.0)
+        {
+          *pRootFound = 1;
+          rootsFound = true;
+        }
+      else
+        {
+          *pRootFound = 0;
+        }
+    }
+
+  // Swap before and after.
+  CVector< C_FLOAT64 > * pTmp = mpRootValuesBefore;
+  mpRootValuesBefore = mpRootValuesAfter;
+  mpRootValuesAfter = pTmp;
+
+  return rootsFound;
 }
 
 // static

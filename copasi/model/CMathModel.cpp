@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/24 16:27:05 $
+//   $Date: 2009/06/25 12:09:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,8 @@ CMathModel::CMathModel(const CCopasiContainer * pParent) :
     mEvents("ListOfMathEvents", this),
     mRootValues(),
     mRootRefreshes(),
-    mRootIndex2Event()
+    mRootIndex2Event(),
+    mRootIndex2RootFinder()
 {}
 
 CMathModel::CMathModel(const CMathModel & src,
@@ -34,7 +35,8 @@ CMathModel::CMathModel(const CMathModel & src,
     mEvents("ListOfMathEvents", this),
     mRootValues(),
     mRootRefreshes(),
-    mRootIndex2Event()
+    mRootIndex2Event(),
+    mRootIndex2RootFinder()
 {
   // Compile the math model.
   compile(mpModel);
@@ -62,6 +64,9 @@ bool CMathModel::compile(CModel * pModel)
 
   // We clear the map to avoid accessing no longer existing events.
   mRootIndex2Event.resize(0);
+
+  // We clear the map to avoid accessing no longer existing root finders.
+  mRootIndex2RootFinder.resize(0);
 
   mpModel = pModel;
 
@@ -95,9 +100,13 @@ bool CMathModel::compile(CModel * pModel)
   mRootValues.resize(RootFinderCount);
   C_FLOAT64 ** ppRootValue = mRootValues.array();
 
-  // We need create a map of root finder indexes to events.
+  // We need create a map of root indexes to events.
   mRootIndex2Event.resize(RootFinderCount);
-  CMathEvent ** ppRootIndex = mRootIndex2Event.array();
+  CMathEvent ** ppEvent = mRootIndex2Event.array();
+
+  // We need create a map of root indexes to root finders.
+  mRootIndex2RootFinder.resize(RootFinderCount);
+  CMathTrigger::CRootFinder ** ppRootFinder = mRootIndex2RootFinder.array();
 
   std::set< const CCopasiObject * > RootValuesDependencies;
 
@@ -113,13 +122,16 @@ bool CMathModel::compile(CModel * pModel)
         (*itMathEvent)->getMathTrigger().getRootFinders().end();
 
       // for each root finder
-      for (; itRootFinder != endRootFinder; ++itRootFinder, ++ppRootValue, ++ppRootIndex)
+      for (; itRootFinder != endRootFinder; ++itRootFinder, ++ppRootValue, ++ppEvent, ++ppRootFinder)
         {
           // Update the vector of pointers to current root values
           *ppRootValue = (*itRootFinder)->getRootValuePtr();
 
           // Build the mapping from root values indexes to CMathEvents
-          *ppRootIndex = *itMathEvent;
+          *ppEvent = *itMathEvent;
+
+          // Build the mapping from root values indexes to root finders
+          *ppRootFinder = *itRootFinder;
 
           // The root finder needs to be up to date
           RootValuesDependencies.insert(*itRootFinder);
@@ -132,7 +144,7 @@ bool CMathModel::compile(CModel * pModel)
   return success;
 }
 
-void CMathModel::evaluateRoots(CVectorCore< double > & rootValues)
+void CMathModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues)
 {
   // Apply all needed refresh calls to calculate the current root values.
   std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
@@ -164,33 +176,39 @@ void CMathModel::processQueue(const C_FLOAT64 & time,
   return;
 }
 
-void CMathModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots)
+void CMathModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & foundRoots)
 {
-  assert(roots.size() == mRootIndex2Event.size());
+  assert(foundRoots.size() == mRootIndex2Event.size());
 
   // All events associated with the found roots need to be evaluated whether they fire.
   // In case one fires the corresponding event needs to be scheduled in the process queue.
 
-  const C_INT *pRoot = roots.array();
-  const C_INT *pRootEnd = pRoot + roots.size();
+  const C_INT *pFoundRoot = foundRoots.array();
+  const C_INT *pFoundRootEnd = pFoundRoot + foundRoots.size();
 
   CMathEvent ** ppEvent = mRootIndex2Event.array();
   CMathEvent * pProcessedEvent = NULL;
 
+  CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
+
   // We go through the list of roots and process the events
   // which need to be checked whether they fire.
-  for (; pRoot != pRootEnd; ++pRoot, ++ppEvent)
+  for (; pFoundRoot != pFoundRootEnd; ++pFoundRoot, ++ppEvent, ++ppRootFinder)
     {
       // Process the events for which we have found a root.
       // A found root is indicated by roots[i] = 1 or 0 otherwise.
-      // We need to process each event at most once.
-      if (*pRoot > 0 && *ppEvent != pProcessedEvent)
+      if (*pFoundRoot > 0)
         {
-          pProcessedEvent = *ppEvent;
-          pProcessedEvent->processRoot(time, mProcessQueue);
-        }
+          // We need to process each event at most once.
+          if (*ppEvent != pProcessedEvent)
+            {
+              pProcessedEvent = *ppEvent;
+              pProcessedEvent->processRoot(time, mProcessQueue);
+            }
 
-      // CRITICAL We need to charge only the roots which are marked..
+          // We must charge only the roots which are marked.
+          (*ppRootFinder)->charge();
+        }
     }
 
   return;

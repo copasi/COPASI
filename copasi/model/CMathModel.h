@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/25 12:09:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,6 +148,11 @@ private:
    * A map from the index of a root value to the associated event
    */
   CVector< CMathEvent * > mRootIndex2Event;
+
+  /**
+   * A map from the index of a root value to the associated root finder
+   */
+  CVector< CMathTrigger::CRootFinder * > mRootIndex2RootFinder;
 };
 
 #endif // COPASI_CMathModel

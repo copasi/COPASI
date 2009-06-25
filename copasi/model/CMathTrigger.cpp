@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/24 16:27:05 $
+//   $Date: 2009/06/25 12:09:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,18 +89,13 @@ void CMathTrigger::CRootFinder::charge()
 {
   // TODO ALGORITHM We need to experiment with this!
 
-  // TODO CRITICAL This implementation does not deactivate
-  // checks for inequality
-
   if ((mActive < 1.0) &&
-      ((*mpRootValue < 0.0) ||
-       ((*mpRootValue <= 0.0) && !mEquality)))
+      (*mpRootValue <= 0.0))
     {
       mActive = 1.0;
     }
   else if ((mActive > 0.0) &&
-           ((*mpRootValue > 0.0) ||
-            ((*mpRootValue >= 0.0) && mEquality)))
+           (*mpRootValue >= 0.0))
     {
       mActive = 0.0;
     }
@@ -151,22 +146,7 @@ CMathTrigger::~CMathTrigger()
 bool CMathTrigger::fire()
 {
   // We assume that all root finder are having their current values.
-
-  // First we calculate whether the expression fires.
-  bool fire = (mFireExpression.calcValue() > 0);
-
-  // Charge the root finders
-  CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
-  CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
-
-  // CRITICAL We must only charge roots which have changed status.
-
-  for (; itRoot != endRoot; ++itRoot)
-    {
-      (*itRoot)->charge();
-    }
-
-  return fire;
+  return (mFireExpression.calcValue() > 0);
 }
 
 void CMathTrigger::calculateInitialActivity()
