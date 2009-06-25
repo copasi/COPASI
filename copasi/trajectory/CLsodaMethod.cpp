@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:52:55 $
+//   $Date: 2009/06/25 12:10:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,7 @@ bool CLsodaMethod::elevateChildren()
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 {
-  if (mData.dim == 0 & mNumRoots == 0) //just do nothing if there are no variables
+  if (mData.dim == 0 && mNumRoots == 0) //just do nothing if there are no variables
     {
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
