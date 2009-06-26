@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/27 11:20:33 $
+//   $Date: 2009/06/26 13:09:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -894,6 +894,16 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
           mCOPASI2SBMLMap[&reaction] = pSBMLReaction;
           pSBMLReaction->setId(sbmlId);
         }
+
+      // maybe this id was assigned by assignSBMLIdstoReactions and there is no object associated with it
+      // If this is the case, we associate the object here.
+      std::map<const std::string, const SBase*>::const_iterator pos = this->mIdMap.find(sbmlId);
+      assert(pos != this->mIdMap.end());
+
+      if (pos->second == NULL)
+        {
+          this->mIdMap[sbmlId] = pSBMLReaction;
+        }
     }
   else
     {
@@ -1760,6 +1770,10 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                 {
                   if (sbmlLevel == 1 || (sbmlLevel == 2 && sbmlVersion == 1))
                     {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), typeString.c_str(), pObjectParent->getObjectName().c_str()));
+                    }
+                  else
+                    {
                       if (typeString == "Reaction")
                         {
                           if (pObject->getObjectName() != "Flux")
@@ -1767,10 +1781,6 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                               result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "reaction", pObjectParent->getObjectName().c_str()));
                             }
                         }
-                    }
-                  else
-                    {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), typeString.c_str(), pObjectParent->getObjectName().c_str()));
                     }
                 }
             }
@@ -2357,6 +2367,11 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     {
       checkForInitialAssignments(dataModel, this->mIncompatibilities);
     }
+
+  // since the flux of a reaction can be referenced in an assignment,
+  // we have to make sure that asll reactions do have SBML Ids prior to creating the rules
+  // and events
+  assignSBMLIdsToReactions(dataModel.getModel());
 
   createRules(dataModel);
   createEvents(dataModel);
@@ -7183,5 +7198,23 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
         {
           idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
         }
+    }
+}
+
+void CSBMLExporter::assignSBMLIdsToReactions(CModel* pModel)
+{
+  std::string sbmlId;
+  CCopasiVectorNS<CReaction>::const_iterator it = pModel->getReactions().begin(), endit = pModel->getReactions().end();
+
+  while (it != endit)
+    {
+      if ((*it)->getSBMLId().empty())
+        {
+          sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "reaction_");
+          (*it)->setSBMLId(sbmlId);
+          this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, NULL));
+        }
+
+      ++it;
     }
 }

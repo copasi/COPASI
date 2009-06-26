@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.238 $
+//   $Revision: 1.239 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/28 17:20:44 $
+//   $Author: gauges $
+//   $Date: 2009/06/26 13:09:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -429,53 +429,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, s.substr(0, s.size() - 2).c_str());
     }
 
-  // import the initial assignments
-  importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
-
-  /* Create the rules */
-  this->areRulesUnique(sbmlModel);
-  num = sbmlModel->getNumRules();
-
-  if (mpImportHandler)
-    {
-      mpImportHandler->finish(hStep);
-      mImportStep = 6;
-
-      if (!mpImportHandler->progress(mhImportStep)) return false;
-
-      step = 0;
-      totalSteps = num;
-      hStep = mpImportHandler->addItem("Importing global parameters...",
-                                       CCopasiParameter::UINT,
-                                       & step,
-                                       &totalSteps);
-    }
-
-  for (counter = 0; counter < num; ++counter)
-    {
-      Rule* sbmlRule = sbmlModel->getRule(counter);
-
-      if (sbmlRule == NULL)
-        {
-          fatalError();
-        }
-
-      this->importSBMLRule(sbmlRule, copasi2sbmlmap, sbmlModel);
-      ++step;
-
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
-    }
-
-  if (sbmlModel->getNumConstraints() > 0)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 49);
-    }
-
-  // TODO Create all contraints
-  // TODO Since we don't have constraints yet, there is no code here.
-  // TODO When implementing import of constraints, don't forget to replace calls to
-  // TODO explicitely time dependent functions in the constraints math exptression.
-
   /* Create all reactions */
   num = sbmlModel->getNumReactions();
 
@@ -540,6 +493,58 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       idList = idList.substr(0, idList.length() - 2);
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29, idList.c_str());
     }
+
+  // import the initial assignments
+  // we do this after the reactions since intial assignments can reference reaction ids.
+  importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
+
+  // import all rules
+  // we have to import them after the reactions since they can reference a reaction
+  // id which has to be known when importing the rule
+
+  /* Create the rules */
+  this->areRulesUnique(sbmlModel);
+  num = sbmlModel->getNumRules();
+
+  if (mpImportHandler)
+    {
+      mpImportHandler->finish(hStep);
+      mImportStep = 6;
+
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+
+      step = 0;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Importing global parameters...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+
+  for (counter = 0; counter < num; ++counter)
+    {
+      Rule* sbmlRule = sbmlModel->getRule(counter);
+
+      if (sbmlRule == NULL)
+        {
+          fatalError();
+        }
+
+      this->importSBMLRule(sbmlRule, copasi2sbmlmap, sbmlModel);
+      ++step;
+
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+    }
+
+  if (sbmlModel->getNumConstraints() > 0)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 49);
+    }
+
+  // TODO Create all constraints
+  // TODO Since we don't have constraints yet, there is no code here.
+  // TODO When implementing import of constraints, don't forget to replace calls to
+  // TODO explicitely time dependent functions in the constraints math exptression.
 
   // import all event
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
@@ -4953,7 +4958,15 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                       }
 
                     break;
-                    //case SBML_REACTION:
+                  case SBML_REACTION:
+
+                    if (((const Reaction*)it->second)->getKineticLaw() == NULL)
+                      {
+                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 80, sbmlId.c_str());
+                      }
+
+                    pNode->setName((pObject->getCN() + ",Reference=Flux").c_str());
+                    break;
                   case SBML_PARAMETER:
 
                     if (!initialExpression)

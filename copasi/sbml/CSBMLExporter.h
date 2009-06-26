@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/27 11:20:33 $
+//   $Date: 2009/06/26 13:09:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -604,6 +604,16 @@ protected:
    * has to be set to the object name of the parameter.
    */
   void restore_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel);
+
+  /**
+   * Since we want to replace local reaction parameters by global parameters if they are used in an assignment,
+   * we have to create the reactions after creating the rules and events. On the other hand, a reaction flux
+   * might also be referenced in an assignment or an event and the creation of this rule or event only works
+   * if the reactions already have SBML ids.
+   * To solve this problem, the reactions have to be assigned SBML ids prior to creating rules and events.
+   * This is what this method does.
+   */
+  void assignSBMLIdsToReactions(CModel* pModel);
 };
 
 #endif // CSBLExporter_H__
