@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/22 19:55:03 $
+//   $Date: 2009/06/26 20:24:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,10 +67,10 @@ public:
     CEvaluationNode * getTrueExpression() const;
 
     /**
-     * Retrieve the expression evaluating the fire value
-     * CEvalutionNode * fireExpression
+     * Retrieve the expression evaluating the activity value
+     * CEvalutionNode * activeExpression
      */
-    CEvaluationNode * getFireExpression() const;
+    CEvaluationNode * getActiveExpression() const;
 
     /**
      * Retrieve the expression evaluating the equality value
@@ -174,44 +174,60 @@ public:
 
 private:
   bool compile(const CEvaluationNode * pSource,
+               CEvaluationNode * & pTrueExpression,
+               CEvaluationNode * & pActiveExpression,
                CEvaluationNode * & pFireExpression,
                CEvaluationNode * & pEqualityExpression);
   bool compileAND(const CEvaluationNode * pSource,
+                  CEvaluationNode * & pTrueExpression,
+                  CEvaluationNode * & pActiveExpression,
                   CEvaluationNode * & pFireExpression,
                   CEvaluationNode * & pEqualityExpression);
   bool compileOR(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileXOR(const CEvaluationNode * pSource,
+                  CEvaluationNode * & pTrueExpression,
+                  CEvaluationNode * & pActiveExpression,
                   CEvaluationNode * & pFireExpression,
                   CEvaluationNode * & pEqualityExpression);
   bool compileEQ(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileNE(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileLT(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileLE(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileGT(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileGE(const CEvaluationNode * pSource,
+                 CEvaluationNode * & pTrueExpression,
+                 CEvaluationNode * & pActiveExpression,
                  CEvaluationNode * & pFireExpression,
                  CEvaluationNode * & pEqualityExpression);
   bool compileNOT(const CEvaluationNode * pSource,
+                  CEvaluationNode * & pTrueExpression,
+                  CEvaluationNode * & pActiveExpression,
                   CEvaluationNode * & pFireExpression,
                   CEvaluationNode * & pEqualityExpression);
-
-  void pushNodes(CEvaluationNode * pActiveNode,
-                 CEvaluationNode * pTrueNode);
-  void popNodes();
-  void addNodes(CEvaluationNode * pActiveNode,
-                CEvaluationNode * pTrueNode);
 
   static
   CEvaluationNode * getEqualityExpression(CEvaluationNode * pFireExpressionLeft,
@@ -219,7 +235,9 @@ private:
                                           CEvaluationNode * pFireExpressionRight,
                                           CEvaluationNode * pEqualityExpressionRight);
 
-  CEvaluationNode * getFireExpression() const;
+  static
+  CEvaluationNode * getFireExpression(CEvaluationNode * pTrueExpression,
+                                      CEvaluationNode * pActiveExpression);
 
   // Attributes
 private:
@@ -250,29 +268,6 @@ private:
    * A vector containing the root expression.
    */
   CCopasiVector< CRootFinder > mRootFinders;
-
-  /**
-   * The stack of nodes used to build the expression to
-   * determine whether a trigger is active
-   */
-  std::stack< CEvaluationNode * > mActiveNodes;
-
-  /**
-   * The stack of nodes used to build the expression to
-   * determine whether a trigger is true.
-   */
-  std::stack< CEvaluationNode * > mTrueNodes;
-
-  /**
-   * The stack of nodes used to build the fire expression
-   */
-  std::stack< CEvaluationNode * > mFireNodes;
-
-  /**
-   * The stack of nodes used to build the expression to
-   * determine whether the check is for equality
-   */
-  std::stack< CEvaluationNode * > mEqualityNodes;
 };
 
 #endif // COPASI_CMathTrigger
