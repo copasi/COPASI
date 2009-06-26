@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/17 19:15:28 $
+//   $Date: 2009/06/26 00:03:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,9 +138,6 @@ void CQEventWidget1::init()
   slotApplyDelay(false);
 
   // SIGNAL-SLOT connections
-  connect(mpExpressionTrigger->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionTriggerValid(bool)));
-  connect(mpExpressionDelay->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionDelayValid(bool)));
-  connect(mpExpressionEA->mpExpressionWidget, SIGNAL(valid(bool)), this, SLOT(slotExpressionEAValid(bool)));
   connect(mpCheckDelay, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
   connect(mpLBTarget, SIGNAL(currentRowChanged(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
 
@@ -156,44 +153,9 @@ void CQEventWidget1::init()
 
   // ----- correlated to GUI layout of the event assignment ----
 
-  // enable unnecessary buttons
-  mpBtnAddTarget->setEnabled(true);
-  mpBtnDeleteTarget->setEnabled(true);
-  mpBtnRevert->setEnabled(true);
-
   // hide the label and widget with respect to expression
   mpLabelEA->hide();
   mpExpressionEA->hide();
-}
-
-/*! Slot to enable the Commit button if the mathematical expression of Delay is valid */
-void CQEventWidget1::slotExpressionDelayValid(bool valid)
-{
-  // std::cout << "CQEW1::slotExpressionDelayValid - valid = " << std::endl;
-
-  mExpressionDelayValid = valid;
-}
-
-/*! Slot to enable the Commit button if the mathematical expression of Trigger is valid */
-void CQEventWidget1::slotExpressionTriggerValid(bool /* valid */)
-{
-  // std::cout << "CQEW1::slotExpressionTriggerValid - valid = " << valid << std::endl;
-
-  if (mpExpressionTrigger->mpExpressionWidget->getExpression() == "")
-    mpExpressionTrigger->mpBtnViewExpression->setEnabled(false);
-
-  mExpressionTriggerValid = mpExpressionTrigger->mpBtnViewExpression->isEnabled();
-}
-
-/*! Slot to enable the Commit button if the mathematical expression of EventAssignment is valid */
-void CQEventWidget1::slotExpressionEAValid(bool /* valid */)
-{
-  // std::cout << "CQEW1::slotExpressionEAValid - valid = " << valid << std::endl;
-
-  if (mpExpressionEA->mpExpressionWidget->getExpression() == "")
-    mpExpressionEA->mpBtnViewExpression->setEnabled(false);
-
-  mExpressionEAValid = mpExpressionEA->mpBtnViewExpression->isEnabled();
 }
 
 /*! Slot to add a new target without object target nor its expression
@@ -401,6 +363,12 @@ void CQEventWidget1::saveToEvent()
     }
 
   // Save the event assignments
+  // First we make sure that the current assignment is saved
+  if (mCurrentTarget != C_INVALID_INDEX)
+    {
+      mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
+    }
+
   std::vector< CEventAssignment >::const_iterator it = mAssignments.begin();
   std::vector< CEventAssignment >::const_iterator end = mAssignments.end();
 
@@ -493,19 +461,7 @@ bool CQEventWidget1::enter(const std::string & key)
 /*! The slot to be done before leaving the active event widget */
 bool CQEventWidget1::leave()
 {
-  mpExpressionTrigger->updateWidget();
-
-  if (!mpCheckDelay->isChecked())
-    mpExpressionDelay->updateWidget();
-
   saveToEvent();
-
-  mpBtnAddTarget->setEnabled(true);
-
-  if (mpLBTarget->count())
-    mpBtnDeleteTarget->setEnabled(true);
-  else
-    mpBtnDeleteTarget->setEnabled(false);
 
   return true;
 }
@@ -538,7 +494,13 @@ void CQEventWidget1::slotSelectObject()
 /// Slot to actualize the assignment expression widget of event assignment according to the target
 void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 {
-  unsigned C_INT32 NewTarget = std::max<unsigned C_INT32>((unsigned C_INT32) index, mAssignments.size() - 1);
+  unsigned C_INT32 NewTarget = (unsigned C_INT32) index;
+
+  if ((unsigned C_INT32) index != C_INVALID_INDEX &&
+      (unsigned C_INT32) index >= mAssignments.size())
+    {
+      NewTarget = mAssignments.size() - 1;
+    }
 
   // Save the current assignment
   if (NewTarget != mCurrentTarget &&
