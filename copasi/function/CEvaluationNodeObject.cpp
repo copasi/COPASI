@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/04 19:33:18 $
+//   $Author: gauges $
+//   $Date: 2009/06/26 13:08:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,16 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
         }
       else
         {
-          fatalError();
+          const CReaction* pReaction = dynamic_cast<const CReaction*>(object);
+
+          if (pReaction)
+            {
+              node->setName(pReaction->getSBMLId().c_str());
+            }
+          else
+            {
+              fatalError();
+            }
         }
     }
 
