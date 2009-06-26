@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/06/26 13:09:51 $
+//   $Author: shoops $
+//   $Date: 2009/06/26 18:10:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -897,7 +897,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
 
       // maybe this id was assigned by assignSBMLIdstoReactions and there is no object associated with it
       // If this is the case, we associate the object here.
-      std::map<const std::string, const SBase*>::const_iterator pos = this->mIdMap.find(sbmlId);
+      std::map<std::string, const SBase*>::const_iterator pos = this->mIdMap.find(sbmlId);
       assert(pos != this->mIdMap.end());
 
       if (pos->second == NULL)
