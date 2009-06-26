@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/06/26 13:08:45 $
+//   $Author: shoops $
+//   $Date: 2009/06/26 20:23:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,9 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
   mPrecedence = PRECEDENCE_NUMBER;
 
   std::ostringstream Pointer;
-  Pointer << pValue;
+  Pointer.flags(std::ios::right | std::ios::hex | std::ios::showbase);
+  Pointer << "0x" << pValue;
+
   mData = Pointer.str();
 }
 
@@ -104,7 +106,16 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       break;
 
       case POINTER:
-        break;
+        // We need to convert the data into a pointer
+      {
+        std::istringstream Pointer;
+        void * pPointer;
+        Pointer.str(mData.substr(2));
+        Pointer.flags(std::ios::right | std::ios::hex | std::ios::showbase);
+        Pointer >> pPointer;
+        mpValue = (const C_FLOAT64 *) pPointer;
+      }
+      break;
 
       case INVALID:
         break;
@@ -114,7 +125,18 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 }
 
 CEvaluationNode::Data CEvaluationNodeObject::getData() const
-{return "<" + mRegisteredObjectCN + ">";}
+{
+  switch ((int) subType(mType))
+    {
+      case CN:
+        return "<" + mRegisteredObjectCN + ">";
+        break;
+
+      case POINTER:
+        return mData;
+        break;
+    }
+}
 
 bool CEvaluationNodeObject::setData(const Data & data)
 {
