@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.133 $
+//   $Revision: 1.134 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/02 20:53:33 $
+//   $Author: gauges $
+//   $Date: 2009/06/26 13:07:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -236,6 +236,7 @@ const MESSAGES Messages[] =
   {MCSBML + 77, "SBML (77): Event \"%s\" is defined to calculate the event assignments after the delay. This can not be expressed in SBML Level %d Version %d. Exporting to this version of SBML will change the semantics of the model."},
   {MCSBML + 78, "SBML (78): All %s units that are used in the file are identical, but they differ from the global default %s unit. Global default %s unit is therefore being used."},
   {MCSBML + 79, "SBML (79): COPASI was not able to handle the %s unit for %s with id \"%s\". The unit has been ignored."},
+  {MCSBML + 80, "SBML (80): Reaction \"%s\" referenced in an expression, although the reaction has no kinetic law."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
