@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.84 $
+//   $Revision: 1.85 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/08 19:52:02 $
+//   $Date: 2009/06/26 00:02:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,9 +178,12 @@ std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool ric
     {
       ret = mpObjectParent->getObjectDisplayName(regular, richtext);
 
-      if (ret == "(CN)Root") ret = "";
-
-      if (ret.substr(0, 7) == "(Model)") ret = "";
+      if (ret == "(CN)Root" ||
+          ret == "ModelList[]" ||
+          ret.substr(0, 7) == "(Model)")
+        {
+          ret = "";
+        }
     }
 
   if (ret.length() >= 2)
