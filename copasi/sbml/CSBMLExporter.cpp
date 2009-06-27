@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/26 18:10:02 $
+//   $Author: gauges $
+//   $Date: 2009/06/27 09:53:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1770,7 +1770,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                 {
                   if (sbmlLevel == 1 || (sbmlLevel == 2 && sbmlVersion == 1))
                     {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), typeString.c_str(), pObjectParent->getObjectName().c_str()));
+                      result.push_back(SBMLIncompatibility(10, pObject->getObjectName().c_str(), typeString.c_str(), pObjectParent->getObjectName().c_str()));
                     }
                   else
                     {
