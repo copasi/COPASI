@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/27 09:52:11 $
+//   $Date: 2009/06/27 15:33:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,16 +13,23 @@
 
 #include "test000087.h"
 
+#include <sstream>
+
 #include "utilities.hpp"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinition.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeObject.h"
 #include "copasi/function/CExpression.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/trajectory/CTrajectoryMethod.h"
 
 #include <sbml/SBMLDocument.h>
 #include <sbml/Model.h>
@@ -311,6 +318,11 @@ void test000087::test_simulate_reaction_flux_reference_1()
   CPPUNIT_ASSERT(parameterMappings[0].size() == 1);
   CPPUNIT_ASSERT(parameterMappings[0][0] == pConstParameter->getKey());
   CPPUNIT_ASSERT(parameterMappings[1].size() == 1);
+  std::string substrateKey = parameterMappings[1][0];
+  const CCopasiObject* pTempObject = CCopasiRootContainer::getKeyFactory()->get(substrateKey);
+  CPPUNIT_ASSERT(pTempObject != NULL);
+  const CMetab* pSubstrate = dynamic_cast<const CMetab*>(pTempObject);
+  CPPUNIT_ASSERT(pSubstrate != NULL);
   // check that the assignment consists of only one object node that is a reference to the reaction flux
   const CExpression* pExpression = pNonConstParameter->getExpressionPtr();
   CPPUNIT_ASSERT(pExpression != NULL);
@@ -329,6 +341,141 @@ void test000087::test_simulate_reaction_flux_reference_1()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pReaction);
   // Simulate the model (5 steps, stepsize 1 and check that at each step, the value of the variable parameter
   // is the same as the flux through the reaction.
+  std::ostringstream result;
+  // create a report with the correct filename and all the species against
+  // time.
+  CReportDefinitionVector* pReports = pCOPASIDATAMODEL->getReportDefinitionList();
+  CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for simulation");
+  pReport->setTaskType(CCopasiTask::timeCourse);
+  pReport->setIsTable(false);
+  pReport->setSeparator(CCopasiReportSeparator(", "));
+
+  std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
+  std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();
+  pHeader->push_back(CCopasiStaticString("time").getCN());
+  pHeader->push_back(pReport->getSeparator().getCN());
+  pHeader->push_back(CCopasiStaticString("substrate").getCN());
+  pHeader->push_back(pReport->getSeparator().getCN());
+  pHeader->push_back(CCopasiStaticString("reaction flux").getCN());
+  pHeader->push_back(pReport->getSeparator().getCN());
+  pHeader->push_back(CCopasiStaticString("variable model value").getCN());
+  pBody->push_back(CCopasiObjectName(pCOPASIDATAMODEL->getModel()->getCN() + ",Reference=Time"));
+  pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
+  pBody->push_back(CCopasiObjectName(pSubstrate->getCN() + ",Reference=Concentration"));
+  pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
+  pBody->push_back(CCopasiObjectName(pReaction->getCN() + ",Reference=Flux"));
+  pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
+  pBody->push_back(CCopasiObjectName(pNonConstParameter->getCN() + ",Reference=Value"));
+  //
+  // create a trajectory task
+  CTrajectoryTask* pTrajectoryTask = new CTrajectoryTask();
+  // use LSODAR from now on since we will have events pretty soon
+  pTrajectoryTask->setMethodType(CCopasiMethod::LSODAR);
+  pTrajectoryTask->getProblem()->setModel(pCOPASIDATAMODEL->getModel());
+
+  pTrajectoryTask->setScheduled(true);
+
+  pTrajectoryTask->getReport().setReportDefinition(pReport);
+
+  CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTrajectoryTask->getProblem());
+
+  pProblem->setStepNumber((const unsigned C_INT32)30);
+  pCOPASIDATAMODEL->getModel()->setInitialTime((const C_FLOAT64)0.0);
+  pProblem->setDuration((const C_FLOAT64)30);
+  pProblem->setTimeSeriesRequested(true);
+
+  CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
+
+  pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
+
+  CCopasiVectorN< CCopasiTask > & TaskList = * pCOPASIDATAMODEL->getTaskList();
+
+  TaskList.remove("Time-Course");
+  TaskList.add(pTrajectoryTask, true);
+
+  try
+    {
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pCOPASIDATAMODEL, &result);
+      pTrajectoryTask->process(true);
+      pTrajectoryTask->restore();
+    }
+  catch (...)
+    {
+      // there should be no exception
+      CPPUNIT_ASSERT(false);
+    }
+
+  // analyse the result
+  CPPUNIT_ASSERT(!result.str().empty());
+  std::string result_string = result.str();
+  std::string delimiter = "\n";
+  std::string delimiter2 = ",";
+  std::size_t lastPos = result_string.find_first_not_of(delimiter);
+  std::size_t pos;
+  std::string line, number_string;
+  unsigned int index = 0;
+  unsigned int index2;
+  std::size_t lastPos2;
+  std::size_t pos2;
+  double last, current;
+
+  while (lastPos != std::string::npos)
+    {
+      pos = result_string.find_first_of(delimiter, lastPos);
+      line = result_string.substr(lastPos, pos - lastPos);
+      lastPos = result_string.find_first_not_of(delimiter, pos);
+      lastPos2 = line.find_first_not_of(delimiter2);
+
+      // skip the header line
+      if (index != 0)
+        {
+          index2 = 0;
+
+          while (lastPos2 != std::string::npos)
+            {
+              pos2 = line.find_first_of(delimiter2, lastPos2);
+              number_string = line.substr(lastPos2, pos2 - lastPos2);
+              lastPos2 = line.find_first_not_of(delimiter2, pos2);
+
+              // skip the time column
+              if (index2 != 0)
+                {
+                  //check that all values in the row (besides the time)
+                  // are always the same
+                  if (index2 == 1)
+                    {
+                      last = strtod(number_string.c_str(), NULL);
+
+                      if (index == 1)
+                        {
+                          // just make sure that we don't compare all zeros
+                          // The initial value of the substrate hould be higher than 1
+                          CPPUNIT_ASSERT(fabs(pSubstrate->getInitialValue()) > 1);
+                          // the first rwo should correspond the the initial value of the substrate
+                          // We check this to make sure that the whole timeseries does not consist of zeros
+                          CPPUNIT_ASSERT(fabs((last - pSubstrate->getInitialConcentration()) / pSubstrate->getInitialConcentration()) < 1e-20);
+                        }
+                    }
+                  else
+                    {
+                      current = strtod(number_string.c_str(), NULL);
+                      CPPUNIT_ASSERT(fabs((current - last) / last) < 1e-20);
+                      last = current;
+                    }
+                }
+
+              ++index2;
+            }
+        }
+
+      ++index;
+    }
+
+  // make sure there actually were datapoints
+  CPPUNIT_ASSERT(index > 1);
+  // the simulation is set to run until all substrate is depleted, so in the end
+  // last should be below the absolute tolerance for the simulation
+  CPPUNIT_ASSERT(last < *pMethod->getParameter("Absolute Tolerance")->getValue().pDOUBLE);
 }
 
 const char* test000087::MODEL_STRING1 =
@@ -525,7 +672,7 @@ const char* test000087::MODEL_STRING5 =
   "      <compartment id=\"compartment_1\" size=\"1\"/>\n"
   "    </listOfCompartments>\n"
   "    <listOfSpecies>\n"
-  "      <species compartment=\"compartment_1\" id=\"species_1\" initialConcentration=\"1\" />\n"
+  "      <species compartment=\"compartment_1\" id=\"species_1\" initialConcentration=\"5\" />\n"
   "      <species compartment=\"compartment_1\" id=\"species_2\" initialConcentration=\"0\" />\n"
   "    </listOfSpecies>\n"
   "    <listOfParameters>\n"
