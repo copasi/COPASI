@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.239 $
+//   $Revision: 1.240 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/26 13:09:51 $
+//   $Date: 2009/06/27 09:56:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4825,7 +4825,7 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
   // only check if Level2 Version1
   if (this->mLevel == 2 && this->mVersion == 1)
     {
-      // check if no nodes with ids of objects are used in an assignmet that are
+      // check if no nodes with ids of objects are used in an assignment that are
       // set in another assignment rule later on
       std::set<std::string> idSet;
       const ASTNode* pNode = pRule->getMath();
@@ -4862,7 +4862,57 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
 
           ++i;
         }
+
+      // Check if there is a reference to a reaction in the expression
+      // This is not allowed for L2V1
+      std::set<std::string> reactionIds;
+
+      for (i = 0; i < sbmlModel->getListOfReactions()->size(); i++)
+        {
+          reactionIds.insert(sbmlModel->getReaction(i)->getId());
+        }
+
+      const ASTNode* pMath = pRule->getMath();
+
+      if (pMath != NULL)
+        {
+          std::string id = SBMLImporter::findIdInASTTree(pMath, reactionIds);
+
+          if (!id.empty())
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 81, id.c_str());
+            }
+        }
     }
+}
+
+/**
+ * This method takes an AST node and a set of ids and returns the first id
+ * from the set it finds in the AST tree.
+ * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
+ */
+std::string SBMLImporter::findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds)
+{
+  std::string id = "";
+
+  if (pMath->getType() == AST_NAME)
+    {
+      if (reactionIds.find(pMath->getName()) != reactionIds.end())
+        {
+          id = pMath->getName();
+        }
+    }
+  else
+    {
+      unsigned int i, iMax = pMath->getNumChildren();
+
+      for (i = 0; i < iMax && id.empty(); ++i)
+        {
+          id = findIdInASTTree(pMath->getChild(i), reactionIds);
+        }
+    }
+
+  return id;
 }
 
 void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& idSet)

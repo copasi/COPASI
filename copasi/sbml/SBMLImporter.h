@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/05/27 11:20:33 $
+//   $Date: 2009/06/27 09:56:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -600,6 +600,13 @@ public:
    * imported if it is present.
    */
   void setImportCOPASIMIRIAM(bool import);
+
+  /**
+   * This method takes an AST node and a set of ids and returns the first id
+   * from the set it finds in the AST tree.
+   * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
+   */
+  std::string findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds);
 };
 
 #endif
