@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/18 20:03:50 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,9 +107,11 @@ public:
    * root. This methods checks whether the event fires and schedules
    * the event if needed.
    * @param const C_FLOAT64 & time
+   * @param const bool & equality
    * @param CProcessQueue & processQueue
    */
   void processRoot(const C_FLOAT64 & time,
+                   const bool & equality,
                    CProcessQueue & processQueue);
 
   /**

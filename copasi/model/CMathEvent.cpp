@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/18 20:03:50 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,10 +150,11 @@ bool CMathEvent::compile(const CEvent * pEvent,
 }
 
 void CMathEvent::processRoot(const C_FLOAT64 & time,
+                             const bool & equality,
                              CProcessQueue & processQueue)
 {
   // We first need ask the trigger whether to fire.
-  bool Fire = mTrigger.fire();
+  bool Fire = mTrigger.fire(equality);
 
   // If the event fires we need to schedule the event in the process queue
   if (Fire)

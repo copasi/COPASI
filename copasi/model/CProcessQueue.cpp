@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/25 12:09:40 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,7 +295,9 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
       // to determine which roots need to be charged.
       if (rootsFound())
         {
-          mpMathModel->processRoots(mTime, mRootsFound);
+          // Since we are dealing with discrete changes we must only
+          // process roots for equality.
+          mpMathModel->processRoots(mTime, true, mRootsFound);
         }
 
       // Note, applying the events may have added new events to the queue.

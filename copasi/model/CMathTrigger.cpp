@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/26 20:24:27 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,13 +59,41 @@ bool CMathTrigger::CRootFinder::compile(std::vector< CCopasiContainer * > listOf
   return true;
 }
 
-CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const
+CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression(const C_FLOAT64 * pEquality) const
 {
-  CEvaluationNode * pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-  pNode->addChild(new CEvaluationNodeObject(mpRootValue));
-  pNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
+  CEvaluationNode * pTrueExpression = NULL;
 
-  return pNode;
+  if (mEquality)
+    {
+      pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
+      pTrueExpression->addChild(new CEvaluationNodeObject(mpRootValue));
+      pTrueExpression->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
+    }
+  else
+    {
+      pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+
+      CEvaluationNode * pGT = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT, "GT");
+      pGT->addChild(new CEvaluationNodeObject(mpRootValue));
+      pGT->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
+      pTrueExpression->addChild(pGT);
+
+      CEvaluationNode * pAND = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "AND");
+
+      CEvaluationNode * pInequality = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "LT");
+      pInequality->addChild(new CEvaluationNodeObject(pEquality));
+      pInequality->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0"));
+      pAND->addChild(pInequality);
+
+      CEvaluationNode * pGE = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
+      pGE->addChild(new CEvaluationNodeObject(mpRootValue));
+      pGE->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
+      pAND->addChild(pGE);
+
+      pTrueExpression->addChild(pAND);
+    }
+
+  return pTrueExpression;
 }
 
 CEvaluationNode * CMathTrigger::CRootFinder::getActiveExpression() const
@@ -83,16 +111,18 @@ CEvaluationNode * CMathTrigger::CRootFinder::getEqualityExpression() const
     return new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
 }
 
-void CMathTrigger::CRootFinder::charge()
+void CMathTrigger::CRootFinder::charge(const bool & equality)
 {
   // TODO ALGORITHM We need to experiment with this!
 
   if ((mActive < 1.0) &&
+      (equality != mEquality) &&
       (*mpRootValue <= 0.0))
     {
       mActive = 1.0;
     }
   else if ((mActive > 0.0) &&
+           (equality == mEquality) &&
            (*mpRootValue >= 0.0))
     {
       mActive = 0.0;
@@ -125,6 +155,7 @@ CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
     mTrueExpression("TrueExpression", this),
     mFireExpression("TriggerExpression", this),
     mEqualityExpression("EqualityExpression", this),
+    mEquality(1.0),
     mRootFinders("ListOfRoots", this)
 {}
 
@@ -135,16 +166,24 @@ CMathTrigger::CMathTrigger(const CMathTrigger & src,
     mTrueExpression(src.mTrueExpression, this),
     mFireExpression(src.mFireExpression, this),
     mEqualityExpression(src.mEqualityExpression, this),
+    mEquality(src.mEquality),
     mRootFinders(src.mRootFinders, this)
 {}
 
 CMathTrigger::~CMathTrigger()
 {}
 
-bool CMathTrigger::fire()
+bool CMathTrigger::fire(const bool & equality)
 {
+  // Set the equality value so that the fire condition can be evaluated
+  // correctly.
+  mEquality = equality ? 1.0 : 0.0;
+
   // We assume that all root finder are having their current values.
-  return (mFireExpression.calcValue() > 0);
+  bool Fire = mFireExpression.calcValue() > 0;
+  bool Equality = mEqualityExpression.calcValue() > 0;
+
+  return (Fire && (Equality == equality));
 }
 
 void CMathTrigger::calculateInitialActivity()
@@ -600,7 +639,7 @@ bool CMathTrigger::compileLE(const CEvaluationNode * pSource,
   pRootFinder->mEquality = true;
   mRootFinders.add(pRootFinder, true);
 
-  pTrueExpression = pRootFinder->getTrueExpression();
+  pTrueExpression = pRootFinder->getTrueExpression(&mEquality);
   pActiveExpression = pRootFinder->getActiveExpression();
   pEqualityExpression = pRootFinder->getEqualityExpression();
 
@@ -632,7 +671,7 @@ bool CMathTrigger::compileLT(const CEvaluationNode * pSource,
   pRootFinder->mEquality = false;
   mRootFinders.add(pRootFinder, true);
 
-  pTrueExpression = pRootFinder->getTrueExpression();
+  pTrueExpression = pRootFinder->getTrueExpression(&mEquality);
   pActiveExpression = pRootFinder->getActiveExpression();
   pEqualityExpression = pRootFinder->getEqualityExpression();
 
@@ -664,7 +703,7 @@ bool CMathTrigger::compileGE(const CEvaluationNode * pSource,
   pRootFinder->mEquality = true;
   mRootFinders.add(pRootFinder, true);
 
-  pTrueExpression = pRootFinder->getTrueExpression();
+  pTrueExpression = pRootFinder->getTrueExpression(&mEquality);
   pActiveExpression = pRootFinder->getActiveExpression();
   pEqualityExpression = pRootFinder->getEqualityExpression();
 
@@ -696,7 +735,7 @@ bool CMathTrigger::compileGT(const CEvaluationNode * pSource,
   pRootFinder->mEquality = false;
   mRootFinders.add(pRootFinder, true);
 
-  pTrueExpression = pRootFinder->getTrueExpression();
+  pTrueExpression = pRootFinder->getTrueExpression(&mEquality);
   pActiveExpression = pRootFinder->getActiveExpression();
   pEqualityExpression = pRootFinder->getEqualityExpression();
 

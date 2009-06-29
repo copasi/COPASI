@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/26 20:24:27 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,27 +62,29 @@ public:
 
     /**
      * Retrieve the expression evaluating the truth value
-     * CEvalutionNode * trueExpression
+     * @param const C_FLOAT64 * pEquality
+     * @return CEvalutionNode * trueExpression
      */
-    CEvaluationNode * getTrueExpression() const;
+    CEvaluationNode * getTrueExpression(const C_FLOAT64 * pEquality) const;
 
     /**
      * Retrieve the expression evaluating the activity value
-     * CEvalutionNode * activeExpression
+     * @return CEvalutionNode * activeExpression
      */
     CEvaluationNode * getActiveExpression() const;
 
     /**
      * Retrieve the expression evaluating the equality value
-     * CEvalutionNode * equalityExpression
+     * @return CEvalutionNode * equalityExpression
      */
     CEvaluationNode * getEqualityExpression() const;
 
     /**
-     * Activate the root finder if the charge expression is true;
-     * Charge expression: mRoot.mValue <= 0 && !mActive
+     * Activate the root finder dependent on the currently
+     * processed equality status
+     * @param const bool & equality
      */
-    void charge();
+    void charge(const bool & equality);
 
     /**
      * Determine the activity for the initial conditions.
@@ -140,10 +142,12 @@ public:
   virtual ~CMathTrigger();
 
   /**
-   * Check whether the fire condition is met.
+   * Check whether the fire condition is met dependent on the
+   * currently processed equality status
+   * @param const bool & equality
    * @return bool fire
    */
-  bool fire();
+  bool fire(const bool & equality);
 
   /**
    * Determine the activity for the initial conditions.
@@ -263,6 +267,12 @@ private:
    * This expression evaluates whether the check us for equality.
    */
   CMathExpression mEqualityExpression;
+
+  /**
+   * This values indicates whether the current root processing is for
+   * equality or not.
+   */
+  C_FLOAT64 mEquality;
 
   /**
    * A vector containing the root expression.

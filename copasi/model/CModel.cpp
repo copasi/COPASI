@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.367 $
+//   $Revision: 1.368 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/06/04 16:09:41 $
+//   $Author: shoops $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4166,9 +4166,11 @@ void CModel::processQueue(const C_FLOAT64 & time,
   return mpMathModel->processQueue(time, equality, pResolveSimultaneousAssignments);
 }
 
-void CModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots)
+void CModel::processRoots(const C_FLOAT64 & time,
+                          const bool & equality,
+                          const CVector< C_INT > & roots)
 {
-  return mpMathModel->processRoots(time, roots);
+  return mpMathModel->processRoots(time, equality, roots);
 }
 
 const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/25 12:09:40 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,16 +72,20 @@ public:
    * Check whether the roots which have value 1 lead to firing of
    * events and schedule them if needed.
    * @param const C_FLOAT64 & time
+   * @param const bool & equality
    * @param const CVector< C_INT > & roots
    */
-  void processRoots(const C_FLOAT64 & time, const CVector< C_INT > & roots);
+  void processRoots(const C_FLOAT64 & time,
+                    const bool & equality,
+                    const CVector< C_INT > & roots);
 
   /**
    * Check whether any event fires and schedule them if needed.
    * This method is used for discontinuous changes.
    * @param const C_FLOAT64 & time
+   * @param const bool & equality
    */
-  void processEvents(const C_FLOAT64 & time);
+  void processEvents(const C_FLOAT64 & time, const bool & equality);
 
   /**
    * Retrieve the next execution time scheduled in the process queue

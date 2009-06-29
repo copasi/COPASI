@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/25 12:09:40 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,7 +176,9 @@ void CMathModel::processQueue(const C_FLOAT64 & time,
   return;
 }
 
-void CMathModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & foundRoots)
+void CMathModel::processRoots(const C_FLOAT64 & time,
+                              const bool & equality,
+                              const CVector< C_INT > & foundRoots)
 {
   assert(foundRoots.size() == mRootIndex2Event.size());
 
@@ -203,18 +205,18 @@ void CMathModel::processRoots(const C_FLOAT64 & time, const CVector< C_INT > & f
           if (*ppEvent != pProcessedEvent)
             {
               pProcessedEvent = *ppEvent;
-              pProcessedEvent->processRoot(time, mProcessQueue);
+              pProcessedEvent->processRoot(time, equality, mProcessQueue);
             }
 
           // We must charge only the roots which are marked.
-          (*ppRootFinder)->charge();
+          (*ppRootFinder)->charge(equality);
         }
     }
 
   return;
 }
 
-void CMathModel::processEvents(const C_FLOAT64 & time)
+void CMathModel::processEvents(const C_FLOAT64 & time, const bool & equality)
 {
   // Now calculate the current root activities
   CCopasiVector< CMathEvent >::const_iterator itMathEvent = mEvents.begin();
@@ -223,7 +225,7 @@ void CMathModel::processEvents(const C_FLOAT64 & time)
   // for each event
   for (; itMathEvent != endMathEvent; ++itMathEvent)
     {
-      (*itMathEvent)->processRoot(time, mProcessQueue);
+      (*itMathEvent)->processRoot(time, equality, mProcessQueue);
     }
 }
 

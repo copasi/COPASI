@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/02 20:55:42 $
+//   $Date: 2009/06/29 11:37:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -384,9 +384,12 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
           case CTrajectoryMethod::ROOT:
             mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-            mpTrajectoryProblem->getModel()->processRoots(*mpCurrentTime,
+            mpTrajectoryProblem->getModel()->processRoots(*mpCurrentTime, true,
                 mpTrajectoryMethod->getRoots());
-
+            // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
+            mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, true, NULL);
+            mpTrajectoryProblem->getModel()->processRoots(*mpCurrentTime, false,
+                mpTrajectoryMethod->getRoots());
             break;
 
           case CTrajectoryMethod::FAILURE:
