@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/06/29 21:12:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,7 +78,7 @@ CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression(const C_FLOAT64 *
       pGT->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
       pTrueExpression->addChild(pGT);
 
-      CEvaluationNode * pAND = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "AND");
+      CEvaluationNode * pAND = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
 
       CEvaluationNode * pInequality = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "LT");
       pInequality->addChild(new CEvaluationNodeObject(pEquality));
@@ -116,7 +116,7 @@ void CMathTrigger::CRootFinder::charge(const bool & equality)
   // TODO ALGORITHM We need to experiment with this!
 
   if ((mActive < 1.0) &&
-      (equality != mEquality) &&
+      (equality == mEquality) &&
       (*mpRootValue <= 0.0))
     {
       mActive = 1.0;
