@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.260 $
+//   $Revision: 1.261 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/06/22 15:47:29 $
+//   $Author: nsimus $
+//   $Date: 2009/06/29 10:49:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,9 @@ extern const char * CopasiLicense;
 #include "MIRIAM/CConstants.h"
 #include "copasi/utilities/CVersion.h"
 #include "model/CModelExpansion.h"
+#ifdef WITH_MERGEMODEL
+#include "model/CModelMerging.h"
+#endif
 
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
@@ -70,6 +73,10 @@ extern const char * CopasiLicense;
 #include "./icons/istos.xpm"
 #include "./icons/stois.xpm"
 #include "./icons/photo.xpm"
+
+#ifdef WITH_MERGEMODEL
+#include "./icons/fileadd.xpm"
+#endif
 
 #define AutoSaveInterval 10*60*1000
 
@@ -360,6 +367,11 @@ void CopasiUI3Window::createActions()
   connect(mpaExpandModel, SIGNAL(activated()), this, SLOT(slotExpandModel()));
 
   //     QAction* mpaObjectBrowser;
+
+#ifdef WITH_MERGEMODEL
+  mpaAddModel = new QAction(QPixmap(fileadd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel"); // TODO : replace fileopen, find simbol for add
+  connect(mpaAddModel, SIGNAL(activated()), this, SLOT(slotAddFileOpen()));
+#endif
 }
 
 void CopasiUI3Window::createToolBar()
@@ -375,6 +387,11 @@ void CopasiUI3Window::createToolBar()
   tb->addAction(mpaApplyInitialState);
   tb->addAction(mpaUpdateInitialState);
   tb->addAction(mpaUpdateMIRIAM);
+
+#ifdef WITH_MERGEMODEL
+  tb->addAction(mpaAddModel);
+#endif
+
   tb->addSeparator();
 
   mpBoxSelectFramework = new QComboBox(tb);
@@ -407,6 +424,10 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addAction(mpaImportSBML);
   pFileMenu->addAction(mpaExportSBML);
   pFileMenu->addAction(mpaExportODE);
+
+#ifdef WITH_MERGEMODEL
+  pFileMenu->addAction(mpaAddModel);
+#endif
 
   pFileMenu->addSeparator();
 
@@ -722,6 +743,121 @@ void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
   CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
   slotImportSBML(file);
 }
+
+#ifdef WITH_MERGEMODEL
+void CopasiUI3Window::slotAddFileOpen(QString file)
+{
+  DataModelGUI* mdataModel; // to keep track of temporary  data model..
+
+  bool success = true;
+
+  ListViews::commit();
+
+  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
+    {
+      newDoc();
+      mSaveAsRequired = true;
+    }
+
+  ListViews::notify(ListViews::MODEL, ListViews::ADD,
+                    (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+  QString newFile = "";
+
+  if (file == "")
+    newFile =
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
+                                        //"COPASI Files (*.gps *.cps);;All Files (*.*)",
+                                        "COPASI Files (*.gps *.cps)",
+                                        "Choose a file");
+  else
+    newFile = file;
+
+  // gives the file information to the datamodel to handle it
+
+  if (!newFile.isNull())
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+      ListViews::switchAllListViewsToWidget(0, "");
+
+      mdataModel = new DataModelGUI; // create a new data model
+
+      QCursor oldCursor = this->cursor();
+      this->setCursor(Qt::WaitCursor);
+
+      CCopasiMessage::clearDeque();
+
+      try
+        {
+          success = mdataModel->addModel(TO_UTF8(newFile));
+        }
+      catch (...)
+        {
+          success = false;
+        }
+
+      setCursor(oldCursor);
+
+      if (success)  slotMergeModels();
+
+      //ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+      //               (*CCopasiRootContainer::getDatamodelList())[1]->getModel()->getKey());
+
+      (*CCopasiRootContainer::getDatamodelList())[1]->getModel()->cleanup();
+
+#if 0
+
+      if (!success)
+        {
+          QString Message = "Error while loading file " + newFile + QString("!\n\n");
+          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+          CQMessageBox::critical(this, QString("File Error"), Message,
+                                 QMessageBox::Ok, QMessageBox::Ok);
+
+          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+          assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, NULL));
+        }
+
+      CCopasiMessage msg = CCopasiMessage::getLastMessage();
+
+      if (msg.getNumber() != MCCopasiMessage + 1)
+        {
+          QString Message = "Problem while loading file " + newFile + QString("!\n\n");
+          Message += FROM_UTF8(msg.getText());
+
+          msg = CCopasiMessage::getLastMessage();
+
+          while (msg.getNumber() != MCCopasiMessage + 1)
+            {
+              Message += "\n";
+              Message += FROM_UTF8(msg.getText());
+              msg = CCopasiMessage::getLastMessage();
+            }
+
+          CQMessageBox::warning(this, QString("File Warning"), Message,
+                                QMessageBox::Ok, QMessageBox::Ok);
+        }
+
+      mSaveAsRequired = true;
+
+      mpaSave->setEnabled(true);
+      mpaSaveAs->setEnabled(true);
+      mpaExportSBML->setEnabled(true);
+      mpaExportODE->setEnabled(true);
+
+      updateTitle();
+      ListViews::switchAllListViewsToWidget(1, "");
+
+      refreshRecentFileMenu();
+
+#endif
+    }
+}
+
+#endif
 
 bool CopasiUI3Window::slotFileSave()
 {
@@ -1676,6 +1812,19 @@ void CopasiUI3Window::slotExpandModel()
 
   ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
+
+#ifdef WITH_MERGEMODEL
+
+void CopasiUI3Window::slotMergeModels()
+{
+  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel *mModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
+  CModelMerging mm(pModel, mModel);
+  mm.simpleCall();
+
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
+}
+#endif
 
 #ifdef COPASI_LICENSE_COM
 
