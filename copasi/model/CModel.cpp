@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.368 $
+//   $Revision: 1.369 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/06/29 13:06:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1553,7 +1553,8 @@ bool CModel::buildConstantSequence()
 
   try
     {
-      mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, UpToDate);
+      // mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, UpToDate);
+      mConstantRefreshes.clear();
     }
   catch (...)
     {
