@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.83 $
+//   $Revision: 1.84 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/08 12:45:05 $
+//   $Author: nsimus $
+//   $Date: 2009/06/29 10:50:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,6 +119,11 @@ protected slots:
   void slotUpdateMIRIAM();
   void slotExpandModel();
 
+#ifdef WITH_MERGEMODEL
+  void slotAddFileOpen(QString file = QString::null);
+  void slotMergeModels();
+#endif
+
   // SBW: handle the custom events
   void customEvent(QCustomEvent *);
   // SBW: start an analyzer when selected from the SBW menu
@@ -166,7 +171,9 @@ private:
   QAction* mpaCapture;
   QAction* mpaUpdateMIRIAM;
   QAction* mpaExpandModel;
-
+#ifdef WITH_MERGEMODEL
+  QAction* mpaAddModel;
+#endif
   SliderDialog* mpSliders;
   ObjectBrowserDialog * mpObjectBrowser;
 

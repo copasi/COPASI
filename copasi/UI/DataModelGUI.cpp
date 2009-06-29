@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:47:15 $
+//   $Author: nsimus $
+//   $Date: 2009/06/29 10:50:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,6 +322,36 @@ const IndexedNode * DataModelGUI::getNode(const int & id) const
 //  {return const_cast<IndexedTree *>(&mTree)->findNodeFromId(id);}
 
 //*****************************************************************
+#ifdef WITH_MERGEMODEL
+
+bool DataModelGUI::addModel(const std::string & fileName)
+{
+  CProgressBar* pProgressBar = new CProgressBar();
+
+  bool success = true;
+
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      success = CCopasiRootContainer::addDatamodel()->loadModel(fileName, pProgressBar);
+    }
+
+  catch (...)
+    {
+      success = false;
+    }
+
+  if (success)
+    {
+      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(fileName);
+    }
+
+  pdelete(pProgressBar);
+
+  return success;
+}
+
+#endif
 
 bool DataModelGUI::createModel()
 {
