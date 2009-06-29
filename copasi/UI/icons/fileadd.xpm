@@ -1,0 +1,22 @@
+/* XPM */
+static const char *fileadd[] = {
+"    16    13        5            1",
+". c #040404",
+"# c #808304",
+"a c None",
+"b c #f3f704",
+"c c #f3f7f3",
+"aaaaaaaaaaaaaaaa",
+"aaaaaaaaaaaaa.aa",
+"aaaaaaaaaaaa...a",
+"a...aaaaaaaaa.aa",
+".bcb.......aaaaa",
+".cbcbcbcbc.aaaaa",
+".bcbcbcbcb.aaaaa",
+".cbcb...........",
+".bcb.#########.a",
+".cb.#########.aa",
+".b.#########.aaa",
+"..#########.aaaa",
+"...........aaaaa"
+};
