@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/21 12:06:22 $
+//   $Author: ssahle $
+//   $Date: 2009/06/30 14:26:28 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -89,7 +89,7 @@ void CCopasiRootContainer::initializeChildren()
 {
   mpFunctionList = new CFunctionDB("FunctionDB", this);
   mpConfiguration = new CConfigurationFile;
-  mpDataModelList = new CCopasiVectorN<CCopasiDataModel>("ModelList", this);
+  mpDataModelList = new CCopasiVector<CCopasiDataModel>("ModelList", this);
 
   mpFunctionList->load();
   mpConfiguration->load();
