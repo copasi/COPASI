@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/03/02 21:02:14 $
+//   $Author: ssahle $
+//   $Date: 2009/06/30 14:25:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,29 +30,29 @@
 #include "report/CCopasiRootContainer.h"
 
 class MyListViewItemWithPtr : public Q3ListViewItem
-  {
-  public:
+{
+public:
 
-    MyListViewItemWithPtr(Q3ListViewItem * parent, const CCopasiObject * ptr,
-                          QString label1, QString label2 = QString::null,
-                          QString label3 = QString::null, QString label4 = QString::null,
-                          QString label5 = QString::null, QString label6 = QString::null,
-                          QString label7 = QString::null, QString label8 = QString::null)
-        : Q3ListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
-        mpObject(ptr)
-    {}
+  MyListViewItemWithPtr(Q3ListViewItem * parent, const CCopasiObject * ptr,
+                        QString label1, QString label2 = QString::null,
+                        QString label3 = QString::null, QString label4 = QString::null,
+                        QString label5 = QString::null, QString label6 = QString::null,
+                        QString label7 = QString::null, QString label8 = QString::null)
+      : Q3ListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
+      mpObject(ptr)
+  {}
 
-    MyListViewItemWithPtr(Q3ListView * parent, const CCopasiObject * ptr,
-                          QString label1, QString label2 = QString::null,
-                          QString label3 = QString::null, QString label4 = QString::null,
-                          QString label5 = QString::null, QString label6 = QString::null,
-                          QString label7 = QString::null, QString label8 = QString::null)
-        : Q3ListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
-        mpObject(ptr)
-    {}
+  MyListViewItemWithPtr(Q3ListView * parent, const CCopasiObject * ptr,
+                        QString label1, QString label2 = QString::null,
+                        QString label3 = QString::null, QString label4 = QString::null,
+                        QString label5 = QString::null, QString label6 = QString::null,
+                        QString label7 = QString::null, QString label8 = QString::null)
+      : Q3ListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
+      mpObject(ptr)
+  {}
 
-    const CCopasiObject * mpObject;
-  };
+  const CCopasiObject * mpObject;
+};
 
 void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
 {
@@ -61,9 +61,7 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
 
   std::string cn = obj->getCN();
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  const CCopasiObject* testObj = pDataModel->getObject(cn);
+  const CCopasiObject* testObj = CCopasiRootContainer::getRoot()->getObject(cn);
 
   QString flags;
   if (obj->isContainer()) flags += "C"; else flags += " ";
@@ -79,9 +77,11 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
   else if (obj->isValueString()) flags += "Str";
   else if (obj->isStaticString()) flags += "SSt";
   else flags += "   ";
+
   if (!(testObj == obj)) flags += "EEE";
 
   QString value;
+
   if (obj->isValueDbl() && obj->getValuePointer())
     value = QString::number(*(C_FLOAT64*)obj->getValuePointer());
   else if (obj->isValueInt() && obj->getValuePointer())
@@ -118,10 +118,12 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
 
           addObjectRecursive((QWidget*)element, (void*)it->second);
         }
+
       return;
     }
 
 #ifdef XXXX
+
   if (obj->isVector())
     {
       CCopasiVector <CCopasiObject> * vect;
@@ -131,9 +133,11 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, const void * ptr)
       int cnt = vect->size();
 
       int i;
+
       for (i = 0; i != cnt; ++i)
-      {addObjectRecursive((QWidget*)element, (void*)(*vect)[i]);}
+        {addObjectRecursive((QWidget*)element, (void*)(*vect)[i]);}
     }
+
 #endif // XXXX
 }
 
@@ -148,6 +152,7 @@ void ObjectDebug::update()
   element->setOpen(true);
 
   obj = CCopasiRootContainer::getRoot();
+
   if (!obj) return;
 
   addObjectRecursive((QWidget*)element, (const void *) obj);
