@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2009/06/30 14:28:41 $
+//   $Date: 2009/06/30 15:44:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ public:
 
   CCopasiDataModel(const std::string & name,
                    const CCopasiContainer * pParent = NULL,
-                   const std::string & type = "DataModel",
+                   const std::string & type = "CN",
                    bool withGUI = false);
 
   ~CCopasiDataModel();
