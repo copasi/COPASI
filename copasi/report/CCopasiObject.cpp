@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.85 $
+//   $Revision: 1.86 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/26 00:02:57 $
+//   $Author: ssahle $
+//   $Date: 2009/06/30 14:27:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,11 +98,9 @@ CCopasiObjectName CCopasiObject::getCN() const
 {
   CCopasiObjectName CN;
 
-  // if the object has a parent and if the object is not a datamodel,
+  // if the object has a parent
   // we add the name of the parent to the common name
-  if (isDataModel())
-    CN = (std::string) "CN=Root";
-  else if (mpObjectParent)
+  if (mpObjectParent)
     {
       std::stringstream tmp;
       tmp << mpObjectParent->getCN();
