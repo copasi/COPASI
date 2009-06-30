@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/04 20:04:27 $
+//   $Author: ssahle $
+//   $Date: 2009/06/30 14:28:41 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,137 +48,136 @@ template <class CType> class CCopasiVectorN;
 class CCopasiDataModel;
 
 class CDataModelRenameHandler : public CRenameHandler
-  {
-  public:
-    CDataModelRenameHandler(CCopasiDataModel* dm);
+{
+public:
+  CDataModelRenameHandler(CCopasiDataModel* dm);
 
-    virtual ~CDataModelRenameHandler(){};
+  virtual ~CDataModelRenameHandler() {};
 
-    virtual bool handle(const std::string & oldCN, const std::string & newCN) const;
+  virtual bool handle(const std::string & oldCN, const std::string & newCN) const;
 
-  private:
-    CCopasiDataModel * mpDataModel;
-  };
+private:
+  CCopasiDataModel * mpDataModel;
+};
 
 //******************************************************************************
 
 class CCopasiDataModel: public CCopasiContainer, public COutputHandler
-  {
-    // Operations
-  public:
-    CCopasiDataModel(const bool withGUI = false);
+{
+  // Operations
+public:
+  CCopasiDataModel(const bool withGUI = false);
 
-    CCopasiDataModel(const std::string & name,
-                     const CCopasiContainer * pParent = NULL,
-                     const std::string & type = "CN",
-                     bool withGUI = false);
+  CCopasiDataModel(const std::string & name,
+                   const CCopasiContainer * pParent = NULL,
+                   const std::string & type = "DataModel",
+                   bool withGUI = false);
 
+  ~CCopasiDataModel();
 
-    ~CCopasiDataModel();
+  bool loadModel(const std::string & fileName, CProcessReport* pProcessReport);
+  bool saveModel(const std::string & fileName, CProcessReport* pProcessReport,
+                 bool overwriteFile = false,
+                 const bool & autoSave = false);
+  bool autoSave();
 
-    bool loadModel(const std::string & fileName, CProcessReport* pProcessReport);
-    bool saveModel(const std::string & fileName, CProcessReport* pProcessReport,
-                   bool overwriteFile = false,
-                   const bool & autoSave = false);
-    bool autoSave();
+  bool newModel(CModel * pModel, CProcessReport* pProcessReport, CListOfLayouts * pLol = NULL);
 
-    bool newModel(CModel * pModel, CProcessReport* pProcessReport, CListOfLayouts * pLol = NULL);
+  bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
+  bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
+  std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
+  bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+  bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
+                       const std::string & filter, bool overwriteFile = false);
 
-    bool importSBMLFromString(const std::string & sbmlDocumentText, CProcessReport* pImportHandler = NULL);
-    bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
-    std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
-    bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
-    bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
-                         const std::string & filter, bool overwriteFile = false);
+  CModel * getModel();
+  const CModel * getModel() const;
+  CCopasiVectorN< CCopasiTask > * getTaskList();
+  CCopasiTask * addTask(const CCopasiTask::Type & taskType);
+  bool addDefaultTasks();
+  std::set<std::string> listTaskDependentOnReport(const std::string & key);
 
-    CModel * getModel();
-    const CModel * getModel() const;
-    CCopasiVectorN< CCopasiTask > * getTaskList();
-    CCopasiTask * addTask(const CCopasiTask::Type & taskType);
-    bool addDefaultTasks();
-    std::set<std::string> listTaskDependentOnReport(const std::string & key);
+  CReportDefinitionVector * getReportDefinitionList();
+  CReportDefinition * addReport(const CCopasiTask::Type & taskType);
+  bool addDefaultReports();
 
-    CReportDefinitionVector * getReportDefinitionList();
-    CReportDefinition * addReport(const CCopasiTask::Type & taskType);
-    bool addDefaultReports();
+  COutputDefinitionVector * getPlotDefinitionList();
 
-    COutputDefinitionVector * getPlotDefinitionList();
+  CListOfLayouts * getListOfLayouts();
+  bool removeLayout(const std::string& key);
 
-    CListOfLayouts * getListOfLayouts();
-    bool removeLayout(const std::string& key);
+  SCopasiXMLGUI * getGUI();
+  const std::string & getFileName() const;
 
-    SCopasiXMLGUI * getGUI();
-    const std::string & getFileName() const;
+  bool isChanged() const;
+  void changed(const bool & changed = true);
 
-    bool isChanged() const;
-    void changed(const bool & changed = true);
+  SBMLDocument* getCurrentSBMLDocument();
+  bool setSBMLFileName(const std::string & fileName);
+  const std::string & getSBMLFileName() const;
 
-    SBMLDocument* getCurrentSBMLDocument();
-    bool setSBMLFileName(const std::string & fileName);
-    const std::string & getSBMLFileName() const;
+  std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
-    std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
+  /**
+   * @param const std::vector< CCopasiContainer * > &listOfContainer
+   * @param const CCopasiObjectName& objName
+   * @return CCopasiObject * pObject
+   */
+  CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                 const CCopasiObjectName & objName);
 
-    /**
-     * @param const std::vector< CCopasiContainer * > &listOfContainer
-     * @param const CCopasiObjectName& objName
-     * @return CCopasiObject * pObject
-     */
-    CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                   const CCopasiObjectName & objName);
+  /**
+   * @param const std::vector< CCopasiContainer * > &listOfContainer
+   * @param const CCopasiObjectName& objName
+   * @return CCopasiObject * pObject
+   */
+  const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
+                                       const CCopasiObjectName & objName) const;
 
-    /**
-     * @param const std::vector< CCopasiContainer * > &listOfContainer
-     * @param const CCopasiObjectName& objName
-     * @return CCopasiObject * pObject
-     */
-    const CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                         const CCopasiObjectName & objName) const;
+  // Attributes
+protected:
+  CModel * mpModel;
+  CCopasiVectorN< CCopasiTask > * mpTaskList;
+  CReportDefinitionVector * mpReportDefinitionList;
 
-    // Attributes
-  protected:
-    CModel * mpModel;
-    CCopasiVectorN< CCopasiTask > * mpTaskList;
-    CReportDefinitionVector * mpReportDefinitionList;
+  COutputDefinitionVector * mpPlotDefinitionList;
 
-    COutputDefinitionVector * mpPlotDefinitionList;
+  CListOfLayouts * mpListOfLayouts;
 
-    CListOfLayouts * mpListOfLayouts;
+  bool mWithGUI;
+  SCopasiXMLGUI * mpGUI;
 
-    bool mWithGUI;
-    SCopasiXMLGUI * mpGUI;
+  std::string mSaveFileName;
+  bool mChanged;
+  bool mAutoSaveNeeded;
+  CDataModelRenameHandler mRenameHandler;
 
-    std::string mSaveFileName;
-    bool mChanged;
-    bool mAutoSaveNeeded;
-    CDataModelRenameHandler mRenameHandler;
+  /**
+   * This will hold the SBMLDocument that was imported
+   * to create the current Model.
+   */
+  SBMLDocument* mpCurrentSBMLDocument;
 
-    /**
-     * This will hold the SBMLDocument that was imported
-     * to create the current Model.
-     */
-    SBMLDocument* mpCurrentSBMLDocument;
+  /**
+   * The name of the referenced SBML file
+   */
+  std::string mSBMLFileName;
 
-    /**
-     * The name of the referenced SBML file
-     */
-    std::string mSBMLFileName;
+  /**
+   * This will map each Copasi object to the
+   * corresponding SBML object if the current model
+   * was created by an SBML import.
+   */
+  std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
 
-    /**
-     * This will map each Copasi object to the
-     * corresponding SBML object if the current model
-     * was created by an SBML import.
-     */
-    std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
+public:
+  /**
+   *  This is a hack at the moment to be able to read Gepasi model files
+   */
+  CCopasiVectorS < CMetabOld > * pOldMetabolites;
 
-  public:
-    /**
-     *  This is a hack at the moment to be able to read Gepasi model files
-     */
-    CCopasiVectorS < CMetabOld > * pOldMetabolites;
-
-  protected:
-    void removeSBMLIdFromFunctions();
-  };
+protected:
+  void removeSBMLIdFromFunctions();
+};
 
 #endif // COPASI_CCopasiDataModel
