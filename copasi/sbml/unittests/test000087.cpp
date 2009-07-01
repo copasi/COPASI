@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/27 15:33:59 $
+//   $Date: 2009/07/01 08:28:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 #include "test000087.h"
 
 #include <sstream>
+#include <limits>
 
 #include "utilities.hpp"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -417,7 +418,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   unsigned int index2;
   std::size_t lastPos2;
   std::size_t pos2;
-  double last, current;
+  double last = std::numeric_limits<double>::max(), current = std::numeric_limits<double>::max();
 
   while (lastPos != std::string::npos)
     {
