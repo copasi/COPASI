@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000076.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Author: gauges $
+//   $Date: 2009/07/01 15:50:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@
 // Bug 1035
 // Test export of models with references to local variables
 
+class CCopasiDataModel;
+
 class test000076 : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE(test000076);
@@ -31,6 +33,7 @@ class test000076 : public CppUnit::TestFixture
   CPPUNIT_TEST_SUITE_END();
 
 protected:
+  static CCopasiDataModel* pCOPASIDATAMODEL;
   static const char* MODEL_STRING1;
   static const char* MODEL_STRING2;
   static const char* MODEL_STRING3;

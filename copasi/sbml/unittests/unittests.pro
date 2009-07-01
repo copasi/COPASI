@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.28 $ 
+#   $Revision: 1.29 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2009/06/27 09:52:11 $ 
+#   $Date: 2009/07/01 15:50:02 $ 
 # End CVS Header 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,6 +43,8 @@ contains(BUILD_OS, Linux) {
 
 contains(BUILD_OS, SunOS) {
   QMAKE_LFLAGS += -z rescan
+  LIBS += -lsocket
+  LIBS += -lnsl
 
 !isEmpty(CPPUNIT_PATH) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
@@ -240,6 +242,8 @@ SOURCES += utilities.cpp \
            test000073.cpp \ 
            test000074.cpp \ 
            test000075.cpp \ 
+           test000076.cpp \ 
+           test000077.cpp \ 
            test000078.cpp \ 
            test000079.cpp \ 
            test000080.cpp \ 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000077.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Author: gauges $
+//   $Date: 2009/07/01 15:50:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,12 +15,15 @@
 
 #include "utilities.hpp"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
 #include "sbml/Species.h"
+
+CCopasiDataModel* test000077::pCOPASIDATAMODEL = NULL;
 
 /**
  * Test the export of models with references to local parameters in
@@ -29,23 +32,19 @@
 void test000077::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000077::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  CCopasiRootContainer::destroy();
 }
 
 void test000077::test_import_dimensionless_1()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -65,7 +64,7 @@ void test000077::test_import_dimensionless_1()
 
 void test000077::test_import_dimensionless_2()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -85,7 +84,7 @@ void test000077::test_import_dimensionless_2()
 
 void test000077::test_import_dimensionless_3()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -118,7 +117,7 @@ void test000077::test_import_dimensionless_3()
 
 void test000077::test_import_dimensionless_4()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -151,7 +150,7 @@ void test000077::test_import_dimensionless_4()
 
 void test000077::test_import_dimensionless_5()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -184,7 +183,7 @@ void test000077::test_import_dimensionless_5()
 
 void test000077::test_export_dimensionless()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000077::MODEL_STRING6);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);

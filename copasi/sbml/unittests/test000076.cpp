@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000076.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:19:06 $
+//   $Author: gauges $
+//   $Date: 2009/07/01 15:50:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <vector>
 #include "utilities.hpp"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
 #include <sbml/SBMLDocument.h>
 #include <sbml/Model.h>
 #include <sbml/Compartment.h>
@@ -32,6 +33,8 @@
 // TODO add tests for models with references to local parameters in event
 // TODO triggers and event assignments
 
+CCopasiDataModel* test000076::pCOPASIDATAMODEL = NULL;
+
 /**
  * Test the export of models with references to local parameters in
  * expressions.
@@ -39,23 +42,19 @@
 void test000076::setUp()
 {
   // Create the root container.
-  CCopasiContainer::init();
-
+  CCopasiRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
 }
 
 void test000076::tearDown()
 {
-  delete CCopasiDataModel::Global;
-  CCopasiDataModel::Global = NULL;
-  delete CCopasiContainer::Root;
-  CCopasiContainer::Root = NULL;
+  CCopasiRootContainer::destroy();
 }
 
 void test000076::test_bug1035_1()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000076::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -175,7 +174,7 @@ void test000076::test_bug1035_1()
 // assignment is exported correctly.
 void test000076::test_bug1035_2()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000076::MODEL_STRING2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -296,7 +295,7 @@ void test000076::test_bug1035_2()
 // the local parameter should stay local during export.
 void test000076::test_bug1035_3()
 {
-  CCopasiDataModel* pDataModel = CCopasiDataModel::Global;
+  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000076::MODEL_STRING3);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
