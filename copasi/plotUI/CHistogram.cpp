@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:03:24 $
+//   $Date: 2009/07/01 18:53:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,10 +23,11 @@
 
 CHistogram::CHistogram():
     mIncrement(0.1),
-    mUptodate(false),
+    mUptodate(true),
     mXArray(NULL),
     mYArray(NULL),
     mArraySize(0),
+    mMap(),
     mCount(0)
 {
   mInvIncrement = 1 / mIncrement;
@@ -34,10 +35,11 @@ CHistogram::CHistogram():
 
 CHistogram::CHistogram(C_FLOAT64 incr):
     mIncrement(incr),
-    mUptodate(false),
+    mUptodate(true),
     mXArray(NULL),
     mYArray(NULL),
     mArraySize(0),
+    mMap(),
     mCount(0)
 {
   mInvIncrement = 1 / mIncrement;
@@ -47,6 +49,7 @@ CHistogram::~CHistogram()
 {
   if (mXArray)
     delete[] mXArray;
+
   if (mYArray)
     delete[] mYArray;
 }
@@ -71,6 +74,7 @@ const double* CHistogram::getXArray()
 {
   if (!mUptodate)
     updateArray();
+
   return mXArray;
 }
 
@@ -78,6 +82,7 @@ const double* CHistogram::getYArray()
 {
   if (!mUptodate)
     updateArray();
+
   return mYArray;
 }
 
@@ -85,6 +90,7 @@ int CHistogram::size()
 {
   if (!mUptodate)
     updateArray();
+
   return mArraySize;
 }
 
@@ -97,6 +103,7 @@ void CHistogram::updateArray()
   //delete Arrays
   if (mXArray)
     delete[] mXArray;
+
   if (mYArray)
     delete[] mYArray;
 
@@ -108,17 +115,27 @@ void CHistogram::updateArray()
   C_FLOAT64 tmpFactor = 1 / (mCount * mIncrement);
 
   //add one bin to the left
-  mXArray[0] = (mMap.begin()->first - 1) * mIncrement;
+  if (mMap.size() > 0)
+    {
+      mXArray[0] = (mMap.begin()->first - 1) * mIncrement;
+    }
+  else
+    {
+      mXArray[0];
+    }
+
   mYArray[0] = 0.0;
 
   C_INT32 i;
   std::map<C_INT32, C_INT32>::const_iterator it, itEnd = mMap.end();
+
   for (it = mMap.begin(), i = 1; it != itEnd; ++it, ++i)
     {//TODO use pointer increments instead of [...]
       mXArray[i] = it->first * mIncrement;
       mYArray[i] = (double)it->second * tmpFactor;
       //std::cout <<it->first <<" " <<it->second << " : " << mXArray[i] << " " << mYArray[i] << std::endl;
     }
+
   //std::cout << std::endl;
 
   mUptodate = true;
