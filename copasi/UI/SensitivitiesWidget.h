@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/04/12 20:06:17 $
+//   $Date: 2009/07/01 09:52:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,16 +30,6 @@
 #include "UI/SensWidgetComboBox.h"
 
 #include <qcombobox.h>
-/*
-//Added by qt3to4:
-//#include <Q3VBoxLayout>
-#include <QLabel>
-
-#include <QVBoxLayout>
-#include <QToolButton>
-
-//class QToolButton;
- */
 
 class SensitivitiesWidget : public TaskWidget, public Ui::SensitivitiesWidget
 {
@@ -56,40 +46,6 @@ protected:
   virtual bool loadTask();
   virtual bool saveTask();
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
-
-  //     enum ChoiceType {
-  //       SubTask,
-  //       Function,
-  //       Variable,
-  //       SecondVariable
-  //     };
-
-protected:
-  /*
-  //    Q3VBoxLayout* SensitivitiesWidgetLayout;
-      QVBoxLayout* SensitivitiesWidgetLayout;
-      //QGridLayout* mpSensitivitiesLayout;
-      QLabel* TextLabel1;
-      QLabel* TextLabel2;
-      QLabel* TextLabel3;
-      QLabel* TextLabel4;
-
-      QComboBox* SubTaskChooser;
-
-      SensWidgetComboBox* FunctionChooser;
-      QLineEdit* FunctionLineEdit;
-      QToolButton *SingleFunctionChooser;
-      //    QListView* FunctionChoiceBox;
-
-      SensWidgetComboBox* VariableChooser;
-      QLineEdit* VariableLineEdit;
-      QToolButton *SingleVariableChooser;
-      //    QListView* VariableChoiceBox;
-
-      SensWidgetComboBox* Variable2Chooser;
-      QLineEdit* Variable2LineEdit;
-      QToolButton *SingleVariable2Chooser;
-  */
 
 private:
 
@@ -126,35 +82,30 @@ private:
    */
   void updateComboBoxes(CSensProblem::SubTaskType type);
 
-  //void updateFunctionsStringList(CSensProblem::SubTaskType);
-  //void updateVariablesStringList(CSensProblem::SubTaskType);
-
-  //QStringList mVariablesStringList;
-  //QStringList mFunctionsStringList;
-
-  // for indexing the dynamic entries of our combo boxes:
-  //std::vector<CObjectLists::ListType> mVariablesIndexTable;
-  //std::vector<CObjectLists::ListType> mFunctionsIndexTable;
-
-  //CObjectLists::ListType mFunction;
-  //CObjectLists::ListType mVariable;
-  //CObjectLists::ListType mVariable2;
-
   const CCopasiObject * mpSingleFunction;
   const CCopasiObject * mpSingleVariable;
   const CCopasiObject * mpSingleVariable2;
 
-  //CSensProblem::SubTaskType mSubTaskType;
-
 private slots:
-  void on_SubTaskChooser_activated(int);
-  void on_FunctionChooser_activated(int);
-  void on_VariableChooser_activated(int);
-  void on_Variable2Chooser_activated(int);
 
-  void on_SingleFunctionChooser_clicked();
-  void on_SingleVariableChooser_clicked();
-  void on_SingleVariable2Chooser_clicked();
+  /*
+    void on_SubTaskChooser_activated(int);
+    void on_FunctionChooser_activated(int);
+    void on_VariableChooser_activated(int);
+    void on_Variable2Chooser_activated(int);
+
+    void on_SingleFunctionChooser_clicked();
+    void on_SingleVariableChooser_clicked();
+    void on_SingleVariable2Chooser_clicked();
+  */
+  void slotChooseSubTask(int);
+  void slotChooseFunction(int);
+  void slotChooseVariable(int);
+  void slotChooseVariable2(int);
+
+  void slotChooseSingleFunction();
+  void slotChooseSingleVariable();
+  void slotChooseSingleVariable2();
 
 protected slots:
   virtual void languageChange();

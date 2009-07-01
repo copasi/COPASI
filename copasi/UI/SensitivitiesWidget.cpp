@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: pwilly $
+//   $Date: 2009/07/01 09:52:06 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,29 +15,22 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-//#include <q3filedialog.h>
-
 #include <qvariant.h>
 #include <qcheckbox.h>
-//#include <qcombobox.h>
-//#include <q3frame.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-//#include <q3table.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <q3whatsthis.h>
 #include <qmessagebox.h>
 #include <qtoolbutton.h>
 #include <qimage.h>
-//Added by qt3to4:
-//#include <Q3GridLayout>
 
 #include <QFrame>
 #include <QFileDialog>
-//#include <QTableWidget>
+#include <QtDebug>
 
 #include <algorithm>
 
@@ -59,7 +52,6 @@
 #include "CQSensResultWidget.h"
 
 //**************** SensitivitiesWidget *********************************
-
 static const unsigned char button_image_data[] =
 {
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -119,7 +111,6 @@ static const unsigned char button_image_data[] =
   0xc6, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
   0x82
 };
-
 /**
  *  Constructs a SensitivitiesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -134,166 +125,6 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::
 
   init();
   retranslateUi(this);
-
-  /*
-    QSize lineEditFormat;
-    QImage img;
-
-    img.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
-
-    // row where the header ends:
-    const int fieldStart = 3;
-
-    if (!name)
-      setName("SensitivitiesWidget");
-    setCaption(trUtf8("SensitivitiesWidget"));
-
-    //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
-  //  mpMethodLayout = new Q3GridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
-    mpMethodLayout = new QGridLayout(this, 0, 1, 11, 6, "mpMethodLayout");
-
-    mpHeaderWidget->setTaskName("Sensitivities");
-    addHeaderToGrid();
-
-    //addHLineToGrid(mpMethodLayout, 2, 2);
-
-    //QSpacerItem* spacer1 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-    //mpMethodLayout->addItem(spacer1, 3, 3);
-
-    //******** subtask ******************
-
-    TextLabel1 = new QLabel(this, "TextLabel1");
-    TextLabel1->setText(trUtf8("Subtask"));
-    TextLabel1->setAlignment(int(Qt::AlignVCenter
-                                 | Qt::AlignRight));
-    mpMethodLayout->addWidget(TextLabel1, fieldStart + 1, 0);
-
-    SubTaskChooser = new QComboBox(false, this, "SubTaskChooser");
-    SubTaskChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, SubTaskChooser->sizePolicy().hasHeightForWidth()));
-    mpMethodLayout->addWidget(SubTaskChooser, fieldStart + 1, 1);
-
-    QSpacerItem* spacer2 = new QSpacerItem(4, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
-    mpMethodLayout->addItem(spacer2, fieldStart + 2, 0);
-
-    addHLineToGrid(mpMethodLayout, fieldStart + 3, 2);
-
-    //*********** function *******************
-
-    TextLabel2 = new QLabel(this, "TextLabel2");
-    TextLabel2->setText(trUtf8("Function"));
-    TextLabel2->setAlignment(int(Qt::AlignVCenter
-                                 | Qt::AlignRight));
-    mpMethodLayout->addWidget(TextLabel2, fieldStart + 4, 0);
-
-    FunctionChooser = new SensWidgetComboBox(this, "TargetFunctionChooser");
-    //  FunctionChooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, FunctionChooser->sizePolicy().hasHeightForWidth()));
-    mpMethodLayout->addMultiCellWidget(FunctionChooser, fieldStart + 4, fieldStart + 4, 1, 1);
-    QToolTip::add(FunctionChooser, "This specifies the set of target values for which<br>the sensitivities are to be calculated.");
-
-    FunctionLineEdit = new QLineEdit(this, "FunctionLineEdit");
-    lineEditFormat = FunctionLineEdit->sizeHint();
-    FunctionLineEdit->resize(lineEditFormat);
-    mpMethodLayout->addMultiCellWidget(FunctionLineEdit, fieldStart + 5, fieldStart + 5, 1, 1);
-    FunctionLineEdit->setText("[Please Choose Object.] --->");
-    FunctionLineEdit->setReadOnly(true);
-    FunctionLineEdit->setEnabled(false); //hide();
-
-    SingleFunctionChooser = new QToolButton(this, "SingleFunctionChooser");
-    mpMethodLayout->addWidget(SingleFunctionChooser, fieldStart + 5, 2);
-    SingleFunctionChooser->setMaximumSize(lineEditFormat.height(),
-                                          lineEditFormat.height());
-    SingleFunctionChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
-    SingleFunctionChooser->setEnabled(false); //hide();
-    QToolTip::add(SingleFunctionChooser, "If the target value of the sensitivities calculation is a single object <br>the object can be selected by clicking this button.");
-
-    //*********** variable 1 **********************
-
-    TextLabel3 = new QLabel(this, "TextLabel3");
-    TextLabel3->setText(trUtf8("Variable"));
-    TextLabel3->setAlignment(int(Qt::AlignVCenter
-                                 | Qt::AlignRight));
-    mpMethodLayout->addWidget(TextLabel3, fieldStart + 6, 0);
-
-    VariableChooser = new SensWidgetComboBox(this, "VariableChooser");
-
-    mpMethodLayout->addMultiCellWidget(VariableChooser, fieldStart + 6, fieldStart + 6, 1, 1);
-    QToolTip::add(VariableChooser, "This specifies a set of parameters. The sensitivities are calculated with respect to these parameters.");
-
-    VariableLineEdit = new QLineEdit(this, "VariableLineEdit");
-    VariableLineEdit->resize(lineEditFormat);
-    mpMethodLayout->addMultiCellWidget(VariableLineEdit, fieldStart + 7, fieldStart + 7, 1, 1);
-    VariableLineEdit->setText("[Please Choose Object.] --->");
-    VariableLineEdit->setReadOnly(true);
-    VariableLineEdit->setEnabled(false); //hide();
-
-    SingleVariableChooser = new QToolButton(this, "SingleVariableChooser");
-    mpMethodLayout->addWidget(SingleVariableChooser, fieldStart + 7, 2);
-    SingleVariableChooser->setMaximumSize(lineEditFormat.height(),
-                                          lineEditFormat.height());
-    SingleVariableChooser->setIconSet(QIcon(QPixmap::fromImage(img)));
-    SingleVariableChooser->setEnabled(false); //hide();
-
-    //********** variable 2 **********************
-
-    TextLabel4 = new QLabel(this, "TextLabel4");
-    TextLabel4->setText(trUtf8("Second Variable"));
-    TextLabel4->setAlignment(int(Qt::AlignVCenter
-                                 | Qt::AlignRight));
-    mpMethodLayout->addWidget(TextLabel4, fieldStart + 8, 0);
-
-    Variable2Chooser = new SensWidgetComboBox(this, "Variable2Chooser");
-    //  Variable2Chooser->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, Variable2Chooser->sizePolicy().hasHeightForWidth()));
-    mpMethodLayout->addMultiCellWidget(Variable2Chooser, fieldStart + 8, fieldStart + 8, 1, 1);
-    QToolTip::add(Variable2Chooser, "This specifies a second set of parameters. If this is set, second order sensitivities will be calculated.");
-
-    Variable2LineEdit = new QLineEdit(this, "Variable2LineEdit");
-    Variable2LineEdit->resize(lineEditFormat);
-    mpMethodLayout->addMultiCellWidget(Variable2LineEdit, fieldStart + 9, fieldStart + 9, 1, 1);
-    Variable2LineEdit->setText("[Please Choose Object.] --->");
-    Variable2LineEdit->setReadOnly(true);
-    Variable2LineEdit->setEnabled(false); //hide();
-
-    SingleVariable2Chooser = new QToolButton(this, "SingleVariable2Chooser");
-    mpMethodLayout->addWidget(SingleVariable2Chooser, fieldStart + 9, 2);
-    SingleVariable2Chooser->setMaximumSize(lineEditFormat.height(),
-                                           lineEditFormat.height());
-    SingleVariable2Chooser->setIconSet(QIcon(QPixmap::fromImage(img)));
-    SingleVariable2Chooser->setEnabled(false); //hide();
-
-    //**********************************************
-
-    QSpacerItem* spacer3 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-    mpMethodLayout->addItem(spacer3, fieldStart + 10, fieldStart + 10);
-
-    initCombos();
-
-    addHLineToGrid(mpMethodLayout, fieldStart + 11, 2);
-
-    addMethodParameterTable(4, fieldStart + 12);
-
-    mpMethodLayout->addMultiCellWidget(mpBtnWidget,
-                                       fieldStart + 13, fieldStart + 13,
-                                       0, 2);
-    mpBtnWidget->mpBtnRun->setEnabled(false);
-
-    connect(SubTaskChooser, SIGNAL(activated(int)),
-            this, SLOT(on_SubTaskChooser_activated(int)));
-    connect(FunctionChooser, SIGNAL(activated(int)),
-            this, SLOT(on_FunctionChooser_activated(int)));
-    connect(VariableChooser, SIGNAL(activated(int)),
-            this, SLOT(on_VariableChooser_activated(int)));
-    connect(Variable2Chooser, SIGNAL(activated(int)),
-            this, SLOT(on_Variable2Chooser_activated(int)));
-
-    connect(SingleFunctionChooser, SIGNAL(clicked()),
-            this, SLOT(on_SingleFunctionChooser_clicked()));
-    connect(SingleVariableChooser, SIGNAL(clicked()),
-            this, SLOT(on_SingleVariableChooser_clicked()));
-    connect(SingleVariable2Chooser, SIGNAL(clicked()),
-            this, SLOT(on_SingleVariable2Chooser_clicked()));
-
-    //mChoicesDone = 0;
-  */
 }
 
 /*
@@ -317,17 +148,19 @@ void SensitivitiesWidget::init()
   addMethodParameterTable(0);
 
   // icons
-
   QImage img0;
   img0.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+//  SingleFunctionChooserButton->setIcon(QPixmap::fromImage(img0));
   SingleFunctionChooser->setIcon(QPixmap::fromImage(img0));
 
   QImage img1;
   img1.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+//  SingleVariableChooserButton->setIcon(QPixmap::fromImage(img1));
   SingleVariableChooser->setIcon(QPixmap::fromImage(img1));
 
   QImage img2;
   img2.loadFromData(button_image_data, sizeof(button_image_data), "PNG");
+//  SingleVariable2ChooserButton->setIcon(QPixmap::fromImage(img2));
   SingleVariable2Chooser->setIcon(QPixmap::fromImage(img2));
 
   // initialization
@@ -558,6 +391,11 @@ void SensitivitiesWidget::updateLineeditEnable(const SensWidgetComboBox* box, QW
 
 void SensitivitiesWidget::updateAllLineditEnable()
 {
+  /*
+    updateLineeditEnable(FunctionChooser, FunctionLineEdit, SingleFunctionChooserButton);
+    updateLineeditEnable(VariableChooser, VariableLineEdit, SingleVariableChooserButton);
+    updateLineeditEnable(Variable2Chooser, Variable2LineEdit, SingleVariable2ChooserButton);
+  */
   updateLineeditEnable(FunctionChooser, FunctionLineEdit, SingleFunctionChooser);
   updateLineeditEnable(VariableChooser, VariableLineEdit, SingleVariableChooser);
   updateLineeditEnable(Variable2Chooser, Variable2LineEdit, SingleVariable2Chooser);
@@ -626,7 +464,8 @@ void SensitivitiesWidget::updateComboBoxes(CSensProblem::SubTaskType type)
 // ******************* SLOTs *******************************+
 
 void
-SensitivitiesWidget::on_SubTaskChooser_activated(int)
+//SensitivitiesWidget::on_SubTaskChooser_activated(int)
+SensitivitiesWidget::slotChooseSubTask(int)
 {
   CSensProblem::SubTaskType subTaskType = (CSensProblem::SubTaskType)SubTaskChooser->currentItem();
   updateComboBoxes(subTaskType);
@@ -636,28 +475,32 @@ SensitivitiesWidget::on_SubTaskChooser_activated(int)
 }
 
 void
-SensitivitiesWidget::on_FunctionChooser_activated(int)
+//SensitivitiesWidget::on_FunctionChooser_activated(int a)
+SensitivitiesWidget::slotChooseFunction(int)
 {
   updateAllLineditEnable();
   updateRunButton();
 }
 
 void
-SensitivitiesWidget::on_VariableChooser_activated(int)
+//SensitivitiesWidget::on_VariableChooser_activated(int)
+SensitivitiesWidget::slotChooseVariable(int)
 {
   updateAllLineditEnable();
   updateRunButton();
 }
 
 void
-SensitivitiesWidget::on_Variable2Chooser_activated(int)
+//SensitivitiesWidget::on_Variable2Chooser_activated(int)
+SensitivitiesWidget::slotChooseVariable2(int)
 {
   updateAllLineditEnable();
   updateRunButton();
 }
 
 void
-SensitivitiesWidget::on_SingleFunctionChooser_clicked()
+//SensitivitiesWidget::on_SingleFunctionChooser_clicked()
+SensitivitiesWidget::slotChooseSingleFunction()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
@@ -676,7 +519,8 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 }
 
 void
-SensitivitiesWidget::on_SingleVariableChooser_clicked()
+//SensitivitiesWidget::on_SingleVariableChooser_clicked()
+SensitivitiesWidget::slotChooseSingleVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
@@ -694,7 +538,8 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
 }
 
 void
-SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
+//SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
+SensitivitiesWidget::slotChooseSingleVariable2()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
