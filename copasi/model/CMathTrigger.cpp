@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 21:12:32 $
+//   $Date: 2009/07/02 11:43:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,14 +116,12 @@ void CMathTrigger::CRootFinder::charge(const bool & equality)
   // TODO ALGORITHM We need to experiment with this!
 
   if ((mActive < 1.0) &&
-      (equality == mEquality) &&
-      (*mpRootValue <= 0.0))
+      (equality == mEquality))
     {
       mActive = 1.0;
     }
   else if ((mActive > 0.0) &&
-           (equality == mEquality) &&
-           (*mpRootValue >= 0.0))
+           (equality == mEquality))
     {
       mActive = 0.0;
     }
@@ -133,8 +131,8 @@ void CMathTrigger::CRootFinder::charge(const bool & equality)
 
 void CMathTrigger::CRootFinder::calculateInitialActivity()
 {
-  if ((*mpRootValue < 0.0)
-      || ((*mpRootValue <= 0.0) && !mEquality))
+  if ((*mpRootValue < 0.0) ||
+      ((*mpRootValue <= 0.0) && !mEquality))
     {
       mActive = 1.0;
     }
