@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/26 20:23:40 $
+//   $Date: 2009/07/02 11:39:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,18 @@ bool CEvaluationNodeObject::setData(const Data & data)
 }
 
 std::string CEvaluationNodeObject::getInfix() const
-{return "<" + mRegisteredObjectCN + ">";}
+{
+  switch ((int) subType(mType))
+    {
+      case CN:
+        return "<" + mRegisteredObjectCN + ">";
+        break;
+
+      case POINTER:
+        return mData;
+        break;
+    }
+}
 
 #if 0
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
