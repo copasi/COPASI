@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/02/18 20:53:06 $
+//   $Date: 2009/07/02 17:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "compareExpressions/CNormalChoiceLogical.h"
 #include "compareExpressions/CNormalLogical.h"
 #include "compareExpressions/CNormalLogicalItem.h"
+#include "report/CCopasiRootContainer.h"
 
 #ifdef __SUNPRO_CC
 typedef std::set<CNormalProduct*, compareProducts>::iterator ProductIterator;
@@ -46,12 +47,15 @@ typedef std::set<CNormalItemPower*, compareItemPowers>::const_iterator ItemPower
 
 void test_normalform::setUp()
 {
+  CCopasiRootContainer::init(false, 0, NULL);
   pFraction = NULL;
 }
 
 void test_normalform::tearDown()
 {
   if (pFraction != NULL) delete pFraction;
+
+  CCopasiRootContainer::destroy();
 }
 
 void test_normalform::test_item_number()
@@ -4682,48 +4686,87 @@ void test_normalform::test_nested_stepwise_fractions_3levels()
 bool test_normalform::check_LogicalItemA(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::LT) return false;
 
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::CONSTANT) return false;
+
   if (pNormalItem->getName() != "PI") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "A") return false;
+
   return result;
 }
 
@@ -4731,40 +4774,71 @@ bool test_normalform::check_LogicalItemA(const CNormalLogicalItem* pLogicalItem)
 bool test_normalform::check_LogicalItemB(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
 
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 4.0) return false;
+
   if (pProduct->getItemPowers().size() != 0) return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "A") return false;
+
   return result;
 }
 
@@ -4772,39 +4846,71 @@ bool test_normalform::check_LogicalItemB(const CNormalLogicalItem* pLogicalItem)
 bool test_normalform::check_LogicalItemC(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 2.0) return false;
+
   if (pProduct->getItemPowers().size() != 0) return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "T") return false;
+
   return result;
 }
 
@@ -4812,47 +4918,87 @@ bool test_normalform::check_LogicalItemC(const CNormalLogicalItem* pLogicalItem)
 bool test_normalform::check_LogicalItemNotD(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "D") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "F") return false;
+
   return result;
 }
 
@@ -4860,74 +5006,138 @@ bool test_normalform::check_LogicalItemNotD(const CNormalLogicalItem* pLogicalIt
 bool test_normalform::check_LogicalItemE(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::LT) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::FUNCTION) return false;
+
   const CNormalFunction* pFunction = dynamic_cast<const CNormalFunction*>(&pItemPower->getItem());
+
   if (pFunction == NULL) return false;
+
   if (pFunction->getType() != CNormalFunction::SIN) return false;
+
   pTmpFraction = &pFunction->getFraction();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   ProductIterator productsIt = products->begin();
   pProduct = *(productsIt);
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 2) return false;
+
   std::set<CNormalItemPower*, compareItemPowers>::const_iterator itemPowersIt = pProduct->getItemPowers().begin();
   pItemPower = *(itemPowersIt);
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::CONSTANT) return false;
+
   if (pItem->getName() != "PI") return false;
+
   ++itemPowersIt;
   pItemPower = *(itemPowersIt);
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "D") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "X") return false;
+
   return result;
 }
 
@@ -4935,76 +5145,144 @@ bool test_normalform::check_LogicalItemE(const CNormalLogicalItem* pLogicalItem)
 bool test_normalform::check_LogicalItemF(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() == false) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 2.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *pProduct->getItemPowers().begin();
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::POWER) return false;
+
   const CNormalGeneralPower* pGeneralPower = dynamic_cast<const CNormalGeneralPower*>(&pItemPower->getItem());
+
   if (pGeneralPower == NULL) return false;
+
   // check this general power which should be (t^(3*J))
   if (pGeneralPower->getType() != CNormalGeneralPower::POWER) return false;
+
   pTmpFraction = &pGeneralPower->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "T") return false;
+
   pTmpFraction = &pGeneralPower->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 3.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "J") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 6.2) return false;
+
   if (pProduct->getItemPowers().size() != 0) return false;
+
   return result;
 }
 
@@ -5012,49 +5290,87 @@ bool test_normalform::check_LogicalItemF(const CNormalLogicalItem* pLogicalItem)
 bool test_normalform::check_LogicalItemNotA(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::LE) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
 
   const CNormalSum* pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "A") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
 
   pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::CONSTANT) return false;
+
   if (pNormalItem->getName() != "PI") return false;
+
   return result;
 }
 
@@ -5062,40 +5378,71 @@ bool test_normalform::check_LogicalItemNotA(const CNormalLogicalItem* pLogicalIt
 bool test_normalform::check_LogicalItemNotB(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
 
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 4.0) return false;
+
   if (pProduct->getItemPowers().size() != 0) return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   pNumerator = &pTmpFraction->getNumerator();
+
   if (pNumerator->getFractions().size() != 0) return false;
+
   pProducts = &pNumerator->getProducts();
+
   if (pProducts->size() != 1) return false;
+
   pProduct = *(pProducts->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "A") return false;
+
   return result;
 }
 
@@ -5103,39 +5450,71 @@ bool test_normalform::check_LogicalItemNotB(const CNormalLogicalItem* pLogicalIt
 bool test_normalform::check_LogicalItemNotC(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 2.0) return false;
+
   if (pProduct->getItemPowers().size() != 0) return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "T") return false;
+
   return result;
 }
 
@@ -5143,47 +5522,87 @@ bool test_normalform::check_LogicalItemNotC(const CNormalLogicalItem* pLogicalIt
 bool test_normalform::check_LogicalItemD(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::NE) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "D") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pNormalItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pNormalItem == NULL) return false;
+
   if (pNormalItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pNormalItem->getName() != "F") return false;
+
   return result;
 }
 
@@ -5191,75 +5610,138 @@ bool test_normalform::check_LogicalItemD(const CNormalLogicalItem* pLogicalItem)
 bool test_normalform::check_LogicalItemNotE(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::LE) return false;
 
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "X") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::FUNCTION) return false;
+
   const CNormalFunction* pFunction = dynamic_cast<const CNormalFunction*>(&pItemPower->getItem());
+
   if (pFunction == NULL) return false;
+
   if (pFunction->getType() != CNormalFunction::SIN) return false;
+
   pTmpFraction = &pFunction->getFraction();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   ProductIterator productsIt = products->begin();
   pProduct = *(productsIt);
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 2) return false;
+
   std::set<CNormalItemPower*, compareItemPowers>::const_iterator itemPowersIt = pProduct->getItemPowers().begin();
   pItemPower = *(itemPowersIt);
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::CONSTANT) return false;
+
   if (pItem->getName() != "PI") return false;
+
   ++itemPowersIt;
   pItemPower = *(itemPowersIt);
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "D") return false;
+
   return result;
 }
 
@@ -5267,76 +5749,144 @@ bool test_normalform::check_LogicalItemNotE(const CNormalLogicalItem* pLogicalIt
 bool test_normalform::check_LogicalItemNotF(const CNormalLogicalItem* pLogicalItem)
 {
   bool result = true;
+
   if (pLogicalItem == NULL) return false;
+
   if (pLogicalItem->getType() != CNormalLogicalItem::EQ) return false;
+
   const CNormalFraction* pTmpFraction = &pLogicalItem->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   const CNormalSum* numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   const std::set<CNormalProduct*, compareProducts >* products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   const CNormalProduct* pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 2.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   const CNormalItemPower* pItemPower = *pProduct->getItemPowers().begin();
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::POWER) return false;
+
   const CNormalGeneralPower* pGeneralPower = dynamic_cast<const CNormalGeneralPower*>(&pItemPower->getItem());
+
   if (pGeneralPower == NULL) return false;
+
   // check this general power which should be (t^(3*J))
   if (pGeneralPower->getType() != CNormalGeneralPower::POWER) return false;
+
   pTmpFraction = &pGeneralPower->getLeft();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 1.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   const CNormalItem* pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "T") return false;
+
   pTmpFraction = &pGeneralPower->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 3.0) return false;
+
   if (pProduct->getItemPowers().size() != 1) return false;
+
   pItemPower = *(pProduct->getItemPowers().begin());
+
   if (pItemPower == NULL) return false;
+
   if (pItemPower->getExp() != 1.0) return false;
+
   if (pItemPower->getItemType() != CNormalItemPower::ITEM) return false;
+
   pItem = dynamic_cast<const CNormalItem*>(&pItemPower->getItem());
+
   if (pItem == NULL) return false;
+
   if (pItem->getType() != CNormalItem::VARIABLE) return false;
+
   if (pItem->getName() != "J") return false;
 
   pTmpFraction = &pLogicalItem->getRight();
+
   if (pTmpFraction == NULL) return false;
+
   if (pTmpFraction->checkDenominatorOne() != true) return false;
+
   numerator = &pTmpFraction->getNumerator();
+
   if (numerator->getFractions().size() != 0) return false;
+
   products = &numerator->getProducts();
+
   if (products->size() != 1) return false;
+
   pProduct = *(products->begin());
+
   if (pProduct == NULL) return false;
+
   if (pProduct->getFactor() != 6.2) return false;
+
   if (pProduct->getItemPowers().size() != 0) return false;
+
   return result;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_cnormallogical.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/08/02 14:09:18 $
+//   $Date: 2009/07/02 17:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,12 +25,19 @@
 #include "compareExpressions/CNormalItemPower.h"
 #include "compareExpressions/CNormalProduct.h"
 #include "compareExpressions/CNormalItem.h"
+#include "report/CCopasiRootContainer.h"
 
 template void CNormalLogical::cleanSet(const CNormalLogical::ItemSet&);
 
-void test_cnormallogical::setUp(){}
+void test_cnormallogical::setUp()
+{
+  CCopasiRootContainer::init(false, 0, NULL);
+}
 
-void test_cnormallogical::tearDown(){}
+void test_cnormallogical::tearDown()
+{
+  CCopasiRootContainer::destroy();
+}
 
 void test_cnormallogical::test_SetOfSetsSorter_operator()
 {

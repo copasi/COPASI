@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/31 13:40:48 $
+//   $Date: 2009/07/02 17:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,12 +24,17 @@
 #include "compareExpressions/CNormalTranslation.h"
 #include "compareExpressions/CNormalBase.h"
 #include "compareExpressions/CNormalFraction.h"
+#include "report/CCopasiRootContainer.h"
 
 void test_expression_comparison::setUp()
-{}
+{
+  CCopasiRootContainer::init(false, 0, NULL);
+}
 
 void test_expression_comparison::tearDown()
-{}
+{
+  CCopasiRootContainer::destroy();
+}
 
 void test_expression_comparison::test_substrate_activation()
 {
@@ -270,6 +275,7 @@ void test_expression_comparison::test_reversible_hill_two_modifiers()
 bool test_expression_comparison::are_expressions_equal(const std::string& expr1, const std::string& expr2, const std::string& /*filename*/, bool oldStyle)
 {
   bool result = false;
+
   //std::ofstream file(filename.c_str(),std::ios_base::out|std::ios_base::trunc);
   //std::streambuf* sbuf = std::cout.rdbuf();
   //std::cout.rdbuf(file.rdbuf());
@@ -289,6 +295,7 @@ bool test_expression_comparison::are_expressions_equal(const std::string& expr1,
       CPPUNIT_ASSERT(secondTree->getRoot() != NULL);
       //std::cout << "<p>Normalizing first tree.</p>" << std::endl;
       CNormalBase * firstBase = NULL;
+
       if (oldStyle == true)
         {
           firstBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(firstTree));
@@ -297,11 +304,13 @@ bool test_expression_comparison::are_expressions_equal(const std::string& expr1,
         {
           firstBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(firstTree->getRoot()));
         }
+
       CPPUNIT_ASSERT(firstBase != NULL);
       CNormalFraction* firstFraction = dynamic_cast<CNormalFraction*>(firstBase);
       CPPUNIT_ASSERT(firstFraction != NULL);
       //std::cout << "<p>Normalizing second tree.</p>" << std::endl;
       CNormalBase * secondBase = NULL;
+
       if (oldStyle == true)
         {
           secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree));
@@ -310,6 +319,7 @@ bool test_expression_comparison::are_expressions_equal(const std::string& expr1,
         {
           secondBase = dynamic_cast<CNormalFraction*>(CNormalTranslation::normAndSimplifyReptdly(secondTree->getRoot()));
         }
+
       CPPUNIT_ASSERT(secondBase != NULL);
       CNormalFraction* secondFraction = dynamic_cast<CNormalFraction*>(secondBase);
       CPPUNIT_ASSERT(secondFraction != NULL);
@@ -328,6 +338,7 @@ bool test_expression_comparison::are_expressions_equal(const std::string& expr1,
     {
       std::cout << "CopasiException " << std::endl;
     }
+
   //file.close();
   //std::cout.rdbuf(sbuf);
   return result;

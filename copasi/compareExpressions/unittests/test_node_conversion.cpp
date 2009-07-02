@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_node_conversion.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/07/31 13:40:48 $
+//   $Date: 2009/07/02 17:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,12 +26,19 @@
 #include "compareExpressions/CNormalProduct.h"
 #include "compareExpressions/CNormalItem.h"
 #include "compareExpressions/CNormalItemPower.h"
+#include "report/CCopasiRootContainer.h"
 
 #include "function/CEvaluationTree.h"
 
-void test_node_conversion::setUp(){}
+void test_node_conversion::setUp()
+{
+  CCopasiRootContainer::init(false, 0, NULL);
+}
 
-void test_node_conversion::tearDown(){}
+void test_node_conversion::tearDown()
+{
+  CCopasiRootContainer::destroy();
+}
 
 void test_node_conversion::test_0001()
 {
@@ -51,6 +58,7 @@ void test_node_conversion::test_0001()
   CPPUNIT_ASSERT(pOperator != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperator->getType())) == CEvaluationNodeOperator::PLUS);
   CEvaluationNodeVariable* pVariable = NULL;
+
   if (dynamic_cast<CEvaluationNodeOperator*>(pOperator->getChild()))
     {
       pOperator = static_cast<CEvaluationNodeOperator*>(pOperator->getChild());
@@ -61,8 +69,10 @@ void test_node_conversion::test_0001()
       pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());
       pOperator = static_cast<CEvaluationNodeOperator*>(pVariable->getSibling());
     }
+
   CPPUNIT_ASSERT(pOperator != NULL);
   CPPUNIT_ASSERT(pVariable != NULL);
+
   if (dynamic_cast<CEvaluationNodeOperator*>(pOperator->getChild()))
     {
       pOperator = static_cast<CEvaluationNodeOperator*>(pOperator->getChild());
@@ -73,6 +83,7 @@ void test_node_conversion::test_0001()
       pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());
       pOperator = static_cast<CEvaluationNodeOperator*>(pVariable->getSibling());
     }
+
   CPPUNIT_ASSERT(pOperator != NULL);
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_simplify.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2008/10/16 13:47:10 $
+//   $Date: 2009/07/02 17:57:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,12 +19,17 @@
 #include "../CNormalItemPower.h"
 #include "../CNormalGeneralPower.h"
 #include "../CNormalItem.h"
+#include "report/CCopasiRootContainer.h"
 
 void test_simplify::setUp()
-{}
+{
+  CCopasiRootContainer::init(false, 0, NULL);
+}
 
 void test_simplify::tearDown()
-{}
+{
+  CCopasiRootContainer::destroy();
+}
 
 void test_simplify::test_simplify_1()
 {
