@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/02 11:41:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,6 +166,11 @@ void CMathModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues)
     }
 
   return;
+}
+
+const C_FLOAT64 & CMathModel::getInitialTime() const
+{
+  return mpModel->getInitialTime();
 }
 
 void CMathModel::processQueue(const C_FLOAT64 & time,

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/02 11:41:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,6 +56,12 @@ public:
    * @param CVectorCore< double > & rootValues
    */
   void evaluateRoots(CVectorCore< double > & rootValues);
+
+  /**
+   * Retreive the initial time
+   * @return const C_FLOAT64 & initialTime
+   */
+  const C_FLOAT64 & getInitialTime() const;
 
   /**
    * Process events scheduled at the given which a are checked for
