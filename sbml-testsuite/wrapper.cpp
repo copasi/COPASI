@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:21:37 $
+//   $Author: gauges $
+//   $Date: 2009/07/02 09:27:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 #include "copasi/copasi.h"
+#include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiContainer.h"
 #include "copasi/model/CMetab.h"
@@ -265,26 +266,34 @@ int main(int argc, char** argv)
   try
     {
       // Create the root container.
-      CCopasiContainer::init();
+      CCopasiRootContainer::init(false, 0, NULL);
+    }
+  catch (copasi::autoexcept &e)
+    {}
 
+  catch (copasi::option_error &e)
+    {}
+
+  try
+    {
       // Create the global data model.
-      CCopasiDataModel::Global = new CCopasiDataModel;
+      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
 
       // Import the SBML File
-      CCopasiDataModel::Global->importSBML(sbml_filename.c_str());
+      pDataModel->importSBML(sbml_filename.c_str());
       // create a report with the correct filename and all the species against
       // time.
-      CReportDefinitionVector* pReports = CCopasiDataModel::Global->getReportDefinitionList();
+      CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
       pReport->setSeparator(CCopasiReportSeparator(","));
       pReport->setTaskType(CCopasiTask::timeCourse);
       pReport->setIsTable(true);
 
       std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-      pTable->push_back(CCopasiObjectName(CCopasiDataModel::Global->getModel()->getCN() + ",Reference=Time"));
+      pTable->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
       // create a map of all posible variables
       std::map<std::string, const CModelEntity*> variableMap;
-      const CCopasiVector<CMetab>& metabolites = CCopasiDataModel::Global->getModel()->getMetabolites();
+      const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
       unsigned int i, iMax = metabolites.size();
 
       for (i = 0; i < iMax; ++i)
@@ -292,7 +301,7 @@ int main(int argc, char** argv)
           variableMap.insert(std::pair<std::string, const CModelEntity*>(metabolites[i]->getSBMLId(), metabolites[i]));
         }
 
-      const CCopasiVector<CCompartment>& compartments = CCopasiDataModel::Global->getModel()->getCompartments();
+      const CCopasiVector<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
 
       iMax = compartments.size();
 
@@ -301,7 +310,7 @@ int main(int argc, char** argv)
           variableMap.insert(std::pair<std::string, const CModelEntity*>(compartments[i]->getSBMLId(), compartments[i]));
         }
 
-      const CCopasiVector<CModelValue>& modelValues = CCopasiDataModel::Global->getModel()->getModelValues();
+      const CCopasiVector<CModelValue>& modelValues = pDataModel->getModel()->getModelValues();
 
       iMax = modelValues.size();
 
@@ -331,7 +340,7 @@ int main(int argc, char** argv)
                   // create a new global value with an assignment
                   std::stringstream ss;
                   ss << "dummy_modelvalue_" << dummyCount;
-                  CModelValue* pTmpMV = CCopasiDataModel::Global->getModel()->createModelValue(ss.str());
+                  CModelValue* pTmpMV = pDataModel->getModel()->createModelValue(ss.str());
                   ++dummyCount;
                   ss.str("");
                   assert(pTmpMV);
@@ -367,7 +376,7 @@ int main(int argc, char** argv)
 
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask();
-      pTrajectoryTask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+      pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
       pTrajectoryTask->setScheduled(true);
 
@@ -385,7 +394,7 @@ int main(int argc, char** argv)
 
       pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
-      CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
       TaskList.remove("Time-Course");
       TaskList.add(pTrajectoryTask, true);
@@ -393,11 +402,11 @@ int main(int argc, char** argv)
       // save the file for control purposes
       //std::string saveFilename = pSBMLFilename;
       //saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
-      //CCopasiDataModel::Global->saveModel(saveFilename, NULL, true);
+      //pDataModel->saveModel(saveFilename, NULL, true);
 
       // Run the trajectory task
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
 
@@ -406,7 +415,7 @@ int main(int argc, char** argv)
       // create a trajectory task
       //pTrajectoryTask->getReport().setTarget(pOutputFilename);
 
-      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, CCopasiDataModel::Global, NULL);
+      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
       //pTrajectoryTask->process(true);
       //pTrajectoryTask->restore();
     }
@@ -415,7 +424,6 @@ int main(int argc, char** argv)
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
 
-  pdelete(CCopasiDataModel::Global);
-  pdelete(CCopasiContainer::Root);
+  CCopasiRootContainer::destroy();
   return 0;
 }
