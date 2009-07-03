@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:16 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:50:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,10 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CDirEntry.h"
 
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
+
 QString getParameterValue(const CCopasiParameterGroup * group,
                           const unsigned C_INT32 & index,
                           CCopasiParameter::Type * type)
@@ -35,51 +39,51 @@ QString getParameterValue(const CCopasiParameterGroup * group,
 
   switch (group->getType(index))
     {
-    case CCopasiParameter::DOUBLE:
-      return QString::number(* group->getValue(index).pDOUBLE);
-      break;
+      case CCopasiParameter::DOUBLE:
+        return QString::number(* group->getValue(index).pDOUBLE);
+        break;
 
-    case CCopasiParameter::UDOUBLE:
-      return QString::number(* group->getValue(index).pDOUBLE);
-      break;
+      case CCopasiParameter::UDOUBLE:
+        return QString::number(* group->getValue(index).pDOUBLE);
+        break;
 
-    case CCopasiParameter::INT:
-      return QString::number(* group->getValue(index).pINT);
-      break;
+      case CCopasiParameter::INT:
+        return QString::number(* group->getValue(index).pINT);
+        break;
 
-    case CCopasiParameter::UINT:
-      return QString::number(* group->getValue(index).pUINT);
-      break;
+      case CCopasiParameter::UINT:
+        return QString::number(* group->getValue(index).pUINT);
+        break;
 
-    case CCopasiParameter::BOOL:
-      return QString::number(* group->getValue(index).pBOOL);
-      break;
+      case CCopasiParameter::BOOL:
+        return QString::number(* group->getValue(index).pBOOL);
+        break;
 
-    case CCopasiParameter::STRING:
-      return
-      FROM_UTF8(* group->getValue(index).pSTRING);
-      break;
+      case CCopasiParameter::STRING:
+        return
+          FROM_UTF8(* group->getValue(index).pSTRING);
+        break;
 
-    case CCopasiParameter::KEY:
-      return
-      FROM_UTF8(* group->getValue(index).pKEY);
-      break;
+      case CCopasiParameter::KEY:
+        return
+          FROM_UTF8(* group->getValue(index).pKEY);
+        break;
 
-    case CCopasiParameter::CN:
-      return
-      FROM_UTF8(* group->getValue(index).pCN);
-      break;
+      case CCopasiParameter::CN:
+        return
+          FROM_UTF8(* group->getValue(index).pCN);
+        break;
 
-    case CCopasiParameter::GROUP:
-      return FROM_UTF8((group->getName(index)));
-      break;
+      case CCopasiParameter::GROUP:
+        return FROM_UTF8((group->getName(index)));
+        break;
 
-    case CCopasiParameter::INVALID:
-      return QString::fromUtf8("INVALID");
-      break;
+      case CCopasiParameter::INVALID:
+        return QString::fromUtf8("INVALID");
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
 
   return QString::fromLatin1("INVALID");
@@ -110,54 +114,61 @@ bool setParameterValue(CCopasiParameterGroup * group,
 
   switch (group->getType(index))
     {
-    case CCopasiParameter::DOUBLE:
-    case CCopasiParameter::UDOUBLE:
-      DOUBLE = value.toDouble(&ok);
-      if (!ok) return false;
-      return group->setValue(index, DOUBLE);
-      break;
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+        DOUBLE = value.toDouble(&ok);
 
-    case CCopasiParameter::INT:
-      INT = value.toInt(&ok);
-      if (!ok) return false;
-      return group->setValue(index, INT);
-      break;
+        if (!ok) return false;
 
-    case CCopasiParameter::UINT:
-      UINT = value.toUInt(&ok);
-      if (!ok) return false;
-      return group->setValue(index, UINT);
-      break;
+        return group->setValue(index, DOUBLE);
+        break;
 
-    case CCopasiParameter::BOOL:;
-      UINT = value.toUShort(&ok);
-      if (!ok) return false;
+      case CCopasiParameter::INT:
+        INT = value.toInt(&ok);
 
-      if (UINT == 1) BOOL = true;
-      else if (UINT == 0) BOOL = false;
-      else return false;
+        if (!ok) return false;
 
-      return group->setValue(index, BOOL);
-      break;
+        return group->setValue(index, INT);
+        break;
 
-    case CCopasiParameter::STRING:
-    case CCopasiParameter::KEY:
-      STRING = TO_UTF8(value);
-      return group->setValue(index, STRING);
-      break;
+      case CCopasiParameter::UINT:
+        UINT = value.toUInt(&ok);
 
-    case CCopasiParameter::CN:
-      CN = std::string(TO_UTF8(value));
-      return group->setValue(index, CN);
-      break;
+        if (!ok) return false;
 
-    case CCopasiParameter::GROUP:
-    case CCopasiParameter::INVALID:
-      return false;
-      break;
+        return group->setValue(index, UINT);
+        break;
 
-    default:
-      break;
+      case CCopasiParameter::BOOL:;
+        UINT = value.toUShort(&ok);
+
+        if (!ok) return false;
+
+        if (UINT == 1) BOOL = true;
+        else if (UINT == 0) BOOL = false;
+        else return false;
+
+        return group->setValue(index, BOOL);
+        break;
+
+      case CCopasiParameter::STRING:
+      case CCopasiParameter::KEY:
+        STRING = TO_UTF8(value);
+        return group->setValue(index, STRING);
+        break;
+
+      case CCopasiParameter::CN:
+        CN = std::string(TO_UTF8(value));
+        return group->setValue(index, CN);
+        break;
+
+      case CCopasiParameter::GROUP:
+      case CCopasiParameter::INVALID:
+        return false;
+        break;
+
+      default:
+        break;
     }
 
   return false;
@@ -170,6 +181,11 @@ bool setParameterValue(CCopasiParameterGroup * group,
 
 C_INT32 checkSelection(const QString & file)
 {
+
+#ifdef DEBUG_UI
+  qDebug() << "Filename on checkSelection = " << file;
+#endif
+
   if (QFileInfo(file).exists())
     {
       if (CDirEntry::isWritable(TO_UTF8(file)))
@@ -193,5 +209,6 @@ void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
 {
   qsl.clear();
   C_INT32 i, imax = vs.size();
+
   for (i = 0; i < imax; ++i) qsl += FROM_UTF8(vs[i]);
 }
