@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/02 09:27:23 $
+//   $Date: 2009/07/03 19:13:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
       while (! f.eof())
         {
           getline(f, line);
-          unsigned int pos = line.find(':');
+          size_t pos = line.find(':');
 
           if (pos != std::string::npos)
             {
