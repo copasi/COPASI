@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/22 20:47:04 $
+//   $Date: 2009/07/03 10:35:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,10 @@
 
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -155,18 +159,28 @@ void PlotWindow::printAsImage()
   // take a name from QFileDialog
 
   C_INT32 Answer = QMessageBox::No;
-  QString fileName, extensionName = "";
+  QString fileName, extensionName;
 
   while (Answer == QMessageBox::No)
     {
-      QString filter;
-      fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
-                 QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
+
+//      QString userFilter = new QString;
+      /*
+            fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
+                       QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
+      */
+      fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                 "untitled.png", "PNG Files (*.png);;SVG Files (*.svg)", "Save to", new QString);
 
       if (fileName.isEmpty()) return;
 
-      QFileInfo fileInfo(fileName);
-      extensionName = fileInfo.extension();
+      /*
+            QFileInfo fileInfo(fileName);
+            extensionName = fileInfo.extension();
+      */
+#ifdef DEBUG_UI
+//      qDebug() << "extensionName = " << extensionName;
+#endif
 
       // check whether the file exists
       Answer = checkSelection(fileName);
@@ -182,7 +196,8 @@ void PlotWindow::printAsImage()
 
   //  std::cout << "size: " << rect.width() << " x " << rect.height() << std::endl;
 
-  if (extensionName == "png")
+//  if (extensionName == "png")
+  if (fileName.endsWith(".png"))
     {
       QPixmap pixmap(rect.width(), rect.height());
       pixmap.fill();
@@ -194,7 +209,8 @@ void PlotWindow::printAsImage()
       pixmap.save(fileName, "PNG");
     }
 
-  if (extensionName == "svg") // true
+//  if (extensionName == "svg")
+  if (fileName.endsWith(".svg"))
     {
       QSvgGenerator generator;
       generator.setFileName(fileName);
@@ -233,15 +249,11 @@ void PlotWindow::slotSaveData()
   while (Answer == QMessageBox::No)
     {
       fileName =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", "untitled.txt", "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isNull()) return;
 
-      if (!fileName.endsWith(".txt") &&
-          !fileName.endsWith(".")) fileName += ".txt";
-
-      fileName = fileName.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;

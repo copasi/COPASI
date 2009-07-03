@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/16 19:51:18 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:39:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,10 @@
 #include <QContextMenuEvent>
 #include <Q3GridLayout>
 #include <Q3PopupMenu>
+
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
 
 #include "copasi/UI/CQMessageBox.h"
 
@@ -52,10 +56,12 @@ Plot3d::~Plot3d()
 void Plot3d::setZoom()
 {
   double zoom;
+
   if (mData.maxItems < 7)
     zoom = (double)(mData.maxItems) / 10;
   else
     zoom = 0.7;
+
   mpPlot->setZoom(zoom);
 }
 
@@ -86,17 +92,16 @@ void Plot3d::setAxes()
       majorTicLength = mData.valueZone * 3;
       minorTicLength = mData.valueZone * 2.5;
     }
+  else if (mData.maxItems < 5)
+    {
+      majorTicLength = mData.valueZone;
+      minorTicLength = mData.valueZone / 1.2;
+    }
   else
-    if (mData.maxItems < 5)
-      {
-        majorTicLength = mData.valueZone;
-        minorTicLength = mData.valueZone / 1.2;
-      }
-    else
-      {
-        majorTicLength = mData.valueZone / 3;
-        minorTicLength = mData.valueZone / 4;
-      }
+    {
+      majorTicLength = mData.valueZone / 3;
+      minorTicLength = mData.valueZone / 4;
+    }
 
   mpPlot->coordinates()->setLineSmooth(true);
   mpPlot->coordinates()->setGridLinesColor(Qwt3D::RGBA(0, 0, 0.5));
@@ -109,37 +114,45 @@ void Plot3d::setAxes()
   //mpPlot->coordinates()->setAutoDecoration(false);
 
   mpPlot->coordinates()->axes[Qwt3D::Z1].setScale(new ValueScale);
+
   if ((mData.maxValue > 0) && (mData.minValue < 0))
     mpPlot->coordinates()->axes[Qwt3D::Z1].setMajors(2);
   else
     mpPlot->coordinates()->axes[Qwt3D::Z1].setMajors(1);
+
   mpPlot->coordinates()->axes[Qwt3D::Z1].setMinors(0);
   mpPlot->coordinates()->axes[Qwt3D::Z1].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z1].setTicOrientation(-1, 1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z1].setTicLength(majorTicLength, minorTicLength);
   mpPlot->coordinates()->axes[Qwt3D::Z2].setScale(new ValueScale);
+
   if ((mData.maxValue > 0) && (mData.minValue < 0))
     mpPlot->coordinates()->axes[Qwt3D::Z2].setMajors(2);
   else
     mpPlot->coordinates()->axes[Qwt3D::Z2].setMajors(1);
+
   mpPlot->coordinates()->axes[Qwt3D::Z2].setMinors(0);
   mpPlot->coordinates()->axes[Qwt3D::Z2].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z2].setTicOrientation(-1, -1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z2].setTicLength(majorTicLength, minorTicLength);
   mpPlot->coordinates()->axes[Qwt3D::Z3].setScale(new ValueScale);
+
   if ((mData.maxValue > 0) && (mData.minValue < 0))
     mpPlot->coordinates()->axes[Qwt3D::Z3].setMajors(2);
   else
     mpPlot->coordinates()->axes[Qwt3D::Z3].setMajors(1);
+
   mpPlot->coordinates()->axes[Qwt3D::Z3].setMinors(0);
   mpPlot->coordinates()->axes[Qwt3D::Z3].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z3].setTicOrientation(1, -1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z3].setTicLength(majorTicLength, minorTicLength);
   mpPlot->coordinates()->axes[Qwt3D::Z4].setScale(new ValueScale);
+
   if ((mData.maxValue > 0) && (mData.minValue < 0))
     mpPlot->coordinates()->axes[Qwt3D::Z4].setMajors(2);
   else
     mpPlot->coordinates()->axes[Qwt3D::Z4].setMajors(1); mpPlot->coordinates()->axes[Qwt3D::Z4].setMinors(0);
+
   mpPlot->coordinates()->axes[Qwt3D::Z4].setLineWidth(2, 0.7, 0.2);
   mpPlot->coordinates()->axes[Qwt3D::Z4].setTicOrientation(1, 1, 0);
   mpPlot->coordinates()->axes[Qwt3D::Z4].setTicLength(majorTicLength, minorTicLength);
@@ -148,32 +161,39 @@ void Plot3d::setAxes()
   mpPlot->coordinates()->axes[Qwt3D::X1].setLabelString("columns");
   mpPlot->coordinates()->axes[Qwt3D::X1].setMajors(mData.columns - 1);
   mpPlot->coordinates()->axes[Qwt3D::X1].setMinors(0);
+
   //mpPlot->coordinates()->axes[Qwt3D::X1].setLineWidth(2, 0.7, 0);
   if (mpColumnScale)
     mpPlot->coordinates()->axes[Qwt3D::X1].setTicLength(majorTicLength, 0);
   else
     mpPlot->coordinates()->axes[Qwt3D::X1].setTicLength(0, 0);
+
   mpPlot->coordinates()->axes[Qwt3D::X2].setScale(new ColumnScale(mpColumnScale, getColSliderPos()));
   mpPlot->coordinates()->axes[Qwt3D::X2].setLabelString("columns");
   mpPlot->coordinates()->axes[Qwt3D::X2].setMajors(mData.columns - 1);
   mpPlot->coordinates()->axes[Qwt3D::X2].setMinors(0);
+
   //mpPlot->coordinates()->axes[Qwt3D::X2].setLineWidth(2, 0.7, 0);
   if (mpColumnScale)
     mpPlot->coordinates()->axes[Qwt3D::X2].setTicLength(majorTicLength, 0);
   else
     mpPlot->coordinates()->axes[Qwt3D::X2].setTicLength(0, 0);
+
   mpPlot->coordinates()->axes[Qwt3D::X3].setScale(new ColumnScale(mpColumnScale, getColSliderPos()));
   mpPlot->coordinates()->axes[Qwt3D::X3].setLabelString("columns");
   mpPlot->coordinates()->axes[Qwt3D::X3].setMajors(mData.columns - 1);
   mpPlot->coordinates()->axes[Qwt3D::X3].setMinors(0);
+
   //mpPlot->coordinates()->axes[Qwt3D::X3].setLineWidth(2, 0.7, 0);
   if (mpColumnScale)
     mpPlot->coordinates()->axes[Qwt3D::X3].setTicLength(majorTicLength, 0);
   else
     mpPlot->coordinates()->axes[Qwt3D::X3].setTicLength(0, 0);
+
   mpPlot->coordinates()->axes[Qwt3D::X4].setScale(new ColumnScale(mpColumnScale, getColSliderPos()));
   mpPlot->coordinates()->axes[Qwt3D::X4].setLabelString("columns");
   mpPlot->coordinates()->axes[Qwt3D::X4].setMajors(mData.columns - 1);
+
   //mpPlot->coordinates()->axes[Qwt3D::X4].setLineWidth(2, 0.7, 0);
   if (mpColumnScale)
     mpPlot->coordinates()->axes[Qwt3D::X4].setTicLength(majorTicLength, 0);
@@ -209,8 +229,10 @@ void Plot3d::setAxes()
 void Plot3d::setLegend()
 {
   mpPlot->legend()->setLimits(mpPlot->hull().minVertex.z, mpPlot->hull().maxVertex.z);
+
   if ((mpPlot->hull().minVertex.z < 0) && (mpPlot->hull().maxVertex.z < 0))
     mpPlot->legend()->setLimits(mpPlot->hull().minVertex.z, 0);
+
   if ((mpPlot->hull().minVertex.z > 0) && (mpPlot->hull().maxVertex.z > 0))
     mpPlot->legend()->setLimits(0, mpPlot->hull().maxVertex.z);
 
@@ -293,6 +315,7 @@ void Plot3d::setData(double** data, int columns, int rows, double valueZone)
       mData.rowAxeLength = ((mData.rows - 1) * mData.faktor);
       mpPlot->loadFromData(data, mData.columns, mData.rows, 0, mData.columnAxeLength, 0, mData.rowAxeLength);
     }
+
   plotData();
   setSlider();
 }
@@ -303,12 +326,14 @@ void Plot3d::setSlider()
     if (mData.valueZone != 0)
       {
         mpSliderColumn->setMinValue(0);
+
         if (mData.columns == 1)
           mpSliderColumn->setMaxValue((mData.columns - 1) * 1000);
         else
           mpSliderColumn->setMaxValue(mData.columns * 1000);
 
         mpSliderRow->setMinValue(0);
+
         if (mData.rows == 1)
           mpSliderRow->setMaxValue((mData.rows - 1) * 1000);
         else
@@ -330,22 +355,26 @@ void Plot3d::resizeCoordSys()
           minZ = -mpPlot->hull().maxVertex.z;
           maxZ = mpPlot->hull().maxVertex.z;
         }
+
       if (mpPlot->hull().maxVertex.z < fabs(mpPlot->hull().minVertex.z))
         {
           minZ = mpPlot->hull().minVertex.z;
           maxZ = -mpPlot->hull().minVertex.z;
         }
     }
+
   if ((mpPlot->hull().minVertex.z < 0) && (mpPlot->hull().maxVertex.z < 0))
     {
       minZ = mpPlot->hull().minVertex.z;
       maxZ = 0;
     }
+
   if ((mpPlot->hull().minVertex.z > 0) && (mpPlot->hull().maxVertex.z > 0))
     {
       minZ = 0;
       maxZ = mpPlot->hull().maxVertex.z;
     }
+
   mpPlot->coordinates()->init(Qwt3D::Triple(mpPlot->hull().minVertex.x, mpPlot->hull().minVertex.y, minZ),
                               Qwt3D::Triple(mpPlot->hull().maxVertex.x, mpPlot->hull().maxVertex.y, maxZ));
 }
@@ -353,6 +382,7 @@ void Plot3d::resizeCoordSys()
 int Plot3d::getColSliderPos()
 {
   if (!mpSlider) return - 1;
+
   if (mpSliderColumn->value() > mData.columns)
     return - 1;
   else
@@ -362,6 +392,7 @@ int Plot3d::getColSliderPos()
 int Plot3d::getRowSliderPos()
 {
   if (!mpSlider) return - 1;
+
   if (mpSliderRow->value() > mData.rows)
     return - 1;
   else
@@ -371,6 +402,7 @@ int Plot3d::getRowSliderPos()
 void Plot3d::sliderMoved(int column, int row)
 {
   if (!mpSlider) return;
+
   int showColumn;
   int showRow;
 
@@ -421,6 +453,7 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
   Q3PopupMenu* mpContextMenu = new Q3PopupMenu(this);
   Q_CHECK_PTR(mpContextMenu);
   mpContextMenu->insertItem("handling information", this, SLOT(hotKeysMessage()));
+
   if (mColorLegend)
     mpContextMenu->insertItem("hide legend", this, SLOT(showLegend()));
   else
@@ -439,38 +472,33 @@ void Plot3d::contextMenuEvent(QContextMenuEvent *)
 void Plot3d::saveDataToFile()
 {
   C_INT32 Answer = QMessageBox::No;
-  QString fileName, filetype_, newFilter;
+  QString fileName, filetype_; //, newFilter;
 
   while (Answer == QMessageBox::No)
     {
+
+      QString *userFilter = new QString;
+
       fileName =
-        CopasiFileDialog::getSaveFileNameAndFilter(newFilter, this, "Save File Dialog",
-            "ILDMResults-barsPrint", "BMP Files (*.bmp);;PS Files (*.ps);;PDF Files (*.pdf);;", "Save to");
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          "ILDMResults-barsPrint", "BMP Files (*.bmp);;PS Files (*.ps);;PDF Files (*.pdf)", "Save to",
+                                          userFilter);
 
       if (fileName.isNull()) return;
 
-      fileName = fileName.remove(QRegExp("\\.$"));
+      if (*userFilter == "BMP Files (*.bmp)")
+        filetype_ = "BMP";
+      else if (*userFilter == "PS Files (*.ps)")
+        filetype_ = "PS";
+      else if (*userFilter == "PDF Files (*.pdf)")
+        filetype_ = "PDF";
 
-      if (!fileName.endsWith(".bmp") && !fileName.endsWith(".") && !fileName.endsWith(".ps") && !fileName.endsWith(".png") && !fileName.endsWith(".pdf"))
-        if (newFilter == "BMP Files (*.bmp)")
-          {
-            fileName += ".bmp";
-            filetype_ = "BMP";
-          }
-        else
-          if (newFilter == "PS Files (*.ps)")
-            {
-              fileName += ".ps";
-              filetype_ = "PS";
-            }
-          else
-            if (newFilter == "PDF Files (*.pdf)")
-              {
-                fileName += ".pdf";
-                filetype_ = "PDF";
-              }
+#ifdef DEBUG_UI
+      qDebug() << "user's filter pointer = " << *userFilter;
+      qDebug() << "filetype_ = " << filetype_;
+#endif
 
-      fileName = fileName.remove(QRegExp("\\.$"));
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
@@ -512,7 +540,7 @@ void Plot3d::hotKeysMessage()
                             "You can perform shifts, turns, scales and zooms. \n \n"
                             "Try Ctrl, Shift, Alt in combination with your wheel and left mouse \n"
                             "button to get a clue (or use instead your cursor keys).\n"
-);
+                           );
 
   return;
 }

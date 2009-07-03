@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.261 $
+//   $Revision: 1.262 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/06/29 10:49:45 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:33:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,10 @@ extern const char * CopasiLicense;
 #endif
 
 #define AutoSaveInterval 10*60*1000
+
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
 
 static const unsigned char image0_data[] =
 {
@@ -499,22 +503,28 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
   ListViews::commit();
 
   C_INT32 Answer = QMessageBox::No;
-  QString tmp = "";
+  QString tmp;
+
+  if (str.isEmpty()) str = "untitled.cps";
+
+#ifdef DEBUG_UI
+  qDebug() << "Filename on slotFileSaveAs = " << str;
+#endif
 
   while (Answer == QMessageBox::No)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "COPASI Files (*.cps);;All Files (*.*)",
+                                          str, "COPASI Files (*.cps)",
                                           "Choose a filename to save under");
 
-      if (tmp.isNull()) return false;
+      if (tmp.isEmpty()) return false;
 
-      if (!tmp.endsWith(".cps") &&
-          !tmp.endsWith(".")) tmp += ".cps";
+#ifdef DEBUG_UI
+      qDebug() << "tmp = " << tmp;
+#endif
 
-      tmp = tmp.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(tmp);
 
       if (Answer == QMessageBox::Cancel) return false;
@@ -865,6 +875,10 @@ bool CopasiUI3Window::slotFileSave()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   std::string FileName = (*CCopasiRootContainer::getDatamodelList())[0]->getFileName();
+
+#ifdef DEBUG_UI
+  std::cout << "Filename = " << FileName << std::endl;
+#endif
 
   if (mSaveAsRequired || FileName == "")
     {
@@ -1303,6 +1317,8 @@ void CopasiUI3Window::slotExportSBML()
                     + CDirEntry::Separator
                     + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
                     + ".xml");
+      else
+        Default = "untitled.xml";
 
       // we need a new dialog the lets the user choose different levels of SBML as soon as support for export to those versions
       // has been implemented.
@@ -1313,13 +1329,9 @@ void CopasiUI3Window::slotExportSBML()
       sbmlLevel = nameAndVersion.second.first;
       sbmlVersion = nameAndVersion.second.second;
 
-      if (tmp.isNull()) return;
+      if (tmp.isEmpty()) return;
 
-      if (!tmp.endsWith(".xml") && !tmp.endsWith("."))
-        tmp += ".xml";
-
-      tmp = tmp.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(tmp);
 
       if (Answer == QMessageBox::Cancel) return;
@@ -1374,10 +1386,11 @@ void CopasiUI3Window::slotExportMathModel()
 
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
-  QString newFilter;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
+  QString *userFilter = new QString;
 
   while (Answer == QMessageBox::No)
     {
@@ -1388,33 +1401,22 @@ void CopasiUI3Window::slotExportMathModel()
         = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
                     + CDirEntry::Separator
                     + CDirEntry::baseName(pDataModel->getFileName()));
+      else
+        Default = "untitled.c";
 
       tmp =
-        CopasiFileDialog::getSaveFileNameAndFilter(newFilter, this, "Save File Dialog",
-            Default,
-            "C Files (*.c);;Berkeley Madonna Files (*.mmd);;XPPAUT (*.ode)",
-            "Choose an export format.");
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          Default,
+                                          "C Files (*.c);;Berkeley Madonna Files (*.mmd);;XPPAUT (*.ode)",
+                                          "Choose an export format", userFilter);
 
-      if (tmp.isNull()) return;
+      if (tmp.isEmpty()) return;
 
-      tmp = tmp.remove(QRegExp("\\.$"));
+#ifdef DEBUG_UI
+      qDebug() << "user's filter pointer = " << *userFilter;
+#endif
 
-      if (!tmp.endsWith(".c") && !tmp.endsWith(".") && !tmp.endsWith(".mmd") && !tmp.endsWith(".ode"))
-        {
-          if (newFilter == "C Files (*.c)")
-            tmp += ".c";
-          else if (newFilter == "Berkeley Madonna Files (*.mmd)")
-            tmp += ".mmd";
-          else if (newFilter == "XPPAUT (*.ode)")
-            tmp += ".ode";
-        }
-
-      if (tmp.endsWith(".c") && newFilter != "C Files (*.c)") newFilter = "C Files (*.c)";
-
-      if (tmp.endsWith(".mmd") && newFilter != "Berkeley Madonna Files (*.mmd)") newFilter = "Berkeley Madonna Files (*.mmd)";
-
-      if (tmp.endsWith(".ode") && newFilter != "XPPAUT (*.ode)") newFilter = "XPPAUT (*.ode)";
-
+      // Checks whether the file exists
       Answer = checkSelection(tmp);
 
       if (Answer == QMessageBox::Cancel) return;
@@ -1425,7 +1427,7 @@ void CopasiUI3Window::slotExportMathModel()
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if (!dataModel->exportMathModel(TO_UTF8(tmp), TO_UTF8(newFilter), true))
+      if (!dataModel->exportMathModel(TO_UTF8(tmp), TO_UTF8(*userFilter), true))
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
@@ -1789,9 +1791,8 @@ void CopasiUI3Window::slotCapture()
 
   while (Answer == QMessageBox::No)
     {
-      QString strFilter;
-      fileName = CopasiFileDialog::getSaveFileNameAndFilter(strFilter, this, "Save File Dialog",
-                 QString::null, "PNG Files (*.png)", "Save Capture as PNG file");
+      fileName = CopasiFileDialog::getSaveFileName(this,
+                 "Save File Dialog", "untitled.png", "PNG Files (*.png)", "Save Capture as PNG file");
 
       if (fileName.isEmpty()) return;
 
