@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.92 $
+//   $Revision: 1.93 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/04 15:18:52 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:44:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@
 #include <stdlib.h>
 
 #include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
@@ -52,6 +53,10 @@
 #include "ParaPanel.h"
 #include "CQPlayerControlWidget.h"
 #include "load_data.xpm"
+
+#ifdef DEBUG_UI
+#include <QtDebug>
+#endif
 
 using namespace std;
 
@@ -606,8 +611,14 @@ void CQLayoutMainWindow::startAnimation()
 
 void CQLayoutMainWindow::saveImage()
 {
+#ifdef DEBUG_UI
+//  qDebug() << "mCurrentPlace = " << mCurrentPlace;
+#endif
+
   QImage img = mpGLViewport->getPainter()->getImage();
-  QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
+//  QString filename = QFileDialog::getSaveFileName(mCurrentPlace, "PNG Files (*.png);;All Files (*.*);;", this, "Choose a filename to save the image under");
+  QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
+                     "PNG Files (*.png)", "Choose a filename to save the image under");
 
   if (!filename.isNull())
     {
