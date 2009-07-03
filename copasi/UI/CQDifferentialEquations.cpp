@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: pwilly $
-//   $Date: 2009/06/20 05:06:25 $
+//   $Date: 2009/07/03 10:11:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,23 +179,20 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
 
 void CQDifferentialEquations::slotSave()
 {
-  QString sSelectedFilter;
-  QString outfilename = "";
+  QString outfilename;
 
   C_INT32 Answer = QMessageBox::No;
 
   while (Answer == QMessageBox::No)
     {
       outfilename =
-        CopasiFileDialog::getSaveFileNameAndFilter(sSelectedFilter,
-            this,
-            "Save File Dialog",
-            QString::null,
-//            "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
-            "MathML (*.mml);;TeX (*.tex)",
-            "Save Formula to Disk");
+        CopasiFileDialog::getSaveFileName(this,
+                                          "Save File Dialog",
+                                          "untitled.mml",
+                                          "MathML (*.mml);;TeX (*.tex)",
+                                          "Save Formula to Disk", new QString);
 
-      if (outfilename.isNull()) return;
+      if (outfilename.isEmpty()) return;
 
       // Checks whether the file exists
       Answer = checkSelection(outfilename);
@@ -205,10 +202,10 @@ void CQDifferentialEquations::slotSave()
     }
 
 #ifdef DEBUG_UI
-  qDebug() << qPrintable(sSelectedFilter);
+  qDebug() << "outfilename = " << outfilename;
 #endif
 
-  if (sSelectedFilter.contains("tex"))
+  if (outfilename.contains(".tex"))
     saveTeX(outfilename);
   else
     saveMML(outfilename);

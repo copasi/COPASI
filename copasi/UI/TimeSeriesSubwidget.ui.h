@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:21:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,22 +49,20 @@ void TimeSeriesSubWidget::saveDataToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
-      if (!fileName.endsWith(".txt") &&
-          !fileName.endsWith(".")) fileName += ".txt";
-
-      fileName = fileName.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
 
   const CTimeSeries* timeSeries = this->table()->getTimeSeries();
+
   int failed = 0;
+
   if (timeSeries)
     {
       QCursor oldCursor = cursor();
@@ -72,6 +70,7 @@ void TimeSeriesSubWidget::saveDataToFile()
       failed = timeSeries->save(TO_UTF8(fileName), !(this->table()->doShowConcentrations()), "\t");
       setCursor(oldCursor);
     }
+
   if (failed)
     {
       std::string s = "Could not save data to ";
@@ -109,12 +108,12 @@ void TimeSeriesSubWidget::setFramework(const int & framework)
 
   switch (mFramework)
     {
-    case 0:
-      dataTable->showConcentrations(true);
-      break;
+      case 0:
+        dataTable->showConcentrations(true);
+        break;
 
-    case 1:
-      dataTable->showConcentrations(false);
-      break;
+      case 1:
+        dataTable->showConcentrations(false);
+        break;
     }
 }

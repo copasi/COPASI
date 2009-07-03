@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationResult.ui.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:17:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,9 +80,11 @@ bool CQOptimizationResult::enter(const std::string & /* key */)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   mpTask =
     dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
+
   if (!mpTask) return false;
 
   mpProblem = dynamic_cast<const COptProblem *>(mpTask->getProblem());
+
   if (!mpProblem) return false;
 
   // Objective Value
@@ -103,6 +105,7 @@ bool CQOptimizationResult::enter(const std::string & /* key */)
   const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
 
   imax = Items.size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -110,10 +113,12 @@ bool CQOptimizationResult::enter(const std::string & /* key */)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
         pDataModel->getObject(Items[i]->getObjectCN());
+
       if (pObject)
         mpParameters->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
       else
@@ -139,21 +144,18 @@ void CQOptimizationResult::slotSave(void)
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
-      if (!fileName.endsWith(".txt") &&
-          !fileName.endsWith(".")) fileName += ".txt";
-
-      fileName = fileName.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
 
   std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+
   if (file.fail()) return;
 
   unsigned C_INT32 i, imax;
@@ -179,6 +181,7 @@ void CQOptimizationResult::slotSave(void)
   const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
 
   imax = Items.size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -190,6 +193,7 @@ void CQOptimizationResult::slotSave(void)
     {
       const CCopasiObject *pObject =
         pDataModel->getObject(Items[i]->getObjectCN());
+
       if (pObject)
         file << pObject->getObjectDisplayName() << "\t";
       else

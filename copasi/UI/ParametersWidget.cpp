@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/08 22:38:18 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:22:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,15 +265,11 @@ void ParametersWidget::savePressed()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
-      if (!fileName.endsWith(".txt") &&
-          !fileName.endsWith(".")) fileName += ".txt";
-
-      fileName = fileName.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;

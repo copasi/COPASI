@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/12 16:46:57 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:13:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,14 +93,13 @@ void CQExpressionMmlWidget::slotSaveExpression()
   while (Answer == QMessageBox::No)
     {
       outfilename =
-        CopasiFileDialog::getSaveFileNameAndFilter(filter,
-            this,
-            "Save File Dialog",
-            QString::null,
-            "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
-            "Save Expression to Disk");
+        CopasiFileDialog::getSaveFileName(this,
+                                          "Save File Dialog",
+                                          "untitled.mml",
+                                          "MathML (*.mml);;TeX (*.tex)",
+                                          "Save Expression to Disk", new QString);
 
-      if (outfilename.isNull()) return;
+      if (outfilename.isEmpty()) return;
 
       // Checks whether the file exists
       Answer = checkSelection(outfilename);

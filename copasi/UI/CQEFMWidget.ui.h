@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/08 16:07:44 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:11:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,30 +70,35 @@ void CQEFMWidget::loadFluxModes()
       Ui::CQEFMWidget::mpListView->setColumnText(0, "Reversibility");
 #ifdef COPASI_SSA
       bool ssatask = pTask->getMethod()->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis;
+
       if (ssatask)
         mpListView->setColumnText(0, "Stability");
+
 #endif
       unsigned C_INT32 j;
+
       for (j = 0; j < noOfModesRows; j++)
         {
 #ifdef COPASI_SSA
+
           if (ssatask)
             {
               item = new Q3ListViewItem(mpListView, "");
 
               std::string title;
+
               switch (dynamic_cast<CSSAMethod *>(pTask->getMethod())->isMixingStable(j))
                 {
-                case TriTrue:
-                  title = "Mixing stable";
-                  break;
+                  case TriTrue:
+                    title = "Mixing stable";
+                    break;
 
-                case TriFalse:
-                  title = "Not mixing stable";
-                  break;
+                  case TriFalse:
+                    title = "Not mixing stable";
+                    break;
 
-                default:
-                  title = "Unknown";
+                  default:
+                    title = "Unknown";
                 }
 
               item->setText(0, title);
@@ -101,6 +106,7 @@ void CQEFMWidget::loadFluxModes()
           else
             {
 #endif // COPASI_SSA
+
               if (pTask->isFluxModeReversible(j) == true)
                 {
                   item = new Q3ListViewItem(Ui::CQEFMWidget::mpListView, "Reversible");
@@ -109,20 +115,24 @@ void CQEFMWidget::loadFluxModes()
                 {
                   item = new Q3ListViewItem(Ui::CQEFMWidget::mpListView, "Irreversible");
                 }
+
 #ifdef COPASI_SSA
             }
+
 #endif // COPASI_SSA
           item->setMultiLinesEnabled(true);
 
           item->setText(1, FROM_UTF8(pTask->getFluxModeDescription(j)));
           std::string reactionEq = "";
           unsigned int x, xmax = pTask->getFluxModeSize(j);
+
           //const CFluxMode & mode = pTask->getFluxMode(j);
           for (x = 0; x < xmax; x++)
             {
               reactionEq += pTask->getReactionEquation(j, x);
               reactionEq += "\n";
             }
+
           item->setText(2, FROM_UTF8(reactionEq).stripWhiteSpace() + "\n");
         }
     }
@@ -148,6 +158,7 @@ bool CQEFMWidget::saveTask()
 {
   CEFMTask * pTask =
     dynamic_cast< CEFMTask * >(mpTask);
+
   if (!pTask) return false;
 
   saveCommon();
@@ -158,6 +169,7 @@ bool CQEFMWidget::loadTask()
 {
   CEFMTask * pTask =
     dynamic_cast< CEFMTask * >(mpTask);
+
   if (!pTask) return false;
 
   loadCommon();
@@ -180,15 +192,11 @@ void CQEFMWidget::slotSave()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
-      if (!fileName.endsWith(".txt") &&
-          !fileName.endsWith(".")) fileName += ".txt";
-
-      fileName = fileName.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;

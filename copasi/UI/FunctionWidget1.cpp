@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.169 $
+//   $Revision: 1.170 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:18:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1305,19 +1305,18 @@ bool FunctionWidget1::enter(const std::string & key)
 void FunctionWidget1::slotSave()
 {
   QString filter;
-  QString outfilename;
+  QString outfilename, extName;
 
   C_INT32 Answer = QMessageBox::No;
 
   while (Answer == QMessageBox::No)
     {
       outfilename =
-        CopasiFileDialog::getSaveFileNameAndFilter(filter,
-            this,
-            "Save File Dialog",
-            QString::null,
-            "MathML (*.mml);;XML (*.xml);;TeX (*.tex);;",
-            "Save Formula to Disk");
+        CopasiFileDialog::getSaveFileName(this,
+                                          "Save File Dialog",
+                                          "untitled.mml",
+                                          "MathML (*.mml);;TeX (*.tex)",
+                                          "Save Formula to Disk", new QString);
 
       if (outfilename.isNull()) return;
 
@@ -1328,7 +1327,7 @@ void FunctionWidget1::slotSave()
         return;
     }
 
-  if (filter.contains("tex"))
+  if (outfilename.endsWith(".tex"))
     saveTeX(outfilename);
   else
     saveMML(outfilename);
