@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAResultSubWidget.ui.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: pwilly $
+//   $Date: 2009/07/03 10:54:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,15 +98,11 @@ void CQTSSAResultSubWidget::saveDataToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
-      if (!fileName.endsWith(".txt") &&
-          !fileName.endsWith(".")) fileName += ".txt";
-
-      fileName = fileName.remove(QRegExp("\\.$"));
-
+      // Checks whether the file exists
       Answer = checkSelection(fileName);
 
       if (Answer == QMessageBox::Cancel) return;
