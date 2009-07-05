@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,16 +103,15 @@ public:
                std::vector< CCopasiContainer * > listOfContainer);
 
   /**
-   * At least one of the root finders of the the trigger has found a
-   * root. This methods checks whether the event fires and schedules
-   * the event if needed.
+   * The event fires and the approriate actions are scheduled
+   * in the process queue.
    * @param const C_FLOAT64 & time
    * @param const bool & equality
    * @param CProcessQueue & processQueue
    */
-  void processRoot(const C_FLOAT64 & time,
-                   const bool & equality,
-                   CProcessQueue & processQueue);
+  void fire(const C_FLOAT64 & time,
+            const bool & equality,
+            CProcessQueue & processQueue);
 
   /**
    * Apply all needed refreshes so that the delay expression are

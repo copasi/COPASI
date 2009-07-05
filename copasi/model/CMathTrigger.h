@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,35 +61,35 @@ public:
     bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
     /**
+     * Determine whether the root only changes during dicrete events.
+     * The root must be compiled before calling this method.
+     * @param const std::set< const CCopasiObject *> & stateVariables
+     */
+    void determineDiscrete(const std::set< const CCopasiObject * > & stateVariables);
+
+    /**
+     * Check whther the root change only during discrete events.
+     * @return const bool & isDiscrete
+     */
+    const bool & isDiscrete() const;
+
+    /**
      * Retrieve the expression evaluating the truth value
-     * @param const C_FLOAT64 * pEquality
      * @return CEvalutionNode * trueExpression
      */
-    CEvaluationNode * getTrueExpression(const C_FLOAT64 * pEquality) const;
+    CEvaluationNode * getTrueExpression() const;
 
     /**
-     * Retrieve the expression evaluating the activity value
-     * @return CEvalutionNode * activeExpression
-     */
-    CEvaluationNode * getActiveExpression() const;
-
-    /**
-     * Retrieve the expression evaluating the equality value
-     * @return CEvalutionNode * equalityExpression
-     */
-    CEvaluationNode * getEqualityExpression() const;
-
-    /**
-     * Activate the root finder dependent on the currently
+     * Toggle the root status dependent on the
      * processed equality status
      * @param const bool & equality
      */
-    void charge(const bool & equality);
+    void toggle(const bool & equality);
 
     /**
-     * Determine the activity for the initial conditions.
+     * Determine the truth value for the initial conditions.
      */
-    void calculateInitialActivity();
+    void calculateInitialTrue();
 
     /**
      * Retrieve a pointer to the current value of the root.
@@ -114,10 +114,15 @@ public:
     bool mEquality;
 
     /**
-     * Indicates whether the trigger is active
+     * This indicates whether the root changes only discretely
      */
-    // TODO This should be a bool but the CExpressionTree only handles double
-    C_FLOAT64 mActive;
+    bool mDiscrete;
+
+    /**
+     * Indicates the truth value of the root active
+     * This should be a bool but the CExpressionTree only handles double
+     */
+    C_FLOAT64 mTrue;
   };
 
   // Operations
@@ -142,12 +147,9 @@ public:
   virtual ~CMathTrigger();
 
   /**
-   * Check whether the fire condition is met dependent on the
-   * currently processed equality status
-   * @param const bool & equality
-   * @return bool fire
+   * Determine the true value for the initial conditions.
    */
-  bool fire(const bool & equality);
+  void calculateInitialTrue();
 
   /**
    * Determine the activity for the initial conditions.
@@ -155,11 +157,10 @@ public:
   void calculateInitialActivity();
 
   /**
-   * Calculate whether the current trigger is evaluated for
-   * equality.
-   * @return equality
+   * Calculate the current trigger value.
+   * @return value
    */
-  bool calculateEquality();
+  bool calculate();
 
   /**
    * Compile the trigger
@@ -178,101 +179,35 @@ public:
 
 private:
   bool compile(const CEvaluationNode * pSource,
-               CEvaluationNode * & pTrueExpression,
-               CEvaluationNode * & pActiveExpression,
-               CEvaluationNode * & pFireExpression,
-               CEvaluationNode * & pEqualityExpression);
+               CEvaluationNode * & pTrueExpression);
   bool compileAND(const CEvaluationNode * pSource,
-                  CEvaluationNode * & pTrueExpression,
-                  CEvaluationNode * & pActiveExpression,
-                  CEvaluationNode * & pFireExpression,
-                  CEvaluationNode * & pEqualityExpression);
+                  CEvaluationNode * & pTrueExpression);
   bool compileOR(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileXOR(const CEvaluationNode * pSource,
-                  CEvaluationNode * & pTrueExpression,
-                  CEvaluationNode * & pActiveExpression,
-                  CEvaluationNode * & pFireExpression,
-                  CEvaluationNode * & pEqualityExpression);
+                  CEvaluationNode * & pTrueExpression);
   bool compileEQ(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileNE(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileLT(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileLE(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileGT(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileGE(const CEvaluationNode * pSource,
-                 CEvaluationNode * & pTrueExpression,
-                 CEvaluationNode * & pActiveExpression,
-                 CEvaluationNode * & pFireExpression,
-                 CEvaluationNode * & pEqualityExpression);
+                 CEvaluationNode * & pTrueExpression);
   bool compileNOT(const CEvaluationNode * pSource,
-                  CEvaluationNode * & pTrueExpression,
-                  CEvaluationNode * & pActiveExpression,
-                  CEvaluationNode * & pFireExpression,
-                  CEvaluationNode * & pEqualityExpression);
-
-  static
-  CEvaluationNode * getEqualityExpression(CEvaluationNode * pFireExpressionLeft,
-                                          CEvaluationNode * pEqualityExpressionLeft,
-                                          CEvaluationNode * pFireExpressionRight,
-                                          CEvaluationNode * pEqualityExpressionRight);
-
-  static
-  CEvaluationNode * getFireExpression(CEvaluationNode * pTrueExpression,
-                                      CEvaluationNode * pActiveExpression);
+                  CEvaluationNode * & pTrueExpression);
 
   // Attributes
 private:
   /**
    * This expression evaluates whether
-   * the trigger is active.
-   */
-  CMathExpression mActiveExpression;
-
-  /**
-   * This expression evaluates whether
    * the trigger value is true.
    */
   CMathExpression mTrueExpression;
-
-  /**
-   * This expression evaluates the boolean operators to determine whether
-   * the trigger fires.
-   */
-  CMathExpression mFireExpression;
-
-  /**
-   * This expression evaluates whether the check us for equality.
-   */
-  CMathExpression mEqualityExpression;
-
-  /**
-   * This values indicates whether the current root processing is for
-   * equality or not.
-   */
-  C_FLOAT64 mEquality;
 
   /**
    * A vector containing the root expression.

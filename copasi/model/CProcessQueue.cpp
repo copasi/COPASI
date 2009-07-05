@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/02 11:41:15 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -276,7 +276,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
   if (success &&
       notEmpty(Assignments))
     {
-      mpMathModel->evaluateRoots(*mpRootValuesBefore);
+      mpMathModel->evaluateRoots(*mpRootValuesBefore, false);
     }
 
   // The algorithm below will work properly for user ordered events
@@ -505,7 +505,7 @@ bool CProcessQueue::rootsFound()
   bool rootsFound = false;
 
   // Calculate the current root values
-  mpMathModel->evaluateRoots(*mpRootValuesAfter);
+  mpMathModel->evaluateRoots(*mpRootValuesAfter, false);
 
   // Compare the root values before and after;
   C_INT * pRootFound = mRootsFound.array();

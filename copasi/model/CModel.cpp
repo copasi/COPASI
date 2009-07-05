@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.369 $
+//   $Revision: 1.370 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 13:06:10 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4154,9 +4154,10 @@ std::string CModel::getQuantityRateUnitsDisplayString() const
 
 /****** Below will be removed when the math model completed ******/
 
-void CModel::evaluateRoots(CVectorCore< double > & rootValues)
+void CModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues,
+                           const bool & ignoreDiscrete)
 {
-  return mpMathModel->evaluateRoots(rootValues);
+  return mpMathModel->evaluateRoots(rootValues, ignoreDiscrete);
 }
 
 void CModel::processQueue(const C_FLOAT64 & time,

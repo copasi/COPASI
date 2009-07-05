@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/02 11:41:14 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@ CMathModel::CMathModel(const CCopasiContainer * pParent) :
     mProcessQueue(),
     mEvents("ListOfMathEvents", this),
     mRootValues(),
+    mRootDiscrete(),
     mRootRefreshes(),
     mRootIndex2Event(),
     mRootIndex2RootFinder()
@@ -34,6 +35,7 @@ CMathModel::CMathModel(const CMathModel & src,
     mProcessQueue(src.mProcessQueue),
     mEvents("ListOfMathEvents", this),
     mRootValues(),
+    mRootDiscrete(),
     mRootRefreshes(),
     mRootIndex2Event(),
     mRootIndex2RootFinder()
@@ -100,6 +102,11 @@ bool CMathModel::compile(CModel * pModel)
   mRootValues.resize(RootFinderCount);
   C_FLOAT64 ** ppRootValue = mRootValues.array();
 
+  // We need to create a CVector indicating whther the roots only change
+  // during discrete events.
+  mRootDiscrete.resize(RootFinderCount);
+  bool * pRootDiscrete = mRootDiscrete.array();
+
   // We need create a map of root indexes to events.
   mRootIndex2Event.resize(RootFinderCount);
   CMathEvent ** ppEvent = mRootIndex2Event.array();
@@ -107,6 +114,17 @@ bool CMathModel::compile(CModel * pModel)
   // We need create a map of root indexes to root finders.
   mRootIndex2RootFinder.resize(RootFinderCount);
   CMathTrigger::CRootFinder ** ppRootFinder = mRootIndex2RootFinder.array();
+
+  // We need to list all state variables to find out whether the roots
+  // only change during discrete events.
+  std::set< const CCopasiObject * > StateVariables;
+  CModelEntity *const*ppEntity = mpModel->getStateTemplate().getEntities();
+  CModelEntity *const*ppEntityEnd = mpModel->getStateTemplate().endIndependent();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      StateVariables.insert((*ppEntity)->getValueReference());
+    }
 
   std::set< const CCopasiObject * > RootValuesDependencies;
 
@@ -122,10 +140,15 @@ bool CMathModel::compile(CModel * pModel)
         (*itMathEvent)->getMathTrigger().getRootFinders().end();
 
       // for each root finder
-      for (; itRootFinder != endRootFinder; ++itRootFinder, ++ppRootValue, ++ppEvent, ++ppRootFinder)
+      for (; itRootFinder != endRootFinder;
+           ++itRootFinder, ++ppRootValue, ++pRootDiscrete, ++ppEvent, ++ppRootFinder)
         {
-          // Update the vector of pointers to current root values
+          // Update the vector of pointers to current root values.
           *ppRootValue = (*itRootFinder)->getRootValuePtr();
+
+          // Store whether a root changes only during discrete events.
+          (*itRootFinder)->determineDiscrete(StateVariables);
+          *pRootDiscrete = (*itRootFinder)->isDiscrete();
 
           // Build the mapping from root values indexes to CMathEvents
           *ppEvent = *itMathEvent;
@@ -144,7 +167,8 @@ bool CMathModel::compile(CModel * pModel)
   return success;
 }
 
-void CMathModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues)
+void CMathModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues,
+                               const bool & ignoreDiscrete)
 {
   // Apply all needed refresh calls to calculate the current root values.
   std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
@@ -156,13 +180,25 @@ void CMathModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues)
   // Copy the current values to the output vector.
   assert(rootValues.size() == mRootValues.size());
 
-  C_FLOAT64 * pTarget = rootValues.array();
+  C_FLOAT64 *pTarget = rootValues.array();
   C_FLOAT64 **pSrc = mRootValues.array();
   C_FLOAT64 **pSrcEnd = pSrc + mRootValues.size();
 
-  for (; pSrc != pSrcEnd; ++pSrc, ++pTarget)
+  if (ignoreDiscrete)
     {
-      *pTarget = **pSrc;
+      bool *pDiscrete = mRootDiscrete.array();
+
+      for (; pSrc != pSrcEnd; ++pSrc, ++pDiscrete, ++pTarget)
+        {
+          *pTarget = (*pDiscrete) ? 1.0 : **pSrc;
+        }
+    }
+  else
+    {
+      for (; pSrc != pSrcEnd; ++pSrc, ++pTarget)
+        {
+          *pTarget = **pSrc;
+        }
     }
 
   return;
@@ -194,44 +230,44 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
   const C_INT *pFoundRootEnd = pFoundRoot + foundRoots.size();
 
   CMathEvent ** ppEvent = mRootIndex2Event.array();
-  CMathEvent * pProcessedEvent = NULL;
+  CMathEvent * pProcessEvent = NULL;
 
   CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
 
   // We go through the list of roots and process the events
   // which need to be checked whether they fire.
-  for (; pFoundRoot != pFoundRootEnd; ++pFoundRoot, ++ppEvent, ++ppRootFinder)
+  bool TriggerBefore = true;
+
+  while (pFoundRoot != pFoundRootEnd)
     {
+      pProcessEvent = *ppEvent;
+      TriggerBefore = pProcessEvent->getMathTrigger().calculate();
+
       // Process the events for which we have found a root.
       // A found root is indicated by roots[i] = 1 or 0 otherwise.
-      if (*pFoundRoot > 0)
+      while (*ppEvent == pProcessEvent &&
+             pFoundRoot != pFoundRootEnd)
         {
-          // We need to process each event at most once.
-          if (*ppEvent != pProcessedEvent)
+          // We must only toggle the roots which are marked.
+          if (*pFoundRoot > 0)
             {
-              pProcessedEvent = *ppEvent;
-              pProcessedEvent->processRoot(time, equality, mProcessQueue);
+              (*ppRootFinder)->toggle(equality);
             }
 
-          // We must charge only the roots which are marked.
-          (*ppRootFinder)->charge(equality);
+          ++pFoundRoot; ++ppEvent; ++ppRootFinder;
+        }
+
+      bool TriggerAfter = pProcessEvent->getMathTrigger().calculate();
+
+      // Check whether the event fires
+      if (TriggerAfter == true &&
+          TriggerBefore == false)
+        {
+          pProcessEvent->fire(time, equality, mProcessQueue);
         }
     }
 
   return;
-}
-
-void CMathModel::processEvents(const C_FLOAT64 & time, const bool & equality)
-{
-  // Now calculate the current root activities
-  CCopasiVector< CMathEvent >::const_iterator itMathEvent = mEvents.begin();
-  CCopasiVector< CMathEvent >::const_iterator endMathEvent = mEvents.end();
-
-  // for each event
-  for (; itMathEvent != endMathEvent; ++itMathEvent)
-    {
-      (*itMathEvent)->processRoot(time, equality, mProcessQueue);
-    }
 }
 
 const C_FLOAT64 & CMathModel::getProcessQueueExecutionTime() const
@@ -259,8 +295,18 @@ void CMathModel::applyInitialValues()
   // for each event
   for (; itMathEvent != endMathEvent; ++itMathEvent)
     {
-      (*itMathEvent)->getMathTrigger().calculateInitialActivity();
+      (*itMathEvent)->getMathTrigger().calculateInitialTrue();
     }
+
+  // TODO CRITICAL We need to schedule events which fire at t > t_0
+
+  // The roots which are checked for inequality with a current root value
+  // are the candidates. We should toggle them if their time derivitative
+  // is positive
+
+  // The time derivitives of the roots can be calculated as:
+  // Dr_i/Dt = sum_j (dr_i/dx_j dx_j/dt) + dr_i/dt
+  // dx_j/dt are the rates of the state variables
 }
 
 size_t CMathModel::getNumRoots() const

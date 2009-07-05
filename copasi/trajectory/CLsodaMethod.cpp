@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/25 12:10:16 $
+//   $Date: 2009/07/05 04:15:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -336,8 +336,8 @@ void CLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
                          const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
-void CLsodaMethod::evalR(const C_FLOAT64 *  t , const C_FLOAT64 *  y ,
-                         const C_INT *  nr , C_FLOAT64 * r)
+void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  y,
+                         const C_INT *  nr, C_FLOAT64 * r)
 {
   assert(y == mY);
   assert(*nr == (C_INT) mRoots.size());
@@ -348,5 +348,5 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t , const C_FLOAT64 *  y ,
 
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
 
-  mpModel->evaluateRoots(RootValues);
+  mpModel->evaluateRoots(RootValues, true);
 };

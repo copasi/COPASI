@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.176 $
+//   $Revision: 1.177 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1463,10 +1463,13 @@ private:
   // Operations
 public:
   /**
-   * Evaluate all root values for the current state of the model
-   * @param CVectorCore< double > & rootValues
+   * Evaluate all root values for the current state of the model. If
+   * ignoreDiscrete is true discrete roots evaluate to 1.0.
+   * @param CVectorCore< C_FLOAT64 > & rootValues
+   * @param const bool & ignoreDiscrete
    */
-  void evaluateRoots(CVectorCore< double > & rootValues);
+  void evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues,
+                     const bool & ignoreDiscrete);
 
   /**
    * Process events scheduled at the given which a are checked for

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/05 04:15:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,40 +149,31 @@ bool CMathEvent::compile(const CEvent * pEvent,
   return success;
 }
 
-void CMathEvent::processRoot(const C_FLOAT64 & time,
-                             const bool & equality,
-                             CProcessQueue & processQueue)
+void CMathEvent::fire(const C_FLOAT64 & time,
+                      const bool & equality,
+                      CProcessQueue & processQueue)
 {
-  // We first need ask the trigger whether to fire.
-  bool Fire = mTrigger.fire(equality);
+  unsigned C_INT32 EventId = processQueue.createEventId();
 
-  // If the event fires we need to schedule the event in the process queue
-  if (Fire)
+  // Add each assignment to the calculation queue
+  CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
+  CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
+
+  // Determine the execution time of the calculation of the event.
+  C_FLOAT64 ExecutionTime = getExecutionTime(time);
+
+  // We can only add calculations even if the calculation time is the current time.
+  // This is due to the fact that equality and inequality checks are treated differently.
+  for (; itAssignment != endAssignment; ++itAssignment)
     {
-      bool Equality = mTrigger.calculateEquality();
-
-      unsigned C_INT32 EventId = processQueue.createEventId();
-
-      // Add each assignment to the calculation queue
-      CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
-      CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
-
-      // Determine the execution time of the calculation of the event.
-      C_FLOAT64 ExecutionTime = getExecutionTime(time);
-
-      // We can only add calculations even if the calculation time is the current time.
-      // This is due to the fact that equality and inequality checks are treated differently.
-      for (; itAssignment != endAssignment; ++itAssignment)
-        {
-          // We must delay the calculation of the new target value
-          processQueue.addCalculation(ExecutionTime,
-                                      Equality,
-                                      mOrder,
-                                      EventId,
-                                      (*itAssignment)->mpTarget,
-                                      &(*itAssignment)->mExpression,
-                                      this);
-        }
+      // We must delay the calculation of the new target value
+      processQueue.addCalculation(ExecutionTime,
+                                  equality,
+                                  mOrder,
+                                  EventId,
+                                  (*itAssignment)->mpTarget,
+                                  &(*itAssignment)->mExpression,
+                                  this);
     }
 }
 
