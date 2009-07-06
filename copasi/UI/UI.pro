@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.203 $
+#   $Revision: 1.204 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2009/07/06 12:12:14 $
+#   $Date: 2009/07/06 12:46:06 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.203 $ $Author: aekamal $ $Date: 2009/07/06 12:12:14 $
+# $Revision: 1.204 $ $Author: aekamal $ $Date: 2009/07/06 12:46:06 $
 ######################################################################
 
 LIB = UI
@@ -156,7 +156,7 @@ SOURCES	+= \
 	CQSortFilterProxyModel.cpp \
 	CQSpecieDM.cpp \
 	CQSpeciesWidget.cpp \
-	CQSpinBoxDelegate.h \
+	CQSpinBoxDelegate.cpp \
 	CQUpdatesWidget.cpp \
 	CQValidator.cpp \
 	CScanContainerWidget.cpp \
