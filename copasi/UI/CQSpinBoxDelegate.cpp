@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpinBoxDelegate.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/06 12:12:14 $
+//   $Author: ssahle $
+//   $Date: 2009/07/06 14:43:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ void CQSpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 {
   QSpinBox *pSpinBox = static_cast<QSpinBox*>(editor);
   pSpinBox->interpretText();
-  unsigned C_INT32 value = pSpinBox->value();
+  unsigned int value = pSpinBox->value();
 
   model->setData(index, value, Qt::EditRole);
 }
