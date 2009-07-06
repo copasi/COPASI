@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/06 12:12:14 $
+//   $Author: ssahle $
+//   $Date: 2009/07/06 14:42:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,7 +116,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                 return QVariant(FROM_UTF8(pEvent->getObjectName()));
 
               case COL_ORDER_EVENTS:
-                return QVariant(pEvent->getOrder());
+                return QVariant((unsigned int)pEvent->getOrder());
 
               case COL_TRIGGER_EVENTS:
                 return QVariant(FROM_UTF8(pEvent->getTriggerExpression()));
@@ -232,7 +232,7 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
+//      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
     }
 
   endRemoveRows();
