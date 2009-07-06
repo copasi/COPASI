@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.177 $
+//   $Revision: 1.178 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/06 15:45:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -962,8 +962,31 @@ public:
    */
   CEvent* createEvent(const std::string &name);
 
-  /** Remove an event from the model*/
+  /**
+   * Remove an event from the model
+   * @param const unsigned C_INT32 index
+   * @param const bool & recursive (default: true)
+   * @return bool success
+   */
+  bool removeEvent(const unsigned C_INT32 index,
+                   const bool & recursive = true);
+
+  /**
+   * Remove an event from the model
+   * @param const std::string & key
+   * @param const bool & recursive (default: true)
+   * @return bool success
+   */
   bool removeEvent(const std::string & key,
+                   const bool & recursive = true);
+
+  /**
+   * Remove an event from the model
+   * @param const CEvent * pEvent
+   * @param const bool & recursive (default: true)
+   * @return bool success
+   */
+  bool removeEvent(const CEvent * pEvent,
                    const bool & recursive = true);
 
   /**

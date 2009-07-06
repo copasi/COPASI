@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/07/06 14:42:53 $
+//   $Author: shoops $
+//   $Date: 2009/07/06 15:45:46 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,7 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-//      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
+      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(position);
     }
 
   endRemoveRows();

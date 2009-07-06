@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.370 $
+//   $Revision: 1.371 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/06 15:45:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2907,15 +2907,27 @@ CEvent* CModel::createEvent(const std::string & name)
   return pEvent;
 }
 
+bool CModel::removeEvent(const unsigned C_INT32 index,
+                         const bool & recursive)
+{
+  const CEvent * pEvent = mEvents[index];
+
+  return removeEvent(pEvent, recursive);
+}
+
 bool CModel::removeEvent(const std::string & key,
-                         const bool & /* recursive */)
+                         const bool & recursive)
 {
   CEvent * pEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
+  return removeEvent(pEvent, recursive);
+}
+
+bool CModel::removeEvent(const CEvent * pEvent,
+                         const bool & /* recursive */)
+{
   if (!pEvent)
     return false;
-
-  //TODO can anything depend on an event?
 
   //Check if Event exists
   unsigned C_INT32 index =
@@ -2927,9 +2939,8 @@ bool CModel::removeEvent(const std::string & key,
   mEvents.CCopasiVector< CEvent >::remove(index);
 
   clearMoieties();
-  mCompileIsNecessary = true;
 
-  return true;
+  mCompileIsNecessary = true;
 }
 
 void CModel::synchronizeEventOrder(const CEvent * pEvent,
