@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Author: aekamal $
+//   $Date: 2009/07/06 12:12:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,170 +11,191 @@
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#include "listviews.h"
-#include "CQMessageBox.h"
-#include "qtUtilities.h"
-#include "CQEventsWidget.h"
+#include <QHeaderView>
+#include <QClipboard>
 
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "report/CKeyFactory.h"
 
-#define COL_MARK    0
-#define COL_NAME    1
-#define COL_TRIGGER    2
-#define COL_DELAY    3
-#define COL_ASSIGNTARGET  4
-#define COL_ASSIGNEXPRESSION 5
+#include "CQEventsWidget.h"
+#include "qtUtilities.h"
+#include "copasi.h"
+#include "CQMessageBox.h"
 
-std::vector<const CCopasiObject*> CQEventsWidget::getObjects() const
+/*
+ *  Constructs a CQEventsWidget which is a child of 'parent', with the
+ *  name 'name'.'
+ */
+CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
+    : CopasiWidget(parent, name)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiVectorN<CEvent>& tmp = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents();
-  std::vector<const CCopasiObject*> ret;
+  setupUi(this);
 
-  C_INT32 i, imax = tmp.size();
+  //Create Source Data Model.
+  mpEventDM = new CQEventDM(this);
 
-  for (i = 0; i < imax; ++i)
-    ret.push_back(tmp[i]);
+  //Create the Proxy Model for sorting/filtering and set its properties.
+  mpProxyModel = new CQSortFilterProxyModel();
+  mpProxyModel->setDynamicSortFilter(true);
+  mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+  mpProxyModel->setFilterKeyColumn(COL_NAME_EVENTS);
 
-  return ret;
+  mpOrderDelegate = new CQSpinBoxDelegate(this);
+  mpTblEvents->setItemDelegateForColumn(COL_ORDER_EVENTS, mpOrderDelegate);
+
+  mpTblEvents->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpTblEvents->verticalHeader()->hide();
+  mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+
+  // Connect the table widget
+  connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotFilterChanged()));
 }
 
-void CQEventsWidget::init()
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+CQEventsWidget::~CQEventsWidget()
 {
-  mOT = ListViews::EVENT;
-  numCols = 6; // + 1;
-  table->setNumCols(numCols);
-  std::vector<const CCopasiObject*> objectstemp;
-  //table->QTable::setNumRows(1);
-
-  //Setting table headers
-  Q3Header *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Condition Trigger");
-  tableHeader->setLabel(3, "Delay");
-  tableHeader->setLabel(4, "Assignment Target");
-  tableHeader->setLabel(5, "Assignment Expression");
+  pdelete(mpOrderDelegate);
+  pdelete(mpProxyModel);
+  pdelete(mpEventDM);
+  // no need to delete child widgets, Qt does it all for us
 }
 
-void CQEventsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void CQEventsWidget::languageChange()
 {
-  if (!obj) return;
+  retranslateUi(this);
+}
 
-  const CEvent* pEv = dynamic_cast<const CEvent*>(obj);
-  assert(pEv);
+void CQEventsWidget::slotBtnDeleteClicked()
+{
+  if (mpTblEvents->hasFocus())
+    {deleteSelectedEvents();}
+}
 
-  //table->horizontalHeader()->setLabel(4, "Flux\n("
-  //                                    + FROM_UTF8((*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getQuantityRateUnitName()) + ")");
-  table->setText(row, 1, FROM_UTF8(pEv->getObjectName()));
+void CQEventsWidget::deleteSelectedEvents()
+{
+  QModelIndexList selRows = mpTblEvents->selectionModel()->selectedRows(0);
 
-  table->setText(row, 2, FROM_UTF8(pEv->getTriggerExpression()));
-  table->setText(row, 3, FROM_UTF8(pEv->getDelayExpression()));
+  if (selRows.empty())
+    {return;}
 
-  QString assignmentTarget = "";
-  QString assignmentExpression = "";
+  QModelIndexList mappedSelRows;
+  QModelIndexList::const_iterator i;
 
-  CCopasiVectorN< CEventAssignment >::const_iterator it = pEv->getAssignments().begin();
-  CCopasiVectorN< CEventAssignment >::const_iterator begin = pEv->getAssignments().begin();
-  CCopasiVectorN< CEventAssignment >::const_iterator end = pEv->getAssignments().end();
+  for (i = selRows.begin(); i != selRows.end(); ++i)
+    {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  for (; it != end; ++it)
+  if (mpEventDM->removeRows(mappedSelRows))
+    protectedNotify(ListViews::EVENT, ListViews::DELETE, "");
+}
+
+void CQEventsWidget::slotBtnClearClicked()
+{
+
+  int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Events?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
+  if (ret == QMessageBox::Yes)
     {
-      const CModelEntity * pEntity =
-        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get((*it)->getTargetKey()));
-
-      if (pEntity != NULL)
-        {
-          if (it != begin)
-            {
-              assignmentTarget += "\n";
-              assignmentExpression += "\n";
-            }
-
-          assignmentTarget += FROM_UTF8(pEntity->getObjectDisplayName());
-          assignmentExpression += FROM_UTF8((*it)->getExpression());
-        }
+      mpEventDM->clear();
+      protectedNotify(ListViews::EVENT, ListViews::DELETE, "");
     }
-
-  table->setText(row, 4, assignmentTarget);
-  table->setText(row, 5, assignmentExpression);
-
-  table->adjustRow(row);
 }
 
-void CQEventsWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* obj)
+bool CQEventsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!obj) return;
+  return true;
 }
 
-void CQEventsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 /* exc */)
+bool CQEventsWidget::leave()
 {
-  //  std::cout << "exc = " << exc << std::endl;
-
-  //  if (exc != 2)
-  //    table->clearCell(row, 2);
-
-  table->clearCell(row, 2);
-  table->clearCell(row, 3);
-  table->clearCell(row, 4);
-  table->clearCell(row, 5);
-
-  //  {int y; std::cout << "L: " << __LINE__ << std::endl; std::cin >> y;}
-
-  //if (exc != 3)
-  // table->clearCell(row, 3);
+  return true;
 }
 
-QString CQEventsWidget::defaultObjectName() const
+bool CQEventsWidget::enter(const std::string & C_UNUSED(key))
 {
-  return "event";
+  mpProxyModel->setSourceModel(mpEventDM);
+  //Set Model for the TableView
+  mpTblEvents->setModel(NULL);
+  mpTblEvents->setModel(mpProxyModel);
+  mpTblEvents->resizeColumnsToContents();
+
+  return true;
 }
 
-CCopasiObject* CQEventsWidget::createNewObject(const std::string & name)
+void CQEventsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
+                                 const QModelIndex& C_UNUSED(bottomRight))
 {
-  std::string nname = name;
-  int i = 0;
-  CEvent* pEv;
+  mpTblEvents->resizeColumnsToContents();
+  protectedNotify(ListViews::EVENT, ListViews::CHANGE, "");
+}
+
+void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
+{
+  QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
+
+  if (mpEventDM->isDefaultRow(index))
+    return;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  while (!(pEv = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(nname)))
-    {
-      i++;
-      nname = name + "_";
-      nname += TO_UTF8(QString::number(i));
-    }
-
-  //std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
-  return pEv;
-}
-
-void CQEventsWidget::deleteObjects(const std::vector<std::string> & keys)
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL)
     return;
 
-  if (keys.size() == 0)
-    return;
+  std::string key = pModel->getEvents()[index.row()]->getKey();
 
-  unsigned C_INT32 i, imax = keys.size();
+  if (CCopasiRootContainer::getKeyFactory()->get(key))
+    mpListView->switchToOtherWidget(0, key);
+}
 
-  for (i = 0; i < imax; i++)
+void CQEventsWidget::keyPressEvent(QKeyEvent* ev)
+{
+  if (ev->key() == Qt::Key_Delete)
+    slotBtnDeleteClicked();
+  else if (ev->key() == Qt::Key_C && ev->modifiers() & Qt::ControlModifier)
     {
-      (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->removeEvent(keys[i]);
+      QModelIndexList selRows = mpTblEvents->selectionModel()->selectedRows(0);
+
+      if (selRows.empty())
+        {return;}
+
+      QString str;
+      QModelIndexList::const_iterator i;
+
+      for (i = selRows.begin(); i != selRows.end(); ++i)
+        {
+          for (int x = 0; x < mpEventDM->columnCount(); ++x)
+            {
+              if (!mpTblEvents->isColumnHidden(x))
+                {
+                  if (!str.isEmpty())
+                    str += "\t";
+
+                  str += mpEventDM->index(mpProxyModel->mapToSource(*i).row(), x).data().toString();
+                }
+            }
+
+          str += "\n";
+        }
+
+      QApplication::clipboard()->setText(str);
     }
+}
 
-  for (i = 0; i < imax; i++)
-    protectedNotify(ListViews::EVENT, ListViews::DELETE, keys[i]);
-
-  return;
+void CQEventsWidget::slotFilterChanged()
+{
+  QRegExp regExp(mpLEFilter->text() + "|No Name", Qt::CaseInsensitive, QRegExp::RegExp);
+  mpProxyModel->setFilterRegExp(regExp);
 }

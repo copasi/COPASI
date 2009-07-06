@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.202 $
+#   $Revision: 1.203 $
 #   $Name:  $
-#   $Author: pwilly $
-#   $Date: 2009/06/19 09:42:31 $
+#   $Author: aekamal $
+#   $Date: 2009/07/06 12:12:14 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.202 $ $Author: pwilly $ $Date: 2009/06/19 09:42:31 $
+# $Revision: 1.203 $ $Author: aekamal $ $Date: 2009/07/06 12:12:14 $
 ######################################################################
 
 LIB = UI
@@ -57,6 +57,7 @@ HEADERS	+= \
 	CQDateTimeEditDelegate.h \
 	CQDateTimeEditTableItem.h \
 	CQEventsWidget.h \
+	CQEventDM.h \
 	CQExpressionWidget.h \
 	CQFunctionDM.h \
 	CQFunctionsWidget.h \
@@ -76,6 +77,7 @@ HEADERS	+= \
 	CQSortFilterProxyModel.h \
 	CQSpecieDM.h \
 	CQSpeciesWidget.h \
+	CQSpinBoxDelegate.h \
 	CQUpdatesWidget.h \
 	CQValidator.h \
 	CScanContainerWidget.h \
@@ -134,6 +136,7 @@ SOURCES	+= \
 	CQDateTimeEditDelegate.cpp \
 	CQDateTimeEditTableItem.cpp \
 	CQEventsWidget.cpp \
+	CQEventDM.cpp \
 	CQExpressionWidget.cpp \
 	CQFunctionDM.cpp \
 	CQFunctionsWidget.cpp \
@@ -153,6 +156,7 @@ SOURCES	+= \
 	CQSortFilterProxyModel.cpp \
 	CQSpecieDM.cpp \
 	CQSpeciesWidget.cpp \
+	CQSpinBoxDelegate.h \
 	CQUpdatesWidget.cpp \
 	CQValidator.cpp \
 	CScanContainerWidget.cpp \
@@ -192,6 +196,7 @@ SOURCES	+= \
 
 
 FORMS += CQCompartmentsWidget.ui
+FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
 FORMS += CQFittingItemWidget.ui
 FORMS += CQFittingWidget.ui

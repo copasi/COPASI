@@ -214,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQEventDM.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQEventsWidget.cpp"
 				>
 			</File>
@@ -511,6 +515,10 @@
 			</File>
 			<File
 				RelativePath=".\CQSpeciesWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQSpinBoxDelegate.cpp"
 				>
 			</File>
 			<File
@@ -967,6 +975,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQEventDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQEventsWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CQEventWidget1.h"
 				>
 			</File>
@@ -1104,6 +1120,10 @@
 			</File>
 			<File
 				RelativePath=".\CQSpeciesWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQSpinBoxDelegate.h"
 				>
 			</File>
 			<File
@@ -1378,6 +1398,10 @@
 		</File>
 		<File
 			RelativePath="CQEFMWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQEventsWidget.ui"
 			>
 		</File>
 		<File
