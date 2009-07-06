@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.28 $
+#   $Revision: 1.29 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2008/09/30 19:49:51 $
+#   $Author: ssahle $
+#   $Date: 2009/07/06 14:57:25 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ COPASI_LIBS += plot
 COPASI_LIBS += randomGenerator
 COPASI_LIBS += report
 COPASI_LIBS += sbmlimport
+COPASI_LIBS += sbmlunit
 COPASI_LIBS += scan
 COPASI_LIBS += sensitivities
 COPASI_LIBS += steadystate

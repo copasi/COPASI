@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.58 $
+#   $Revision: 1.59 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2009/04/21 16:12:03 $
+#   $Author: ssahle $
+#   $Date: 2009/07/06 14:57:25 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.58 $ $Author: shoops $ $Date: 2009/04/21 16:12:03 $
+# $Revision: 1.59 $ $Author: ssahle $ $Date: 2009/07/06 14:57:25 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -49,6 +49,7 @@ COPASISE_DIRS += plot
 COPASISE_DIRS += randomGenerator
 COPASISE_DIRS += report
 COPASISE_DIRS += sbml
+COPASISE_DIRS += sbmlunit
 COPASISE_DIRS += scan
 COPASISE_DIRS += sensitivities
 COPASISE_DIRS += steadystate
