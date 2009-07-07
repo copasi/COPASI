@@ -86,9 +86,9 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
 
   for (i = 0; i < model->getNumSpecies(); i++)
     {
-      Species* s = model->getSpecies(i);
+      Species * s = model->getSpecies(i);
 
-      if (unitsFromModel and s->isSetUnits())
+      if (unitsFromModel && s->isSetUnits())
         mSBMLObjectsMap[s->getId()] = CUnitInformation(s->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
       else //take info from global units
         {
@@ -138,7 +138,7 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
     {
       Compartment *c = model->getCompartment(i);
 
-      if (unitsFromModel and c->isSetUnits())
+      if (unitsFromModel && c->isSetUnits())
         mSBMLObjectsMap[c->getId()] = CUnitInformation(c->getDerivedUnitDefinition(), CUnitInformation::PROVIDED);
       else //take info from global units
         {
@@ -170,7 +170,7 @@ void CUnitInterfaceSBML::initializeFromSBMLModel(Model* model, bool unitsFromMod
     {
       Parameter *p = model->getParameter(i);
 
-      if (unitsFromModel and p->isSetUnits())
+      if (unitsFromModel && p->isSetUnits())
         mSBMLObjectsMap[p->getId()] = CUnitInformation(p->getDerivedUnitDefinition(),
                                       CUnitInformation::PROVIDED);
       else
@@ -352,11 +352,11 @@ void CUnitInterfaceSBML::writeBackToModel()
   //species
   unsigned int i;
 
-  for (i = 0; i < mpModel->getNumSpecies(); i++)
-    {
-      Species* s = mpModel->getSpecies(i);
-      //do nothing for level 2 since the species units are never unknown
-    }
+  //do nothing for level 2 since the species units are never unknown
+  // for (i = 0; i < mpModel->getNumSpecies(); i++)
+  //   {
+  //     Species * s = mpModel->getSpecies(i);
+  //}
 
   //compartments
   //do nothing for level 2 since the compartment units are never unknown
@@ -1153,7 +1153,7 @@ CUnitInformation CUnitInterfaceSBML::recursionDivide(const ASTNode* node,
         return ret;
 
       //case where nominator is unknown (or assumed unknown)
-      if (unknown.size() == 0 or unknown[0] == 0)
+      if (unknown.size() == 0 || unknown[0] == 0)
         {
           //determine units
           CUnitInformation tmpUnit = childUnits[1];
@@ -1221,7 +1221,7 @@ CUnitInformation CUnitInterfaceSBML::recursionPower(const ASTNode* node,
       if (fabs(res.result - floor(res.result + 0.5)) < 1e-100)
         {
           //std::cout << "fixed exponent is integer" << std::endl;
-          int intExp = floor(res.result + 0.5);
+          int intExp = (int) floor(res.result + 0.5);
 
           if (ui.getInfo() == CUnitInformation::UNKNOWN)
             {
@@ -1475,7 +1475,8 @@ bool CUnitInterfaceSBML::isBuiltInFunctionCall(const ASTNode* node)
 
 double CUnitInterfaceSBML::getValueFromNumberNode(const ASTNode* node)
 {
-  if (!node) return 0.0 / 0.0;
+  if (!node)
+    return std::numeric_limits< double >::quiet_NaN();
 
   switch (node->getType())
     {
@@ -1492,7 +1493,7 @@ double CUnitInterfaceSBML::getValueFromNumberNode(const ASTNode* node)
         //TODO rational number format
       default:
         std::cout << "unsupported number format" << std::endl;
-        return 0.0 / 0.0;
+        return std::numeric_limits< double >::quiet_NaN();
     }
 }
 
