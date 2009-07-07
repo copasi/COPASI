@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/07 01:45:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,12 @@ public:
      * @return const bool & isDiscrete
      */
     const bool & isDiscrete() const;
+
+    /**
+     * Check whther the root is checked for equality.
+     * @return const bool & isEquality
+     */
+    const bool & isEquality() const;
 
     /**
      * Retrieve the expression evaluating the truth value

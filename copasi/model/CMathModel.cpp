@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/07 01:45:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 
 #include "CMathModel.h"
 #include "CModel.h"
+
+#include "blaswrap.h"
 
 CMathModel::CMathModel(const CCopasiContainer * pParent) :
     CCopasiContainer("MathModel", pParent, "CMathModel"),
@@ -298,20 +300,26 @@ void CMathModel::applyInitialValues()
       (*itMathEvent)->getMathTrigger().calculateInitialTrue();
     }
 
-  // TODO CRITICAL We need to schedule events which fire at t > t_0
+  // We need to schedule events which fire at t > t_0
 
   // The roots which are checked for inequality with a current root value
-  // are the candidates. We should toggle them if their time derivitative
-  // is positive
+  // zero are the candidates. We should toggle them if their time derivitative
+  // is positive.
 
   // The time derivitives of the roots can be calculated as:
   // Dr_i/Dt = sum_j (dr_i/dx_j dx_j/dt) + dr_i/dt
   // dx_j/dt are the rates of the state variables
+  CVector< C_INT > InitialRoots;
+
+  if (determineInitialRoots(InitialRoots))
+    {
+      processRoots(mpModel->getInitialTime(), false, InitialRoots);
+    }
 }
 
 size_t CMathModel::getNumRoots() const
 {
-  return this->mRootValues.size();
+  return mRootValues.size();
 }
 
 std::vector< Refresh * > CMathModel::buildRequiredRefreshList(const std::set< const CCopasiObject * > & requiredObjects) const
@@ -412,4 +420,143 @@ std::vector< Refresh * > CMathModel::buildDependendRefreshList(const std::set< c
 
   std::set< const CCopasiObject * > UpToDate;
   return CCopasiObject::buildUpdateSequence(RequiredObjects, UpToDate, changedObjects);
+}
+
+bool CMathModel::determineInitialRoots(CVector< C_INT > & foundRoots)
+{
+  bool Found = false;
+
+  CVector< C_FLOAT64 > RootDerivatives;
+  calculateRootDerivatives(RootDerivatives);
+
+  foundRoots.resize(mRootValues.size());
+  C_INT * pFoundRoot = foundRoots.array();
+  C_FLOAT64 ** pRootValue = mRootValues.array();
+  C_FLOAT64 * pDerivative = RootDerivatives.array();
+  CMathTrigger::CRootFinder ** ppRootFinder = mRootIndex2RootFinder.array();
+  CMathTrigger::CRootFinder ** ppEndRootFinder = ppRootFinder + mRootIndex2RootFinder.size();
+
+  for (; ppRootFinder != ppEndRootFinder;
+       ++ppRootFinder, ++pRootValue, ++pDerivative, ++pFoundRoot)
+    {
+      if (!(*ppRootFinder)->isEquality() &&
+          **pRootValue == 0.0 &&
+          *pDerivative > 0.0)
+        {
+          *pFoundRoot = 1.0;
+          Found = true;
+        }
+      else
+        {
+          *pFoundRoot = 0.0;
+        }
+    }
+
+  return Found;
+}
+void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
+{
+  CMatrix< C_FLOAT64 > Jacobian;
+  calculateRootJacobian(Jacobian);
+
+  unsigned C_INT32 NumCols = mpModel->getStateTemplate().getNumVariable() + 1;
+
+  CVector< C_FLOAT64 > Rates;
+  Rates.resize(NumCols);
+  C_FLOAT64 * pRate = Rates.array();
+
+  rootDerivatives.resize(mRootValues.size());
+  C_FLOAT64 * pDerivative = rootDerivatives.array();
+
+  CModelEntity ** ppIt = mpModel->getStateTemplate().getEntities();
+  CModelEntity ** ppEnd = ppIt + NumCols;
+
+  for (; ppIt != ppEnd; ++ppIt, ++pRate)
+    *pRate = (*ppIt)->getRate();
+
+  // Now calculate derivatives of all metabolites determined by reactions
+  char T = 'N';
+  C_INT M = 1;
+  C_INT N = mRootValues.size();
+  C_INT K = NumCols;
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Beta = 0.0;
+
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, Rates.array(), &M,
+         Jacobian.array(), &K, &Beta, pDerivative, &M);
+}
+
+void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
+{
+  CState State = mpModel->getState();
+
+  //Dim now contains the number of entities with ODEs + number of metabs depending on reactions.
+  unsigned C_INT32 NumRows = mRootValues.size();
+  unsigned C_INT32 NumCols = State.getNumVariable() + 1;
+
+  unsigned C_INT32 Col;
+
+  jacobian.resize(NumRows, NumCols);
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(NumRows);
+  CVector< C_FLOAT64 > Y2(NumRows);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  C_FLOAT64 * pX = State.beginIndependent() - 1;
+  C_FLOAT64 * pXEnd = pX + NumCols;
+
+  C_FLOAT64 * pJacobian;
+  C_FLOAT64 * pJacobianEnd = jacobian.array() + jacobian.size();
+
+  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+    {
+      Store = *pX;
+
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < 100 * DBL_MIN)
+        {
+          X1 = 0.0;
+
+          if (Store < 0.0)
+            X2 = -200.0 * DBL_MIN;
+          else
+            X2 = 200.0 * DBL_MIN;;
+        }
+      else
+        {
+          X1 = Store * (1.0 + 0.001);
+          X2 = Store * (1.0 - 0.001);
+        }
+
+      InvDelta = 1.0 / (X2 - X1);
+
+      *pX = X1;
+      mpModel->setState(State);
+      mpModel->updateSimulatedValues(false);
+      evaluateRoots(Y1, true);
+
+      *pX = X2;
+      mpModel->setState(State);
+      mpModel->updateSimulatedValues(false);
+      mpModel->evaluateRoots(Y2, true);
+
+      *pX = Store;
+
+      pJacobian = jacobian.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      for (; pJacobian < pJacobianEnd; pJacobian += NumCols, ++pY1, ++pY2)
+        * pJacobian = (*pY2 - *pY1) * InvDelta;
+    }
+
+  mpModel->setState(State);
+  mpModel->updateSimulatedValues(false);
 }

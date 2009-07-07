@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/07 01:45:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,11 @@ void CMathTrigger::CRootFinder::determineDiscrete(const std::set< const CCopasiO
 const bool & CMathTrigger::CRootFinder::isDiscrete() const
 {
   return mDiscrete;
+}
+
+const bool & CMathTrigger::CRootFinder::isEquality() const
+{
+  return mEquality;
 }
 
 CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const

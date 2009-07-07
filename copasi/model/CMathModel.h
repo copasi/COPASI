@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/07 01:45:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #define COPASI_CMathModel
 
 #include "utilities/CVector.h"
+#include "utilities/CMatrix.h"
 
 #include "copasi/model/CProcessQueue.h"
 #include "copasi/model/CMathEvent.h"
@@ -120,6 +121,26 @@ public:
    * @return std::vector< Refresh * > refreshList
    */
   std::vector< Refresh * > buildDependendRefreshList(const std::set< const CCopasiObject * > & changedObjects) const;
+
+private:
+  /**
+   * Determine whether there are any initial roots and mark them.
+   * @param CVector< C_INT > & foundRoots
+   * @return bool found
+   */
+  bool determineInitialRoots(CVector< C_INT > & foundRoots);
+
+  /**
+   * Calculate the time derivative of all roots
+   * @param CVector< C_FLOAT64 > & rootDerivatives
+   */
+  void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
+
+  /**
+   * Calculate the Jacobian for the roots.
+   * @param CMatrix< C_FLOAT64 > & jacobian
+   */
+  void calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian);
 
   // Attributes
 private:

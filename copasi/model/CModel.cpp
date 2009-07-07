@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.371 $
+//   $Revision: 1.372 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/06 15:45:45 $
+//   $Date: 2009/07/07 01:45:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2941,6 +2941,8 @@ bool CModel::removeEvent(const CEvent * pEvent,
   clearMoieties();
 
   mCompileIsNecessary = true;
+
+  return true;
 }
 
 void CModel::synchronizeEventOrder(const CEvent * pEvent,
@@ -3208,6 +3210,8 @@ void CModel::initObjects()
 
   mpIValueReference->setObjectName("Initial Time");
   mpValueReference->setObjectName("Time");
+
+  mRate = 1.0;
 
   addObjectReference("Comments", mComments);
 
