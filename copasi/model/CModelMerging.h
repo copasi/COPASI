@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/06/29 10:51:55 $
+//   $Date: 2009/07/07 09:44:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,9 @@
 class CModel;
 class CCompartment;
 class CReaction;
+class CMetab;
+class CModelEntity;
+class CExpression;
 
 class CModelMerging
 {
@@ -33,17 +36,14 @@ public:
 
 protected:
 
-  class MergingInfo
-  {
-  public:
-    MergingInfo() {};
+  std::map<std::string, std::string> keyMap;
+  std::map<std::string, std::string> nameMap;
 
-    std::map<std::string, std::string> metabMap;
-    std::string key;
-  };
-
-  MergingInfo addCompartments(std::string name) const;
-  MergingInfo addMetabolitesAndReactions(std::string name) const;
+  bool  addCompartments(std::string name);
+  bool  addMetabolites(std::string name);
+  bool  addModelValues(std::string name);
+  bool  addReactions(std::string name);
+  bool  copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
 
   /**
    * determine whether the one of the substrate, products, or modifiers of the reaction
