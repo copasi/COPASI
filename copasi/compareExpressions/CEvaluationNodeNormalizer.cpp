@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/02 20:33:12 $
+//   $Date: 2009/07/08 09:37:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,7 +215,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
           case CEvaluationNodeFunction::FACTORIAL:
           case CEvaluationNodeFunction::NOT:
           case CEvaluationNodeFunction::MINUS:
-            pResult = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), "");
+            pResult = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 
             if (pTmpResult != NULL)
