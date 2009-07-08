@@ -84,7 +84,7 @@ bool CUnit::multiply(const CUnit & unit)
       return true;
     }
 
-  std::cout << "!!! could not multiply units because of symbolic exponent !!!" << std::endl;
+  //std::cout << "!!! could not multiply units because of symbolic exponent !!!" << std::endl;
   //assert(false);
   return false;
 }
@@ -145,7 +145,7 @@ void CUnit::applyExponent(const std::string& id, int frame)
     }
   else
     {
-      std::cout << " !!! could not apply symbolic exponent !!!" << std::endl;
+      //std::cout << " !!! could not apply symbolic exponent !!!" << std::endl;
       assert(false);
     }
 }
@@ -163,7 +163,7 @@ void CUnit::applyInverseExponent(const std::string& id, int frame)
     }
   else
     {
-      std::cout << " !!! could not apply inverse symbolic exponent !!!" << std::endl;
+      //std::cout << " !!! could not apply inverse symbolic exponent !!!" << std::endl;
       assert(false);
     }
 }
