@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/06 15:42:58 $
+//   $Author: gauges $
+//   $Date: 2009/07/08 07:33:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,7 +238,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
 
       if (mWithGUI)
         {
-          pGUI = new SCopasiXMLGUI;
+          pGUI = new SCopasiXMLGUI("GUI", this);
           XML.setGUI(pGUI);
         }
 
@@ -524,7 +524,7 @@ bool CCopasiDataModel::newModel(CModel * pModel, CProcessReport* pProcessReport,
   if (mWithGUI)
     {
       pdelete(mpGUI);
-      mpGUI = new SCopasiXMLGUI;
+      mpGUI = new SCopasiXMLGUI("GUI", this);
     }
 
   if (mpModel)
