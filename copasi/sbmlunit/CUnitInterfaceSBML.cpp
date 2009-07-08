@@ -556,6 +556,95 @@ void CUnitInterfaceSBML::outputStatistics(const Statistics & stat, bool flag)
   //  debugOutput();
 }
 
+std::vector<std::string> CUnitInterfaceSBML::getListOfObjectsWithGivenUnitStatus(int status) const
+{
+  std::vector<std::string> ret;
+
+  std::map<std::string, CUnitInformation>::const_iterator it, itEnd = mSBMLObjectsMap.end();
+
+  for (it = mSBMLObjectsMap.begin(); it != itEnd; ++it)
+    {
+      if (status == 5 && it->second.isConflict())
+        ret.push_back(it->first);
+
+      if (status < 5 && (int)it->second.getInfo() == status)
+        ret.push_back(it->first);
+    }
+
+  return ret;
+}
+
+std::vector<std::pair<std::string, std::string> > CUnitInterfaceSBML::getListOfLocalParametersWithGivenUnitStatus(int status) const
+{
+  std::vector<std::pair<std::string, std::string> > ret;
+
+  std::map<std::string, CUnitInformation>::const_iterator it, itEnd = mSBMLObjectsMap.end();
+  std::map<std::string, std::map<std::string, CUnitInformation> >::const_iterator rit;
+
+  for (rit = mSBMLLocalParametersMap.begin(); rit != mSBMLLocalParametersMap.end(); ++rit)
+    {
+      for (it = rit->second.begin(); it != rit->second.end(); ++it)
+        {
+          if (status == 5 && it->second.isConflict())
+            ret.push_back(std::pair<std::string, std::string>(rit->first, it->first));
+
+          if (status < 5 && (int)it->second.getInfo() == status)
+            ret.push_back(std::pair<std::string, std::string>(rit->first, it->first));
+        }
+    }
+
+  return ret;
+}
+
+std::string CUnitInterfaceSBML::getMessageAboutUnknownUnits() const
+{
+  std::string ret;
+
+  ret += "Some objects in the SBML file have unknown units. \n";
+  ret += "Global objects:\n";
+
+  std::vector<std::string> globalobjects = getListOfObjectsWithGivenUnitStatus(0); //unknown units
+  unsigned int i;
+
+  for (i = 0; i < globalobjects.size(); ++i)
+    {
+      const Compartment* c = mpModel->getCompartment(globalobjects[i]);
+
+      if (c)
+        ret += "  Compartment " + c->getId() + " " + c->getName() +  "\n";
+
+      const Species* s = mpModel->getSpecies(globalobjects[i]);
+
+      if (s)
+        ret += "  Species " + s->getId() + " " + s->getName() +  "\n";
+
+      const Parameter* p = mpModel->getParameter(globalobjects[i]);
+
+      if (p)
+        ret += "  Global parameter " + p->getId() + " " + p->getName() +  "\n";
+    }
+
+  ret += "\n";
+  ret += "Local parameters:\n";
+
+  std::vector<std::pair<std::string, std::string> > localparameters =
+    getListOfLocalParametersWithGivenUnitStatus(0);
+
+  for (i = 0; i < localparameters.size(); ++i)
+    {
+      const Reaction* r = mpModel->getReaction(localparameters[i].first);
+
+      if (r)
+        {
+          ret += "  Reaction " + r->getId() + " " + r->getName()
+                 + ", parameter " + localparameters[i].second +  "\n";
+        }
+    }
+
+  //TODO this is not really very nice output. Needs improvement
+  return ret;
+}
+
 void CUnitInterfaceSBML::debugOutput() const
 {
   std::cout << "global units:" << std::endl;
@@ -737,6 +826,9 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
           CUnitInformation tmpTimeUnit = mSBMLTimeUnit;
           return handleTerminalNode(ui, &tmpTimeUnit);
         }
+
+      //check if it is a reaction ID
+      //TODO
 
       //check if the object is a function variable
       ASTNode* variable = resolveVariableName(getIdentifier(node), ei);

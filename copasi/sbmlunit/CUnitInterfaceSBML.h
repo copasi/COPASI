@@ -94,6 +94,24 @@ public:
   static void outputStatistics(const Statistics & stat, bool flag);
 
   /**
+   * returns a list of sbml id corresponding to all global sbml objects that match
+   * the given unit status (as explained above)
+   */
+  std::vector<std::string> getListOfObjectsWithGivenUnitStatus(int status) const;
+
+  /**
+   * returns a list of pairs of sbml IDs corresponding to all local parameters that match
+   * the given unit status (as explained above)
+   */
+  std::vector<std::pair<std::string, std::string> > getListOfLocalParametersWithGivenUnitStatus(int status) const;
+
+  /**
+   * generates a message containing a list of the objects with unknown units.
+   * The message should be suitable for presentation in a user interface.
+   */
+  std::string getMessageAboutUnknownUnits() const;
+
+  /**
     * This class contains the information about one mathematical expression
     * from an sbml model and how it relates to units constraints.
     */
