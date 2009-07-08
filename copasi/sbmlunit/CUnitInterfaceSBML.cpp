@@ -549,6 +549,8 @@ void CUnitInterfaceSBML::outputStatistics(const Statistics & stat, bool flag)
 
   if (stat.all[0] == 0)
     std::cout << "***SUCCESS***" << std::endl;
+  else if (stat.global[0] + stat.local[0] == 0)
+    std::cout << "only some numbers are still unknown" << std::endl;
   else
     std::cout << "some unknown units left..." << std::endl;
 
