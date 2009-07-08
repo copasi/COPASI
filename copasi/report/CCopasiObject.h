@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/21 15:24:29 $
+//   $Author: gauges $
+//   $Date: 2009/07/08 07:28:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,7 +180,8 @@ protected:
     ModelEntity = 0x1000,
     Array = 0x2000,
     DataModel = 0x4000,
-    Root = 0x8000
+    Root = 0x8000,
+    Gui = 0x10000
   };
 
 private:

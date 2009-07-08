@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Author: gauges $
+//   $Date: 2009/07/08 07:28:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@
 #include "UI/CQMessageBox.h"
 
 #include "utilities/CSlider.h"
+#include "report/CCopasiRootContainer.h"
 
 CSlider* SliderSettingsDialog::getSlider()
 {
@@ -388,7 +389,8 @@ void SliderSettingsDialog::browseButtonPressed()
       // We do not have a slider therefore we create one.
       if (mpSlider == NULL)
         {
-          mpSlider = new CSlider;
+          // temporarily add the slider the the first datamodel
+          mpSlider = new CSlider("slider", (*CCopasiRootContainer::getDatamodelList())[0]);
           mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
 
           if (pAncestor)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.50 $
+ $Revision: 1.51 $
  $Name:  $
- $Author: shoops $
- $Date: 2009/06/05 17:53:11 $
+ $Author: gauges $
+ $Date: 2009/07/08 07:28:29 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,13 +44,32 @@
 #include "utilities/CSlider.h"
 #include "utilities/CDirEntry.h"
 
-SCopasiXMLGUI::SCopasiXMLGUI():
-    pSliderList(new CCopasiVector<CSlider>)
+SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
+                             const CCopasiContainer * pParent,
+                             const std::string & type,
+                             const unsigned C_INT32 & flag)
+    : CCopasiContainer(name, pParent, type, flag),
+    mpSliderList(new CCopasiVector<CSlider>("SliderList", this))
 {}
 
 SCopasiXMLGUI::~SCopasiXMLGUI()
 {
-  pdelete(pSliderList);
+}
+
+/**
+ * Returns a pointer the the slider list.
+ */
+CCopasiVector<CSlider>* SCopasiXMLGUI::getSliderList()
+{
+  return this->mpSliderList;
+}
+
+/**
+ * Returns a const pointer to the slider list.
+ */
+const CCopasiVector<CSlider>* SCopasiXMLGUI::getSliderList() const
+{
+  return this->mpSliderList;
 }
 
 void encodeNONE(const char & chr, std::ostringstream & xml)

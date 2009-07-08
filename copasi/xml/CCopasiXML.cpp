@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/02 20:55:00 $
+//   $Author: gauges $
+//   $Date: 2009/07/08 07:28:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1495,7 +1495,7 @@ bool CCopasiXML::saveGUI()
 
   startSaveElement("GUI");
 
-  if (mpGUI->pSliderList && mpGUI->pSliderList->size())
+  if (mpGUI->getSliderList() && mpGUI->getSliderList()->size())
     {
       startSaveElement("ListOfSliders");
 
@@ -1513,11 +1513,11 @@ bool CCopasiXML::saveGUI()
       Attributes.add("tickFactor", "");
       Attributes.add("scaling", "");
 
-      unsigned C_INT32 i, imax = mpGUI->pSliderList->size();
+      unsigned C_INT32 i, imax = mpGUI->getSliderList()->size();
 
       for (i = 0; i < imax; i++)
         {
-          pSlider = (*mpGUI->pSliderList)[i];
+          pSlider = (*mpGUI->getSliderList())[i];
           Attributes.setValue(0, pSlider->getKey());
           Attributes.setValue(1, pSlider->getAssociatedEntityKey());
           Attributes.setValue(2, pSlider->getSliderObjectCN());

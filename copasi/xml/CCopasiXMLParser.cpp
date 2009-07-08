@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.200 $
+//   $Revision: 1.201 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/06/02 20:55:00 $
+//   $Author: gauges $
+//   $Date: 2009/07/08 07:28:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -10206,8 +10206,10 @@ void CCopasiXMLParser::ListOfSlidersElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfSliders", mParser.getCurrentLineNumber());
 
-        if (!mCommon.pGUI->pSliderList)
-          mCommon.pGUI->pSliderList = new CCopasiVector< CSlider >;
+        if (!mCommon.pGUI->getSliderList())
+          {
+            fatalError();
+          }
 
         break;
 
@@ -10335,7 +10337,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
 
         if (mCommon.KeyMap.get(AssociatedEntityKey))
           {
-            pSlider = new CSlider;
+            pSlider = new CSlider("slider", mCommon.pGUI->getSliderList());
             mCommon.KeyMap.addFix(Key, pSlider);
 
             if (strncmp(AssociatedEntityKey, "", 1))
@@ -10355,7 +10357,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
             pSlider->setTickNumber(TickNumber);
             pSlider->setTickFactor(TickFactor);
             pSlider->setScaling(pSlider->convertScaleNameToScale(scaling));
-            mCommon.pGUI->pSliderList->add(pSlider, true);
+            mCommon.pGUI->getSliderList()->add(pSlider, true);
           }
 
         break;

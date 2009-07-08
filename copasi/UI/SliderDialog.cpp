@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/05 23:57:16 $
+//   $Author: gauges $
+//   $Date: 2009/07/08 07:28:29 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -244,7 +244,7 @@ void SliderDialog::removeSlider()
   if (currSlider)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI()->pSliderList;
+      CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI()->getSliderList();
       unsigned int i, maxCount = pSliderList->size();
 
       for (i = 0; i < maxCount; ++i)
@@ -354,7 +354,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
 
   if (!equivalentSliderExists(pSlider))
     {
-      pGUI->pSliderList->add(pSlider, true);
+      pGUI->getSliderList()->add(pSlider, true);
     }
 
   CopasiSlider* tmp = findCopasiSliderForCSlider(pSlider);
@@ -386,11 +386,11 @@ CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   SCopasiXMLGUI* pGUI = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI();
   assert(pGUI);
-  unsigned i, maxCount = pGUI->pSliderList->size();
+  unsigned i, maxCount = pGUI->getSliderList()->size();
 
   for (i = 0; i < maxCount; ++i)
     {
-      CSlider* pTmpSlider = (*(pGUI->pSliderList))[i];
+      CSlider* pTmpSlider = (*(pGUI->getSliderList()))[i];
 
       if (pTmpSlider->getSliderObject() == pCSlider->getSliderObject() && pTmpSlider->getAssociatedEntityKey() == pCSlider->getAssociatedEntityKey())
         {
@@ -725,7 +725,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
   SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
   bool sliderDeleted = false;
-  CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
+  CCopasiVector<CSlider>* pSliderList = pGUI->getSliderList();
   assert(pSliderList);
   // go through the list in reverse so that items can be deleted
   unsigned int i, iMax = pSliderList->size();
