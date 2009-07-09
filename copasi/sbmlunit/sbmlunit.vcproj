@@ -64,12 +64,44 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\CUnit.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CUnitInterfaceSBML.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Expression2PresentationMML.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Expression2PresentationMMLUnits.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\CUnit.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CUnitInterfaceSBML.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Expression2PresentationMML.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Expression2PresentationMMLUnits.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -79,6 +111,10 @@
 		</Filter>
 		<File
 			RelativePath=".\readme.txt"
+			>
+		</File>
+		<File
+			RelativePath=".\sbmlunit.pro"
 			>
 		</File>
 	</Files>
