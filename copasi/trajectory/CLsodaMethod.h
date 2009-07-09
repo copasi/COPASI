@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.23 $
+ $Revision: 1.24 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/05/22 21:07:36 $
+ $Date: 2009/07/09 21:15:15 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,6 +187,12 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
+
+  /**
+   * Inform the trajectory method that the state has changed outside
+   * its control
+   */
+  virtual void stateChanged();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

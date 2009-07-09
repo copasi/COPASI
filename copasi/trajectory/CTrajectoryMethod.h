@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/05/21 15:28:13 $
+   $Date: 2009/07/09 21:15:15 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,6 +122,12 @@ public:
    *  @param "CTrajectoryProblem *" problem
    */
   void setProblem(CTrajectoryProblem * problem);
+
+  /**
+   * Inform the trajectory method that the state has changed outside
+   * its control
+   */
+  virtual void stateChanged();
 
   /**
    *  This instructs the method to calculate a time step of deltaT

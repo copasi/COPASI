@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/25 12:09:40 $
+//   $Date: 2009/07/09 21:15:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -273,7 +273,7 @@ public:
    * @param const C_FLOAT64 & time
    * @param const bool & priorToOutput
    * @param resolveSimultaneousAssignments pResolveSimultaneousAssignments
-   * @return bool success
+   * @return bool stateChanged
    */
   bool process(const C_FLOAT64 & time,
                const bool & priorToOutput,

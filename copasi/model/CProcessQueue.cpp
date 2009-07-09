@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/09 21:15:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,9 +251,8 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
                             const bool & priorToOutput,
                             resolveSimultaneousAssignments pResolveSimultaneousAssignments)
 {
-  if (mCalculations.size() == 0 &&
-      mAssignments.size() == 0)
-    return true;
+  if (getProcessQueueExecutionTime() > time)
+    return false;
 
   mTime = time;
   mEquality = priorToOutput;
@@ -262,6 +261,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
   mCascadingLevel = 0;
 
   bool success = true;
+  bool stateChanged = false;
 
   range Calculations = getCalculations();
 
@@ -277,6 +277,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
       notEmpty(Assignments))
     {
       mpMathModel->evaluateRoots(*mpRootValuesBefore, false);
+      stateChanged = true;
     }
 
   // The algorithm below will work properly for user ordered events
@@ -285,7 +286,6 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
          notEmpty(Assignments) &&
          mCascadingLevel != std::numeric_limits<unsigned C_INT32>::max())
     {
-
       // We switch to the next cascading level so that events triggered by the
       // execution of assignments are properly scheduled.
       mCascadingLevel++;
@@ -358,8 +358,9 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
       success = false;
     }
 
-  return success;
+  return stateChanged;
 }
+
 CProcessQueue::range CProcessQueue::getCalculations()
 {
   range Calculations;

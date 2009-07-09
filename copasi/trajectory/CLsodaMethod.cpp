@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:23 $
+//   $Date: 2009/07/09 21:15:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,6 +147,12 @@ bool CLsodaMethod::elevateChildren()
 {
   initializeParameter();
   return true;
+}
+
+// virtual
+void CLsodaMethod::stateChanged()
+{
+  *mpState = *mpCurrentState;
 }
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)

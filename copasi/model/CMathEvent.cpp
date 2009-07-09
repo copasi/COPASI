@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/05 04:15:22 $
+//   $Date: 2009/07/09 21:15:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ bool CMathEvent::compile(const CEvent * pEvent,
 
   // Build the list of refresh calls needed to assure that all dependent model values
   // are updated after the assignments are executed.
-  mDependentValueRefreshes = pMathModel->buildRequiredRefreshList(Targets);
+  mDependentValueRefreshes = pMathModel->buildDependendRefreshList(Targets);
 
   return success;
 }

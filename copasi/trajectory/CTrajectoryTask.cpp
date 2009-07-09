@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/29 11:37:40 $
+//   $Date: 2009/07/09 21:15:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -349,47 +349,51 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
 
 bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 {
-  // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
-  mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, false, NULL);
+  CModel * pModel = mpTrajectoryProblem->getModel();
+  bool StateChanged = false;
 
   C_FLOAT64 Tolerance = 100 * (fabs(endTime) * DBL_EPSILON + DBL_MIN);
   C_FLOAT64 NextTime = endTime;
 
   do
     {
+      // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
+      StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
+
+      if (StateChanged)
+        {
+          *mpCurrentState = pModel->getState();
+          mpTrajectoryMethod->stateChanged();
+          StateChanged = false;
+        }
+
       // std::min suffices since events are only supported in forward integration.
-      NextTime = std::min(endTime, mpTrajectoryProblem->getModel()->getProcessQueueExecutionTime());
+      NextTime = std::min(endTime, pModel->getProcessQueueExecutionTime());
 
       switch (mpTrajectoryMethod->step(NextTime - *mpCurrentTime))
         {
           case CTrajectoryMethod::NORMAL:
+            pModel->setState(*mpCurrentState);
+            pModel->updateSimulatedValues(mUpdateMoieties);
+
+            // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
+            StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
-              {
-                mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-                mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+              return true;
 
-                // Only equality
-                // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
-                mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, true, NULL);
-                return true;
-              }
-
-            // We need to process both equality and inequality
-            // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
-            mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, true, NULL);
-            // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
-            mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, false, NULL);
             break;
 
           case CTrajectoryMethod::ROOT:
-            mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-            mpTrajectoryProblem->getModel()->processRoots(*mpCurrentTime, true,
-                mpTrajectoryMethod->getRoots());
+            pModel->setState(*mpCurrentState);
+            pModel->updateSimulatedValues(mUpdateMoieties);
+
+            pModel->processRoots(*mpCurrentTime, true, mpTrajectoryMethod->getRoots());
+
             // TODO CRITICAL Provide a call back method for resolving simultaneous assignments.
-            mpTrajectoryProblem->getModel()->processQueue(*mpCurrentTime, true, NULL);
-            mpTrajectoryProblem->getModel()->processRoots(*mpCurrentTime, false,
-                mpTrajectoryMethod->getRoots());
+            StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
+
+            pModel->processRoots(*mpCurrentTime, false, mpTrajectoryMethod->getRoots());
             break;
 
           case CTrajectoryMethod::FAILURE:

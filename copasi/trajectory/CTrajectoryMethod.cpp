@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/07/09 21:15:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,6 +114,10 @@ void CTrajectoryMethod::setCurrentState(CState * currentState)
  */
 void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
 {mpProblem = problem;}
+
+// virtual
+void CTrajectoryMethod::stateChanged()
+{}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
