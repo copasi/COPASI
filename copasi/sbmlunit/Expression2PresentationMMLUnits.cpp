@@ -41,9 +41,18 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
 
   if (!unitInformation)
     {
+      //use the base class implementation
       Expression2PresentationMML::writeMathMLName(out, node, l + 1);
       return;
     }
+
+  std::string color;
+
+  if (mpUnitInterface->getListOfConflictingNodes().count(node)
+      || mpUnitInterface2->getListOfConflictingNodes().count(node))
+    color = "#f0b0b0";
+  else
+    color = "#d0d0e0";
 
   CUnitInformation* unitInformation2;
 
@@ -57,12 +66,12 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
   if (unitInformation2)
     {
       if (CUnitInformation::isEqual(*unitInformation, *unitInformation2))
-        writeMathMLBox(out, oss.str(), getMathML(*unitInformation), "", "#d0d0e0", l);
+        writeMathMLBox(out, oss.str(), getMathML(*unitInformation), "", color, l);
       else
-        writeMathMLBox(out, oss.str(), getMathML(*unitInformation), getMathML(*unitInformation2), "#d0d0e0", l);
+        writeMathMLBox(out, oss.str(), getMathML(*unitInformation), getMathML(*unitInformation2), color, l);
     }
   else
-    writeMathMLBox(out, oss.str(), getMathML(*unitInformation), "#d0d0e0", l);
+    writeMathMLBox(out, oss.str(), getMathML(*unitInformation), color, l);
 }
 
 void Expression2PresentationMMLUnits::writeMathMLNumber(std::ostream & out, const ASTNode* node, unsigned int l) const
@@ -79,22 +88,30 @@ void Expression2PresentationMMLUnits::writeMathMLNumber(std::ostream & out, cons
       return;
     }
 
+  std::string color;
+
+  if (mpUnitInterface->getListOfConflictingNodes().count(node)
+      || mpUnitInterface2->getListOfConflictingNodes().count(node))
+    color = "#f0b0b0";
+  else
+    color = "#d0e0d0";
+
   std::ostringstream oss;
   Expression2PresentationMML::writeMathMLNumber(oss, node, l + 2);
 
   if (!unitInformation && unitInformation2)
     {
-      writeMathMLBox(out, oss.str(), "<mi>unknown</mi>", getMathML(*unitInformation2), "#d0e0d0", l);
+      writeMathMLBox(out, oss.str(), "<mi>unknown</mi>", getMathML(*unitInformation2), color, l);
     }
 
   if (unitInformation && !unitInformation2)
     {
-      writeMathMLBox(out, oss.str(),  getMathML(*unitInformation), "#d0e0d0", l);
+      writeMathMLBox(out, oss.str(),  getMathML(*unitInformation), color, l);
     }
 
   if (unitInformation && unitInformation2)
     {
-      writeMathMLBox(out, oss.str(),  getMathML(*unitInformation), getMathML(*unitInformation2), "#d0e0d0", l);
+      writeMathMLBox(out, oss.str(),  getMathML(*unitInformation), getMathML(*unitInformation2), color, l);
     }
 }
 
