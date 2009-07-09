@@ -259,7 +259,7 @@ std::string Expression2PresentationMMLUnits::getMathML(const Unit * u, bool absE
   tmp << "</mrow>";
   //if (flag) tmp << "</mfenced>";
 
-  if (flagExp) tmp << "<mn>" << u->getExponent() << "</mn>";
+  if (flagExp) tmp << "<mn>" << exponent << "</mn>";
 
   if (flagExp) tmp << "</msup>";
 
