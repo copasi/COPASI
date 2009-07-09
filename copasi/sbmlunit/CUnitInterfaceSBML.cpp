@@ -701,9 +701,17 @@ void CUnitInterfaceSBML::debugOutput() const
     }
 }
 
+const std::set<const ASTNode *> & CUnitInterfaceSBML::getListOfConflictingNodes() const
+{
+  return mConflictingNodes;
+}
+
 void CUnitInterfaceSBML::determineUnits()
 {
   if (!mpModel) return;
+
+  //clear set of conflicting nodes
+  mConflictingNodes.clear();
 
   //first a very crude implementation... TODO
   std::vector<CExpressionInformation>::iterator it, itEnd = mSBMLExpressions.end();
@@ -782,7 +790,7 @@ void CUnitInterfaceSBML::handleOneExpression(CExpressionInformation & ei)
           //std::cout << "rate rule return" << std::endl;
         }
 
-      handleTerminalNode(tmp, pNodeUnit);
+      handleTerminalNode(tmp, pNodeUnit, NULL);
     }
 
   //TODO handle mpRootObject case
@@ -826,7 +834,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
           //TODO: does not work???
           //std::cout << "time" << std::endl;
           CUnitInformation tmpTimeUnit = mSBMLTimeUnit;
-          return handleTerminalNode(ui, &tmpTimeUnit);
+          return handleTerminalNode(ui, &tmpTimeUnit, node);
         }
 
       //check if it is a reaction ID
@@ -851,7 +859,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
       //if (getIdentifier(node)=="PIP2_PM") for debugging...
       //  std::cout << getIdentifier(node)<< std::endl;
 
-      return handleTerminalNode(ui, pNodeUnit);
+      return handleTerminalNode(ui, pNodeUnit, node);
     }//is object node
 
   //number node
@@ -875,7 +883,7 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
             pNodeUnit->setInfo(CUnitInformation::DERIVED);
         }
 
-      return handleTerminalNode(ui, pNodeUnit);
+      return handleTerminalNode(ui, pNodeUnit, node);
     }
 
   //operator node
@@ -1015,12 +1023,12 @@ CUnitInformation CUnitInterfaceSBML::recursion(const ASTNode* node,
   return ret;
 }
 
-CUnitInformation CUnitInterfaceSBML::handleTerminalNode(const CUnitInformation & ui, CUnitInformation *pNodeUnit)
+CUnitInformation CUnitInterfaceSBML::handleTerminalNode(const CUnitInformation & ui, CUnitInformation *pNodeUnit, const ASTNode* node)
 {
 #ifdef UNIT_DEBUG
   std::cout << "terminal: assign " << ui.getDisplayString() << "  to " << pNodeUnit->getDisplayString() <<  std::endl;
 #endif
-  //TODO handle case where conflict flag is set bfore
+  //TODO handle case where conflict flag is set before
 
   if (ui.getInfo() == CUnitInformation::UNKNOWN)
     {
@@ -1047,7 +1055,12 @@ CUnitInformation CUnitInterfaceSBML::handleTerminalNode(const CUnitInformation &
             }
 
           if (!pNodeUnit->isConflict())
-            if (1 > mError) mError = 1; //only report the conflict for this expression if it was not known before
+            {
+              //only report the conflict for this expression if it was not known before
+              if (1 > mError) mError = 1;
+
+              mConflictingNodes.insert(node);
+            }
 
           pNodeUnit->setConflict(true);
           return *pNodeUnit;

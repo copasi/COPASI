@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include "CUnit.h"
 
 class Model;
@@ -110,6 +111,14 @@ public:
    * The message should be suitable for presentation in a user interface.
    */
   std::string getMessageAboutUnknownUnits() const;
+
+  /**
+   * after determineUnits() was called this contains a set of terminal ASTNodes
+   * in which a conflict was detected.
+   * Note that is not necessarily where one would intuitively locate the conflict,
+   * i's just where it was detected.
+   */
+  const std::set<const ASTNode *> & getListOfConflictingNodes() const;
 
   /**
     * This class contains the information about one mathematical expression
@@ -249,9 +258,11 @@ private:
    *  This handles the units assignment/comparison/query for terminal node of the tree.
    * ui is the unit information that is passed from above, pNodeUnit is the unit information
    * that is already present in the terminal node, and the return value is the units of the node
-   * after the assignment/comparison/querying.
+   * after the assignment/comparison/querying. mError is set to 1 if a conflict appears.
+   * The node is optional (it can be NULL), it is only used for reporting conflicts.
+   * If a new conflict appears the node pointer is added to the mConflictingNodes set.
    */
-  CUnitInformation handleTerminalNode(const CUnitInformation & ui, CUnitInformation *pNodeUnit);
+  CUnitInformation handleTerminalNode(const CUnitInformation & ui, CUnitInformation *pNodeUnit, const ASTNode* node);
 
   /**
    * handle the case of a node where the units are supposed to be equal.
@@ -341,6 +352,9 @@ private:
   CUnitInformation mSBMLConflictUnit;
 
   int mError;
+
+  ///contains the (terminal) nodes where a conflict appeared
+  std::set<const ASTNode *> mConflictingNodes;
 
   Statistics mStatistics;
 };
