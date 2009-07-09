@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/07 09:44:07 $
+//   $Date: 2009/07/09 11:31:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 #include "CModel.h"
 #include "function/CExpression.h"
 #include "report/CCopasiObject.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
 
 CModelMerging::CModelMerging(CModel* pModel, CModel* mModel)
     : mpModel(pModel), mmModel(mModel)
@@ -53,14 +55,13 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
 
   bool info;
 
-  // if (mmModel)
-  // mmModel->setCompileFlag(true);
-
   const CExpression* pExpression = sourceEntity->getExpressionPtr();
   assert(pExpression);
 
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
+
+  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
 
   const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
   unsigned j, jmax = objectNodes.size();
@@ -73,16 +74,36 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
           assert(pObjectNode);
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          std::cout << cn << std::endl;
+          //std::cout << cn << std::endl;
 
-          const CCopasiObject* pObject = mmModel->getObject(cn);
-          assert(pObject);
+          const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
+          assert(mObject);
+          std::string host = "";
 
-          // the last part is in CModelMerging.cpp_06.07
+          if (mObject->isReference())
+            {
+              host = ",Reference=" + mObject->getObjectName();
+              mObject = mObject->getObjectParent();
+            }
+
+          assert(mObject);
+
+          std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
+          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+
+          cn = pObject->getCN() + host;
+
+          //std::cout << cn << std::endl;
+
+          pObjectNode->setData("<" + cn + ">");
         }
     }
 
-  // the last part is in CModelMerging.cpp_06.07
+  tmp->updateTree();
+
+  //std::cout << tmp->getRoot()->getDisplayString(tmp).c_str() << std::endl;
+
+  newEntity->setExpression(tmp->getInfix().c_str());
 
   return true;
 }
@@ -120,9 +141,13 @@ bool CModelMerging::addCompartments(std::string name)
             break;
           case CModelEntity::ASSIGNMENT:
 
+            if (!copyExpression(sourceComp, newComp)) return info;
+
             break;
 
           case CModelEntity::ODE:
+
+            if (!copyExpression(sourceComp, newComp)) return info;
 
             break;
 
@@ -186,6 +211,8 @@ bool CModelMerging::addMetabolites(std::string name)
 
           case CModelEntity::ODE:
 
+            if (!copyExpression(sourceMetab, newMetab)) return info;
+
             break;
 
           case CModelEntity::REACTIONS:
@@ -238,15 +265,16 @@ bool CModelMerging::addModelValues(std::string name)
             break;
           case CModelEntity::ASSIGNMENT:
 
+            if (!copyExpression(sourceModVal, newModVal)) return info;
+
             break;
 
           case CModelEntity::ODE:
 
-            break;
-
-          case CModelEntity::REACTIONS:
+            if (!copyExpression(sourceModVal, newModVal)) return info;
 
             break;
+
           default:
 
             return info;
