@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/02 11:39:49 $
+//   $Date: 2009/07/10 21:13:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,6 +136,8 @@ CEvaluationNode::Data CEvaluationNodeObject::getData() const
         return mData;
         break;
     }
+
+  return mData;
 }
 
 bool CEvaluationNodeObject::setData(const Data & data)
@@ -160,6 +162,8 @@ std::string CEvaluationNodeObject::getInfix() const
         return mData;
         break;
     }
+
+  return mData;
 }
 
 #if 0
