@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:15:15 $
+//   $Date: 2009/07/10 01:22:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,12 @@ public:
    * @return size_t numRoots
    */
   size_t getNumRoots() const;
+
+  /**
+   * Retrieve a vector of root finders
+   * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
+   */
+  const CVector< CMathTrigger::CRootFinder * > & getRootFinders() const;
 
   /**
    * Build a list of refresh calls needed to assure that required objects

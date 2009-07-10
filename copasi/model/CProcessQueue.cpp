@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 22:16:51 $
+//   $Date: 2009/07/10 01:22:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -513,22 +513,43 @@ bool CProcessQueue::rootsFound()
   C_INT * pRootEnd = pRootFound + mRootsFound.size();
   C_FLOAT64 * pValueBefore = mpRootValuesBefore->array();
   C_FLOAT64 * pValueAfter = mpRootValuesAfter->array();
+  CMathTrigger::CRootFinder *const* ppRootFinder = mpMathModel->getRootFinders().array();
 
   for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter)
     {
-      if (*pValueBefore < 0.0 && *pValueAfter >= 0.0)
+      if ((*ppRootFinder)->isEquality())
         {
-          *pRootFound = 1;
-          rootsFound = true;
-        }
-      else if (*pValueBefore > 0.0 && *pValueAfter <= 0.0)
-        {
-          *pRootFound = 1;
-          rootsFound = true;
+          if (*pValueBefore < 0.0 && *pValueAfter >= 0.0)
+            {
+              *pRootFound = 1;
+              rootsFound = true;
+            }
+          else if (*pValueBefore > 0.0 && *pValueAfter <= 0.0)
+            {
+              *pRootFound = 1;
+              rootsFound = true;
+            }
+          else
+            {
+              *pRootFound = 0;
+            }
         }
       else
         {
-          *pRootFound = 0;
+          if (*pValueBefore <= 0.0 && *pValueAfter > 0.0)
+            {
+              *pRootFound = 1;
+              rootsFound = true;
+            }
+          else if (*pValueBefore >= 0.0 && *pValueAfter < 0.0)
+            {
+              *pRootFound = 1;
+              rootsFound = true;
+            }
+          else
+            {
+              *pRootFound = 0;
+            }
         }
     }
 
