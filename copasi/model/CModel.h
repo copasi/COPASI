@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.179 $
+//   $Revision: 1.180 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:15:15 $
+//   $Date: 2009/07/10 21:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1203,7 +1203,7 @@ private:
    * "constant" during simulation
    * @return bool success
    */
-  bool buildConstantSequence();
+  bool buildConcentrationSequence();
 
   /**
    * Build the update sequence used by updateSimulatedValues.
@@ -1456,7 +1456,7 @@ private:
    * An ordered list of refresh methods needed by the applyInitialValues
    * to update values which stay constant during simulation.
    */
-  std::vector< Refresh * > mConstantRefreshes;
+  std::vector< Refresh * > mConcentrationRefreshes;
 
   /**
    * An ordered list of refresh methods needed to update all model values

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.71 $
+//   $Revision: 1.72 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:44:18 $
+//   $Date: 2009/07/10 21:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,6 @@ CModelEntity::CModelEntity(const std::string & name,
     mpInitialExpression(NULL),
     mStatus(FIXED),
     mUsed(false),
-    mCalculatedOnce(false),
     mMiriamAnnotation(""),
     mpModel(NULL)
 {
@@ -101,7 +100,6 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpInitialExpression(new CExpression(*src.mpInitialExpression)),
     mStatus(FIXED),
     mUsed(false),
-    mCalculatedOnce(false),
     mMiriamAnnotation(""),
     mpModel(NULL)
 {
@@ -426,7 +424,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
             mUsed = true;
-            mCalculatedOnce = false;
             break;
 
           case ODE:
@@ -438,21 +435,18 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mpRateReference->setRefresh(this, &CModelEntity::calculate);
 
             mUsed = true;
-            mCalculatedOnce = false;
             break;
 
           case REACTIONS:
             pdelete(mpExpression);
 
             mUsed = true;
-            mCalculatedOnce = false;
             break;
 
           case TIME:
             pdelete(mpExpression);
 
             mUsed = true;
-            mCalculatedOnce = false;
             break;
 
           case FIXED:
@@ -461,7 +455,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mRate = 0.0;
 
             mUsed = false;
-            mCalculatedOnce = false;
             break;
         }
     }
@@ -603,12 +596,6 @@ void CModelEntity::setUsed(const bool & used)
 
 const bool & CModelEntity::isUsed() const
 {return mUsed;}
-
-void CModelEntity::setCalculatedOnce(const bool & calculatedOnce)
-{mCalculatedOnce = calculatedOnce;}
-
-const bool & CModelEntity::isCalculatedOnce() const
-{return mCalculatedOnce;}
 
 void CModelEntity::setMiriamAnnotation(const std::string & miriamAnnotation,
                                        const std::string & oldId)

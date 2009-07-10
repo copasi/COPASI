@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:44:18 $
+//   $Date: 2009/07/10 21:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -296,18 +296,6 @@ public:
   const bool & isUsed() const;
 
   /**
-   * Set whether the model entity is calculated once prior to simulation
-   * @param const bool & calculatedOnce
-   */
-  void setCalculatedOnce(const bool & calculatedOnce);
-
-  /**
-   * Retrieve whether the model value is calculated once prior to simulation
-   * @return const bool & calculatedOnce
-   */
-  const bool & isCalculatedOnce() const;
-
-  /**
    * Retrieve object referencing the initial value
    * @return CCopasiObject * initialValueReference
    */
@@ -382,12 +370,6 @@ private:
    * calculated during the simulation
    */
   bool mUsed;
-
-  /**
-   * Indicates whether the model value is only calculated once, i.e., must be
-   * calculated prior to the simulation
-   */
-  bool mCalculatedOnce;
 
   /**
    * The RDF/XML representation of the MIRIAM annotation

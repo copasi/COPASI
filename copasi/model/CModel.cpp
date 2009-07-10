@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.373 $
+//   $Revision: 1.374 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:15:15 $
+//   $Date: 2009/07/10 21:14:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ CModel::CModel(CCopasiContainer* pParent):
     mpCompileHandler(NULL),
     mInitialRefreshes(),
     mSimulatedRefreshes(),
-    mConstantRefreshes(),
+    mConcentrationRefreshes(),
     mNonSimulatedRefreshes(),
     mReorderNeeded(false),
     mIsAutonomous(true),
@@ -399,7 +399,7 @@ bool CModel::compile()
   // first
   mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
-  mConstantRefreshes.clear();
+  mConcentrationRefreshes.clear();
   mNonSimulatedRefreshes.clear();
 
   CompileStep = 0;
@@ -436,7 +436,7 @@ bool CModel::compile()
   try
     {
       success &= buildInitialSequence();
-      success &= buildConstantSequence();
+      success &= buildConcentrationSequence();
       success &= buildSimulatedSequence();
       success &= buildNonSimulatedSequence();
     }
@@ -1107,10 +1107,12 @@ void CModel::applyInitialValues()
   // Copy the initial state to the current state,
   setState(mInitialState);
 
-  // Update all "constant" dependent values.
-  // Here "constant" means do not change during simulation.
-  std::vector< Refresh * >::const_iterator itRefresh = mConstantRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mConstantRefreshes.end();
+  // Since the initial state is in itself consistent we should not need to
+  // do anything further. However, for species of type ODE and ASSIGNMENT
+  // the effective state variable is the concentration, i.e., we need to update
+  // their concentration here.
+  std::vector< Refresh * >::const_iterator itRefresh = mConcentrationRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mConcentrationRefreshes.end();
 
   while (itRefresh != endRefresh)
     (**itRefresh++)();
@@ -1462,7 +1464,7 @@ bool CModel::buildSimulatedSequence()
         (*itReaction)->compile();
 
       // The compile might have broken some refresh pointers we need to rebuild the constant sequence
-      buildConstantSequence();
+      buildConcentrationSequence();
     }
 
   std::set< const CCopasiObject * > UpToDate;
@@ -1478,8 +1480,8 @@ bool CModel::buildSimulatedSequence()
     }
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
-  std::vector< Refresh * >::const_iterator itConstantRefresh = mConstantRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endConstantRefresh = mConstantRefreshes.end();
+  std::vector< Refresh * >::const_iterator itConstantRefresh = mConcentrationRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endConstantRefresh = mConcentrationRefreshes.end();
 
   std::vector< Refresh * >::iterator itRefresh;
   std::vector< Refresh * >::iterator endRefresh;
@@ -1500,66 +1502,25 @@ bool CModel::buildSimulatedSequence()
   return success;
 }
 
-bool CModel::buildConstantSequence()
+bool CModel::buildConcentrationSequence()
 {
   bool success = true;
 
-  // Now find all model entities which are assignments and which do
-  // not depend on simulated values, i.e., on model entities of type
-  // time, ode, reaction
-  std::set< const CCopasiObject * > Dependencies;
-  std::set< const CCopasiObject * > Context;
-  std::set< const CCopasiObject * >::const_iterator itDepend;
-  std::set< const CCopasiObject * >::const_iterator endDepend;
-  const CModelEntity * pEntity;
-  std::set< const CCopasiObject * > Objects;
+  mConcentrationRefreshes.clear();
 
-  CModelEntity ** ppEntity =
-    mStateTemplate.beginDependent() + MNumMetabolitesReactionDependent;
+  const CMetab * pMetab;
+
+  CModelEntity ** ppEntity =  mStateTemplate.beginIndependent();
   CModelEntity ** ppEntityEnd = mStateTemplate.endFixed();
 
-  //range now includes all entities with assignments, and fixed entities. The loop
-  // is only over the entities with assignments ???
-  for (; ppEntity != ppEntityEnd && (*ppEntity)->getStatus() == ASSIGNMENT; ++ppEntity)
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      Dependencies.clear();
-      // We need to add the value and not the object.
-      (*ppEntity)->getValueReference()->getAllDependencies(Dependencies, Context);
-
-      itDepend = Dependencies.begin();
-      endDepend = Dependencies.end();
-
-      for (; itDepend != endDepend; ++itDepend)
-
-        // We need to check the object and its parent
-        if ((pEntity = dynamic_cast< const CModelEntity * >(*itDepend)) != NULL &&
-            (pEntity->getStatus() != ASSIGNMENT &&
-             pEntity->getStatus() != FIXED))
-          break;
-
-      if (itDepend == endDepend)
+      if (((*ppEntity)->getStatus() == ASSIGNMENT ||
+           (*ppEntity)->getStatus() == ODE) &&
+          (pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
-          mReorderNeeded = true;
-          (*ppEntity)->setUsed(false);
-          (*ppEntity)->setCalculatedOnce(true);
-          // For CMetab it would suffice to get the concentration.
-          Objects.insert((*ppEntity)->getValueReference());
+          mConcentrationRefreshes.push_back(pMetab->getConcentrationReference()->getRefresh());
         }
-      else
-        (*ppEntity)->setCalculatedOnce(false);
-    }
-
-  std::set< const CCopasiObject * > UpToDate;
-
-  try
-    {
-      // mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, UpToDate);
-      mConstantRefreshes.clear();
-    }
-  catch (...)
-    {
-      mConstantRefreshes.clear();
-      success = true;
     }
 
   return success;
@@ -1654,8 +1615,8 @@ bool CModel::buildNonSimulatedSequence()
     }
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
-  std::vector< Refresh * >::const_iterator itConstantRefresh = mConstantRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endConstantRefresh = mConstantRefreshes.end();
+  std::vector< Refresh * >::const_iterator itConstantRefresh = mConcentrationRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endConstantRefresh = mConcentrationRefreshes.end();
 
   std::vector< Refresh * >::iterator itRefresh;
   std::vector< Refresh * >::iterator endRefresh;
@@ -3673,7 +3634,7 @@ const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
 {return mSimulatedRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfConstantRefreshes() const
-{return mConstantRefreshes;}
+{return mConcentrationRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfNonSimulatedRefreshes() const
 {return mNonSimulatedRefreshes;}
