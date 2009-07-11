@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.240 $
+//   $Revision: 1.241 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/06/27 09:56:11 $
+//   $Date: 2009/07/11 08:54:53 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -554,11 +554,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (this->mUnsupportedRuleFound)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 3);
-    }
-
-  if (sbmlModel->getNumEvents() > 0)
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
     }
 
   if (mpImportHandler)
