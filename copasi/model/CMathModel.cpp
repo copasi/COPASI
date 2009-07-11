@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 01:22:57 $
+//   $Date: 2009/07/11 13:05:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,7 +121,7 @@ bool CMathModel::compile(CModel * pModel)
   // only change during discrete events.
   std::set< const CCopasiObject * > StateVariables;
   CModelEntity *const*ppEntity = mpModel->getStateTemplate().getEntities();
-  CModelEntity *const*ppEntityEnd = mpModel->getStateTemplate().endIndependent();
+  CModelEntity *const*ppEntityEnd = mpModel->getStateTemplate().endDependent();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
