@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -46,6 +46,8 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget* parent, const char* name)
   mpTblFunctions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
+  connect(mpFunctionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
   connect(mpFunctionDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -90,8 +92,7 @@ void CQFunctionsWidget::deleteSelectedFunctions()
   for (i = selRows.begin(); i != selRows.end(); ++i)
     {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  if (mpFunctionDM->removeRows(mappedSelRows))
-    protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");
+  mpFunctionDM->removeRows(mappedSelRows)
 }
 
 void CQFunctionsWidget::slotBtnClearClicked()
@@ -103,7 +104,6 @@ void CQFunctionsWidget::slotBtnClearClicked()
   if (ret == QMessageBox::Yes)
     {
       mpFunctionDM->clear();
-      protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");
     }
 }
 

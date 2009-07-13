@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
 
   // Connect the table widget
   connect(mpSpecieDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(slotNotifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)));
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
   connect(mpSpecieDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -102,8 +102,7 @@ void CQSpeciesWidget::deleteSelectedSpecies()
   for (i = selRows.begin(); i != selRows.end(); ++i)
     {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  if (mpSpecieDM->removeRows(mappedSelRows))
-    protectedNotify(ListViews::REACTION, ListViews::DELETE, "");
+  mpSpecieDM->removeRows(mappedSelRows);
 }
 
 void CQSpeciesWidget::slotBtnClearClicked()
@@ -115,7 +114,6 @@ void CQSpeciesWidget::slotBtnClearClicked()
   if (ret == QMessageBox::Yes)
     {
       mpSpecieDM->clear();
-      protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");
     }
 }
 
@@ -148,11 +146,6 @@ void CQSpeciesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
   mpTblSpecies->resizeColumnsToContents();
   setFramework(mFramework);
   refreshCompartments();
-}
-
-void CQSpeciesWidget::slotNotifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
-{
-  protectedNotify(objectType, action, key);
 }
 
 void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/07/06 12:12:14 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,8 @@ CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
+  connect(mpEventDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
   connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -94,8 +96,7 @@ void CQEventsWidget::deleteSelectedEvents()
   for (i = selRows.begin(); i != selRows.end(); ++i)
     {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  if (mpEventDM->removeRows(mappedSelRows))
-    protectedNotify(ListViews::EVENT, ListViews::DELETE, "");
+  mpEventDM->removeRows(mappedSelRows);
 }
 
 void CQEventsWidget::slotBtnClearClicked()
@@ -107,7 +108,6 @@ void CQEventsWidget::slotBtnClearClicked()
   if (ret == QMessageBox::Yes)
     {
       mpEventDM->clear();
-      protectedNotify(ListViews::EVENT, ListViews::DELETE, "");
     }
 }
 
@@ -136,7 +136,6 @@ void CQEventsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
                                  const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblEvents->resizeColumnsToContents();
-  protectedNotify(ListViews::EVENT, ListViews::CHANGE, "");
 }
 
 void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)

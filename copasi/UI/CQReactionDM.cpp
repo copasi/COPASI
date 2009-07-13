@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,6 +192,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
         pRea->setObjectName(TO_UTF8(createNewName("Reaction", COL_NAME_REACTIONS)));
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
     }
 
   return true;
@@ -291,8 +292,6 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   else
     {
       if (createdMetabs) emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
-
-      emit notifyGUI(ListViews::REACTION, ListViews::CHANGE, "");
     }
 }
 
@@ -306,6 +305,8 @@ bool CQReactionDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
+  emit notifyGUI(ListViews::REACTION, ListViews::ADD, "");
+
   return true;
 }
 
@@ -322,6 +323,8 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");
+
   return true;
 }
 

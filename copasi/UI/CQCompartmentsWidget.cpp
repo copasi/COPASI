@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,8 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
   mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
+  connect(mpCompartmentDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
   connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -95,8 +97,7 @@ void CQCompartmentsWidget::deleteSelectedCompartments()
   for (i = selRows.begin(); i != selRows.end(); ++i)
     {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  if (mpCompartmentDM->removeRows(mappedSelRows))
-    protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");
+  mpCompartmentDM->removeRows(mappedSelRows);
 }
 
 void CQCompartmentsWidget::slotBtnClearClicked()
@@ -108,7 +109,6 @@ void CQCompartmentsWidget::slotBtnClearClicked()
   if (ret == QMessageBox::Yes)
     {
       mpCompartmentDM->clear();
-      protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");
     }
 }
 
@@ -137,7 +137,6 @@ void CQCompartmentsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
                                        const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblCompartments->resizeColumnsToContents();
-  protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 

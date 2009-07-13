@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/25 17:31:50 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,6 @@
 #define CQReactionDM_H
 
 #include "model/CModel.h"
-#include "listviews.h"
 #include "CQBaseDataModel.h"
 
 #define COL_NAME_REACTIONS   1
@@ -47,9 +46,6 @@ protected:
 
 private:
   void setEquation(const CReaction *pRea, const QModelIndex& index, const QVariant &value);
-
-signals:
-  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 };
 
 #endif //CQReactionDM_H

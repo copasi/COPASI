@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantitiesWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,8 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget* parent, const char* 
   mpTblGlobalQuantities->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   // Connect the table widget
+  connect(mpGlobalQuantityDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
   connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -95,8 +97,7 @@ void CQGlobalQuantitiesWidget::deleteSelectedGlobalQuantities()
   for (i = selRows.begin(); i != selRows.end(); ++i)
     {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  if (mpGlobalQuantityDM->removeRows(mappedSelRows))
-    protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");
+  mpGlobalQuantityDM->removeRows(mappedSelRows);
 }
 
 void CQGlobalQuantitiesWidget::slotBtnClearClicked()
@@ -108,7 +109,6 @@ void CQGlobalQuantitiesWidget::slotBtnClearClicked()
   if (ret == QMessageBox::Yes)
     {
       mpGlobalQuantityDM->clear();
-      protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");
     }
 }
 
@@ -137,7 +137,6 @@ void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
     const QModelIndex& C_UNUSED(bottomRight))
 {
   mpTblGlobalQuantities->resizeColumnsToContents();
-  protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, "");
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 

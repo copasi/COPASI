@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -92,7 +92,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_GQ:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
               case COL_INITIAL_GQ:
-                return QVariant(0.0);
+                return QVariant(QString("0.0"));
               default:
                 return QVariant(QString(""));
             }
@@ -114,8 +114,12 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));
 
               case COL_INITIAL_GQ:
-                return QVariant(pGQ->getInitialValue());
-
+              {
+                if (role == Qt::EditRole)
+                  return QVariant(QString::number(pGQ->getInitialValue()));
+                else
+                  return QVariant(pGQ->getInitialValue());
+              }
               case COL_TRANSIENT_GQ:
                 return QVariant(pGQ->getValue());
 
@@ -221,6 +225,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
         pGQ->setObjectName(TO_UTF8(createNewName("Quantity", COL_NAME_GQ)));
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, "");
     }
 
   return true;
@@ -236,6 +241,8 @@ bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
+  emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, "");
+
   return true;
 }
 
@@ -252,6 +259,8 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, "");
+
   return true;
 }
 

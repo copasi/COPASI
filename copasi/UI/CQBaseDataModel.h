@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/05/15 19:36:28 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -15,6 +15,8 @@
 
 #include <QTableView>
 #include <QAbstractTableModel>
+
+#include "listviews.h"
 
 #define COL_ROW_NUMBER   0
 
@@ -39,6 +41,9 @@ public:
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;
   virtual bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) = 0;
+
+signals:
+  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 };
 
 #endif //CQBaseDataModel_H

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.204 $
+#   $Revision: 1.205 $
 #   $Name:  $
 #   $Author: aekamal $
-#   $Date: 2009/07/06 12:46:06 $
+#   $Date: 2009/07/13 15:43:44 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.204 $ $Author: aekamal $ $Date: 2009/07/06 12:46:06 $
+# $Revision: 1.205 $ $Author: aekamal $ $Date: 2009/07/13 15:43:44 $
 ######################################################################
 
 LIB = UI
@@ -194,7 +194,7 @@ SOURCES	+= \
   SOURCES -= TSSWidget.cpp
 }
 
-
+FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
@@ -219,7 +219,6 @@ FORMS += CQMCAWidget.ui
 FORMS += CQDifferentialEquations.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
-# FORMS3 += CQCompartment.ui
 # FORMS3 += CQDifferentialEquations.ui
 FORMS3 += CQEFMWidget.ui
 # FORMS3 += CQExperimentData.ui
@@ -256,7 +255,6 @@ HEADERS += \
            CMCAResultSubwidget.h \
            CMCAResultSubwidget.ui.h \
            CQCompartment.h \
-           CQCompartment.ui.h \
            CQDifferentialEquations.h \
 #           CQDifferentialEquations.ui.h \
            CQEFMWidget.ui.h \

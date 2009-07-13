@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,16 +140,16 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ICONCENTRATION:
               {
                 if (mFlagConc)
-                  return QVariant(1.0);
+                  return QVariant(QString("1.0"));
                 else
-                  return QVariant();
+                  return QVariant(QString(""));
               }
               case COL_INUMBER:
               {
                 if (mFlagConc)
-                  return QVariant();
+                  return QVariant(QString(""));
                 else
-                  return QVariant(100.0);
+                  return QVariant(QString("100.0"));
               }
               default:
                 return QVariant(QString(""));
@@ -174,11 +174,20 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pSpe->getStatus()])));
 
               case COL_ICONCENTRATION:
-                return QVariant(pSpe->getInitialConcentration());
+              {
+                if (role == Qt::EditRole)
+                  return QVariant(QString::number(pSpe->getInitialConcentration()));
+                else
+                  return QVariant(pSpe->getInitialConcentration());
+              }
 
               case COL_INUMBER:
-                return QVariant(pSpe->getInitialValue());
-
+              {
+                if (role == Qt::EditRole)
+                  return QVariant(QString::number(pSpe->getInitialValue()));
+                else
+                  return QVariant(pSpe->getInitialValue());
+              }
               case COL_CONCENTRATION:
                 return QVariant(pSpe->getConcentration());
 
@@ -420,6 +429,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
         pSpe->setObjectName(TO_UTF8(createNewName("Species", COL_NAME_SPECIES)));
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, "");
     }
 
   return true;
@@ -440,6 +450,8 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
+  emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, "");
+
   return true;
 }
 
@@ -456,6 +468,8 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  emit notifyGUI(ListViews::METABOLITE, ListViews::DELETE, "");
+
   return true;
 }
 

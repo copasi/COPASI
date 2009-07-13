@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/06 15:45:46 $
+//   $Author: aekamal $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,6 +205,7 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
         pEvent->setObjectName(TO_UTF8(createNewName("Event", COL_NAME_EVENTS)));
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, "");
     }
 
   return true;
@@ -220,6 +221,8 @@ bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
+  emit notifyGUI(ListViews::EVENT, ListViews::ADD, "");
+
   return true;
 }
 
@@ -236,6 +239,8 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex&)
     }
 
   endRemoveRows();
+  emit notifyGUI(ListViews::EVENT, ListViews::DELETE, "");
+
   return true;
 }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:25 $
+//   $Date: 2009/07/13 15:43:44 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -209,6 +209,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
         pFunc->setObjectName(TO_UTF8(createNewName("Function", COL_NAME_FUNCTIONS)));
 
       emit dataChanged(index, index);
+      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, "");
     }
 
   return true;
@@ -224,6 +225,8 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
+  emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, "");
+
   return true;
 }
 
@@ -239,6 +242,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex&)
           beginRemoveRows(QModelIndex(), position + row, position + row);
           CCopasiRootContainer::getFunctionList()->removeFunction(position + row);
           endRemoveRows();
+          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, "");
         }
     }
 
