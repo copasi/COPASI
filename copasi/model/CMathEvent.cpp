@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathEvent.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:15:15 $
+//   $Date: 2009/07/13 10:53:38 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +160,12 @@ void CMathEvent::fire(const C_FLOAT64 & time,
   CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
 
   // Determine the execution time of the calculation of the event.
-  C_FLOAT64 ExecutionTime = getExecutionTime(time);
+  C_FLOAT64 ExecutionTime = time;
+
+  if (!mDelayAssignment)
+    {
+      ExecutionTime = getExecutionTime(time);
+    }
 
   // We can only add calculations even if the calculation time is the current time.
   // This is due to the fact that equality and inequality checks are treated differently.
