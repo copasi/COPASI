@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/13 12:09:23 $
+//   $Date: 2009/07/14 14:21:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@ class CMetab;
 class CModelEntity;
 class CExpression;
 class CEvent;
+class CEventAssignment;
 
 class CModelMerging
 {
@@ -46,6 +47,8 @@ protected:
   bool  addReactions(std::string name);
   bool  addEvents(std::string name);
 
+  bool  copyEventAssignmentExpression(const CEventAssignment * sourceAssignment, CEventAssignment * newAssignment);
+  bool  copyDelayExpression(const CEvent * sourceEvent, CEvent * newEvent);
   bool  copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEvent);
   bool  copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
   bool  copyInitialExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
