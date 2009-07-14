@@ -17,11 +17,17 @@ fi
 
 $ASTYLE --mode=c \
         --style=gnu \
-        --one-line=keep-statements \
-        --one-line=keep-blocks \
-        --pad=oper \
+        --keep-one-line-statements \
+        --keep-one-line-blocks \
+        --break-blocks \
+        --unpad-paren \
+        --pad-oper \
         --convert-tabs \
+        --indent-switches \
         --min-conditional-indent=0 \
+        --indent-preprocessor \
+        --suffix=none \
+        --quiet \
         $1
 $GAWK -- '
 BEGIN {
@@ -53,26 +59,13 @@ $0 !~ "^ *$" {
 
   gsub(/ +$/, "")
   gsub(/\( +/, "(")
-  gsub(/, +/, ", ")
-  gsub(/ +)/, ")")
   gsub(/\{ +/, "{")
   gsub(/^\*/, " *")
-  gsub(/; +}/, ";}")
   gsub(/^ +#/, "#")
 
-  $0 = gensub(/([,&+]) ( +\/)/, "\\1\\2", 1)
-  $0 = gensub(/(C_INT operator\(\) \(evalF f,)/, "\\1 ", 1)
- 
-  $0 = gensub(/ +;$/, ";", "g")
+  $0 = gensub(/([^ ]) +\)$/, "\\1)", "g")
+  $0 = gensub(/([^ ]) +;$/, "\\1;", "g")
   $0 = gensub(/([^ ]) +}$/, "\\1}", "g")
-  
-  $0 = gensub(/case *([^ ]*) +:/, "case \\1:", "g")
-  $0 = gensub(/^( *[^ ]+): ( +\/)/, "\\1:\\2", "g")
-  $0 = gensub(/(case [0-9]+): ( +)/, "\\1:\\2", "g")
-  $0 = gensub(/(case .\\..): ( +)/, "\\1:\\2", "g")
-  $0 = gensub(/(case [^ ]+::[^ ]+): ( +)/, "\\1:\\2", "g")
-  $0 = gensub(/if (.*\|\| +) \//, "if \\1/", "g")
-  $0 = gensub(/(.*)=( +) \//, "\\1=\\2/", "g")
   
   if ($0 ~ ".*}$") {
     lastClosingBracket = 1
