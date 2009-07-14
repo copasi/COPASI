@@ -30,7 +30,7 @@ elif [ "`basename $1`" != "`basename $1 .xsd`" -o \
 elif [ "`basename $1`" != "`basename $1 .ui`" ]; then
   CommentStart='<comment>'
   CommentEnd='</comment>'
-  PrologEnd='>'
+  PrologEnd='<ui.*>'
 elif [ "`basename $1`" != "`basename $1 .py`" ]; then
   CommentStart=#
   PrologEnd='-\\*-'
@@ -51,10 +51,10 @@ BEGIN {
       if ($0 !~ ".*Begin CVS Header.*") {
         printf "'$CommentStart' Begin CVS Header '$CommentEnd'\n"
         printf "'$CommentStart'   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/addHeader,v $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Revision: 1.10 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Revision: 1.11 $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Name:  $ '$CommentEnd'\n"
         printf "'$CommentStart'   $Author: shoops $ '$CommentEnd'\n"
-        printf "'$CommentStart'   $Date: 2008/04/11 15:21:36 $ '$CommentEnd'\n"
+        printf "'$CommentStart'   $Date: 2009/07/14 11:09:51 $ '$CommentEnd'\n"
         printf "'$CommentStart' End CVS Header '$CommentEnd'\n"
         if ($0 !~ "^$") {
           printf "\n"
