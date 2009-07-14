@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2009/07/14 02:13:23 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -92,7 +92,7 @@ void CQFunctionsWidget::deleteSelectedFunctions()
   for (i = selRows.begin(); i != selRows.end(); ++i)
     {mappedSelRows.append(mpProxyModel->mapToSource(*i));}
 
-  mpFunctionDM->removeRows(mappedSelRows)
+  mpFunctionDM->removeRows(mappedSelRows);
 }
 
 void CQFunctionsWidget::slotBtnClearClicked()
