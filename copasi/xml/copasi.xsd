@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Begin CVS Header -->
 <!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/copasi.xsd,v $ -->
-<!--   $Revision: 1.57 $ -->
+<!--   $Revision: 1.58 $ -->
 <!--   $Name:  $ -->
 <!--   $Author: shoops $ -->
-<!--   $Date: 2009/06/02 20:54:23 $ -->
+<!--   $Date: 2009/07/15 13:33:23 $ -->
 <!-- End CVS Header -->
 
 <!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
@@ -67,6 +67,14 @@
                                   <xs:element name="InitialExpression" type="sEXPRESSION"
                                     minOccurs="0"/>
                                 </xs:sequence>
+                                <xs:attribute name="dimensionality">
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:int">
+                                      <xs:minInclusive value="0"/>
+                                      <xs:maxInclusive value="3"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:attribute>
                               </xs:extension>
                             </xs:complexContent>
                           </xs:complexType>
@@ -231,7 +239,7 @@
                                         <xs:sequence>
                                           <xs:element name="Expression" type="sEXPRESSION"/>
                                         </xs:sequence>
-                                        <xs:attribute name="targetkey"
+                                        <xs:attribute name="targetKey"
                                           type="cEVENT_ASSIGNMENT_TARGET_KEYREF" use="required"/>
                                       </xs:complexType>
                                     </xs:element>
@@ -239,7 +247,7 @@
                                 </xs:complexType>
                                 <xs:unique name="AssignmentTarget">
                                   <xs:selector xpath="Assignment"/>
-                                  <xs:field xpath="@targetkey"/>
+                                  <xs:field xpath="@targetKey"/>
                                 </xs:unique>
                               </xs:element>
                             </xs:sequence>
@@ -322,6 +330,34 @@
                       <xs:enumeration value="nl"/>
                       <xs:enumeration value="pl"/>
                       <xs:enumeration value="fl"/>
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="areaUnit">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:enumeration value="m²"/>
+                      <xs:enumeration value="dm²"/>
+                      <xs:enumeration value="cm²"/>
+                      <xs:enumeration value="mm²"/>
+                      <xs:enumeration value="µm²"/>
+                      <xs:enumeration value="nm²"/>
+                      <xs:enumeration value="pm²"/>
+                      <xs:enumeration value="fm²"/>
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="lengthUnit">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:enumeration value="m"/>
+                      <xs:enumeration value="dm"/>
+                      <xs:enumeration value="cm"/>
+                      <xs:enumeration value="mm"/>
+                      <xs:enumeration value="µm"/>
+                      <xs:enumeration value="nm"/>
+                      <xs:enumeration value="pm"/>
+                      <xs:enumeration value="fm"/>
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>
