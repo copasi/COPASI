@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.374 $
+//   $Revision: 1.375 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 21:14:24 $
+//   $Date: 2009/07/16 18:46:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1515,9 +1515,7 @@ bool CModel::buildConcentrationSequence()
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
-      if (((*ppEntity)->getStatus() == ASSIGNMENT ||
-           (*ppEntity)->getStatus() == ODE) &&
-          (pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
+      if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
           mConcentrationRefreshes.push_back(pMetab->getConcentrationReference()->getRefresh());
         }
