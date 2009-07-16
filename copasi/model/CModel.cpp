@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.375 $
+//   $Revision: 1.376 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 18:46:30 $
+//   $Date: 2009/07/16 19:32:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1477,26 +1477,6 @@ bool CModel::buildSimulatedSequence()
     {
       mSimulatedRefreshes.clear();
       success = false;
-    }
-
-  // We have to remove the refresh calls already covered by mConstantRefreshes
-  std::vector< Refresh * >::const_iterator itConstantRefresh = mConcentrationRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endConstantRefresh = mConcentrationRefreshes.end();
-
-  std::vector< Refresh * >::iterator itRefresh;
-  std::vector< Refresh * >::iterator endRefresh;
-
-  for (; itConstantRefresh != endConstantRefresh; ++itConstantRefresh)
-    {
-      itRefresh = mSimulatedRefreshes.begin();
-      endRefresh = mSimulatedRefreshes.end();
-
-      for (; itRefresh != endRefresh; ++itRefresh)
-        if ((*itRefresh)->isEqual(*itConstantRefresh))
-          {
-            mSimulatedRefreshes.erase(itRefresh);
-            break;
-          }
     }
 
   return success;
