@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:22:07 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -279,7 +279,7 @@ void ParametersWidget::savePressed()
 
   if (file.fail()) return;
 
-  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!model) return;
 
@@ -288,7 +288,7 @@ void ParametersWidget::savePressed()
 
 bool ParametersWidget::loadFromModel()
 {
-  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!model) return false;
 
@@ -556,10 +556,9 @@ void ParametersWidget::editItem(Q3ListViewItem * item)
 
 //***********************************************************************************
 
-bool ParametersWidget::enter(const std::string & key)
+bool ParametersWidget::enterProtected()
 {
-  objKey = key;
-  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CModel* model = dynamic_cast< CModel * >(mpObject);
 
   if (model) return loadFromModel();
   else return false;

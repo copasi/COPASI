@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMetabolite.ui.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -284,10 +284,9 @@ void CQMetabolite::slotInitialExpressionValid(bool valid)
   mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
-bool CQMetabolite::enter(const std::string & key)
+bool CQMetabolite::enterProtected()
 {
-  mKey = key;
-  mpMetab = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  mpMetab = dynamic_cast< CMetab * >(mpObject);
 
   if (!mpMetab)
     {

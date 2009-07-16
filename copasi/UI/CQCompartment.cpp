@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:36:17 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,10 +268,9 @@ void CQCompartment::slotInitialExpressionValid(bool valid)
   mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
-bool CQCompartment::enter(const std::string & key)
+bool CQCompartment::enterProtected()
 {
-  mKey = key;
-  mpCompartment = dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  mpCompartment = dynamic_cast< CCompartment * >(mpObject);
 
   if (!mpCompartment)
     {

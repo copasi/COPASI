@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQMoietiesTaskResult.ui.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:13:16 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,9 +114,9 @@ bool CQMoietiesTaskResult::update(ListViews::ObjectType /* objectType */,
 bool CQMoietiesTaskResult::leave()
 {return true;}
 
-bool CQMoietiesTaskResult::enter(const std::string & key)
+bool CQMoietiesTaskResult::enterProtected()
 {
-  mpMoietiesTask = dynamic_cast< CMoietiesTask * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  mpMoietiesTask = dynamic_cast< CMoietiesTask * >(mpObject);
 
   load();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-$Revision: 1.15 $
+$Revision: 1.16 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/19 19:54:03 $
+$Date: 2009/07/16 15:47:26 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,7 @@ TSSWidget::TSSWidget(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   if (!name)
     setName("TSSWidget");
+
   setCaption(trUtf8("TSSWidget"));
 
   //if a mpMethodLayout is created here, it will be used by addMethodXXX() below.
@@ -90,7 +91,7 @@ bool TSSWidget::saveTask()
   saveMethod();
 
   CTSSTask* tssTask =
-    dynamic_cast<CTSSTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CTSSTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
   assert(tssTask);
 
   CTSSProblem* problem =
@@ -109,6 +110,7 @@ bool TSSWidget::saveTask()
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
     }
+
   return true;
 }
 
@@ -176,7 +178,7 @@ bool TSSWidget::loadTask()
   loadMethod();
 
   CTSSTask* tssTask =
-    dynamic_cast<CTSSTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CTSSTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
   assert(tssTask);
 
   CTSSProblem* problem =

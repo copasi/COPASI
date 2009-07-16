@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/Attic/CQRDFListViewWidget.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Creator: aekamal $
-//   $Date: 2009/04/21 16:17:35 $
+//   $Date: 2009/07/16 15:46:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,9 +38,8 @@ void CQRDFListViewWidget::init()
   mpGraph = NULL;
 }
 
-bool CQRDFListViewWidget::enter(const std::string & key)
+bool CQRDFListViewWidget::enterProtected()
 {
-  mKey = key;
   load();
 
   return true;

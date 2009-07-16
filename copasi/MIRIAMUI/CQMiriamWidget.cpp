@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/06/22 17:19:07 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:46:13 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,9 +294,9 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
     }
 }
 
-bool CQMiriamWidget::enter(const std::string & key)
+bool CQMiriamWidget::enterProtected()
 {
-  mpMIRIAMInfo->load(key);
+  mpMIRIAMInfo->load(mKey);
 
   //Set Models for the 4 TableViews
   std::vector<QTableView*>::const_iterator it = mWidgets.begin();

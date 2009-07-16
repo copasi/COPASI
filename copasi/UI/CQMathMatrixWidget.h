@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:56:21 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,37 +33,36 @@ class QLabel;
 class QTabWidget;
 
 class CQMathMatrixWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQMathMatrixWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~CQMathMatrixWidget();
+public:
+  CQMathMatrixWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~CQMathMatrixWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
 
-  protected slots:
+protected slots:
 
-  protected:
+protected:
+  virtual bool enterProtected();
+  void loadMatrices();
+  void clearArrays();
 
-    void loadMatrices();
-    void clearArrays();
+  Q3GridLayout* mWidgetLayout;
 
-    Q3GridLayout* mWidgetLayout;
+  QLabel* mLabelTitle;
 
-    QLabel* mLabelTitle;
+  QTabWidget* mpTab;
 
-    QTabWidget* mpTab;
+  CQArrayAnnotationsWidget* mArrayWidget1;
+  CQArrayAnnotationsWidget* mArrayWidget2;
+  CQArrayAnnotationsWidget* mArrayWidget3;
 
-    CQArrayAnnotationsWidget* mArrayWidget1;
-    CQArrayAnnotationsWidget* mArrayWidget2;
-    CQArrayAnnotationsWidget* mArrayWidget3;
-
-    const CArrayAnnotation * mpArrayAnn1;
-    const CArrayAnnotation * mpArrayAnn2;
-    const CArrayAnnotation * mpArrayAnn3;
-  };
+  const CArrayAnnotation * mpArrayAnn1;
+  const CArrayAnnotation * mpArrayAnn2;
+  const CArrayAnnotation * mpArrayAnn3;
+};
 
 #endif

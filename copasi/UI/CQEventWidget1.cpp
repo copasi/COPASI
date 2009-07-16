@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/26 00:03:41 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,9 +74,9 @@ void CQEventWidget1::slotBtnDeleteClicked()
     return;
 
   unsigned C_INT32 index =
-    pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(CCopasiRootContainer::getKeyFactory()->get(mEventKey));
+    pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
-  pDataModel->getModel()->removeEvent(mEventKey);
+  pDataModel->getModel()->removeEvent(mKey);
 
   unsigned C_INT32 size = pDataModel->getModel()->getEvents().size();
 
@@ -87,7 +87,7 @@ void CQEventWidget1::slotBtnDeleteClicked()
   else
     enter("");
 
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, mEventKey);
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
 }
 
 /// Slot to create a new event; activated whenever the New button is clicked
@@ -324,7 +324,7 @@ void CQEventWidget1::saveToEvent()
         }
       else  // the new name is accepted
         {
-          protectedNotify(ListViews::EVENT, ListViews::RENAME, mEventKey);
+          protectedNotify(ListViews::EVENT, ListViews::RENAME, mKey);
           mChanged = true;
         }
     }
@@ -429,7 +429,7 @@ void CQEventWidget1::saveToEvent()
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
-      protectedNotify(ListViews::EVENT, ListViews::CHANGE, mEventKey);
+      protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
     }
 
   mChanged = false;
@@ -442,11 +442,10 @@ bool CQEventWidget1::update(ListViews::ObjectType /* objectType */, ListViews::A
 }
 
 /*! Function to interact with an object of class CEvent */
-bool CQEventWidget1::enter(const std::string & key)
+bool CQEventWidget1::enterProtected()
 {
   // std::cout << "CQEW1::enter - key = " << key << std::endl;
-  mEventKey = key;
-  mpEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  mpEvent = dynamic_cast< CEvent * >(mpObject);
   mCurrentTarget = C_INVALID_INDEX;
 
   if (mpEvent)

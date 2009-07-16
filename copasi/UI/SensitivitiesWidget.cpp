@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/01 09:52:06 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,7 @@ bool SensitivitiesWidget::saveTask()
   saveMethod();
 
   CSensTask* sensTask =
-    dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (sensTask == NULL)
     return false;
@@ -284,7 +284,7 @@ bool SensitivitiesWidget::loadTask()
   loadMethod();
 
   CSensTask* sensTask =
-    dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
   assert(sensTask);
 
   CSensProblem* problem =

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   vBoxLayout->addWidget(table);
 
   //table->sortColumn (0, true, true);
-  table->setSorting (false);
+  table->setSorting(false);
   table->setFocusPolicy(Qt::WheelFocus);
   table->setColumnReadOnly(0, true);
 
@@ -90,15 +90,15 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnNew);
 
-      connect(btnOK, SIGNAL(clicked ()), this,
+      connect(btnOK, SIGNAL(clicked()), this,
               SLOT(slotBtnOKClicked()));
-      connect(btnCancel, SIGNAL(clicked ()), this,
+      connect(btnCancel, SIGNAL(clicked()), this,
               SLOT(slotBtnCancelClicked()));
-      connect(btnDelete, SIGNAL(clicked ()), this,
+      connect(btnDelete, SIGNAL(clicked()), this,
               SLOT(slotBtnDeleteClicked()));
-      connect(btnClear, SIGNAL(clicked ()), this,
+      connect(btnClear, SIGNAL(clicked()), this,
               SLOT(slotBtnClearClicked()));
-      connect(btnNew, SIGNAL(clicked ()), this,
+      connect(btnNew, SIGNAL(clicked()), this,
               SLOT(slotBtnNewClicked()));
     }
 
@@ -134,6 +134,7 @@ void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 
   bool flag = false;
 
   const CModelEntity * pEntity = dynamic_cast<const CModelEntity *>(obj);
+
   if (pEntity)
     {
       tmp = FROM_UTF8(pEntity->getSBMLId());
@@ -141,6 +142,7 @@ void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 
     }
 
   const CFunction * pFunction = dynamic_cast<const CFunction *>(obj);
+
   if (pFunction)
     {
       tmp = FROM_UTF8(pFunction->getSBMLId());
@@ -148,6 +150,7 @@ void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 
     }
 
   const CReaction * pReaction = dynamic_cast<const CReaction *>(obj);
+
   if (pReaction)
     {
       tmp = FROM_UTF8(pReaction->getSBMLId());
@@ -215,6 +218,7 @@ void CopasiTableWidget::fillTable()
   if (!mRO)
     {
       emit setEnableOKAndCancel(false);
+
       if (mShowButtons)
         {
           btnOK->setEnabled(false);
@@ -228,6 +232,7 @@ void CopasiTableWidget::saveTable()
   if (mRO) return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
     return;
 
@@ -238,6 +243,7 @@ void CopasiTableWidget::saveTable()
   //mIgnoreUpdates = true; //to avoid recursive calls
 
   C_INT32 j, jmax = table->numRows() - 1;
+
   for (j = 0; j < jmax; ++j)
     {
       if (mFlagNew[j])
@@ -245,7 +251,9 @@ void CopasiTableWidget::saveTable()
           if (!mFlagDelete[j])
             {
               CCopasiObject* pObj = createNewObject(TO_UTF8(table->text(j, 1)));
+
               if (!pObj) continue;
+
               if (mShowNewObjectWarning && pObj->getObjectName() != TO_UTF8(table->text(j, 1)))
                 {
                   QString msg;
@@ -281,6 +289,7 @@ void CopasiTableWidget::saveTable()
               protectedNotify(mOT, ListViews::CHANGE, mKeys[j]);
               mChanged = true;
             }
+
           if (mFlagRenamed[j])
             {
               if (!CCopasiRootContainer::getKeyFactory()->get(mKeys[j])->setObjectName(TO_UTF8(table->text(j, 1))))
@@ -307,7 +316,7 @@ void CopasiTableWidget::saveTable()
 
   if (flagDelete) deleteObjects(delKeys);
 
-  if (mChanged) (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+  if (mChanged)(*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return;
 }
@@ -318,6 +327,7 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     int C_UNUSED(m), const QPoint & C_UNUSED(n))
 {
   if (row >= table->numRows() || row < 0) return;
+
   if (mRO && (row == table->numRows() - 1)) return;
 
   std::string key = mKeys[row];
@@ -371,6 +381,7 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
   if (mRO) return;
 
   emit setEnableOKAndCancel(true);
+
   if (mShowButtons)
     {
       btnOK->setEnabled(true);
@@ -402,6 +413,7 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
       else
         mFlagChanged[row] = true;
     }
+
   updateRow(row);
 }
 
@@ -433,10 +445,15 @@ void CopasiTableWidget::updateRow(const C_INT32 row)
 {
   //status flags
   QString tmp;
+
   if (mFlagChanged[row]) tmp += "changed ";
+
   if (mFlagDelete[row]) tmp += "delete ";
+
   if (mFlagNew[row]) tmp += "new ";
+
   if (mFlagRenamed[row]) tmp += "renamed ";
+
   if (mFlagRO[row]) tmp += "ro ";
 
   table->setText(row, 0, tmp);
@@ -453,13 +470,16 @@ QString CopasiTableWidget::createNewName(const QString name)
   unsigned C_INT32 j, jmax = mKeys.size();
   unsigned C_INT32 i = 1;
 
-  for (;;++i)
+  for (;; ++i)
     {
       for (j = 0; j < jmax; ++j)
         if (table->text(j, 1) == nname) break;
+
       if (j == jmax) break;
+
       nname = name + "_" + QString::number(i);
     }
+
   return nname;
 }
 
@@ -478,6 +498,7 @@ void CopasiTableWidget::slotBtnOKClicked()
 void CopasiTableWidget::slotBtnCancelClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
   if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
     fillTable();
 }
@@ -485,10 +506,12 @@ void CopasiTableWidget::slotBtnCancelClicked()
 void CopasiTableWidget::slotBtnClearClicked()
 {
   int rowCount = table->numRows() - 1;
+
   for (int i = 0; i < rowCount; i++)
     {
       table->selectRow(i);
     }
+
   CopasiTableWidget::slotBtnDeleteClicked();
 }
 
@@ -498,6 +521,7 @@ void CopasiTableWidget::slotBtnDeleteClicked()
   bool flagNewDelState = false;
 
   C_INT32 i, imax = table->numRows() - 1;
+
   for (i = 0; i < imax; i++)
     {
       if ((table->isRowSelected(i, false)) || (i == table->currentRow()))
@@ -509,13 +533,17 @@ void CopasiTableWidget::slotBtnDeleteClicked()
             }
 
           mFlagDelete[i] = flagNewDelState;
+
           if (mFlagRO[i]) mFlagDelete[i] = false;
+
           updateRow(i);
         }
     }
+
   if (flagFirstFound)
     {
       emit setEnableOKAndCancel(true);
+
       if (mShowButtons)
         {
           btnOK->setEnabled(true);
@@ -538,6 +566,7 @@ void CopasiTableWidget::slotBtnNewClicked()
   table->ensureCellVisible(row, 0);
 
   emit setEnableOKAndCancel(true);
+
   if (mShowButtons)
     {
       btnOK->setEnabled(true);
@@ -559,7 +588,7 @@ bool CopasiTableWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListV
 bool CopasiTableWidget::leave()
 {
   if (mSaveOnLeave)
-  {saveTable();}
+    {saveTable();}
 
   //this is not strictly necessary if you actually leave the widget
   //but the leave() method is also used to force a commit - even if the widget
@@ -569,13 +598,13 @@ bool CopasiTableWidget::leave()
   return true;
 }
 
-bool CopasiTableWidget::enter(const std::string & C_UNUSED(key))
+bool CopasiTableWidget::enterProtected()
 {
   fillTable();
   return true;
 }
 
-void CopasiTableWidget::keyPressEvent (QKeyEvent * e)
+void CopasiTableWidget::keyPressEvent(QKeyEvent * e)
 {
   Qt::Key k = Qt::Key_Delete;
   //Process Delete Key
@@ -597,18 +626,20 @@ bool CopasiTableWidget::isTableChanged()
 {
   bool changeMade = false;
   C_INT32 j, jmax = table->numRows() - 1;
+
   for (j = 0; j < jmax; ++j)
     {
       if (mFlagNew[j] && !mFlagDelete[j])
-      {changeMade = true;}
+        {changeMade = true;}
       else if (mFlagDelete[j])
-      {changeMade = true;}
+        {changeMade = true;}
       else
         {
           if (mFlagChanged[j] || mFlagRenamed[j])
-          {changeMade = true;}
+            {changeMade = true;}
         }
     }
+
   return changeMade;
 }
 
@@ -617,8 +648,8 @@ void CopasiTableWidget::updateHeaderUnits()
 
 // virtual
 QSize CopasiTableWidget::sizeHint() const
-  {
-    QSize SizeHint = QWidget::sizeHint();
-    SizeHint.setHeight((table->numRows() + 2) * table->rowHeight(0));
-    return SizeHint;
-  }
+{
+  QSize SizeHint = QWidget::sizeHint();
+  SizeHint.setHeight((table->numRows() + 2) * table->rowHeight(0));
+  return SizeHint;
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:35 $
+//   $Date: 2009/07/16 15:46:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.61 2009/04/21 16:18:35 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.62 2009/07/16 15:46:25 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -455,7 +455,7 @@ void PlotWidget1::commitPlot()
 {
   saveToPlotSpec();
 
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
 }
 
 //-----------------------------------------------------------------------------
@@ -471,13 +471,13 @@ void PlotWidget1::deletePlot()
   if (!pDataModel->getModel())
     return;
 
-  CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!pspec) return;
 
   Index =
     pDataModel->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
-  pDataModel->getPlotDefinitionList()->removePlotSpec(objKey);
+  pDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
 
   Size = pDataModel->getPlotDefinitionList()->size();
 
@@ -487,7 +487,7 @@ void PlotWidget1::deletePlot()
     enter("");
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, objKey);
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, mKey);
 }
 
 //-----------------------------------------------------------------------------
@@ -520,7 +520,7 @@ void PlotWidget1::addPlot()
 
 void PlotWidget1::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
 }
 
 void PlotWidget1::typeChanged()
@@ -611,7 +611,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 
 bool PlotWidget1::saveToPlotSpec()
 {
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!pspec) return true;
 
@@ -621,7 +621,7 @@ bool PlotWidget1::saveToPlotSpec()
   if (pspec->getTitle() != TO_UTF8(titleLineEdit->text()))
     {
       pspec->setTitle(TO_UTF8(titleLineEdit->text()));
-      protectedNotify(ListViews::PLOT, ListViews::RENAME, objKey);
+      protectedNotify(ListViews::PLOT, ListViews::RENAME, mKey);
     }
 
   //active?
@@ -664,10 +664,9 @@ bool PlotWidget1::saveToPlotSpec()
 
 //TODO:  save a copy!
 
-bool PlotWidget1::enter(const std::string & key)
+bool PlotWidget1::enterProtected()
 {
-  objKey = key;
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(mpObject);
 
   if (!pspec)
     {
@@ -692,7 +691,7 @@ bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_U
       case ListViews::METABOLITE:
       case ListViews::REPORT:
       case ListViews::PLOT:
-        return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+        return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
         break;
 
       default:

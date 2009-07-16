@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:54:03 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,11 +36,11 @@
  *  name 'name' and widget flags set to 'f'.
  */
 TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl),
-    objKey("")
+    : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("TimeSeriesWidget");
+
   setCaption(trUtf8("TimeSeriesWidget"));
 
   mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
@@ -87,7 +87,7 @@ bool TimeSeriesWidget::leave()
   return true;
 }
 
-bool TimeSeriesWidget::enter(const std::string & /* key */)
+bool TimeSeriesWidget::enterProtected()
 {
   return true;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,6 @@ public:
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
-  virtual bool enter(const std::string & key = "");
   virtual void setFramework(int framework);
 
 protected slots:
@@ -75,12 +74,13 @@ protected slots:
   //  public slots:
   virtual void slotTableChanged(int index, int sub, QString newValue);
   virtual void slotParameterStatusChanged(int index, bool local);
+
 protected:
+  virtual bool enterProtected();
   bool loadFromReaction(const CReaction* reaction);
   bool saveToReaction();
   void FillWidgetFromRI();
 
-  std::string objKey;
   CReactionInterface * mpRi;
 
   Q3GridLayout* ReactionsWidget1Layout;

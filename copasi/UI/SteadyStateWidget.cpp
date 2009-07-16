@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.119 $
+//   $Revision: 1.120 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:02:36 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,7 +194,7 @@ bool SteadyStateWidget::loadTask()
   loadMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (mSteadyStateTask == NULL)
     return false;
@@ -230,7 +230,7 @@ bool SteadyStateWidget::saveTask()
   saveMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (mSteadyStateTask == NULL)
     return false;

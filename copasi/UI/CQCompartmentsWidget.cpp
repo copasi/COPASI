@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ bool CQCompartmentsWidget::leave()
   return true;
 }
 
-bool CQCompartmentsWidget::enter(const std::string & C_UNUSED(key))
+bool CQCompartmentsWidget::enterProtected()
 {
   mpProxyModel->setSourceModel(mpCompartmentDM);
   //Set Model for the TableView

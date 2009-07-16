@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:54 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,19 +27,19 @@
 /**This class is the container for two or more widgets.
  */
 class CTabWidget : public CopasiWidget
-  {
-  public:
-    CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
-               QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0);
+{
+public:
+  CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
+             QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0);
 
-    ~CTabWidget();
+  ~CTabWidget();
 
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+  virtual bool leave();
 
-  protected:
-    QTabWidget *mTabWidget;
-    std::vector< CopasiWidget * > mPages;
-  };
+protected:
+  virtual bool enterProtected();
+  QTabWidget *mTabWidget;
+  std::vector< CopasiWidget * > mPages;
+};
 
 #endif // CTABWIDGET_H

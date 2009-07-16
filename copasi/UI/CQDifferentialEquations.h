@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/06/19 08:27:46 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,8 +50,6 @@ public:
   CQDifferentialEquations(QWidget* parent = 0, const char* name = 0);
   ~CQDifferentialEquations();
 
-  virtual bool enter(const std::string &);
-
 public slots:
   virtual void slotUpdateWidget();
   virtual void slotSave();
@@ -59,6 +57,7 @@ public slots:
 protected:
   QtMmlWidget * mpMMLWidget;
   std::ostringstream mml;
+  virtual bool enterProtected();
 
 protected slots:
   virtual void languageChange();

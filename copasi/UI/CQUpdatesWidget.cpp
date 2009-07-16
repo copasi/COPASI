@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 21:14:36 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -391,7 +391,7 @@ bool CQUpdatesWidget::leave()
   return true;
 }
 
-bool CQUpdatesWidget::enter(const std::string & C_UNUSED(key))
+bool CQUpdatesWidget::enterProtected()
 {
   loadWidget();
 

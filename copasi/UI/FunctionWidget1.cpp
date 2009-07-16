@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.170 $
+//   $Revision: 1.171 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:18:46 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,7 +96,6 @@
  */
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WFlags fl):
     CopasiWidget(parent, name, fl),
-    objKey(""),
     mpFunction(NULL)
 {
   if (!name)
@@ -758,7 +757,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
 
 bool FunctionWidget1::functionParametersChanged()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!func) return false;
 
@@ -767,7 +766,7 @@ bool FunctionWidget1::functionParametersChanged()
 
 bool FunctionWidget1::saveToFunction()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!func) return false;
 
@@ -824,7 +823,7 @@ bool FunctionWidget1::saveToFunction()
           LineEdit1->setText(FROM_UTF8(func->getObjectName()));
         }
       else
-        protectedNotify(ListViews::FUNCTION, ListViews::RENAME, objKey);
+        protectedNotify(ListViews::FUNCTION, ListViews::RENAME, mKey);
     }
 
   //radio buttons
@@ -853,7 +852,7 @@ bool FunctionWidget1::saveToFunction()
     {
       copyFunctionContentsToFunction(mpFunction, func);
 
-      protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, mKey);
     }
 
   func->compile();
@@ -955,7 +954,7 @@ void FunctionWidget1::slotReversibilityChanged()
 //! Slot for being activated wehenver Cancel button is clicked
 void FunctionWidget1::slotCancelButtonClicked()
 {
-  enter(objKey); // reload
+  enter(mKey); // reload
 }
 
 //! Slot for being activated wehenver Commit button is clicked
@@ -973,7 +972,7 @@ void FunctionWidget1::slotCommitButtonClicked()
   if (pFunctionDB == NULL)
     return;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (pFunction == NULL) return;
 
@@ -1168,7 +1167,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
   if (pFunctionDB == NULL)
     return;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (pFunction == NULL)
     return;
@@ -1186,7 +1185,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
         unsigned C_INT32 index =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
-        CCopasiRootContainer::getFunctionList()->removeFunction(objKey);
+        CCopasiRootContainer::getFunctionList()->removeFunction(mKey);
 
         unsigned C_INT32 size =
           CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
@@ -1196,7 +1195,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
         else
           enter("");
 
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mKey);
 
         break;
       }
@@ -1271,7 +1270,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
     {
       case ListViews::MODEL:
       case ListViews::FUNCTION:
-        return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+        return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
         break;
 
       default:
@@ -1289,10 +1288,9 @@ bool FunctionWidget1::leave()
   return true;
 }
 
-bool FunctionWidget1::enter(const std::string & key)
+bool FunctionWidget1::enterProtected()
 {
-  objKey = key;
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(key));
+  CFunction* func = dynamic_cast<CFunction*>(mpObject);
 
   if (func)
     return loadFromFunction(func);

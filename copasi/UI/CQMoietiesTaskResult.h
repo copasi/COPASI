@@ -1,9 +1,9 @@
 // Begin CVS Header
-//   $Source: /home/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.h,v $
-//   $Revision: 1.5 $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.h,v $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:48:22 $
+//   $Author: gauges $
+//   $Date: 2009/02/18 20:47:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,116 +38,117 @@ class CMoietiesTask;
 #include "copasiWidget.h"
 
 class Ui_CQMoietiesTaskResult
+{
+public:
+  Q3GridLayout *gridLayout;
+  QTabWidget *mpTabWidget;
+  Q3Table *mpMoieties;
+  CQArrayAnnotationsWidget *mpStoichiometry;
+  CQArrayAnnotationsWidget *mpLinkMatrix;
+  CQArrayAnnotationsWidget *mpReducedStoichiometry;
+  QLabel *mpLblResult;
+  QPushButton *mpBtnSave;
+
+  void setupUi(CopasiWidget *CQMoietiesTaskResult)
   {
-  public:
-    Q3GridLayout *gridLayout;
-    QTabWidget *mpTabWidget;
-    Q3Table *mpMoieties;
-    CQArrayAnnotationsWidget *mpStoichiometry;
-    CQArrayAnnotationsWidget *mpLinkMatrix;
-    CQArrayAnnotationsWidget *mpReducedStoichiometry;
-    QLabel *mpLblResult;
-    QPushButton *mpBtnSave;
+    if (CQMoietiesTaskResult->objectName().isEmpty())
+      CQMoietiesTaskResult->setObjectName(QString::fromUtf8("CQMoietiesTaskResult"));
 
-    void setupUi(CopasiWidget *CQMoietiesTaskResult)
-    {
-      if (CQMoietiesTaskResult->objectName().isEmpty())
-        CQMoietiesTaskResult->setObjectName(QString::fromUtf8("CQMoietiesTaskResult"));
-      CQMoietiesTaskResult->resize(337, 237);
-      gridLayout = new Q3GridLayout(CQMoietiesTaskResult);
-      gridLayout->setSpacing(6);
-      gridLayout->setMargin(11);
-      gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-      mpTabWidget = new QTabWidget(CQMoietiesTaskResult);
-      mpTabWidget->setObjectName(QString::fromUtf8("mpTabWidget"));
-      QSizePolicy sizePolicy(static_cast<QSizePolicy::Policy>(2), static_cast<QSizePolicy::Policy>(5));
-      sizePolicy.setHorizontalStretch(0);
-      sizePolicy.setVerticalStretch(0);
-      sizePolicy.setHeightForWidth(mpTabWidget->sizePolicy().hasHeightForWidth());
-      mpTabWidget->setSizePolicy(sizePolicy);
-      mpTabWidget->setMinimumSize(QSize(210, 180));
-      mpMoieties = new Q3Table();
-      mpMoieties->setObjectName(QString::fromUtf8("mpMoieties"));
-      mpTabWidget->addTab(mpMoieties, QString());
-      mpStoichiometry = new CQArrayAnnotationsWidget();
-      mpStoichiometry->setObjectName(QString::fromUtf8("mpStoichiometry"));
-      mpTabWidget->addTab(mpStoichiometry, QString());
-      mpLinkMatrix = new CQArrayAnnotationsWidget();
-      mpLinkMatrix->setObjectName(QString::fromUtf8("mpLinkMatrix"));
-      mpTabWidget->addTab(mpLinkMatrix, QString());
-      mpReducedStoichiometry = new CQArrayAnnotationsWidget();
-      mpReducedStoichiometry->setObjectName(QString::fromUtf8("mpReducedStoichiometry"));
-      mpTabWidget->addTab(mpReducedStoichiometry, QString());
+    CQMoietiesTaskResult->resize(337, 237);
+    gridLayout = new Q3GridLayout(CQMoietiesTaskResult);
+    gridLayout->setSpacing(6);
+    gridLayout->setMargin(11);
+    gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+    mpTabWidget = new QTabWidget(CQMoietiesTaskResult);
+    mpTabWidget->setObjectName(QString::fromUtf8("mpTabWidget"));
+    QSizePolicy sizePolicy(static_cast<QSizePolicy::Policy>(2), static_cast<QSizePolicy::Policy>(5));
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(mpTabWidget->sizePolicy().hasHeightForWidth());
+    mpTabWidget->setSizePolicy(sizePolicy);
+    mpTabWidget->setMinimumSize(QSize(210, 180));
+    mpMoieties = new Q3Table();
+    mpMoieties->setObjectName(QString::fromUtf8("mpMoieties"));
+    mpTabWidget->addTab(mpMoieties, QString());
+    mpStoichiometry = new CQArrayAnnotationsWidget();
+    mpStoichiometry->setObjectName(QString::fromUtf8("mpStoichiometry"));
+    mpTabWidget->addTab(mpStoichiometry, QString());
+    mpLinkMatrix = new CQArrayAnnotationsWidget();
+    mpLinkMatrix->setObjectName(QString::fromUtf8("mpLinkMatrix"));
+    mpTabWidget->addTab(mpLinkMatrix, QString());
+    mpReducedStoichiometry = new CQArrayAnnotationsWidget();
+    mpReducedStoichiometry->setObjectName(QString::fromUtf8("mpReducedStoichiometry"));
+    mpTabWidget->addTab(mpReducedStoichiometry, QString());
 
-      gridLayout->addWidget(mpTabWidget, 1, 0, 1, 2);
+    gridLayout->addWidget(mpTabWidget, 1, 0, 1, 2);
 
-      mpLblResult = new QLabel(CQMoietiesTaskResult);
-      mpLblResult->setObjectName(QString::fromUtf8("mpLblResult"));
-      QSizePolicy sizePolicy1(static_cast<QSizePolicy::Policy>(3), static_cast<QSizePolicy::Policy>(5));
-      sizePolicy1.setHorizontalStretch(0);
-      sizePolicy1.setVerticalStretch(0);
-      sizePolicy1.setHeightForWidth(mpLblResult->sizePolicy().hasHeightForWidth());
-      mpLblResult->setSizePolicy(sizePolicy1);
-      mpLblResult->setWordWrap(false);
+    mpLblResult = new QLabel(CQMoietiesTaskResult);
+    mpLblResult->setObjectName(QString::fromUtf8("mpLblResult"));
+    QSizePolicy sizePolicy1(static_cast<QSizePolicy::Policy>(3), static_cast<QSizePolicy::Policy>(5));
+    sizePolicy1.setHorizontalStretch(0);
+    sizePolicy1.setVerticalStretch(0);
+    sizePolicy1.setHeightForWidth(mpLblResult->sizePolicy().hasHeightForWidth());
+    mpLblResult->setSizePolicy(sizePolicy1);
+    mpLblResult->setWordWrap(false);
 
-      gridLayout->addWidget(mpLblResult, 0, 0, 1, 1);
+    gridLayout->addWidget(mpLblResult, 0, 0, 1, 1);
 
-      mpBtnSave = new QPushButton(CQMoietiesTaskResult);
-      mpBtnSave->setObjectName(QString::fromUtf8("mpBtnSave"));
+    mpBtnSave = new QPushButton(CQMoietiesTaskResult);
+    mpBtnSave->setObjectName(QString::fromUtf8("mpBtnSave"));
 
-      gridLayout->addWidget(mpBtnSave, 0, 1, 1, 1);
+    gridLayout->addWidget(mpBtnSave, 0, 1, 1, 1);
 
-      retranslateUi(CQMoietiesTaskResult);
-      QObject::connect(mpBtnSave, SIGNAL(clicked()), CQMoietiesTaskResult, SLOT(slotSave()));
+    retranslateUi(CQMoietiesTaskResult);
+    QObject::connect(mpBtnSave, SIGNAL(clicked()), CQMoietiesTaskResult, SLOT(slotSave()));
 
-      QMetaObject::connectSlotsByName(CQMoietiesTaskResult);
-    } // setupUi
+    QMetaObject::connectSlotsByName(CQMoietiesTaskResult);
+  } // setupUi
 
-    void retranslateUi(CopasiWidget *CQMoietiesTaskResult)
-    {
-      CQMoietiesTaskResult->setCaption(QApplication::translate("CQMoietiesTaskResult", "Moieties Result", 0, QApplication::UnicodeUTF8));
-      mpTabWidget->setTabText(mpTabWidget->indexOf(mpMoieties), QApplication::translate("CQMoietiesTaskResult", "Moieties", 0, QApplication::UnicodeUTF8));
-      mpTabWidget->setTabText(mpTabWidget->indexOf(mpStoichiometry), QApplication::translate("CQMoietiesTaskResult", "Stoichiometry", 0, QApplication::UnicodeUTF8));
-      mpTabWidget->setTabText(mpTabWidget->indexOf(mpLinkMatrix), QApplication::translate("CQMoietiesTaskResult", "Link Matrix", 0, QApplication::UnicodeUTF8));
-      mpTabWidget->setTabText(mpTabWidget->indexOf(mpReducedStoichiometry), QApplication::translate("CQMoietiesTaskResult", "Reduced Stoichiometry", 0, QApplication::UnicodeUTF8));
-      mpLblResult->setText(QApplication::translate("CQMoietiesTaskResult", "<h2>Moieties Result</h2>", 0, QApplication::UnicodeUTF8));
-      mpBtnSave->setText(QApplication::translate("CQMoietiesTaskResult", "save data", 0, QApplication::UnicodeUTF8));
-      Q_UNUSED(CQMoietiesTaskResult);
-    } // retranslateUi
-  };
+  void retranslateUi(CopasiWidget *CQMoietiesTaskResult)
+  {
+    CQMoietiesTaskResult->setCaption(QApplication::translate("CQMoietiesTaskResult", "Moieties Result", 0, QApplication::UnicodeUTF8));
+    mpTabWidget->setTabText(mpTabWidget->indexOf(mpMoieties), QApplication::translate("CQMoietiesTaskResult", "Moieties", 0, QApplication::UnicodeUTF8));
+    mpTabWidget->setTabText(mpTabWidget->indexOf(mpStoichiometry), QApplication::translate("CQMoietiesTaskResult", "Stoichiometry", 0, QApplication::UnicodeUTF8));
+    mpTabWidget->setTabText(mpTabWidget->indexOf(mpLinkMatrix), QApplication::translate("CQMoietiesTaskResult", "Link Matrix", 0, QApplication::UnicodeUTF8));
+    mpTabWidget->setTabText(mpTabWidget->indexOf(mpReducedStoichiometry), QApplication::translate("CQMoietiesTaskResult", "Reduced Stoichiometry", 0, QApplication::UnicodeUTF8));
+    mpLblResult->setText(QApplication::translate("CQMoietiesTaskResult", "<h2>Moieties Result</h2>", 0, QApplication::UnicodeUTF8));
+    mpBtnSave->setText(QApplication::translate("CQMoietiesTaskResult", "save data", 0, QApplication::UnicodeUTF8));
+    Q_UNUSED(CQMoietiesTaskResult);
+  } // retranslateUi
+};
 
 namespace Ui
-  {
-  class CQMoietiesTaskResult: public Ui_CQMoietiesTaskResult {};
+{
+class CQMoietiesTaskResult: public Ui_CQMoietiesTaskResult {};
 } // namespace Ui
 
 class CQMoietiesTaskResult : public CopasiWidget, public Ui::CQMoietiesTaskResult
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQMoietiesTaskResult(QWidget* parent = 0, const char* name = 0);
-    ~CQMoietiesTaskResult();
+public:
+  CQMoietiesTaskResult(QWidget* parent = 0, const char* name = 0);
+  ~CQMoietiesTaskResult();
 
-    virtual bool leave();
-    virtual bool enter(const std::string &);
-    void load();
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
+  void load();
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
-  protected:
-    QPixmap mToolBtn;
-    QSignalMapper * mpToolBtnMap;
-    CMoietiesTask * mpMoietiesTask;
+protected:
+  virtual bool enterProtected();
+  QPixmap mToolBtn;
+  QSignalMapper * mpToolBtnMap;
+  CMoietiesTask * mpMoietiesTask;
 
-  protected slots:
-    virtual void languageChange();
+protected slots:
+  virtual void languageChange();
 
-  private:
-    void init();
+private:
+  void init();
 
-  private slots:
-    void slotSave(void);
-    void slotCreateGlobalQuantity(int row);
-  };
+private slots:
+  void slotSave(void);
+  void slotCreateGlobalQuantity(int row);
+};
 
 #endif // CQMOIETIESTASKRESULT_H

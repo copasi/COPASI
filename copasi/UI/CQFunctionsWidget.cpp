@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/14 02:13:23 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -117,7 +117,7 @@ bool CQFunctionsWidget::leave()
   return true;
 }
 
-bool CQFunctionsWidget::enter(const std::string & C_UNUSED(key))
+bool CQFunctionsWidget::enterProtected()
 {
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView

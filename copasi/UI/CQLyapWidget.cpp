@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ void CQLyapWidget::languageChange()
 bool CQLyapWidget::runTask()
 {
   CLyapTask * pTask =
-    dynamic_cast< CLyapTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CLyapTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

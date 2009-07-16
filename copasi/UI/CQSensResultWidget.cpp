@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:31 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WF
 {
   if (!name)
     setName("CQSensResultWidget");
+
   setCaption("CQSensResultWidget");
 
   mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
@@ -110,6 +111,7 @@ void CQSensResultWidget::newResult()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CSensTask * pTask =
     dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
+
   if (!pTask)
     {
       clearArrays();
@@ -117,6 +119,7 @@ void CQSensResultWidget::newResult()
     }
 
   CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
+
   if (!pProblem)
     {
       clearArrays();
@@ -140,6 +143,7 @@ void CQSensResultWidget::newResult()
       mpCollapsedResult = NULL;
       mpTab->setTabEnabled(mArrayWidgetCollapsed, false);
     }
+
   mArrayWidgetCollapsed->setArrayAnnotation(mpCollapsedResult);
 }
 
@@ -167,12 +171,13 @@ bool CQSensResultWidget::leave()
   return true;
 }
 
-bool CQSensResultWidget::enter(const std::string & C_UNUSED(key))
+bool CQSensResultWidget::enterProtected()
 {
   //clear the widget if the pointer to the result has changed
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CSensTask * pTask =
     dynamic_cast<CSensTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Sensitivities"]);
+
   if (!pTask)
     {
       clearArrays();
@@ -180,6 +185,7 @@ bool CQSensResultWidget::enter(const std::string & C_UNUSED(key))
     }
 
   CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
+
   if (!pProblem)
     {
       clearArrays();

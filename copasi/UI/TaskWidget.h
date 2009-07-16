@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.15 $
+ $Revision: 1.16 $
  $Name:  $
- $Author: pwilly $
- $Date: 2009/04/12 19:56:31 $
+ $Author: shoops $
+ $Date: 2009/07/16 15:47:26 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,8 +73,6 @@ public:
 
   virtual bool leave();
 
-  virtual bool enter(const std::string & key = "");
-
   virtual bool runTask() = 0;
 
 protected slots:
@@ -89,7 +87,7 @@ protected slots:
   void changeMethod(int);
 
 protected:
-  std::string mObjectKey;
+  virtual bool enterProtected();
   CProgressBar * mProgressBar;
 
   virtual bool loadTask() = 0;

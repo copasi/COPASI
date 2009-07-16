@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQModelValue.ui.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -251,10 +251,9 @@ bool CQModelValue::leave()
   return true;
 }
 
-bool CQModelValue::enter(const std::string & key)
+bool CQModelValue::enterProtected()
 {
-  mKey = key;
-  mpModelValue = dynamic_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  mpModelValue = dynamic_cast< CModelValue * >(mpObject);
 
   if (!mpModelValue)
     {

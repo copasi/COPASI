@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:33 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
     CopasiWidget::setName("CTabWidget");
 
   Q3HBoxLayout* tabLayout = new Q3HBoxLayout(this, 0, 0, "tabLayout");
-  mTabWidget = new QTabWidget (this, "mTabWidget");
+  mTabWidget = new QTabWidget(this, "mTabWidget");
   tabLayout->addWidget(mTabWidget);
 
   mPages.push_back(pCopasiWidget);
@@ -72,13 +72,13 @@ bool CTabWidget::leave()
   return true;
 }
 
-bool CTabWidget::enter(const std::string & key)
+bool CTabWidget::enterProtected()
 {
   std::vector< CopasiWidget * >::iterator it = mPages.begin();
   std::vector< CopasiWidget * >::iterator end = mPages.end();
 
   for (; it != end; ++it)
-    (*it)->enter(key);
+    (*it)->enter(mKey);
 
   return true;
 }

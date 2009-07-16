@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:36:17 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,9 +30,11 @@ public:
   CQCompartment(QWidget* parent = 0, const char* name = 0);
   ~CQCompartment();
 
-  virtual bool enter(const std::string & key);
   virtual bool leave();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+
+protected:
+  virtual bool enterProtected();
 
 protected slots:
   virtual void languageChange();
@@ -40,7 +42,6 @@ protected slots:
 private:
   std::vector< int > mItemToType;
   CCompartment * mpCompartment;
-  std::string mKey;
   bool mChanged;
   bool mExpressionValid;
   bool mInitialExpressionValid;

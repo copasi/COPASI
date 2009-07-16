@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/23 12:58:37 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,6 @@ public:
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
-  virtual bool enter(const std::string & key = "");
   bool loadFromBackend();
 
 protected slots:
@@ -60,8 +59,8 @@ protected slots:
   //virtual void slotBtnOKClicked();
 
 protected:
+  virtual bool enterProtected();
   bool saveToBackend();
-  std::string objKey;
 
   /*
       Q3GridLayout* mWidgetLayout;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:12:07 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -274,7 +274,7 @@ CCopasiMethod * CQFittingWidget::createMethod(const CCopasiMethod::SubType & typ
 bool CQFittingWidget::runTask()
 {
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CFitTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

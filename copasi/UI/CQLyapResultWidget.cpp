@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-$Revision: 1.6 $
+$Revision: 1.7 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/19 19:53:06 $
+$Date: 2009/07/16 15:47:26 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,7 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WF
 {
   if (!name)
     setName("CQLyapResultWidget");
+
   setCaption("CQLyapResultWidget");
 
   mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "LyapResultWidgetLayout");
@@ -117,9 +118,11 @@ bool CQLyapResultWidget::loadFromBackend()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CLyapTask * pTask = dynamic_cast<CLyapTask*>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Lyapunov Exponents"]);
+
   if (!pTask) return false;
 
   CLyapProblem * pProblem = dynamic_cast< CLyapProblem * >(pTask->getProblem());
+
   if (!pProblem) return false;
 
   if (!pTask->resultAvailable())
@@ -141,6 +144,7 @@ bool CQLyapResultWidget::loadFromBackend()
   unsigned C_INT32 i, imax = pProblem->getExponentNumber();
 
   mTableExponents->setNumRows(imax);
+
   for (i = 0; i < imax; ++i)
     mTableExponents->setText(i, 0, QString::number(pTask->exponents()[i]));
 
@@ -159,12 +163,14 @@ bool CQLyapResultWidget::loadFromBackend()
 
   //comment
   mLabelComment->setText("");
+
   if (pTask->resultHasDivergence()
       && (pTask->modelVariablesInResult() == pTask->numberOfExponentsCalculated()))
     {
       if ((pTask->sumOfExponents() < 0.0) && (pTask->averageDivergence() < 0.0))
         {
           C_FLOAT64 factor = pTask->averageDivergence() / pTask->sumOfExponents();
+
           if (factor > 1.01)
             mLabelComment->setText("Warning: Divergence differs from sum of exponents. This may indicate that the strongly negative exponents are calculated inaccuratly.");
         }
@@ -187,7 +193,7 @@ bool CQLyapResultWidget::leave()
   return true;
 }
 
-bool CQLyapResultWidget::enter(const std::string & C_UNUSED(key))
+bool CQLyapResultWidget::enterProtected()
 {
   return loadFromBackend();
 }

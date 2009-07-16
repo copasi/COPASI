@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/03/23 12:58:37 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,6 @@
  */
 StateWidget::StateWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : CopasiWidget(parent, name, fl),
-    objKey(""),
     mUpToDate(false)
 {
   if (!name)
@@ -123,7 +122,7 @@ bool StateWidget::leave()
   return true;
 }
 
-bool StateWidget::enter(const std::string & C_UNUSED(key))
+bool StateWidget::enterProtected()
 {
   // :TODO: update the validity indicator
   // ...;

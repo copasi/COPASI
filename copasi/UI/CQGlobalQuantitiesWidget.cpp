@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantitiesWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ bool CQGlobalQuantitiesWidget::leave()
   return true;
 }
 
-bool CQGlobalQuantitiesWidget::enter(const std::string & C_UNUSED(key))
+bool CQGlobalQuantitiesWidget::enterProtected()
 {
   mpProxyModel->setSourceModel(mpGlobalQuantityDM);
   //Set Model for the TableView

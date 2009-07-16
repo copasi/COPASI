@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.203 $
+//   $Revision: 1.204 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 18:48:40 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,6 @@
 
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlags f)
     : CopasiWidget(parent, name, f),
-    objKey(""),
     mpRi(NULL)
 {
   if (!name)
@@ -239,7 +238,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
-  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (reac == NULL) return true;
 
@@ -302,7 +301,7 @@ bool ReactionsWidget1::saveToReaction()
 
   // We need to check whether the current reaction still exists, since it is possible that
   // removing a local reaction parameter triggers its deletion.
-  reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (reac == NULL)
     {
@@ -315,7 +314,7 @@ bool ReactionsWidget1::saveToReaction()
       else
         enter("");
 
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
       return true;
     }
 
@@ -328,7 +327,7 @@ bool ReactionsWidget1::saveToReaction()
   //this writes all changes to the reaction
   if (!mpRi->writeBackToReaction(NULL))
     {
-      CCopasiObject * pReaction = CCopasiRootContainer::getKeyFactory()->get(objKey);
+      CCopasiObject * pReaction = CCopasiRootContainer::getKeyFactory()->get(mKey);
 
       if (mpRi->getReactionName() != pReaction->getObjectName())
         {
@@ -356,7 +355,7 @@ bool ReactionsWidget1::saveToReaction()
     {
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
 
-      protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
     }
 
   //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
@@ -368,7 +367,7 @@ bool ReactionsWidget1::saveToReaction()
 }
 
 void ReactionsWidget1::slotBtnCancelClicked()
-{enter(objKey);}
+{enter(mKey);}
 
 void ReactionsWidget1::slotBtnOKClicked()
 {
@@ -376,7 +375,7 @@ void ReactionsWidget1::slotBtnOKClicked()
   commitChanges->setFocus();
 
   saveToReaction();
-  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (reac == NULL) return;
 
@@ -467,7 +466,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     return;
 
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (pReaction == NULL) return;
 
@@ -483,7 +482,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
         unsigned C_INT32 index
         = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
 
-        pDataModel->getModel()->removeReaction(objKey);
+        pDataModel->getModel()->removeReaction(mKey);
         unsigned C_INT32 size
         = pDataModel->getModel()->getReactions().size();
 
@@ -494,7 +493,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
         else
           enter("");
 
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
         break;
       }
       default:                                                     // No or Escape
@@ -634,7 +633,7 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
       case ListViews::STATE:
       case ListViews::COMPARTMENT:
       case ListViews::METABOLITE:
-        return loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey)));
+        return loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
         break;
 
       default:
@@ -651,10 +650,9 @@ bool ReactionsWidget1::leave()
   //left without saving
 }
 
-bool ReactionsWidget1::enter(const std::string & key)
+bool ReactionsWidget1::enterProtected()
 {
-  objKey = key;
-  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CReaction* reac = dynamic_cast< CReaction * >(mpObject);
 
   if (reac)
     return loadFromReaction(reac);
@@ -667,7 +665,7 @@ void ReactionsWidget1::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
 
-  const CReaction * pReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  const CReaction * pReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   const CModel * pModel = NULL;
 

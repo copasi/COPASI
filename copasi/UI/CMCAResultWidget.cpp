@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CMCAResultWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,11 +34,11 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CMCAResultWidget::CMCAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl),
-    objKey("")
+    : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("CMCAResultWidget");
+
   setCaption(trUtf8("CMCAResultWidget"));
 
   mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
@@ -60,6 +60,7 @@ bool CMCAResultWidget::loadFromBackend()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CMCATask * pTask =
     dynamic_cast<CMCATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]);
+
   if (!pTask) return false;
 
   mCentralWidget->loadAll(dynamic_cast<CMCAMethod*>(pTask->getMethod()));
@@ -86,7 +87,7 @@ bool CMCAResultWidget::leave()
   return true;
 }
 
-bool CMCAResultWidget::enter(const std::string & C_UNUSED(key))
+bool CMCAResultWidget::enterProtected()
 {
   return true;
 }

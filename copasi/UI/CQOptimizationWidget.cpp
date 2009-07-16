@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/05/18 09:48:32 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,7 +169,7 @@ bool CQOptimizationWidget::runTask()
   // ----
 
   COptTask * pTask =
-    dynamic_cast< COptTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast< COptTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

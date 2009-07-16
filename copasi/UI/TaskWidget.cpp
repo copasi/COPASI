@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 19:56:31 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -710,11 +710,9 @@ bool TaskWidget::leave()
   return saveTask();
 }
 
-bool TaskWidget::enter(const std::string & key)
+bool TaskWidget::enterProtected()
 {
-  if (key != "") mObjectKey = key;
-
-  mpTask = dynamic_cast< CCopasiTask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+  mpTask = dynamic_cast< CCopasiTask * >(mpObject);
 
   // :TODO: We need a message here.
   if (!mpTask) return false;

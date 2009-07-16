@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,48 +39,46 @@ class QLabel;
 class CParameterListItem;
 
 class ParametersWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    ParametersWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~ParametersWidget();
+public:
+  ParametersWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~ParametersWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-    virtual void setFramework(int framework);
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
+  virtual void setFramework(int framework);
 
-  protected:
-    bool loadFromModel();
-    bool saveToModel();
+protected:
+  virtual bool enterProtected();
+  bool loadFromModel();
+  bool saveToModel();
 
-    std::string objKey;
+  QPushButton* commitButton;
+  QPushButton* revertButton;
+  QPushButton* saveButton;
+  Q3ListView* listView;
+  QLabel* labelTitle;
 
-    QPushButton* commitButton;
-    QPushButton* revertButton;
-    QPushButton* saveButton;
-    Q3ListView* listView;
-    QLabel* labelTitle;
+  Q3GridLayout* ParametersWidgetLayout;
+  QSpacerItem* spacer2;
+  Q3VBoxLayout* layoutLeft;
+  QSpacerItem* spacer1;
 
-    Q3GridLayout* ParametersWidgetLayout;
-    QSpacerItem* spacer2;
-    Q3VBoxLayout* layoutLeft;
-    QSpacerItem* spacer1;
+  CParameterListItem* mTimeItem;
+  CParameterListItem* mCompItem;
+  CParameterListItem* mReacItem;
+  CParameterListItem* mMetabItem;
+  CParameterListItem* mParamItem;
 
-    CParameterListItem* mTimeItem;
-    CParameterListItem* mCompItem;
-    CParameterListItem* mReacItem;
-    CParameterListItem* mMetabItem;
-    CParameterListItem* mParamItem;
+protected slots:
+  virtual void commitPressed();
+  virtual void revertPressed();
+  virtual void savePressed();
 
-  protected slots:
-    virtual void commitPressed();
-    virtual void revertPressed();
-    virtual void savePressed();
-
-    virtual void editItem(Q3ListViewItem * item, const QPoint & pnt, int c);
-    virtual void editItem(Q3ListViewItem * item);
-  };
+  virtual void editItem(Q3ListViewItem * item, const QPoint & pnt, int c);
+  virtual void editItem(Q3ListViewItem * item);
+};
 
 #endif // PARAMETERSWIDGET_H

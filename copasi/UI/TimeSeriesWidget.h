@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:58:29 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,30 +32,29 @@ class Q3GridLayout;
 class TimeSeriesSubWidget;
 
 class TimeSeriesWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    TimeSeriesWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~TimeSeriesWidget();
+public:
+  TimeSeriesWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~TimeSeriesWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
-    virtual void setFramework(int framework);
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
+  virtual void setFramework(int framework);
 
-  protected slots:
-    //virtual void slotBtnCancelClicked();
-    //virtual void slotBtnOKClicked();
+protected slots:
+  //virtual void slotBtnCancelClicked();
+  //virtual void slotBtnOKClicked();
 
-  public:
-    bool loadFromBackend();
-    bool saveToBackend();
+public:
+  bool loadFromBackend();
+  bool saveToBackend();
 
-  protected:
-    std::string objKey;
-    Q3GridLayout* mWidgetLayout;
-    TimeSeriesSubWidget* mCentralWidget;
-  };
+protected:
+  virtual bool enterProtected();
+  Q3GridLayout* mWidgetLayout;
+  TimeSeriesSubWidget* mCentralWidget;
+};
 
 #endif

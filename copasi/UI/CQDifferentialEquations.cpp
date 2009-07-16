@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:11:38 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,7 +152,7 @@ void CQDifferentialEquations::slotUpdateWidget()
   mpSaveButton->setEnabled(hasContents);
 }
 
-bool CQDifferentialEquations::enter(const std::string &)
+bool CQDifferentialEquations::enterProtected()
 {
   slotUpdateWidget();
   return true;

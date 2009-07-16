@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationResult.ui.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:17:15 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ bool CQOptimizationResult::leave()
   return true;
 }
 
-bool CQOptimizationResult::enter(const std::string & /* key */)
+bool CQOptimizationResult::enterProtected()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   mpTask =

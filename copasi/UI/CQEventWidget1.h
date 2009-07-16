@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/26 00:03:41 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,8 +33,10 @@ public:
   ~CQEventWidget1();
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool enter(const std::string & key);
   virtual bool leave();
+
+protected:
+  virtual bool enterProtected();
 
 protected slots:
   virtual void languageChange();
@@ -46,7 +48,7 @@ private:
   QString mEAName;
   bool mChanged;
   CEvent *mpEvent;
-  std::string mEventKey;
+  std::string mKey;
   std::string mAssignmentKey;
   unsigned C_INT32 mCurrentTarget;
   std::vector< CEventAssignment > mAssignments;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -147,6 +147,7 @@ void CQFittingResult::init()
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
     mpCrossValidationValues->adjustColumn(i);
+
 #endif // COPASI_CROSSVALIDATION
 
 #ifndef COPASI_CROSSVALIDATION
@@ -169,16 +170,18 @@ bool CQFittingResult::leave()
   return true;
 }
 
-bool CQFittingResult::enter(const std::string & /* key */)
+bool CQFittingResult::enterProtected()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
   mpTask =
     dynamic_cast<CFitTask *>((*pDataModel->getTaskList())["Parameter Estimation"]);
+
   if (!mpTask) return false;
 
   mpProblem = dynamic_cast<const CFitProblem *>(mpTask->getProblem());
+
   if (!mpProblem) return false;
 
   mpMain->load(mpProblem);
@@ -192,14 +195,17 @@ bool CQFittingResult::enter(const std::string & /* key */)
   const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
 
   imax = Items.size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   mpParameters->setNumRows(imax);
+
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
         pDataModel->getObject(Items[i]->getObjectCN());
+
       if (pObject)
         {
           std::string Experiments =
@@ -228,10 +234,12 @@ bool CQFittingResult::enter(const std::string & /* key */)
   const CExperimentSet & Experiments = mpProblem->getExperiementSet();
 
   imax = Experiments.getExperimentCount();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   mpExperiments->setNumRows(imax);
+
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * Experiments.getExperiment(i);
@@ -248,13 +256,16 @@ bool CQFittingResult::enter(const std::string & /* key */)
 
   // Loop over the dependent objects
   imax = Experiments.getDependentObjects().size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   mpValues->setNumRows(imax);
+
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
+
       if (pObject)
         mpValues->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
       else
@@ -272,6 +283,7 @@ bool CQFittingResult::enter(const std::string & /* key */)
 
   // Fill correlation matrix
   imax = Items.size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -295,10 +307,12 @@ bool CQFittingResult::enter(const std::string & /* key */)
   const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
 
   imax = CrossValidations.getExperimentCount();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   mpCrossValidations->setNumRows(imax);
+
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * CrossValidations.getExperiment(i);
@@ -315,13 +329,16 @@ bool CQFittingResult::enter(const std::string & /* key */)
 
   // Loop over the dependent objects
   imax = CrossValidations.getDependentObjects().size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   mpCrossValidationValues->setNumRows(imax);
+
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
+
       if (pObject)
         mpCrossValidationValues->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
       else
@@ -336,6 +353,7 @@ bool CQFittingResult::enter(const std::string & /* key */)
 
   for (i = 0, imax = mpCrossValidationValues->numCols(); i != imax; i++)
     mpCrossValidationValues->adjustColumn(i);
+
 #endif // COPASI_CROSSVALIDATION
 
   return true;
@@ -365,6 +383,7 @@ void CQFittingResult::slotSave(void)
     }
 
   std::ofstream file(utf8ToLocale(TO_UTF8(fileName)).c_str());
+
   if (file.fail()) return;
 
   unsigned C_INT32 i, imax;
@@ -393,16 +412,19 @@ void CQFittingResult::slotSave(void)
   const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
 
   imax = Items.size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject *pObject =
         pDataModel->getObject(Items[i]->getObjectCN());
+
       if (pObject)
         {
           std::string Experiments =
@@ -432,6 +454,7 @@ void CQFittingResult::slotSave(void)
   const CExperimentSet & Experiments = mpProblem->getExperiementSet();
 
   imax = Experiments.getExperimentCount();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -451,12 +474,14 @@ void CQFittingResult::slotSave(void)
 
   // Loop over the fitted values objects
   imax = Experiments.getDependentObjects().size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
+
       if (pObject)
         file << pObject->getObjectDisplayName() << "\t";
       else
@@ -467,6 +492,7 @@ void CQFittingResult::slotSave(void)
       file << Experiments.getDependentErrorMean()[i] << "\t";
       file << Experiments.getDependentErrorMeanSD()[i] << std::endl;
     }
+
   file << std::endl;
 
   // Save the parameter correlations
@@ -478,6 +504,7 @@ void CQFittingResult::slotSave(void)
 #ifdef COPASI_CROSSVALIDATION
   const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
   imax = CrossValidations.getExperimentCount();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -500,6 +527,7 @@ void CQFittingResult::slotSave(void)
     }
 
   imax = CrossValidations.getDependentObjects().size();
+
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -513,6 +541,7 @@ void CQFittingResult::slotSave(void)
       for (i = 0; i != imax; i++)
         {
           const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
+
           if (pObject)
             file << pObject->getObjectDisplayName() << "\t";
           else
@@ -524,6 +553,7 @@ void CQFittingResult::slotSave(void)
           file << CrossValidations.getDependentErrorMeanSD()[i] << std::endl;
         }
     }
+
   file << std::endl;
 #endif // COPASI_CROSSVALIDATION
 }

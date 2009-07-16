@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.h,v $
- $Revision: 1.5 $
+ $Revision: 1.6 $
  $Name:  $
  $Author: shoops $
- $Date: 2008/12/18 19:56:21 $
+ $Date: 2009/07/16 15:47:26 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,32 +30,32 @@ class QLabel;
 class Q3Table;
 
 class CQLyapResultWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQLyapResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~CQLyapResultWidget();
+public:
+  CQLyapResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~CQLyapResultWidget();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
 
-  protected slots:
+protected slots:
 
-  protected:
-    bool loadFromBackend();
+protected:
+  virtual bool enterProtected();
+  bool loadFromBackend();
 
-    Q3GridLayout* mWidgetLayout;
+  Q3GridLayout* mWidgetLayout;
 
-    QLabel* mLabelExponents;
-    QLabel* mLabelSum;
-    QLabel* mLabelDivergence;
-    QLabel* mLabelComment;
+  QLabel* mLabelExponents;
+  QLabel* mLabelSum;
+  QLabel* mLabelDivergence;
+  QLabel* mLabelComment;
 
-    Q3Table* mTableExponents;
-    QLineEdit* mLineEditSum;
-    QLineEdit* mLineEditDivergence;
-  };
+  Q3Table* mTableExponents;
+  QLineEdit* mLineEditSum;
+  QLineEdit* mLineEditDivergence;
+};
 
 #endif

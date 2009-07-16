@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/12/18 19:57:10 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,38 +35,38 @@ class QLabel;
 class QTabWidget;
 
 class CQSensResultWidget : public CopasiWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    CQSensResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
-    ~CQSensResultWidget();
+public:
+  CQSensResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ~CQSensResultWidget();
 
-    void newResult();
+  void newResult();
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-    virtual bool leave();
-    virtual bool enter(const std::string & key = "");
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
 
-  protected slots:
+protected slots:
 
-  protected:
-    //bool loadFromBackend();
-    void clearArrays();
+protected:
+  virtual bool enterProtected();
+  //bool loadFromBackend();
+  void clearArrays();
 
-    Q3GridLayout* mWidgetLayout;
+  Q3GridLayout* mWidgetLayout;
 
-    QLabel* mLabelTitle;
+  QLabel* mLabelTitle;
 
-    QTabWidget* mpTab;
+  QTabWidget* mpTab;
 
-    CQArrayAnnotationsWidget* mArrayWidget;
-    CQArrayAnnotationsWidget* mArrayWidgetScaled;
-    CQArrayAnnotationsWidget* mArrayWidgetCollapsed;
+  CQArrayAnnotationsWidget* mArrayWidget;
+  CQArrayAnnotationsWidget* mArrayWidgetScaled;
+  CQArrayAnnotationsWidget* mArrayWidgetCollapsed;
 
-    const CArrayAnnotation * mpResult;
-    const CArrayAnnotation * mpScaledResult;
-    const CArrayAnnotation * mpCollapsedResult;
-  };
+  const CArrayAnnotation * mpResult;
+  const CArrayAnnotation * mpScaledResult;
+  const CArrayAnnotation * mpCollapsedResult;
+};
 
 #endif

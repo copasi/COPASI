@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,11 +43,11 @@ CTSSAMethod* pTSSILDM;
  *  name 'name' and widget flags set to 'f'.
  */
 CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl),
-    objKey("")
+    : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("CQTSSAResultWidget");
+
   setCaption(trUtf8("CQTSSAResultWidget"));
 
   mWidgetLayout = new Q3GridLayout(this, 1, 1, 0, -1, "Layout");
@@ -114,9 +114,8 @@ bool CQTSSAResultWidget::leave()
   return true;
 }
 
-bool CQTSSAResultWidget::enter(const std::string & C_UNUSED(key))
+bool CQTSSAResultWidget::enterProtected()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pTask =
     dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
   pTSSILDM = dynamic_cast<CTSSAMethod*>(pTask->getMethod());

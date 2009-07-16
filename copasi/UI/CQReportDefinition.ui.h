@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -397,10 +397,9 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
 bool CQReportDefinition::leave()
 {return save();}
 
-bool CQReportDefinition::enter(const std::string & key)
+bool CQReportDefinition::enterProtected()
 {
-  mKey = key;
-  mpReportDefinition = dynamic_cast<CReportDefinition *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  mpReportDefinition = dynamic_cast<CReportDefinition *>(mpObject);
 
   if (!mpReportDefinition)
     {

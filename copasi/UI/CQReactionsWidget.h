@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionsWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,6 @@ public:
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
-  virtual bool enter(const std::string & key = "");
   virtual void setFramework(int framework);
 
 private:
@@ -37,6 +36,7 @@ private:
   void deleteSelectedReactions();
 
 protected:
+  virtual bool enterProtected();
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:

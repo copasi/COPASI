@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 13:20:35 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ void CQMCAWidget::slotSteadyStateChecked()
 bool CQMCAWidget::runTask()
 {
   CMCATask * pTask =
-    dynamic_cast< CMCATask * >(CCopasiRootContainer::getKeyFactory()->get(mObjectKey));
+    dynamic_cast< CMCATask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

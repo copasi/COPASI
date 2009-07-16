@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/13 15:43:44 $
+//   $Author: shoops $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,9 @@
 
 class DataModelGUI;
 class QResizeEvent;
+class ListViews;
+class CCopasiDataModel;
+class CCopasiObject;
 
 class CopasiWidget : public QWidget
 {
@@ -42,13 +45,19 @@ public:
   CopasiWidget(QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0);
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
-  virtual bool enter(const std::string & key = "");
+  bool enter(const std::string & key);
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
 
 protected:
+  virtual bool enterProtected();
+
   ListViews * mpListView;
+  std::string mKey;
+  CCopasiObject * mpObject;
+  CCopasiDataModel * mpDataModel;
+
   bool mIgnoreUpdates;
   int mFramework;
 

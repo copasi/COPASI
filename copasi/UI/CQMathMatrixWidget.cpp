@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:53:06 $
+//   $Date: 2009/07/16 15:47:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent, const char* name, Qt::WF
 {
   if (!name)
     setName("CQMathMatrixWidget");
+
   setCaption("CQMathMatrixWidget");
 
   mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQMathMatrixWidgetLayout");
@@ -151,7 +152,7 @@ bool CQMathMatrixWidget::leave()
   return true;
 }
 
-bool CQMathMatrixWidget::enter(const std::string & C_UNUSED(key))
+bool CQMathMatrixWidget::enterProtected()
 {
   loadMatrices();
 
