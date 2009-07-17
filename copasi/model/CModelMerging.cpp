@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/17 10:40:49 $
+//   $Date: 2009/07/17 16:09:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,6 +93,8 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
   unsigned C_INT32 i, imax = mpModel->getReactions().size();
   unsigned C_INT32 j, jmax;
 
+#if 0 // this part seems to work
+
   for (i = 0; i < imax; ++i)
     {
       CReaction * reac = mpModel->getReactions()[i];
@@ -140,31 +142,12 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
               {
 
                 //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
-                bool isVector = (reac->getFunctionParameters()[j]->getType() == CFunctionParameter::VFLOAT64);
 
-                //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
+                unsigned C_INT32 k, kmax = reac->getParameterMappings()[j].size();
 
-                unsigned C_INT32 k;
-                bool found = false;
-
-                for (k = 0; k < reac->getParameterMappings()[j].size(); ++k)
-                  if (reac->getParameterMappings()[j][k] == key) found = true;
-
-                if (found)
-                  if (isVector)
-                    reac->clearParameterMapping(j);
-
-                for (k = 0; k < reac->getParameterMappings()[j].size(); ++k)
-                  {
-                    if (reac->getParameterMappings()[j][k] == key)
-                      {
-
-                        if (isVector)
-                          reac->addParameterMapping(j, toKey);
-                        else
-                          reac->setParameterMapping(j, toKey);
-                      }
-                  }
+                for (k = 0; k < kmax; ++k)
+                  if (reac->getParameterMappings()[j][k] == key)
+                    reac->getParameterMappings()[j][k] = toKey;
               }
               break;
 
@@ -185,7 +168,63 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
         }
     }
 
-#if 0
+  imax = mpModel->getEvents().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      CEvent* event = mpModel->getEvents()[i];
+
+      if (!event) return info;
+
+      /* merge in  trigger expressions */
+      CExpression* pExpression = event->getTriggerExpressionPtr();
+
+      if (pExpression)
+        {
+          if (!mergeInExpression(toKey, key, pExpression))
+            return info;
+        }
+      else
+        {
+          fatalError();
+        }
+
+      pExpression = event->getDelayExpressionPtr();
+
+      if (pExpression)
+        if (!mergeInExpression(toKey, key, pExpression))
+          return info;
+
+      jmax = event->getAssignments().size();
+
+      for (j = 0; j < jmax; ++j)
+        {
+          CEventAssignment* assignment = event->getAssignments()[j];
+
+          if (!assignment) return info;
+
+          std::string assignmentKey = assignment->getTargetKey();
+
+          if (assignmentKey == key) assignment->setTargetKey(toKey);
+
+          pExpression = assignment->getExpressionPtr();
+
+          if (pExpression)
+            {
+              if (!mergeInExpression(toKey, key, pExpression))
+
+                return info;
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+    }
+
+#endif
+
+  // in work
   imax = mpModel->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
@@ -194,12 +233,14 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       if (!metab) return info;
 
-      switch (metab ->getStatus())
+      switch (metab->getStatus())
         {
           case CModelEntity::FIXED:
+          case CModelEntity::REACTIONS:
 
             break;
           case CModelEntity::ASSIGNMENT:
+            std::cout << "metab " <<  metab->getObjectName() << std::endl;
 
             if (!mergeInExpression(toKey, key, metab->getExpressionPtr())) return info;
 
@@ -221,6 +262,8 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
             break;
         }
     }
+
+#if 0 // was not tested
 
   imax = mpModel->getCompartments().size();
 
@@ -294,60 +337,6 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
         }
     }
 
-  imax = mpModel->getEvents().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      CEvent* event = mpModel->getEvents()[i];
-
-      if (!event) return info;
-
-      /* merge in  trigger expressions */
-      CExpression* pExpression = event->getTriggerExpressionPtr();
-
-      if (pExpression)
-        {
-          if (!mergeInExpression(toKey, key, pExpression))
-            return info;
-        }
-      else
-        {
-          fatalError();
-        }
-
-      pExpression = event->getDelayExpressionPtr();
-
-      if (pExpression)
-        if (!mergeInExpression(toKey, key, pExpression))
-          return info;
-
-      jmax = event->getAssignments().size();
-
-      for (j = 0; j < jmax; ++j)
-        {
-          CEventAssignment* assignment = event->getAssignments()[j];
-
-          if (!assignment) return info;
-
-          std::string assignmentKey = assignment->getTargetKey();
-
-          if (assignmentKey == key) assignment->setTargetKey(toKey);
-
-          pExpression = assignment->getExpressionPtr();
-
-          if (pExpression)
-            {
-              if (!mergeInExpression(toKey, key, pExpression))
-
-                return info;
-            }
-          else
-            {
-              fatalError();
-            }
-        }
-    }
-
 #endif
 
   return true;
@@ -383,20 +372,25 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
+              std::cout << host << std::endl;
             }
 
           assert(mObject);
 
           CCopasiObject* pObject;
 
-          if ((dynamic_cast<const CModelEntity * >(mObject))->getKey() == key)
-            pObject = (CCopasiRootContainer::getKeyFactory()->get(toKey));
+          std::string ikey = (dynamic_cast<const CModelEntity * >(mObject))->getKey();
 
-          cn = pObject->getCN() + host;
+          if (ikey == key)
+            {
+              pObject = (CCopasiRootContainer::getKeyFactory()->get(toKey));
 
-          std::cout << cn << std::endl;
+              cn = pObject->getCN() + host;
 
-          pObjectNode->setData("<" + cn + ">");
+              std::cout << cn << std::endl;
+
+              pObjectNode->setData("<" + cn + ">");
+            }
         }
     }
 
