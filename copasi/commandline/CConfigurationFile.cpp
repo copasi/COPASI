@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.12 $
+$Revision: 1.13 $
 $Name:  $
-$Author: gauges $
-$Date: 2009/02/18 20:53:06 $
+$Author: shoops $
+$Date: 2009/07/17 17:24:16 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@ void CRecentFiles::initializeParameter()
 
 void CRecentFiles::addFile(const std::string & file)
 {
-  std::string FileName = file;
+  std::string FileName = CDirEntry::normalize(file);
 
 #ifdef WIN32
   std::string::size_type pos = FileName.find('\\');
@@ -74,6 +74,7 @@ void CRecentFiles::addFile(const std::string & file)
       FileName[pos] = '/';
       pos = FileName.find('\\', pos);
     }
+
 #endif
 
   std::string PWD;
@@ -147,15 +148,18 @@ bool CConfigurationFile::elevateChildren()
 
   mpRecentFiles =
     elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent Files"));
+
   if (!mpRecentFiles) success = false;
 
   mpRecentSBMLFiles =
     elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent SBML Files"));
+
   if (!mpRecentSBMLFiles) success = false;
 
   mpRecentMIRIAMResources =
     elevate<CMIRIAMResources, CCopasiParameterGroup>(getGroup("MIRIAM Resources"));
   CMIRIAMResourceObject::setMIRIAMResources(mpRecentMIRIAMResources);
+
   if (!mpRecentMIRIAMResources) success = false;
 
 #ifdef COPASI_LICENSE_COM
@@ -305,6 +309,7 @@ bool CConfigurationFile::CXML::load(std::istream & is,
       mpIstream->get(pBuffer, BUFFER_SIZE, 0);
 
       if (mpIstream->eof()) done = true;
+
       if (mpIstream->fail() && !done)
         {
           std::string ConfigFile;
@@ -325,6 +330,7 @@ bool CConfigurationFile::CXML::load(std::istream & is,
           success = false;
         }
     }
+
   delete [] pBuffer;
 #undef BUFFER_SIZE
 
@@ -343,4 +349,4 @@ void CConfigurationFile::CXML::setConfiguration(const CCopasiParameterGroup & co
 {mConfiguration = configuration;}
 
 const CCopasiParameterGroup & CConfigurationFile::CXML::getConfiguration() const
-  {return mConfiguration;}
+{return mConfiguration;}

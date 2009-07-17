@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/03/12 00:33:30 $
+//   $Date: 2009/07/17 17:24:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@
 #include "randomGenerator/CRandom.h"
 
 #ifdef WIN32
+# include "commandline/COptions.h"
 const std::string CDirEntry::Separator = "\\";
 #else
 const std::string CDirEntry::Separator = "/";
@@ -49,6 +50,7 @@ const std::string CDirEntry::Separator = "/";
 bool CDirEntry::isFile(const std::string & path)
 {
   struct stat st;
+
   if (stat(utf8ToLocale(path).c_str(), & st) == -1) return false;
 
 #ifdef WIN32
@@ -61,6 +63,7 @@ bool CDirEntry::isFile(const std::string & path)
 bool CDirEntry::isDir(const std::string & path)
 {
   struct stat st;
+
   if (stat(utf8ToLocale(path).c_str(), & st) == -1) return false;
 
 #ifdef WIN32
@@ -73,6 +76,7 @@ bool CDirEntry::isDir(const std::string & path)
 bool CDirEntry::exist(const std::string & path)
 {
   struct stat st;
+
   if (stat(utf8ToLocale(path).c_str(), & st) == -1) return false;
 
 #ifdef WIN32
@@ -93,14 +97,17 @@ std::string CDirEntry::baseName(const std::string & path)
 {
   std::string::size_type start = path.find_last_of(Separator);
 #ifdef WIN32 // WIN32 also understands '/' as the separator.
+
   if (start == std::string::npos)
     start = path.find_last_of("/");
+
 #endif
 
   if (start == std::string::npos) start = 0;
   else start++; // We do not want the separator.
 
   std::string::size_type end = path.find_last_of(".");
+
   if (end == std::string::npos || end < start)
     end = path.length();
 
@@ -111,8 +118,10 @@ std::string CDirEntry::fileName(const std::string & path)
 {
   std::string::size_type start = path.find_last_of(Separator);
 #ifdef WIN32 // WIN32 also understands '/' as the separator.
+
   if (start == std::string::npos)
     start = path.find_last_of("/");
+
 #endif
 
   if (start == std::string::npos) start = 0;
@@ -124,6 +133,7 @@ std::string CDirEntry::fileName(const std::string & path)
 std::string CDirEntry::dirName(const std::string & path)
 {
   if (path == "") return path;
+
 #ifdef WIN32 // WIN32 also understands '/' as the separator.
   std::string::size_type end = path.find_last_of(Separator + "/");
 #else
@@ -148,14 +158,17 @@ std::string CDirEntry::suffix(const std::string & path)
 {
   std::string::size_type start = path.find_last_of(Separator);
 #ifdef WIN32 // WIN32 also understands '/' as the separator.
+
   if (start == std::string::npos)
     start = path.find_last_of("/");
+
 #endif
 
   if (start == std::string::npos) start = 0;
   else start++; // We do not want the separator.
 
   std::string::size_type end = path.find_last_of(".");
+
   if (end == std::string::npos || end < start)
     return "";
   else
@@ -166,7 +179,9 @@ bool CDirEntry::createDir(const std::string & dir,
                           const std::string & parent)
 {
   std::string Dir;
+
   if (parent != "") Dir = parent + Separator;
+
   Dir += dir;
 
   // Check whether the directory already exists and is writable.
@@ -197,6 +212,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
       for (unsigned C_INT32 i = 0; i < 8; i++)
         {
           Char = pRandom->getRandomU(35);
+
           if (Char < 10)
             RandomName += '0' + Char;
           else
@@ -221,12 +237,15 @@ bool CDirEntry::move(const std::string & from,
   // filename of from
   if (isDir(To))
     To += Separator + fileName(from);
+
   if (isDir(To)) return false;
 
 #ifdef WIN32
+
   // The target must not exist under WIN32 for rename to succeed.
   if (exist(To) && !remove(To))
     return false;
+
 #endif // WIN32
 
   bool success =
@@ -300,6 +319,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 #else
 
   DIR * pDir = opendir(utf8ToLocale(path).c_str());
+
   if (!pDir) return false;
 
   struct dirent * pEntry;
@@ -363,6 +383,7 @@ bool CDirEntry::match(const std::string & name,
   std::string::size_type after = 0;
 
   bool Match = true;
+
   while (it != end && Match)
     Match = matchInternal(name, *it++, at, after);
 
@@ -372,11 +393,15 @@ bool CDirEntry::match(const std::string & name,
 bool CDirEntry::isRelativePath(const std::string & path)
 {
 #ifdef WIN32
-  if (path.length() < 2)
+  std::string Path = normalize(path);
+
+  if (Path.length() < 2)
     return true;
-  if (path[1] == ':')
+
+  if (Path[1] == ':')
     return false;
-  if (path[0] == '/' && path[1] == '/')
+
+  if (Path[0] == '/' && Path[1] == '/')
     return false;
 
   return true;
@@ -394,6 +419,7 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
   std:: string RelativeTo = normalize(relativeTo);
 
   if (isFile(RelativeTo)) RelativeTo = dirName(RelativeTo);
+
   if (!isDir(RelativeTo)) return false;
 
   absolutePath = normalize(absolutePath);
@@ -408,12 +434,15 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
     i = absolutePath.find_last_of('/', i) + 1;
 
 #ifdef WIN32
+
   if (i == 0) return false; // A different drive letter we cannot do anything
+
 #endif
 
   RelativeTo = RelativeTo.substr(i);
 
   std::string relativePath;
+
   while (RelativeTo != "")
     {
       relativePath += "../";
@@ -437,6 +466,7 @@ bool CDirEntry::makePathAbsolute(std::string & relativePath,
   std:: string AbsoluteTo = normalize(absoluteTo);
 
   if (isFile(AbsoluteTo)) AbsoluteTo = dirName(AbsoluteTo);
+
   if (!isDir(AbsoluteTo)) return false;
 
   relativePath = normalize(relativePath);
@@ -461,41 +491,46 @@ bool CDirEntry::matchInternal(const std::string & name,
 
   switch (pattern[0])
     {
-    case '*':
-      if (at != std::string::npos)
-        {
-          after = at;
-          at = std::string::npos;
-        }
-      break;
+      case '*':
 
-    case '?':
-      if (at != std::string::npos)
-        {
-          ++at;
-          Match = (name.length() >= at);
-        }
-      else
-        {
-          ++after;
-          Match = (name.length() >= after);
-        }
-      break;
+        if (at != std::string::npos)
+          {
+            after = at;
+            at = std::string::npos;
+          }
 
-    default:
-      if (at != std::string::npos)
-        {
-          Match = (name.compare(at, pattern.length(), pattern) == 0);
-          at += pattern.length();
-        }
-      else
-        {
-          at = name.find(pattern, after);
-          Match = (at != std::string::npos);
-          at += pattern.length();
-        }
+        break;
 
-      break;
+      case '?':
+
+        if (at != std::string::npos)
+          {
+            ++at;
+            Match = (name.length() >= at);
+          }
+        else
+          {
+            ++after;
+            Match = (name.length() >= after);
+          }
+
+        break;
+
+      default:
+
+        if (at != std::string::npos)
+          {
+            Match = (name.compare(at, pattern.length(), pattern) == 0);
+            at += pattern.length();
+          }
+        else
+          {
+            at = name.find(pattern, after);
+            Match = (at != std::string::npos);
+            at += pattern.length();
+          }
+
+        break;
     }
 
   return Match;
@@ -508,8 +543,23 @@ std::string CDirEntry::normalize(const std::string & path)
 #ifdef WIN32
   // converts all '\' to '/' (only on WIN32)
   unsigned C_INT32 i, imax;
+
   for (i = 0, imax = Normalized.length(); i < imax; i++)
     if (Normalized[i] == '\\') Normalized[i] = '/';
+
+  // if the path starts with /[^/] we prepend the current drive letter
+  if (Normalized.length() > 0 && Normalized[0] == '/')
+    {
+      if ((Normalized.length() > 1 && Normalized[1] != '/') ||
+          Normalized.length() == 1)
+        {
+          std::string PWD;
+          COptions::getValue("PWD", PWD);
+
+          Normalized = PWD.substr(0, 2) + Normalized;
+        }
+    }
+
 #endif
 
   // Remove leading './'
@@ -518,6 +568,7 @@ std::string CDirEntry::normalize(const std::string & path)
 
   // Collapse '//' to '/'
   std::string::size_type pos = 1;
+
   while (true)
     {
       pos = Normalized.find("//", pos);
@@ -529,6 +580,7 @@ std::string CDirEntry::normalize(const std::string & path)
 
   // Collapse '/./' to '/'
   pos = 0;
+
   while (true)
     {
       pos = Normalized.find("/./", pos);
@@ -544,9 +596,11 @@ std::string CDirEntry::normalize(const std::string & path)
   while (true)
     {
       pos = Normalized.rfind("/../", start);
+
       if (pos == std::string::npos) break;
 
       start = Normalized.rfind('/', pos - 1);
+
       if (start == std::string::npos) break;
 
       if (!Normalized.compare(start, 4, "/../")) continue;

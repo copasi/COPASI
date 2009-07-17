@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.143 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/08 07:33:51 $
+//   $Author: shoops $
+//   $Date: 2009/07/17 17:24:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,6 +222,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
         mSaveFileName += Suffix;
 
       mSaveFileName += ".cps";
+      mSaveFileName = CDirEntry::normalize(mSaveFileName);
       mSBMLFileName = "";
     }
   else if (!Line.find("<?xml") != std::string::npos)
@@ -324,7 +325,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName, CProcessReport* p
           mpGUI = pGUI;
         }
 
-      mSaveFileName = FileName;
+      mSaveFileName = CDirEntry::normalize(FileName);
     }
   else
     {
@@ -443,7 +444,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
   if (!autoSave)
     {
       changed(false);
-      mSaveFileName = FileName;
+      mSaveFileName = CDirEntry::normalize(FileName);
     }
 
   return true;
@@ -634,7 +635,8 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
     mSaveFileName += Suffix;
 
   mSaveFileName += ".cps";
-  mSBMLFileName = FileName;
+  mSaveFileName = CDirEntry::normalize(mSaveFileName);
+  mSBMLFileName = CDirEntry::normalize(FileName);
 
   pdelete(mpCurrentSBMLDocument);
 
@@ -1188,7 +1190,7 @@ SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
 
 bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
 {
-  mSBMLFileName = fileName;
+  mSBMLFileName = CDirEntry::normalize(fileName);
 
   if (CDirEntry::isRelativePath(mSBMLFileName) &&
       !CDirEntry::makePathAbsolute(mSBMLFileName, mSaveFileName))
