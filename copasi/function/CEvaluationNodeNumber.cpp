@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/20 17:56:22 $
+//   $Author: ssahle $
+//   $Date: 2009/07/17 14:33:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,29 +29,35 @@ CEvaluationNodeNumber::CEvaluationNodeNumber():
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::NUMBER | subType), data)
+    CEvaluationNode((Type)(CEvaluationNode::NUMBER | subType), data)
 {
   char * end;
   const char * str = mData.c_str();
 
   switch (subType)
     {
-    case DOUBLE:
-    case INTEGER:
-    case ENOTATION:
-      mValue = strtod(str, NULL);
+      case DOUBLE:
+      case INTEGER:
+      case ENOTATION:
+      {
+        //mValue = strtod(str, NULL);
+        std::istringstream in;
+        in.imbue(std::locale::classic());
+        in.str(str);
+        in >> mValue;
+      }
       break;
 
-    case RATIONALE:
-      str++; // Skip the '('
-      mValue = strtod(str, &end);
-      end++; // Skip the '/'
-      mValue /= strtod(end, NULL);
-      break;
+      case RATIONALE:
+        str++; // Skip the '('
+        mValue = strtod(str, &end);
+        end++; // Skip the '/'
+        mValue /= strtod(end, NULL);
+        break;
 
-    case INVALID:
-      fatalError();
-      break;
+      case INVALID:
+        fatalError();
+        break;
     }
 
   mPrecedence = PRECEDENCE_NUMBER;
@@ -76,106 +82,116 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
   SubType subType;
   std::string data = "";
   CEvaluationNode* pNode = NULL;
+
   switch (type)
     {
-    case AST_INTEGER:
-      subType = INTEGER;
-      if (node.getInteger() < 0)
-        {
-          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+      case AST_INTEGER:
+        subType = INTEGER;
 
-          ss << abs(node.getInteger());
-          data = ss.str();
-          pNode->addChild(new CEvaluationNodeNumber(subType, data));
-        }
-      else
-        {
-          ss << node.getInteger();
-          data = ss.str();
-          pNode = new CEvaluationNodeNumber(subType, data);
-        }
-      break;
-    case AST_REAL:
-      subType = DOUBLE;
-      if (node.getReal() == (2*DBL_MAX))
-        {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
-        }
-      else if (node.getReal() == (-2*DBL_MAX))
-        {
-          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
-          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
-        }
-      else if (isnan(node.getReal()))
-        {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
-        }
-      else if (node.getReal() < 0.0)
-        {
-          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+        if (node.getInteger() < 0)
+          {
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-          ss << fabs(node.getReal());
-          data = ss.str();
-          pNode->addChild(new CEvaluationNodeNumber(subType, data));
-        }
-      else
-        {
-          ss << node.getReal();
-          data = ss.str();
-          pNode = new CEvaluationNodeNumber(subType, data);
-        }
-      break;
-    case AST_REAL_E:
-      subType = ENOTATION;
-      if (node.getReal() == (2*DBL_MAX))
-        {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
-        }
-      else if (node.getReal() == (-2*DBL_MAX))
-        {
-          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
-          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
-        }
-      else if (isnan(node.getReal()))
-        {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
-        }
-      else if (node.getReal() < 0.0)
-        {
-          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+            ss << abs(node.getInteger());
+            data = ss.str();
+            pNode->addChild(new CEvaluationNodeNumber(subType, data));
+          }
+        else
+          {
+            ss << node.getInteger();
+            data = ss.str();
+            pNode = new CEvaluationNodeNumber(subType, data);
+          }
 
-          ss << fabs(node.getReal());
-          data = ss.str();
-          pNode->addChild(new CEvaluationNodeNumber(subType, data));
-        }
-      else
-        {
-          ss << node.getReal();
-          data = ss.str();
-          pNode = new CEvaluationNodeNumber(subType, data);
-        }
-      break;
-    case AST_RATIONAL:
-      subType = RATIONALE;
-      if (node.getReal() < 0.0) // getReal returns the value of the node
-        {
-          pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+        break;
+      case AST_REAL:
+        subType = DOUBLE;
 
-          ss << "(" << abs(node.getNumerator()) << "/" << abs(node.getDenominator()) << ")";
-          data = ss.str();
-          pNode->addChild(new CEvaluationNodeNumber(subType, data));
-        }
-      else
-        {
-          ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
-          data = ss.str();
-          pNode = new CEvaluationNodeNumber(subType, data);
-        }
-      break;
-    default:
-      subType = INVALID;
-      break;
+        if (node.getReal() == (2*DBL_MAX))
+          {
+            pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
+          }
+        else if (node.getReal() == (-2*DBL_MAX))
+          {
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+            pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
+          }
+        else if (isnan(node.getReal()))
+          {
+            pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+          }
+        else if (node.getReal() < 0.0)
+          {
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+
+            ss << fabs(node.getReal());
+            data = ss.str();
+            pNode->addChild(new CEvaluationNodeNumber(subType, data));
+          }
+        else
+          {
+            ss << node.getReal();
+            data = ss.str();
+            pNode = new CEvaluationNodeNumber(subType, data);
+          }
+
+        break;
+      case AST_REAL_E:
+        subType = ENOTATION;
+
+        if (node.getReal() == (2*DBL_MAX))
+          {
+            pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
+          }
+        else if (node.getReal() == (-2*DBL_MAX))
+          {
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+            pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
+          }
+        else if (isnan(node.getReal()))
+          {
+            pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+          }
+        else if (node.getReal() < 0.0)
+          {
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+
+            ss << fabs(node.getReal());
+            data = ss.str();
+            pNode->addChild(new CEvaluationNodeNumber(subType, data));
+          }
+        else
+          {
+            ss << node.getReal();
+            data = ss.str();
+            pNode = new CEvaluationNodeNumber(subType, data);
+          }
+
+        break;
+      case AST_RATIONAL:
+        subType = RATIONALE;
+
+        if (node.getReal() < 0.0) // getReal returns the value of the node
+          {
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
+
+            ss << "(" << abs(node.getNumerator()) << "/" << abs(node.getDenominator()) << ")";
+            data = ss.str();
+            pNode->addChild(new CEvaluationNodeNumber(subType, data));
+          }
+        else
+          {
+            ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
+            data = ss.str();
+            pNode = new CEvaluationNodeNumber(subType, data);
+          }
+
+        break;
+      default:
+        subType = INVALID;
+        break;
     }
+
   return pNode;
 }
 
@@ -184,16 +200,16 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
 #endif
 
 ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) const
-  {
-    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
-    ASTNode* node = new ASTNode();
-    double num1;
-    double num2;
-    char* end;
-    const char * str = mData.c_str();
+{
+  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  ASTNode* node = new ASTNode();
+  double num1;
+  double num2;
+  char* end;
+  const char * str = mData.c_str();
 
-    switch (subType)
-      {
+  switch (subType)
+    {
       case DOUBLE:
         node->setType(AST_REAL);
         node->setValue(this->value());
@@ -218,9 +234,10 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
         break;
       case INVALID:
         break;
-      }
-    return node;
-  }
+    }
+
+  return node;
+}
 
 #include "utilities/copasimathml.h"
 
@@ -228,7 +245,7 @@ void CEvaluationNodeNumber::writeMathML(std::ostream & out,
                                         const std::vector<std::vector<std::string> > & /* env */,
                                         bool /* expand */,
                                         unsigned C_INT32 l) const
-  {
-    out << SPC(l) << "<mn>" << mData << "</mn>" << std::endl;
-    //or use mValue instead?
-  }
+{
+  out << SPC(l) << "<mn>" << mData << "</mn>" << std::endl;
+  //or use mValue instead?
+}
