@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/14 14:21:07 $
+//   $Date: 2009/07/17 10:41:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,9 @@ protected:
   bool  copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEvent);
   bool  copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
   bool  copyInitialExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity);
+
+  bool  mergeMetabolites(std::string toKey, std::string key);
+  bool mergeInExpression(std::string toKey, std::string key, CExpression *pExpression);
 
   /**
    * determine whether the one of the substrate, products, or modifiers of the reaction
