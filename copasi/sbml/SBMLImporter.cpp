@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.241 $
+//   $Revision: 1.242 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/11 08:54:53 $
+//   $Date: 2009/07/18 19:13:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
+#include "compareExpressions/CEvaluationNodeNormalizer.h"
 
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"
@@ -3482,13 +3483,16 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
   if (chemicalEquation.getReversibility())
     {
+      CEvaluationNode* pTmpNode = CEvaluationNodeNormalizer::normalize(pRootNode);
+      //CEvaluationNode* pTmpNode=pRootNode->copyBranch();
+      assert(pTmpNode != NULL);
       // the root node must be a minus operator
       // the two children must be irreversible mass action terms
-      result = (CEvaluationNode::type(pRootNode->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pRootNode->getType())) == CEvaluationNodeOperator::MINUS);
+      result = (CEvaluationNode::type(pTmpNode->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pTmpNode->getType())) == CEvaluationNodeOperator::MINUS);
 
       if (result)
         {
-          const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pRootNode->getChild());
+          const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pTmpNode->getChild());
           result = (pChildNode != NULL);
 
           if (result)
@@ -3565,6 +3569,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
         {
           v = new std::vector<CEvaluationNodeObject*>;
         }
+
+      pdelete(pTmpNode);
     }
   else
     {
@@ -4360,6 +4366,52 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
             }
 
           ++step;
+        }
+
+      // find the used function in events
+      iMax = this->mpCopasiModel->getEvents().size();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          CEvent* pEvent = this->mpCopasiModel->getEvents()[i];
+          assert(pEvent != NULL);
+          const CEvaluationTree* pTree = pEvent->getTriggerExpressionPtr();
+          // an event has to have a trigger
+          assert(pTree != NULL);
+
+          if (pTree != NULL)
+            {
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
+
+          // handle the delay
+          pTree = pEvent->getDelayExpressionPtr();
+
+          if (pTree != NULL)
+            {
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
+
+          // handle all assignments
+          unsigned int j, jMax = pEvent->getAssignments().size();
+
+          for (j = 0; j < jMax; ++j)
+            {
+              CEventAssignment* pEventAssignment = pEvent->getAssignments()[j];
+              assert(pEventAssignment != NULL);
+
+              if (pEventAssignment != NULL)
+                {
+                  pTree = pEventAssignment->getExpressionPtr();
+                  // each event assignment has to have an expression
+                  assert(pTree != NULL);
+
+                  if (pTree != NULL)
+                    {
+                      this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                    }
+                }
+            }
         }
 
       CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
