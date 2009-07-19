@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.376 $
+//   $Revision: 1.377 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 19:32:42 $
+//   $Date: 2009/07/19 14:15:51 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -2259,24 +2259,6 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
         }
 
       DeleteObjects |= appendDependentEvents(DeletedObjects, dependentEvents);
-
-      if (dependentEvents.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentEvents.end();
-
-          for (it = dependentEvents.begin(); it != itEnd; ++it)
-            if (DeletedObjects.find(*it) == DeletedObjects.end())
-              {
-                std::set< const CCopasiObject * > AdditionalObjects =
-                  static_cast< const CCompartment * >(*it)->getDeletedObjects();
-
-                std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
-                std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
-
-                for (; itDeleted != endDeleted; ++itDeleted)
-                  DeletedObjects.insert(*itDeleted);
-              }
-        }
 
       ObjectsAppended |= DeleteObjects;
     }
