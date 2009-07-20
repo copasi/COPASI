@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/09 21:30:22 $
+//   $Date: 2009/07/20 16:06:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -636,10 +636,11 @@ unsigned C_INT32 COptProblem::getOptItemSize() const
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
-  COptItem * pItem = new COptItem();
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
-  pItem->setObjectCN(objectCN, pDataModel);
+
+  COptItem * pItem = new COptItem(pDataModel);
+  pItem->setObjectCN(objectCN);
 
   mpGrpItems->addParameter(pItem);
 

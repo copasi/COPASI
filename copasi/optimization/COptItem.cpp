@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/07/20 16:06:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,8 @@ UpdateMethod DoNothing;
 
 CRandom * COptItem::mpRandom = NULL;
 
-COptItem::COptItem(const std::string & name,
-                   const CCopasiContainer * pParent):
+COptItem::COptItem(const CCopasiContainer * pParent,
+                   const std::string & name):
     CCopasiParameterGroup(name, pParent),
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
@@ -59,7 +59,7 @@ COptItem::COptItem(const std::string & name,
 
 COptItem::COptItem(const COptItem & src,
                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
+    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectParent()->getObjectDataModel()),
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
@@ -77,7 +77,7 @@ COptItem::COptItem(const COptItem & src,
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
+    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectParent()->getObjectDataModel()),
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
@@ -108,8 +108,11 @@ void COptItem::initializeParameter()
     assertParameter("StartValue", CCopasiParameter::DOUBLE, NaN)->getValue().pDOUBLE;
 }
 
-bool COptItem::setObjectCN(const CCopasiObjectName & objectCN, const CCopasiDataModel* pDataModel)
+bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 {
+  const CCopasiDataModel * pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+
   const CCopasiObject * pObject = pDataModel->getObject(objectCN);
 
   if (pObject == NULL || !pObject->isValueDbl())
@@ -136,7 +139,7 @@ std::string COptItem::getObjectDisplayName() const
   return mpObject->getObjectDisplayName();
 }
 
-bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound, const CCopasiDataModel* pDataModel)
+bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 {
   const CCopasiObject * pObject;
 
@@ -152,6 +155,10 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound, const CCopasi
 
       return true;
     }
+
+  const CCopasiDataModel * pDataModel = getObjectDataModel();
+
+  assert(pDataModel != NULL);
 
   if (lowerBound != "-inf" &&
       !isNumber(lowerBound) &&
@@ -169,7 +176,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound, const CCopasi
 const std::string COptItem::getLowerBound() const
 {return *mpParmLowerBound;}
 
-bool COptItem::setUpperBound(const CCopasiObjectName & upperBound, const CCopasiDataModel* pDataModel)
+bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 {
   const CCopasiObject * pObject;
 
@@ -185,6 +192,10 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound, const CCopasi
 
       return true;
     }
+
+  const CCopasiDataModel * pDataModel = getObjectDataModel();
+
+  assert(pDataModel != NULL);
 
   if (upperBound != "inf" &&
       !isNumber(upperBound) &&
@@ -315,23 +326,24 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
 UpdateMethod * COptItem::getUpdateMethod() const
 {return mpMethod;}
 
-bool COptItem::isValid(const CCopasiDataModel* pDataModel) const
+bool COptItem::isValid() const
 {
   COptItem *pTmp = const_cast<COptItem *>(this);
 
-  if (!pTmp->setObjectCN(getObjectCN(), pDataModel)) return false;
+  if (!pTmp->setObjectCN(getObjectCN())) return false;
 
-  if (!pTmp->setLowerBound(getLowerBound(), pDataModel)) return false;
+  if (!pTmp->setLowerBound(getLowerBound())) return false;
 
-  if (!pTmp->setUpperBound(getUpperBound(), pDataModel)) return false;
+  if (!pTmp->setUpperBound(getUpperBound())) return false;
 
   return true;
 }
 
-bool COptItem::isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel)
+bool COptItem::isValid(CCopasiParameterGroup & group)
 {
   COptItem tmp(group);
-  return tmp.isValid(pDataModel);
+
+  return tmp.isValid();
 }
 
 bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Date: 2009/07/20 16:06:20 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,9 +27,9 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-CFitItem::CFitItem(const std::string & name,
-                   const CCopasiContainer * pParent):
-    COptItem(name, pParent),
+CFitItem::CFitItem(const CCopasiContainer * pParent,
+                   const std::string & name):
+    COptItem(pParent, name),
     mpGrpAffectedExperiments(NULL),
 #ifdef COPASI_CROSSVALIDATION
     mpGrpAffectedCrossValidations(NULL),
@@ -80,6 +80,7 @@ bool CFitItem::elevateChildren()
   // through the StartValue. Therefore, in case we encounter an old file
   // we need to copy its value.
   CCopasiParameter *pSavedValue = getParameter("SavedValue");
+
   if (pSavedValue)
     {
       setStartValue(*pSavedValue->getValue().pDOUBLE);
@@ -88,25 +89,28 @@ bool CFitItem::elevateChildren()
 
   mpGrpAffectedExperiments =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpAffectedExperiments);
+
   if (!mpGrpAffectedExperiments) return false;
 
 #ifdef COPASI_CROSSVALIDATION
   mpGrpAffectedCrossValidations =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpAffectedCrossValidations);
+
   if (!mpGrpAffectedCrossValidations) return false;
+
 #endif // COPASI_CROSSVALIDATION
 
   return true;
 }
 
-bool CFitItem::isValid(const CCopasiDataModel* pDataModel) const
-{return COptItem::isValid(pDataModel);}
+bool CFitItem::isValid() const
+{return COptItem::isValid();}
 
-bool CFitItem::isValid(CCopasiParameterGroup & group, const CCopasiDataModel* pDataModel)
+bool CFitItem::isValid(CCopasiParameterGroup & group)
 {
   CFitItem tmp(group);
 
-  return tmp.isValid(pDataModel);
+  return tmp.isValid();
 }
 
 bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
@@ -119,16 +123,18 @@ bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 }
 
 C_INT32 CFitItem::checkConstraint() const
-  {
-    if (*mpLowerBound > mLocalValue) return - 1;
-    if (mLocalValue > *mpUpperBound) return 1;
-    return 0;
-  }
+{
+  if (*mpLowerBound > mLocalValue) return - 1;
+
+  if (mLocalValue > *mpUpperBound) return 1;
+
+  return 0;
+}
 
 C_FLOAT64 CFitItem::getConstraintViolation() const
-  {
-    switch (checkConstraint())
-      {
+{
+  switch (checkConstraint())
+    {
       case - 1:
         return *mpLowerBound - mLocalValue;
         break;
@@ -140,8 +146,8 @@ C_FLOAT64 CFitItem::getConstraintViolation() const
       default:
         return 0.0;
         break;
-      }
-  }
+    }
+}
 
 std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 {
@@ -150,11 +156,13 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
   unsigned C_INT32 i, imax = o.mpGrpAffectedExperiments->size();
 
   os << "    Affected Experiments:" << std::endl << "      ";
+
   if (imax == 0) os << "all";
 
   for (i = 0; i < imax; i++)
     {
       if (i) os << ", ";
+
       os << o.getExperiment(i);
     }
 
@@ -162,13 +170,16 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
   imax = o.mpGrpAffectedCrossValidations->size();
 
   os << "    Affected Cross Validation Experiments:" << std::endl << "      ";
+
   if (imax == 0) os << "all";
 
   for (i = 0; i < imax; i++)
     {
       if (i) os << ", ";
+
       os << o.getCrossValidation(i);
     }
+
 #endif // COPASI_CROSSVALIDATION
 
   return os;
@@ -181,13 +192,13 @@ void CFitItem::setLocalValue(const C_FLOAT64 & value)
 }
 
 const C_FLOAT64 & CFitItem::getLocalValue() const
-  {return mLocalValue;}
+{return mLocalValue;}
 
 const C_FLOAT64 * CFitItem::getObjectValue() const
-  {return & mLocalValue;}
+{return & mLocalValue;}
 
 UpdateMethod * CFitItem::getUpdateMethod() const
-  {return mpLocalMethod;}
+{return mpLocalMethod;}
 
 bool CFitItem::addExperiment(const std::string & key)
 {
@@ -200,39 +211,39 @@ bool CFitItem::addExperiment(const std::string & key)
 }
 
 const std::string & CFitItem::getExperiment(const unsigned C_INT32 & index) const
-  {
-    static const std::string Empty("");
+{
+  static const std::string Empty("");
 
-    if (index < mpGrpAffectedExperiments->size())
-      return *mpGrpAffectedExperiments->getValue(index).pKEY;
+  if (index < mpGrpAffectedExperiments->size())
+    return *mpGrpAffectedExperiments->getValue(index).pKEY;
 
-    return Empty;
-  }
+  return Empty;
+}
 
 bool CFitItem::removeExperiment(const unsigned C_INT32 & index)
 {return mpGrpAffectedExperiments->removeParameter(index);}
 
 unsigned C_INT32 CFitItem::getExperimentCount() const
-  {return mpGrpAffectedExperiments->size();}
+{return mpGrpAffectedExperiments->size();}
 
 std::string CFitItem::getExperiments() const
-  {
-    std::string Experiments;
-    unsigned C_INT32 i, imax = mpGrpAffectedExperiments->size();
-    const CCopasiObject * pObject;
+{
+  std::string Experiments;
+  unsigned C_INT32 i, imax = mpGrpAffectedExperiments->size();
+  const CCopasiObject * pObject;
 
-    for (i = 0; i < imax; i++)
-      {
-        pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
+  for (i = 0; i < imax; i++)
+    {
+      pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
 
-        if (i && pObject)
-          Experiments += ", ";
+      if (i && pObject)
+        Experiments += ", ";
 
-        Experiments += pObject->getObjectName();
-      }
+      Experiments += pObject->getObjectName();
+    }
 
-    return Experiments;
-  }
+  return Experiments;
+}
 
 #ifdef COPASI_CROSSVALIDATION
 bool CFitItem::addCrossValidation(const std::string & key)
@@ -246,39 +257,39 @@ bool CFitItem::addCrossValidation(const std::string & key)
 }
 
 const std::string & CFitItem::getCrossValidation(const unsigned C_INT32 & index) const
-  {
-    static const std::string Empty("");
+{
+  static const std::string Empty("");
 
-    if (index < mpGrpAffectedCrossValidations->size())
-      return *mpGrpAffectedCrossValidations->getValue(index).pKEY;
+  if (index < mpGrpAffectedCrossValidations->size())
+    return *mpGrpAffectedCrossValidations->getValue(index).pKEY;
 
-    return Empty;
-  }
+  return Empty;
+}
 
 bool CFitItem::removeCrossValidation(const unsigned C_INT32 & index)
 {return mpGrpAffectedCrossValidations->removeParameter(index);}
 
 unsigned C_INT32 CFitItem::getCrossValidationCount() const
-  {return mpGrpAffectedCrossValidations->size();}
+{return mpGrpAffectedCrossValidations->size();}
 
 std::string CFitItem::getCrossValidations() const
-  {
-    std::string CrossValidations;
-    unsigned C_INT32 i, imax = mpGrpAffectedCrossValidations->size();
-    const CCopasiObject * pObject;
+{
+  std::string CrossValidations;
+  unsigned C_INT32 i, imax = mpGrpAffectedCrossValidations->size();
+  const CCopasiObject * pObject;
 
-    for (i = 0; i < imax; i++)
-      {
-        pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
+  for (i = 0; i < imax; i++)
+    {
+      pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
 
-        if (i && pObject)
-          CrossValidations += ", ";
+      if (i && pObject)
+        CrossValidations += ", ";
 
-        CrossValidations += pObject->getObjectName();
-      }
+      CrossValidations += pObject->getObjectName();
+    }
 
-    return CrossValidations;
-  }
+  return CrossValidations;
+}
 #endif // COPASI_CROSSVALIDATION
 
 bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
@@ -297,9 +308,9 @@ bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
   return true;
 }
 
-CFitConstraint::CFitConstraint(const std::string & name,
-                               const CCopasiContainer * pParent):
-    CFitItem(name, pParent),
+CFitConstraint::CFitConstraint(const CCopasiContainer * pParent,
+                               const std::string & name):
+    CFitItem(pParent, name),
     mCheckConstraint(0),
     mConstraintViolation(0.0)
 {}
@@ -334,16 +345,16 @@ void CFitConstraint::calculateConstraintViolation()
 
   switch (mCheckConstraint)
     {
-    case - 1:
-      mConstraintViolation += *mpLowerBound - *mpObjectValue;
-      break;
+      case - 1:
+        mConstraintViolation += *mpLowerBound - *mpObjectValue;
+        break;
 
-    case 1:
-      mConstraintViolation += *mpObjectValue - *mpUpperBound;
-      break;
+      case 1:
+        mConstraintViolation += *mpObjectValue - *mpUpperBound;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
 }
 
@@ -351,4 +362,4 @@ C_INT32 CFitConstraint::checkConstraint() const
 {return mCheckConstraint;}
 
 C_FLOAT64 CFitConstraint::getConstraintViolation() const
-  {return mConstraintViolation;}
+{return mConstraintViolation;}

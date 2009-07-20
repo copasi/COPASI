@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 15:44:34 $
+//   $Date: 2009/07/20 16:06:21 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -358,12 +358,12 @@ int main()
   // define a CFitItem
   const CCopasiObject* pParameterReference = pParameter->getObject(CCopasiObjectName("Reference=Value"));
   assert(pParameterReference != NULL);
-  CFitItem* pFitItem1 = new CFitItem();
-  pFitItem1->setObjectCN(pParameterReference->getCN(), pDataModel);
+  CFitItem* pFitItem1 = new CFitItem(pDataModel);
+  pFitItem1->setObjectCN(pParameterReference->getCN());
   assert(pFitItem1 != NULL);
   pFitItem1->setStartValue(4.0);
-  pFitItem1->setLowerBound(CCopasiObjectName("0.00001"), pDataModel);
-  pFitItem1->setUpperBound(CCopasiObjectName("10"), pDataModel);
+  pFitItem1->setLowerBound(CCopasiObjectName("0.00001"));
+  pFitItem1->setUpperBound(CCopasiObjectName("10"));
   // add the fit item
   pOptimizationItemGroup->addParameter(pFitItem1);
 
@@ -376,12 +376,12 @@ int main()
   // define a CFitItem
   pParameterReference = pParameter->getObject(CCopasiObjectName("Reference=Value"));
   assert(pParameterReference != NULL);
-  CFitItem* pFitItem2 = new CFitItem();
-  pFitItem2->setObjectCN(pParameterReference->getCN(), pDataModel);
+  CFitItem* pFitItem2 = new CFitItem(pDataModel);
+  pFitItem2->setObjectCN(pParameterReference->getCN());
   assert(pFitItem2 != NULL);
   pFitItem2->setStartValue(4.0);
-  pFitItem2->setLowerBound(CCopasiObjectName("0.00001"), pDataModel);
-  pFitItem2->setUpperBound(CCopasiObjectName("10"), pDataModel);
+  pFitItem2->setLowerBound(CCopasiObjectName("0.00001"));
+  pFitItem2->setUpperBound(CCopasiObjectName("10"));
   // add the fit item
   pOptimizationItemGroup->addParameter(pFitItem2);
 

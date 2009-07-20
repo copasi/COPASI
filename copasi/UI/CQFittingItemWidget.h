@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 20:12:31 $
+//   $Author: shoops $
+//   $Date: 2009/07/20 16:06:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include <QLabel>
 #include <QPixmap>
 
+class CCopasiDataModel;
 class CCopasiSelectionDialog;
 class COptItem;
 class CCopasiObject;
@@ -42,26 +43,6 @@ class QColor;
 class CExperimentSet;
 class CCopasiParameterGroup;
 class CCrossValidationSet;
-/*
-#include <Qt3Support/Q3Header>
-#include <Qt3Support/Q3Table>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
-#include <Qt3Support/Q3GridLayout>
-#include <Qt3Support/Q3HBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QToolButton>
-#include <Qt3Support/Q3VBoxLayout>
-#include <QtGui/QWidget>
-#include "TaskWidget.h"
- */
 
 #ifndef COPASI_CROSSVALIDATION
 # define pCrossValidationMap
@@ -72,7 +53,7 @@ class CQFittingItemWidget : public QWidget, public Ui::CQFittingItemWidget
   Q_OBJECT
 
 public:
-  CQFittingItemWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  CQFittingItemWidget(QWidget* parent, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQFittingItemWidget();
 
   enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};
@@ -87,6 +68,7 @@ signals:
   void numberChanged(int);
 
 protected:
+  const CCopasiDataModel * mpDataModel;
   const CCrossValidationSet **mppCrossValidationSet;
   std::set< unsigned int > mSelection;
   unsigned int mCurrentRow;

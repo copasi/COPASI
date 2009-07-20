@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/07/20 16:06:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,6 +86,16 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
 }
 
 bool CopasiWidget::getIgnoreUpdates()
-{return mIgnoreUpdates;}
+{
+  return mIgnoreUpdates;
+}
+
 void CopasiWidget::setIgnoreUpdates(bool v)
-{mIgnoreUpdates = v;}
+{
+  mIgnoreUpdates = v;
+}
+
+CCopasiDataModel * CopasiWidget::getDataModel()
+{
+  return mpDataModel;
+}

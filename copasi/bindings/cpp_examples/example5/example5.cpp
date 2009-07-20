@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/04/29 11:08:01 $
+//   $Author: shoops $
+//   $Date: 2009/07/20 16:06:20 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -147,8 +147,8 @@ int main()
   // we want to change the fixed model value from -100 to +100 with a start
   // value of 50
   pOptItem->setStartValue(50.0);
-  pOptItem->setLowerBound(CCopasiObjectName("-100"), pDataModel);
-  pOptItem->setUpperBound(CCopasiObjectName("100"), pDataModel);
+  pOptItem->setLowerBound(CCopasiObjectName("-100"));
+  pOptItem->setUpperBound(CCopasiObjectName("100"));
 
   // now we set some parameters on the method
   // these parameters are specific to the method type we set above

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/07/20 16:06:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ public:
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
+  CCopasiDataModel * getDataModel();
 
 protected:
   virtual bool enterProtected();

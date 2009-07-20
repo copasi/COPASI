@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/07/20 16:06:21 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,9 @@ void CQFittingItemWidget::languageChange()
 
 void CQFittingItemWidget::init()
 {
+  mpDataModel = static_cast<CopasiWidget *>(parent())->getDataModel();
+  assert(mpDataModel != NULL);
+
   mppExperimentSet = NULL;
   mppCrossValidationSet = NULL;
 
@@ -185,7 +188,7 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setLowerBound(Number, pDataModel);
+      (*mpItemsCopy)[*it]->setLowerBound(Number);
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
 }
@@ -223,7 +226,7 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setUpperBound(Number, pDataModel);
+      (*mpItemsCopy)[*it]->setUpperBound(Number);
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
 }
@@ -276,7 +279,7 @@ void CQFittingItemWidget::slotLowerEdit()
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setLowerBound(CN, pDataModel);
+          (*mpItemsCopy)[*it]->setLowerBound(CN);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -336,7 +339,7 @@ void CQFittingItemWidget::slotUpperEdit()
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setUpperBound(CN, pDataModel);
+          (*mpItemsCopy)[*it]->setUpperBound(CN);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -402,15 +405,15 @@ void CQFittingItemWidget::slotParamEdit()
             {
               case OPT_ITEM:
               case OPT_CONSTRAINT:
-                pItem = new COptItem();
+                pItem = new COptItem(mpDataModel);
                 break;
 
               case FIT_ITEM:
-                pItem = new CFitItem();
+                pItem = new CFitItem(mpDataModel);
                 break;
 
               case FIT_CONSTRAINT:
-                pItem = new CFitConstraint();
+                pItem = new CFitConstraint(mpDataModel);
                 break;
             }
 
@@ -430,7 +433,7 @@ void CQFittingItemWidget::slotParamEdit()
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN(), pDataModel);
+          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN());
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -462,7 +465,7 @@ void CQFittingItemWidget::slotParamEdit()
                 break;
             }
 
-          pItem->setObjectCN(Selection[i]->getCN(), pDataModel);
+          pItem->setObjectCN(Selection[i]->getCN());
 
           // Add the new item to the list.
           mpItemsCopy->insert(mpItemsCopy->begin() + current + i, pItem);
@@ -643,20 +646,20 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
         {
           changed = true;
 
-          if (!(*target)->setObjectCN((*it)->getObjectCN(), pDataModel))
+          if (!(*target)->setObjectCN((*it)->getObjectCN()))
             (*target)->setValue("ObjectCN", (*it)->getObjectCN());
         }
 
       if ((*target)->getLowerBound() != (*it)->getLowerBound())
         {
           changed = true;
-          (*target)->setLowerBound((*it)->getLowerBound(), pDataModel);
+          (*target)->setLowerBound((*it)->getLowerBound());
         }
 
       if ((*target)->getUpperBound() != (*it)->getUpperBound())
         {
           changed = true;
-          (*target)->setUpperBound((*it)->getUpperBound(), pDataModel);
+          (*target)->setUpperBound((*it)->getUpperBound());
         }
 
       if ((*target)->getStartValue() != (*it)->getStartValue())
@@ -1175,15 +1178,15 @@ void CQFittingItemWidget::slotNew()
     {
       case OPT_ITEM:
       case OPT_CONSTRAINT:
-        pItem = new COptItem();
+        pItem = new COptItem(mpDataModel);
         break;
 
       case FIT_ITEM:
-        pItem = new CFitItem();
+        pItem = new CFitItem(mpDataModel);
         break;
 
       case FIT_CONSTRAINT:
-        pItem = new CFitConstraint();
+        pItem = new CFitConstraint(mpDataModel);
         break;
     }
 
@@ -1532,14 +1535,14 @@ void CQFittingItemWidget::saveSelection()
       pItem = (*mpItemsCopy)[*it];
 
       if (mpCheckLowerInf->isChecked())
-        pItem->setLowerBound(CCopasiObjectName("-inf"), pDataModel);
+        pItem->setLowerBound(CCopasiObjectName("-inf"));
       else if (isNumber(TO_UTF8(mpEditLower->text())))
-        pItem->setLowerBound(CCopasiObjectName(TO_UTF8(mpEditLower->text())), pDataModel);
+        pItem->setLowerBound(CCopasiObjectName(TO_UTF8(mpEditLower->text())));
 
       if (mpCheckUpperInf->isChecked())
-        pItem->setUpperBound(CCopasiObjectName("inf"), pDataModel);
+        pItem->setUpperBound(CCopasiObjectName("inf"));
       else if (isNumber(TO_UTF8(mpEditUpper->text())))
-        pItem->setUpperBound(CCopasiObjectName(TO_UTF8(mpEditUpper->text())), pDataModel);
+        pItem->setUpperBound(CCopasiObjectName(TO_UTF8(mpEditUpper->text())));
 
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
@@ -1619,7 +1622,7 @@ void CQFittingItemWidget::slotLowerLostFocus()
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setLowerBound(Number, pDataModel);
+      (*mpItemsCopy)[*it]->setLowerBound(Number);
 
       if (first)
         {
@@ -1657,7 +1660,7 @@ void CQFittingItemWidget::slotUpperLostFocus()
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setUpperBound(Number, pDataModel);
+      (*mpItemsCopy)[*it]->setUpperBound(Number);
 
       if (first)
         {
