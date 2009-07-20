@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/07/20 19:31:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,9 +151,9 @@ bool CQOptimizationWidget::loadTask()
 
   mpBoxSubtask->setCurrentText(FROM_UTF8(CCopasiTask::TypeName[pProblem->getSubtaskType()]));
 
-  mpParameters->load(pProblem->getGroup("OptimizationItemList"), NULL, NULL);
+  mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), NULL, NULL);
 
-  mpConstraints->load(pProblem->getGroup("OptimizationConstraintList"), NULL, NULL);
+  mpConstraints->load(mpDataModel, pProblem->getGroup("OptimizationConstraintList"), NULL, NULL);
 
   mChanged = false;
 

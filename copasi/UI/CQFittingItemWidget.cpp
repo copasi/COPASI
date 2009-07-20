@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:21 $
+//   $Date: 2009/07/20 19:31:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,9 +98,6 @@ void CQFittingItemWidget::languageChange()
 
 void CQFittingItemWidget::init()
 {
-  mpDataModel = static_cast<CopasiWidget *>(parent())->getDataModel();
-  assert(mpDataModel != NULL);
-
   mppExperimentSet = NULL;
   mppCrossValidationSet = NULL;
 
@@ -524,10 +521,13 @@ void CQFittingItemWidget::slotExperiments()
     }
 }
 
-bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
+bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
+                               CCopasiParameterGroup * pItems,
                                const std::map<std::string, std::string> * pExperimentMap,
                                const std::map<std::string, std::string> * pCrossValidationMap)
 {
+  mpDataModel = pDataModel;
+
   mpItems = pItems;
   mSelection.clear();
 

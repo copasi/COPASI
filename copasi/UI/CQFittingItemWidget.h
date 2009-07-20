@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:21 $
+//   $Date: 2009/07/20 19:31:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,8 +58,12 @@ public:
 
   enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};
 
-  virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap);
-  virtual bool save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap);
+  virtual bool load(CCopasiDataModel * pDataModel,
+                    CCopasiParameterGroup * pItems,
+                    const std::map<std::string, std::string> * pExperimentMap,
+                    const std::map<std::string, std::string> * pCrossValidationMap);
+  virtual bool save(const std::map<std::string, std::string> * pExperimentMap,
+                    const std::map<std::string, std::string> * pCrossValidationMap);
   void setItemType(const ItemType & type);
   void setExperimentSet(const CExperimentSet * & pExperimentSet);
   void setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet);
