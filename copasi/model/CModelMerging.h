@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/17 10:41:03 $
+//   $Date: 2009/07/20 11:57:15 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,11 @@ protected:
   bool  addCompartments(std::string name);
   bool  addMetabolites(std::string name);
   bool  addModelValues(std::string name);
+
+  bool  addCompartmentsExpressions();
+  bool  addMetabolitesExpressions();
+  bool  addModelValuesExpressions();
+
   bool  addReactions(std::string name);
   bool  addEvents(std::string name);
 

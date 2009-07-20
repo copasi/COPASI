@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/17 16:09:04 $
+//   $Date: 2009/07/20 11:57:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,12 @@ void CModelMerging::simpleCall()
 
   if (!addModelValues(name)) return; // TODO error message
 
+  if (!addCompartmentsExpressions()) return; // TODO error message
+
+  if (!addMetabolitesExpressions()) return; // TODO error message
+
+  if (!addModelValuesExpressions()) return; // TODO error message
+
   if (!addReactions(name)) return; // TODO error message
 
   if (!addEvents(name)) return; // TODO error message
@@ -67,14 +73,14 @@ void CModelMerging::simpleCall()
 
           if (metab1->getObjectName() == metabName)
             {
-              std::cout << " merge "  << metab1->getObjectName() <<  " to  "
-                        << metabName  << std::endl;
-              std::cout <<  std::endl;
 
               std::string toKey = metab->getKey();
               std::string key = metab1->getKey();
 
               if (!mergeMetabolites(toKey, key)) return;
+
+              //  else
+              //   pdelete(metab1);
             }
         }
     }
@@ -92,8 +98,6 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
   unsigned C_INT32 i, imax = mpModel->getReactions().size();
   unsigned C_INT32 j, jmax;
-
-#if 0 // this part seems to work
 
   for (i = 0; i < imax; ++i)
     {
@@ -222,9 +226,6 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
         }
     }
 
-#endif
-
-  // in work
   imax = mpModel->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
@@ -240,7 +241,6 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
             break;
           case CModelEntity::ASSIGNMENT:
-            std::cout << "metab " <<  metab->getObjectName() << std::endl;
 
             if (!mergeInExpression(toKey, key, metab->getExpressionPtr())) return info;
 
@@ -262,8 +262,6 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
             break;
         }
     }
-
-#if 0 // was not tested
 
   imax = mpModel->getCompartments().size();
 
@@ -337,8 +335,6 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
         }
     }
 
-#endif
-
   return true;
 }
 
@@ -349,7 +345,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
   assert(pExpression);
 
-  std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
+  //std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
 
   const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
   unsigned j, jmax = objectNodes.size();
@@ -362,7 +358,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
           assert(pObjectNode);
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          std::cout << cn << std::endl;
+          //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mpModel->getObjectDataModel()->getObject(cn);
           assert(mObject);
@@ -372,7 +368,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
-              std::cout << host << std::endl;
+              //std::cout << host << std::endl;
             }
 
           assert(mObject);
@@ -387,7 +383,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
               cn = pObject->getCN() + host;
 
-              std::cout << cn << std::endl;
+              //std::cout << cn << std::endl;
 
               pObjectNode->setData("<" + cn + ">");
             }
@@ -396,8 +392,8 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
   pExpression->updateTree();
 
-  std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
-  std::cout <<  std::endl;
+  //std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
+  //std::cout <<  std::endl;
 
   return true;
 }
@@ -819,7 +815,46 @@ bool CModelMerging::addCompartments(std::string name)
 
       if (!newComp) return info;
 
-      switch (sourceComp ->getStatus())
+      newComp->setStatus(sourceComp->getStatus());
+
+      newComp->setDimensionality(sourceComp->getDimensionality());
+
+      keyMap[sourceComp->getKey()] = newComp->getKey();
+      nameMap[sourceComp->getObjectName()] = newName;
+    }
+
+  return true;
+}
+
+bool CModelMerging::addCompartmentsExpressions()
+{
+  bool info;
+
+  if (!mpModel) return info;
+
+  if (!mmModel) return info;
+
+  if (!mmModel->getCompartments().size()) return info;
+
+  unsigned C_INT32 i, imax = mmModel->getCompartments().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CCompartment* sourceComp = mmModel->getCompartments()[i];
+
+      if (!sourceComp) return info;
+
+      std::string newKey = keyMap[sourceComp->getKey()];
+
+      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+
+      CCompartment*  newComp = dynamic_cast< CCompartment * >(pObject);
+
+      if (!newComp)
+        //std::cout << "compartment was  not found ";
+        return info;
+
+      switch (newComp ->getStatus())
         {
           case CModelEntity::FIXED:
 
@@ -845,11 +880,6 @@ bool CModelMerging::addCompartments(std::string name)
 
             break;
         }
-
-      newComp->setDimensionality(sourceComp->getDimensionality());
-
-      keyMap[sourceComp->getKey()] = newComp->getKey();
-      nameMap[sourceComp->getObjectName()] = newName;
     }
 
   return true;
@@ -886,7 +916,42 @@ bool CModelMerging::addMetabolites(std::string name)
 
       newMetab->setStatus(sourceMetab->getStatus());
 
-      switch (sourceMetab ->getStatus())
+      keyMap[sourceMetab->getKey()] = newMetab->getKey();
+      nameMap[sourceMetab->getObjectName()] = newName;
+    }
+
+  return true;
+}
+
+bool CModelMerging::addMetabolitesExpressions()
+{
+  bool info;
+
+  if (!mpModel) return info;
+
+  if (!mmModel) return info;
+
+  if (!mmModel->getMetabolites().size()) return info;
+
+  unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CMetab* sourceMetab = mmModel->getMetabolites()[i];
+
+      if (!sourceMetab) return info;
+
+      std::string newKey = keyMap[sourceMetab->getKey()];
+
+      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+
+      CMetab*  newMetab = dynamic_cast< CMetab * >(pObject);
+
+      if (!newMetab)
+        //std::cout << "metabolite was  not found ";
+        return info;
+
+      switch (newMetab ->getStatus())
         {
           case CModelEntity::FIXED:
 
@@ -915,9 +980,6 @@ bool CModelMerging::addMetabolites(std::string name)
 
             break;
         }
-
-      keyMap[sourceMetab->getKey()] = newMetab->getKey();
-      nameMap[sourceMetab->getObjectName()] = newName;
     }
 
   return true;
@@ -949,7 +1011,40 @@ bool CModelMerging::addModelValues(std::string name)
 
       newModVal->setStatus(sourceModVal->getStatus());
 
-      switch (sourceModVal ->getStatus())
+      keyMap[sourceModVal->getKey()] = newModVal->getKey();
+      nameMap[sourceModVal->getObjectName()] = newName;
+    }
+
+  return true;
+}
+
+bool CModelMerging::addModelValuesExpressions()
+{
+  bool info;
+
+  if (!mpModel) return info;
+
+  if (!mmModel) return info;
+
+  unsigned C_INT32 i, imax = mmModel->getModelValues().size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const CModelValue* sourceModVal = mmModel->getModelValues()[i];
+
+      if (!sourceModVal) return info;
+
+      std::string newKey = keyMap[sourceModVal->getKey()];
+
+      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+
+      CModelValue*  newModVal = dynamic_cast<CModelValue * >(pObject);
+
+      if (!newModVal)
+        //std::cout << "model value was  not found ";
+        return info;
+
+      switch (newModVal ->getStatus())
         {
           case CModelEntity::FIXED:
 
@@ -975,9 +1070,6 @@ bool CModelMerging::addModelValues(std::string name)
 
             break;
         }
-
-      keyMap[sourceModVal->getKey()] = newModVal->getKey();
-      nameMap[sourceModVal->getObjectName()] = newName;
     }
 
   return true;
