@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/17 19:14:50 $
+//   $Date: 2009/07/20 16:03:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,8 @@ bool CEventAssignment::setObjectParent(const CCopasiContainer * pParent)
 
 bool CEventAssignment::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
+  clearDirectDependencies();
+
   bool success = true;
 
   mpTarget = NULL;
@@ -118,7 +120,6 @@ bool CEventAssignment::compile(std::vector< CCopasiContainer * > listOfContainer
   else
     {
       success = false;
-      setDirectDependencies(std::set< const CCopasiObject * >());
     }
 
   return success;
