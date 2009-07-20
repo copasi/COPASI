@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Author: gauges $
+//   $Date: 2009/07/20 11:50:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,114 +33,118 @@ class CConfigurationFile;
  * If this is necessary or not needs to be discussed.
  */
 class CCopasiRootContainer : public CCopasiContainer
-  {
-  private:
-    /**
-     * The default constructor should be private so that nobody can create
-     * new instances of the root container.
-     * The only way to create a root container is through the static init
-     * method.
-     * Maybe this restriction is not necessary. We have to discuss this
-     * later.
-     */
-    CCopasiRootContainer(const bool & withGUI = false);
+{
+private:
+  /**
+   * The default constructor should be private so that nobody can create
+   * new instances of the root container.
+   * The only way to create a root container is through the static init
+   * method.
+   * Maybe this restriction is not necessary. We have to discuss this
+   * later.
+   */
+  CCopasiRootContainer(const bool & withGUI = false);
 
-    /**
-     * The copy constructor is private as well to make sure that there is only
-     * one root container that can be initialized through the init call.
-     * @param const CCopasiRootContainer & src
-     */
-    CCopasiRootContainer(const CCopasiRootContainer & src);
+  /**
+   * The copy constructor is private as well to make sure that there is only
+   * one root container that can be initialized through the init call.
+   * @param const CCopasiRootContainer & src
+   */
+  CCopasiRootContainer(const CCopasiRootContainer & src);
 
-    /**
-     * The assignment operator is private as well to make sure that there is only
-     * one root container that can be initialized through the init call.
-     * @param const CCopasiRootContainer & src
-     * @return CCopasiRootContainer &
-     */
-    CCopasiRootContainer& operator=(const CCopasiRootContainer& src);
+  /**
+   * The assignment operator is private as well to make sure that there is only
+   * one root container that can be initialized through the init call.
+   * @param const CCopasiRootContainer & src
+   * @return CCopasiRootContainer &
+   */
+  CCopasiRootContainer& operator=(const CCopasiRootContainer& src);
 
-    /**
-     * This method needs to be called after a new root container is
-     * constructed.
-     * Since many of the children of the root container need to access the key
-     * factory through the global Root instance, the global root instance need to be created before the children can be initialized.
-     * Calling this Method initializes the children. This method must be
-     * protected since it can only be called once by the global init method.
-     */
-    void initializeChildren();
+  /**
+   * This method needs to be called after a new root container is
+   * constructed.
+   * Since many of the children of the root container need to access the key
+   * factory through the global Root instance, the global root instance need to be created before the children can be initialized.
+   * Calling this Method initializes the children. This method must be
+   * protected since it can only be called once by the global init method.
+   */
+  void initializeChildren();
 
-  protected:
-    CKeyFactory mKeyFactory;
-    CFunctionDB* mpFunctionList;
-    CConfigurationFile* mpConfiguration;
-    CCopasiVector<CCopasiDataModel>* mpDataModelList;
-    // flag to store if we are running a GUI or not
-    bool mWithGUI;
+protected:
+  CKeyFactory mKeyFactory;
+  CFunctionDB* mpFunctionList;
+  CConfigurationFile* mpConfiguration;
+  CCopasiVector<CCopasiDataModel>* mpDataModelList;
+  // flag to store if we are running a GUI or not
+  bool mWithGUI;
 
-    /**
-     * Pointer to a function created for supporting the load SBML models
-     * using the delay symbol
-     */
-    CFunction * mpUnsupportedDelay;
+  /**
+   * Pointer to a function created for supporting the load SBML models
+   * using the delay symbol
+   */
+  CFunction * mpUnsupportedDelay;
 
-    CFunction * mpUndefined;
+  CFunction * mpUndefined;
 
-  public:
-    // Destructor
-    virtual ~CCopasiRootContainer();
+public:
+  // Destructor
+  virtual ~CCopasiRootContainer();
 
-    /**
-     * This method creates the only root container.
-     */
-    static void init(int argc, char** argv, const bool & withGui = false);
+  /**
+   * This method creates the only root container.
+   */
+  static void init(int argc, char** argv, const bool & withGui = false);
 
-    static void destroy();
+  static void destroy();
 
-    /**
-     * Retrieve the root container
-     */
-    static const CCopasiContainer * getRoot();
+  /**
+   * Retrieve the root container
+   */
+  static const CCopasiContainer * getRoot();
 
-    /**
-     * Returns the a pointer to the configuration.
-     */
-    static CConfigurationFile * getConfiguration();
+  /**
+   * Returns the a pointer to the configuration.
+   */
+  static CConfigurationFile * getConfiguration();
 
-    /**
-     * Returns a pointer to the global function database.
-     */
-    static CFunctionDB * getFunctionList();
+  /**
+   * Returns a pointer to the global function database.
+   */
+  static CFunctionDB * getFunctionList();
 
-    /**
-     * Returns a pointer to the list of data models.
-     */
-    static CCopasiVector< CCopasiDataModel > * getDatamodelList();
+  /**
+   * Returns a pointer to the list of data models.
+   */
+  static CCopasiVector< CCopasiDataModel > * getDatamodelList();
 
-    /**
-     * Creates a new datamodel instance and adds it to the list.
-     * The new instance is returned by the method.
-     */
-    static CCopasiDataModel * addDatamodel();
+  /**
+   * Creates a new datamodel instance and adds it to the list.
+   * The new instance is returned by the method.
+   */
+  static CCopasiDataModel * addDatamodel();
 
-    /**
-     * Retrieve the pointer for the function used for importing the
-     * unsupported SBML symbol delay
-     * @return CFunction * pUnsupportedDelay
-     */
-    static CFunction * getUnsupportedDelay();
+  /**
+   * Retrieve the pointer for the function used for importing the
+   * unsupported SBML symbol delay
+   * @return CFunction * pUnsupportedDelay
+   */
+  static CFunction * getUnsupportedDelay();
 
-    /**
-     * Retrieve the pointer for the function used for importing
-     * kinetics without a kinetic law
-     * @return CFunction * pUnsupportedDelay
-     */
-    static CFunction * getUndefinedFunction();
+  /**
+   * Retrieve the pointer for the function used for importing
+   * kinetics without a kinetic law
+   * @return CFunction * pUnsupportedDelay
+   */
+  static CFunction * getUndefinedFunction();
 
-    /**
-     * Returns a pointer to the KeyFactory.
-     */
-    static CKeyFactory* getKeyFactory();
-  };
+  /**
+   * Returns a pointer to the KeyFactory.
+   */
+  static CKeyFactory* getKeyFactory();
+
+  static bool removeDatamodel(const CCopasiDataModel * pDatamodel);
+
+  static bool removeDatamodel(const unsigned C_INT32 index);
+};
 
 #endif /* COPASI_CCopasiRootContainer */

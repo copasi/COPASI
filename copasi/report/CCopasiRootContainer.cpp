@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/06/30 14:26:28 $
+//   $Author: gauges $
+//   $Date: 2009/07/20 11:50:04 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -167,4 +167,23 @@ CFunction * CCopasiRootContainer::getUndefinedFunction()
 CKeyFactory* CCopasiRootContainer::getKeyFactory()
 {
   return &pRootContainer->mKeyFactory;
+}
+
+bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)
+{
+  if (!pDatamodel)
+    {
+      return false;
+    }
+
+  pRootContainer->mpDataModelList->remove((CCopasiDataModel *)pDatamodel);
+  pdelete(pDatamodel);
+
+  return true;
+}
+
+bool CCopasiRootContainer::removeDatamodel(const unsigned C_INT32 index)
+{
+  const CCopasiDataModel* pDatamodel = (*CCopasiRootContainer::getDatamodelList())[index];
+  return CCopasiRootContainer::removeDatamodel(pDatamodel);
 }
