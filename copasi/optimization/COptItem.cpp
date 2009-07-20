@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:20 $
+//   $Date: 2009/07/20 19:49:31 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ COptItem::COptItem(const CCopasiContainer * pParent,
 
 COptItem::COptItem(const COptItem & src,
                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectParent()->getObjectDataModel()),
+    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
@@ -77,7 +77,7 @@ COptItem::COptItem(const COptItem & src,
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectParent()->getObjectDataModel()),
+    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
