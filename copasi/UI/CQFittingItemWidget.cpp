@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/21 19:24:44 $
+//   $Date: 2009/07/21 23:34:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,8 +113,7 @@ void CQFittingItemWidget::init()
   mpTable->setAlternatingRowColors(true);
   mpTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   mpTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-//  mpTable->setTopMargin(0);
+  mpTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 
   int h, s, v;
 
@@ -1254,7 +1253,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
 
   QTableWidgetItem *itemValue = new QTableWidgetItem(Item);
   itemValue->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-  itemValue->setTextAlignment(Qt::AlignRight);
+  itemValue->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   mpTable->setItem(row, 0, itemValue);
 }
 
