@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/10 01:22:57 $
+//   $Author: ssahle $
+//   $Date: 2009/07/21 19:16:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -589,13 +589,13 @@ const C_FLOAT64 & CProcessQueue::getProcessQueueExecutionTime() const
   static C_FLOAT64 Infinity =
     std::numeric_limits< C_FLOAT64 >::infinity();
 
-  const C_FLOAT64 & CalculationTime =
-    mCalculations.size() > 0 ? mCalculations.begin()->first.getExecutionTime() : Infinity;
+  const C_FLOAT64 * CalculationTime =
+    mCalculations.size() > 0 ? &mCalculations.begin()->first.getExecutionTime() : &Infinity;
 
-  const C_FLOAT64 & AssignmentTime =
-    mAssignments.size() > 0 ? mAssignments.begin()->first.getExecutionTime() : Infinity;
+  const C_FLOAT64 * AssignmentTime =
+    mAssignments.size() > 0 ? &mAssignments.begin()->first.getExecutionTime() : &Infinity;
 
-  return std::min(CalculationTime, AssignmentTime);
+  return std::min(*CalculationTime, *AssignmentTime);
 }
 
 bool CProcessQueue::isEmpty() const
