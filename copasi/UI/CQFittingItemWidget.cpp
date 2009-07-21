@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 19:50:14 $
+//   $Date: 2009/07/21 16:50:42 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -379,7 +379,7 @@ void CQFittingItemWidget::slotParamEdit()
       unsigned C_INT32 current = currentRow();
 
       // We must not trigger slotSelectionChanged!
-      disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+      disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
       // If no item is selected create one.
       if (!mSelection.size())
@@ -457,7 +457,7 @@ void CQFittingItemWidget::slotParamEdit()
           setTableText(current + i, pItem);
         }
 
-      connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+      connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
       // Update the table
       mpTable->resizeColumnToContents(0);
 
@@ -524,10 +524,10 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
 
 // TODO: in progress since 08.04.09 - adjustColumn
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 //  mpTable->setNumRows(mpItems->size());
   mpTable->setRowCount(mpItems->size());
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
   mCurrentRow = C_INVALID_INDEX;
 
   mpItemsCopy->resize(mpItems->size());
@@ -888,7 +888,7 @@ void CQFittingItemWidget::slotDelete()
   std::set< unsigned int >::const_iterator end = mSelection.end();
 
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   unsigned int Deleted = 0;
 
@@ -908,7 +908,7 @@ void CQFittingItemWidget::slotDelete()
   mpTable->clearSelection();
   mSelection.clear();
 
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   // Change the selection
   if (row >= mpItemsCopy->size())
@@ -955,10 +955,10 @@ void CQFittingItemWidget::slotCopy()
 // TODO: in progress since 08.04.09 - adjustColumn
   // Update the table
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 //  mpTable->insertRows(row);
   mpTable->insertRow(row);
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   setTableText(row, pItem);
   mpTable->resizeColumnToContents(0);
@@ -1058,7 +1058,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
   CFitItem * pItem = NULL, * pTemplate = NULL;
 
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   if (imax)
     {
@@ -1135,7 +1135,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
         static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->addExperiment((*mppExperimentSet)->getExperiment(0)->CCopasiParameter::getKey());
     }
 
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   // Update the current item
   setTableText(row - 1, (*mpItemsCopy)[*mSelection.begin()]);
@@ -1180,10 +1180,10 @@ void CQFittingItemWidget::slotNew()
 
   // Update the table
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 //  mpTable->insertRows(row);
   mpTable->insertRow(row);
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   setTableText(row, pItem);
   mpTable->resizeColumnToContents(0);
@@ -1540,9 +1540,9 @@ void CQFittingItemWidget::selectRow(const unsigned int & row)
   mpTable->setCurrentCell(row, 0);
 
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
   mpTable->clearSelection();
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
   mpTable->selectRow(row);
 }
@@ -1561,7 +1561,7 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
     mpTable->setCurrentCell(C_INVALID_INDEX, 0);
 
   // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 
 // TODO: in progress since 08.04.09 - clearSelection, addSelection
   /*
@@ -1570,7 +1570,7 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
     for (; it != end; ++it)
       mpTable->addSelection(Q3TableSelection(*it, 0, *it, 0));
   */
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 }
 
 void CQFittingItemWidget::slotLowerLostFocus()
