@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:46:25 $
+//   $Date: 2009/07/21 23:10:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.62 2009/07/16 15:46:25 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.63 2009/07/21 23:10:37 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -611,7 +611,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 
 bool PlotWidget1::saveToPlotSpec()
 {
-  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(mpObject);
 
   if (!pspec) return true;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:46:25 $
+//   $Date: 2009/07/21 23:10:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.20 2009/07/16 15:46:25 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.21 2009/07/21 23:10:37 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -98,8 +98,6 @@ protected:
   void addHisto1DTab(const std::string & title,
                      const CPlotDataChannelSpec & x,
                      const C_FLOAT64 & incr);
-
-  std::string mKey;
 
   CPlotItem::Type mType;
 
