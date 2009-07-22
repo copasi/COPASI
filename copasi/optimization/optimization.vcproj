@@ -113,6 +113,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodPraxis.cpp"
+				>
+			</File>
+			<File
 				RelativePath="COptMethodPS.cpp"
 				>
 			</File>
@@ -129,11 +133,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodTruncatedNewton.cpp"
+				>
+			</File>
+			<File
 				RelativePath="COptProblem.cpp"
 				>
 			</File>
 			<File
 				RelativePath="COptTask.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CPraxis.cpp"
 				>
 			</File>
 			<File
@@ -202,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodPraxis.h"
+				>
+			</File>
+			<File
 				RelativePath="COptMethodPS.h"
 				>
 			</File>
@@ -218,11 +234,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\COptMethodTruncatedNewton.h"
+				>
+			</File>
+			<File
 				RelativePath="COptProblem.h"
 				>
 			</File>
 			<File
 				RelativePath="COptTask.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CPraxis.h"
 				>
 			</File>
 			<File
