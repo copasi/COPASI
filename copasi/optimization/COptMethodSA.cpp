@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Date: 2009/07/22 19:17:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,6 +91,9 @@ bool COptMethodSA::optimise()
         }
 
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+
+      // The step must not contain any zeroes
+      mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
     }
 
   mCurrentValue = evaluate();
@@ -110,7 +113,6 @@ bool COptMethodSA::optimise()
     fk[a] = mCurrentValue;
 
   mAccepted = 0;
-  mStep = mCurrent;
 
   // set the number of steps at one single temperature
   nt = 5 * mVariableSize;
