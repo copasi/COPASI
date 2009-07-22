@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:49:36 $
+//   $Author: shoops $
+//   $Date: 2009/07/22 16:51:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 #define COPASI_CPraxis
 
 #include <limits>
+
+class CRandom;
 
 class FPraxis
 {
@@ -73,6 +75,7 @@ public:
   ~CPraxis();
 
 private:
+  CRandom * mpRandom;
 
   Global global_1;
   Q q_1;

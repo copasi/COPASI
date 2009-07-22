@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/04/22 17:52:21 $
+//   $Date: 2009/07/22 16:51:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,18 +51,20 @@ static bool c_true = TRUE_;
 static C_INT c__3 = 3;
 static C_INT c__0 = 0;
 
-CPraxis::CPraxis()
-{}
+CPraxis::CPraxis():
+    mpRandom(NULL)
+{
+  mpRandom = CRandom::createGenerator();
+}
 
 CPraxis::~CPraxis()
-{}
+{
+  pdelete(mpRandom);
+}
 
 C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
                            C_INT *n, C_INT *prin, C_FLOAT64 *x, FPraxis *f, C_FLOAT64 *fmin)
 {
-  /* a pointer to the randomnumber generator */
-  CRandom *pRandom = CRandom::createGenerator(CRandom::r250, (unsigned C_INT32) * n);
-
   /* System generated locals */
   C_INT i__1, i__2, i__3;
   C_FLOAT64 ret_val, d__1;
@@ -85,6 +87,8 @@ C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
   static C_INT km1, im1;
   static C_FLOAT64 dni, lds;
   static C_INT ktm;
+
+  C_FLOAT64 lastValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   /*                             LAST MODIFIED 3/1/73 */
 
@@ -171,10 +175,12 @@ C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
   ktm = 1;
 
   ldfac = .01;
+
   if (illc)
     {
       ldfac = .1;
     }
+
   kt = 0;
   global_1.nl = 0;
   global_1.nf = 1;
@@ -184,34 +190,42 @@ C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
   t2 = t;
   global_1.dmin__ = small;
   h__ = *h0;
+
   if (h__ < t * 100)
     {
       h__ = t * 100;
     }
+
   global_1.ldt = h__;
   /* .....THE FIRST SET OF SEARCH DIRECTIONS V IS THE IDENTITY MATRIX.....
   */
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       i__2 = *n;
+
       for (j = 1; j <= i__2; ++j)
         {
           /* L10: */
           q_1.v[i__ + j * 100 - 101] = 0.;
         }
+
       /* L20: */
       q_1.v[i__ + i__ * 100 - 101] = 1.;
     }
+
   d__[0] = 0.;
   q_1.qd0 = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       q_1.q0[i__ - 1] = x[i__];
       /* L30: */
       q_1.q1[i__ - 1] = x[i__];
     }
+
   if (*prin > 0)
     {
       print_(n, &x[1], prin, fmin);
@@ -228,22 +242,29 @@ L40:
   value = global_1.fx;
   min_(n, &c__1, &c__2, d__, &s, &value, &c_false, f, &x[1], &t,
        machep, &h__);
+
   if (s > 0.)
     {
       goto L50;
     }
+
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L45: */
       q_1.v[i__ - 1] = -q_1.v[i__ - 1];
     }
+
 L50:
+
   if (sf > d__[0] * .9 && sf * .9 < d__[0])
     {
       goto L70;
     }
+
   i__1 = *n;
+
   for (i__ = 2; i__ <= i__1; ++i__)
     {
       /* L60: */
@@ -253,19 +274,24 @@ L50:
   /* .....THE INNER LOOP STARTS HERE..... */
 L70:
   i__1 = *n;
+
   for (k = 2; k <= i__1; ++k)
     {
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L75: */
           y[i__ - 1] = x[i__];
         }
+
       sf = global_1.fx;
+
       if (kt > 0)
         {
           illc = TRUE_;
         }
+
 L80:
       kl = k;
       df = 0.;
@@ -278,27 +304,33 @@ L80:
         {
           goto L95;
         }
+
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
-          s = (global_1.ldt * .1 + t2 * pow(10.0, (C_FLOAT64)kt)) * (pRandom->getRandomCC() - 0.5);
+          s = (global_1.ldt * .1 + t2 * pow(10.0, (C_FLOAT64)kt)) * (mpRandom->getRandomCC() - 0.5);
           z__[i__ - 1] = s;
           i__3 = *n;
+
           for (j = 1; j <= i__3; ++j)
             {
               /* L85: */
               x[j] += s * q_1.v[j + i__ * 100 - 101];
             }
+
           /* L90: */
         }
+
       global_1.fx = (*f)(&x[1], n);
       ++global_1.nf;
 
       /* .....MINIMIZE ALONG THE "NON-CONJUGATE" DIRECTIONS V(*,K),...,V(*,N
-) */
+      ) */
 
 L95:
       i__2 = *n;
+
       for (k2 = k; k2 <= i__2; ++k2)
         {
           sl = global_1.fx;
@@ -306,10 +338,12 @@ L95:
           value = global_1.fx;
           min_(n, &k2, &c__2, &d__[k2 - 1], &s, &value, &c_false, f, &
                x[1], &t, machep, &h__);
+
           if (illc)
             {
               goto L97;
             }
+
           s = sl - global_1.fx;
           goto L99;
 L97:
@@ -317,15 +351,18 @@ L97:
           d__1 = s + z__[k2 - 1];
           s = d__[k2 - 1] * (d__1 * d__1);
 L99:
+
           if (df > s)
             {
               goto L105;
             }
+
           df = s;
           kl = k2;
 L105:
-;
+          ;
         }
+
       if (illc || df >= (d__1 = *machep * 100 * global_1.fx, fabs(d__1)))
         {
           goto L110;
@@ -337,6 +374,7 @@ L105:
       illc = TRUE_;
       goto L80;
 L110:
+
       if (k == 2 && *prin > 1)
         {
           vcprnt_(&c__1, d__, n);
@@ -347,6 +385,7 @@ L110:
 
       km1 = k - 1;
       i__2 = km1;
+
       for (k2 = 1; k2 <= i__2; ++k2)
         {
           s = 0.;
@@ -355,10 +394,12 @@ L110:
                x[1], &t, machep, &h__);
           /* L120: */
         }
+
       f1 = global_1.fx;
       global_1.fx = sf;
       lds = 0.;
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           sl = x[i__];
@@ -368,7 +409,9 @@ L110:
           /* L130: */
           lds += sl * sl;
         }
+
       lds = sqrt(lds);
+
       if (lds <= small)
         {
           goto L160;
@@ -379,26 +422,33 @@ L110:
       /*     DIRECTION ALONG WHICH THE GREATEST IMPROVEMENT WAS MADE..... */
 
       klmk = kl - k;
+
       if (klmk < 1)
         {
           goto L141;
         }
+
       i__2 = klmk;
+
       for (ii = 1; ii <= i__2; ++ii)
         {
           i__ = kl - ii;
           i__3 = *n;
+
           for (j = 1; j <= i__3; ++j)
             {
               /* L135: */
               q_1.v[j + (i__ + 1) * 100 - 101] = q_1.v[j + i__ * 100 - 101];
             }
+
           /* L140: */
           d__[i__] = d__[i__ - 1];
         }
+
 L141:
       d__[k - 1] = 0.;
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L145: */
@@ -411,29 +461,37 @@ L141:
       value = f1;
       min_(n, &k, &c__4, &d__[k - 1], &lds, &value, &c_true, f, &x[1],
            &t, machep, &h__);
+
       if (lds > 0.)
         {
           goto L160;
         }
+
       lds = -lds;
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L150: */
           q_1.v[i__ + k * 100 - 101] = -q_1.v[i__ + k * 100 - 101];
         }
+
 L160:
       global_1.ldt = ldfac * global_1.ldt;
+
       if (global_1.ldt < lds)
         {
           global_1.ldt = lds;
         }
+
       if (*prin > 0)
         {
           print_(n, &x[1], prin, fmin);
         }
+
       t2 = 0.;
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L165: */
@@ -441,6 +499,7 @@ L160:
           d__1 = x[i__];
           t2 += d__1 * d__1;
         }
+
       t2 = m2 * sqrt(t2) + t;
 
       /* .....SEE WHETHER THE LENGTH OF THE STEP TAKEN SINCE STARTING THE */
@@ -450,13 +509,17 @@ L160:
         {
           kt = -1;
         }
+
       ++kt;
+
       if (kt > ktm)
         {
           goto L400;
         }
+
       /* L170: */
     }
+
   /* added manually by Pedro Mendes 11/11/1998 */
   // if(callback != 0/*NULL*/) callback(global_1.fx);
   /* .....THE INNER LOOP ENDS HERE. */
@@ -467,24 +530,31 @@ L160:
   quad_(n, f, &x[1], &t, machep, &h__);
   dn = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       d__[i__ - 1] = 1. / sqrt(d__[i__ - 1]);
+
       if (dn < d__[i__ - 1])
         {
           dn = d__[i__ - 1];
         }
+
       /* L175: */
     }
+
   if (*prin > 3)
     {
       maprnt_(&c__1, q_1.v, &idim, n);
     }
+
   i__1 = *n;
+
   for (j = 1; j <= i__1; ++j)
     {
       s = d__[j - 1] / dn;
       i__2 = *n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L180: */
@@ -498,46 +568,59 @@ L160:
     {
       goto L200;
     }
+
   s = vlarge;
   i__2 = *n;
+
   for (i__ = 1; i__ <= i__2; ++i__)
     {
       sl = 0.;
       i__1 = *n;
+
       for (j = 1; j <= i__1; ++j)
         {
           /* L182: */
           sl += q_1.v[i__ + j * 100 - 101] * q_1.v[i__ + j * 100 - 101];
         }
+
       z__[i__ - 1] = sqrt(sl);
+
       if (z__[i__ - 1] < m4)
         {
           z__[i__ - 1] = m4;
         }
+
       if (s > z__[i__ - 1])
         {
           s = z__[i__ - 1];
         }
+
       /* L185: */
     }
+
   i__2 = *n;
+
   for (i__ = 1; i__ <= i__2; ++i__)
     {
       sl = s / z__[i__ - 1];
       z__[i__ - 1] = 1. / sl;
+
       if (z__[i__ - 1] <= scbd)
         {
           goto L189;
         }
+
       sl = 1. / scbd;
       z__[i__ - 1] = scbd;
 L189:
       i__1 = *n;
+
       for (j = 1; j <= i__1; ++j)
         {
           /* L190: */
           q_1.v[i__ + j * 100 - 101] = sl * q_1.v[i__ + j * 100 - 101];
         }
+
       /* L195: */
     }
 
@@ -547,10 +630,12 @@ L189:
 
 L200:
   i__2 = *n;
+
   for (i__ = 2; i__ <= i__2; ++i__)
     {
       im1 = i__ - 1;
       i__1 = im1;
+
       for (j = 1; j <= i__1; ++j)
         {
           s = q_1.v[i__ + j * 100 - 101];
@@ -558,6 +643,7 @@ L200:
           /* L210: */
           q_1.v[j + i__ * 100 - 101] = s;
         }
+
       /* L220: */
     }
 
@@ -574,23 +660,30 @@ L200:
     {
       goto L250;
     }
+
   i__2 = *n;
+
   for (i__ = 1; i__ <= i__2; ++i__)
     {
       s = z__[i__ - 1];
       i__1 = *n;
+
       for (j = 1; j <= i__1; ++j)
         {
           /* L225: */
           q_1.v[i__ + j * 100 - 101] = s * q_1.v[i__ + j * 100 - 101];
         }
+
       /* L230: */
     }
+
   i__2 = *n;
+
   for (i__ = 1; i__ <= i__2; ++i__)
     {
       s = 0.;
       i__1 = *n;
+
       for (j = 1; j <= i__1; ++j)
         {
           /* L235: */
@@ -598,31 +691,38 @@ L200:
           d__1 = q_1.v[j + i__ * 100 - 101];
           s += d__1 * d__1;
         }
+
       s = sqrt(s);
       d__[i__ - 1] = s * d__[i__ - 1];
       s = 1 / s;
       i__1 = *n;
+
       for (j = 1; j <= i__1; ++j)
         {
           /* L240: */
           q_1.v[j + i__ * 100 - 101] = s * q_1.v[j + i__ * 100 - 101];
         }
+
       /* L245: */
     }
 
 L250:
   i__2 = *n;
+
   for (i__ = 1; i__ <= i__2; ++i__)
     {
       dni = dn * d__[i__ - 1];
+
       if (dni > large)
         {
           goto L265;
         }
+
       if (dni < small)
         {
           goto L260;
         }
+
       d__[i__ - 1] = 1 / (dni * dni);
       goto L270;
 L260:
@@ -631,48 +731,64 @@ L260:
 L265:
       d__[i__ - 1] = vsmall;
 L270:
-;
+      ;
     }
 
   /* .....SORT THE EIGENVALUES AND EIGENVECTORS..... */
 
   sort_(&idim, n, d__, q_1.v);
   global_1.dmin__ = d__[*n - 1];
+
   if (global_1.dmin__ < small)
     {
       global_1.dmin__ = small;
     }
+
   illc = FALSE_;
+
   if (m2 * d__[0] > global_1.dmin__)
     {
       illc = TRUE_;
     }
+
   if (*prin > 1 && scbd > 1.)
     {
       vcprnt_(&c__2, z__, n);
     }
+
   if (*prin > 1)
     {
       vcprnt_(&c__3, d__, n);
     }
+
   if (*prin > 3)
     {
       maprnt_(&c__2, q_1.v, &idim, n);
     }
+
   /* .....THE MAIN LOOP ENDS HERE..... */
 
   /* added manually by Pedro Mendes 29/1/1998 */
   /* if(callback != 0) callback(global_1.fx);*/
 
-  goto L40;
+  // We need a stopping condition for 1 dimensional problems.
+  // We compare the values between the last and current steps.
+  if (*n > 1 ||
+      global_1.fx < lastValue)
+    {
+      lastValue = global_1.fx;
+      goto L40;
+    }
 
   /* .....RETURN..... */
 
 L400:
+
   if (*prin > 0)
     {
       vcprnt_(&c__4, &x[1], n);
     }
+
   ret_val = global_1.fx;
   return ret_val;
 } /* praxis_ */
@@ -709,16 +825,19 @@ L400:
     {
       goto L200;
     }
+
   eps = *machep;
   g = 0.;
   x = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       e[i__ - 1] = g;
       s = 0.;
       l = i__ + 1;
       i__2 = *n;
+
       for (j = i__; j <= i__2; ++j)
         {
           /* L1: */
@@ -726,213 +845,272 @@ L400:
           d__1 = ab[j + i__ * ab_dim1];
           s += d__1 * d__1;
         }
+
       g = 0.;
+
       if (s < *tol)
         {
           goto L4;
         }
+
       f = ab[i__ + i__ * ab_dim1];
       g = sqrt(s);
+
       if (f >= 0.)
         {
           g = -g;
         }
+
       h__ = f * g - s;
       ab[i__ + i__ * ab_dim1] = f - g;
+
       if (l > *n)
         {
           goto L4;
         }
+
       i__2 = *n;
+
       for (j = l; j <= i__2; ++j)
         {
           f = 0.;
           i__3 = *n;
+
           for (k = i__; k <= i__3; ++k)
             {
               /* L2: */
               f += ab[k + i__ * ab_dim1] * ab[k + j * ab_dim1];
             }
+
           f /= h__;
           i__3 = *n;
+
           for (k = i__; k <= i__3; ++k)
             {
               /* L3: */
               ab[k + j * ab_dim1] += f * ab[k + i__ * ab_dim1];
             }
         }
+
 L4:
       q[i__] = g;
       s = 0.;
+
       if (i__ == *n)
         {
           goto L6;
         }
+
       i__3 = *n;
+
       for (j = l; j <= i__3; ++j)
         {
           /* L5: */
           s += ab[i__ + j * ab_dim1] * ab[i__ + j * ab_dim1];
         }
+
 L6:
       g = 0.;
+
       if (s < *tol)
         {
           goto L10;
         }
+
       if (i__ == *n)
         {
           goto L16;
         }
+
       f = ab[i__ + (i__ + 1) * ab_dim1];
 L16:
       g = sqrt(s);
+
       if (f >= 0.)
         {
           g = -g;
         }
+
       h__ = f * g - s;
+
       if (i__ == *n)
         {
           goto L10;
         }
+
       ab[i__ + (i__ + 1) * ab_dim1] = f - g;
       i__3 = *n;
+
       for (j = l; j <= i__3; ++j)
         {
           /* L7: */
           e[j - 1] = ab[i__ + j * ab_dim1] / h__;
         }
+
       i__3 = *n;
+
       for (j = l; j <= i__3; ++j)
         {
           s = 0.;
           i__2 = *n;
+
           for (k = l; k <= i__2; ++k)
             {
               /* L8: */
               s += ab[j + k * ab_dim1] * ab[i__ + k * ab_dim1];
             }
+
           i__2 = *n;
+
           for (k = l; k <= i__2; ++k)
             {
               /* L9: */
               ab[j + k * ab_dim1] += s * e[k - 1];
             }
         }
+
 L10:
       y = (d__1 = q[i__], fabs(d__1)) + (d__2 = e[i__ - 1], fabs(d__2));
+
       /* L11: */
       if (y > x)
         {
           x = y;
         }
     }
+
   /* ...ACCUMULATION OF RIGHT-HAND TRANSFORMATIONS... */
   ab[*n + *n * ab_dim1] = 1.;
   g = e[*n - 1];
   l = *n;
   i__1 = *n;
+
   for (ii = 2; ii <= i__1; ++ii)
     {
       i__ = *n - ii + 1;
+
       if (g == 0.)
         {
           goto L23;
         }
+
       h__ = ab[i__ + (i__ + 1) * ab_dim1] * g;
       i__2 = *n;
+
       for (j = l; j <= i__2; ++j)
         {
           /* L20: */
           ab[j + i__ * ab_dim1] = ab[i__ + j * ab_dim1] / h__;
         }
+
       i__2 = *n;
+
       for (j = l; j <= i__2; ++j)
         {
           s = 0.;
           i__3 = *n;
+
           for (k = l; k <= i__3; ++k)
             {
               /* L21: */
               s += ab[i__ + k * ab_dim1] * ab[k + j * ab_dim1];
             }
+
           i__3 = *n;
+
           for (k = l; k <= i__3; ++k)
             {
               /* L22: */
               ab[k + j * ab_dim1] += s * ab[k + i__ * ab_dim1];
             }
         }
+
 L23:
       i__3 = *n;
+
       for (j = l; j <= i__3; ++j)
         {
           ab[i__ + j * ab_dim1] = 0.;
           /* L24: */
           ab[j + i__ * ab_dim1] = 0.;
         }
+
       ab[i__ + i__ * ab_dim1] = 1.;
       g = e[i__ - 1];
       /* L25: */
       l = i__;
     }
+
   /* ...DIAGONALIZATION OF THE BIDIAGONAL FORM... */
   /* L100: */
   eps *= x;
   i__1 = *n;
+
   for (kk = 1; kk <= i__1; ++kk)
     {
       k = *n - kk + 1;
       kt = 0;
 L101:
       ++kt;
+
       if (kt <= 30)
         {
           goto L102;
         }
+
       e[k - 1] = 0.;
       printf("QR FAILED\n");
 L102:
       i__3 = k;
+
       for (ll2 = 1; ll2 <= i__3; ++ll2)
         {
           l2 = k - ll2 + 1;
           l = l2;
+
           if ((d__1 = e[l - 1], fabs(d__1)) <= eps)
             {
               goto L120;
             }
+
           if (l == 1)
             {
               goto L103;
             }
+
           if ((d__1 = q[l - 1], fabs(d__1)) <= eps)
             {
               goto L110;
             }
+
 L103:
-;
+          ;
         }
+
       /* ...CANCELLATION OF E(L) IF L>1... */
 L110:
       c__ = 0.;
       s = 1.;
       i__3 = k;
+
       for (i__ = l; i__ <= i__3; ++i__)
         {
           f = s * e[i__ - 1];
           e[i__ - 1] = c__ * e[i__ - 1];
+
           if (fabs(f) <= eps)
             {
               goto L120;
             }
+
           g = q[i__];
+
           /* ...Q(I) = H = DSQRT(G*G + F*F)... */
           if (fabs(f) < fabs(g))
             {
               goto L113;
             }
+
           if (f != 0.)
             {
               goto L112;
@@ -941,6 +1119,7 @@ L110:
             {
               goto L111;
             }
+
 L111:
           h__ = 0.;
           goto L114;
@@ -955,10 +1134,12 @@ L113:
           h__ = fabs(g) * sqrt(d__1 * d__1 + 1);
 L114:
           q[i__] = h__;
+
           if (h__ != 0.)
             {
               goto L115;
             }
+
           g = 1.;
           h__ = 1.;
 L115:
@@ -966,13 +1147,16 @@ L115:
           /* L116: */
           s = -f / h__;
         }
+
       /* ...TEST FOR CONVERGENCE... */
 L120:
       z__ = q[k];
+
       if (l == k)
         {
           goto L140;
         }
+
       /* ...SHIFT FROM BOTTOM 2*2 MINOR... */
       x = q[l];
       y = q[k - 1];
@@ -981,30 +1165,37 @@ L120:
       f = ((y - z__) * (y + z__) + (g - h__) * (g + h__)) / (h__ * 2 * y);
       g = sqrt(f * f + 1.);
       temp = f - g;
+
       if (f >= 0.)
         {
           temp = f + g;
         }
+
       f = ((x - z__) * (x + z__) + h__ * (y / temp - h__)) / x;
       /* ...NEXT QR TRANSFORMATION... */
       c__ = 1.;
       s = 1.;
       lp1 = l + 1;
+
       if (lp1 > k)
         {
           goto L133;
         }
+
       i__3 = k;
+
       for (i__ = lp1; i__ <= i__3; ++i__)
         {
           g = e[i__ - 1];
           y = q[i__];
           h__ = s * g;
           g *= c__;
+
           if (fabs(f) < fabs(h__))
             {
               goto L123;
             }
+
           if (f != 0.)
             {
               goto L122;
@@ -1013,6 +1204,7 @@ L120:
             {
               goto L121;
             }
+
 L121:
           z__ = 0.;
           goto L124;
@@ -1027,10 +1219,12 @@ L123:
           z__ = fabs(h__) * sqrt(d__1 * d__1 + 1);
 L124:
           e[i__ - 2] = z__;
+
           if (z__ != 0.)
             {
               goto L125;
             }
+
           f = 1.;
           z__ = 1.;
 L125:
@@ -1041,6 +1235,7 @@ L125:
           h__ = y * s;
           y *= c__;
           i__2 = *n;
+
           for (j = 1; j <= i__2; ++j)
             {
               x = ab[j + (i__ - 1) * ab_dim1];
@@ -1049,10 +1244,12 @@ L125:
               /* L126: */
               ab[j + i__ * ab_dim1] = -x * s + z__ * c__;
             }
+
           if (fabs(f) < fabs(h__))
             {
               goto L129;
             }
+
           if (f != 0.)
             {
               goto L128;
@@ -1061,6 +1258,7 @@ L125:
             {
               goto L127;
             }
+
 L127:
           z__ = 0.;
           goto L130;
@@ -1075,10 +1273,12 @@ L129:
           z__ = fabs(h__) * sqrt(d__1 * d__1 + 1);
 L130:
           q[i__ - 1] = z__;
+
           if (z__ != 0.)
             {
               goto L131;
             }
+
           f = 1.;
           z__ = 1.;
 L131:
@@ -1088,6 +1288,7 @@ L131:
           /* L132: */
           x = -s * g + c__ * y;
         }
+
 L133:
       e[l - 1] = 0.;
       e[k - 1] = f;
@@ -1095,20 +1296,25 @@ L133:
       goto L101;
       /* ...CONVERGENCE:  Q(K) IS MADE NON-NEGATIVE... */
 L140:
+
       if (z__ >= 0.)
         {
           goto L150;
         }
+
       q[k] = -z__;
       i__3 = *n;
+
       for (j = 1; j <= i__3; ++j)
         {
           /* L141: */
           ab[j + k * ab_dim1] = -ab[j + k * ab_dim1];
         }
+
 L150:
-;
+      ;
     }
+
   return 0;
 L200:
   q[1] = ab[ab_dim1 + 1];
@@ -1161,6 +1367,7 @@ L200:
   /* ...FIND THE STEP SIZE... */
   s = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L1: */
@@ -1168,65 +1375,84 @@ L200:
       d__1 = x[i__];
       s += d__1 * d__1;
     }
+
   s = sqrt(s);
   temp = *d2;
+
   if (dz)
     {
       temp = global_1.dmin__;
     }
+
   t2 = m4 * sqrt(fabs(global_1.fx) / temp + s * global_1.ldt) + m2 *
        global_1.ldt;
   s = m4 * s + *t;
+
   if (dz && t2 > s)
     {
       t2 = s;
     }
+
   t2 = dmax(t2, small);
   /* Computing MIN */
   d__1 = t2, d__2 = *h__ * .01;
   t2 = dmin(d__1, d__2);
-  if (! (*fk) || *f1 > fm)
+
+  if (!(*fk) || *f1 > fm)
     {
       goto L2;
     }
+
   xm = *x1;
   fm = *f1;
 L2:
+
   if (*fk && fabs(*x1) >= t2)
     {
       goto L3;
     }
+
   temp = 1.;
+
   if (*x1 < 0.)
     {
       temp = -1.;
     }
+
   *x1 = temp * t2;
   *f1 = flin_(n, j, x1, f, &x[1], &global_1.nf);
 L3:
+
   if (*f1 > fm)
     {
       goto L4;
     }
+
   xm = *x1;
   fm = *f1;
 L4:
+
   if (! dz)
     {
       goto L6;
     }
+
   /* ...EVALUATE FLIN AT ANOTHER POINT AND ESTIMATE THE SECOND DERIVATIVE...
    */
   x2 = -(*x1);
+
   if (f0 >= *f1)
     {
       x2 = *x1 * 2.;
     }
+
   f2 = flin_(n, j, &x2, f, &x[1], &global_1.nf);
+
   if (f2 > fm)
     {
       goto L5;
     }
+
   xm = x2;
   fm = f2;
 L5:
@@ -1235,24 +1461,30 @@ L5:
 L6:
   d1 = (*f1 - f0) / *x1 - *x1 * *d2;
   dz = TRUE_;
+
   /* ...PREDICT THE MINIMUM... */
   if (*d2 > small)
     {
       goto L7;
     }
+
   x2 = *h__;
+
   if (d1 >= 0.)
     {
       x2 = -x2;
     }
+
   goto L8;
 L7:
   x2 = d1 * -.5 / *d2;
 L8:
+
   if (fabs(x2) <= *h__)
     {
       goto L11;
     }
+
   if (x2 <= 0.)
     {
       goto L9;
@@ -1261,6 +1493,7 @@ L8:
     {
       goto L10;
     }
+
 L9:
   x2 = -(*h__);
   goto L11;
@@ -1269,67 +1502,85 @@ L10:
   /* ...EVALUATE F AT THE PREDICTED MINIMUM... */
 L11:
   f2 = flin_(n, j, &x2, f, &x[1], &global_1.nf);
+
   if (k >= *nits || f2 <= f0)
     {
       goto L12;
     }
+
   /* ...NO SUCCESS, SO TRY AGAIN... */
   ++k;
+
   if (f0 < *f1 && *x1 * x2 > 0.)
     {
       goto L4;
     }
+
   x2 *= .5;
   goto L11;
   /* ...INCREMENT THE ONE-DIMENSIONAL SEARCH COUNTER... */
 L12:
   ++global_1.nl;
+
   if (f2 <= fm)
     {
       goto L13;
     }
+
   x2 = xm;
   goto L14;
 L13:
   fm = f2;
   /* ...GET A NEW ESTIMATE OF THE SECOND DERIVATIVE... */
 L14:
+
   if ((d__1 = x2 * (x2 - *x1), fabs(d__1)) <= small)
     {
       goto L15;
     }
+
   *d2 = (x2 * (*f1 - f0) - *x1 * (fm - f0)) / (*x1 * x2 * (*x1 - x2));
   goto L16;
 L15:
+
   if (k > 0)
     {
       *d2 = 0.;
     }
+
 L16:
+
   if (*d2 <= small)
     {
       *d2 = small;
     }
+
   *x1 = x2;
   global_1.fx = fm;
+
   if (sf1 >= global_1.fx)
     {
       goto L17;
     }
+
   global_1.fx = sf1;
   *x1 = sx1;
   /* ...UPDATE X FOR LINEAR BUT NOT PARABOLIC SEARCH... */
 L17:
+
   if (*j == 0)
     {
       return 0;
     }
+
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L18: */
       x[i__] += *x1 * q_1.v[i__ + *j * 100 - 101];
     }
+
   return 0;
 } /* min_ */
 
@@ -1354,13 +1605,16 @@ C_FLOAT64 CPraxis::flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64
     {
       goto L2;
     }
+
   /* ...THE SEARCH IS LINEAR... */
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L1: */
       t[i__ - 1] = x[i__] + *l * q_1.v[i__ + *j * 100 - 101];
     }
+
   goto L4;
   /* ...THE SEARCH IS ALONG A PARABOLIC SPACE CURVE... */
 L2:
@@ -1368,12 +1622,14 @@ L2:
   q_1.qb = (*l + q_1.qd0) * (q_1.qd1 - *l) / (q_1.qd0 * q_1.qd1);
   q_1.qc = *l * (*l + q_1.qd0) / (q_1.qd1 * (q_1.qd0 + q_1.qd1));
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L3: */
       t[i__ -1] = q_1.qa * q_1.q0[i__ - 1] + q_1.qb * x[i__] + q_1.qc *
                   q_1.q1[i__ - 1];
     }
+
   /* ...THE FUNCTION EVALUATION COUNTER NF IS INCREMENTED... */
 L4:
   ++(*nf);
@@ -1406,32 +1662,39 @@ L4:
     {
       return 0;
     }
+
   nm1 = *n - 1;
   i__1 = nm1;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       k = i__;
       s = d__[i__];
       ip1 = i__ + 1;
       i__2 = *n;
+
       for (j = ip1; j <= i__2; ++j)
         {
           if (d__[j] <= s)
             {
               goto L1;
             }
+
           k = j;
           s = d__[j];
 L1:
-;
+          ;
         }
+
       if (k <= i__)
         {
           goto L3;
         }
+
       d__[k] = d__[i__];
       d__[i__] = s;
       i__2 = *n;
+
       for (j = 1; j <= i__2; ++j)
         {
           s = v[j + i__ * v_dim1];
@@ -1439,9 +1702,11 @@ L1:
           /* L2: */
           v[j + k * v_dim1] = s;
         }
+
 L3:
-;
+      ;
     }
+
   return 0;
 } /* sort_ */
 
@@ -1466,6 +1731,7 @@ L3:
   q_1.qf1 = s;
   q_1.qd1 = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       s = x[i__];
@@ -1477,13 +1743,16 @@ L3:
       d__1 = s - l;
       q_1.qd1 += d__1 * d__1;
     }
+
   q_1.qd1 = sqrt(q_1.qd1);
   l = q_1.qd1;
   s = 0.;
+
   if (q_1.qd0 <= 0. || q_1.qd1 <= 0. || global_1.nl < *n * 3 * *n)
     {
       goto L2;
     }
+
   value = q_1.qf1;
   min_(n, &c__0, &c__2, &s, &l, &value, &c_true, f, &x[1], t, machep,
        h__);
@@ -1499,6 +1768,7 @@ L2:
 L3:
   q_1.qd0 = q_1.qd1;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       s = q_1.q0[i__ - 1];
@@ -1506,6 +1776,7 @@ L3:
       /* L4: */
       x[i__] = q_1.qa * s + q_1.qb * x[i__] + q_1.qc * q_1.q1[i__ - 1];
     }
+
   return 0;
 } /* quad_ */
 
@@ -1523,42 +1794,51 @@ L3:
   /* Function Body */
   switch ((int)*option)
     {
-    case 1: goto L1;
-    case 2: goto L2;
-    case 3: goto L3;
-    case 4: goto L4;
+      case 1: goto L1;
+      case 2: goto L2;
+      case 3: goto L3;
+      case 4: goto L4;
     }
+
 L1:
   printf("THE SECOND DIFFERENCE ARRAY D[*] IS :\n");
   i__1 = *n;
+
   for (i = 1; i <= i__1; ++i)
     {
       printf("%g\n", v[i]);
     }
+
   return 0;
 L2:
   printf("THE SCALE FACTORS ARE:\n");
   i__1 = *n;
+
   for (i = 1; i <= i__1; ++i)
     {
       printf("%g\n", v[i]);
     }
+
   return 0;
 L3:
   printf("THE APPROXIMATING QUADRATIC FORM HAS THE PRINCEPAL VALUES:\n");
   i__1 = *n;
+
   for (i = 1; i <= i__1; ++i)
     {
       printf("%g\n", v[i]);
     }
+
   return 0;
 L4:
   printf("x is:\n");
   i__1 = *n;
+
   for (i = 1; i <= i__1; ++i)
     {
       printf("%g\n", v[i]);
     }
+
   return 0;
 } /* vcprnt_ */
 
@@ -1585,10 +1865,12 @@ L4:
   printf("%d TIMES.\n", global_1.nf);
   printf("THE SMALLEST VALUE FOUND IS F(X) = ");
   printf("%g\n", global_1.fx);
+
   if (global_1.fx <= *fmin)
     {
       goto L1;
     }
+
   d__1 = global_1.fx - *fmin;
   //   ln = d_lg10(&d__1);
   printf("log (f(x)) - ");
@@ -1601,16 +1883,20 @@ L1:
   printf("%g", *fmin);
   printf(" IS UNDERFINED\n");
 L2:
+
   if (*n > 4 && *prin <= 2)
     {
       return 0;
     }
+
   i__1 = *n;
+
   for (i = 1; i <= i__1; ++i)
     {
       printf("x is:");
       printf("%g\n", x[i]);
     }
+
   return 0;
 } /* print_ */
 
@@ -1634,38 +1920,48 @@ L2:
   /* Function Body */
   low = 1;
   upp = 5;
+
   switch ((int)*option)
     {
-    case 1: goto L1;
-    case 2: goto L2;
+      case 1: goto L1;
+      case 2: goto L2;
     }
+
 L1:
   printf("HE NEW DIRECTIONS ARE:\n");
   goto L3;
 L2:
   printf("AND THE PRINCIPAL AXES:\n");
 L3:
+
   if (*n < upp)
     {
       upp = *n;
     }
+
   i__1 = *n;
+
   for (i = 1; i <= i__1; ++i)
     {
       /* L4: */
       printf("%3d", i);
       i__2 = upp;
+
       for (j = low; j <= i__2; ++j)
         {
           printf("  %12g", v[i*v_dim1 + j]);
         }
+
       printf("\n");
     }
+
   low += 5;
+
   if (*n < low)
     {
       return 0;
     }
+
   upp += 5;
   goto L3;
 } /* maprnt_ */
