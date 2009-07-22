@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Date: 2009/07/22 15:03:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -167,6 +167,15 @@ bool COptMethodLevenbergMarquardt::optimise()
           // SUBROUTINE DSYTRS(UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
           // dsytrs_("L", &dim, &one, mHessianLM.array(), &dim, Pivot.array(), mStep.array(),
           //         &dim, &info);
+        }
+      else
+        {
+          // We are in a concave region. Thus the current step is an over estimation.
+          // We reduce it by dividing by lambda
+          for (i = 0; i < mVariableSize; i++)
+            {
+              mStep[i] /= LM_lambda;
+            }
         }
 
       // Force the parameters to stay within the defined boundaries.
