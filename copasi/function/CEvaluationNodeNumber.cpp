@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/07/17 14:33:12 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
+#include "utilities/utility.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -31,7 +32,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type)(CEvaluationNode::NUMBER | subType), data)
 {
-  char * end;
+  const char * end;
   const char * str = mData.c_str();
 
   switch (subType)
@@ -40,7 +41,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
       case INTEGER:
       case ENOTATION:
       {
-        //mValue = strtod(str, NULL);
+        //mValue = strToDouble(str, NULL);
         std::istringstream in;
         in.imbue(std::locale::classic());
         in.str(str);
@@ -50,9 +51,9 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
 
       case RATIONALE:
         str++; // Skip the '('
-        mValue = strtod(str, &end);
+        mValue = strToDouble(str, &end);
         end++; // Skip the '/'
-        mValue /= strtod(end, NULL);
+        mValue /= strToDouble(end, NULL);
         break;
 
       case INVALID:
@@ -205,7 +206,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
   ASTNode* node = new ASTNode();
   double num1;
   double num2;
-  char* end;
+  const char * end;
   const char * str = mData.c_str();
 
   switch (subType)
@@ -227,9 +228,9 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
       case RATIONALE:
         node->setType(AST_RATIONAL);
         str++; // Skip the '('
-        num1 = strtod(str, &end);
+        num1 = strToDouble(str, &end);
         end++; // Skip the '/'
-        num2 = strtod(end, NULL);
+        num2 = strToDouble(end, NULL);
         node->setValue((long)num1, (long)num2);
         break;
       case INVALID:

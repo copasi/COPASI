@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.30 $
+$Revision: 1.31 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/01/07 19:38:35 $
+$Date: 2009/07/23 19:53:47 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,10 @@ End CVS Header */
 #include <stdio.h>
 #include <time.h>
 
-#include <string.h>
+#include <string>
 #include <stdlib.h>
+
+#include <sstream>
 
 #ifdef WIN32
 # include <windows.h>
@@ -84,10 +86,11 @@ bool isNumber(const std::string & str)
 {
   if (str.find_first_of("+-.0123456789")) return false;
 
-  char * Tail;
-  strtod(str.c_str(), & Tail);
+  const char * Tail;
+  strToDouble(str.c_str(), & Tail);
 
   if (*Tail) return false;
+
   return true;
 }
 
@@ -178,63 +181,120 @@ std::string quote(const std::string & name,
 void FixSName(const std::string &original, std::string &fixed)
 {
   int i, len;
+
   // check reserved names
   if (original == "abs") {fixed = "_abs"; return;}
+
   if (original == "acos") {fixed = "_acos"; return;}
+
   if (original == "and") {fixed = "_and"; return;}
+
   if (original == "asin") {fixed = "_asin"; return;}
+
   if (original == "atan") {fixed = "_atan"; return;}
+
   if (original == "ceil") {fixed = "_ceil"; return;}
+
   if (original == "cos") {fixed = "_cos"; return;}
+
   if (original == "exp") {fixed = "_exp"; return;}
+
   if (original == "floor") {fixed = "_floor"; return;}
+
   if (original == "hilli") {fixed = "_hilli"; return;}
+
   if (original == "hillmmr") {fixed = "_hillmmr"; return;}
+
   if (original == "hillmr") {fixed = "_hillmr"; return;}
+
   if (original == "hillr") {fixed = "_hillr"; return;}
+
   if (original == "isouur") {fixed = "_isouur"; return;}
+
   if (original == "log") {fixed = "_log"; return;}
+
   if (original == "log10") {fixed = "_log10"; return;}
+
   if (original == "massi") {fixed = "_massi"; return;}
+
   if (original == "massr") {fixed = "_massr"; return;}
+
   if (original == "not") {fixed = "_not"; return;}
+
   if (original == "or") {fixed = "_or"; return;}
+
   if (original == "ordbbr") {fixed = "_ordbbr"; return;}
+
   if (original == "ordbur") {fixed = "_ordbur"; return;}
+
   if (original == "ordubr") {fixed = "_ordubr"; return;}
+
   if (original == "pow") {fixed = "_pow"; return;}
+
   if (original == "ppbr") {fixed = "_ppbr"; return;}
+
   if (original == "sin") {fixed = "_sin"; return;}
+
   if (original == "sqr") {fixed = "_sqr"; return;}
+
   if (original == "sqrt") {fixed = "_sqrt"; return;}
+
   if (original == "substance") {fixed = "_substance"; return;}
+
   if (original == "time") {fixed = "_time"; return;}
+
   if (original == "tan") {fixed = "_tan"; return;}
+
   if (original == "umai") {fixed = "_umai"; return;}
+
   if (original == "umar") {fixed = "_umar"; return;}
+
   if (original == "uai") {fixed = "_uai"; return;}
+
   if (original == "ualii") {fixed = "_ualii"; return;}
+
   if (original == "uar") {fixed = "_uar"; return;}
+
   if (original == "ucii") {fixed = "_ucii"; return;}
+
   if (original == "ucir") {fixed = "_ucir"; return;}
+
   if (original == "ucti") {fixed = "_ucti"; return;}
+
   if (original == "uctr") {fixed = "_uctr"; return;}
+
   if (original == "uhmi") {fixed = "_uhmi"; return;}
+
   if (original == "uhmr") {fixed = "_uhmr"; return;}
+
   if (original == "umi") {fixed = "_umi"; return;}
+
   if (original == "unii") {fixed = "_unii"; return;}
+
   if (original == "unir") {fixed = "_unir"; return;}
+
   if (original == "uuhr") {fixed = "_uuhr"; return;}
+
   if (original == "umr") {fixed = "_umr"; return;}
+
   if (original == "usii") {fixed = "_usii"; return;}
+
   if (original == "usir") {fixed = "_usir"; return;}
+
   if (original == "uuci") {fixed = "_uuci"; return;}
+
   if (original == "uucr") {fixed = "_uucr"; return;}
+
   if (original == "uui") {fixed = "_uui"; return;}
+
   if (original == "uur") {fixed = "_uur"; return;}
+
   if (original == "volume") {fixed = "_volume"; return;}
+
   if (original == "xor") {fixed = "_xor"; return;}
+
   len = original.length();
+
   // check rule for initial characters
   // if first not a letter...
   if (((original[0] < 'A') || (original[0] > 'z')) && (original[0] != '_'))
@@ -242,10 +302,11 @@ void FixSName(const std::string &original, std::string &fixed)
       if ((original[0] >= '0') && (original[0] <= '9'))
         fixed = "_" + original;
       else
-      {fixed = original; fixed [0] = '_';}
+        {fixed = original; fixed [0] = '_';}
     }
   else
     fixed = original;
+
   len = fixed.length();
 
   for (i = 1; i < len; i++)
@@ -264,316 +325,319 @@ void FixXHTML(const std::string &original, std::string &fixed)
   // find the next illegal character
   Str = original;
   fixed.erase();
+
   for (i = 0; i != -1;)
     {
       p = Str.find_first_of("&><\"¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
       fixed += Str.substr(0, p)
-;
+               ;
       len = Str.length();
       i = Str.find_first_of("&><\"¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
+
       if (i != -1)
         {
           switch (Str[i])
             {
-            case '&':
-              fixed += "&amp; ";
-              break;
-            case '>':
-              fixed += "&gt; ";
-              break;
-            case '<':
-              fixed += "&lt; ";
-              break;
-            case '"':
-              fixed += "&quot; ";
-              break;
-            case '¡':
-              fixed += "&#161; ";
-              break;
-            case '¢':
-              fixed += "&#162; ";
-              break;
-            case '£':
-              fixed += "&#163; ";
-              break;
-            case '¤':
-              fixed += "&#164; ";
-              break;
-            case '¥':
-              fixed += "&#165; ";
-              break;
-            case '¦':
-              fixed += "&#166; ";
-              break;
-            case '§':
-              fixed += "&#167; ";
-              break;
-            case '¨':
-              fixed += "&#168; ";
-              break;
-            case '©':
-              fixed += "&#169; ";
-              break;
-            case 'ª':
-              fixed += "&#170; ";
-              break;
-            case '«':
-              fixed += "&#171; ";
-              break;
-            case '¬':
-              fixed += "&#172; ";
-              break;
-            case '­':
-              fixed += "&#173; ";
-              break;
-            case '®':
-              fixed += "&#174; ";
-              break;
-            case '¯':
-              fixed += "&#175; ";
-              break;
-            case '°':
-              fixed += "&#176; ";
-              break;
-            case '±':
-              fixed += "&#177; ";
-              break;
-            case '²':
-              fixed += "&#178; ";
-              break;
-            case '³':
-              fixed += "&#179; ";
-              break;
-            case '´':
-              fixed += "&#180; ";
-              break;
-            case 'µ':
-              fixed += "&#181; ";
-              break;
-            case '¶':
-              fixed += "&#182; ";
-              break;
-            case '·':
-              fixed += "&#183; ";
-              break;
-            case '¸':
-              fixed += "&#184; ";
-              break;
-            case '¹':
-              fixed += "&#185; ";
-              break;
-            case 'º':
-              fixed += "&#186; ";
-              break;
-            case '»':
-              fixed += "&#187; ";
-              break;
-            case '¼':
-              fixed += "&#188; ";
-              break;
-            case '½':
-              fixed += "&#189; ";
-              break;
-            case '¾':
-              fixed += "&#190; ";
-              break;
-            case '¿':
-              fixed += "&#191; ";
-              break;
-            case 'À':
-              fixed += "&#192; ";
-              break;
-            case 'Á':
-              fixed += "&#193; ";
-              break;
-            case 'Â':
-              fixed += "&#194; ";
-              break;
-            case 'Ã':
-              fixed += "&#195; ";
-              break;
-            case 'Ä':
-              fixed += "&#196; ";
-              break;
-            case 'Å':
-              fixed += "&#197; ";
-              break;
-            case 'Æ':
-              fixed += "&#198; ";
-              break;
-            case 'Ç':
-              fixed += "&#199; ";
-              break;
-            case 'È':
-              fixed += "&#200; ";
-              break;
-            case 'É':
-              fixed += "&#201; ";
-              break;
-            case 'Ê':
-              fixed += "&#202; ";
-              break;
-            case 'Ë':
-              fixed += "&#203; ";
-              break;
-            case 'Ì':
-              fixed += "&#204; ";
-              break;
-            case 'Í':
-              fixed += "&#205; ";
-              break;
-            case 'Î':
-              fixed += "&#206; ";
-              break;
-            case 'Ï':
-              fixed += "&#207; ";
-              break;
-            case 'Ð':
-              fixed += "&#208; ";
-              break;
-            case 'Ñ':
-              fixed += "&#209; ";
-              break;
-            case 'Ò':
-              fixed += "&#210; ";
-              break;
-            case 'Ó':
-              fixed += "&#211; ";
-              break;
-            case 'Ô':
-              fixed += "&#212; ";
-              break;
-            case 'Õ':
-              fixed += "&#213; ";
-              break;
-            case 'Ö':
-              fixed += "&#214; ";
-              break;
-            case '×':
-              fixed += "&#215; ";
-              break;
-            case 'Ø':
-              fixed += "&#216; ";
-              break;
-            case 'Ù':
-              fixed += "&#217; ";
-              break;
-            case 'Ú':
-              fixed += "&#218; ";
-              break;
-            case 'Û':
-              fixed += "&#219; ";
-              break;
-            case 'Ü':
-              fixed += "&#220; ";
-              break;
-            case 'Ý':
-              fixed += "&#221; ";
-              break;
-            case 'Þ':
-              fixed += "&#222; ";
-              break;
-            case 'ß':
-              fixed += "&#223; ";
-              break;
-            case 'à':
-              fixed += "&#224; ";
-              break;
-            case 'á':
-              fixed += "&#225; ";
-              break;
-            case 'â':
-              fixed += "&#226; ";
-              break;
-            case 'ã':
-              fixed += "&#227; ";
-              break;
-            case 'ä':
-              fixed += "&#228; ";
-              break;
-            case 'å':
-              fixed += "&#229; ";
-              break;
-            case 'æ':
-              fixed += "&#230; ";
-              break;
-            case 'ç':
-              fixed += "&#231; ";
-              break;
-            case 'è':
-              fixed += "&#232; ";
-              break;
-            case 'é':
-              fixed += "&#233; ";
-              break;
-            case 'ê':
-              fixed += "&#234; ";
-              break;
-            case 'ë':
-              fixed += "&#235; ";
-              break;
-            case 'ì':
-              fixed += "&#236; ";
-              break;
-            case 'í':
-              fixed += "&#237; ";
-              break;
-            case 'î':
-              fixed += "&#238; ";
-              break;
-            case 'ï':
-              fixed += "&#239; ";
-              break;
-            case 'ð':
-              fixed += "&#240; ";
-              break;
-            case 'ñ':
-              fixed += "&#241; ";
-              break;
-            case 'ò':
-              fixed += "&#242; ";
-              break;
-            case 'ó':
-              fixed += "&#243; ";
-              break;
-            case 'ô':
-              fixed += "&#244; ";
-              break;
-            case 'õ':
-              fixed += "&#245; ";
-              break;
-            case 'ö':
-              fixed += "&#246; ";
-              break;
-            case '÷':
-              fixed += "&#247; ";
-              break;
-            case 'ø':
-              fixed += "&#248; ";
-              break;
-            case 'ù':
-              fixed += "&#249; ";
-              break;
-            case 'ú':
-              fixed += "&#250; ";
-              break;
-            case 'û':
-              fixed += "&#251; ";
-              break;
-            case 'ü':
-              fixed += "&#252; ";
-              break;
-            case 'ý':
-              fixed += "&#253; ";
-              break;
-            case 'þ':
-              fixed += "&#254; ";
-              break;
-            case 'ÿ':
-              fixed += "&#255; ";
-              break;
+              case '&':
+                fixed += "&amp; ";
+                break;
+              case '>':
+                fixed += "&gt; ";
+                break;
+              case '<':
+                fixed += "&lt; ";
+                break;
+              case '"':
+                fixed += "&quot; ";
+                break;
+              case '¡':
+                fixed += "&#161; ";
+                break;
+              case '¢':
+                fixed += "&#162; ";
+                break;
+              case '£':
+                fixed += "&#163; ";
+                break;
+              case '¤':
+                fixed += "&#164; ";
+                break;
+              case '¥':
+                fixed += "&#165; ";
+                break;
+              case '¦':
+                fixed += "&#166; ";
+                break;
+              case '§':
+                fixed += "&#167; ";
+                break;
+              case '¨':
+                fixed += "&#168; ";
+                break;
+              case '©':
+                fixed += "&#169; ";
+                break;
+              case 'ª':
+                fixed += "&#170; ";
+                break;
+              case '«':
+                fixed += "&#171; ";
+                break;
+              case '¬':
+                fixed += "&#172; ";
+                break;
+              case '­':
+                fixed += "&#173; ";
+                break;
+              case '®':
+                fixed += "&#174; ";
+                break;
+              case '¯':
+                fixed += "&#175; ";
+                break;
+              case '°':
+                fixed += "&#176; ";
+                break;
+              case '±':
+                fixed += "&#177; ";
+                break;
+              case '²':
+                fixed += "&#178; ";
+                break;
+              case '³':
+                fixed += "&#179; ";
+                break;
+              case '´':
+                fixed += "&#180; ";
+                break;
+              case 'µ':
+                fixed += "&#181; ";
+                break;
+              case '¶':
+                fixed += "&#182; ";
+                break;
+              case '·':
+                fixed += "&#183; ";
+                break;
+              case '¸':
+                fixed += "&#184; ";
+                break;
+              case '¹':
+                fixed += "&#185; ";
+                break;
+              case 'º':
+                fixed += "&#186; ";
+                break;
+              case '»':
+                fixed += "&#187; ";
+                break;
+              case '¼':
+                fixed += "&#188; ";
+                break;
+              case '½':
+                fixed += "&#189; ";
+                break;
+              case '¾':
+                fixed += "&#190; ";
+                break;
+              case '¿':
+                fixed += "&#191; ";
+                break;
+              case 'À':
+                fixed += "&#192; ";
+                break;
+              case 'Á':
+                fixed += "&#193; ";
+                break;
+              case 'Â':
+                fixed += "&#194; ";
+                break;
+              case 'Ã':
+                fixed += "&#195; ";
+                break;
+              case 'Ä':
+                fixed += "&#196; ";
+                break;
+              case 'Å':
+                fixed += "&#197; ";
+                break;
+              case 'Æ':
+                fixed += "&#198; ";
+                break;
+              case 'Ç':
+                fixed += "&#199; ";
+                break;
+              case 'È':
+                fixed += "&#200; ";
+                break;
+              case 'É':
+                fixed += "&#201; ";
+                break;
+              case 'Ê':
+                fixed += "&#202; ";
+                break;
+              case 'Ë':
+                fixed += "&#203; ";
+                break;
+              case 'Ì':
+                fixed += "&#204; ";
+                break;
+              case 'Í':
+                fixed += "&#205; ";
+                break;
+              case 'Î':
+                fixed += "&#206; ";
+                break;
+              case 'Ï':
+                fixed += "&#207; ";
+                break;
+              case 'Ð':
+                fixed += "&#208; ";
+                break;
+              case 'Ñ':
+                fixed += "&#209; ";
+                break;
+              case 'Ò':
+                fixed += "&#210; ";
+                break;
+              case 'Ó':
+                fixed += "&#211; ";
+                break;
+              case 'Ô':
+                fixed += "&#212; ";
+                break;
+              case 'Õ':
+                fixed += "&#213; ";
+                break;
+              case 'Ö':
+                fixed += "&#214; ";
+                break;
+              case '×':
+                fixed += "&#215; ";
+                break;
+              case 'Ø':
+                fixed += "&#216; ";
+                break;
+              case 'Ù':
+                fixed += "&#217; ";
+                break;
+              case 'Ú':
+                fixed += "&#218; ";
+                break;
+              case 'Û':
+                fixed += "&#219; ";
+                break;
+              case 'Ü':
+                fixed += "&#220; ";
+                break;
+              case 'Ý':
+                fixed += "&#221; ";
+                break;
+              case 'Þ':
+                fixed += "&#222; ";
+                break;
+              case 'ß':
+                fixed += "&#223; ";
+                break;
+              case 'à':
+                fixed += "&#224; ";
+                break;
+              case 'á':
+                fixed += "&#225; ";
+                break;
+              case 'â':
+                fixed += "&#226; ";
+                break;
+              case 'ã':
+                fixed += "&#227; ";
+                break;
+              case 'ä':
+                fixed += "&#228; ";
+                break;
+              case 'å':
+                fixed += "&#229; ";
+                break;
+              case 'æ':
+                fixed += "&#230; ";
+                break;
+              case 'ç':
+                fixed += "&#231; ";
+                break;
+              case 'è':
+                fixed += "&#232; ";
+                break;
+              case 'é':
+                fixed += "&#233; ";
+                break;
+              case 'ê':
+                fixed += "&#234; ";
+                break;
+              case 'ë':
+                fixed += "&#235; ";
+                break;
+              case 'ì':
+                fixed += "&#236; ";
+                break;
+              case 'í':
+                fixed += "&#237; ";
+                break;
+              case 'î':
+                fixed += "&#238; ";
+                break;
+              case 'ï':
+                fixed += "&#239; ";
+                break;
+              case 'ð':
+                fixed += "&#240; ";
+                break;
+              case 'ñ':
+                fixed += "&#241; ";
+                break;
+              case 'ò':
+                fixed += "&#242; ";
+                break;
+              case 'ó':
+                fixed += "&#243; ";
+                break;
+              case 'ô':
+                fixed += "&#244; ";
+                break;
+              case 'õ':
+                fixed += "&#245; ";
+                break;
+              case 'ö':
+                fixed += "&#246; ";
+                break;
+              case '÷':
+                fixed += "&#247; ";
+                break;
+              case 'ø':
+                fixed += "&#248; ";
+                break;
+              case 'ù':
+                fixed += "&#249; ";
+                break;
+              case 'ú':
+                fixed += "&#250; ";
+                break;
+              case 'û':
+                fixed += "&#251; ";
+                break;
+              case 'ü':
+                fixed += "&#252; ";
+                break;
+              case 'ý':
+                fixed += "&#253; ";
+                break;
+              case 'þ':
+                fixed += "&#254; ";
+                break;
+              case 'ÿ':
+                fixed += "&#255; ";
+                break;
             }
         }
+
       Str = Str.substr(len - i - 1);
     }
 }
@@ -598,14 +662,18 @@ const char * findLocale()
     Locale = strdup(nl_langinfo(CODESET));
 
 #ifdef SunOS
+
   if (strcmp(Locale, "646") == 0)
     pfree(Locale);
 
   if (Locale == NULL)
     Locale = strdup("8859-1");
+
 #else
+
   if (Locale == NULL)
     Locale = strdup("ISO-8859-1");
+
 #endif
 
   return Locale;
@@ -698,29 +766,29 @@ std::string utf8ToLocale(const std::string & utf8)
       {
         switch (errno)
           {
-          case EILSEQ:
-            pUtf8 = Utf8;
-            LocaleLength = 0;
-            break;
+            case EILSEQ:
+              pUtf8 = Utf8;
+              LocaleLength = 0;
+              break;
 
-          case EINVAL:
-            pLocale = Locale;
-            Utf8Length = 0;
-            break;
+            case EINVAL:
+              pLocale = Locale;
+              Utf8Length = 0;
+              break;
 
-          case E2BIG:
-            char * pTmp = Locale;
-            size_t OldLength = LocaleLength;
-            LocaleLength += 2 * Utf8Length;
+            case E2BIG:
+              char * pTmp = Locale;
+              size_t OldLength = LocaleLength;
+              LocaleLength += 2 * Utf8Length;
 
-            Locale = new char[LocaleLength];
-            memcpy(Locale, pTmp,
-                   sizeof(char) * (OldLength - SpaceLeft - 1));
-            pLocale = Locale + OldLength - SpaceLeft - 1;
-            SpaceLeft += 2 * Utf8Length;
-            delete [] pTmp;
+              Locale = new char[LocaleLength];
+              memcpy(Locale, pTmp,
+                     sizeof(char) *(OldLength - SpaceLeft - 1));
+              pLocale = Locale + OldLength - SpaceLeft - 1;
+              SpaceLeft += 2 * Utf8Length;
+              delete [] pTmp;
 
-            break;
+              break;
           }
 
         continue;
@@ -824,29 +892,29 @@ std::string localeToUtf8(const std::string & locale)
       {
         switch (errno)
           {
-          case EILSEQ:
-            pUtf8 = Utf8;
-            LocaleLength = 0;
-            break;
+            case EILSEQ:
+              pUtf8 = Utf8;
+              LocaleLength = 0;
+              break;
 
-          case EINVAL:
-            pUtf8 = Utf8;
-            LocaleLength = 0;
-            break;
+            case EINVAL:
+              pUtf8 = Utf8;
+              LocaleLength = 0;
+              break;
 
-          case E2BIG:
-            char * pTmp = Utf8;
-            size_t OldLength = Utf8Length;
-            Utf8Length += 2 * LocaleLength;
+            case E2BIG:
+              char * pTmp = Utf8;
+              size_t OldLength = Utf8Length;
+              Utf8Length += 2 * LocaleLength;
 
-            Utf8 = new char[Utf8Length];
-            memcpy(Utf8, pTmp,
-                   sizeof(char) * (OldLength - SpaceLeft - 1));
-            pUtf8 = Utf8 + OldLength - SpaceLeft - 1;
-            SpaceLeft += 2 * LocaleLength;
-            delete [] pTmp;
+              Utf8 = new char[Utf8Length];
+              memcpy(Utf8, pTmp,
+                     sizeof(char) *(OldLength - SpaceLeft - 1));
+              pUtf8 = Utf8 + OldLength - SpaceLeft - 1;
+              SpaceLeft += 2 * LocaleLength;
+              delete [] pTmp;
 
-            break;
+              break;
           }
 
         continue;
@@ -866,4 +934,50 @@ std::string localeToUtf8(const std::string & locale)
 #endif // SunOS || Linux
 
   return locale;
+}
+
+/**
+ * Convert a character sequence to a double
+ * @param const char * str
+ * @return double
+ */
+double strToDouble(const char * str,
+                   char const ** tail)
+{
+  double Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  if (tail != NULL)
+    {
+      *tail = str;
+    }
+
+  if (str == NULL || *str == 0)
+    {
+      return Value;
+    }
+
+  std::istringstream in;
+
+  in.imbue(std::locale::classic());
+  in.str(str);
+
+  in >> Value;
+
+  if (isnan(Value))
+    {
+      if (!strcmp(str, "INF"))
+        Value = std::numeric_limits<C_FLOAT64>::infinity();
+      else if (!strcmp(str, "-INF"))
+        Value = - std::numeric_limits<C_FLOAT64>::infinity();
+    }
+
+  if (tail != NULL && !isnan(Value))
+    {
+      std::string Tail;
+      in >> Tail;
+
+      *tail = str + strlen(str) - Tail.length();
+    }
+
+  return Value;
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/21 19:24:12 $
+//   $Date: 2009/07/23 19:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,7 +150,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
       std::stringstream LowerBound;
       C_FLOAT64 StartValue = getStartValue();
 
-      LowerBound << StartValue + fabs(StartValue) * strtod(lowerBound.c_str(), NULL) / 100.0;
+      LowerBound << StartValue + fabs(StartValue) * strToDouble(lowerBound.c_str(), NULL) / 100.0;
       *mpParmLowerBound = LowerBound.str();
 
       return true;
@@ -187,7 +187,7 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
       std::stringstream UpperBound;
       C_FLOAT64 StartValue = getStartValue();
 
-      UpperBound << StartValue + fabs(StartValue) * strtod(upperBound.c_str(), NULL) / 100.0;
+      UpperBound << StartValue + fabs(StartValue) * strToDouble(upperBound.c_str(), NULL) / 100.0;
       *mpParmUpperBound = UpperBound.str();
 
       return true;
@@ -382,7 +382,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
     }
   else if (isNumber(Bound))
     {
-      mLowerBound = strtod(Bound.c_str(), NULL);
+      mLowerBound = strToDouble(Bound.c_str(), NULL);
       mpLowerBound = &mLowerBound;
     }
   else if ((mpLowerObject =
@@ -411,7 +411,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
     }
   else if (isNumber(Bound))
     {
-      mUpperBound = strtod(Bound.c_str(), NULL);
+      mUpperBound = strToDouble(Bound.c_str(), NULL);
       mpUpperBound = &mUpperBound;
     }
   else if ((mpUpperObject =

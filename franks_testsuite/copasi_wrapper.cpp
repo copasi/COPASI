@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/27 13:15:22 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:53:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,15 +53,17 @@ int main(int argc, char *argv[])
     }
 
   catch (copasi::autoexcept &e)
-  {}
+    {}
 
   catch (copasi::option_error &e)
-  {}
+    {}
+
   if (argc < 5)
     {
       std::cout << "Usage: batch_wrapper SBMLFILENAME STARTTIME ENDTIME STEPNUMBER OUTFILENAME" << std::endl;
       exit(1);
     }
+
   char* pSBMLFilename = argv[1];
   char* pStartTime = argv[2];
   char* pEndTime = argv[3];
@@ -70,24 +72,28 @@ int main(int argc, char *argv[])
   CTrajectoryTask* pTrajectoryTask = NULL;
 
   std::string CWD = COptions::getPWD();
-  double startTime = strtod(pStartTime, &pStartTime);
-  double endTime = strtod(pEndTime, &pEndTime);
-  double stepNumber = strtod(pStepNumber, &pStepNumber);
+  double startTime = strToDouble(pStartTime, &pStartTime);
+  double endTime = strToDouble(pEndTime, &pEndTime);
+  double stepNumber = strToDouble(pStepNumber, &pStepNumber);
+
   if (startTime < 0.0)
     {
       std::cerr << "Invalid endtime " << pEndTime << std::endl;
       exit(1);
     }
+
   if (endTime <= 0.0)
     {
       std::cerr << "Invalid endtime " << pEndTime << std::endl;
       exit(1);
     }
+
   if (stepNumber <= 0.0)
     {
       std::cerr << "Invalid step number " << pStepNumber << std::endl;
       exit(1);
     }
+
   try
     {
       // Create the global data model.
@@ -126,7 +132,8 @@ int main(int argc, char *argv[])
       */
       const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
       jMax = metabolites.size();
-      for (j = 0; j < jMax;++j)
+
+      for (j = 0; j < jMax; ++j)
         {
           if (metabolites[j]->getStatus() != CModelEntity::FIXED)
             {
@@ -136,6 +143,7 @@ int main(int argc, char *argv[])
               pHeader->push_back(pReport->getSeparator().getCN());
             }
         }
+
       /*
       const CCopasiVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
       jMax = parameters.size();
@@ -159,11 +167,13 @@ int main(int argc, char *argv[])
         pHeader->push_back(pReport->getSeparator().getCN());
       }
       */
+
       // delete the last separator
       if ((*pBody->rbegin()) == pReport->getSeparator().getCN())
         {
           pBody->erase(--pBody->end());
         }
+
       if ((*pHeader->rbegin()) == pReport->getSeparator().getCN())
         {
           pHeader->erase(--pHeader->end());
@@ -223,12 +233,15 @@ int main(int argc, char *argv[])
     }
 
   std::string Text = "";
+
   while (CCopasiMessage::size() > 0)
     {
       const CCopasiMessage& message = CCopasiMessage::getLastMessage();
+
       if (message.getType() < CCopasiMessage::RAW_FILTERED)
         {
           if (Text != "") Text += "\n";
+
           Text += message.getText();
         }
     }

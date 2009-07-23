@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/27 13:15:21 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:53:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,15 +55,17 @@ int main(int argc, char *argv[])
     }
 
   catch (copasi::autoexcept &e)
-  {}
+    {}
 
   catch (copasi::option_error &e)
-  {}
+    {}
+
   if (argc < 5)
     {
       std::cout << "Usage: stochastic-testsuite SBMLFILENAME ENDTIME STEPNUMBER REPEATS OUTFILENAME SPECIESID1 SPECIESID2 ..." << std::endl;
       exit(1);
     }
+
   char* pSBMLFilename = argv[1];
   char* pEndTime = argv[2];
   char* pStepNumber = argv[3];
@@ -83,21 +85,23 @@ int main(int argc, char *argv[])
   CScanTask* pScanTask = NULL;
 
   std::string CWD = COptions::getPWD();
-  double endTime = strtod(pEndTime, &pEndTime);
-  double stepNumber = strtod(pStepNumber, &pStepNumber);
+  double endTime = strToDouble(pEndTime, &pEndTime);
+  double stepNumber = strToDouble(pStepNumber, &pStepNumber);
   long int repeats = strtol(pRepeats, &pRepeats , 10);
+
   if (endTime == 0.0)
     {
       std::cerr << "Invalid endtime " << pEndTime << std::endl;
       exit(1);
     }
+
   if (stepNumber == 0.0)
     {
       std::cerr << "Invalid step number " << pStepNumber << std::endl;
       exit(1);
     }
 
-  for (i = NUMARGS; i < iMax;++i)
+  for (i = NUMARGS; i < iMax; ++i)
     {
       pSBMLSpeciesIds[i - NUMARGS] = argv[i];
       //std::cout << "Copying pointer to " <<  argv[i]  << "." << std::endl;
@@ -124,10 +128,12 @@ int main(int argc, char *argv[])
       pTable->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
       iMax = iMax - NUMARGS;
       const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
-      for (i = 0; i < iMax;++i)
+
+      for (i = 0; i < iMax; ++i)
         {
           unsigned int j, jMax = metabolites.size();
-          for (j = 0; j < jMax;++j)
+
+          for (j = 0; j < jMax; ++j)
             {
               if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
                 {
@@ -136,6 +142,7 @@ int main(int argc, char *argv[])
                   break;
                 }
             }
+
           if (j == jMax)
             {
               std::cerr << "Could not find a metabolite for the SBML id \"" << pSBMLSpeciesIds[i] << "\"" << std::endl;

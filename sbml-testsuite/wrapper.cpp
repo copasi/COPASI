@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/03 19:13:02 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:53:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,11 +142,11 @@ int main(int argc, char** argv)
 
               if (tag == "start")
                 {
-                  start_time = strtod(value.c_str(), NULL);
+                  start_time = strToDouble(value.c_str(), NULL);
                 }
               else if (tag == "duration")
                 {
-                  duration = strtod(value.c_str(), NULL);
+                  duration = strToDouble(value.c_str(), NULL);
                 }
               else if (tag == "steps")
                 {
@@ -173,11 +173,11 @@ int main(int argc, char** argv)
                 }
               else if (tag == "absolute")
                 {
-                  absolute_error = strtod(value.c_str(), NULL);
+                  absolute_error = strToDouble(value.c_str(), NULL);
                 }
               else if (tag == "relative")
                 {
-                  relative_error = strtod(value.c_str(), NULL);
+                  relative_error = strToDouble(value.c_str(), NULL);
                 }
               else
                 {

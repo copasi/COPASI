@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/miase/CMiaseParser.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: akoenig $
-//   $Date: 2008/04/02 12:14:39 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:54:03 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,14 +52,15 @@ void CMiaseParser::createAllowedStateTags()
 {
   std::vector<std::string> tmpAllowedTags;
   int i;
+
   for (i = 0; i <= (int)STATE_STOPPED; i++)
-  {this->mAllowedStateTags.push_back(tmpAllowedTags);}
+    {this->mAllowedStateTags.push_back(tmpAllowedTags);}
 
   tmpAllowedTags.push_back("Notes");
   tmpAllowedTags.push_back("Annotation");
 
   for (i = (int)STATE_MIASE; i < (int)STATE_LAST; i++)
-  {this->mAllowedStateTags.push_back(tmpAllowedTags);}
+    {this->mAllowedStateTags.push_back(tmpAllowedTags);}
 
   this->mAllowedStateTags[STATE_READY_TO_READ].push_back("MiaseML");
 
@@ -143,53 +144,61 @@ void CMiaseParser::newNotes(const char **attr)
   CMiaseBase * tmpMiaseObj;
 
   CMiaseNotes *newNotes = new CMiaseNotes();
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "xmlns") == 0)
-      {newNotes->setXmlNs(attr[i + 1]);}
+        {newNotes->setXmlNs(attr[i + 1]);}
     }
 
   switch (myParser->mActState)
     {
-    case STATE_MIASE:
-      myParser->mMiase->addNotes(newNotes);
-      break;
-    case STATE_SED:
-      myParser->mMiase->getSed()->addNotes(newNotes);
-      break;
-    case STATE_LIST_OF_SIMULATIONS:
-      tmpMiaseObj = myParser->mMiase->getSed()->getLastSimulation();
-      if (tmpMiaseObj != NULL)
-      {tmpMiaseObj->addNotes(new CMiaseNotes());}
-      else
-      {myParser->error("invalid Notes before Change");}
-      break;
-    case STATE_MODEL:
-      myParser->mMiase->getSed()->getLastModel()->addNotes(newNotes);
-      break;
-    case STATE_LIST_OF_CHANGES:
-      tmpMiaseObj = myParser->mMiase->getSed()->getLastModel()->getLastChange();
-      if (tmpMiaseObj != NULL)
-      {tmpMiaseObj->addNotes(newNotes);}
-      else
-      {myParser->error("invalid Notes before Change");}
-      break;
-    case STATE_TASK:
-      myParser->mMiase->getSed()->getLastTask()->addNotes(newNotes);
-      break;
-    case STATE_LIST_OF_MEASUREMENT:
-      tmpMiaseObj = myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
-      if (tmpMiaseObj != NULL)
-      {tmpMiaseObj->addNotes(newNotes);}
-      else
-      {myParser->error("invalid Notes before Measurement");}
-      break;
-    case STATE_OUTPUT:
-      myParser->mMiase->getSed()->getLastOutput()->addNotes(newNotes);
-      break;
-    default:
-      break;
+      case STATE_MIASE:
+        myParser->mMiase->addNotes(newNotes);
+        break;
+      case STATE_SED:
+        myParser->mMiase->getSed()->addNotes(newNotes);
+        break;
+      case STATE_LIST_OF_SIMULATIONS:
+        tmpMiaseObj = myParser->mMiase->getSed()->getLastSimulation();
+
+        if (tmpMiaseObj != NULL)
+          {tmpMiaseObj->addNotes(new CMiaseNotes());}
+        else
+          {myParser->error("invalid Notes before Change");}
+
+        break;
+      case STATE_MODEL:
+        myParser->mMiase->getSed()->getLastModel()->addNotes(newNotes);
+        break;
+      case STATE_LIST_OF_CHANGES:
+        tmpMiaseObj = myParser->mMiase->getSed()->getLastModel()->getLastChange();
+
+        if (tmpMiaseObj != NULL)
+          {tmpMiaseObj->addNotes(newNotes);}
+        else
+          {myParser->error("invalid Notes before Change");}
+
+        break;
+      case STATE_TASK:
+        myParser->mMiase->getSed()->getLastTask()->addNotes(newNotes);
+        break;
+      case STATE_LIST_OF_MEASUREMENT:
+        tmpMiaseObj = myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
+
+        if (tmpMiaseObj != NULL)
+          {tmpMiaseObj->addNotes(newNotes);}
+        else
+          {myParser->error("invalid Notes before Measurement");}
+
+        break;
+      case STATE_OUTPUT:
+        myParser->mMiase->getSed()->getLastOutput()->addNotes(newNotes);
+        break;
+      default:
+        break;
     }
+
   myParser->newState(STATE_NOTES);
 }
 
@@ -201,53 +210,61 @@ void CMiaseParser::newAnnotation(const char **attr)
   CMiaseBase * tmpMiaseObj;
 
   CMiaseAnnotation *newAnnotation = new CMiaseAnnotation();
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "xmlns") == 0)
-      {newAnnotation->setXmlNs(attr[i + 1]);}
+        {newAnnotation->setXmlNs(attr[i + 1]);}
     }
 
   switch (myParser->mActState)
     {
-    case STATE_MIASE:
-      myParser->mMiase->addAnnotation(newAnnotation);
-      break;
-    case STATE_SED:
-      myParser->mMiase->getSed()->addAnnotation(newAnnotation);
-      break;
-    case STATE_LIST_OF_SIMULATIONS:
-      tmpMiaseObj = myParser->mMiase->getSed()->getLastSimulation();
-      if (tmpMiaseObj != NULL)
-      {tmpMiaseObj->addAnnotation(newAnnotation);}
-      else
-      {myParser->error("invalid Annotation before Change");}
-      break;
-    case STATE_MODEL:
-      myParser->mMiase->getSed()->getLastModel()->addAnnotation(newAnnotation);
-      break;
-    case STATE_LIST_OF_CHANGES:
-      tmpMiaseObj = myParser->mMiase->getSed()->getLastModel()->getLastChange();
-      if (tmpMiaseObj != NULL)
-      {tmpMiaseObj->addAnnotation(newAnnotation);}
-      else
-      {myParser->error("invalid Annotation before Change");}
-      break;
-    case STATE_TASK:
-      myParser->mMiase->getSed()->getLastTask()->addAnnotation(newAnnotation);
-      break;
-    case STATE_LIST_OF_MEASUREMENT:
-      tmpMiaseObj = myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
-      if (tmpMiaseObj != NULL)
-      {tmpMiaseObj->addAnnotation(newAnnotation);}
-      else
-      {myParser->error("invalid Annotation before Measurement");}
-      break;
-    case STATE_OUTPUT:
-      myParser->mMiase->getSed()->getLastOutput()->addAnnotation(newAnnotation);
-      break;
-    default:
-      break;
+      case STATE_MIASE:
+        myParser->mMiase->addAnnotation(newAnnotation);
+        break;
+      case STATE_SED:
+        myParser->mMiase->getSed()->addAnnotation(newAnnotation);
+        break;
+      case STATE_LIST_OF_SIMULATIONS:
+        tmpMiaseObj = myParser->mMiase->getSed()->getLastSimulation();
+
+        if (tmpMiaseObj != NULL)
+          {tmpMiaseObj->addAnnotation(newAnnotation);}
+        else
+          {myParser->error("invalid Annotation before Change");}
+
+        break;
+      case STATE_MODEL:
+        myParser->mMiase->getSed()->getLastModel()->addAnnotation(newAnnotation);
+        break;
+      case STATE_LIST_OF_CHANGES:
+        tmpMiaseObj = myParser->mMiase->getSed()->getLastModel()->getLastChange();
+
+        if (tmpMiaseObj != NULL)
+          {tmpMiaseObj->addAnnotation(newAnnotation);}
+        else
+          {myParser->error("invalid Annotation before Change");}
+
+        break;
+      case STATE_TASK:
+        myParser->mMiase->getSed()->getLastTask()->addAnnotation(newAnnotation);
+        break;
+      case STATE_LIST_OF_MEASUREMENT:
+        tmpMiaseObj = myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
+
+        if (tmpMiaseObj != NULL)
+          {tmpMiaseObj->addAnnotation(newAnnotation);}
+        else
+          {myParser->error("invalid Annotation before Measurement");}
+
+        break;
+      case STATE_OUTPUT:
+        myParser->mMiase->getSed()->getLastOutput()->addAnnotation(newAnnotation);
+        break;
+      default:
+        break;
     }
+
   myParser->newState(STATE_ANNOTATION);
 }
 
@@ -257,25 +274,28 @@ void CMiaseParser::newModel(const char **attr)
   myParser->newState(STATE_MODEL);
 
   myParser->mMiase->getSed()->addModel(new CMiaseModel());
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "id") == 0)
-      {myParser->mMiase->getSed()->getLastModel()->setId(attr[i + 1]);}
+        {myParser->mMiase->getSed()->getLastModel()->setId(attr[i + 1]);}
       else if (strcmp(attr[i], "name") == 0)
-      {myParser->mMiase->getSed()->getLastModel()->setName(attr[i + 1]);}
+        {myParser->mMiase->getSed()->getLastModel()->setName(attr[i + 1]);}
       else if (strcmp(attr[i], "type") == 0)
-      {myParser->mMiase->getSed()->getLastModel()->setType(attr[i + 1]);}
+        {myParser->mMiase->getSed()->getLastModel()->setType(attr[i + 1]);}
       else if (strcmp(attr[i], "source") == 0)
-      {myParser->mMiase->getSed()->getLastModel()->setSource(attr[i + 1]);}
+        {myParser->mMiase->getSed()->getLastModel()->setSource(attr[i + 1]);}
     }
 }
 
 void CMiaseParser::newSimulation(const char *el, const char **attr)
 {
   int i;
+
   if (strcmp(el, "UniformTimeCourse") == 0)
     {
       myParser->mMiase->getSed()->addSimulation(new CMiaseUniformTimeCourse());
+
       for (i = 0; attr[i]; i += 2)
         {
           if (strcmp(attr[i], "id") == 0)
@@ -291,22 +311,22 @@ void CMiaseParser::newSimulation(const char *el, const char **attr)
           else if (strcmp(attr[i], "initialTime") == 0)
             {
               ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()
-               ->getLastSimulation())->setInitialTime(strtod(attr[i + 1], 0));
+               ->getLastSimulation())->setInitialTime(strToDouble(attr[i + 1], 0));
             }
           else if (strcmp(attr[i], "outputStartTime") == 0)
             {
               ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()
-               ->getLastSimulation())->setOutputStartTime(strtod(attr[i + 1], 0));
+               ->getLastSimulation())->setOutputStartTime(strToDouble(attr[i + 1], 0));
             }
           else if (strcmp(attr[i], "outputEndTime") == 0)
             {
               ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()
-               ->getLastSimulation())->setOutputEndTime(strtod(attr[i + 1], 0));
+               ->getLastSimulation())->setOutputEndTime(strToDouble(attr[i + 1], 0));
             }
           else if (strcmp(attr[i], "numberOfPoints") == 0)
             {
               ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()
-               ->getLastSimulation())->setNumberOfPoints(strtod(attr[i + 1], 0));
+               ->getLastSimulation())->setNumberOfPoints(strToDouble(attr[i + 1], 0));
             }
         }
     }
@@ -323,10 +343,12 @@ void CMiaseParser::newSimulation(const char *el, const char **attr)
 void CMiaseParser::newChange(const char *el, const char **attr)
 {
   int i;
+
   if (strcmp(el, "ChangeAttribute") == 0)
     {
       myParser->mMiase->getSed()->getLastModel()
       ->addChange(new CMiaseChangeAttribute());
+
       for (i = 0; attr[i]; i += 2)
         {
           if (strcmp(attr[i], "newValue") == 0)
@@ -345,6 +367,7 @@ void CMiaseParser::newChange(const char *el, const char **attr)
     {
       myParser->mMiase->getSed()->getLastModel()
       ->addChange(new CMiaseChangeMath());
+
       for (i = 0; attr[i]; i += 2)
         {
           if (strcmp(attr[i], "newMath") == 0)
@@ -367,6 +390,7 @@ void CMiaseParser::newTask(const char **attr)
   myParser->newState(STATE_TASK);
 
   myParser->mMiase->getSed()->addTask(new CMiaseTask());
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "id") == 0)
@@ -395,6 +419,7 @@ void CMiaseParser::newMeasurementData(const char **attr)
   int i;
   myParser->mMiase->getSed()->getLastTask()
   ->addMeasurement(new CMiaseMeasurementData());
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "name") == 0)
@@ -418,12 +443,13 @@ void CMiaseParser::newOutput(const char **attr)
   myParser->newState(STATE_OUTPUT);
 
   myParser->mMiase->getSed()->addOutput(new CMiaseOutput());
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "id") == 0)
-      {myParser->mMiase->getSed()->getLastOutput()->setId(attr[i + 1]);}
+        {myParser->mMiase->getSed()->getLastOutput()->setId(attr[i + 1]);}
       else if (strcmp(attr[i], "name") == 0)
-      {myParser->mMiase->getSed()->getLastOutput()->setName(attr[i + 1]);}
+        {myParser->mMiase->getSed()->getLastOutput()->setName(attr[i + 1]);}
     }
 }
 
@@ -433,12 +459,13 @@ void CMiaseParser::newMiase(const char **attr)
   myParser->newState(STATE_MIASE);
 
   myParser->mMiase = new CMiaseML();
+
   for (i = 0; attr[i]; i += 2)
     {
       if (strcmp(attr[i], "xmlns") == 0)
-      {myParser->mMiase->setXmlns(attr[i + 1]);}
+        {myParser->mMiase->setXmlns(attr[i + 1]);}
       else if (strcmp(attr[i], "version") == 0)
-      {myParser->mMiase->setVersion(attr[i + 1]);}
+        {myParser->mMiase->setVersion(attr[i + 1]);}
     }
 }
 
@@ -447,83 +474,106 @@ void CMiaseParser::startElement(const char *el, const char **attr)
   if (myParser->isValid(el))
     {
       if ((strcmp(el, "Notes") == 0) && (myParser->mActState != STATE_NOTES))
-      {myParser->newNotes(attr);}
+        {myParser->newNotes(attr);}
       else if ((strcmp(el, "Annotation") == 0)
                && (myParser->mActState != STATE_ANNOTATION))
-      {myParser->newAnnotation(attr);}
+        {myParser->newAnnotation(attr);}
       else
         {
           switch (myParser->mActState)
             {
-            case STATE_LIST_OF_MODELS:
-              if (strcmp(el, "Model") == 0)
-              {myParser->newModel(attr);}
-              break;
-            case STATE_MODEL:
-              if (strcmp(el, "listOfChanges") == 0)
-              {myParser->newState(STATE_LIST_OF_CHANGES);}
-              break;
-            case STATE_LIST_OF_CHANGES:
-              if ((strcmp(el, "ChangeAttribute") == 0)
-                  || (strcmp(el, "ChangeMath") == 0))
-              {myParser->newChange(el, attr);}
-              break;
-            case STATE_LIST_OF_SIMULATIONS:
-              if ((strcmp(el, "UniformTimeCourse") == 0)
-                  || (strcmp(el, "SteadyStateAnalysis") == 0)
-                  || (strcmp(el, "AnySimulationType") == 0))
-              {myParser->newSimulation(el, attr);}
-              break;
-            case STATE_LIST_OF_TASKS:
-              if (strcmp(el, "Task") == 0)
-              {myParser->newTask(attr);}
-              break;
-            case STATE_TASK:
-              if (strcmp(el, "listOfMeasurement") == 0)
-              {myParser->newState(STATE_LIST_OF_MEASUREMENT);}
-              break;
-            case STATE_LIST_OF_MEASUREMENT:
-              if (strcmp(el, "MeasurementData") == 0)
-              {myParser->newMeasurementData(attr);}
-              break;
-            case STATE_LIST_OF_OUTPUTS:
-              if (strcmp(el, "Output") == 0)
-              {myParser->newOutput(attr);}
-              break;
-            case STATE_SED:
-              if (strcmp(el, "listOfSimulations") == 0)
-              {myParser->newState(STATE_LIST_OF_SIMULATIONS);}
-              else if (strcmp(el, "listOfOutputs") == 0)
-              {myParser->newState(STATE_LIST_OF_OUTPUTS);}
-              else if (strcmp(el, "listOfTasks") == 0)
-              {myParser->newState(STATE_LIST_OF_TASKS);}
-              else if (strcmp(el, "listOfModels") == 0)
-              {myParser->newState(STATE_LIST_OF_MODELS);}
-              break;
-            case STATE_MIASE:
-              if (strcmp(el, "Sed") == 0)
-                {
-                  myParser->mMiase->setMiaseSed(new CMiaseSed());
-                  myParser->newState(STATE_SED);
-                }
-              break;
-            case STATE_READY_TO_READ:
-              if (strcmp(el, "MiaseML") == 0)
-              {myParser->newMiase(attr);}
-              break;
-            case STATE_NOTES:
-              myParser->addContent(el, attr);
-              break;
-            case STATE_ANNOTATION:
-              myParser->addContent(el, attr);
-              break;
-            case STATE_OUTPUT:
-              myParser->addContent(el, attr);
-              break;
-            default:
-              break;
+              case STATE_LIST_OF_MODELS:
+
+                if (strcmp(el, "Model") == 0)
+                  {myParser->newModel(attr);}
+
+                break;
+              case STATE_MODEL:
+
+                if (strcmp(el, "listOfChanges") == 0)
+                  {myParser->newState(STATE_LIST_OF_CHANGES);}
+
+                break;
+              case STATE_LIST_OF_CHANGES:
+
+                if ((strcmp(el, "ChangeAttribute") == 0)
+                    || (strcmp(el, "ChangeMath") == 0))
+                  {myParser->newChange(el, attr);}
+
+                break;
+              case STATE_LIST_OF_SIMULATIONS:
+
+                if ((strcmp(el, "UniformTimeCourse") == 0)
+                    || (strcmp(el, "SteadyStateAnalysis") == 0)
+                    || (strcmp(el, "AnySimulationType") == 0))
+                  {myParser->newSimulation(el, attr);}
+
+                break;
+              case STATE_LIST_OF_TASKS:
+
+                if (strcmp(el, "Task") == 0)
+                  {myParser->newTask(attr);}
+
+                break;
+              case STATE_TASK:
+
+                if (strcmp(el, "listOfMeasurement") == 0)
+                  {myParser->newState(STATE_LIST_OF_MEASUREMENT);}
+
+                break;
+              case STATE_LIST_OF_MEASUREMENT:
+
+                if (strcmp(el, "MeasurementData") == 0)
+                  {myParser->newMeasurementData(attr);}
+
+                break;
+              case STATE_LIST_OF_OUTPUTS:
+
+                if (strcmp(el, "Output") == 0)
+                  {myParser->newOutput(attr);}
+
+                break;
+              case STATE_SED:
+
+                if (strcmp(el, "listOfSimulations") == 0)
+                  {myParser->newState(STATE_LIST_OF_SIMULATIONS);}
+                else if (strcmp(el, "listOfOutputs") == 0)
+                  {myParser->newState(STATE_LIST_OF_OUTPUTS);}
+                else if (strcmp(el, "listOfTasks") == 0)
+                  {myParser->newState(STATE_LIST_OF_TASKS);}
+                else if (strcmp(el, "listOfModels") == 0)
+                  {myParser->newState(STATE_LIST_OF_MODELS);}
+
+                break;
+              case STATE_MIASE:
+
+                if (strcmp(el, "Sed") == 0)
+                  {
+                    myParser->mMiase->setMiaseSed(new CMiaseSed());
+                    myParser->newState(STATE_SED);
+                  }
+
+                break;
+              case STATE_READY_TO_READ:
+
+                if (strcmp(el, "MiaseML") == 0)
+                  {myParser->newMiase(attr);}
+
+                break;
+              case STATE_NOTES:
+                myParser->addContent(el, attr);
+                break;
+              case STATE_ANNOTATION:
+                myParser->addContent(el, attr);
+                break;
+              case STATE_OUTPUT:
+                myParser->addContent(el, attr);
+                break;
+              default:
+                break;
             }
         }
+
       /*          int i;
                 for (i = 0; i < myParser->mDepth; i++)
                    printf("  ");
@@ -544,10 +594,13 @@ void CMiaseParser::addContent(const char *el, const char **attr)
 {
   //myParser->mContent += "\n";
   int i;
+
   for (i = 0; i < myParser->mTmpDepth; i++)
     myParser->mContent += "  ";
+
   myParser->mContent += "<";
   myParser->mContent += el /*c_str()*/;
+
   for (i = 0; attr[i]; i += 2)
     {
       myParser->mContent += " "; // + attr[i] + " " + attr[i + 1];
@@ -555,6 +608,7 @@ void CMiaseParser::addContent(const char *el, const char **attr)
       myParser->mContent += " ";
       myParser->mContent += attr[i + 1];
     }
+
   myParser->mContent += ">\n";
 }
 
@@ -580,6 +634,7 @@ void CMiaseParser::endElement(const char *el)
     {
       for (i = 0; i < myParser->mTmpDepth; i++)
         myParser->mContent += "  ";
+
       myParser->mContent += "</";
       myParser->mContent += el;
       myParser->mContent += ">\n";
@@ -591,18 +646,18 @@ void CMiaseParser::endElement(const char *el)
       myParser->newState(myParser->mLastState);
     }
   else if (strcmp(el, "Model") == 0)
-  {myParser->newState(STATE_LIST_OF_MODELS);}
+    {myParser->newState(STATE_LIST_OF_MODELS);}
   else if (strcmp(el, "listOfChanges") == 0)
-  {myParser->newState(STATE_MODEL);}
+    {myParser->newState(STATE_MODEL);}
   else if (strcmp(el, "listOfMeasurement") == 0)
-  {myParser->newState(STATE_TASK);}
+    {myParser->newState(STATE_TASK);}
   else if ((strcmp(el, "listOfSimulations") == 0)
            || (strcmp(el, "listOfTasks") == 0)
            || (strcmp(el, "listOfModels") == 0)
            || (strcmp(el, "listOfOutputs") == 0))
-  {myParser->newState(STATE_SED);}
+    {myParser->newState(STATE_SED);}
   else if (strcmp(el, "Task") == 0)
-  {myParser->newState(STATE_LIST_OF_TASKS);}
+    {myParser->newState(STATE_LIST_OF_TASKS);}
   else if (strcmp(el, "Output") == 0)
     {
       myParser->newState(STATE_LIST_OF_OUTPUTS);
@@ -611,40 +666,41 @@ void CMiaseParser::endElement(const char *el)
       myParser->mMiase->getSed()->getLastOutput()->saveWholeOutput(myParser->mContent);
     }
   else if ((strcmp(el, "Sed") == 0) || (strcmp(el, "Miase") == 0))
-  {myParser->newState(STATE_LAST);}
+    {myParser->newState(STATE_LAST);}
 }
 
 CMiaseBase* CMiaseParser::getLastObj()
 {
   switch (myParser->mLastState)
     {
-    case STATE_OUTPUT:
-      return myParser->mMiase->getSed()->getLastOutput();
-      break;
-    case STATE_LIST_OF_MEASUREMENT:
-      return myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
-      break;
-    case STATE_TASK:
-      return myParser->mMiase->getSed()->getLastTask();
-      break;
-    case STATE_LIST_OF_CHANGES:
-      return myParser->mMiase->getSed()->getLastModel()->getLastChange();
-      break;
-    case STATE_MODEL:
-      return myParser->mMiase->getSed()->getLastModel();
-      break;
-    case STATE_LIST_OF_SIMULATIONS:
-      return myParser->mMiase->getSed()->getLastSimulation();
-      break;
-    case STATE_SED:
-      return myParser->mMiase->getSed();
-      break;
-    case STATE_MIASE:
-      return myParser->mMiase;
-      break;
-    default:
-      break;
+      case STATE_OUTPUT:
+        return myParser->mMiase->getSed()->getLastOutput();
+        break;
+      case STATE_LIST_OF_MEASUREMENT:
+        return myParser->mMiase->getSed()->getLastTask()->getLastMeasurement();
+        break;
+      case STATE_TASK:
+        return myParser->mMiase->getSed()->getLastTask();
+        break;
+      case STATE_LIST_OF_CHANGES:
+        return myParser->mMiase->getSed()->getLastModel()->getLastChange();
+        break;
+      case STATE_MODEL:
+        return myParser->mMiase->getSed()->getLastModel();
+        break;
+      case STATE_LIST_OF_SIMULATIONS:
+        return myParser->mMiase->getSed()->getLastSimulation();
+        break;
+      case STATE_SED:
+        return myParser->mMiase->getSed();
+        break;
+      case STATE_MIASE:
+        return myParser->mMiase;
+        break;
+      default:
+        break;
     }
+
   myParser->error("Last Obj is NULL");
   return NULL;
 }
@@ -661,6 +717,7 @@ void CMiaseParser::xmlDecl(const XML_Char *version,
 {
 
   unsigned int i;
+
   for (i = 0; i < (sizeof(myParser->mVersion_1_0) /
                    sizeof(myParser->mVersion_1_0[0])); ++i)
     {
@@ -698,11 +755,13 @@ void CMiaseParser::load(std::string filename)
       int len;
 
       len = (int)fread(myParser->mBuff, 1, BUFFSIZE, file);
+
       if (ferror(file))
         {
           fprintf(stderr, "Read error\n");
           exit(-1);
         }
+
       done = feof(file);
 
       if (XML_Parse(myParser->mXmlParser, myParser->mBuff, len, done)
@@ -717,6 +776,7 @@ void CMiaseParser::load(std::string filename)
       if (done)
         break;
     }
+
   XML_ParserFree(myParser->mXmlParser);
 }
 
@@ -730,10 +790,11 @@ void CMiaseParser::error(std::string errorString)
 bool CMiaseParser::isValid(const char *el)
 {
   unsigned int i;
+
   if ((myParser->mActState == STATE_ANNOTATION)
       || (myParser->mActState == STATE_NOTES)
       || (myParser->mActState == STATE_OUTPUT))
-  {return true;}
+    {return true;}
   else if (myParser->mActState == STATE_STOPPED)
     {
       myParser->error("PARSE ERROR");
@@ -746,8 +807,9 @@ bool CMiaseParser::isValid(const char *el)
   for (i = 0; i < tmpAllowedStateTags.size(); i++)
     {
       if (strcmp(el, tmpAllowedStateTags[i].c_str()) == 0)
-      {return true;}
+        {return true;}
     }
+
   myParser->error("PARSE ERROR");
   return false;
 }
@@ -762,57 +824,58 @@ void CMiaseParser::testDataStructure()
   if (myParser->mMiase)
     {
       std::cout <<
-      myParser->mMiase->getSed()->getNotes()->getNotes() << std::endl;
+                myParser->mMiase->getSed()->getNotes()->getNotes() << std::endl;
 
-      if (myParser->mMiase->getSed()->getNumOfSimulations () > 0)
+      if (myParser->mMiase->getSed()->getNumOfSimulations() > 0)
         {
           std::cout << "NumOfSimulations: " <<
-          myParser->mMiase->getSed()->getNumOfSimulations () << std::endl << std::endl;
+                    myParser->mMiase->getSed()->getNumOfSimulations() << std::endl << std::endl;
 
           for (i = 0 ; i < myParser->mMiase->getSed()->getNumOfSimulations() ; i++)
             {
               std::cout << "    Simulation nr. :" << i << std::endl;
 
               std::cout << "     id: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getId() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getId() << std::endl;
               std::cout << "     name: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getName() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getName() << std::endl;
 
               std::cout << "        InitialTime: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getInitialTime() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getInitialTime() << std::endl;
               std::cout << "        OutputStartTime: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getOutputStartTime() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getOutputStartTime() << std::endl;
               std::cout << "        OutputEndTime: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getOutputEndTime() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getOutputEndTime() << std::endl;
               std::cout << "        NumberOfPoints: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getNumberOfPoints() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getSimulation(i))->getNumberOfPoints() << std::endl;
             }
         }
+
       std::cout << std::endl << std::endl;
 
-      if (myParser->mMiase->getSed()->getNumOfModels () > 0)
+      if (myParser->mMiase->getSed()->getNumOfModels() > 0)
         {
           std::cout << "NumOfModels: " <<
-          myParser->mMiase->getSed()->getNumOfModels () << std::endl << std::endl;
+                    myParser->mMiase->getSed()->getNumOfModels() << std::endl << std::endl;
 
           for (i = 0 ; i < myParser->mMiase->getSed()->getNumOfModels() ; i++)
             {
               std::cout << "    Model nr. :" << i << std::endl;
 
               std::cout << "     id: " <<
-              myParser->mMiase->getSed()->getModel(i)->getId() << std::endl;
+                        myParser->mMiase->getSed()->getModel(i)->getId() << std::endl;
               std::cout << "     name: " <<
-              myParser->mMiase->getSed()->getModel(i)->getName() << std::endl;
+                        myParser->mMiase->getSed()->getModel(i)->getName() << std::endl;
 
               std::cout << "        type: " <<
-              myParser->mMiase->getSed()->getModel(i)->getType() << std::endl;
+                        myParser->mMiase->getSed()->getModel(i)->getType() << std::endl;
               std::cout << "        source: " <<
-              myParser->mMiase->getSed()->getModel(i)->getSource() << std::endl;
+                        myParser->mMiase->getSed()->getModel(i)->getSource() << std::endl;
 
-              if (myParser->mMiase->getSed()->getModel(i)->getNumOfChanges () > 0)
+              if (myParser->mMiase->getSed()->getModel(i)->getNumOfChanges() > 0)
                 {
                   std::cout << "              NumOfChanges: " <<
-                  myParser->mMiase->getSed()->getModel(i)->getNumOfChanges() << std::endl << std::endl;
+                            myParser->mMiase->getSed()->getModel(i)->getNumOfChanges() << std::endl << std::endl;
 
                   for (j = 0 ; j < myParser->mMiase->getSed()->getModel(i)->getNumOfChanges() ; j++)
                     {
@@ -822,66 +885,68 @@ void CMiaseParser::testDataStructure()
                         {
                           std::cout << "                   Change the ATTRIBUTE: " << std::endl;
                           std::cout << "                     NewValue: " <<
-                          ((CMiaseChangeAttribute*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getNewValue() << std::endl;
+                                    ((CMiaseChangeAttribute*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getNewValue() << std::endl;
                           std::cout << "                     Target: " <<
-                          ((CMiaseChangeAttribute*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getTarget() << std::endl;
+                                    ((CMiaseChangeAttribute*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getTarget() << std::endl;
                         }
 
                       if (myParser->mMiase->getSed()->getModel(i)->getChange(j)->mType == CMiaseChange::MATH)
                         {
                           std::cout << "                   Change the MATH: " << std::endl;
                           std::cout << "                     NewMath: " <<
-                          ((CMiaseChangeMath*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getNewMath() << std::endl;
+                                    ((CMiaseChangeMath*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getNewMath() << std::endl;
                           std::cout << "                     Target: " <<
-                          ((CMiaseChangeMath*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getTarget() << std::endl;
+                                    ((CMiaseChangeMath*)myParser->mMiase->getSed()->getModel(i)->getChange(j))->getTarget() << std::endl;
                         }
                     }
                 }
             }
         }
+
       std::cout << std::endl << std::endl;
 
-      if (myParser->mMiase->getSed()->getNumOfTasks () > 0)
+      if (myParser->mMiase->getSed()->getNumOfTasks() > 0)
         {
           std::cout << "NumOfTasks: " <<
-          myParser->mMiase->getSed()->getNumOfTasks () << std::endl << std::endl;
+                    myParser->mMiase->getSed()->getNumOfTasks() << std::endl << std::endl;
 
           for (i = 0 ; i < myParser->mMiase->getSed()->getNumOfTasks() ; i++)
             {
               std::cout << "    Task nr. :" << i << std::endl;
 
               std::cout << "     id: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getTask(i))->getId() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getTask(i))->getId() << std::endl;
               std::cout << "     name: " <<
-              ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getTask(i))->getName() << std::endl;
+                        ((CMiaseUniformTimeCourse*)myParser->mMiase->getSed()->getTask(i))->getName() << std::endl;
 
               std::cout << "     notes: " <<
-              myParser->mMiase->getSed()->getTask(i)->getNotes()->getNotes() << std::endl;
+                        myParser->mMiase->getSed()->getTask(i)->getNotes()->getNotes() << std::endl;
 
               if (myParser->mMiase->getSed()->getTask(i)->getNumberOfMeasurements() > 0)
                 {
                   std::cout << "           NumberOfMeasurements: " <<
-                  myParser->mMiase->getSed()->getTask(i) << std::endl << std::endl;
+                            myParser->mMiase->getSed()->getTask(i) << std::endl << std::endl;
 
                   for (j = 0 ; j < myParser->mMiase->getSed()->getTask(i)->
-                        getNumberOfMeasurements() ; j++)
+                       getNumberOfMeasurements() ; j++)
                     {
                       std::cout << "                 Measurement nr. :" << j << std::endl;
 
                       std::cout << "     source: " <<
-                      myParser->mMiase->getSed()->getTask(i)->getMeasurement(j)->getSource() << std::endl;
+                                myParser->mMiase->getSed()->getTask(i)->getMeasurement(j)->getSource() << std::endl;
                       std::cout << "     name: " <<
-                      myParser->mMiase->getSed()->getTask(i)->getMeasurement(j)->getName() << std::endl;
+                                myParser->mMiase->getSed()->getTask(i)->getMeasurement(j)->getName() << std::endl;
                     }
                 }
             }
         }
+
       std::cout << std::endl << std::endl;
 
-      if (myParser->mMiase->getSed()->getNumOfOutputs () > 0)
+      if (myParser->mMiase->getSed()->getNumOfOutputs() > 0)
         {
           std::cout << "NumOfOutputs: " <<
-          myParser->mMiase->getSed()->getNumOfOutputs () << std::endl << std::endl;
+                    myParser->mMiase->getSed()->getNumOfOutputs() << std::endl << std::endl;
 
           for (i = 0 ; i < myParser->mMiase->getSed()->getNumOfOutputs() ; i++)
             {

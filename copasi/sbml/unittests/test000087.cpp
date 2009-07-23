@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/01 08:28:40 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:53:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -445,7 +445,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
                   // are always the same
                   if (index2 == 1)
                     {
-                      last = strtod(number_string.c_str(), NULL);
+                      last = strToDouble(number_string.c_str(), NULL);
 
                       if (index == 1)
                         {
@@ -459,7 +459,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
                     }
                   else
                     {
-                      current = strtod(number_string.c_str(), NULL);
+                      current = strToDouble(number_string.c_str(), NULL);
                       CPPUNIT_ASSERT(fabs((current - last) / last) < 1e-20);
                       last = current;
                     }

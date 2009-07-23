@@ -21,6 +21,7 @@
 #include "CChemEqParser.h"
 
 #include "utilities/CCopasiMessage.h"
+#include "utilities/utility.h"
 
 #undef yyparse
 #define yyparse CChemEqParserBase::yyparse

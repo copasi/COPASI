@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 15:43:14 $
+   $Date: 2009/07/23 19:53:47 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -115,5 +120,14 @@ std::string utf8ToLocale(const std::string & utf8);
  * @return std::string utf8
  */
 std::string localeToUtf8(const std::string & locale);
+
+/**
+ * Convert a character sequence to a double
+ * @param const char * str
+ * @param char const ** tail (default: NULL)
+ * @return double
+ */
+double strToDouble(const char * str,
+                   char const ** tail = NULL);
 
 #endif // COPASI_utilities

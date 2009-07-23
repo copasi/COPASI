@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:44:42 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 19:53:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -877,7 +877,7 @@ void CQLayoutMainWindow::setZoomFactor(std::string s)
 {
   s.erase(s.size() - 1);
   // create a number from the text
-  double n = strtod(s.c_str(), NULL);
+  double n = strToDouble(s.c_str(), NULL);
   n /= 100.0;
   this->mpGLViewport->setZoomFactor(n);
 }

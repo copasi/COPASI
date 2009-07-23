@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.15 $
+$Revision: 1.16 $
 $Name:  $
-$Author: ssahle $
-$Date: 2009/04/24 12:53:18 $
+$Author: shoops $
+$Date: 2009/07/23 19:53:47 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@ End CVS Header */
 #include "copasi.h"
 
 #include "CTableCell.h"
+
+#include "utilities/utility.h"
 
 CTableCell::CTableCell(const char & separator):
     mSeparator(separator),
@@ -103,8 +105,8 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
   cell.mIsEmpty = false;
 
   /* Try to convert the string into a number */
-  char * Tail;
-  cell.mValue = strtod(cell.mName.c_str(), & Tail);
+  const char * Tail;
+  cell.mValue = strToDouble(cell.mName.c_str(), & Tail);
 
   if (!*Tail)
     {
