@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.31 $
+$Revision: 1.32 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/23 19:53:47 $
+$Date: 2009/07/23 22:28:37 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@ End CVS Header */
 #include <stdio.h>
 #include <time.h>
 
+#include <limits>
 #include <string>
 #include <stdlib.h>
 
@@ -966,17 +967,20 @@ double strToDouble(const char * str,
   if (isnan(Value))
     {
       if (!strcmp(str, "INF"))
-        Value = std::numeric_limits<C_FLOAT64>::infinity();
+        {
+          Value = std::numeric_limits<C_FLOAT64>::infinity();
+          in.seekg(3);
+        }
       else if (!strcmp(str, "-INF"))
-        Value = - std::numeric_limits<C_FLOAT64>::infinity();
+        {
+          Value = - std::numeric_limits<C_FLOAT64>::infinity();
+          in.seekg(4);
+        }
     }
 
   if (tail != NULL && !isnan(Value))
     {
-      std::string Tail;
-      in >> Tail;
-
-      *tail = str + strlen(str) - Tail.length();
+      *tail = str + in.tellg();
     }
 
   return Value;
