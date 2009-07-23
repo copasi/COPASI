@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/05/14 17:51:58 $
+   $Date: 2009/07/23 18:17:12 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,9 +88,9 @@ protected:
   //Attributes
   Type * mpLineEdit;
 
-private:
   QString mLastAccepted;
 
+private:
   QColor mSavedColor;
 
   QColor mAcceptableColor;

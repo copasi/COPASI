@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 17:28:22 $
+//   $Date: 2009/07/23 18:17:12 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,7 +143,8 @@ public:
             return Intermediate;
           }
 
-        if (mpContext->mpExperimentSetCopy->getParameter(TO_UTF8(input)))
+        if (mLastAccepted != input &&
+            mpContext->mpExperimentSetCopy->getParameter(TO_UTF8(input)))
           {
             setColor(Invalid);
             return Intermediate;
