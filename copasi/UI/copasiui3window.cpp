@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.262 $
+//   $Revision: 1.263 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:33:27 $
+//   $Author: nsimus $
+//   $Date: 2009/07/23 11:21:35 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -809,15 +809,6 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
       setCursor(oldCursor);
 
-      if (success)  slotMergeModels();
-
-      //ListViews::notify(ListViews::MODEL, ListViews::DELETE,
-      //               (*CCopasiRootContainer::getDatamodelList())[1]->getModel()->getKey());
-
-      (*CCopasiRootContainer::getDatamodelList())[1]->getModel()->cleanup();
-
-#if 0
-
       if (!success)
         {
           QString Message = "Error while loading file " + newFile + QString("!\n\n");
@@ -851,6 +842,11 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
                                 QMessageBox::Ok, QMessageBox::Ok);
         }
 
+      if (success)  slotMergeModels();
+
+      //(*CCopasiRootContainer::getDatamodelList())[1]->getModel()->cleanup();
+      CCopasiRootContainer::removeDatamodel(1);
+
       mSaveAsRequired = true;
 
       mpaSave->setEnabled(true);
@@ -862,8 +858,6 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       ListViews::switchAllListViewsToWidget(1, "");
 
       refreshRecentFileMenu();
-
-#endif
     }
 }
 
