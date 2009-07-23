@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:21 $
+//   $Date: 2009/07/23 17:28:23 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -279,7 +279,7 @@ int main()
   assert(pExperimentSet != NULL);
 
   // first experiment (we only have one here)
-  CExperiment* pExperiment = new CExperiment();
+  CExperiment* pExperiment = new CExperiment(pDataModel);
   assert(pExperiment != NULL);
   // tell COPASI where to find the data
   // reading data from string is not possible with the current C++ API

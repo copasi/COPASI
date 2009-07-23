@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 19:31:34 $
+//   $Date: 2009/07/23 17:28:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -290,7 +290,7 @@ bool CQFittingWidget::runTask()
 void CQFittingWidget::slotExperimentData()
 {
   CQExperimentData * pDialog = new CQExperimentData(this);
-  pDialog->load(mpExperimentSet);
+  pDialog->load(mpExperimentSet, mpDataModel);
 
   connect(pDialog, SIGNAL(experimentChanged()), mpParameters, SLOT(slotExperimentChanged()));
   connect(pDialog, SIGNAL(experimentChanged()), mpConstraints, SLOT(slotExperimentChanged()));
@@ -366,7 +366,7 @@ void CQFittingWidget::slotCrossValidationData()
 {
 #ifdef COPASI_CROSSVALIDATION
   CQExperimentData * pDialog = new CQExperimentData(this);
-  pDialog->load(mpCrossValidationSet);
+  pDialog->load(mpCrossValidationSet, mpDataModel);
 
   connect(pDialog, SIGNAL(experimentChanged()), mpParameters, SLOT(slotCrossValidationChanged()));
   connect(pDialog, SIGNAL(experimentChanged()), mpConstraints, SLOT(slotCrossValidationChanged()));

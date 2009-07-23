@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 13:30:54 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 17:28:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,8 +72,8 @@ const char* CExperiment::WeightMethodType[] =
   NULL
 };
 
-CExperiment::CExperiment(const std::string & name,
-                         const CCopasiContainer * pParent):
+CExperiment::CExperiment(const CCopasiContainer * pParent,
+                         const std::string & name):
     CCopasiParameterGroup(name, pParent),
     mpFileName(NULL),
     mpFirstRow(NULL),
@@ -103,7 +103,7 @@ CExperiment::CExperiment(const std::string & name,
 
 CExperiment::CExperiment(const CExperiment & src,
                          const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
+    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpLastRow(NULL),
@@ -132,7 +132,7 @@ CExperiment::CExperiment(const CExperiment & src,
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
                          const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
+    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpLastRow(NULL),
@@ -425,9 +425,7 @@ bool CExperiment::calculateStatistics()
 
   if (*mpTaskType == CCopasiTask::timeCourse)
     {
-      CCopasiDataModel* pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
-      pTime = const_cast<C_FLOAT64 *>(&pDataModel->getModel()->getTime());
+      pTime = const_cast<C_FLOAT64 *>(&getObjectDataModel()->getModel()->getTime());
       SavedTime = *pTime;
     }
 
@@ -670,10 +668,8 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnCount.resize(numCols);
   mColumnCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
   CModel * pModel =
-    dynamic_cast< CModel * >(pDataModel->ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(pDataModel->getModel()->getObjectName()))));
+    dynamic_cast< CModel * >(getObjectDataModel()->ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(getObjectDataModel()->getModel()->getObjectName()))));
 
   mIndependentRefreshMethods = pModel->buildInitialRefreshSequence(IdependentObjects);
   mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
@@ -1071,12 +1067,9 @@ const std::string & CExperiment::getFileName() const
 {
   std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
 
-  const CCopasiDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
-
   if (CDirEntry::isRelativePath(*pFileName) &&
       !CDirEntry::makePathAbsolute(*pFileName,
-                                   pDataModel->getFileName()))
+                                   getObjectDataModel()->getFileName()))
     *pFileName = CDirEntry::fileName(*pFileName);
 
   return *mpFileName;

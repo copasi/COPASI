@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/07/23 17:28:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,7 +252,7 @@ private:
 
 void CQExperimentData::slotRevert()
 {
-  load(mpExperimentSet);
+  load(mpExperimentSet, mpDataModel);
 }
 
 void CQExperimentData::slotFirst()
@@ -368,7 +368,7 @@ void CQExperimentData::slotCheckHeader(bool checked)
 
 void CQExperimentData::slotExperimentAdd()
 {
-  CExperiment Experiment;
+  CExperiment Experiment(mpDataModel);
   CExperiment * pExperiment = mpExperimentSetCopy->addExperiment(Experiment);
 
   unsigned C_INT32 First, Last;
@@ -645,8 +645,10 @@ void CQExperimentData::slotOK()
   accept();
 }
 
-bool CQExperimentData::load(CExperimentSet * pExperimentSet)
+bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * pDataModel)
 {
+  mpDataModel = pDataModel;
+
 #ifdef COPASI_CROSSVALIDATION
   mCrossValidation = (dynamic_cast< CCrossValidationSet * >(pExperimentSet) != NULL);
 #endif // COPASI_CROSSVALIDATION

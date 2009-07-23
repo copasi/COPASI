@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 13:30:54 $
+//   $Author: shoops $
+//   $Date: 2009/07/23 17:28:23 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,24 +104,24 @@ public:
 
   /**
    * Default constructor
+   * @param const CCopasiContainer * pParent
    * @param const std::string & name (default: Experiment)
-   * @param const CCopasiContainer * pParent (default: NULL)
    */
-  CExperiment(const std::string & name = "Experiment",
-              const CCopasiContainer * pParent = NULL);
+  CExperiment(const CCopasiContainer * pParent,
+              const std::string & name = "Experiment");
 
   /**
    * Copy constructor
    * @param const CExperiment & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CCopasiContainer * pParent (default: src data model)
    */
   CExperiment(const CExperiment & src,
               const CCopasiContainer * pParent = NULL);
 
   /**
-   * Specific constructor used for reading copasi files
+   * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CCopasiContainer * pParent (default: group data model)
    */
   CExperiment(const CCopasiParameterGroup & group,
               const CCopasiContainer * pParent = NULL);

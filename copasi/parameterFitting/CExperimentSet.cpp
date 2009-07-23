@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.30 $
+$Revision: 1.31 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/02/23 16:20:15 $
+$Date: 2009/07/23 17:28:23 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,8 @@ End CVS Header */
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
 
-CExperimentSet::CExperimentSet(const std::string & name,
-                               const CCopasiContainer * pParent):
+CExperimentSet::CExperimentSet(const CCopasiContainer * pParent,
+                               const std::string & name):
     CCopasiParameterGroup(name, pParent, "CExperimentSet"),
     mpExperiments(NULL),
     mNonExperiments(0)
@@ -38,14 +38,14 @@ CExperimentSet::CExperimentSet(const std::string & name,
 
 CExperimentSet::CExperimentSet(const CExperimentSet & src,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
+    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
     mpExperiments(NULL),
     mNonExperiments(0)
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
+    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
     mpExperiments(NULL),
     mNonExperiments(0)
 {initializeParameter();}
@@ -63,6 +63,7 @@ bool CExperimentSet::elevateChildren()
   for (; it != end; ++it)
     {
       if (dynamic_cast< CCopasiParameterGroup * >(*it) == NULL) continue;
+
       if (!elevate<CExperiment, CCopasiParameterGroup>(*it)) return false;
     }
 
@@ -96,6 +97,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
         {
           CurrentFileName = (*it)->getFileName();
           CurrentLineNumber = 1;
+
           if (in.is_open())
             {
               in.close();
@@ -103,6 +105,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
             }
 
           in.open(utf8ToLocale(CurrentFileName).c_str(), std::ios::binary);
+
           if (in.fail())
             {
               CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, CurrentFileName.c_str());
@@ -111,6 +114,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
         }
 
       if (!(*it)->read(in, CurrentLineNumber)) return false;
+
       if (!(*it)->compile(listOfContainer)) return false;
 
       const std::map< CCopasiObject *, unsigned C_INT32 > & ExpDependentObjects
@@ -174,6 +178,7 @@ bool CExperimentSet::calculateStatistics()
 
   unsigned C_INT32 i, Count;
   C_FLOAT64 Tmp;
+
   for (; it != end; ++it)
     {
       (*it)->calculateStatistics();
@@ -200,6 +205,7 @@ bool CExperimentSet::calculateStatistics()
     }
 
   unsigned C_INT32 imax = mDependentObjects.size();
+
   for (i = 0; i != imax; i++)
     {
       Count = mDependentDataCount[i];
@@ -250,6 +256,7 @@ bool CExperimentSet::calculateStatistics()
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
+
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
@@ -265,19 +272,19 @@ const CVector< CCopasiObject * > & CExperimentSet::getDependentObjects() const
 {return mDependentObjects;}
 
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentObjectiveValues() const
-  {return mDependentObjectiveValues;}
+{return mDependentObjectiveValues;}
 
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentRMS() const
-  {return mDependentRMS;}
+{return mDependentRMS;}
 
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMean() const
-  {return mDependentErrorMean;}
+{return mDependentErrorMean;}
 
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMeanSD() const
-  {return mDependentErrorMeanSD;}
+{return mDependentErrorMeanSD;}
 
 unsigned C_INT32 CExperimentSet::getExperimentCount() const
-  {return size() - mNonExperiments;}
+{return size() - mNonExperiments;}
 
 CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
 {
@@ -285,6 +292,7 @@ CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
   std::string name = experiment.getObjectName();
 
   int i = 0;
+
   while (getParameter(name))
     {
       i++;
@@ -307,36 +315,36 @@ CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index)
 {return (*mpExperiments)[index + mNonExperiments];}
 
 const CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index) const
-  {return (*mpExperiments)[index + mNonExperiments];}
+{return (*mpExperiments)[index + mNonExperiments];}
 
 CExperiment * CExperimentSet::getExperiment(const std::string & name)
 {return static_cast<CExperiment *>(getGroup(name));}
 
 const CExperiment * CExperimentSet::getExperiment(const std::string & name) const
-  {return static_cast<const CExperiment *>(getGroup(name));}
+{return static_cast<const CExperiment *>(getGroup(name));}
 
 const CCopasiTask::Type & CExperimentSet::getExperimentType(const unsigned C_INT32 & index) const
-  {return getExperiment(index)->getExperimentType();}
+{return getExperiment(index)->getExperimentType();}
 
 const CMatrix< C_FLOAT64 > & CExperimentSet::getIndependentData(const unsigned C_INT32 & index) const
-  {return getExperiment(index)->getIndependentData();}
+{return getExperiment(index)->getIndependentData();}
 
 const CMatrix< C_FLOAT64 > & CExperimentSet::getDependentData(const unsigned C_INT32 & index) const
-  {return getExperiment(index)->getDependentData();}
+{return getExperiment(index)->getDependentData();}
 
 unsigned C_INT32 CExperimentSet::keyToIndex(const std::string & key) const
-  {
-    const CExperiment * pExp = dynamic_cast<const CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(key));
+{
+  const CExperiment * pExp = dynamic_cast<const CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(key));
 
-    if (!pExp) return C_INVALID_INDEX;
+  if (!pExp) return C_INVALID_INDEX;
 
-    unsigned C_INT32 i, imax = size();
+  unsigned C_INT32 i, imax = size();
 
-    for (i = 0; i < imax; i++)
-      if (pExp == getExperiment(i)) return i;
+  for (i = 0; i < imax; i++)
+    if (pExp == getExperiment(i)) return i;
 
-    return C_INVALID_INDEX;
-  }
+  return C_INVALID_INDEX;
+}
 
 void CExperimentSet::sort()
 {
@@ -367,38 +375,38 @@ void CExperimentSet::sort()
 }
 
 std::vector< std::string > CExperimentSet::getFileNames() const
-  {
-    std::vector< std::string > List;
-    std::string currentFile = "";
+{
+  std::vector< std::string > List;
+  std::string currentFile = "";
 
-    std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
-    std::vector< CExperiment * >::iterator end = mpExperiments->end();
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
-    for (; it != end; ++it)
-      if (currentFile != (*it)->getFileName())
-        {
-          currentFile = (*it)->getFileName();
-          List.push_back(currentFile);
-        }
+  for (; it != end; ++it)
+    if (currentFile != (*it)->getFileName())
+      {
+        currentFile = (*it)->getFileName();
+        List.push_back(currentFile);
+      }
 
-    return List;
-  }
+  return List;
+}
 
 unsigned C_INT32 CExperimentSet::getDataPointCount() const
-  {
-    unsigned C_INT32 Count = 0;
-    std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
-    std::vector< CExperiment * >::iterator end = mpExperiments->end();
+{
+  unsigned C_INT32 Count = 0;
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
-    for (; it != end; ++it)
-      Count += (*it)->getDependentData().numRows() * (*it)->getDependentData().numCols();
+  for (; it != end; ++it)
+    Count += (*it)->getDependentData().numRows() * (*it)->getDependentData().numCols();
 
-    return Count;
-  }
+  return Count;
+}
 
 #ifdef COPASI_CROSSVALIDATION
-CCrossValidationSet::CCrossValidationSet(const std::string & name,
-    const CCopasiContainer * pParent):
+CCrossValidationSet::CCrossValidationSet(const CCopasiContainer * pParent,
+    const std::string & name):
     CExperimentSet(name, pParent),
     mpWeight(NULL),
     mpThreshold(NULL)
@@ -437,7 +445,7 @@ void CCrossValidationSet::setThreshold(const unsigned C_INT32 & threshold)
 {*mpThreshold = threshold;}
 
 const unsigned C_INT32 & CCrossValidationSet::getThreshold() const
-  {return *mpThreshold;}
+{return *mpThreshold;}
 
 void CCrossValidationSet::initializeParameter()
 {
