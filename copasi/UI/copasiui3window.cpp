@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.263 $
+//   $Revision: 1.264 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/07/23 11:21:35 $
+//   $Author: ssahle $
+//   $Date: 2009/07/23 16:03:08 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -757,7 +757,7 @@ void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 #ifdef WITH_MERGEMODEL
 void CopasiUI3Window::slotAddFileOpen(QString file)
 {
-  DataModelGUI* mdataModel; // to keep track of temporary  data model..
+  //DataModelGUI* mdataModel; // to keep track of temporary  data model..
 
   bool success = true;
 
@@ -791,7 +791,8 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
       ListViews::switchAllListViewsToWidget(0, "");
 
-      mdataModel = new DataModelGUI; // create a new data model
+      if (!dataModel)
+        dataModel = new DataModelGUI; // create a new data model
 
       QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
@@ -800,7 +801,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
       try
         {
-          success = mdataModel->addModel(TO_UTF8(newFile));
+          success = dataModel->addModel(TO_UTF8(newFile));
         }
       catch (...)
         {
