@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2009/07/23 16:38:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,6 +127,7 @@ bool COptMethodPS::move(const unsigned C_INT32 & index)
   std::set< unsigned C_INT32 >::const_iterator endInformant = mInformants[index].end();
 
   unsigned C_INT32 i = mNumInformed + mNumInformedMin;
+
   for (; i && itInformant != endInformant; --i, ++itInformant)
     if (mBestValues[*itInformant] < BestInformantValue)
       {
@@ -148,15 +149,15 @@ bool COptMethodPS::move(const unsigned C_INT32 & index)
       // force it to be within the bounds
       switch (OptItem.checkConstraint(*pIndividual))
         {
-        case - 1:
-          *pIndividual = *OptItem.getLowerBoundValue();
-          *pVelocity = 0.0;
-          break;
+          case - 1:
+            *pIndividual = *OptItem.getLowerBoundValue();
+            *pVelocity = 0.0;
+            break;
 
-        case 1:
-          *pIndividual = *OptItem.getUpperBoundValue();
-          *pVelocity = 0.0;
-          break;
+          case 1:
+            *pIndividual = *OptItem.getUpperBoundValue();
+            *pVelocity = 0.0;
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -246,6 +247,7 @@ bool COptMethodPS::create(const unsigned C_INT32 & index)
                 {
                   C_FLOAT64 mean = (mx + mn) * 0.5;
                   C_FLOAT64 sigma = mean * 0.01;
+
                   do
                     {
                       *pIndividual = mpRandom->getRandomNormal(mean, sigma);
@@ -287,13 +289,13 @@ bool COptMethodPS::create(const unsigned C_INT32 & index)
       // force it to be within the bounds
       switch (OptItem.checkConstraint(*pIndividual))
         {
-        case - 1:
-          *pIndividual = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            *pIndividual = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          *pIndividual = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            *pIndividual = *OptItem.getUpperBoundValue();
+            break;
         }
 
       *pBestPosition = *pIndividual;
@@ -359,6 +361,7 @@ bool COptMethodPS::initialize()
   mIndividuals.resize(mSwarmSize);
 
   unsigned C_INT32 i;
+
   for (i = 0; i < mSwarmSize; i++)
     mIndividuals[i].resize(mVariableSize);
 
@@ -371,6 +374,7 @@ bool COptMethodPS::initialize()
   mNumInformed = mNumInformedMin;
 
   mShuffle.resize(mSwarmSize);
+
   for (i = 0; i < mSwarmSize; i++)
     mShuffle[i] = i;
 
@@ -419,6 +423,7 @@ void COptMethodPS::buildInformants()
       mInformants[i].insert(i);
 
       pShuffle = mShuffle.array() + mpRandom->getRandomU(mSwarmSize - 2);
+
       for (j = 1; j < mNumInformed; j++, pShuffle++)
         {
           if (pShuffle == pEnd)
@@ -451,6 +456,10 @@ bool COptMethodPS::reachedStdDeviation()
 
   for (; pValue != pEnd; ++pValue)
     {
+      // We need to deal with infinity values since they indicate failure
+      if (*pValue == std::numeric_limits<C_FLOAT64>::infinity())
+        return false;
+
       Delta = *pValue - Mean;
       Mean += Delta / ++N;
       // This uses the new mean, i.e., not Delta * Delta
@@ -459,7 +468,8 @@ bool COptMethodPS::reachedStdDeviation()
 
   Variance /= (N - 1);
 
-  if (Variance > mVariance) return false;
+  if (Variance > mVariance)
+    return false;
 
   // The variance of the function value is smaller than requiered. We now
   // Check the variance of the flock positions.
@@ -490,9 +500,11 @@ bool COptMethodPS::reachedStdDeviation()
 
   pFirstMoment = FirstMoments.array();
   pSecondMoment = SecondMoments.array();
+
   for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment)
     {
       Variance = (*pSecondMoment - *pFirstMoment * *pFirstMoment / mSwarmSize) / (mSwarmSize - 1);
+
       if (Variance > mVariance) return false;
     }
 
@@ -524,13 +536,13 @@ bool COptMethodPS::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(*pIndividual))
         {
-        case - 1:
-          *pIndividual = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            *pIndividual = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          *pIndividual = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            *pIndividual = *OptItem.getUpperBoundValue();
+            break;
         }
 
       *pBestPosition = *pIndividual;
