@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.32 $
+$Revision: 1.33 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/23 22:28:37 $
+$Date: 2009/07/23 22:50:14 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -963,20 +963,6 @@ double strToDouble(const char * str,
   in.str(str);
 
   in >> Value;
-
-  if (isnan(Value))
-    {
-      if (!strcmp(str, "INF"))
-        {
-          Value = std::numeric_limits<C_FLOAT64>::infinity();
-          in.seekg(3);
-        }
-      else if (!strcmp(str, "-INF"))
-        {
-          Value = - std::numeric_limits<C_FLOAT64>::infinity();
-          in.seekg(4);
-        }
-    }
 
   if (tail != NULL && !isnan(Value))
     {
