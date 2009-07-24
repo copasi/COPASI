@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -215,12 +215,6 @@ void COptMethodHookeJeeves::initObjects()
   addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 bool COptMethodHookeJeeves::initialize()
 {
   cleanup();
@@ -247,14 +241,10 @@ bool COptMethodHookeJeeves::initialize()
   mNew.resize(mVariableSize);
   mDelta.resize(mVariableSize);
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   return true;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 bool COptMethodHookeJeeves::cleanup()
 {
@@ -277,7 +267,7 @@ bool COptMethodHookeJeeves::evaluate()
 
   // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = 2.0 * DBL_MAX;
+    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
     // get the value of the objective function
     mEvaluationValue = mpOptProblem->getCalculateValue();

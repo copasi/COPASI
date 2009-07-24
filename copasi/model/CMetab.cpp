@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.147 $
+//   $Revision: 1.148 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/08 19:52:01 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,12 +316,6 @@ void CMetab::setStatus(const CModelEntity::Status & status)
   if (mpModel && mpCompartment) refreshConcentration();
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 bool CMetab::compile()
 {
   bool success = true;
@@ -387,7 +381,7 @@ bool CMetab::compile()
         // Fixed values
         mRate = 0.0;
         mConcRate = 0.0;
-        mTT = 2 * DBL_MAX;
+        mTT = std::numeric_limits<C_FLOAT64>::infinity();
         break;
 
       case ASSIGNMENT:
@@ -701,7 +695,7 @@ void CMetab::refreshTransitionTime()
         Flux = std::min(PositiveFlux, NegativeFlux);
 
         if (Flux == 0.0)
-          mTT = 2 * DBL_MAX;
+          mTT = std::numeric_limits<C_FLOAT64>::infinity();
         else
           mTT = *mpValueData / Flux;
       }
@@ -711,10 +705,6 @@ void CMetab::refreshTransitionTime()
         break;
     }
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 void CMetab::initObjects()
 {

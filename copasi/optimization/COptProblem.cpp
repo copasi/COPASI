@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:20 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,7 +238,7 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
   if (pCallBack)
     {
       // We need to reset mSolutionValue here since initialize is called later during the process
-      mSolutionValue = (*mpParmMaximize ? -2.0 : 2.0) * DBL_MAX;
+      mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             CCopasiParameter::DOUBLE,
@@ -260,12 +260,6 @@ void COptProblem::initObjects()
   addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
-
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
 
 bool COptProblem::initializeSubtaskBeforeOutput()
 {
@@ -294,7 +288,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 
 bool COptProblem::initialize()
 {
-  mInfinity = (*mpParmMaximize ? -2.0 : 2.0) * DBL_MAX;
+  mInfinity = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
 
   if (!mpModel) return false;
 
@@ -392,10 +386,6 @@ bool COptProblem::initialize()
 
   return success;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 bool COptProblem::restore(const bool & updateModel)
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/04 19:33:18 $
+//   $Date: 2009/07/24 14:30:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,12 +25,6 @@
 #include "copasi/utilities/CCopasiMessage.h"
 
 #include "copasi/function/CEvaluationNode.h"
-
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
 
 class CRandom;
 class CCopasiDataModel;
@@ -256,7 +250,7 @@ private:
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
     if (value > 170)
-      return DBL_MAX * 2;
+      return std::numeric_limits<C_FLOAT64>::infinity();
 
     if (value == 0.0)
       return 1.0;
@@ -316,9 +310,5 @@ private:
 
   static CRandom * mpRandom;
 };
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 #endif // COPASI_CEvaluationNodeFunction

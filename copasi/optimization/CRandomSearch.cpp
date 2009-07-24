@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,12 +67,6 @@ void CRandomSearch::initObjects()
   addObjectReference("Current Iteration", mCurrentIteration, CCopasiObject::ValueInt);
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 /**
  * Optimizer Function
  * Returns: true if properly initialized
@@ -88,17 +82,13 @@ bool CRandomSearch::initialize()
   mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                                       * getValue("Seed").pUINT);
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mVariableSize = mpOptItem->size();
   mIndividual.resize(mVariableSize);
 
   return true;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 /**
  * Optimizer Function
@@ -223,7 +213,7 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
-    mValue = 2.0 * DBL_MAX;
+    mValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
     mValue = mpOptProblem->getCalculateValue();
 

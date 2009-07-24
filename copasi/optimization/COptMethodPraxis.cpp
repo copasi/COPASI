@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:47:32 $
+//   $Author: shoops $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,12 +52,6 @@ void COptMethodPraxis::initObjects()
 {
   addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
 }
-
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
 
 bool COptMethodPraxis::optimise()
 {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:48:15 $
+//   $Author: shoops $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,7 +200,7 @@ bool COptMethodSteepestDescent::initialize()
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   return true;
 }

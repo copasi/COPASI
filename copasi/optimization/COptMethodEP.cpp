@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/09/01 16:58:11 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,7 @@ COptMethodEP::~COptMethodEP()
 bool COptMethodEP::optimise()
 {
   if (!initialize()) return false;
+
   bool Continue = true;
 
   // initialise the population
@@ -135,11 +136,13 @@ bool COptMethodEP::cleanup()
   unsigned C_INT32 i;
   // pdelete all used variables
   pdelete(mpRandom);
+
   for (i = 0; i < mIndividual.size(); i++)
     {
       pdelete(mIndividual[i]);
       pdelete(mVariance[i]);
     }
+
   return true;
 }
 
@@ -148,6 +151,7 @@ bool COptMethodEP::initialize()
   cleanup();
 
   unsigned C_INT32 i;
+
   if (!COptMethod::initialize()) return false;
 
   mGenerations = * getValue("Number of Generations").pUINT;
@@ -159,6 +163,7 @@ bool COptMethodEP::initialize()
                           CCopasiParameter::UINT,
                           & mGeneration,
                           & mGenerations);
+
   mGeneration++;
 
   mPopulationSize = * getValue("Population Size").pUINT;
@@ -170,6 +175,7 @@ bool COptMethodEP::initialize()
 
   mIndividual.resize(2*mPopulationSize);
   mVariance.resize(2*mPopulationSize);
+
   for (i = 0; i < 2*mPopulationSize; i++)
     {
       mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
@@ -199,7 +205,7 @@ bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = 2.0 * DBL_MAX;
+    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
     mEvaluationValue = mpOptProblem->getCalculateValue();
 
@@ -234,27 +240,31 @@ bool COptMethodEP::creation()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = - DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
-          break;
+            if (!OptItem.checkLowerBound(mut)) // Inequality
+              {
+                if (mut == 0.0)
+                  mut = DBL_MIN;
+                else
+                  mut += mut * DBL_EPSILON;
+              }
+
+            break;
+
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+
+            if (!OptItem.checkUpperBound(mut)) // Inequality
+              {
+                if (mut == 0.0)
+                  mut = - DBL_MIN;
+                else
+                  mut -= mut * DBL_EPSILON;
+              }
+
+            break;
         }
 
       // We need to set the value here so that further checks take
@@ -310,6 +320,7 @@ bool COptMethodEP::creation()
                     {
                       C_FLOAT64 mean = (mx + mn) * 0.5;
                       C_FLOAT64 sigma = mean * 0.01;
+
                       do
                         {
                           mut = mpRandom->getRandomNormal(mean, sigma);
@@ -341,28 +352,33 @@ bool COptMethodEP::creation()
           // force it to be within the bounds
           switch (OptItem.checkConstraint(mut))
             {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
-              break;
+              case - 1:
+                mut = *OptItem.getLowerBoundValue();
 
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
-              break;
+                if (!OptItem.checkLowerBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = DBL_MIN;
+                    else
+                      mut += mut * DBL_EPSILON;
+                  }
+
+                break;
+
+              case 1:
+                mut = *OptItem.getUpperBoundValue();
+
+                if (!OptItem.checkUpperBound(mut)) // Inequality
+                  {
+                    if (mut == 0.0)
+                      mut = - DBL_MIN;
+                    else
+                      mut -= mut * DBL_EPSILON;
+                  }
+
+                break;
             }
+
           // We need to set the value here so that further checks take
           // account of the value.
           (*(*mpSetCalculateVariable)[j])(mut);
@@ -509,13 +525,13 @@ bool COptMethodEP::mutate(unsigned C_INT32 i)
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
         {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          break;
+          case - 1:
+            mut = *OptItem.getLowerBoundValue();
+            break;
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          break;
+          case 1:
+            mut = *OptItem.getUpperBoundValue();
+            break;
         }
 
       // We need to set the value here so that further checks take

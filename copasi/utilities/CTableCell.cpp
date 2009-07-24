@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.16 $
+$Revision: 1.17 $
 $Name:  $
 $Author: shoops $
-$Date: 2009/07/23 19:53:47 $
+$Date: 2009/07/24 14:30:48 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,12 +62,6 @@ const std::string & CTableCell::getName() const {return mName;}
 
 const C_FLOAT64 & CTableCell::getValue() const {return mValue;}
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 std::istream & operator >> (std::istream &is, CTableCell & cell)
 {
   static char buffer[256];
@@ -115,12 +109,12 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
   else if (cell.mName == "INF")
     {
       cell.mIsValue = true;
-      cell.mValue = DBL_MAX * 2;
+      cell.mValue = std::numeric_limits<C_FLOAT64>::infinity();
     }
   else if (cell.mName == "-INF")
     {
       cell.mIsValue = true;
-      cell.mValue = - DBL_MAX * 2;
+      cell.mValue = - std::numeric_limits<C_FLOAT64>::infinity();
     }
   else
     {
@@ -130,10 +124,6 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
 
   return is;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 CTableRow::CTableRow(const unsigned C_INT32 & size,
                      const char & separator):

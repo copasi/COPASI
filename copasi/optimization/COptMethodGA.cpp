@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:18:08 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,7 +97,7 @@ bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
   // check whether the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = 2.0 * DBL_MAX;
+    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
     mEvaluationValue = mpOptProblem->getCalculateValue();
 
@@ -387,12 +387,6 @@ void COptMethodGA::initObjects()
   addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 bool COptMethodGA::initialize()
 {
   cleanup();
@@ -430,8 +424,8 @@ bool COptMethodGA::initialize()
   mCrossOver.resize(mVariableSize);
 
   mValue.resize(2*mPopulationSize);
-  mValue = 2.0 * DBL_MAX;
-  mBestValue = 2.0 * DBL_MAX;
+  mValue = std::numeric_limits<C_FLOAT64>::infinity();
+  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mShuffle.resize(mPopulationSize);
 
@@ -445,10 +439,6 @@ bool COptMethodGA::initialize()
 
   return true;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 bool COptMethodGA::cleanup()
 {

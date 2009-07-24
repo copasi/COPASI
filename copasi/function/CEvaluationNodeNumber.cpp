@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 19:53:48 $
+//   $Date: 2009/07/24 14:30:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,12 +70,6 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& node)
 {
   ASTNodeType_t type = node.getType();
@@ -108,11 +102,11 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       case AST_REAL:
         subType = DOUBLE;
 
-        if (node.getReal() == (2*DBL_MAX))
+        if (node.getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
           }
-        else if (node.getReal() == (-2*DBL_MAX))
+        else if (node.getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
@@ -140,11 +134,11 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       case AST_REAL_E:
         subType = ENOTATION;
 
-        if (node.getReal() == (2*DBL_MAX))
+        if (node.getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
           }
-        else if (node.getReal() == (-2*DBL_MAX))
+        else if (node.getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
@@ -195,10 +189,6 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
 
   return pNode;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) const
 {

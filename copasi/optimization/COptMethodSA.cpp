@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/22 19:17:24 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -269,12 +269,6 @@ bool COptMethodSA::cleanup()
   return true;
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 const C_FLOAT64 & COptMethodSA::evaluate()
 {
   // We do not need to check whether the parametric constraints are fulfilled
@@ -286,14 +280,10 @@ const C_FLOAT64 & COptMethodSA::evaluate()
   // When we leave the either functional domain
   // we set the objective value +Inf
   if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = 2.0 * DBL_MAX;
+    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   return mEvaluationValue;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 bool COptMethodSA::initialize()
 {
@@ -315,7 +305,7 @@ bool COptMethodSA::initialize()
                           & mTemperature,
                           NULL);
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mContinue = true;
 
   mVariableSize = mpOptItem->size();
@@ -326,7 +316,3 @@ bool COptMethodSA::initialize()
 
   return true;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif

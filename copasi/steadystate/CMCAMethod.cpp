@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2008/10/08 23:30:27 $
+//   $Author: shoops $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,6 +125,7 @@ void CMCAMethod::initializeParameter()
   CCopasiParameter *pParm;
 
   assertParameter("Modulation Factor", CCopasiParameter::UDOUBLE, 1.0e-009);
+
   if ((pParm = getParameter("MCA.ModulationFactor")) != NULL)
     {
       setValue("Modulation Factor", *pParm->getValue().pUDOUBLE);
@@ -222,6 +223,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
       if (fabs(Store) < 100 * DBL_MIN)
         {
           X1 = 0.0;
+
           if (Store < 0.0)
             X2 = -200.0 * DBL_MIN;
           else
@@ -307,6 +309,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   // LU decomposition of aux2 (for inversion)
   dgetrf_(&M, &M, aux2.array(), &M, Ipiv.array(), &info);
+
   if (info != 0) return MCA_SINGULAR;
 
   C_INT lwork = -1; // Instruct dgetri_ to determine work array size.
@@ -319,6 +322,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   // now invert aux2 (result in aux2)
   dgetri_(&M, aux2.array(), &M, Ipiv.array(), work.array(), &lwork, &info);
+
   if (info != 0)
     return MCA_SINGULAR;
 
@@ -337,6 +341,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     for (j = 0; j < M; j++)
       {
         aux1[i][j] = 0.0;
+
         for (k = 0; k < M; k++)
           aux1[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux2[k][j];
       }
@@ -349,6 +354,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     for (j = 0; j < N; j++)
       {
         mUnscaledConcCC[i][j] = 0;
+
         for (k = 0; k < M; k++)
           mUnscaledConcCC[i][j] += aux1[i][k] * (C_FLOAT64) mpModel->getRedStoi()[k][j];
       }
@@ -393,12 +399,6 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
     mUnscaledFluxCCAnn->setCopasiVector(1, &mpModel->getReactions());*/
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 {
   assert(mpModel);
@@ -420,6 +420,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
+
   // Reactions are rows, species are columnss
   for (col = 0; itSpecies != endSpecies; ++itSpecies, col++)
     {
@@ -439,7 +440,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
               *pUnscaled * Number / (*itReaction)->getParticleFlux();
           else
             *pScaled =
-              (((*itReaction)->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
+              (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
         }
     }
 
@@ -472,8 +473,9 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
           *pScaled =
             *pUnscaled * (*itReaction)->getParticleFlux() / (*itSpecies)->getValue();
         else
-          *pScaled = 2.0 * DBL_MAX;
+          *pScaled = std::numeric_limits<C_FLOAT64>::infinity();
       }
+
   //std::cout << "scConcCC " << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
 
@@ -505,7 +507,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             *pScaled =
               *pUnscaled * (*itReactionCol)->getFlux() / (*itReaction)->getFlux();
           else
-            *pScaled = (((*itReaction)->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
+            *pScaled = (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
         }
     }
 
@@ -514,10 +516,6 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
     mScaledFluxCCAnn->setCopasiVector(0, &reacs);
     mScaledFluxCCAnn->setCopasiVector(1, &reacs);*/
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 /**
  * Set the Model
@@ -577,6 +575,7 @@ bool CMCAMethod::process()
     {
       //   CalculateTimeMCA(mSteadyStateResolution);
     }
+
   return true;
 }
 
@@ -601,9 +600,9 @@ void CMCAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
 }
 
 const CModel* CMCAMethod::getModel() const
-  {
-    return this->mpModel;
-  }
+{
+  return this->mpModel;
+}
 
 //virtual
 bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
@@ -611,6 +610,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CMCAProblem * pP = dynamic_cast<const CMCAProblem *>(pProblem);
+
   if (!pP)
     {
       //not a TrajectoryProblem

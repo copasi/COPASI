@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:28:13 $
+//   $Date: 2009/07/24 14:30:48 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -712,7 +712,7 @@ void CHybridMethodLSODA::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
 }
 C_FLOAT64 CHybridMethodLSODA::generateReactionTime(C_INT32 rIndex)
 {
-  if (mAmu[rIndex] == 0) return 2.0 * DBL_MAX;
+  if (mAmu[rIndex] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
   C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[rIndex];
