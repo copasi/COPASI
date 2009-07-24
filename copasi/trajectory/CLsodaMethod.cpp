@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/13 14:37:07 $
+//   $Date: 2009/07/24 21:08:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,8 @@
 CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::deterministic, pParent),
     mpState(NULL),
-    mY(NULL)
+    mY(NULL),
+    mRootMask()
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -40,7 +41,8 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
                            const CCopasiContainer * pParent):
     CTrajectoryMethod(src, pParent),
     mpState(NULL),
-    mY(NULL)
+    mY(NULL),
+    mRootMask(src.mRootMask)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -153,7 +155,10 @@ bool CLsodaMethod::elevateChildren()
 void CLsodaMethod::stateChanged()
 {
   *mpState = *mpCurrentState;
+  mTime = mpState->getTime();
   mLsodaStatus = 1;
+
+  destroyRootMask();
 }
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
@@ -195,6 +200,27 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               &EvalR, // 18. evaluate constraint functions
               &mNumRoots, // 19. number of constraint functions g(i)
               mRoots.array()); // 20. integer array of length NG for output of root information
+
+      switch (mLsodaStatus)
+        {
+          case -33:
+
+            if (mRootMask.size() == 0)
+              {
+                // Reset the integrator to the state before the failed integration.
+                *mpState = *mpCurrentState;
+                mTime = mpState->getTime();
+                mLsodaStatus = 1;
+
+                // Create a mask which hides all roots being constant and zero.
+                createRootMask();
+              }
+
+            break;
+
+          default:
+            break;
+        }
     }
   else
     {
@@ -234,8 +260,9 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   if (mLsodaStatus == 3)
     {
-      // TODO ALGORITHM Check whether it is sufficient to switch to 2
-      mLsodaStatus = 1;
+      // It is sufficient to switch to 2. Eventual state changes due to events
+      // are indicated via the method stateChanged()
+      mLsodaStatus = 2;
       Status = ROOT;
     }
 
@@ -263,6 +290,7 @@ void CLsodaMethod::start(const CState * initialState)
 
   mNumRoots = mpModel->getNumRoots();
   mRoots.resize(mNumRoots);
+  destroyRootMask();
 
   if (*mpReducedModel)
     mData.dim = mpState->getNumIndependent();
@@ -356,4 +384,49 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  y,
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
 
   mpModel->evaluateRoots(RootValues, true);
+
+  if (mRootMask.size())
+    {
+      maskRoots(RootValues);
+    }
 };
+
+void CLsodaMethod::maskRoots(CVectorCore< C_FLOAT64 > & rootValues)
+{
+  const bool *pMask = mRootMask.array();
+  const bool *pMaskEnd = pMask + mRootMask.size();
+  C_FLOAT64 * pRoot = rootValues.array();
+
+  for (; pMask != pMaskEnd; ++pMask, ++pRoot)
+    {
+      if (*pMask)
+        {
+          *pRoot = 1.0;
+        }
+    }
+}
+
+void CLsodaMethod::createRootMask()
+{
+  size_t NumRoots = mRoots.size();
+  mRootMask.resize(NumRoots);
+  CVector< C_FLOAT64 > RootDerivatives;
+  RootDerivatives.resize(NumRoots);
+
+  mpModel->setState(*mpState);
+  mpModel->calculateRootDerivatives(RootDerivatives);
+
+  bool *pMask = mRootMask.array();
+  bool *pMaskEnd = pMask + mRootMask.size();
+  C_FLOAT64 * pRootDerivative = RootDerivatives.array();
+
+  for (; pMask != pMaskEnd; ++pMask, ++pRootDerivative)
+    {
+      *pMask = (fabs(*pRootDerivative) < *mpAbsoluteTolerance) ? true : false;
+    }
+}
+
+void CLsodaMethod::destroyRootMask()
+{
+  mRootMask.resize(0);
+}

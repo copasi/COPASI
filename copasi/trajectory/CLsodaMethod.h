@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.24 $
+ $Revision: 1.25 $
  $Name:  $
  $Author: shoops $
- $Date: 2009/07/09 21:15:15 $
+ $Date: 2009/07/24 21:08:45 $
  End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,6 +159,11 @@ private:
    */
   C_FLOAT64 mDummy;
 
+  /**
+   * A mask which hides all roots being constant and zero.
+   */
+  CVector< bool > mRootMask;
+
   // Operations
 private:
   /**
@@ -236,5 +241,21 @@ private:
    * Initialize the method parameter
    */
   void initializeParameter();
+
+  /**
+   * Mask roots which are constant and zero.
+   * @param CVectorCore< C_FLOAT64 > & rootValues
+   */
+  void maskRoots(CVectorCore< C_FLOAT64 > & rootValues);
+
+  /**
+   * Create a mask which hides all roots being constant and zero.
+   */
+  void createRootMask();
+
+  /**
+   * Destroy the mask which hides all roots being constant and zero.
+   */
+  void destroyRootMask();
 };
 #endif // COPASI_CLsodaMethod

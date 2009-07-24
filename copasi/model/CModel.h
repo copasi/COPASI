@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.180 $
+//   $Revision: 1.181 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 21:14:24 $
+//   $Date: 2009/07/24 21:08:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1529,6 +1529,12 @@ public:
    * @return size_t numRoots
    */
   size_t getNumRoots() const;
+
+  /**
+   * Calculate the time derivative of all roots
+   * @param CVector< C_FLOAT64 > & rootDerivatives
+   */
+  void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
 };
 
 #endif // CModel

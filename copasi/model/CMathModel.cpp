@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/11 13:05:59 $
+//   $Date: 2009/07/24 21:08:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,6 +321,39 @@ size_t CMathModel::getNumRoots() const
   return mRootValues.size();
 }
 
+void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
+{
+  unsigned C_INT32 NumCols = mpModel->getStateTemplate().getNumVariable() + 1;
+
+  CVector< C_FLOAT64 > Rates;
+  Rates.resize(NumCols);
+  C_FLOAT64 * pRate = Rates.array();
+  *pRate = 1.0; // for time
+  mpModel->updateSimulatedValues(false);
+  mpModel->calculateDerivatives(pRate + 1);
+
+  CMatrix< C_FLOAT64 > Jacobian;
+  calculateRootJacobian(Jacobian, Rates);
+
+  rootDerivatives.resize(mRootValues.size());
+  C_FLOAT64 * pDerivative = rootDerivatives.array();
+
+  DebugFile << Rates << std::endl;
+
+  // Now calculate derivatives of all metabolites determined by reactions
+  char T = 'N';
+  C_INT M = 1;
+  C_INT N = mRootValues.size();
+  C_INT K = NumCols;
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Beta = 0.0;
+
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, Rates.array(), &M,
+         Jacobian.array(), &K, &Beta, pDerivative, &M);
+
+  DebugFile << rootDerivatives << std::endl;
+}
+
 const CVector< CMathTrigger::CRootFinder * > & CMathModel::getRootFinders() const
 {
   return mRootIndex2RootFinder;
@@ -458,39 +491,9 @@ bool CMathModel::determineInitialRoots(CVector< C_INT > & foundRoots)
 
   return Found;
 }
-void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
-{
-  CMatrix< C_FLOAT64 > Jacobian;
-  calculateRootJacobian(Jacobian);
 
-  unsigned C_INT32 NumCols = mpModel->getStateTemplate().getNumVariable() + 1;
-
-  CVector< C_FLOAT64 > Rates;
-  Rates.resize(NumCols);
-  C_FLOAT64 * pRate = Rates.array();
-
-  rootDerivatives.resize(mRootValues.size());
-  C_FLOAT64 * pDerivative = rootDerivatives.array();
-
-  CModelEntity ** ppIt = mpModel->getStateTemplate().getEntities();
-  CModelEntity ** ppEnd = ppIt + NumCols;
-
-  for (; ppIt != ppEnd; ++ppIt, ++pRate)
-    *pRate = (*ppIt)->getRate();
-
-  // Now calculate derivatives of all metabolites determined by reactions
-  char T = 'N';
-  C_INT M = 1;
-  C_INT N = mRootValues.size();
-  C_INT K = NumCols;
-  C_FLOAT64 Alpha = 1.0;
-  C_FLOAT64 Beta = 0.0;
-
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, Rates.array(), &M,
-         Jacobian.array(), &K, &Beta, pDerivative, &M);
-}
-
-void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
+void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                                       const CVector< C_FLOAT64 > & rates)
 {
   CState State = mpModel->getState();
 
@@ -519,37 +522,46 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
   C_FLOAT64 * pJacobian;
   C_FLOAT64 * pJacobianEnd = jacobian.array() + jacobian.size();
 
-  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+  const C_FLOAT64 * pRate = rates.array();
+
+  for (Col = 0; pX != pXEnd; ++pX, ++Col, ++pRate)
     {
       Store = *pX;
 
-      // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < 100 * DBL_MIN)
+      if (fabs(*pRate) < 1e4 * DBL_EPSILON * fabs(Store))
         {
-          X1 = 0.0;
+          if (fabs(Store) < 100 * DBL_MIN)
+            {
+              X1 = 0.0;
 
-          if (Store < 0.0)
-            X2 = -200.0 * DBL_MIN;
+              if (Store < 0.0)
+                X2 = -200.0 * DBL_MIN;
+              else
+                X2 = 200.0 * DBL_MIN;
+
+              InvDelta = X2;
+            }
           else
-            X2 = 200.0 * DBL_MIN;;
+            {
+              X1 = 0.999 * Store;
+              X2 = 1.001 * Store;
+              InvDelta = 500.0 / Store;
+            }
         }
       else
         {
-          X1 = Store * (1.0 + 0.001);
-          X2 = Store * (1.0 - 0.001);
+          X1 = Store - 0.001 * *pRate;
+          X2 = Store + 0.001 * *pRate;
+          InvDelta = 500.0 / *pRate;
         }
-
-      InvDelta = 1.0 / (X2 - X1);
 
       *pX = X1;
       mpModel->setState(State);
-      mpModel->updateSimulatedValues(false);
       evaluateRoots(Y1, true);
 
       *pX = X2;
       mpModel->setState(State);
-      mpModel->updateSimulatedValues(false);
-      mpModel->evaluateRoots(Y2, true);
+      evaluateRoots(Y2, true);
 
       *pX = Store;
 
@@ -561,6 +573,7 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
+  DebugFile << jacobian << std::endl;
+
   mpModel->setState(State);
-  mpModel->updateSimulatedValues(false);
 }

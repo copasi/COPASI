@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 15:55:41 $
+   $Date: 2009/07/24 21:08:45 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 //
@@ -109,16 +114,17 @@ CLSODAR::CLSODAR() :
 CLSODAR::~CLSODAR()
 {
   if (mpPJAC != NULL) {delete mpPJAC; mpPJAC = NULL;}
+
   if (mpSLVS != NULL) {delete mpSLVS; mpSLVS = NULL;}
 }
 
 /* DECK DLSODAR */
 /* Subroutine */
-C_INT CLSODAR::operator() (evalF f, C_INT *neq, double *y, double
-                           *t, double *tout, C_INT *itol, double *rtol, double *
-                           atol, C_INT *itask, C_INT *istate, C_INT *iopt, double *
-                           rwork, C_INT *lrw, C_INT *iwork, C_INT *liw, evalJ jac, C_INT *
-                           jt, evalG g, C_INT *ng, C_INT *jroot)
+C_INT CLSODAR::operator()(evalF f, C_INT *neq, double *y, double
+                          *t, double *tout, C_INT *itol, double *rtol, double *
+                          atol, C_INT *itask, C_INT *istate, C_INT *iopt, double *
+                          rwork, C_INT *lrw, C_INT *iwork, C_INT *liw, evalJ jac, C_INT *
+                          jt, evalG g, C_INT *ng, C_INT *jroot)
 {
   /* Initialized data */
 
@@ -289,10 +295,12 @@ C_INT CLSODAR::operator() (evalF f, C_INT *neq, double *y, double
   /*          -3 means illegal input detected (see printed message). */
   /*          -4 means repeated error test failures (check all inputs). */
   /*          -5 means repeated convergence failures (perhaps bad Jacobian */
-  /*             supplied or wrong choice of JT or tolerances). */
+  /*                   supplied or wrong choice of JT or tolerances). */
   /*          -6 means error weight became zero during problem. (Solution */
   /*             component i vanished, and ATOL or ATOL(i) = 0.) */
   /*          -7 means work space insufficient to finish (see messages). */
+  /*         -33 means One or more components of g have a root too near */
+  /*                   to the initial point. */
   /* JROOT  = array showing roots found if ISTATE = 3 on return. */
   /*          JROOT(i) = 1 if g(i) has a root at t, or 0 otherwise. */
 
@@ -684,6 +692,9 @@ C_INT CLSODAR::operator() (evalF f, C_INT *neq, double *y, double
   /*              proceed, but the integration was successful as far as T. */
   /*              This happens when DLSODAR chooses to switch methods */
   /*              but LRW and/or LIW is too small for the new method. */
+  /*         -33  means One or more components of g have a root too near */
+  /*              to the initial point. This happens when a root is constant */
+  /*              and zero. */
 
   /*          Note:  Since the normal output value of ISTATE is 2, */
   /*          it does not need to be reset for normal continuation. */
@@ -1279,42 +1290,58 @@ C_INT CLSODAR::operator() (evalF f, C_INT *neq, double *y, double
   --jroot;
 
   /* Function Body */
+
   /* ----------------------------------------------------------------------- */
+
   /* Block A. */
+
   /* This code block is executed on every call. */
+
   /* It tests ISTATE and ITASK for legality and branches appropriately. */
+
   /* If ISTATE .gt. 1 but the flag INIT shows that initialization has */
+
   /* not yet been done, an error return occurs. */
+
   /* If ISTATE = 1 and TOUT = T, return immediately. */
+
   /* ----------------------------------------------------------------------- */
   if (*istate < 1 || *istate > 3)
     {
       goto L601;
     }
+
   if (*itask < 1 || *itask > 5)
     {
       goto L602;
     }
+
   dlsr01_1.itaskc = *itask;
+
   if (*istate == 1)
     {
       goto L10;
     }
+
   if (dls001_1.init == 0)
     {
       goto L603;
     }
+
   if (*istate == 2)
     {
       goto L200;
     }
+
   goto L20;
 L10:
   dls001_1.init = 0;
+
   if (*tout == *t)
     {
       return 0;
     }
+
   /* ----------------------------------------------------------------------- */
   /* Block B. */
   /* The next code block is executed for the initial call (ISTATE = 1), */
@@ -1325,149 +1352,193 @@ L10:
   /* JT, ML, MU, and NG. */
   /* ----------------------------------------------------------------------- */
 L20:
+
   if (neq[1] <= 0)
     {
       goto L604;
     }
+
   if (*istate == 1)
     {
       goto L25;
     }
+
   if (neq[1] > dls001_1.n)
     {
       goto L605;
     }
+
 L25:
   dls001_1.n = neq[1];
+
   if (*itol < 1 || *itol > 4)
     {
       goto L606;
     }
+
   if (*iopt < 0 || *iopt > 1)
     {
       goto L607;
     }
+
   if (*jt == 3 || *jt < 1 || *jt > 5)
     {
       goto L608;
     }
+
   dlsa01_1.jtyp = *jt;
+
   if (*jt <= 2)
     {
       goto L30;
     }
+
   ml = iwork[1];
   mu = iwork[2];
+
   if (ml < 0 || ml >= dls001_1.n)
     {
       goto L609;
     }
+
   if (mu < 0 || mu >= dls001_1.n)
     {
       goto L610;
     }
+
 L30:
+
   if (*ng < 0)
     {
       goto L630;
     }
+
   if (*istate == 1)
     {
       goto L35;
     }
+
   if (dlsr01_1.irfnd == 0 && *ng != dlsr01_1.ngc)
     {
       goto L631;
     }
+
 L35:
   dlsr01_1.ngc = *ng;
+
   /* Next process and check the optional inputs. -------------------------- */
   if (*iopt == 1)
     {
       goto L40;
     }
+
   dlsa01_1.ixpr = 0;
   dls001_1.mxstep = mxstp0;
   dls001_1.mxhnil = mxhnl0;
   dls001_1.hmxi = 0.;
   dls001_1.hmin = 0.;
+
   if (*istate != 1)
     {
       goto L60;
     }
+
   h0 = 0.;
   dlsa01_1.mxordn = mord[0];
   dlsa01_1.mxords = mord[1];
   goto L60;
 L40:
   dlsa01_1.ixpr = iwork[5];
+
   if (dlsa01_1.ixpr < 0 || dlsa01_1.ixpr > 1)
     {
       goto L611;
     }
+
   dls001_1.mxstep = iwork[6];
+
   if (dls001_1.mxstep < 0)
     {
       goto L612;
     }
+
   if (dls001_1.mxstep == 0)
     {
       dls001_1.mxstep = mxstp0;
     }
+
   dls001_1.mxhnil = iwork[7];
+
   if (dls001_1.mxhnil < 0)
     {
       goto L613;
     }
+
   if (dls001_1.mxhnil == 0)
     {
       dls001_1.mxhnil = mxhnl0;
     }
+
   if (*istate != 1)
     {
       goto L50;
     }
+
   h0 = rwork[5];
   dlsa01_1.mxordn = iwork[8];
+
   if (dlsa01_1.mxordn < 0)
     {
       goto L628;
     }
+
   if (dlsa01_1.mxordn == 0)
     {
       dlsa01_1.mxordn = 100;
     }
+
   dlsa01_1.mxordn = std::min(dlsa01_1.mxordn, mord[0]);
   dlsa01_1.mxords = iwork[9];
+
   if (dlsa01_1.mxords < 0)
     {
       goto L629;
     }
+
   if (dlsa01_1.mxords == 0)
     {
       dlsa01_1.mxords = 100;
     }
+
   dlsa01_1.mxords = std::min(dlsa01_1.mxords, mord[1]);
+
   if ((*tout - *t) * h0 < 0.)
     {
       goto L614;
     }
+
 L50:
   hmax = rwork[6];
+
   if (hmax < 0.)
     {
       goto L615;
     }
+
   dls001_1.hmxi = 0.;
+
   if (hmax > 0.)
     {
       dls001_1.hmxi = 1. / hmax;
     }
+
   dls001_1.hmin = rwork[7];
+
   if (dls001_1.hmin < 0.)
     {
       goto L616;
     }
+
   /* ----------------------------------------------------------------------- */
   /* Set work array pointers and check lengths LRW and LIW. */
   /* If ISTATE = 1, METH is initialized to 1 here to facilitate the */
@@ -1483,57 +1554,72 @@ L50:
   /* method but not for both methods, a warning message is sent. */
   /* ----------------------------------------------------------------------- */
 L60:
+
   if (*istate == 1)
     {
       dls001_1.meth = 1;
     }
+
   if (*istate == 1)
     {
       dls001_1.nyh = dls001_1.n;
     }
+
   dlsr01_1.lg0 = 21;
   dlsr01_1.lg1 = dlsr01_1.lg0 + *ng;
   dlsr01_1.lgx = dlsr01_1.lg1 + *ng;
   lyhnew = dlsr01_1.lgx + *ng;
+
   if (*istate == 1)
     {
       dls001_1.lyh = lyhnew;
     }
+
   if (lyhnew == dls001_1.lyh)
     {
       goto L62;
     }
+
   /* If ISTATE = 3 and NG was changed, shift YH to its new location. ------ */
   lenyh = dls001_1.l * dls001_1.nyh;
+
   if (*lrw < lyhnew - 1 + lenyh)
     {
       goto L62;
     }
+
   i1 = 1;
+
   if (lyhnew > dls001_1.lyh)
     {
       i1 = -1;
     }
+
   dcopy_(&lenyh, &rwork[dls001_1.lyh], &i1, &rwork[lyhnew], &i1);
   dls001_1.lyh = lyhnew;
 L62:
   len1n = lyhnew - 1 + (dlsa01_1.mxordn + 1) * dls001_1.nyh;
   len1s = lyhnew - 1 + (dlsa01_1.mxords + 1) * dls001_1.nyh;
   dls001_1.lwm = len1s + 1;
+
   if (*jt <= 2)
     {
       lenwm = dls001_1.n * dls001_1.n + 2;
     }
+
   if (*jt >= 4)
     {
       lenwm = ((ml << 1) + mu + 1) * dls001_1.n + 2;
     }
+
   len1s += lenwm;
   len1c = len1n;
+
   if (dls001_1.meth == 2)
     {
       len1c = len1s;
     }
+
   len1 = std::max(len1n, len1s);
   len2 = dls001_1.n * 3;
   lenrw = len1 + len2;
@@ -1542,33 +1628,42 @@ L62:
   dls001_1.liwm = 1;
   leniw = dls001_1.n + 20;
   leniwc = 20;
+
   if (dls001_1.meth == 2)
     {
       leniwc = leniw;
     }
+
   iwork[18] = leniw;
+
   if (*istate == 1 && *lrw < lenrwc)
     {
       goto L617;
     }
+
   if (*istate == 1 && *liw < leniwc)
     {
       goto L618;
     }
+
   if (*istate == 3 && *lrw < lenrwc)
     {
       goto L550;
     }
+
   if (*istate == 3 && *liw < leniwc)
     {
       goto L555;
     }
+
   dls001_1.lewt = len1 + 1;
   dlsa01_1.insufr = 0;
+
   if (*lrw >= lenrw)
     {
       goto L65;
     }
+
   dlsa01_1.insufr = 2;
   dls001_1.lewt = len1c + 1;
   msg = "DLSODAR-  Warning.. RWORK length is sufficient for now, but ";
@@ -1584,10 +1679,12 @@ L65:
   dls001_1.lsavf = dls001_1.lewt + dls001_1.n;
   dls001_1.lacor = dls001_1.lsavf + dls001_1.n;
   dlsa01_1.insufi = 0;
+
   if (*liw >= leniw)
     {
       goto L70;
     }
+
   dlsa01_1.insufi = 2;
   msg = "DLSODAR-  Warning.. IWORK length is sufficient for now, but ";
   mxerrwd(msg, &c__60, &c__104, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
@@ -1603,49 +1700,62 @@ L70:
   rtoli = rtol[1];
   atoli = atol[1];
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (*itol >= 3)
         {
           rtoli = rtol[i__];
         }
+
       if (*itol == 2 || *itol == 4)
         {
           atoli = atol[i__];
         }
+
       if (rtoli < 0.)
         {
           goto L619;
         }
+
       if (atoli < 0.)
         {
           goto L620;
         }
+
       /* L75: */
     }
+
   if (*istate == 1)
     {
       goto L100;
     }
+
   /* if ISTATE = 3, set flag to signal parameter changes to DSTODA. ------- */
   dls001_1.jstart = -1;
+
   if (dls001_1.n == dls001_1.nyh)
     {
       goto L200;
     }
+
   /* NEQ was reduced.  zero part of yh to avoid undefined references. ----- */
   i1 = dls001_1.lyh + dls001_1.l * dls001_1.nyh;
   i2 = dls001_1.lyh + (dls001_1.maxord + 1) * dls001_1.nyh - 1;
+
   if (i1 > i2)
     {
       goto L200;
     }
+
   i__1 = i2;
+
   for (i__ = i1; i__ <= i__1; ++i__)
     {
       /* L95: */
       rwork[i__] = 0.;
     }
+
   goto L200;
   /* ----------------------------------------------------------------------- */
   /* Block C. */
@@ -1659,19 +1769,24 @@ L100:
   dls001_1.tn = *t;
   dlsa01_1.tsw = *t;
   dls001_1.maxord = dlsa01_1.mxordn;
+
   if (*itask != 4 && *itask != 5)
     {
       goto L110;
     }
+
   tcrit = rwork[1];
-  if ((tcrit - *tout) * (*tout - *t) < 0.)
+
+  if ((tcrit - *tout) *(*tout - *t) < 0.)
     {
       goto L625;
     }
+
   if (h0 != 0. && (*t + h0 - tcrit) * h0 > 0.)
     {
       h0 = tcrit - *t;
     }
+
 L110:
   dls001_1.jstart = 0;
   dls001_1.nhnil = 0;
@@ -1692,26 +1807,31 @@ L110:
   dls001_1.nfe = 1;
   /* Load the initial value vector in YH. --------------------------------- */
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L115: */
       rwork[i__ + dls001_1.lyh - 1] = y[i__];
     }
+
   /* Load and invert the EWT array.  (H is temporarily set to 1.0.) ------- */
   dls001_1.nq = 1;
   dls001_1.h__ = 1.;
   dewset_(&dls001_1.n, itol, &rtol[1], &atol[1], &rwork[dls001_1.lyh], &
           rwork[dls001_1.lewt]);
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (rwork[i__ + dls001_1.lewt - 1] <= 0.)
         {
           goto L621;
         }
+
       /* L120: */
       rwork[i__ + dls001_1.lewt - 1] = 1. / rwork[i__ + dls001_1.lewt - 1];
     }
+
   /* ----------------------------------------------------------------------- */
   /* The coding below computes the step size, H0, to be attempted on the */
   /* first step, unless the user has supplied a value for this. */
@@ -1724,31 +1844,44 @@ L110:
   /*   H0**(-2)  =  1./(TOL * w0**2)  +  TOL * (norm(F))**2 */
 
   /* where   w0     = MAX (ABS(T), ABS(TOUT)), */
+
   /*         F      = the initial value of the vector f(t,y), and */
+
   /*         norm() = the weighted vector norm used throughout, given by */
+
   /*                  the DMNORM function routine, and weighted by the */
+
   /*                  tolerances initially loaded into the EWT array. */
+
   /* The sign of H0 is inferred from the initial values of TOUT and T. */
+
   /* ABS(H0) is made .le. ABS(TOUT-T) in any case. */
+
   /* ----------------------------------------------------------------------- */
   if (h0 != 0.)
     {
       goto L180;
     }
+
   tdist = (d__1 = *tout - *t, fabs(d__1));
   /* Computing MAX */
   d__1 = fabs(*t), d__2 = fabs(*tout);
   w0 = std::max(d__1, d__2);
+
   if (tdist < dls001_1.uround * 2. * w0)
     {
       goto L622;
     }
+
   tol = rtol[1];
+
   if (*itol <= 2)
     {
       goto L140;
     }
+
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L130: */
@@ -1756,28 +1889,36 @@ L110:
       d__1 = tol, d__2 = rtol[i__];
       tol = std::max(d__1, d__2);
     }
+
 L140:
+
   if (tol > 0.)
     {
       goto L160;
     }
+
   atoli = atol[1];
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (*itol == 2 || *itol == 4)
         {
           atoli = atol[i__];
         }
+
       ayi = (d__1 = y[i__], fabs(d__1));
+
       if (ayi != 0.)
         {
           /* Computing MAX */
           d__1 = tol, d__2 = atoli / ayi;
           tol = std::max(d__1, d__2);
         }
+
       /* L150: */
     }
+
 L160:
   /* Computing MAX */
   d__1 = tol, d__2 = dls001_1.uround * 100.;
@@ -1794,13 +1935,16 @@ L160:
   /* Adjust H0 if necessary to meet HMAX bound. --------------------------- */
 L180:
   rh = fabs(h0) * dls001_1.hmxi;
+
   if (rh > 1.)
     {
       h0 /= rh;
     }
+
   /* Load H with H0 and scale YH(*,2) by H0. ------------------------------ */
   dls001_1.h__ = h0;
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L190: */
@@ -1810,17 +1954,21 @@ L180:
   /* Check for a zero of g at T. ------------------------------------------ */
   dlsr01_1.irfnd = 0;
   dlsr01_1.toutc = *tout;
+
   if (dlsr01_1.ngc == 0)
     {
       goto L270;
     }
+
   drchek_(&c__1, (evalG)g, &neq[1], &y[1], &rwork[dls001_1.lyh], &
           dls001_1.nyh, &rwork[dlsr01_1.lg0], &rwork[dlsr01_1.lg1], &rwork[
             dlsr01_1.lgx], &jroot[1], &irt);
+
   if (irt == 0)
     {
       goto L270;
     }
+
   goto L632;
   /* ----------------------------------------------------------------------- */
   /* Block D. */
@@ -1835,27 +1983,33 @@ L200:
   dls001_1.nslast = dls001_1.nst;
 
   irfp = dlsr01_1.irfnd;
+
   if (dlsr01_1.ngc == 0)
     {
       goto L205;
     }
+
   if (*itask == 1 || *itask == 4)
     {
       dlsr01_1.toutc = *tout;
     }
+
   drchek_(&c__2, (evalG)g, &neq[1], &y[1], &rwork[dls001_1.lyh], &
           dls001_1.nyh, &rwork[dlsr01_1.lg0], &rwork[dlsr01_1.lg1], &rwork[
             dlsr01_1.lgx], &jroot[1], &irt);
+
   if (irt != 1)
     {
       goto L205;
     }
+
   dlsr01_1.irfnd = 1;
   *istate = 3;
   *t = dlsr01_1.t0;
   goto L425;
 L205:
   dlsr01_1.irfnd = 0;
+
   if (irfp == 1 && dlsr01_1.tlast != dls001_1.tn && *itask == 2)
     {
       goto L400;
@@ -1863,89 +2017,113 @@ L205:
 
   switch (*itask)
     {
-    case 1: goto L210;
-    case 2: goto L250;
-    case 3: goto L220;
-    case 4: goto L230;
-    case 5: goto L240;
+      case 1: goto L210;
+      case 2: goto L250;
+      case 3: goto L220;
+      case 4: goto L230;
+      case 5: goto L240;
     }
+
 L210:
+
   if ((dls001_1.tn - *tout) * dls001_1.h__ < 0.)
     {
       goto L250;
     }
+
   dintdy_(tout, &c__0, &rwork[dls001_1.lyh], &dls001_1.nyh, &y[1], &iflag);
+
   if (iflag != 0)
     {
       goto L627;
     }
+
   *t = *tout;
   goto L420;
 L220:
   tp = dls001_1.tn - dls001_1.hu * (dls001_1.uround * 100. + 1.);
+
   if ((tp - *tout) * dls001_1.h__ > 0.)
     {
       goto L623;
     }
+
   if ((dls001_1.tn - *tout) * dls001_1.h__ < 0.)
     {
       goto L250;
     }
+
   *t = dls001_1.tn;
   goto L400;
 L230:
   tcrit = rwork[1];
+
   if ((dls001_1.tn - tcrit) * dls001_1.h__ > 0.)
     {
       goto L624;
     }
+
   if ((tcrit - *tout) * dls001_1.h__ < 0.)
     {
       goto L625;
     }
+
   if ((dls001_1.tn - *tout) * dls001_1.h__ < 0.)
     {
       goto L245;
     }
+
   dintdy_(tout, &c__0, &rwork[dls001_1.lyh], &dls001_1.nyh, &y[1], &iflag);
+
   if (iflag != 0)
     {
       goto L627;
     }
+
   *t = *tout;
   goto L420;
 L240:
   tcrit = rwork[1];
+
   if ((dls001_1.tn - tcrit) * dls001_1.h__ > 0.)
     {
       goto L624;
     }
+
 L245:
   hmx = fabs(dls001_1.tn) + fabs(dls001_1.h__);
   ihit = (d__1 = dls001_1.tn - tcrit, fabs(d__1)) <= dls001_1.uround * 100. *
          hmx;
+
   if (ihit)
     {
       *t = tcrit;
     }
+
   if (irfp == 1 && dlsr01_1.tlast != dls001_1.tn && *itask == 5)
     {
       goto L400;
     }
+
   if (ihit)
     {
       goto L400;
     }
+
   tnext = dls001_1.tn + dls001_1.h__ * (dls001_1.uround * 4. + 1.);
+
   if ((tnext - tcrit) * dls001_1.h__ <= 0.)
     {
       goto L250;
     }
+
   dls001_1.h__ = (tcrit - dls001_1.tn) * (1. - dls001_1.uround * 4.);
+
   if (*istate == 2 && dls001_1.jstart >= 0)
     {
       dls001_1.jstart = -2;
     }
+
   /* ----------------------------------------------------------------------- */
   /* Block E. */
   /* The next block is normally executed for all calls and contains */
@@ -1958,58 +2136,75 @@ L245:
   /* check for H below the roundoff level in T. */
   /* ----------------------------------------------------------------------- */
 L250:
+
   if (dls001_1.meth == dlsa01_1.mused)
     {
       goto L255;
     }
+
   if (dlsa01_1.insufr == 1)
     {
       goto L550;
     }
+
   if (dlsa01_1.insufi == 1)
     {
       goto L555;
     }
+
 L255:
+
   if (dls001_1.nst - dls001_1.nslast >= dls001_1.mxstep)
     {
       goto L500;
     }
+
   dewset_(&dls001_1.n, itol, &rtol[1], &atol[1], &rwork[dls001_1.lyh], &
           rwork[dls001_1.lewt]);
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       if (rwork[i__ + dls001_1.lewt - 1] <= 0.)
         {
           goto L510;
         }
+
       /* L260: */
       rwork[i__ + dls001_1.lewt - 1] = 1. / rwork[i__ + dls001_1.lewt - 1];
     }
+
 L270:
   tolsf = dls001_1.uround * dmnorm_(&dls001_1.n, &rwork[dls001_1.lyh], &
                                     rwork[dls001_1.lewt]);
+
   if (tolsf <= 1.)
     {
       goto L280;
     }
+
   tolsf *= 2.;
+
   if (dls001_1.nst == 0)
     {
       goto L626;
     }
+
   goto L520;
 L280:
+
   if (dls001_1.tn + dls001_1.h__ != dls001_1.tn)
     {
       goto L290;
     }
+
   ++dls001_1.nhnil;
+
   if (dls001_1.nhnil > dls001_1.mxhnil)
     {
       goto L290;
     }
+
   msg = "DLSODAR-  Warning..Internal T(=R1) and H(=R2) are ";
   mxerrwd(msg, &c__50, &c__101, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
@@ -2019,10 +2214,12 @@ L280:
   msg = "     (H = step size). Solver will continue anyway.";
   mxerrwd(msg, &c__50, &c__101, &c__0, &c__0, &c__0, &c__0, &c__2, &
           dls001_1.tn, &dls001_1.h__, (C_INT)60);
+
   if (dls001_1.nhnil < dls001_1.mxhnil)
     {
       goto L290;
     }
+
   msg = "DLSODAR-  Above warning has been issued I1 times. ";
   mxerrwd(msg, &c__50, &c__102, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
@@ -2038,12 +2235,14 @@ L290:
           rwork[dls001_1.lacor], &rwork[dls001_1.lwm], &iwork[dls001_1.liwm]
           , f, jac, mpPJAC, mpSLVS);
   kgo = 1 - dls001_1.kflag;
+
   switch (kgo)
     {
-    case 1: goto L300;
-    case 2: goto L530;
-    case 3: goto L540;
+      case 1: goto L300;
+      case 2: goto L530;
+      case 3: goto L540;
     }
+
   /* ----------------------------------------------------------------------- */
   /* Block F. */
   /* The following block handles the case of a successful return from the */
@@ -2056,39 +2255,48 @@ L290:
   /* ----------------------------------------------------------------------- */
 L300:
   dls001_1.init = 1;
+
   if (dls001_1.meth == dlsa01_1.mused)
     {
       goto L310;
     }
+
   dlsa01_1.tsw = dls001_1.tn;
   dls001_1.maxord = dlsa01_1.mxordn;
+
   if (dls001_1.meth == 2)
     {
       dls001_1.maxord = dlsa01_1.mxords;
     }
+
   if (dls001_1.meth == 2)
     {
       rwork[dls001_1.lwm] = sqrt(dls001_1.uround);
     }
+
   dlsa01_1.insufr = std::min(dlsa01_1.insufr, (C_INT)1);
   dlsa01_1.insufi = std::min(dlsa01_1.insufi, (C_INT)1);
   dls001_1.jstart = -1;
+
   if (dlsa01_1.ixpr == 0)
     {
       goto L310;
     }
+
   if (dls001_1.meth == 2)
     {
       msg = "DLSODAR- A switch to the BDF (stiff) method has occurred";
       mxerrwd(msg, &c__60, &c__105, &c__0, &c__0, &c__0, &c__0, &c__0, &
               c_b76, &c_b76, (C_INT)60);
     }
+
   if (dls001_1.meth == 1)
     {
       msg = "DLSODAR- A switch to the Adams (nonstiff) method occurred";
       mxerrwd(msg, &c__60, &c__106, &c__0, &c__0, &c__0, &c__0, &c__0, &
               c_b76, &c_b76, (C_INT)60);
     }
+
   msg = "     at T = R1,  tentative step size H = R2,  step NST = I1";
   mxerrwd(msg, &c__60, &c__107, &c__0, &c__1, &dls001_1.nst, &c__0, &c__2, &
           dls001_1.tn, &dls001_1.h__, (C_INT)60);
@@ -2098,13 +2306,16 @@ L310:
     {
       goto L315;
     }
+
   drchek_(&c__3, (evalG)g, &neq[1], &y[1], &rwork[dls001_1.lyh], &
           dls001_1.nyh, &rwork[dlsr01_1.lg0], &rwork[dlsr01_1.lg1], &rwork[
             dlsr01_1.lgx], &jroot[1], &irt);
+
   if (irt != 1)
     {
       goto L315;
     }
+
   dlsr01_1.irfnd = 1;
   *istate = 3;
   *t = dlsr01_1.t0;
@@ -2113,34 +2324,41 @@ L315:
 
   switch (*itask)
     {
-    case 1: goto L320;
-    case 2: goto L400;
-    case 3: goto L330;
-    case 4: goto L340;
-    case 5: goto L350;
+      case 1: goto L320;
+      case 2: goto L400;
+      case 3: goto L330;
+      case 4: goto L340;
+      case 5: goto L350;
     }
+
   /* ITASK = 1.  If TOUT has been reached, interpolate. ------------------- */
 L320:
+
   if ((dls001_1.tn - *tout) * dls001_1.h__ < 0.)
     {
       goto L250;
     }
+
   dintdy_(tout, &c__0, &rwork[dls001_1.lyh], &dls001_1.nyh, &y[1], &iflag);
   *t = *tout;
   goto L420;
   /* ITASK = 3.  Jump to exit if TOUT was reached. ------------------------ */
 L330:
+
   if ((dls001_1.tn - *tout) * dls001_1.h__ >= 0.)
     {
       goto L400;
     }
+
   goto L250;
   /* ITASK = 4.  See if TOUT or TCRIT was reached.  Adjust H if necessary. */
 L340:
+
   if ((dls001_1.tn - *tout) * dls001_1.h__ < 0.)
     {
       goto L345;
     }
+
   dintdy_(tout, &c__0, &rwork[dls001_1.lyh], &dls001_1.nyh, &y[1], &iflag);
   *t = *tout;
   goto L420;
@@ -2148,20 +2366,26 @@ L345:
   hmx = fabs(dls001_1.tn) + fabs(dls001_1.h__);
   ihit = (d__1 = dls001_1.tn - tcrit, fabs(d__1)) <= dls001_1.uround * 100. *
          hmx;
+
   if (ihit)
     {
       goto L400;
     }
+
   tnext = dls001_1.tn + dls001_1.h__ * (dls001_1.uround * 4. + 1.);
+
   if ((tnext - tcrit) * dls001_1.h__ <= 0.)
     {
       goto L250;
     }
+
   dls001_1.h__ = (tcrit - dls001_1.tn) * (1. - dls001_1.uround * 4.);
+
   if (dls001_1.jstart >= 0)
     {
       dls001_1.jstart = -2;
     }
+
   goto L250;
   /* ITASK = 5.  See if TCRIT was reached and jump to exit. --------------- */
 L350:
@@ -2177,20 +2401,25 @@ L350:
   /* ----------------------------------------------------------------------- */
 L400:
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L410: */
       y[i__] = rwork[i__ + dls001_1.lyh - 1];
     }
+
   *t = dls001_1.tn;
+
   if (*itask != 4 && *itask != 5)
     {
       goto L420;
     }
+
   if (ihit)
     {
       *t = tcrit;
     }
+
 L420:
   *istate = 2;
 L425:
@@ -2293,28 +2522,34 @@ L560:
   big = 0.;
   imxer = 1;
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       size = (d__1 = rwork[i__ + dls001_1.lacor - 1] * rwork[i__ +
                      dls001_1.lewt - 1], fabs(d__1));
+
       if (big >= size)
         {
           goto L570;
         }
+
       big = size;
       imxer = i__;
 L570:
-;
+      ;
     }
+
   iwork[16] = imxer;
   /* Set Y vector, T, and optional outputs. ------------------------------- */
 L580:
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L590: */
       y[i__] = rwork[i__ + dls001_1.lyh - 1];
     }
+
   *t = dls001_1.tn;
   rwork[11] = dls001_1.hu;
   rwork[12] = dls001_1.h__;
@@ -2341,10 +2576,12 @@ L601:
   msg = "DLSODAR-  ISTATE(=I1) illegal.";
   mxerrwd(msg, &c__30, &c__1, &c__0, &c__1, istate, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
+
   if (*istate < 0)
     {
       goto L800;
     }
+
   goto L700;
 L602:
   msg = "DLSODAR-  ITASK (=I1) illegal.";
@@ -2514,6 +2751,8 @@ L632:
   msg = "      too near to the initial point.    ";
   mxerrwd(msg, &c__40, &c__32, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
+  *istate = -33;
+  return 0;
 
 L700:
   *istate = -3;

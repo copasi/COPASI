@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 01:22:57 $
+//   $Date: 2009/07/24 21:08:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,6 +108,12 @@ public:
   size_t getNumRoots() const;
 
   /**
+   * Calculate the time derivative of all roots
+   * @param CVector< C_FLOAT64 > & rootDerivatives
+   */
+  void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
+
+  /**
    * Retrieve a vector of root finders
    * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
    */
@@ -138,16 +144,12 @@ private:
   bool determineInitialRoots(CVector< C_INT > & foundRoots);
 
   /**
-   * Calculate the time derivative of all roots
-   * @param CVector< C_FLOAT64 > & rootDerivatives
-   */
-  void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
-
-  /**
    * Calculate the Jacobian for the roots.
    * @param CMatrix< C_FLOAT64 > & jacobian
+   * @param const CVector< C_FLOAT64 > & rates
    */
-  void calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian);
+  void calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                             const CVector< C_FLOAT64 > & rates);
 
   // Attributes
 private:

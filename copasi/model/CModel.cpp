@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.377 $
+//   $Revision: 1.378 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/19 14:15:51 $
+//   $Date: 2009/07/24 21:08:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -4118,4 +4118,9 @@ const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const
 size_t CModel::getNumRoots() const
 {
   return mpMathModel->getNumRoots();
+}
+
+void CModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
+{
+  return mpMathModel->calculateRootDerivatives(rootDerivatives);
 }
