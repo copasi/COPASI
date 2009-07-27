@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/27 17:29:45 $
+//   $Date: 2009/07/27 17:31:32 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,7 +85,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pLayout2->setContentsMargins(3, 3, 3, 3);
   pLayout2->addStretch();
   this->mpNewSliderButton = new QPushButton(0);
-  this->mpNewSliderButton->setText("new slider");
+  this->mpNewSliderButton->setText("new sliders");
   this->mpNewSliderButton->setEnabled(true);
   pLayout2->addWidget(this->mpNewSliderButton);
   pLayout2->addStretch();
