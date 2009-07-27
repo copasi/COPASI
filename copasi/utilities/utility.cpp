@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.33 $
+$Revision: 1.34 $
 $Name:  $
-$Author: shoops $
-$Date: 2009/07/23 22:50:14 $
+$Author: gauges $
+$Date: 2009/07/27 17:28:40 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,8 @@ End CVS Header */
 #include <limits>
 #include <string>
 #include <stdlib.h>
+// for strcmp
+#include <string.h>
 
 #include <sstream>
 
