@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 21:08:44 $
+//   $Date: 2009/07/27 16:14:50 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,8 +338,6 @@ void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives
   rootDerivatives.resize(mRootValues.size());
   C_FLOAT64 * pDerivative = rootDerivatives.array();
 
-  DebugFile << Rates << std::endl;
-
   // Now calculate derivatives of all metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
@@ -350,8 +348,6 @@ void CMathModel::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, Rates.array(), &M,
          Jacobian.array(), &K, &Beta, pDerivative, &M);
-
-  DebugFile << rootDerivatives << std::endl;
 }
 
 const CVector< CMathTrigger::CRootFinder * > & CMathModel::getRootFinders() const
@@ -572,8 +568,6 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
       for (; pJacobian < pJacobianEnd; pJacobian += NumCols, ++pY1, ++pY2)
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
-
-  DebugFile << jacobian << std::endl;
 
   mpModel->setState(State);
 }
