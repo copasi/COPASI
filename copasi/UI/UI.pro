@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.205 $
+#   $Revision: 1.206 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/07/13 15:43:44 $
+#   $Author: gauges $
+#   $Date: 2009/07/27 13:33:34 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.205 $ $Author: aekamal $ $Date: 2009/07/13 15:43:44 $
+# $Revision: 1.206 $ $Author: gauges $ $Date: 2009/07/27 13:33:34 $
 ######################################################################
 
 LIB = UI
@@ -217,6 +217,7 @@ FORMS += CQLyapWidget.ui
 FORMS += CQMCAWidget.ui
 
 FORMS += CQDifferentialEquations.ui
+FORMS += SliderSettingsDialog.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQDifferentialEquations.ui
@@ -246,7 +247,6 @@ FORMS3 += CQOptimizationResult.ui
 # FORMS3 += CScanWidgetBreak.ui
 # FORMS3 += CUpDownSubwidget.ui
 # FORMS3 += DefaultplotDialog.ui
-# FORMS3 += SliderSettingsDialog.ui
 # FORMS3 += TimeSeriesSubwidget.ui
 # FORMS3 += objectdebug.ui
 
@@ -318,7 +318,6 @@ HEADERS += \
            DefaultplotDialog.h \
            DefaultplotDialog.ui.h \
            SliderSettingsDialog.h \
-           SliderSettingsDialog.ui.h \
            StateSubwidget.h \
            TimeSeriesSubwidget.h \
            TimeSeriesSubwidget.ui.h \

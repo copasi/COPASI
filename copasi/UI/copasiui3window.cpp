@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.264 $
+//   $Revision: 1.265 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/07/23 16:03:08 $
+//   $Author: gauges $
+//   $Date: 2009/07/27 13:33:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ CopasiUI3Window::CopasiUI3Window():
   this->mpSliders->setParentWindow(this);
   C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->getFolder()->getId();
   this->mpSliders->setCurrentFolderId(id);
-  this->mpSliders->resize(350, 250);
+  this->mpSliders->resize(320, 350);
 
   //look at commandline
   if (!COptions::compareValue("ImportSBML", std::string("")))

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/27 11:07:30 $
+//   $Date: 2009/07/27 13:33:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,14 +91,9 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pMainLayout->addLayout(pLayout2);
 
   this->mpScrollView = new QScrollArea(0);
-  this->mpScrollView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-  this->mpScrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-  //mpScrollView->setResizePolicy(QScrollArea::AutoOneFit);
   this->mpSliderBox = new QFrame(0);
   QVBoxLayout* pLayout3 = new QVBoxLayout(0);
   this->mpSliderBox->setLayout(pLayout3);
-  //this->mpSliderBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-  //this->mpSliderBox->layout()->setAutoAdd(false);
   this->mpScrollView->setWidget(this->mpSliderBox);
   this->mpScrollView->setWidgetResizable(true);
   pMainLayout->addWidget(this->mpScrollView);
