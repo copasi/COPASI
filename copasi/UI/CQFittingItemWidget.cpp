@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/21 23:34:54 $
+//   $Author: pwilly $
+//   $Date: 2009/07/27 13:57:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,8 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+#include <QtDebug>
 
 //#include "UI/icons/Copasi16-Alpha.xpm"
 
@@ -531,10 +533,8 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   for (; it != end; ++it)
     pdelete(*it);
 
-// TODO: in progress since 08.04.09 - adjustColumn
   // We must not trigger slotSelectionChanged!
   disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
-//  mpTable->setNumRows(mpItems->size());
   mpTable->setRowCount(mpItems->size());
   connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
   mCurrentRow = C_INVALID_INDEX;
@@ -961,7 +961,6 @@ void CQFittingItemWidget::slotCopy()
   unsigned C_INT32 row = mCurrentRow + 1;
   mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
 
-// TODO: in progress since 08.04.09 - adjustColumn
   // Update the table
   // We must not trigger slotSelectionChanged!
   disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
@@ -991,7 +990,6 @@ void CQFittingItemWidget::slotUp()
 
   if (*it == 0) ++it; // The first row can not be moved up.
 
-// TODO: in progress since 08.04.09 - swapRows, updateContents
   for (; it != end; ++it)
     {
       NewSelection.insert(*it - 1);
@@ -1002,14 +1000,11 @@ void CQFittingItemWidget::slotUp()
       (*mpItemsCopy)[*it - 1] = pItem;
 
       // Swap the table rows
-//      mpTable->swapRows(*it, *it - 1);
-      QWidget *item = mpTable->cellWidget(*it - 1, 0);
-      mpTable->insertRow(*it + 1);
-      mpTable->setCellWidget(*it + 1, 0, item);
-      mpTable->removeRow(*it - 1);
+      QTableWidgetItem *item1 = mpTable->takeItem(*it - 1, 0);
+      QTableWidgetItem *item2 = mpTable->takeItem(*it, 0);
+      mpTable->setItem(*it, 0, item1);
+      mpTable->setItem(*it - 1, 0, item2);
     }
-
-// --->  mpTable->updateContents();
 
   setItemSelection(NewSelection);
   loadSelection();
@@ -1026,28 +1021,27 @@ void CQFittingItemWidget::slotDown()
   std::set< unsigned int >::reverse_iterator end = mSelection.rend();
   COptItem * pItem;
 
-  /* TODO: temporarily ignore since 01.04.09 - swapRows, updateContents
-    if (*it == (unsigned int) (mpTable->numRows() - 1))
-      ++it; // The last row can not be moved down.
+  if (*it == (unsigned int)(mpTable->rowCount() - 1))
+    ++it; // The last row can not be moved down.
 
-    for (; it != end; ++it)
-      {
-        NewSelection.insert(*it + 1);
+  for (; it != end; ++it)
+    {
+      NewSelection.insert(*it + 1);
 
-        // Swap the items
-        pItem = (*mpItemsCopy)[*it];
-        (*mpItemsCopy)[*it] = (*mpItemsCopy)[*it + 1];
-        (*mpItemsCopy)[*it + 1] = pItem;
+      // Swap the items
+      pItem = (*mpItemsCopy)[*it];
+      (*mpItemsCopy)[*it] = (*mpItemsCopy)[*it + 1];
+      (*mpItemsCopy)[*it + 1] = pItem;
 
-        // Swap the table rows
-        mpTable->swapRows(*it, *it + 1);
-      }
+      // Swap the table rows
+      QTableWidgetItem *item1 = mpTable->takeItem(*it + 1, 0);
+      QTableWidgetItem *item2 = mpTable->takeItem(*it, 0);
+      mpTable->setItem(*it, 0, item1);
+      mpTable->setItem(*it + 1, 0, item2);
+    }
 
-    mpTable->updateContents();
-
-    setItemSelection(NewSelection);
-    loadSelection();
-  */
+  setItemSelection(NewSelection);
+  loadSelection();
 }
 
 void CQFittingItemWidget::slotDuplicatePerExperiment()
@@ -1109,9 +1103,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
 
           mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
 
-// TODO: in progress since 08.04.09 - OK
           // Update the table
-//          mpTable->insertRows(row);
           mpTable->insertRow(row);
           setTableText(row, pItem);
         }
@@ -1131,9 +1123,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
 
               mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
 
-// TODO: in progress since 08.04.09 - OK
               // Update the table
-//              mpTable->insertRows(row);
               mpTable->insertRow(row);
               setTableText(row, pItem);
             }
@@ -1183,8 +1173,6 @@ void CQFittingItemWidget::slotNew()
 
   mpItemsCopy->push_back(pItem);
 
-// TODO: in progress since 08.04.09 - adjustColumn
-//  unsigned C_INT32 row = mpTable->numRows();
   unsigned C_INT32 row = mpTable->rowCount();
 
   // Update the table
@@ -1269,14 +1257,11 @@ void CQFittingItemWidget::slotSelectionChanged()
 {
   saveSelection();
 
-// TODO: in progress since 08.04.09 - isRowSelected
-//  unsigned int i, imax = mpTable->numRows();
   unsigned int i, imax = mpTable->rowCount();
 
   // Update mSelection;
   for (i = 0; i != imax; i++)
 
-//    if (mpTable->isRowSelected(i))
     if (mpTable->item(i, 0)->isSelected())
       mSelection.insert(i);
     else
@@ -1564,22 +1549,19 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
   std::set< unsigned int >::const_iterator it = selection.begin();
   std::set< unsigned int >::const_iterator end = selection.end();
 
+  // We must not trigger slotSelectionChanged!
+  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
+
   // This sets the focus and creates a selection
   if (it != end)
     mpTable->setCurrentCell(*it, 0);
   else
     mpTable->setCurrentCell(C_INVALID_INDEX, 0);
 
-  // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
+  // Update selection
+  for (; it != end; ++it)
+    mpTable->item(*it, 0)->setSelected(true);
 
-// TODO: in progress since 08.04.09 - clearSelection, addSelection
-  /*
-    // Update selection
-    mpTable->clearSelection();
-    for (; it != end; ++it)
-      mpTable->addSelection(Q3TableSelection(*it, 0, *it, 0));
-  */
   connect(mpTable, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()));
 }
 
