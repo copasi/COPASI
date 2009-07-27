@@ -1,10 +1,11 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/07/16 15:47:26 $ </comment>
+<comment>   $Author: aekamal $ </comment>
+<comment>   $Date: 2009/07/27 16:33:59 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -12,706 +13,520 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<class>CQReportDefinition</class>
-<widget class="CopasiWidget">
-    <property name="name">
-        <cstring>CQReportDefinition</cstring>
-    </property>
+  <comment> All rights reserved. </comment>
+  <class>CQReportDefinition</class>
+  <widget class="CopasiWidget" name="CQReportDefinition">
     <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>469</width>
-            <height>463</height>
-        </rect>
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>576</width>
+        <height>463</height>
+      </rect>
     </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>5</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
+    <property name="caption" stdset="0">
+      <string>Report</string>
     </property>
-    <property name="minimumSize">
-        <size>
-            <width>0</width>
-            <height>0</height>
-        </size>
-    </property>
-    <property name="caption">
-        <string>Report</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-    <widget class="QFrame">
-        <property name="name">
-            <cstring>mpReportFrame</cstring>
-        </property>
-        <property name="sizePolicy">
-            <sizepolicy>
-                <hsizetype>5</hsizetype>
-                <vsizetype>0</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
+    <layout class="QVBoxLayout">
+      <item>
+        <widget class="Q3Frame" name="mpReportFrame">
+          <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
             </sizepolicy>
-        </property>
-        <property name="minimumSize">
+          </property>
+          <property name="minimumSize">
             <size>
-                <width>0</width>
-                <height>0</height>
+              <width>0</width>
+              <height>0</height>
             </size>
-        </property>
-        <property name="maximumSize">
+          </property>
+          <property name="maximumSize">
             <size>
-                <width>32767</width>
-                <height>128</height>
+              <width>32767</width>
+              <height>128</height>
             </size>
-        </property>
-        <property name="frameShape">
-            <enum>Box</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <grid>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <widget class="QTextEdit" row="1" column="1" rowspan="1" colspan="4">
-                <property name="name">
-                    <cstring>mpCommentEdit</cstring>
-                </property>
+          </property>
+          <property name="frameShape">
+            <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+          </property>
+          <layout class="QGridLayout">
+            <item row="1" column="1" colspan="4">
+              <widget class="Q3TextEdit" name="mpCommentEdit">
                 <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>7</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
                 </property>
                 <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>50</height>
-                    </size>
+                  <size>
+                    <width>0</width>
+                    <height>50</height>
+                  </size>
                 </property>
                 <property name="resizePolicy">
-                    <enum>Manual</enum>
+                  <enum>Q3ScrollView::Manual</enum>
                 </property>
-            </widget>
-            <widget class="QLineEdit" row="0" column="1">
-                <property name="name">
-                    <cstring>mpName</cstring>
-                </property>
+              </widget>
+            </item>
+            <item row="0" column="1">
+              <widget class="QLineEdit" name="mpName">
                 <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>3</hsizetype>
-                        <vsizetype>0</vsizetype>
+                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                  <size>
+                    <width>150</width>
+                    <height>0</height>
+                  </size>
+                </property>
+              </widget>
+            </item>
+            <item row="0" column="3" colspan="2">
+              <widget class="QComboBox" name="mpTaskBox">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                  <size>
+                    <width>150</width>
+                    <height>0</height>
+                  </size>
+                </property>
+              </widget>
+            </item>
+            <item row="2" column="1">
+              <layout class="QHBoxLayout">
+                <item>
+                  <widget class="QLineEdit" name="mpSeparator">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
-                    </sizepolicy>
+                      </sizepolicy>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QCheckBox" name="mpTabCheck">
+                    <property name="text">
+                      <string>&lt;tab&gt;</string>
+                    </property>
+                  </widget>
+                </item>
+              </layout>
+            </item>
+            <item row="2" column="4">
+              <widget class="QLineEdit" name="mpPrecision"/>
+            </item>
+            <item row="2" column="2" colspan="2">
+              <widget class="QLabel" name="mpPrecisionLabel">
+                <property name="text">
+                  <string>Precision</string>
                 </property>
+                <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="wordWrap">
+                  <bool>false</bool>
+                </property>
+              </widget>
+            </item>
+            <item row="0" column="2">
+              <widget class="QLabel" name="mpTaskLabel">
                 <property name="minimumSize">
-                    <size>
-                        <width>150</width>
-                        <height>0</height>
-                    </size>
+                  <size>
+                    <width>45</width>
+                    <height>0</height>
+                  </size>
                 </property>
-                <property name="frameShape">
-                    <enum>LineEditPanel</enum>
+                <property name="text">
+                  <string>Task</string>
                 </property>
-                <property name="frameShadow">
-                    <enum>Sunken</enum>
+                <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                 </property>
-            </widget>
-            <widget class="QComboBox" row="0" column="3" rowspan="1" colspan="2">
-                <property name="name">
-                    <cstring>mpTaskBox</cstring>
+                <property name="wordWrap">
+                  <bool>false</bool>
                 </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>3</hsizetype>
-                        <vsizetype>0</vsizetype>
+              </widget>
+            </item>
+            <item row="2" column="0">
+              <widget class="QLabel" name="mpSeparatorLabel">
+                <property name="minimumSize">
+                  <size>
+                    <width>62</width>
+                    <height>0</height>
+                  </size>
+                </property>
+                <property name="text">
+                  <string>Separator</string>
+                </property>
+                <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="wordWrap">
+                  <bool>false</bool>
+                </property>
+              </widget>
+            </item>
+            <item row="0" column="0">
+              <widget class="QLabel" name="mpNameLabel">
+                <property name="minimumSize">
+                  <size>
+                    <width>62</width>
+                    <height>0</height>
+                  </size>
+                </property>
+                <property name="text">
+                  <string>Name</string>
+                </property>
+                <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="wordWrap">
+                  <bool>false</bool>
+                </property>
+              </widget>
+            </item>
+            <item row="1" column="0">
+              <widget class="QLabel" name="mpCommentLabel">
+                <property name="minimumSize">
+                  <size>
+                    <width>62</width>
+                    <height>0</height>
+                  </size>
+                </property>
+                <property name="text">
+                  <string>Comment</string>
+                </property>
+                <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+                </property>
+                <property name="wordWrap">
+                  <bool>false</bool>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </widget>
+      </item>
+      <item>
+        <widget class="Q3Frame" name="mpEditListsFrame">
+          <property name="frameShape">
+            <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+          </property>
+          <layout class="QHBoxLayout">
+            <item>
+              <layout class="QVBoxLayout">
+                <item>
+                  <widget class="QPushButton" name="mpBtnAdvanced">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>150</width>
-                        <height>0</height>
-                    </size>
-                </property>
-            </widget>
-            <widget class="QLayoutWidget" row="2" column="1">
-                <property name="name">
-                    <cstring>mpSeparatorLayout</cstring>
-                </property>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
+                      </sizepolicy>
                     </property>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>mpSeparator</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
-                            <cstring>mpTabCheck</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&lt;tab&gt;</string>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget class="QLineEdit" row="2" column="4">
-                <property name="name">
-                    <cstring>mpPrecision</cstring>
-                </property>
-            </widget>
-            <widget class="QLabel" row="2" column="2" rowspan="1" colspan="2">
-                <property name="name">
-                    <cstring>mpPrecisionLabel</cstring>
-                </property>
-                <property name="text">
-                    <string>Precision</string>
-                </property>
-                <property name="alignment">
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-            </widget>
-            <widget class="QLabel" row="0" column="2">
-                <property name="name">
-                    <cstring>mpTaskLabel</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>45</width>
+                    <property name="minimumSize">
+                      <size>
+                        <width>90</width>
                         <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Task</string>
-                </property>
-                <property name="alignment">
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-            </widget>
-            <widget class="QLabel" row="2" column="0">
-                <property name="name">
-                    <cstring>mpSeparatorLabel</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>62</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Separator</string>
-                </property>
-                <property name="alignment">
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-            </widget>
-            <widget class="QLabel" row="0" column="0">
-                <property name="name">
-                    <cstring>mpNameLabel</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>62</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Name</string>
-                </property>
-                <property name="alignment">
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-            </widget>
-            <widget class="QLabel" row="1" column="0">
-                <property name="name">
-                    <cstring>mpCommentLabel</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>62</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Comment</string>
-                </property>
-                <property name="alignment">
-                    <set>AlignTop|AlignRight</set>
-                </property>
-            </widget>
-        </grid>
-    </widget>
-    <widget class="QFrame">
-        <property name="name">
-            <cstring>mpEditListsFrame</cstring>
-        </property>
-        <property name="frameShape">
-            <enum>Box</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <widget class="QLayoutWidget">
-                <property name="name">
-                    <cstring>mpEditBtnLayout</cstring>
-                </property>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
+                      </size>
                     </property>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnAdvanced</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>90</width>
-                                <height>0</height>
-                            </size>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Advanced &gt;&gt;</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnItem</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Item</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnSeparator</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Separator</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnText</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Text</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnDelete</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Delete</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnUp</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Up</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>mpBtnDown</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Down</string>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
-                            <cstring>mpTitleCheck</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>112</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>Title Row</string>
-                        </property>
-                    </widget>
-                    <spacer>
-                        <property name="name">
-                            <cstring>mpSpacerBtnLayout</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>16</height>
-                            </size>
-                        </property>
-                    </spacer>
-                </vbox>
-            </widget>
-            <widget class="QTabWidget">
-                <property name="name">
-                    <cstring>mpReportSectionTab</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>5</vsizetype>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Advanced &gt;&gt;</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="mpBtnItem">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
-                    </sizepolicy>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Item</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="mpBtnSeparator">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Separator</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="mpBtnText">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Text</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="mpBtnDelete">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Delete</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="mpBtnUp">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Up</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="mpBtnDown">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Down</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QCheckBox" name="mpTitleCheck">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                      <size>
+                        <width>112</width>
+                        <height>32767</height>
+                      </size>
+                    </property>
+                    <property name="text">
+                      <string>Title Row</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <spacer name="mpSpacerBtnLayout">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                      <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>16</height>
+                      </size>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </item>
+            <item>
+              <widget class="QTabWidget" name="mpReportSectionTab">
+                <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
                 </property>
                 <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>0</height>
-                    </size>
+                  <size>
+                    <width>0</width>
+                    <height>0</height>
+                  </size>
                 </property>
-                    <widget class="QListBox">
-                    <property name="name">
-                        <cstring>mpTableList</cstring>
-                    </property>
-                    <attribute name="title">
-                        <string>Table</string>
-                    </attribute>
+                <widget class="Q3ListBox" name="mpTableList">
+                  <attribute name="title">
+                    <string>Table</string>
+                  </attribute>
                 </widget>
-                    <widget class="QListBox">
-                    <property name="name">
-                        <cstring>mpHeaderList</cstring>
-                    </property>
-                    <attribute name="title">
-                        <string>Header</string>
-                    </attribute>
+                <widget class="Q3ListBox" name="mpHeaderList">
+                  <attribute name="title">
+                    <string>Header</string>
+                  </attribute>
                 </widget>
-                    <widget class="QListBox">
-                    <property name="name">
-                        <cstring>mpBodyList</cstring>
-                    </property>
-                    <attribute name="title">
-                        <string>Body</string>
-                    </attribute>
+                <widget class="Q3ListBox" name="mpBodyList">
+                  <attribute name="title">
+                    <string>Body</string>
+                  </attribute>
                 </widget>
-                    <widget class="QListBox">
-                    <property name="name">
-                        <cstring>mpFooterList</cstring>
-                    </property>
-                    <attribute name="title">
-                        <string>Footer</string>
-                    </attribute>
+                <widget class="Q3ListBox" name="mpFooterList">
+                  <attribute name="title">
+                    <string>Footer</string>
+                  </attribute>
                 </widget>
+              </widget>
+            </item>
+          </layout>
+        </widget>
+      </item>
+      <item>
+        <layout class="QHBoxLayout">
+          <property name="spacing">
+            <number>6</number>
+          </property>
+          <property name="margin">
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="QPushButton" name="mpBtnCommit">
+              <property name="text">
+                <string>&amp;Commit</string>
+              </property>
+              <property name="shortcut">
+                <string>Alt+C</string>
+              </property>
             </widget>
-        </hbox>
-    </widget>
-    <widget class="QLayoutWidget">
-        <property name="name">
-            <cstring>mpBtnLayout</cstring>
-        </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>mpBtnCommit</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Commit</string>
-                </property>
-                <property name="accel">
-                    <string>Alt+C</string>
-                </property>
+          </item>
+          <item>
+            <widget class="QPushButton" name="mpBtnRevert">
+              <property name="text">
+                <string>Revert</string>
+              </property>
+              <property name="shortcut">
+                <string/>
+              </property>
             </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>mpBtnRevert</cstring>
-                </property>
-                <property name="text">
-                    <string>Revert</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
+          </item>
+          <item>
+            <widget class="QPushButton" name="mpBtnNewReport">
+              <property name="text">
+                <string>&amp;New</string>
+              </property>
+              <property name="shortcut">
+                <string>Alt+N</string>
+              </property>
             </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>mpBtnNewReport</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;New</string>
-                </property>
-                <property name="accel">
-                    <string>Alt+N</string>
-                </property>
+          </item>
+          <item>
+            <widget class="QPushButton" name="mpBtnDeleteReport">
+              <property name="text">
+                <string>&amp;Delete</string>
+              </property>
+              <property name="shortcut">
+                <string>Alt+D</string>
+              </property>
             </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>mpBtnDeleteReport</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Delete</string>
-                </property>
-                <property name="accel">
-                    <string>Alt+D</string>
-                </property>
-            </widget>
-        </hbox>
-    </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>mpName</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>nameChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>mpTaskBox</sender>
-        <signal>activated(const QString&amp;)</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>taskChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>mpCommentEdit</sender>
-        <signal>textChanged()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>commentChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpSeparator</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>separatorChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>mpPrecision</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>precisionChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>mpTabCheck</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>chkTabClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpTitleCheck</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>chkTitleClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnAdvanced</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnAdvancedClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnItem</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnItemClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnSeparator</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnSeparatorClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnText</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnTextClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnDelete</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnDeleteClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnUp</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnUpClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnDown</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnDownClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnCommit</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnCommitClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnRevert</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnRevertClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnNewReport</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnNewReportClicked()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnDeleteReport</sender>
-        <signal>clicked()</signal>
-        <receiver>CQReportDefinition</receiver>
-        <slot>btnDeleteReportClicked()</slot>
-    </connection>
-</connections>
-<tabstops>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>Q3Frame</class>
+      <extends>QFrame</extends>
+      <header>Qt3Support/Q3Frame</header>
+      <container>1</container>
+    </customwidget>
+    <customwidget>
+      <class>Q3ListBox</class>
+      <extends>Q3Frame</extends>
+      <header>q3listbox.h</header>
+    </customwidget>
+    <customwidget>
+      <class>Q3TextEdit</class>
+      <extends>Q3Frame</extends>
+      <header>q3textedit.h</header>
+    </customwidget>
+    <customwidget>
+      <class>CopasiWidget</class>
+      <extends>QWidget</extends>
+      <header>copasiwidget.h</header>
+      <container>1</container>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
     <tabstop>mpName</tabstop>
     <tabstop>mpTaskBox</tabstop>
     <tabstop>mpCommentEdit</tabstop>
@@ -730,52 +545,301 @@
     <tabstop>mpBtnRevert</tabstop>
     <tabstop>mpBtnNewReport</tabstop>
     <tabstop>mpBtnDeleteReport</tabstop>
-</tabstops>
-<includes>
-    <include location="global" impldecl="in declaration">qlistbox.h</include>
-    <include location="local" impldecl="in declaration">copasiWidget.h</include>
-</includes>
-<forwards>
-    <forward>class CReportDefinition;</forward>
-</forwards>
-<variables>
-    <variable access="private">bool mAdvanced;</variable>
-    <variable access="private">bool mChanged;</variable>
-    <variable access="private">std::string mKey;</variable>
-    <variable access="private">CReportDefinition * mpReportDefinition;</variable>
-</variables>
-<slots>
-    <slot access="private" specifier="non virtual">nameChanged(const QString &amp; string)</slot>
-    <slot access="private" specifier="non virtual">taskChanged(const QString &amp; string)</slot>
-    <slot access="private" specifier="non virtual">commentChanged()</slot>
-    <slot access="private" specifier="non virtual">separatorChanged(const QString &amp; string)</slot>
-    <slot access="private" specifier="non virtual">precisionChanged(const QString &amp; string)</slot>
-    <slot access="private" specifier="non virtual">chkTabClicked()</slot>
-    <slot access="private" specifier="non virtual">btnAdvancedClicked()</slot>
-    <slot access="private" specifier="non virtual">btnItemClicked()</slot>
-    <slot access="private" specifier="non virtual">btnSeparatorClicked()</slot>
-    <slot access="private" specifier="non virtual">btnTextClicked()</slot>
-    <slot access="private" specifier="non virtual">btnDeleteClicked()</slot>
-    <slot access="private" specifier="non virtual">btnUpClicked()</slot>
-    <slot access="private" specifier="non virtual">btnDownClicked()</slot>
-    <slot access="private" specifier="non virtual">chkTitleClicked()</slot>
-    <slot access="private" specifier="non virtual">btnDeleteReportClicked()</slot>
-    <slot access="private" specifier="non virtual">btnNewReportClicked()</slot>
-    <slot access="private" specifier="non virtual">btnRevertClicked()</slot>
-    <slot access="private" specifier="non virtual">btnCommitClicked()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-    <function returnType="bool">leave()</function>
-    <function access="protected" returnType="bool">enterProtected()</function>
-    <function access="private" specifier="non virtual" returnType="bool">load()</function>
-    <function access="private" specifier="non virtual" returnType="bool">save()</function>
-    <function access="private" specifier="non virtual" returnType="bool">setAdvancedMode(const bool &amp; advanced)</function>
-    <function returnType="bool">update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key)</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>copasiWidget.h</includehint>
-</includehints>
-</UI>
+  </tabstops>
+  <includes>
+    <include location="global">q3listbox.h</include>
+    <include location="local">copasiWidget.h</include>
+    <include location="local">copasiWidget.h</include>
+  </includes>
+  <resources/>
+  <connections>
+    <connection>
+      <sender>mpName</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>nameChanged(QString)</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpTaskBox</sender>
+      <signal>activated(QString)</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>taskChanged(QString)</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpCommentEdit</sender>
+      <signal>textChanged()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>commentChanged()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpSeparator</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>separatorChanged(QString)</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpPrecision</sender>
+      <signal>textChanged(QString)</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>precisionChanged(QString)</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpTabCheck</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>chkTabClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpTitleCheck</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>chkTitleClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnAdvanced</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnAdvancedClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnItem</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnItemClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnSeparator</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnSeparatorClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnText</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnTextClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnDelete</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnDeleteClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnUp</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnUpClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnDown</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnDownClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnCommit</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnCommitClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnRevert</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnRevertClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnNewReport</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnNewReportClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+    <connection>
+      <sender>mpBtnDeleteReport</sender>
+      <signal>clicked()</signal>
+      <receiver>CQReportDefinition</receiver>
+      <slot>btnDeleteReportClicked()</slot>
+      <hints>
+        <hint type="sourcelabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+        <hint type="destinationlabel">
+          <x>20</x>
+          <y>20</y>
+        </hint>
+      </hints>
+    </connection>
+  </connections>
+</ui>
