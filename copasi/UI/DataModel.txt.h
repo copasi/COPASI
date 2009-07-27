@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/12/18 19:57:53 $
+//   $Author: aekamal $
+//   $Date: 2009/07/27 16:35:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,8 +64,8 @@ static char DataModeltxt[] =
   "33:331:Result\n"
   "2:34:Sensitivities\n"
   "34:341:Result\n"
-  "0:4:Output\n"
+  "0:4:Output Specifications\n"
   "4:42:Plots\n"
   "4:43:Reports\n"
   "0:5:Functions\n"
-;
+  ;
