@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/20 11:57:08 $
+//   $Date: 2009/07/27 12:08:22 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,6 +78,10 @@ void CModelMerging::simpleCall()
               std::string key = metab1->getKey();
 
               if (!mergeMetabolites(toKey, key)) return;
+
+              /* currently,  before we do not delete metabolites from the model */
+              metab1->setStatus(CModelEntity::FIXED);
+              metab1->setInitialConcentration(0);
 
               //  else
               //   pdelete(metab1);
