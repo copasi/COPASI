@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/08 07:28:29 $
+//   $Date: 2009/07/27 11:07:30 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,26 +19,13 @@
 #include <sstream>
 #include <mathematics.h>
 
-#include <q3hbox.h>
-#include <q3vbox.h>
-#include <q3listbox.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qstring.h>
-#include <qslider.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qobject.h>
-#include <qtooltip.h>
-#include <q3popupmenu.h>
-#include <qlayout.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <QContextMenuEvent>
 #include <QCloseEvent>
 #include <QMouseEvent>
 #include <QEvent>
-#include <Q3VBoxLayout>
+#include <QMenu>
+#include <QScrollArea>
 
 #include "SliderDialog.h"
 #include "copasiui3window.h"
@@ -76,86 +63,92 @@ C_INT32 SliderDialog::folderMappings[][2] =
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
     QDialog(parent, name, modal, fl),
-    pParentWindow(NULL),
-    runTaskButton(NULL),
-    newSliderButton(NULL),
-    autoRunCheckBox(NULL),
+    mpParentWindow(NULL),
+    mpRunTaskButton(NULL),
+    mpNewSliderButton(NULL),
+    mpAutoRunCheckBox(NULL),
     mpAutoModifyRangesCheckBox(NULL),
-    scrollView(NULL),
-    sliderBox(NULL),
-    contextMenu(NULL),
-    currSlider(NULL),
-    currentFolderId(0),
+    mpScrollView(NULL),
+    mpSliderBox(NULL),
+    mpContextMenu(NULL),
+    mpCurrSlider(NULL),
+    mCurrentFolderId(0),
     mSliderValueChanged(false),
     mSliderPressed(false)
 {
   setWindowFlags(windowFlags() | Qt::WStyle_StaysOnTop);
-  Q3VBoxLayout* mainLayout = new Q3VBoxLayout(this);
-  mainLayout->setMargin(5);
-  Q3HBoxLayout* layout2 = new Q3HBoxLayout(0);
-  layout2->setMargin(3);
-  layout2->addStretch();
-  newSliderButton = new QPushButton(this);
-  newSliderButton->setText("new slider");
-  newSliderButton->setEnabled(true);
-  layout2->addWidget(newSliderButton);
-  layout2->addStretch();
-  mainLayout->addLayout(layout2);
+  QVBoxLayout* pMainLayout = new QVBoxLayout(this);
+  this->setLayout(pMainLayout);
+  pMainLayout->setContentsMargins(5, 5, 5, 5);
+  QHBoxLayout* pLayout2 = new QHBoxLayout(0);
+  pLayout2->setContentsMargins(3, 3, 3, 3);
+  pLayout2->addStretch();
+  this->mpNewSliderButton = new QPushButton(0);
+  this->mpNewSliderButton->setText("new slider");
+  this->mpNewSliderButton->setEnabled(true);
+  pLayout2->addWidget(this->mpNewSliderButton);
+  pLayout2->addStretch();
+  pMainLayout->addLayout(pLayout2);
 
-  scrollView = new Q3ScrollView(this);
-  scrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
-  sliderBox = new Q3VBox(0);
-  sliderBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-  sliderBox->layout()->setAutoAdd(false);
-  scrollView->addChild(sliderBox);
-  mainLayout->addWidget(scrollView);
+  this->mpScrollView = new QScrollArea(0);
+  this->mpScrollView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  this->mpScrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  //mpScrollView->setResizePolicy(QScrollArea::AutoOneFit);
+  this->mpSliderBox = new QFrame(0);
+  QVBoxLayout* pLayout3 = new QVBoxLayout(0);
+  this->mpSliderBox->setLayout(pLayout3);
+  //this->mpSliderBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  //this->mpSliderBox->layout()->setAutoAdd(false);
+  this->mpScrollView->setWidget(this->mpSliderBox);
+  this->mpScrollView->setWidgetResizable(true);
+  pMainLayout->addWidget(this->mpScrollView);
 
-  Q3HBoxLayout* layout1 = new Q3HBoxLayout(0);
-  layout1->addStretch();
-  mpAutoModifyRangesCheckBox = new QCheckBox(this);
-  mpAutoModifyRangesCheckBox->setChecked(true);
-  mpAutoModifyRangesCheckBox->setText("update ranges");
-  layout1->addWidget(mpAutoModifyRangesCheckBox);
-  layout1->addStretch();
-  mainLayout->addSpacing(10);
-  mainLayout->addLayout(layout1);
+  QHBoxLayout* pLayout1 = new QHBoxLayout(0);
+  pLayout1->addStretch();
+  this->mpAutoModifyRangesCheckBox = new QCheckBox(0);
+  this->mpAutoModifyRangesCheckBox->setChecked(true);
+  this->mpAutoModifyRangesCheckBox->setText("update ranges");
+  pLayout1->addWidget(this->mpAutoModifyRangesCheckBox);
+  pLayout1->addStretch();
+  pMainLayout->addSpacing(10);
+  pMainLayout->addLayout(pLayout1);
 
-  layout1 = new Q3HBoxLayout(0);
-  layout1->addStretch();
-  autoRunCheckBox = new QCheckBox(this);
-  autoRunCheckBox->setChecked(true);
-  autoRunCheckBox->setText("update automatically");
-  layout1->addWidget(autoRunCheckBox);
-  layout1->addStretch();
-  mainLayout->addSpacing(10);
-  mainLayout->addLayout(layout1);
+  pLayout1 = new QHBoxLayout(0);
+  pLayout1->addStretch();
+  this->mpAutoRunCheckBox = new QCheckBox(0);
+  this->mpAutoRunCheckBox->setChecked(true);
+  this->mpAutoRunCheckBox->setText("update automatically");
+  pLayout1->addWidget(this->mpAutoRunCheckBox);
+  pLayout1->addStretch();
+  pMainLayout->addSpacing(10);
+  pMainLayout->addLayout(pLayout1);
 
-  layout2 = new Q3HBoxLayout(0);
-  layout2->addStretch();
-  runTaskButton = new QPushButton(this);
-  runTaskButton->setText("run task");
-  runTaskButton->setEnabled(true);
-  layout2->addWidget(runTaskButton);
-  layout2->addStretch();
-  mainLayout->addLayout(layout2);
+  pLayout2 = new QHBoxLayout(0);
+  pLayout2->addStretch();
+  this->mpRunTaskButton = new QPushButton(0);
+  this->mpRunTaskButton->setText("run task");
+  this->mpRunTaskButton->setEnabled(true);
+  pLayout2->addWidget(this->mpRunTaskButton);
+  pLayout2->addStretch();
+  pMainLayout->addLayout(pLayout2);
 
-  contextMenu = new Q3PopupMenu(this);
-  contextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
-  contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
-  contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
-  contextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
-  contextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
+  this->mpContextMenu = new QMenu(this);
+  this->mpContextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
+  this->mpContextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
+  this->mpContextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
+  this->mpContextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
+  this->mpContextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
 
-  sliderMap[ -1].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", sliderBox));
+  this->mSliderMap[ -1].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
 
-  taskMap[23] = &SliderDialog::runTimeCourse;
-  taskMap[21] = &SliderDialog::runSteadyStateTask;
-  taskMap[31] = &SliderDialog::runScanTask;
-  taskMap[24] = &SliderDialog::runMCATask;
+  this->mTaskMap[23] = &SliderDialog::runTimeCourse;
+  this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
+  this->mTaskMap[31] = &SliderDialog::runScanTask;
+  this->mTaskMap[24] = &SliderDialog::runMCATask;
 
-  connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
-  connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
-  setCurrentFolderId(-1);
+  connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
+  connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
+  this->setCurrentFolderId(-1);
   init();
 }
 
@@ -165,28 +158,28 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 
   if (pSlider)
     {
-      contextMenu->setItemEnabled(contextMenu->idAt(0), false);
-      contextMenu->setItemEnabled(contextMenu->idAt(1), true);
-      contextMenu->setItemEnabled(contextMenu->idAt(2), true);
+      mpContextMenu->setItemEnabled(mpContextMenu->idAt(0), false);
+      mpContextMenu->setItemEnabled(mpContextMenu->idAt(1), true);
+      mpContextMenu->setItemEnabled(mpContextMenu->idAt(2), true);
       setCurrentSlider(pSlider);
     }
   else
     {
-      contextMenu->setItemEnabled(contextMenu->idAt(0), true);
-      contextMenu->setItemEnabled(contextMenu->idAt(1), false);
-      contextMenu->setItemEnabled(contextMenu->idAt(2), false);
+      mpContextMenu->setItemEnabled(mpContextMenu->idAt(0), true);
+      mpContextMenu->setItemEnabled(mpContextMenu->idAt(1), false);
+      mpContextMenu->setItemEnabled(mpContextMenu->idAt(2), false);
     }
 
-  contextMenu->popup(e->globalPos());
+  mpContextMenu->popup(e->globalPos());
 }
 
 void SliderDialog::setCurrentSlider(CopasiSlider* pSlider)
 {
-  currSlider = pSlider;
+  mpCurrSlider = pSlider;
 
-  if (currSlider)
+  if (mpCurrSlider)
     {
-      currSlider->setFocus();
+      mpCurrSlider->setFocus();
     }
 }
 
@@ -241,7 +234,7 @@ void SliderDialog::createNewSlider()
 
 void SliderDialog::removeSlider()
 {
-  if (currSlider)
+  if (mpCurrSlider)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       CCopasiVector<CSlider>* pSliderList = (*CCopasiRootContainer::getDatamodelList())[0]->getGUI()->getSliderList();
@@ -251,15 +244,15 @@ void SliderDialog::removeSlider()
         {
           CSlider* pTmpSlider = (*pSliderList)[i];
 
-          if (pTmpSlider == currSlider->getCSlider())
+          if (pTmpSlider == mpCurrSlider->getCSlider())
             {
               pSliderList->remove(i);
               break;
             }
         }
 
-      deleteSlider(currSlider);
-      currSlider = NULL;
+      deleteSlider(mpCurrSlider);
+      mpCurrSlider = NULL;
     }
 }
 
@@ -267,7 +260,7 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
 {
   if (pSlider)
     {
-      std::vector<QWidget*>* v = &sliderMap[currentFolderId];
+      std::vector<QWidget*>* v = &mSliderMap[mCurrentFolderId];
       std::vector<QWidget*>::iterator it = v->begin();
       std::vector<QWidget*>::iterator end = v->end();
 
@@ -283,7 +276,7 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
 
       assert(it != end);
       v->erase(it);
-      ((Q3VBoxLayout*)sliderBox->layout())->remove(pSlider);
+      ((Q3VBoxLayout*)mpSliderBox->layout())->remove(pSlider);
       pdelete(pSlider);
     }
 }
@@ -294,7 +287,7 @@ void SliderDialog::editSlider()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pSettingsDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   // set the list of sliders that is already known
-  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(currentFolderId);
+  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
 
   if (!object) return;
 
@@ -303,16 +296,16 @@ void SliderDialog::editSlider()
 
   //pSettingsDialog->disableObjectChoosing(true);
 
-  pSettingsDialog->setSlider(currSlider->getCSlider());
+  pSettingsDialog->setSlider(mpCurrSlider->getCSlider());
 
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       addSlider(pSettingsDialog->getSlider());
-      currSlider->updateSliderData();
+      mpCurrSlider->updateSliderData();
       /*
-      if ((!currSlider->isEnabled()) && currSlider->getCSlider()->compile())
+      if ((!mpCurrSlider->isEnabled()) && mpCurrSlider->getCSlider()->compile())
         {
-          currSlider->setEnabled(true);
+          mpCurrSlider->setEnabled(true);
         }
         */
     }
@@ -323,16 +316,16 @@ void SliderDialog::editSlider()
 
 SliderDialog::~SliderDialog()
 {
-  delete runTaskButton;
-  delete autoRunCheckBox;
+  delete mpRunTaskButton;
+  delete mpAutoRunCheckBox;
   delete mpAutoModifyRangesCheckBox;
-  delete sliderBox;
-  delete scrollView;
-  unsigned int i, j, maxWidgets, maxVectors = sliderMap.size();
+  delete mpSliderBox;
+  delete mpScrollView;
+  unsigned int i, j, maxWidgets, maxVectors = mSliderMap.size();
 
   for (i = 0; i < maxVectors; ++i)
     {
-      std::vector<QWidget*> v = sliderMap[i];
+      std::vector<QWidget*> v = mSliderMap[i];
       maxWidgets = v.size();
 
       for (j = 0; j < maxWidgets; ++j)
@@ -361,22 +354,22 @@ void SliderDialog::addSlider(CSlider* pSlider)
 
   if (!tmp)
     {
-      setCurrentSlider(new CopasiSlider(pSlider, sliderBox));
-      currSlider->installEventFilter(this);
-      currSlider->setHidden(true);
-      currSlider->updateSliderData();
-      sliderMap[currentFolderId].push_back(currSlider);
-      ((Q3VBoxLayout*)sliderBox->layout())->add(currSlider);
-      connect(currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-      connect(currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
-      connect(currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-      connect(currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
-      connect(currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
-      currSlider->setHidden(false);
+      setCurrentSlider(new CopasiSlider(pSlider, mpSliderBox));
+      mpCurrSlider->installEventFilter(this);
+      mpCurrSlider->setHidden(true);
+      mpCurrSlider->updateSliderData();
+      mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+      ((Q3VBoxLayout*)mpSliderBox->layout())->add(mpCurrSlider);
+      connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+      connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+      connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+      connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+      mpCurrSlider->setHidden(false);
     }
   else
     {
-      currSlider = tmp;
+      mpCurrSlider = tmp;
     }
 }
 
@@ -405,7 +398,7 @@ CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
 CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
 {
   CopasiSlider* pResult = NULL;
-  std::vector<QWidget*> v = sliderMap[currentFolderId];
+  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
   unsigned int i, maxCount = v.size();
   CopasiSlider* pTmpSlider;
 
@@ -429,7 +422,7 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
 {
   id = mapFolderId2EntryId(id);
 
-  if (id == currentFolderId) return;
+  if (id == mCurrentFolderId) return;
 
   if (id == -1)
     {
@@ -442,16 +435,16 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
 
   clearSliderBox();
 
-  currentFolderId = id;
+  mCurrentFolderId = id;
 
   fillSliderBox();
 }
 
 void SliderDialog::fillSliderBox()
 {
-  std::vector<QWidget*> v = sliderMap[currentFolderId];
+  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
-  if (currentFolderId != -1)
+  if (mCurrentFolderId != -1)
     {
       std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
@@ -487,15 +480,15 @@ void SliderDialog::fillSliderBox()
 
           if (!found)
             {
-              setCurrentSlider(new CopasiSlider((*pVector)[i], sliderBox));
-              connect(currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-              connect(currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
-              connect(currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-              connect(currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
-              connect(currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
-              currSlider->installEventFilter(this);
-              currSlider->setHidden(true);
-              sliderMap[currentFolderId].push_back(currSlider);
+              setCurrentSlider(new CopasiSlider((*pVector)[i], mpSliderBox));
+              connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+              connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+              connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+              connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+              connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+              mpCurrSlider->installEventFilter(this);
+              mpCurrSlider->setHidden(true);
+              mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
             }
         }
 
@@ -535,19 +528,19 @@ void SliderDialog::fillSliderBox()
       delete pVector;
     }
 
-  v = sliderMap[currentFolderId];
+  v = mSliderMap[mCurrentFolderId];
   unsigned int i, maxCount = v.size();
 
   for (i = maxCount; i != 0; --i)
     {
       QWidget* widget = v[i - 1];
       widget->setHidden(true);
-      ((Q3VBoxLayout*)sliderBox->layout())->insertWidget(0, widget);
+      ((Q3VBoxLayout*)mpSliderBox->layout())->insertWidget(0, widget);
       setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
 
-      if (currSlider)
+      if (mpCurrSlider)
         {
-          currSlider->updateSliderData();
+          mpCurrSlider->updateSliderData();
         }
 
       widget->setHidden(false);
@@ -573,11 +566,11 @@ C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
 
 void SliderDialog::runTask()
 {
-  if (taskMap.find(currentFolderId) != taskMap.end())
+  if (mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
     {
       setEnabled(false);
       updateAllSliders();
-      ((this)->*(taskMap[currentFolderId]))();
+      ((this)->*(mTaskMap[mCurrentFolderId]))();
       updateAllSliders();
       setEnabled(true);
     }
@@ -587,7 +580,7 @@ void SliderDialog::sliderValueChanged()
 {
   mSliderValueChanged = true;
 
-  if ((!mSliderPressed) && autoRunCheckBox->isChecked())
+  if ((!mSliderPressed) && mpAutoRunCheckBox->isChecked())
     {
       //runTask();
       mSliderValueChanged = false;
@@ -596,7 +589,7 @@ void SliderDialog::sliderValueChanged()
 
 void SliderDialog::sliderReleased()
 {
-  if (mSliderValueChanged && autoRunCheckBox->isChecked())
+  if (mSliderValueChanged && mpAutoRunCheckBox->isChecked())
     {
       runTask();
       mSliderValueChanged = false;
@@ -612,39 +605,39 @@ void SliderDialog::sliderPressed()
 
 void SliderDialog::runTimeCourse()
 {
-  if (pParentWindow)
+  if (mpParentWindow)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      pParentWindow->getMainWidget()->getTrajectoryWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]->getKey());
-      pParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
+      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]->getKey());
+      mpParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
     }
 }
 
 void SliderDialog::runSteadyStateTask()
 {
-  if (pParentWindow)
+  if (mpParentWindow)
     {
-      pParentWindow->getMainWidget()->getSteadyStateWidget()->runTask();
+      mpParentWindow->getMainWidget()->getSteadyStateWidget()->runTask();
     }
 }
 
 void SliderDialog::runScanTask()
 {
-  if (pParentWindow)
+  if (mpParentWindow)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      pParentWindow->getMainWidget()->getScanWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]->getKey());
-      pParentWindow->getMainWidget()->getScanWidget()->runTask();
+      mpParentWindow->getMainWidget()->getScanWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]->getKey());
+      mpParentWindow->getMainWidget()->getScanWidget()->runTask();
     }
 }
 
 void SliderDialog::runMCATask()
 {
-  if (pParentWindow)
+  if (mpParentWindow)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      pParentWindow->getMainWidget()->getMCAWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]->getKey());
-      pParentWindow->getMainWidget()->getMCAWidget()->runTask();
+      mpParentWindow->getMainWidget()->getMCAWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]->getKey());
+      mpParentWindow->getMainWidget()->getMCAWidget()->runTask();
     }
 }
 
@@ -652,9 +645,9 @@ void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
 
-  if (pParentWindow)
+  if (mpParentWindow)
     {
-      pParentWindow->slotShowSliders(false);
+      mpParentWindow->slotShowSliders(false);
     }
 }
 
@@ -688,10 +681,10 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
 
 void SliderDialog::updateAllSliders()
 {
-  if (currentFolderId == -1) return;
+  if (mCurrentFolderId == -1) return;
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
-  std::vector<QWidget*> v = sliderMap[currentFolderId];
+  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
   unsigned int i, maxCount = v.size();
 
   for (i = 0; i < maxCount; ++i)
@@ -766,20 +759,20 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
 
 void SliderDialog::clearSliderBox()
 {
-  std::vector<QWidget*> v = sliderMap[currentFolderId];
+  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
   unsigned int i, maxCount = v.size();
 
   for (i = 0; i < maxCount; ++i)
     {
       QWidget* widget = v[i];
       widget->setHidden(true);
-      ((Q3VBoxLayout*)sliderBox->layout())->remove(widget);
+      ((Q3VBoxLayout*)mpSliderBox->layout())->remove(widget);
     }
 }
 
 std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
 {
-  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(currentFolderId);
+  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
 
   if (!object) return NULL;
 
@@ -804,12 +797,12 @@ bool SliderDialog::eventFilter(QObject*, QEvent* event)
 
 void SliderDialog::resetValue()
 {
-  currSlider->resetValue();
+  mpCurrSlider->resetValue();
 }
 
 void SliderDialog::setDefault()
 {
-  currSlider->setOriginalValue(currSlider->value());
+  mpCurrSlider->setOriginalValue(mpCurrSlider->value());
 }
 
 bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
@@ -823,5 +816,5 @@ bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
 
 void SliderDialog::setParentWindow(CopasiUI3Window* pPW)
 {
-  pParentWindow = pPW;
+  mpParentWindow = pPW;
 }
