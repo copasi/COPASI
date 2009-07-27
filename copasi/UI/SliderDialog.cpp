@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/27 13:33:34 $
+//   $Date: 2009/07/27 17:29:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,7 @@
 #include "scan/CScanTask.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
+#include "CCopasiSelectionDialog.h"
 
 C_INT32 SliderDialog::numMappings = 7;
 C_INT32 SliderDialog::folderMappings[][2] =
@@ -194,36 +195,104 @@ CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
 
 void SliderDialog::createNewSlider()
 {
-  SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pSettingsDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-  // set the list of sliders that is already known
+  // allow the user to create more than one slider
+  std::vector<const CCopasiObject*> objects = CCopasiSelectionDialog::getObjectVector(this,
+      CCopasiSimpleSelectionTree::InitialTime |
+      CCopasiSimpleSelectionTree::Parameters);
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
-  pSettingsDialog->setDefinedSliders(*pVector);
+  std::vector<const CCopasiObject*>::const_iterator it = objects.begin(), endit = objects.end();
+  bool yesToAll = false;
+  bool noToAll = false;
+  // create the sliders for all the selected objects
 
-  if (pSettingsDialog->exec() == QDialog::Accepted)
+  // first we need the task object because we need it later to associate the
+  // later with the correct task
+  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
+
+  if (!object) return;
+
+  while (it != endit)
     {
-      CSlider* pCSlider = pSettingsDialog->getSlider();
+      // create a new slider
+      assert((*it) != NULL);
+      CSlider* pCSlider = new CSlider("slider", (*CCopasiRootContainer::getDatamodelList())[0]);
 
       if (pCSlider)
         {
-          if (equivalentSliderExists(pCSlider))
+          pCSlider->setSliderObject(const_cast< CCopasiObject * >(*it));
+          pCSlider->setAssociatedEntityKey(object->getKey());
+          // check if a slider for that object already exists and if so, prompt
+          // the user what to do
+          CSlider* pEquivalentSlider = equivalentSliderExists(pCSlider);
+
+          if (pEquivalentSlider != NULL)
             {
-              CQMessageBox::information(NULL, "Slider Exists",
-                                        "A slider for this object already exists. Please edit the corresponding slider.",
-                                        QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+              CopasiSlider* pCopasiSlider = NULL;
+
+              // if the user has specified yesToAll, we reset the ranges of all
+              // duplicate sliders
+              if (yesToAll)
+                {
+                  pEquivalentSlider->resetRange();
+                  // update the slider widget
+                  pCopasiSlider = findCopasiSliderForCSlider(pEquivalentSlider);
+                  assert(pCopasiSlider != NULL);
+
+                  if (pCopasiSlider != NULL)
+                    {
+                      pCopasiSlider->updateSliderData();
+                    }
+                }
+              // if the user has not specified noToAll, we need to prompt
+              else if (!noToAll)
+                {
+                  QMessageBox::StandardButton result = CQMessageBox::information(NULL, "Slider Exists",
+                                                       "A slider for this object already exists.\n\nDo you want to reset the range of the slider?",
+                                                       QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll, QMessageBox::No);
+
+                  // check the answer and maybe set some flags
+                  switch (result)
+                    {
+                      case QMessageBox::YesToAll:
+                        // set the flag
+                        yesToAll = true;
+                      case QMessageBox::Yes:
+                        // reset the range
+                        pEquivalentSlider->resetRange();
+                        // update the slider widget
+                        pCopasiSlider = findCopasiSliderForCSlider(pEquivalentSlider);
+                        assert(pCopasiSlider != NULL);
+
+                        if (pCopasiSlider != NULL)
+                          {
+                            pCopasiSlider->updateSliderData();
+                          }
+
+                        break;
+                      case QMessageBox::NoToAll:
+                        // set the flag
+                        noToAll = true;
+                      case QMessageBox::No:
+                        // do nothing else
+                        break;
+                      default:
+                        // do nothing
+                        break;
+                    }
+                }
+
               delete pCSlider;
             }
           else
-            addSlider(pCSlider);
+            {
+              pCSlider->resetRange();
+              addSlider(pCSlider);
+            }
         }
-    }
-  else
-    {
-      setCurrentSlider(NULL);
+
+      ++it;
     }
 
-  delete pSettingsDialog;
   delete pVector;
 }
 
