@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.156 $
+//   $Revision: 1.157 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/12 19:58:25 $
+//   $Date: 2009/07/27 16:50:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ class SensitivitiesWidget;
 class CQSensResultWidget;
 class StateWidget;
 class CQTrajectoryWidget;
-class TableDefinition;
+class CQReportsWidget;
 #ifdef COPASI_TSS
 class TSSWidget;
 #endif // COPASI_TSS
@@ -257,7 +257,7 @@ private:
   CQSensResultWidget *sensResultWidget;
   StateWidget *stateWidget;
   SteadyStateWidget *steadystateWidget;
-  TableDefinition *tableDefinition;
+  CQReportsWidget *mpReportsWidget;
   CQReportDefinition *tableDefinition1;
 #ifdef COPASI_TSS
   TSSWidget *tssWidget;

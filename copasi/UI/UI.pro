@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.206 $
+#   $Revision: 1.207 $
 #   $Name:  $
-#   $Author: gauges $
-#   $Date: 2009/07/27 13:33:34 $
+#   $Author: aekamal $
+#   $Date: 2009/07/27 16:50:57 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.206 $ $Author: gauges $ $Date: 2009/07/27 13:33:34 $
+# $Revision: 1.207 $ $Author: aekamal $ $Date: 2009/07/27 16:50:57 $
 ######################################################################
 
 LIB = UI
@@ -103,7 +103,6 @@ HEADERS	+= \
 	SliderDialog.h \
 	StateWidget.h \
 	SteadyStateWidget.h \
-	TableDefinition.h \
 	TaskWidget.h \
 	TimeSeriesWidget.h \
 	Tree.h \
@@ -181,7 +180,6 @@ SOURCES	+= \
 	SliderDialog.cpp \
 	StateWidget.cpp \
 	SteadyStateWidget.cpp \
-	TableDefinition.cpp \
 	TaskWidget.cpp \
 	TimeSeriesWidget.cpp \
 	Tree.cpp \
@@ -204,6 +202,8 @@ FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQReactionsWidget.ui
+FORMS += CQReportDefinition.ui
+FORMS += CQReportsWidget.ui
 FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
@@ -238,7 +238,6 @@ FORMS3 += CQOptimizationResult.ui
 # FORMS3 += CQProgressItem.ui
 # FORMS3 += CQProgressItemBar.ui
 # FORMS3 += CQProgressItemText.ui
-# FORMS3 += CQReportDefinition.ui
 # FORMS3 += CQSplashWidget.ui
 # FORMS3 += CQStartValueReset.ui
 # FORMS3 += CQTaskBtnWidget.ui
@@ -296,7 +295,8 @@ HEADERS += \
            CQProgressItemText.h \
            CQProgressItemText.ui.h \
            CQReportDefinition.h \
-           CQReportDefinition.ui.h \
+           CQReportDM.h \
+           CQReportsWidget.h \
            CQSplashWidget.h \
            CQSplashWidget.ui.h \
            CQStartValueReset.h \
@@ -350,6 +350,8 @@ SOURCES += \
            CQProgressItemText.cpp \
            CQProgressDialog.cpp \
            CQReportDefinition.cpp \
+           CQReportDM.cpp \
+           CQReportsWidget.cpp \
            CQSplashWidget.cpp \
            CQStartValueReset.cpp \
            CQTaskBtnWidget.cpp \

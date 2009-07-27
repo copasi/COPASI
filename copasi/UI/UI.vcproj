@@ -482,11 +482,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQReportDefinition.ui.h"
+				RelativePath=".\CQReportDM.cpp"
 				>
 			</File>
 			<File
 				RelativePath="CQReportListItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReportsWidget.cpp"
 				>
 			</File>
 			<File
@@ -1103,7 +1107,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQReportDM.h"
+				>
+			</File>
+			<File
 				RelativePath="CQReportListItem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQReportsWidget.h"
 				>
 			</File>
 			<File
@@ -1526,6 +1538,10 @@
 		</File>
 		<File
 			RelativePath="CQReportDefinition.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQReportsWidget.ui"
 			>
 		</File>
 		<File

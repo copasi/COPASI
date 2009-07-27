@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.270 $
+//   $Revision: 1.271 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/06/22 17:16:23 $
+//   $Date: 2009/07/27 16:50:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@
 #include "CQSensResultWidget.h"
 #include "CQOptimizationWidget.h"
 #include "CQOptimizationResult.h"
-#include "TableDefinition.h"
+#include "CQReportsWidget.h"
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
@@ -251,7 +251,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     sensResultWidget(NULL),
     stateWidget(NULL),
     steadystateWidget(NULL),
-    tableDefinition(NULL),
+    mpReportsWidget(NULL),
     tableDefinition1(NULL),
 #ifdef COPASI_TSS
     tssWidget(NULL),
@@ -282,8 +282,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
 
   defaultWidget = new CQSplashWidget(this);
 
-  moveToFirst(folders);
-  moveToLast(defaultWidget);
+  addWidget(folders);
+  addWidget(defaultWidget);
   setResizeMode(folders, QSplitter::KeepSize);
 
   if (!opaqueResize())
@@ -488,9 +488,9 @@ void ListViews::ConstructNodeWidgets()
 
   steadystateWidget->hide();
 
-  if (!tableDefinition) tableDefinition = new TableDefinition(this);
+  if (!mpReportsWidget) mpReportsWidget = new CQReportsWidget(this);
 
-  tableDefinition->hide();
+  mpReportsWidget->hide();
 
   if (!tableDefinition1) tableDefinition1 = new CQReportDefinition(this);
 
@@ -718,7 +718,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return sensResultWidget;
         break;
       case 43:                                         //Report
-        return tableDefinition;
+        return mpReportsWidget;
         break;
       case 42:
         return plotWidget;
