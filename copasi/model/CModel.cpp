@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.378 $
+//   $Revision: 1.379 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 21:08:44 $
+//   $Date: 2009/07/27 16:15:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ CModel::CModel(CCopasiContainer* pParent):
     mpCompileHandler(NULL),
     mInitialRefreshes(),
     mSimulatedRefreshes(),
-    mConcentrationRefreshes(),
+    mApplyInitialValuesRefreshes(),
     mNonSimulatedRefreshes(),
     mReorderNeeded(false),
     mIsAutonomous(true),
@@ -399,7 +399,7 @@ bool CModel::compile()
   // first
   mInitialRefreshes.clear();
   mSimulatedRefreshes.clear();
-  mConcentrationRefreshes.clear();
+  mApplyInitialValuesRefreshes.clear();
   mNonSimulatedRefreshes.clear();
 
   CompileStep = 0;
@@ -436,7 +436,7 @@ bool CModel::compile()
   try
     {
       success &= buildInitialSequence();
-      success &= buildConcentrationSequence();
+      success &= buildApplyInitialValuesSequence();
       success &= buildSimulatedSequence();
       success &= buildNonSimulatedSequence();
     }
@@ -1111,8 +1111,8 @@ void CModel::applyInitialValues()
   // do anything further. However, for species of type ODE and ASSIGNMENT
   // the effective state variable is the concentration, i.e., we need to update
   // their concentration here.
-  std::vector< Refresh * >::const_iterator itRefresh = mConcentrationRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endRefresh = mConcentrationRefreshes.end();
+  std::vector< Refresh * >::const_iterator itRefresh = mApplyInitialValuesRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mApplyInitialValuesRefreshes.end();
 
   while (itRefresh != endRefresh)
     (**itRefresh++)();
@@ -1464,7 +1464,7 @@ bool CModel::buildSimulatedSequence()
         (*itReaction)->compile();
 
       // The compile might have broken some refresh pointers we need to rebuild the constant sequence
-      buildConcentrationSequence();
+      buildApplyInitialValuesSequence();
     }
 
   std::set< const CCopasiObject * > UpToDate;
@@ -1482,11 +1482,11 @@ bool CModel::buildSimulatedSequence()
   return success;
 }
 
-bool CModel::buildConcentrationSequence()
+bool CModel::buildApplyInitialValuesSequence()
 {
   bool success = true;
 
-  mConcentrationRefreshes.clear();
+  mApplyInitialValuesRefreshes.clear();
 
   const CMetab * pMetab;
 
@@ -1495,9 +1495,15 @@ bool CModel::buildConcentrationSequence()
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
+      if ((*ppEntity)->getStatus() == ODE ||
+          (*ppEntity)->getStatus() == REACTIONS)
+        {
+          mApplyInitialValuesRefreshes.push_back((*ppEntity)->getRateReference()->getRefresh());
+        }
+
       if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
         {
-          mConcentrationRefreshes.push_back(pMetab->getConcentrationReference()->getRefresh());
+          mApplyInitialValuesRefreshes.push_back(pMetab->getConcentrationReference()->getRefresh());
         }
     }
 
@@ -1593,8 +1599,8 @@ bool CModel::buildNonSimulatedSequence()
     }
 
   // We have to remove the refresh calls already covered by mConstantRefreshes
-  std::vector< Refresh * >::const_iterator itConstantRefresh = mConcentrationRefreshes.begin();
-  std::vector< Refresh * >::const_iterator endConstantRefresh = mConcentrationRefreshes.end();
+  std::vector< Refresh * >::const_iterator itConstantRefresh = mApplyInitialValuesRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endConstantRefresh = mApplyInitialValuesRefreshes.end();
 
   std::vector< Refresh * >::iterator itRefresh;
   std::vector< Refresh * >::iterator endRefresh;
@@ -3594,7 +3600,7 @@ const std::vector< Refresh * > & CModel::getListOfSimulatedRefreshes() const
 {return mSimulatedRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfConstantRefreshes() const
-{return mConcentrationRefreshes;}
+{return mApplyInitialValuesRefreshes;}
 
 const std::vector< Refresh * > & CModel::getListOfNonSimulatedRefreshes() const
 {return mNonSimulatedRefreshes;}
