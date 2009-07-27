@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/07/13 15:43:44 $
+//   $Date: 2009/07/27 16:46:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,6 +113,9 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
   if (index.row() >= rowCount())
     return QVariant();
+
+  if (index.column() > 0 && role == Qt::ForegroundRole && !(flags(index) & Qt::ItemIsEditable))
+    return QColor(Qt::darkGray);
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
