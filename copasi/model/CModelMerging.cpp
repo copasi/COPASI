@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelMerging.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/27 12:08:22 $
+//   $Date: 2009/07/28 10:58:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,30 +34,37 @@ void CModelMerging::setModel(CModel* pModel, CModel* mModel)
 
 void CModelMerging::simpleCall()
 {
-  if (!mpModel) return;
+  if (!mpModel)
+    {
+      fatalError();
+    }
 
-  if (!mmModel) return;
+  if (!mmModel)
+    {
+      fatalError();
+    }
 
   keyMap[mmModel->getKey()] = mpModel->getKey();
-  std::string name = "model_2";
+  std::string name = "model_2"; // temporary we do not take care about naming conflicts.
+  // : "model_2" is the appendix for the names  of compartments and reactions,
+  // comming form the second model
 
-  if (!addCompartments(name)) return; // TODO error message
+  bool  progress  =      addCompartments(name)
+                         &&  addMetabolites(name)
+                         &&  addModelValues(name)
+                         &&  addCompartmentsExpressions()
+                         &&  addMetabolitesExpressions()
+                         &&  addModelValuesExpressions()
+                         &&  addReactions(name)
+                         &&  addEvents(name);
 
-  if (!addMetabolites(name)) return; // TODO error message
+  if (!progress)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCModelMerging + 1);
+      return;
+    }
 
-  if (!addModelValues(name)) return; // TODO error message
-
-  if (!addCompartmentsExpressions()) return; // TODO error message
-
-  if (!addMetabolitesExpressions()) return; // TODO error message
-
-  if (!addModelValuesExpressions()) return; // TODO error message
-
-  if (!addReactions(name)) return; // TODO error message
-
-  if (!addEvents(name)) return; // TODO error message
-
-  /* currently : dummy choice of metabolites  to merge */
+  /* to replace :  dummy choice of metabolites  to merge */
   unsigned C_INT32 i, imax = mpModel->getMetabolites().size();
   unsigned C_INT32 j, jmax = imax;
 
@@ -77,7 +84,13 @@ void CModelMerging::simpleCall()
               std::string toKey = metab->getKey();
               std::string key = metab1->getKey();
 
-              if (!mergeMetabolites(toKey, key)) return;
+              progress = mergeMetabolites(toKey, key);
+
+              if (!progress)
+                {
+                  CCopasiMessage(CCopasiMessage::ERROR, MCModelMerging + 2, metab1->getObjectName().c_str(), metabName.c_str());
+                  return;
+                }
 
               /* currently,  before we do not delete metabolites from the model */
               metab1->setStatus(CModelEntity::FIXED);
@@ -94,9 +107,7 @@ void CModelMerging::simpleCall()
 bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 {
 
-  bool info;
-
-  if (!mpModel) return info;
+  bool info = false;
 
   //merge in  the relevant reactions
 
@@ -163,14 +174,14 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
                 break;
 
               case CFunctionParameter::VOLUME:
-                // TODO : have to ask
+                // ??? TODO : have to ask
                 break;
 
               case CFunctionParameter::PARAMETER:
                 break;
 
               default:
-                //TODO: error handling
+                return info;
                 break;
             }
         }
@@ -187,15 +198,9 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
       /* merge in  trigger expressions */
       CExpression* pExpression = event->getTriggerExpressionPtr();
 
-      if (pExpression)
-        {
-          if (!mergeInExpression(toKey, key, pExpression))
-            return info;
-        }
-      else
-        {
-          fatalError();
-        }
+      if (pExpression == NULL) return info;
+
+      if (!mergeInExpression(toKey, key, pExpression))  return info;
 
       pExpression = event->getDelayExpressionPtr();
 
@@ -217,16 +222,9 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
           pExpression = assignment->getExpressionPtr();
 
-          if (pExpression)
-            {
-              if (!mergeInExpression(toKey, key, pExpression))
+          if (pExpression == NULL) return info;
 
-                return info;
-            }
-          else
-            {
-              fatalError();
-            }
+          if (!mergeInExpression(toKey, key, pExpression))    return info;
         }
     }
 
@@ -260,9 +258,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
             break;
 
           default:
-
             return info;
-
             break;
         }
     }
@@ -296,9 +292,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
             break;
 
           default:
-
             return info;
-
             break;
         }
     }
@@ -332,9 +326,7 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
             break;
 
           default:
-
             return info;
-
             break;
         }
     }
@@ -345,9 +337,9 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpression *pExpression)
 {
 
-  bool info;
+  bool info = false;
 
-  assert(pExpression);
+  if (pExpression == NULL) return info;
 
   //std::cout << pExpression->getRoot()->getDisplayString(pExpression).c_str() << std::endl;
 
@@ -359,13 +351,17 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+
+          if (pObjectNode == NULL) return info;
+
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
           //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mpModel->getObjectDataModel()->getObject(cn);
-          assert(mObject);
+
+          if (mObject == NULL) return info;
+
           std::string host = "";
 
           if (mObject->isReference())
@@ -375,7 +371,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
               //std::cout << host << std::endl;
             }
 
-          assert(mObject);
+          if (mObject == NULL) return info;
 
           CCopasiObject* pObject;
 
@@ -405,11 +401,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 bool CModelMerging::addEvents(std::string name)
 {
 
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
+  bool info = false;
 
   unsigned C_INT32 i, imax = mmModel->getEvents().size();
 
@@ -443,7 +435,8 @@ bool CModelMerging::addEvents(std::string name)
 #endif
 
       CEvent* newEvent = mpModel->createEvent(eventName + appendix);
-      assert(newEvent != NULL);
+
+      if (newEvent == NULL) return info;
 
       /* copy trigger expression */
 
@@ -454,7 +447,7 @@ bool CModelMerging::addEvents(std::string name)
         }
       else
         {
-          fatalError();
+          return info;
         }
 
       /* set whether the calculation or the assignment shall be delayed */
@@ -491,7 +484,7 @@ bool CModelMerging::addEvents(std::string name)
             }
           else
             {
-              fatalError();
+              return info;
             }
         }
     }
@@ -501,10 +494,11 @@ bool CModelMerging::addEvents(std::string name)
 bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourceAssignment, CEventAssignment * newAssignment)
 {
 
-  bool info;
+  bool info = false;
 
   const CExpression* pExpression = sourceAssignment->getExpressionPtr();
-  assert(pExpression);
+
+  if (pExpression == NULL) return info;
 
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
@@ -519,13 +513,17 @@ bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourc
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+
+          if (pObjectNode == NULL) return info;
+
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
           //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-          assert(mObject);
+
+          if (mObject == NULL) return info;
+
           std::string host = "";
 
           if (mObject->isReference())
@@ -534,7 +532,7 @@ bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourc
               mObject = mObject->getObjectParent();
             }
 
-          assert(mObject);
+          if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
           CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
@@ -560,10 +558,11 @@ bool CModelMerging::copyEventAssignmentExpression(const CEventAssignment * sourc
 bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEvent)
 {
 
-  bool info;
+  bool info = false;
 
   const CExpression* pExpression = sourceEvent->getDelayExpressionPtr();
-  assert(pExpression);
+
+  if (pExpression == NULL) return info;
 
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
@@ -578,13 +577,17 @@ bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * new
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+
+          if (pObjectNode == NULL) return info;
+
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
           //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-          assert(mObject);
+
+          if (mObject == NULL) return info;
+
           std::string host = "";
 
           if (mObject->isReference())
@@ -593,7 +596,7 @@ bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * new
               mObject = mObject->getObjectParent();
             }
 
-          assert(mObject);
+          if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
           CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
@@ -619,10 +622,11 @@ bool CModelMerging::copyDelayExpression(const CEvent * sourceEvent, CEvent * new
 bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEvent)
 {
 
-  bool info;
+  bool info = false;
 
   const CExpression* pExpression = sourceEvent->getTriggerExpressionPtr();
-  assert(pExpression);
+
+  if (pExpression == NULL) return info;
 
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
@@ -637,13 +641,17 @@ bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * n
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+
+          if (pObjectNode == NULL) return info;
+
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
           //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-          assert(mObject);
+
+          if (mObject == NULL) return info;
+
           std::string host = "";
 
           if (mObject->isReference())
@@ -652,7 +660,7 @@ bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * n
               mObject = mObject->getObjectParent();
             }
 
-          assert(mObject);
+          if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
           CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
@@ -678,10 +686,11 @@ bool CModelMerging::copyTriggerExpression(const CEvent * sourceEvent, CEvent * n
 bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity)
 {
 
-  bool info;
+  bool info = false;
 
   const CExpression* pExpression = sourceEntity->getExpressionPtr();
-  assert(pExpression);
+
+  if (pExpression == NULL) return info;
 
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
@@ -696,13 +705,17 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+
+          if (pObjectNode == NULL) return info;
+
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
           //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-          assert(mObject);
+
+          if (mObject == NULL) return info;
+
           std::string host = "";
 
           if (mObject->isReference())
@@ -711,7 +724,7 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
               mObject = mObject->getObjectParent();
             }
 
-          assert(mObject);
+          if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
           CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
@@ -737,10 +750,11 @@ bool CModelMerging::copyExpression(const CModelEntity * sourceEntity, CModelEnti
 bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CModelEntity * newEntity)
 {
 
-  bool info;
+  bool info = false;
 
   const CExpression* pExpression = sourceEntity->getInitialExpressionPtr();
-  assert(pExpression);
+
+  if (pExpression == NULL) return info;
 
   CExpression* tmp;
   tmp = new CExpression(*pExpression, mmModel);
@@ -755,13 +769,17 @@ bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CMo
       if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+
+          if (pObjectNode == NULL) return info;
+
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
           //std::cout << cn << std::endl;
 
           const CCopasiObject* mObject = mmModel->getObjectDataModel()->getObject(cn);
-          assert(mObject);
+
+          if (mObject == NULL) return info;
+
           std::string host = "";
 
           if (mObject->isReference())
@@ -770,7 +788,7 @@ bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CMo
               mObject = mObject->getObjectParent();
             }
 
-          assert(mObject);
+          if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
           CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
@@ -790,18 +808,11 @@ bool CModelMerging::copyInitialExpression(const CModelEntity * sourceEntity, CMo
 
   newEntity->setInitialExpression(tmp->getInfix().c_str());
 
-  return true;
+  return info;
 }
 
 bool CModelMerging::addCompartments(std::string name)
 {
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
-
-  if (!mmModel->getCompartments().size()) return info;
 
   unsigned C_INT32 i, imax = mmModel->getCompartments().size();
 
@@ -809,7 +820,7 @@ bool CModelMerging::addCompartments(std::string name)
     {
       const CCompartment* sourceComp = mmModel->getCompartments()[i];
 
-      if (!sourceComp) return info;
+      if (!sourceComp) return false;
 
       //create new compartment
 
@@ -817,7 +828,7 @@ bool CModelMerging::addCompartments(std::string name)
 
       CCompartment* newComp = mpModel->createCompartment(newName, sourceComp->getInitialValue());
 
-      if (!newComp) return info;
+      if (!newComp) return false;
 
       newComp->setStatus(sourceComp->getStatus());
 
@@ -832,13 +843,8 @@ bool CModelMerging::addCompartments(std::string name)
 
 bool CModelMerging::addCompartmentsExpressions()
 {
-  bool info;
 
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
-
-  if (!mmModel->getCompartments().size()) return info;
+  bool info = false;
 
   unsigned C_INT32 i, imax = mmModel->getCompartments().size();
 
@@ -854,9 +860,7 @@ bool CModelMerging::addCompartmentsExpressions()
 
       CCompartment*  newComp = dynamic_cast< CCompartment * >(pObject);
 
-      if (!newComp)
-        //std::cout << "compartment was  not found ";
-        return info;
+      if (!newComp) return info;
 
       switch (newComp ->getStatus())
         {
@@ -891,13 +895,7 @@ bool CModelMerging::addCompartmentsExpressions()
 
 bool CModelMerging::addMetabolites(std::string name)
 {
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
-
-  if (!mmModel->getMetabolites().size()) return info;
+  bool info = false;
 
   unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
 
@@ -929,13 +927,7 @@ bool CModelMerging::addMetabolites(std::string name)
 
 bool CModelMerging::addMetabolitesExpressions()
 {
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
-
-  if (!mmModel->getMetabolites().size()) return info;
+  bool info = false;
 
   unsigned C_INT32 i, imax = mmModel->getMetabolites().size();
 
@@ -951,9 +943,7 @@ bool CModelMerging::addMetabolitesExpressions()
 
       CMetab*  newMetab = dynamic_cast< CMetab * >(pObject);
 
-      if (!newMetab)
-        //std::cout << "metabolite was  not found ";
-        return info;
+      if (!newMetab) return info;
 
       switch (newMetab ->getStatus())
         {
@@ -991,11 +981,7 @@ bool CModelMerging::addMetabolitesExpressions()
 
 bool CModelMerging::addModelValues(std::string name)
 {
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
+  bool info = false;
 
   unsigned C_INT32 i, imax = mmModel->getModelValues().size();
 
@@ -1024,11 +1010,7 @@ bool CModelMerging::addModelValues(std::string name)
 
 bool CModelMerging::addModelValuesExpressions()
 {
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
+  bool info = false;
 
   unsigned C_INT32 i, imax = mmModel->getModelValues().size();
 
@@ -1044,9 +1026,7 @@ bool CModelMerging::addModelValuesExpressions()
 
       CModelValue*  newModVal = dynamic_cast<CModelValue * >(pObject);
 
-      if (!newModVal)
-        //std::cout << "model value was  not found ";
-        return info;
+      if (!newModVal) return info;
 
       switch (newModVal ->getStatus())
         {
@@ -1082,17 +1062,11 @@ bool CModelMerging::addModelValuesExpressions()
 bool CModelMerging::addReactions(std::string name)
 {
 
-  bool info;
-
-  if (!mpModel) return info;
-
-  if (!mmModel) return info;
+  bool info = false;
 
   //create copies of the relevant reactions
 
   unsigned C_INT32 i, imax = mmModel->getReactions().size();
-
-  if (!mmModel->getCompartments().size()) return info;
 
   unsigned C_INT32 ic, icmax = mmModel->getCompartments().size();
 
@@ -1113,8 +1087,7 @@ bool CModelMerging::addReactions(std::string name)
 
               CReaction* newReac = mpModel->createReaction(newName);
 
-              if (!newReac)
-                continue; //should not happen TODO: error handling
+              if (!newReac) return info;
 
               //copy the chemical equation. If the involved metabs are among those that
               //were copied with the compartment, replace them. Otherwise keep the original metab
@@ -1243,7 +1216,7 @@ bool CModelMerging::addReactions(std::string name)
                         break;
 
                       default:
-                        //TODO: error handling
+                        return info;
                         break;
                     }
                 }
