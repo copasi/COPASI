@@ -70,7 +70,7 @@ echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
 
-rem Build the stochastic test suuite wrapper
+rem Build the stochastic test suite wrapper
 cd stochastic-testsuite
 echo executing in stochastic-testsuite:
 rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
@@ -79,3 +79,14 @@ echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
 
 cd ..
+
+rem Build the SBML test suite wrapper
+cd sbml-testsuite
+echo executing in sbml-testsuite:
+rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
+for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
+echo   %QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+%QMAKE% "CONFIG-=release" "CONFIG-=debug" %arguments%
+
+cd ..
+
