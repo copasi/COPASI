@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2009/07/27 17:31:32 $
+//   $Date: 2009/07/28 07:57:55 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -340,7 +340,7 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
 
       assert(it != end);
       v->erase(it);
-      ((Q3VBoxLayout*)mpSliderBox->layout())->remove(pSlider);
+      mpSliderBox->layout()->remove(pSlider);
       pdelete(pSlider);
     }
 }
@@ -423,7 +423,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
       mpCurrSlider->setHidden(true);
       mpCurrSlider->updateSliderData();
       mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
-      ((Q3VBoxLayout*)mpSliderBox->layout())->add(mpCurrSlider);
+      mpSliderBox->layout()->addWidget(mpCurrSlider);
       connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
       connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
       connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
@@ -599,7 +599,7 @@ void SliderDialog::fillSliderBox()
     {
       QWidget* widget = v[i - 1];
       widget->setHidden(true);
-      ((Q3VBoxLayout*)mpSliderBox->layout())->insertWidget(0, widget);
+      static_cast<QBoxLayout*>(mpSliderBox->layout())->insertWidget(0, widget);
       setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
 
       if (mpCurrSlider)
@@ -634,6 +634,10 @@ void SliderDialog::runTask()
     {
       setEnabled(false);
       updateAllSliders();
+      // commit possible changes to the task widget before running the task
+      CopasiWidget* pWidget = mpParentWindow->getMainWidget()->findWidgetFromId(mCurrentFolderId);
+      assert(pWidget != NULL);
+      pWidget->leave();
       ((this)->*(mTaskMap[mCurrentFolderId]))();
       updateAllSliders();
       setEnabled(true);
@@ -830,7 +834,7 @@ void SliderDialog::clearSliderBox()
     {
       QWidget* widget = v[i];
       widget->setHidden(true);
-      ((Q3VBoxLayout*)mpSliderBox->layout())->remove(widget);
+      mpSliderBox->layout()->remove(widget);
     }
 }
 
