@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:51:19 $
+//   $Date: 2009/07/28 15:12:17 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,7 +66,8 @@ CCopasiContainer::~CCopasiContainer()
   objectMap::iterator end = mObjects.end();
 
   for (; it != end; it++)
-    if (it->second->getObjectParent() == this)
+    if (it->second != NULL &&
+        it->second->getObjectParent() == this)
       {
         it->second->setObjectParent(NULL);
         pdelete(it->second);
@@ -74,147 +75,150 @@ CCopasiContainer::~CCopasiContainer()
 }
 
 const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
-  {
-    if (cn == "")
-      {
-        if (isRoot())
-          return NULL;
-        else
-          return this;
-      }
+{
+  if (cn == "")
+    {
+      if (isRoot())
+        return NULL;
+      else
+        return this;
+    }
 
-    std::string Name = cn.getObjectName();
-    std::string Type = cn.getObjectType();
+  std::string Name = cn.getObjectName();
+  std::string Type = cn.getObjectType();
 
-    if (getObjectName() == Name && getObjectType() == Type)
-      return getObject(cn.getRemainder());
+  if (getObjectName() == Name && getObjectType() == Type)
+    return getObject(cn.getRemainder());
 
-    //check if the first part of the cn matches one of the children (by name and type)
-    std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
-      mObjects.equal_range(Name);
+  //check if the first part of the cn matches one of the children (by name and type)
+  std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
+    mObjects.equal_range(Name);
 
-    objectMap::const_iterator it = range.first;
+  objectMap::const_iterator it = range.first;
 
-    while (it != range.second && it->second->getObjectType() != Type) ++it;
+  while (it != range.second && it->second->getObjectType() != Type) ++it;
 
-    //debug
-    /*
-    std::cout << "Container::getObject(); this->getObjectName(): " << getObjectName() << " CN: " << cn << std::endl;
-    objectMap::const_iterator dit, ditEnd=mObjects.end();
-    for (dit=mObjects.begin(); dit != ditEnd; ++dit)
-      std::cout << "   " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
-    ditEnd=range.second;
-    for (dit=range.first; dit != ditEnd; ++dit)
-      std::cout << " * " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
-    */
+  //debug
+  /*
+  std::cout << "Container::getObject(); this->getObjectName(): " << getObjectName() << " CN: " << cn << std::endl;
+  objectMap::const_iterator dit, ditEnd=mObjects.end();
+  for (dit=mObjects.begin(); dit != ditEnd; ++dit)
+    std::cout << "   " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
+  ditEnd=range.second;
+  for (dit=range.first; dit != ditEnd; ++dit)
+    std::cout << " * " << dit->first << " (Name: " << dit->second->getObjectName() << ", Type: " << dit->second->getObjectType() << ")" << std::endl;
+  */
 
-    if (it == range.second) //not found in the list of children
-      {
-        if (Type == "String")
-          return new CCopasiStaticString(Name, this);
-        else if (Type == "Separator")
-          return new CCopasiReportSeparator(Name, this);
-        else
-          return NULL;
-      }
+  if (it == range.second) //not found in the list of children
+    {
+      if (Type == "String")
+        return new CCopasiStaticString(Name, this);
+      else if (Type == "Separator")
+        return new CCopasiReportSeparator(Name, this);
+      else
+        return NULL;
+    }
 
-    const CCopasiObject * pObject = NULL;
+  const CCopasiObject * pObject = NULL;
 
-    if (it->second->isNameVector() || it->second->isVector())
-      {
-        if (cn.getElementName(0, false) == "")
-          return it->second;
+  if (it->second->isNameVector() || it->second->isVector())
+    {
+      if (cn.getElementName(0, false) == "")
+        return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]");
+      pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]");
 
-        if (it->second->getObjectType() == "Reference" ||
-            !pObject ||
-            cn.getRemainder() == "")
-          return pObject;
-        else
-          return pObject->getObject(cn.getRemainder());
-      }
+      if (it->second->getObjectType() == "Reference" ||
+          !pObject ||
+          cn.getRemainder() == "")
+        return pObject;
+      else
+        return pObject->getObject(cn.getRemainder());
+    }
 
-    //handle objects where the array flag is set. Currently this applies to the
-    //CArrayAnnotation object. Since this is also a container, we have to do this
-    //before handling general containers.
-    if (it->second->isArray())
-      {
-        //we need to call the getObject() method of the child array with the
-        //remainder of the cn, with the indices in square brackets, or with an empty string
+  //handle objects where the array flag is set. Currently this applies to the
+  //CArrayAnnotation object. Since this is also a container, we have to do this
+  //before handling general containers.
+  if (it->second->isArray())
+    {
+      //we need to call the getObject() method of the child array with the
+      //remainder of the cn, with the indices in square brackets, or with an empty string
 
-        //if there are no indices there could still be a remainder (since the array can also be
-        //a container)
-        if (cn.getElementName(0, false) == "") //no indices
-          return it->second->getObject(cn.getRemainder());
+      //if there are no indices there could still be a remainder (since the array can also be
+      //a container)
+      if (cn.getElementName(0, false) == "") //no indices
+        return it->second->getObject(cn.getRemainder());
 
-        //get the indices from the CN
-        std::string indices;
-        std::string tmp;
-        C_INT32 ii = 0;
-        while ((tmp = cn.getElementName(ii, false)) != "")
-          {
-            indices += "[" + tmp + "]";
-            ++ii;
-          }
-        //try to get the array element from the indices
-        pObject = it->second->getObject(indices);
+      //get the indices from the CN
+      std::string indices;
+      std::string tmp;
+      C_INT32 ii = 0;
 
-        //if the element could not be resolved, just return NULL. If there is no
-        //remainder, just return the array element.
-        //In all other cases we call getObject() on the array element with the remainder
-        //of the CN. The special treatment of the empty remainder is probably necessary
-        //since not all implementations of getObject(cn) handle the case of empty CN.
-        if (!pObject)
-          return NULL;
-        if (cn.getRemainder() == "")
-          return pObject;
-        else
-          return pObject->getObject(cn.getRemainder());
-      }
+      while ((tmp = cn.getElementName(ii, false)) != "")
+        {
+          indices += "[" + tmp + "]";
+          ++ii;
+        }
 
-    //handle generic containers.
-    if (it->second->isContainer())
-      return it->second->getObject(cn.getRemainder());
+      //try to get the array element from the indices
+      pObject = it->second->getObject(indices);
 
-    if (it->second->isMatrix())
-      {
-        if (cn.getElementName(0, false) == "")
-          return it->second;
+      //if the element could not be resolved, just return NULL. If there is no
+      //remainder, just return the array element.
+      //In all other cases we call getObject() on the array element with the remainder
+      //of the CN. The special treatment of the empty remainder is probably necessary
+      //since not all implementations of getObject(cn) handle the case of empty CN.
+      if (!pObject)
+        return NULL;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +                   //TODO really?
-                                        "[" + cn.getElementName(1, false) + "]");
+      if (cn.getRemainder() == "")
+        return pObject;
+      else
+        return pObject->getObject(cn.getRemainder());
+    }
 
-        if (it->second->getObjectType() == "Reference" || !pObject)
-          return pObject;
-        else
-          return pObject->getObject(cn.getRemainder());
-      }
-
-    if (it->second->isReference() || it->second->isStaticString() ||
-        cn.getRemainder() == "")
-      return it->second;
-
+  //handle generic containers.
+  if (it->second->isContainer())
     return it->second->getObject(cn.getRemainder());
-  }
+
+  if (it->second->isMatrix())
+    {
+      if (cn.getElementName(0, false) == "")
+        return it->second;
+
+      pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +                   //TODO really?
+                                      "[" + cn.getElementName(1, false) + "]");
+
+      if (it->second->getObjectType() == "Reference" || !pObject)
+        return pObject;
+      else
+        return pObject->getObject(cn.getRemainder());
+    }
+
+  if (it->second->isReference() || it->second->isStaticString() ||
+      cn.getRemainder() == "")
+    return it->second;
+
+  return it->second->getObject(cn.getRemainder());
+}
 
 const CCopasiContainer::objectMap & CCopasiContainer::getObjects() const
 {return mObjects;}
 
 const CCopasiObject * CCopasiContainer::getValueObject() const
-  {
-    void * ptr = getValuePointer();
+{
+  void * ptr = getValuePointer();
 
-    if (ptr == NULL) return NULL;
+  if (ptr == NULL) return NULL;
 
-    std::multimap< const std::string, CCopasiObject * >::const_iterator it = mObjects.begin();
-    std::multimap< const std::string, CCopasiObject * >::const_iterator end = mObjects.end();
+  std::multimap< const std::string, CCopasiObject * >::const_iterator it = mObjects.begin();
+  std::multimap< const std::string, CCopasiObject * >::const_iterator end = mObjects.end();
 
-    for (; it != end; ++it)
-      if (ptr == it->second->getValuePointer()) return it->second;
+  for (; it != end; ++it)
+    if (ptr == it->second->getValuePointer()) return it->second;
 
-    return NULL;
-  }
+  return NULL;
+}
 
 void CCopasiContainer::initObjects() {}
 
@@ -237,6 +241,7 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
       pObject));
 
   if (adopt) pObject->setObjectParent(this);
+
   return true;
 }
 
@@ -244,6 +249,7 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
   objectMap::iterator it = mObjects.begin();
   objectMap::iterator end = mObjects.end();
+
   /*
     std::pair< objectMap::iterator, objectMap::iterator > range =
       mObjects.equal_range(pObject->getObjectName());
@@ -265,4 +271,4 @@ std::string CCopasiContainer::getUnits() const
 
 // virtual
 std::string CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
-  {return "";}
+{return "";}
