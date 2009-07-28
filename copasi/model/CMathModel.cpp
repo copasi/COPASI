@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/27 16:14:50 $
+//   $Date: 2009/07/28 13:52:59 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -569,5 +569,7 @@ void CMathModel::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
+  // Undo the changes from evaluateRoots.
   mpModel->setState(State);
+  evaluateRoots(Y2, true);
 }
