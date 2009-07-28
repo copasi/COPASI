@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.135 $
+//   $Revision: 1.136 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/06/30 15:09:57 $
+//   $Author: nsimus $
+//   $Date: 2009/07/28 10:59:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,6 +348,10 @@ const MESSAGES Messages[] =
    "continue."},
   {MCMathModel + 2, "CMathModel (2): The execution time '%d' of an event is before the current"
    " time '%d' due to a negative delay."},
+
+  //CModelMerging
+  {MCModelMerging + 1, "CModelMerging (1): An error has occured while constructing the temporary (joined)  data model."},
+  {MCModelMerging + 2, "CModelMerging (2): Failed while merging  species  \"%s\" with species  \"%s\" . "},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
