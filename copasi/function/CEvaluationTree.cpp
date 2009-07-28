@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:35 $
+//   $Date: 2009/07/28 15:13:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,7 +231,7 @@ bool CEvaluationTree::parse()
   success = (Parser.yyparse() == 0);
 
   // Check whether the expression has the expected type.
-  success &= (mBoolean == Parser.isBoolean());
+  success &= (!mBoolean || Parser.isBoolean());
 
   mpNodeList = Parser.getNodeList();
   mpRoot = Parser.getRootNode();
