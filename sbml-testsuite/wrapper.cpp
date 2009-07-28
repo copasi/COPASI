@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/23 19:53:48 $
+//   $Date: 2009/07/28 13:54:16 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,23 +78,22 @@ int main(int argc, char** argv)
   double absolute_error = 0.0;
   double relative_error = 0.0;
 
-  try
-    {
-      // Parse the commandline options
-      COptions::init(argc, argv);
-    }
-
-  catch (copasi::autoexcept &e)
-    {}
-
-  catch (copasi::option_error &e)
-    {}
-
   if (argc != 6)
     {
       std::cerr << "Usage: sbml-testsuite INPUT_DIRECTORY TESTNAME OUTPUTDIRECTORY SBMLLEVEL SBMLVERSION" << std::endl;
       exit(1);
     }
+
+  try
+    {
+      // Create the root container.
+      CCopasiRootContainer::init(argc, argv, false);
+    }
+  catch (copasi::autoexcept &e)
+    {}
+
+  catch (copasi::option_error &e)
+    {}
 
   in_dir = argv[1];
   test_name = argv[2];
@@ -265,17 +264,6 @@ int main(int argc, char** argv)
 
   try
     {
-      // Create the root container.
-      CCopasiRootContainer::init(false, 0, NULL);
-    }
-  catch (copasi::autoexcept &e)
-    {}
-
-  catch (copasi::option_error &e)
-    {}
-
-  try
-    {
       // Create the global data model.
       CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
 
@@ -400,9 +388,9 @@ int main(int argc, char** argv)
       TaskList.add(pTrajectoryTask, true);
 
       // save the file for control purposes
-      //std::string saveFilename = pSBMLFilename;
-      //saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
-      //pDataModel->saveModel(saveFilename, NULL, true);
+      std::string saveFilename = sbml_filename;
+      saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
+      pDataModel->saveModel(saveFilename, NULL, true, false);
 
       // Run the trajectory task
 
