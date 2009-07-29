@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTSSAWidget.ui.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:53:30 $
+//   $Author: nsimus $
+//   $Date: 2009/07/29 16:09:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,10 +86,6 @@ void CQTSSAWidget::init()
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
   mpValidatorIntervalSize->setRange(0, DBL_MAX);
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
-
-  //mpLbDeuflTol->setText("Deuflhard Tolerance");
-
-  connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(disableDeuflhard(int)));
 }
 
 void CQTSSAWidget::destroy()
@@ -161,6 +157,7 @@ bool CQTSSAWidget::saveTask()
 {
   CTSSATask * pTask =
     dynamic_cast< CTSSATask * >(mpTask);
+
   if (!pTask) return false;
 
   saveCommon();
@@ -169,9 +166,6 @@ bool CQTSSAWidget::saveTask()
   CTSSAProblem* tssaproblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
-
-  //set the Deufelhard Tolerance
-  tssaproblem->setDeufelhardTol(mpEditDeufelTol->text().toDouble());
 
   //numbers
   if (tssaproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
@@ -207,12 +201,11 @@ bool CQTSSAWidget::loadTask()
 {
   CTSSATask * pTask =
     dynamic_cast< CTSSATask * >(mpTask);
+
   if (!pTask) return false;
 
   loadCommon();
   loadMethod();
-
-  disableDeuflhard(mpBoxMethod->currentItem());
 
   CTSSAProblem* tssaproblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
@@ -225,9 +218,6 @@ bool CQTSSAWidget::loadTask()
   mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));
   mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
-
-  //get the Deufelhard Tolerance
-  mpEditDeufelTol->setText(QString::number(tssaproblem->getDeufelhardTol()));
 
   //store time series checkbox
   mpCheckSave->setChecked(tssaproblem->timeSeriesRequested());
@@ -249,16 +239,20 @@ bool CQTSSAWidget::runTask()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pCTSSATask =
     dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
+
   if (!pCTSSATask) return false;
 
   pTSSMethod = dynamic_cast<CTSSAMethod*>(pCTSSATask->getMethod());
+
   if (!pTSSMethod)
     pTSSMethod->emptyVectors();
 
   checkTimeSeries();
+
   if (!commonBeforeRunTask()) return false;
 
   bool success = true;
+
   if (!commonRunTask()) success = false;
 
   if (!commonAfterRunTask()) success = false;
@@ -274,11 +268,14 @@ bool CQTSSAWidget::runTask()
   success &= pResult->loadFromBackend();
 
   pTSSResultSubWidget = pResult->getSubWidget();
+
   if (!pTSSResultSubWidget)
     return false;
+
   pTSSResultSubWidget->discardOldResults();
 
   pILDM_Method = dynamic_cast<CILDMMethod*>(pCTSSATask->getMethod());
+
   if (pILDM_Method)
     {
       pTSSResultSubWidget->changeToILDM();
@@ -286,6 +283,7 @@ bool CQTSSAWidget::runTask()
   else
     {
       pILDMModiMethod = dynamic_cast<CILDMModifiedMethod*>(pCTSSATask->getMethod());
+
       if (pILDMModiMethod)
         {
           pTSSResultSubWidget->changeToILDMModified();
@@ -310,7 +308,8 @@ bool CQTSSAWidget::runTask()
 void CQTSSAWidget::checkTimeSeries()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  if (mpEditIntervals->text().toLong() * (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
+
+  if (mpEditIntervals->text().toLong() *(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
     {
       mpCheckSave->setChecked(false);
       mpCheckSave->setEnabled(false);
@@ -318,19 +317,5 @@ void CQTSSAWidget::checkTimeSeries()
   else
     {
       mpCheckSave->setEnabled(true);
-    }
-}
-
-void CQTSSAWidget::disableDeuflhard(int i)
-{
-  if ((i == 2) || (i == 1))
-    {
-      mpEditDeufelTol->setDisabled(true);
-      mpLbDeuflTol->setDisabled(true);
-    }
-  else
-    {
-      mpEditDeufelTol->setDisabled(false);
-      mpLbDeuflTol->setDisabled(false);
     }
 }

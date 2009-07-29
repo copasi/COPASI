@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: nsimus $
+//   $Date: 2009/07/29 16:08:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,8 +78,6 @@ CTSSAProblem::~CTSSAProblem()
 
 void CTSSAProblem::initializeParameter()
 {
-  mpDeufelhardTol =
-    assertParameter("Deuflhard Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-6)->getValue().pDOUBLE;
 
   mpStepNumber =
     assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100)->getValue().pUINT;
@@ -259,22 +257,6 @@ bool CTSSAProblem::sync()
   if (!success) throw 1;
 
   return success;
-}
-
-/**
- * Get the Deufelhard Tolerance.
- */
-void CTSSAProblem::setDeufelhardTol(C_FLOAT64 value)
-{
-  setValue("Deuflhard Tolerance", value);
-}
-
-/**
- * Get the Deufelhard Tolerance.
- */
-C_FLOAT64 CTSSAProblem::getDeufelhardTol()
-{
-  return *getValue("Deuflhard Tolerance").pDOUBLE;
 }
 
 void CTSSAProblem::printResult(std::ostream * ostream) const
