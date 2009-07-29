@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: nsimus $
+//   $Date: 2009/07/29 16:07:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,8 @@ void CILDMModifiedMethod::initializeParameter()
 
   initializeIntegrationsParameter();
 
+  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+
   createAnnotationsM();
   emptyVectors();
 }
@@ -82,7 +84,7 @@ void CILDMModifiedMethod::start(const CState * initialState)
 
   /* ILDM related staff  */
 
-  mDtol = mpProblem->getDeufelhardTol();
+  mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
 
   std::cout << "ILDM Modified :  " << mDtol << std::endl;
 

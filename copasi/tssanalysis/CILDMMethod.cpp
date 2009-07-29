@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:20:02 $
+//   $Author: nsimus $
+//   $Date: 2009/07/29 16:06:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,8 @@ void CILDMMethod::initializeParameter()
   addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
   initializeIntegrationsParameter();
+
+  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
 
   createAnnotationsM();
   emptyVectors();
@@ -926,9 +928,13 @@ void CILDMMethod::start(const CState * initialState)
 
   integrationMethodStart(initialState);
 
+  mDtol = * getValue("Deuflhard Tolerance").pUDOUBLE;
+
+  std::cout << mDtol << std::endl;
+
   /* ILDM related staff  */
 
-  mDtol = mpProblem->getDeufelhardTol();
+  //mDtol = mpProblem->getDeufelhardTol();
 
   mVslow.resize(mData.dim, mData.dim);
   mVslow_metab.resize(mData.dim, mData.dim);
