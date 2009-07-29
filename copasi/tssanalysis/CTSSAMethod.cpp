@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/05/20 17:34:29 $
+//   $Author: nsimus $
+//   $Date: 2009/07/29 16:07:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -252,6 +252,12 @@ void CTSSAMethod::initializeIntegrationsParameter()
   // These parameters are no longer supported.
   removeParameter("Adams Max Order");
   removeParameter("BDF Max Order");
+
+  //These parametera are no longer defined by user
+  removeParameter("Relative Tolerance");
+  removeParameter("Absolute Tolerance");
+  removeParameter("Integrate Reduced Model");
+  removeParameter("Max Internal Steps");
 }
 
 bool CTSSAMethod::elevateChildren()
@@ -1906,7 +1912,7 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   mJacobian.resize(mData.dim, mData.dim);
 
   /* Configure lsoda */
-  mRtol = * getValue("Relative Tolerance").pUDOUBLE;
+  mRtol = 1.e-6;   // * getValue("Relative Tolerance").pUDOUBLE;
   initializeAtol();
 
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
@@ -1914,7 +1920,7 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
-  mIWork[5] = * getValue("Max Internal Steps").pUINT;
+  mIWork[5] =  10000 ; // * getValue("Max Internal Steps").pUINT;
   mIWork[7] = 12;
   mIWork[8] = 5;
 
@@ -1923,7 +1929,7 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
 
 void CTSSAMethod::initializeAtol()
 {
-  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
+  //C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
 
   mAtol.resize(mData.dim);
   C_FLOAT64 * pAtol = mAtol.array();
@@ -1934,7 +1940,7 @@ void CTSSAMethod::initializeAtol()
 
   for (; pAtol != pEnd; ++pAtol, ++ppEntity)
     {
-      *pAtol = *pTolerance;
+      *pAtol = 1.e-12 ; // *pTolerance;
 
       // Rescale for metabolites as we are using particle numbers
       if ((pMetab = dynamic_cast< const CMetab * >(*ppEntity)) != NULL)
