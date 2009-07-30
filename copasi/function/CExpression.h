@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 00:51:57 $
+//   $Date: 2009/07/30 13:41:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,11 +36,9 @@ public:
    * Default constructor
    * @param const std::string & name (default: "Expression")
    * @param const CCopasiContainer * pParent (default: NULL)
-   * @param const bool & booleanRequired (default: false)
    */
   CExpression(const std::string & name = "Expression",
-              const CCopasiContainer * pParent = NULL,
-              const bool & booleanRequired = false);
+              const CCopasiContainer * pParent = NULL);
 
   /**
    * Copy constructor

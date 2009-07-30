@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/27 16:46:43 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 13:41:34 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -63,7 +63,6 @@ bool CQFunctionDM::isFunctionReadOnly(const QModelIndex &index) const
       case CEvaluationTree::UserDefined:
       case CEvaluationTree::Function:
       case CEvaluationTree::Expression:
-      case CEvaluationTree::Boolean:
         return false;
         break;
     }

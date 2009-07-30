@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 00:51:57 $
+//   $Date: 2009/07/30 13:41:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,11 +70,6 @@ CEvaluationTree::create(CEvaluationTree::Type type)
         pNew = new CExpression();
         break;
 
-      case Boolean:
-        pNew = new CExpression();
-        static_cast< CExpression * >(pNew)->setBooleanRequired(true);
-        break;
-
       default:
         fatalError();
     }
@@ -103,7 +98,6 @@ CEvaluationTree::copy(const CEvaluationTree & src)
         break;
 
       case Expression:
-      case Boolean:
         pNew = new CExpression(*static_cast<const CExpression *>(&src));
         break;
 
@@ -129,7 +123,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mBoolean(false),
-    mBooleanRequired(type == Boolean)
+    mBooleanRequired(false)
 {
   initObjects();
   setInfix("");
@@ -168,7 +162,6 @@ const CEvaluationTree::Type & CEvaluationTree::getType() const
 void CEvaluationTree::setType(const CEvaluationTree::Type & type)
 {
   mType = type;
-  mBooleanRequired = (mType == Boolean);
 }
 
 const std::string & CEvaluationTree::getKey() const

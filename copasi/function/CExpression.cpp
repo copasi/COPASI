@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 00:51:57 $
+//   $Date: 2009/07/30 13:41:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,9 +28,8 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 CExpression::CExpression(const std::string & name,
-                         const CCopasiContainer * pParent,
-                         const bool & booleanRequired):
-    CEvaluationTree(name, pParent, booleanRequired ? CEvaluationTree::Boolean : CEvaluationTree::Expression),
+                         const CCopasiContainer * pParent):
+    CEvaluationTree(name, pParent, CEvaluationTree::Expression),
     mpListOfContainer(NULL),
     mDisplayString("")
 {}
@@ -58,7 +57,6 @@ void CExpression::initObjects()
 void CExpression::setBooleanRequired(const bool & booleanRequired)
 {
   mBooleanRequired = booleanRequired;
-  mType = Boolean;
 }
 
 bool CExpression::setInfix(const std::string & infix)
