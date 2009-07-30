@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-  $Revision: 1.21 $
+  $Revision: 1.22 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/06/04 19:33:18 $
+  $Date: 2009/07/30 21:08:33 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,12 @@ public:
    */
 
   static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+
+  /**
+   * Check whether the result is Boolean
+   * @return bool isBoolean
+   */
+  virtual bool isBoolean() const;
 
   /**
    * Create a new ASTNode corresponding to this ConstantNode.

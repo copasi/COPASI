@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:14:47 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,6 +402,10 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
 
   return convertedNode;
 }
+
+// virtual
+bool CEvaluationNodeLogical::isBoolean() const
+{return true;}
 
 ASTNode* CEvaluationNodeLogical::toAST(const CCopasiDataModel* pDataModel) const
 {

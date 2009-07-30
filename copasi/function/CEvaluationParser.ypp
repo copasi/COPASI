@@ -22,6 +22,15 @@
 
 #undef yyparse
 #define yyparse CEvaluationParserBase::yyparse
+
+void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
+{
+  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL)
+    {
+      static_cast<CEvaluationNodeCall *>(pNode)->setBooleanRequired(booleanRequired);
+    }
+}
+
 %}
 
 /* yacc Declarations */
@@ -184,15 +193,17 @@ bool:     TOKEN_LOGICAL_VALUE
             $$->addChild($3);
             mpRootNode = $$; 
           }
-        | exp TOKEN_LOGICAL_EQ bool
+        | call TOKEN_LOGICAL_EQ bool
           {
+            setBooleanRequired($1, true);
             $$ = $2;
             $$->addChild($1); 
             $$->addChild($3);
             mpRootNode = $$; 
           }
-        | bool TOKEN_LOGICAL_EQ exp
+        | bool TOKEN_LOGICAL_EQ call
           {
+            setBooleanRequired($3, true);
             $$ = $2;
             $$->addChild($1); 
             $$->addChild($3);
@@ -212,15 +223,17 @@ bool:     TOKEN_LOGICAL_VALUE
             $$->addChild($3);
             mpRootNode = $$; 
           }
-        | exp TOKEN_LOGICAL_NE bool
+        | call TOKEN_LOGICAL_NE bool
           {
+            setBooleanRequired($1, true);
             $$ = $2;
             $$->addChild($1); 
             $$->addChild($3);
             mpRootNode = $$; 
           }
-        | bool TOKEN_LOGICAL_NE exp
+        | bool TOKEN_LOGICAL_NE call
           {
+            setBooleanRequired($3, true);
             $$ = $2;
             $$->addChild($1); 
             $$->addChild($3);
@@ -268,8 +281,58 @@ bool:     TOKEN_LOGICAL_VALUE
             $$->addChild($3);
             mpRootNode = $$; 
           }
+        | call TOKEN_LOGICAL_OR bool
+          {
+            setBooleanRequired($1, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_OR call
+          {
+            setBooleanRequired($3, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | call TOKEN_LOGICAL_OR call
+          {
+            setBooleanRequired($1, true);
+            setBooleanRequired($3, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
         | bool TOKEN_LOGICAL_XOR bool
           {
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | call TOKEN_LOGICAL_XOR bool
+          {
+            setBooleanRequired($1, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_XOR call
+          {
+            setBooleanRequired($3, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | call TOKEN_LOGICAL_XOR call
+          {
+            setBooleanRequired($1, true);
+            setBooleanRequired($3, true);
             $$ = $2;
             $$->addChild($1); 
             $$->addChild($3);
@@ -282,6 +345,31 @@ bool:     TOKEN_LOGICAL_VALUE
             $$->addChild($3);
             mpRootNode = $$; 
           }
+        | call TOKEN_LOGICAL_AND bool
+          {
+            setBooleanRequired($1, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | bool TOKEN_LOGICAL_AND call
+          {
+            setBooleanRequired($3, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | call TOKEN_LOGICAL_AND call
+          {
+            setBooleanRequired($1, true);
+            setBooleanRequired($3, true);
+            $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
         | TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_CLOSE
           {
             $$ = $2;
@@ -289,6 +377,13 @@ bool:     TOKEN_LOGICAL_VALUE
           }
         | TOKEN_LOGICAL_NOT bool
           {
+            $$ = $1;
+            $$->addChild($2);
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_NOT call
+          {
+            setBooleanRequired($2, true);
             $$ = $1;
             $$->addChild($2);
             mpRootNode = $$; 

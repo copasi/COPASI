@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:47 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -192,6 +192,20 @@ CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& n
     }
 
   return new CEvaluationNodeConstant(subType, data);
+}
+
+// virtual
+bool CEvaluationNodeConstant::isBoolean() const
+{
+  switch (CEvaluationNode::subType(mType))
+    {
+      case TRUE:
+      case FALSE:
+        return true;
+
+      default:
+        return false;
+    }
 }
 
 ASTNode* CEvaluationNodeConstant::toAST(const CCopasiDataModel* /*pDataModel*/) const

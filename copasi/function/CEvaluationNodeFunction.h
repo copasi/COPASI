@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:47 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,6 +179,12 @@ public:
    * @return CEvaluationNode* return a pointer to the newly created node;
    */
   static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+
+  /**
+   * Check whether the result is Boolean
+   * @return bool isBoolean
+   */
+  virtual bool isBoolean() const;
 
   /**
    * Create a new ASTNode corresponding to this FunctionNode.

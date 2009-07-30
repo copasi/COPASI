@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:02:54 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,7 +34,8 @@ CEvaluationNodeCall::CEvaluationNodeCall():
     mpFunction(NULL),
     mpExpression(NULL),
     mCallNodes(),
-    mpCallParameters(NULL)
+    mpCallParameters(NULL),
+    mBooleanRequired(false)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
@@ -43,7 +44,8 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     mpFunction(NULL),
     mpExpression(NULL),
     mCallNodes(),
-    mpCallParameters(NULL)
+    mpCallParameters(NULL),
+    mBooleanRequired(false)
 {
   mData = unQuote(mData);
 
@@ -67,7 +69,8 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
     mpFunction(src.mpFunction),
     mpExpression(src.mpExpression),
     mCallNodes(src.mCallNodes),
-    mpCallParameters(NULL)
+    mpCallParameters(NULL),
+    mBooleanRequired(src.mBooleanRequired)
 {mpCallParameters = buildParameters(mCallNodes);}
 
 CEvaluationNodeCall::~CEvaluationNodeCall() {}
@@ -116,8 +119,8 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
 
         mpCallParameters = buildParameters(mCallNodes);
-
         break;
+
       case DELAY:
         mpFunction = CCopasiRootContainer::getUnsupportedDelay();
 
@@ -149,7 +152,9 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
             success = compile(pTree);
           }
         else
-          success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
+          {
+            success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
+          }
 
         break;
 
@@ -423,11 +428,11 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      case DELAY:
-        return mpFunction;
-
       case EXPRESSION:
-        return mpExpression;
+        return CCopasiRootContainer::getFunctionList()->findFunction(mData);
+
+      case DELAY:
+        return CCopasiRootContainer::getUnsupportedDelay();
 
       default:
         return NULL;
@@ -505,4 +510,23 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
     }
 
   return;
+}
+
+void CEvaluationNodeCall::setBooleanRequired(const bool & booleanRequired)
+{mBooleanRequired = booleanRequired;}
+
+const bool & CEvaluationNodeCall::isBooleanRequired() const
+{return mBooleanRequired;}
+
+// virtual
+bool CEvaluationNodeCall::isBoolean() const
+{
+  const CEvaluationTree * pEvaluationTree = getCalledTree();
+
+  if (pEvaluationTree != NULL)
+    {
+      return pEvaluationTree->isBoolean();
+    }
+
+  return false;
 }

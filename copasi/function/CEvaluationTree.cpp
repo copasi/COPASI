@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,6 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mBoolean(false),
     mBooleanRequired(false)
 {
   initObjects();
@@ -142,7 +141,6 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue),
-    mBoolean(src.mBoolean),
     mBooleanRequired(src.mBooleanRequired)
 {
   setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
@@ -228,13 +226,14 @@ bool CEvaluationTree::parse()
 
   success = (Parser.yyparse() == 0);
 
-  mBoolean = Parser.isBoolean();
-
-  // Check whether the expression has the expected type.
-  success &= (!mBooleanRequired || mBoolean);
-
   mpNodeList = Parser.getNodeList();
   mpRoot = Parser.getRootNode();
+
+  // Check whether the expression has the expected type.
+  if (mBooleanRequired && mpRoot != NULL)
+    {
+      success &= mpRoot->isBoolean();
+    }
 
   // clean up if parsing failed
   if (!success)
@@ -262,7 +261,12 @@ bool CEvaluationTree::isUsable() const
 {return mUsable;}
 
 bool CEvaluationTree::isBoolean() const
-{return mBoolean;}
+{
+  if (mpRoot != NULL)
+    return mpRoot->isBoolean();
+
+  return false;
+}
 
 bool CEvaluationTree::compileNodes()
 {

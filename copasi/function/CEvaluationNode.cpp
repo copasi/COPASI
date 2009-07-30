@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:37:57 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,79 +42,79 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
 
   switch (CEvaluationNode::type(type))
     {
-    case CEvaluationNode::CALL:
-      pNode = new CEvaluationNodeCall((CEvaluationNodeCall::SubType) subType(type),
-                                      contents);
-      break;
-
-    case CEvaluationNode::CHOICE:
-      pNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType) subType(type),
+      case CEvaluationNode::CALL:
+        pNode = new CEvaluationNodeCall((CEvaluationNodeCall::SubType) subType(type),
                                         contents);
-      break;
+        break;
 
-    case CEvaluationNode::CONSTANT:
-      pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType) subType(type),
+      case CEvaluationNode::CHOICE:
+        pNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType) subType(type),
                                           contents);
-      break;
+        break;
 
-    case CEvaluationNode::FUNCTION:
-      pNode = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType) subType(type),
-                                          contents);
-      break;
-
-    case CEvaluationNode::LOGICAL:
-      pNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType) subType(type),
-                                         contents);
-      break;
-
-    case CEvaluationNode::NUMBER:
-      pNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType) subType(type),
-                                        contents);
-      break;
-
-    case CEvaluationNode::OBJECT:
-      pNode = new CEvaluationNodeObject((CEvaluationNodeObject::SubType) subType(type),
-                                        contents);
-      break;
-
-    case CEvaluationNode::OPERATOR:
-      pNode = new CEvaluationNodeOperator((CEvaluationNodeOperator::SubType) subType(type),
-                                          contents);
-      break;
-
-    case CEvaluationNode::STRUCTURE:
-      pNode = new CEvaluationNodeStructure((CEvaluationNodeStructure::SubType) subType(type),
-                                           contents);
-      break;
-
-    case CEvaluationNode::VARIABLE:
-      pNode = new CEvaluationNodeVariable((CEvaluationNodeVariable::SubType) subType(type),
-                                          contents);
-      break;
-
-    case CEvaluationNode::VECTOR:
-      pNode = new CEvaluationNodeVector((CEvaluationNodeVector::SubType) subType(type),
-                                        contents);
-      break;
-
-    case CEvaluationNode::WHITESPACE:
-      pNode = new CEvaluationNodeWhiteSpace((CEvaluationNodeWhiteSpace::SubType) subType(type),
+      case CEvaluationNode::CONSTANT:
+        pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType) subType(type),
                                             contents);
-      break;
+        break;
 
-    case CEvaluationNode::INVALID:
-    case CEvaluationNode::MV_FUNCTION:
-      break;
+      case CEvaluationNode::FUNCTION:
+        pNode = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType) subType(type),
+                                            contents);
+        break;
+
+      case CEvaluationNode::LOGICAL:
+        pNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType) subType(type),
+                                           contents);
+        break;
+
+      case CEvaluationNode::NUMBER:
+        pNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType) subType(type),
+                                          contents);
+        break;
+
+      case CEvaluationNode::OBJECT:
+        pNode = new CEvaluationNodeObject((CEvaluationNodeObject::SubType) subType(type),
+                                          contents);
+        break;
+
+      case CEvaluationNode::OPERATOR:
+        pNode = new CEvaluationNodeOperator((CEvaluationNodeOperator::SubType) subType(type),
+                                            contents);
+        break;
+
+      case CEvaluationNode::STRUCTURE:
+        pNode = new CEvaluationNodeStructure((CEvaluationNodeStructure::SubType) subType(type),
+                                             contents);
+        break;
+
+      case CEvaluationNode::VARIABLE:
+        pNode = new CEvaluationNodeVariable((CEvaluationNodeVariable::SubType) subType(type),
+                                            contents);
+        break;
+
+      case CEvaluationNode::VECTOR:
+        pNode = new CEvaluationNodeVector((CEvaluationNodeVector::SubType) subType(type),
+                                          contents);
+        break;
+
+      case CEvaluationNode::WHITESPACE:
+        pNode = new CEvaluationNodeWhiteSpace((CEvaluationNodeWhiteSpace::SubType) subType(type),
+                                              contents);
+        break;
+
+      case CEvaluationNode::INVALID:
+      case CEvaluationNode::MV_FUNCTION:
+        break;
     }
 
   return pNode;
 }
 
 CEvaluationNode::Type CEvaluationNode::subType(const Type & type)
-{return (Type) (type & 0x00FFFFFF);}
+{return (Type)(type & 0x00FFFFFF);}
 
 CEvaluationNode::Type CEvaluationNode::type(const Type & type)
-{return (Type) (type & 0xFF000000);}
+{return (Type)(type & 0xFF000000);}
 
 CEvaluationNode::CEvaluationNode():
     CCopasiNode<Data>(),
@@ -147,7 +147,7 @@ bool CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
 {return true;}
 
 CEvaluationNode::Data CEvaluationNode::getData() const
-  {return mData;}
+{return mData;}
 
 bool CEvaluationNode::setData(const Data & data)
 {
@@ -156,118 +156,132 @@ bool CEvaluationNode::setData(const Data & data)
 }
 
 std::string CEvaluationNode::getInfix() const
-  {return mData;}
+{return mData;}
 
 std::string CEvaluationNode::getDisplayString(const CEvaluationTree * /* pTree */) const
-  {return mData;}
+{return mData;}
 
 std::string CEvaluationNode::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
-  {return mData;}
+{return mData;}
 
 std::string CEvaluationNode::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
-  {return mData;}
+{return mData;}
 
 std::string CEvaluationNode::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
-  {return mData;}
+{return mData;}
 
 const CEvaluationNode::Type & CEvaluationNode::getType() const
-  {return mType;}
+{return mType;}
+
+// virtual
+bool CEvaluationNode::isBoolean() const
+{return false;}
 
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
 
 CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationNode* child2) const
-  {
-    std::vector<CEvaluationNode*> children;
-    if (child1 != NULL) children.push_back(child1);
-    if (child2 != NULL) children.push_back(child2);
-    return copyNode(children);
-  }
+{
+  std::vector<CEvaluationNode*> children;
+
+  if (child1 != NULL) children.push_back(child1);
+
+  if (child2 != NULL) children.push_back(child2);
+
+  return copyNode(children);
+}
 
 CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
-  {
-    //std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
+{
+  //std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
 
-    CEvaluationNode *newnode = create(mType, mData);
-    std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
-    while (it != endit)
-      {
-        newnode->addChild(*it);
-        ++it;
-      }
-    return newnode;
-  }
+  CEvaluationNode *newnode = create(mType, mData);
+  std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
+
+  while (it != endit)
+    {
+      newnode->addChild(*it);
+      ++it;
+    }
+
+  return newnode;
+}
 
 CEvaluationNode* CEvaluationNode::copyBranch() const
-  {
-    std::vector<CEvaluationNode*> children;
-    const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
-    while (child != NULL)
-      {
-        children.push_back(child->copyBranch());
-        child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-      }
-    //children.push_back(NULL);
-    CEvaluationNode *newnode = copyNode(children);
-    return newnode;
-  }
+{
+  std::vector<CEvaluationNode*> children;
+  const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
+
+  while (child != NULL)
+    {
+      children.push_back(child->copyBranch());
+      child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+    }
+
+  //children.push_back(NULL);
+  CEvaluationNode *newnode = copyNode(children);
+  return newnode;
+}
 
 CEvaluationNode* CEvaluationNode::simplifyNode(const std::vector<CEvaluationNode*>& children) const
-  {
-    CEvaluationNode *newnode = copyNode(children);
-    return newnode;
-  }
+{
+  CEvaluationNode *newnode = copyNode(children);
+  return newnode;
+}
 
 ASTNode* CEvaluationNode::toAST(const CCopasiDataModel* /*pDataModel*/) const
-  {
-    return new ASTNode();
-  }
+{
+  return new ASTNode();
+}
 
 const C_FLOAT64 * CEvaluationNode::getValuePointer() const
-  {return &mValue;}
+{return &mValue;}
 
 void CEvaluationNode::writeMathML(std::ostream & /* out */,
                                   const std::vector<std::vector<std::string> > & /* env */,
                                   bool /* expand */,
                                   unsigned C_INT32 /* l */) const
-  {}
+{}
 
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
-  {
-    int i;
+{
+  int i;
 
-    os << std::endl;
+  os << std::endl;
 
-    for (i = 0; i < indent; ++i) os << " ";
-    os << "mData: " << mData << std::endl;
+  for (i = 0; i < indent; ++i) os << " ";
 
-    for (i = 0; i < indent; ++i) os << " ";
-    os << "mType: " << type(mType) << "  subType: " << subType(mType) << std::endl;
+  os << "mData: " << mData << std::endl;
 
-    for (i = 0; i < indent; ++i) os << " ";
-    os << "mValue: " << mValue << std::endl;
+  for (i = 0; i < indent; ++i) os << " ";
 
-    CEvaluationNode* tmp;
+  os << "mType: " << type(mType) << "  subType: " << subType(mType) << std::endl;
 
-    tmp = (CEvaluationNode*)getChild();
+  for (i = 0; i < indent; ++i) os << " ";
 
-    while (tmp)
-      {
-        tmp -> printRecursively(os, indent + 2);
-        tmp = (CEvaluationNode*)tmp->getSibling();
-      }
+  os << "mValue: " << mValue << std::endl;
 
-    /*    if (getChild())
-          ((CEvaluationNode*)getChild())->printRecursively(os, indent + 2);
+  CEvaluationNode* tmp;
 
-        if (getSibling())
-          ((CEvaluationNode*)getSibling())->printRecursively(os, indent);*/
-  }
+  tmp = (CEvaluationNode*)getChild();
+
+  while (tmp)
+    {
+      tmp -> printRecursively(os, indent + 2);
+      tmp = (CEvaluationNode*)tmp->getSibling();
+    }
+
+  /*    if (getChild())
+        ((CEvaluationNode*)getChild())->printRecursively(os, indent + 2);
+
+      if (getSibling())
+        ((CEvaluationNode*)getSibling())->printRecursively(os, indent);*/
+}
 
 void CEvaluationNode::printRecursively() const
-  {
-    this->printRecursively(std::cout, 0);
-  }
+{
+  this->printRecursively(std::cout, 0);
+}
 
 /**
  * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
@@ -322,116 +336,130 @@ void CEvaluationNode::replaceRoot(ConverterASTNode* sourceNode)
 }
 
 CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, bool left) const
-  {
-    if (splitnode == this)
-      {
-        const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        if (!child) return NULL;
-        if (left)
-          {
-            return child->copyBranch();
-          }
-        else
-          {
-            child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-            if (!child) return NULL;
-            return child->copyBranch();
-          }
-      }
-    else
-      {
-        /*        const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
-                CEvaluationNode *newchild1 = NULL;
-                CEvaluationNode *newchild2 = NULL;
-                if (child1 != NULL)
-                  {
-                    newchild1 = child1->splitBranch(splitnode, left);
-                    const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-                    if (child2 != NULL)
-                      {
-                        newchild2 = child2->splitBranch(splitnode, left);
-                      }
-                  }
-                CEvaluationNode *newnode = copyNode(newchild1, newchild2);
-                return newnode;*/
+{
+  if (splitnode == this)
+    {
+      const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
 
-        std::vector<CEvaluationNode*> children;
-        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
-        while (child != NULL)
-          {
-            CEvaluationNode *newchild = NULL;
-            newchild = child->splitBranch(splitnode, left);
-            children.push_back(newchild);
-            child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-          }
-        children.push_back(NULL);
-        CEvaluationNode *newnode = copyNode(children);
-        return newnode;
-      }
-  }
+      if (!child) return NULL;
+
+      if (left)
+        {
+          return child->copyBranch();
+        }
+      else
+        {
+          child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+
+          if (!child) return NULL;
+
+          return child->copyBranch();
+        }
+    }
+  else
+    {
+      /*        const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
+              CEvaluationNode *newchild1 = NULL;
+              CEvaluationNode *newchild2 = NULL;
+              if (child1 != NULL)
+                {
+                  newchild1 = child1->splitBranch(splitnode, left);
+                  const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
+                  if (child2 != NULL)
+                    {
+                      newchild2 = child2->splitBranch(splitnode, left);
+                    }
+                }
+              CEvaluationNode *newnode = copyNode(newchild1, newchild2);
+              return newnode;*/
+
+      std::vector<CEvaluationNode*> children;
+      const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
+
+      while (child != NULL)
+        {
+          CEvaluationNode *newchild = NULL;
+          newchild = child->splitBranch(splitnode, left);
+          children.push_back(newchild);
+          child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        }
+
+      children.push_back(NULL);
+      CEvaluationNode *newnode = copyNode(children);
+      return newnode;
+    }
+}
 
 const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const
-  {
-    if (getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
-      return this;
+{
+  if (getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
+    return this;
 
-    if (getType() == (OPERATOR | CEvaluationNodeOperator::MULTIPLY))
-      {
-        //look at left child recursively
-        const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode *tmp = NULL;
-        if (child) tmp = child->findTopMinus(callParameters);
-        if (tmp)
-          {
-            //we have found a minus operator in the branch of the left child. We
-            //only want to report this as a split point if the other branch is positive.
-            const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-            if (CFunctionAnalyzer::evaluateNode(child2, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
-              return tmp;
-            else
-              return NULL;
-          }
+  if (getType() == (OPERATOR | CEvaluationNodeOperator::MULTIPLY))
+    {
+      //look at left child recursively
+      const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+      const CEvaluationNode *tmp = NULL;
 
-        //otherwise look at right child
-        const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        if (child2) tmp = child2->findTopMinus(callParameters);
-        if (tmp)
-          {
-            //we have found a minus operator in the branch of the right child. We
-            //only want to report this as a split point if the other branch is positive.
-            if (CFunctionAnalyzer::evaluateNode(child, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
-              return tmp;
-            else
-              return NULL;
-          }
+      if (child) tmp = child->findTopMinus(callParameters);
 
-        //TODO: check if both children contain a minus. This would not be a valid split point.
-      }
+      if (tmp)
+        {
+          //we have found a minus operator in the branch of the left child. We
+          //only want to report this as a split point if the other branch is positive.
+          const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
 
-    if (getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
-      {
-        //look at left child only (recursively)
-        const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode *tmp = NULL;
-        if (child) tmp = child->findTopMinus(callParameters);
-        if (tmp) return tmp;
-      }
+          if (CFunctionAnalyzer::evaluateNode(child2, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
+            return tmp;
+          else
+            return NULL;
+        }
 
-    return NULL;
-  }
+      //otherwise look at right child
+      const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+
+      if (child2) tmp = child2->findTopMinus(callParameters);
+
+      if (tmp)
+        {
+          //we have found a minus operator in the branch of the right child. We
+          //only want to report this as a split point if the other branch is positive.
+          if (CFunctionAnalyzer::evaluateNode(child, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
+            return tmp;
+          else
+            return NULL;
+        }
+
+      //TODO: check if both children contain a minus. This would not be a valid split point.
+    }
+
+  if (getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
+    {
+      //look at left child only (recursively)
+      const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+      const CEvaluationNode *tmp = NULL;
+
+      if (child) tmp = child->findTopMinus(callParameters);
+
+      if (tmp) return tmp;
+    }
+
+  return NULL;
+}
 
 bool CEvaluationNode::operator!=(const CEvaluationNode& right) const
-  {
-    return !(*this == right);
-  }
+{
+  return !(*this == right);
+}
 
 bool CEvaluationNode::operator==(const CEvaluationNode& right) const
-  {
-    bool result = true;
-    if (this->getType() == right.getType())
-      {
-        switch (CEvaluationNode::type(this->getType()))
-          {
+{
+  bool result = true;
+
+  if (this->getType() == right.getType())
+    {
+      switch (CEvaluationNode::type(this->getType()))
+        {
           case CEvaluationNode::CONSTANT:
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::OBJECT:
@@ -449,45 +477,51 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
           case CEvaluationNode::VECTOR:
           case CEvaluationNode::INVALID:
             break;
-          }
-        const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
-        while (result == true)
-          {
-            if (pChild1 == NULL || pChild2 == NULL)
-              {
-                if (!(pChild1 == NULL && pChild2 == NULL))
-                  {
-                    result = false;
-                  }
-                break;
-              }
-            else
-              {
-                result = (*pChild1 == *pChild2);
-                pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-                pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
-              }
-          }
-      }
-    else
-      {
-        result = false;
-      }
-    return result;
-  }
+        }
+
+      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+
+      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
+
+      while (result == true)
+        {
+          if (pChild1 == NULL || pChild2 == NULL)
+            {
+              if (!(pChild1 == NULL && pChild2 == NULL))
+                {
+                  result = false;
+                }
+
+              break;
+            }
+          else
+            {
+              result = (*pChild1 == *pChild2);
+              pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+              pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+            }
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
 
 bool CEvaluationNode::operator<(const CEvaluationNode& right) const
-  {
-    bool result = false;
-    if (this->getType() < right.getType())
-      {
-        result = true;
-      }
-    else if (this->getType() == right.getType())
-      {
-        switch (CEvaluationNode::type(this->getType()))
-          {
+{
+  bool result = false;
+
+  if (this->getType() < right.getType())
+    {
+      result = true;
+    }
+  else if (this->getType() == right.getType())
+    {
+      switch (CEvaluationNode::type(this->getType()))
+        {
           case CEvaluationNode::CONSTANT:
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::OBJECT:
@@ -505,25 +539,30 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
           case CEvaluationNode::VECTOR:
           case CEvaluationNode::INVALID:
             break;
-          }
-        const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
-        while (result == false)
-          {
-            if (pChild1 == NULL || pChild2 == NULL)
-              {
-                if (pChild1 == NULL && pChild2 != NULL)
-                  {
-                    result = true;
-                  }
-              }
-            else
-              {
-                result = (*pChild1 < *pChild2);
-              }
-            pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-            pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
-          }
-      }
-    return result;
-  }
+        }
+
+      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+
+      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
+
+      while (result == false)
+        {
+          if (pChild1 == NULL || pChild2 == NULL)
+            {
+              if (pChild1 == NULL && pChild2 != NULL)
+                {
+                  result = true;
+                }
+            }
+          else
+            {
+              result = (*pChild1 < *pChild2);
+            }
+
+          pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+          pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+        }
+    }
+
+  return result;
+}

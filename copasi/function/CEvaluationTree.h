@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -352,11 +352,6 @@ protected:
    * The last computed value of the tree;
    */
   C_FLOAT64 mValue;
-
-  /**
-   * Indicates whether the tree evaluates to a boolean value.
-   */
-  bool mBoolean;
 
   /**
    * Indicates whether the tree must evaluate to a boolean value.

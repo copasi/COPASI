@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/04 19:33:18 $
+//   $Date: 2009/07/30 21:08:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,7 +159,7 @@ public:
   virtual bool removeChild(CCopasiNode< Data > * pChild);
 
   /**
-   * Retreive the tree which is called from this node
+   * Retrieve the tree which is called from this node
    * @return const CEvaluationTree * calledTree
    */
   const CEvaluationTree * getCalledTree() const;
@@ -176,6 +176,24 @@ public:
    *  returns the vector of child nodes, corresponding to the arguments of a function call
    */
   const std::vector<CEvaluationNode *> getListOfChildNodes() const {return mCallNodes;}
+
+  /**
+   * Set whether the result of the node must be Boolean
+   * @param const bool & booleanRequired
+   */
+  void setBooleanRequired(const bool & booleanRequired);
+
+  /**
+   * Check whether the result must be Boolean
+   * @return const bool & isBooleanRequired
+   */
+  const bool & isBooleanRequired() const;
+
+  /**
+   * Check whether the result is Boolean
+   * @return bool isBoolean
+   */
+  virtual bool isBoolean() const;
 
 private:
   /**
@@ -208,6 +226,7 @@ private:
   CExpression * mpExpression;
   std::vector<CEvaluationNode *> mCallNodes;
   CCallParameters< C_FLOAT64 > * mpCallParameters;
+  bool mBooleanRequired;
 };
 
 #endif // COPASI_CEvaluationNodeCall
