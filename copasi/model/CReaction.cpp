@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.187 $
+//   $Revision: 1.188 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 16:11:34 $
+//   $Date: 2009/07/30 00:51:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -1347,7 +1347,6 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
             }
 
           pFun = new CKinFunction(functionName + appendix);
-          pFun->setType(CFunction::UserDefined);
           pFun->setRoot(pFunctionTree);
           pFun->setReversible(this->isReversible() ? TriTrue : TriFalse);
 

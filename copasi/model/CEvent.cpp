@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:03:49 $
+//   $Date: 2009/07/30 00:51:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -387,8 +387,7 @@ bool CEvent::setTriggerExpression(const std::string & expression)
 {
   if (mpTriggerExpression == NULL)
     {
-      mpTriggerExpression = new CExpression("TriggerExpression", this);
-      mpTriggerExpression->setBoolean(true);
+      mpTriggerExpression = new CExpression("TriggerExpression", this, true);
     }
 
   if (mpTriggerExpression->getInfix() != expression &&

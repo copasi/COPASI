@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 18:54:35 $
+//   $Date: 2009/07/30 00:51:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,16 +28,13 @@
 
 CMassAction::CMassAction(const std::string & name,
                          const CCopasiContainer * pParent):
-    CFunction(name, pParent)
-{
-  CONSTRUCTOR_TRACE;
-  setType(CFunction::MassAction);
-}
+    CFunction(name, pParent, CEvaluationTree::MassAction)
+{}
 
 CMassAction::CMassAction(const CFunction & src,
                          const CCopasiContainer * pParent):
     CFunction(src, pParent)
-{CONSTRUCTOR_TRACE;}
+{}
 
 CMassAction::CMassAction(const TriLogic & reversible,
                          const CCopasiContainer * pParent):
@@ -48,10 +45,9 @@ CMassAction::CMassAction(const TriLogic & reversible,
               CFunction::MassAction)
 {
   CONSTRUCTOR_TRACE;
+
   if (reversible != TriFalse && reversible != TriTrue)
     CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
-
-  setType(CFunction::MassAction);
 
   if (reversible == TriTrue)
     setInfix("k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>");
@@ -59,7 +55,7 @@ CMassAction::CMassAction(const TriLogic & reversible,
     setInfix("k1*PRODUCT<substrate_i>");
 }
 
-CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
+CMassAction::~CMassAction() {DESTRUCTOR_TRACE;}
 
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
@@ -70,6 +66,7 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
 
   Factor = callParameters[1].vector->begin();
   End = callParameters[1].vector->end();
+
   if (Factor != End)
     {
       mValue = *callParameters[0].value   // k1
@@ -86,6 +83,7 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
 
   Factor = callParameters[3].vector->begin();
   End = callParameters[3].vector->end();
+
   if (Factor != End)
     {
       Products = *callParameters[2].value // k2
@@ -100,28 +98,28 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
 
 bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
                             const CCallParameters<C_FLOAT64> & callParameters) const
-  {
-    if (parameter == callParameters[0].value) return true;
+{
+  if (parameter == callParameters[0].value) return true;
 
-    CCallParameters<C_FLOAT64>::const_iterator it;
-    CCallParameters<C_FLOAT64>::const_iterator end;
+  CCallParameters<C_FLOAT64>::const_iterator it;
+  CCallParameters<C_FLOAT64>::const_iterator end;
 
-    it = callParameters[1].vector->begin();
-    end = callParameters[1].vector->end();
+  it = callParameters[1].vector->begin();
+  end = callParameters[1].vector->end();
 
-    for (; it != end; it++) if (parameter == it->value) return true;
+  for (; it != end; it++) if (parameter == it->value) return true;
 
-    if (isReversible() != TriTrue) return false;
+  if (isReversible() != TriTrue) return false;
 
-    if (parameter == callParameters[2].value) return true;
+  if (parameter == callParameters[2].value) return true;
 
-    it = callParameters[3].vector->begin();
-    end = callParameters[3].vector->end();
+  it = callParameters[3].vector->begin();
+  end = callParameters[3].vector->end();
 
-    for (; it != end; it++) if (parameter == it->value) return true;
+  for (; it != end; it++) if (parameter == it->value) return true;
 
-    return false;
-  }
+  return false;
+}
 
 bool CMassAction::setInfix(const std::string & infix)
 {
@@ -168,38 +166,40 @@ void CMassAction::writeMathML(std::ostream & out,
                               bool /* expand */,
                               bool /* fullExpand */,
                               unsigned C_INT32 l) const
-  {
-    bool rev = (isReversible() == TriTrue);
+{
+  bool rev = (isReversible() == TriTrue);
 
-    if (rev)
-      out << SPC(l) << "<mfenced>" << std::endl;
+  if (rev)
+    out << SPC(l) << "<mfenced>" << std::endl;
 
-    out << SPC(l) << "<mrow>" << std::endl;
+  out << SPC(l) << "<mrow>" << std::endl;
 
-    out << SPC(l + 1) << env[0][0] << std::endl;
+  out << SPC(l + 1) << env[0][0] << std::endl;
 
-    unsigned i, imax = env[1].size();
-    for (i = 0; i < imax; ++i)
-      {
-        out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
-        out << SPC(l + 1) << env[1][i] << std::endl;
-      }
+  unsigned i, imax = env[1].size();
 
-    if (rev)
-      {
-        out << SPC(l + 1) << "<mo>-</mo>" << std::endl;
-        out << SPC(l + 1) << env[2][0] << std::endl;
+  for (i = 0; i < imax; ++i)
+    {
+      out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
+      out << SPC(l + 1) << env[1][i] << std::endl;
+    }
 
-        unsigned i, imax = env[3].size();
-        for (i = 0; i < imax; ++i)
-          {
-            out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
-            out << SPC(l + 1) << env[3][i] << std::endl;
-          }
-      }
+  if (rev)
+    {
+      out << SPC(l + 1) << "<mo>-</mo>" << std::endl;
+      out << SPC(l + 1) << env[2][0] << std::endl;
 
-    out << SPC(l) << "</mrow>" << std::endl;
+      unsigned i, imax = env[3].size();
 
-    if (rev)
-      out << SPC(l) << "</mfenced>" << std::endl;
-  }
+      for (i = 0; i < imax; ++i)
+        {
+          out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
+          out << SPC(l + 1) << env[3][i] << std::endl;
+        }
+    }
+
+  out << SPC(l) << "</mrow>" << std::endl;
+
+  if (rev)
+    out << SPC(l) << "</mfenced>" << std::endl;
+}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 17:50:18 $
+//   $Date: 2009/07/30 00:51:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ public:
    */
   virtual CExpression *getExpression();
 
-  void setBoolean(bool isBoolean) {mExpression.setBoolean(isBoolean);};
+  void setBooleanRequired(bool booleanRequired) {mExpression.setBooleanRequired(booleanRequired);};
 
 protected:
   CExpression mExpression;

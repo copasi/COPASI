@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Date: 2009/07/30 00:51:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,8 +28,9 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 CExpression::CExpression(const std::string & name,
-                         const CCopasiContainer * pParent):
-    CEvaluationTree(name, pParent, Expression),
+                         const CCopasiContainer * pParent,
+                         const bool & booleanRequired):
+    CEvaluationTree(name, pParent, booleanRequired ? CEvaluationTree::Boolean : CEvaluationTree::Expression),
     mpListOfContainer(NULL),
     mDisplayString("")
 {}
@@ -49,14 +50,14 @@ void CExpression::initObjects()
 {
   CCopasiObject * pObject =
     const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value")));
-  assert (pObject != NULL);
+  assert(pObject != NULL);
 
   pObject->setRefresh(this, &CExpression::refresh);
 }
 
-void CExpression::setBoolean(const bool & boolean)
+void CExpression::setBooleanRequired(const bool & booleanRequired)
 {
-  mBoolean = boolean;
+  mBooleanRequired = booleanRequired;
   mType = Boolean;
 }
 
@@ -118,20 +119,20 @@ void CExpression::refresh()
 {calcValue();}
 
 const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) const
-  {
-    const CCopasiDataModel* pDataModel = getObjectDataModel();
-    assert(pDataModel != NULL);
+{
+  const CCopasiDataModel* pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
 
-    if (mpListOfContainer != NULL)
-      return pDataModel->ObjectFromName(*mpListOfContainer, CN);
-    else
-      {
-        return pDataModel->getObject(CN);
-      }
-  }
+  if (mpListOfContainer != NULL)
+    return pDataModel->ObjectFromName(*mpListOfContainer, CN);
+  else
+    {
+      return pDataModel->getObject(CN);
+    }
+}
 
 const std::vector< CCopasiContainer * > & CExpression::getListOfContainer() const
-  {return *mpListOfContainer;}
+{return *mpListOfContainer;}
 
 bool CExpression::updateInfix()
 {
@@ -146,56 +147,59 @@ const std::string & CExpression::getDisplayString() const
 {return mDisplayString;}
 
 std::string CExpression::getDisplay_C_String() const
-  {
-    std::string str1;
+{
+  std::string str1;
 
-    if (mpRoot)
-      str1 = mpRoot->getDisplay_C_String(this);
-    else
-      str1 = "";
+  if (mpRoot)
+    str1 = mpRoot->getDisplay_C_String(this);
+  else
+    str1 = "";
 
-    return str1;
-  }
+  return str1;
+}
 
 std::string CExpression::getDisplay_MMD_String() const
-  {
-    std::string str1;
+{
+  std::string str1;
 
-    if (mpRoot)
-      str1 = mpRoot->getDisplay_MMD_String(this);
-    else
-      str1 = "";
+  if (mpRoot)
+    str1 = mpRoot->getDisplay_MMD_String(this);
+  else
+    str1 = "";
 
-    return str1;
-  }
+  return str1;
+}
 
 std::string CExpression::getDisplay_XPP_String() const
-  {
-    std::string str1;
+{
+  std::string str1;
 
-    if (mpRoot)
-      str1 = mpRoot->getDisplay_XPP_String(this);
-    else
-      str1 = "";
+  if (mpRoot)
+    str1 = mpRoot->getDisplay_XPP_String(this);
+  else
+    str1 = "";
 
-    return str1;
-  }
+  return str1;
+}
 
 #include "utilities/copasimathml.h"
 
 void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const
-  {
-    if (mpRoot)
-      {
-        //create empty environment. Variable nodes should not occur in an expression
-        std::vector<std::vector<std::string> > env;
+{
+  if (mpRoot)
+    {
+      //create empty environment. Variable nodes should not occur in an expression
+      std::vector<std::vector<std::string> > env;
 
-        bool flag = false; //TODO include check if parantheses are necessary
-        if (flag) out << SPC(l) << "<mfenced>" << std::endl;
-        mpRoot->writeMathML(out, env, fullExpand, l + 1);
-        if (flag) out << SPC(l) << "</mfenced>" << std::endl;
-      }
-  }
+      bool flag = false; //TODO include check if parantheses are necessary
+
+      if (flag) out << SPC(l) << "<mfenced>" << std::endl;
+
+      mpRoot->writeMathML(out, env, fullExpand, l + 1);
+
+      if (flag) out << SPC(l) << "</mfenced>" << std::endl;
+    }
+}
 
 // static
 CExpression * CExpression::createInitialExpression(const CExpression & expression, const CCopasiDataModel* pDataModel)
@@ -213,11 +217,13 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
   const CCopasiObject * pObjectParent;
   const CModelEntity * pEntity;
   const CMetab * pMetab;
+
   for (; it != end; ++it)
     {
       if ((pNode = dynamic_cast< CEvaluationNodeObject * >(*it)) != NULL)
         {
           assert(pDataModel != NULL);
+
           if ((pObject = pDataModel->getObject(pNode->getObjectCN())) != NULL &&
               (pObjectParent = pObject->getObjectParent()) != NULL &&
               (pEntity = dynamic_cast<const CModelEntity * >(pObjectParent)) != NULL)
@@ -230,6 +236,7 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
             }
         }
     }
+
   pInitialExpression->updateTree();
 
   while (CCopasiMessage::size() > Size)

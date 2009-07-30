@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/14 17:50:18 $
+//   $Date: 2009/07/30 00:51:58 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ int CQExpressionHighlighter::highlightParagraph(const QString & text, int /* end
 
 //***********************************************************************
 
-CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * name, bool isBoolean):
+CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * name, bool booleanRequired):
     CQValidator< Q3TextEdit >(parent, name),
     mExpression()
 {
@@ -96,7 +96,7 @@ CQValidatorExpression::CQValidatorExpression(Q3TextEdit * parent, const char * n
   assert(pDataModel != NULL);
 
   mExpression.setObjectParent(pDataModel);
-  mExpression.setBoolean(isBoolean);
+  mExpression.setBooleanRequired(booleanRequired);
 }
 
 /**
@@ -492,7 +492,7 @@ void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionT
 
 void CQExpressionWidget::setBoolean(bool isBoolean)
 {
-  mpValidator->setBoolean(isBoolean);
+  mpValidator->setBooleanRequired(isBoolean);
 };
 
 bool CQExpressionWidget::isValid()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/28 15:13:25 $
+//   $Date: 2009/07/30 00:51:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ CEvaluationTree::create(CEvaluationTree::Type type)
 
       case Boolean:
         pNew = new CExpression();
-        static_cast< CExpression * >(pNew)->setBoolean(true);
+        static_cast< CExpression * >(pNew)->setBooleanRequired(true);
         break;
 
       default:
@@ -128,7 +128,8 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mBoolean(false)
+    mBoolean(false),
+    mBooleanRequired(type == Boolean)
 {
   initObjects();
   setInfix("");
@@ -147,7 +148,8 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue),
-    mBoolean(src.mBoolean)
+    mBoolean(src.mBoolean),
+    mBooleanRequired(src.mBooleanRequired)
 {
   setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
   initObjects();
@@ -164,7 +166,10 @@ const CEvaluationTree::Type & CEvaluationTree::getType() const
 {return mType;}
 
 void CEvaluationTree::setType(const CEvaluationTree::Type & type)
-{mType = type;}
+{
+  mType = type;
+  mBooleanRequired = (mType == Boolean);
+}
 
 const std::string & CEvaluationTree::getKey() const
 {return mKey;}
@@ -230,8 +235,10 @@ bool CEvaluationTree::parse()
 
   success = (Parser.yyparse() == 0);
 
+  mBoolean = Parser.isBoolean();
+
   // Check whether the expression has the expected type.
-  success &= (!mBoolean || Parser.isBoolean());
+  success &= (!mBooleanRequired || mBoolean);
 
   mpNodeList = Parser.getNodeList();
   mpRoot = Parser.getRootNode();
@@ -260,6 +267,9 @@ bool CEvaluationTree::compile()
 
 bool CEvaluationTree::isUsable() const
 {return mUsable;}
+
+bool CEvaluationTree::isBoolean() const
+{return mBoolean;}
 
 bool CEvaluationTree::compileNodes()
 {

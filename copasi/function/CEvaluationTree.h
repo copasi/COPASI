@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/26 22:30:19 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 00:51:57 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,12 +109,14 @@ public:
    */
   const CEvaluationTree::Type & getType() const;
 
+protected:
   /**
    * Set the type of the function
    * @param const CEvaluationTree::Type & type
    */
   void setType(const CEvaluationTree::Type & type);
 
+public:
   /**
    * Retrieves the key of the EvaluationTree
    * @return const std::string & key
@@ -166,6 +168,12 @@ public:
    * @return bool isUsable
    */
   bool isUsable() const;
+
+  /**
+   * Check whether this function evaluates to a boolean value.
+   * @return bool isBoolean
+   */
+  bool isBoolean() const;
 
   /**
    * Retrieve the infix description of the tree
@@ -347,9 +355,14 @@ protected:
   C_FLOAT64 mValue;
 
   /**
-   * Indicates whether the tree shall evaluate to a boolean value.
+   * Indicates whether the tree evaluates to a boolean value.
    */
   bool mBoolean;
+
+  /**
+   * Indicates whether the tree must evaluate to a boolean value.
+   */
+  bool mBooleanRequired;
 };
 
 #endif // COPASI_CEvaluationTree
