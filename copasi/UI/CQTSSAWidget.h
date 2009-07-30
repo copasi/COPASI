@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/04/12 19:53:57 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 16:35:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,6 @@ public slots:
   void slotDuration();
   void slotIntervalSize();
   void slotIntervals();
-  virtual void disableDeuflhard(int);
 
 protected:
   virtual bool saveTask();

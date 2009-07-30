@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/07/30 16:35:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -184,9 +184,6 @@ bool CQTSSAWidget::saveTask()
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
 
-  //set the Deufelhard Tolerance
-  tssaproblem->setDeufelhardTol(mpEditDeufelTol->text().toDouble());
-
   //numbers
   if (tssaproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
     {
@@ -227,8 +224,6 @@ bool CQTSSAWidget::loadTask()
   loadCommon();
   loadMethod();
 
-  disableDeuflhard(mpBoxMethod->currentItem());
-
   CTSSAProblem* tssaproblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
   assert(tssaproblem);
@@ -240,9 +235,6 @@ bool CQTSSAWidget::loadTask()
   mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));
   mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
-
-  //get the Deufelhard Tolerance
-  mpEditDeufelTol->setText(QString::number(tssaproblem->getDeufelhardTol()));
 
   //store time series checkbox
   mpCheckSave->setChecked(tssaproblem->timeSeriesRequested());
@@ -342,19 +334,5 @@ void CQTSSAWidget::checkTimeSeries()
   else
     {
       mpCheckSave->setEnabled(true);
-    }
-}
-
-void CQTSSAWidget::disableDeuflhard(int i)
-{
-  if ((i == 2) || (i == 1))
-    {
-      mpEditDeufelTol->setDisabled(true);
-      mpLbDeuflTol->setDisabled(true);
-    }
-  else
-    {
-      mpEditDeufelTol->setDisabled(false);
-      mpLbDeuflTol->setDisabled(false);
     }
 }
