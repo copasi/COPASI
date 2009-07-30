@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.29 $
+#   $Revision: 1.30 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2009/07/06 14:57:25 $
+#   $Author: shoops $
+#   $Date: 2009/07/30 21:04:31 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,11 +54,9 @@ COPASI_LIBS += sensitivities
 COPASI_LIBS += steadystate
 COPASI_LIBS += trajectory
 COPASI_LIBS += tss
+COPASI_LIBS += tssanalysis
 COPASI_LIBS += utilities
 
 
-contains(DEFINES, COPASI_TSSA) {
-  COPASI_LIBS += tssanalysis
-}
 
 include(../lib.pri)
