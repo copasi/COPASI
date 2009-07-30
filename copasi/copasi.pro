@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.59 $
+#   $Revision: 1.60 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2009/07/06 14:57:25 $
+#   $Author: shoops $
+#   $Date: 2009/07/30 16:26:54 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.59 $ $Author: ssahle $ $Date: 2009/07/06 14:57:25 $
+# $Revision: 1.60 $ $Author: shoops $ $Date: 2009/07/30 16:26:54 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -55,13 +55,11 @@ COPASISE_DIRS += sensitivities
 COPASISE_DIRS += steadystate
 COPASISE_DIRS += trajectory
 COPASISE_DIRS += tss
+COPASISE_DIRS += tssanalysis
 COPASISE_DIRS += utilities
 COPASISE_DIRS += xml
 
 
-contains(DEFINES, COPASI_TSSA) {
-  COPASISE_DIRS += tssanalysis
-}
 
 addSubdirs($${COPASISE_DIRS})
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/17 17:24:16 $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,9 +46,7 @@
 # include "tss/CTSSTask.h"
 #endif
 #include "sensitivities/CSensTask.h"
-#ifdef COPASI_TSSA
 #include "tssanalysis/CTSSATask.h"
-#endif // COPASI_TSSA
 #include "lyap/CLyapTask.h"
 #include "tss/CODEExporter.h"
 #include "tss/CODEExporterC.h"
@@ -902,11 +900,9 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         pTask = new CSensTask(mpTaskList);
         break;
 
-#ifdef COPASI_TSSA
       case CCopasiTask::tssAnalysis:
         pTask = new CTSSATask(mpTaskList);
         break;
-#endif // COPASI_TSSA
 
       case CCopasiTask::moieties:
         pTask = new CMoietiesTask(taskType, mpTaskList);
@@ -1092,7 +1088,6 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
         //**************************************************************************
-#ifdef COPASI_TSSA
       case CCopasiTask::tssAnalysis:
         pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
@@ -1108,7 +1103,6 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
         break;
-#endif //COPASI_TSSA
 
       default:
         return pReport;

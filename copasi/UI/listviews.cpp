@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.271 $
+//   $Revision: 1.272 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/27 16:50:57 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,10 +68,8 @@
 #include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#ifdef COPASI_TSSA
 #include "CQTSSAWidget.h"
 #include "CQTSSAResultWidget.h"
-#endif // COPASI_TSSA
 #ifdef COPASI_DEBUG
 #include "CQUpdatesWidget.h"
 #endif //COPASI_DEBUG
@@ -258,10 +256,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
 #endif
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL),
-#ifdef COPASI_TSSA
     tssaWidget(NULL),
     tssaResultWidget(NULL),
-#endif
 #ifdef COPASI_DEBUG
     mpUpdatesWidget(NULL),
 #endif
@@ -519,8 +515,6 @@ void ListViews::ConstructNodeWidgets()
 
   trajectoryWidget->hide();
 
-#ifdef COPASI_TSSA
-
   if (!tssaWidget) tssaWidget = new CQTSSAWidget(this);
 
   tssaWidget->hide();
@@ -528,7 +522,6 @@ void ListViews::ConstructNodeWidgets()
   if (!tssaResultWidget) tssaResultWidget = new CQTSSAResultWidget(this);
 
   tssaResultWidget->hide();
-#endif // COPASI_TSSA
 
 #ifdef COPASI_DEBUG
 
@@ -688,14 +681,12 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 261:
         return lyapResultWidget;
         break;
-#ifdef COPASI_TSSA
       case 27:
         return tssaWidget;
         break;
       case 271:
         return tssaResultWidget;
         break;
-#endif // COPASI_TSSA
       case 31:
         return scanWidget;
         break;

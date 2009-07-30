@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:38:35 $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,190 +35,188 @@
 class CProcessReport;
 
 class CCopasiMethod : public CCopasiParameterGroup
+{
+public:
+  /**
+   * Enumeration of the sub types of methods known to COPASI.
+   */
+  enum SubType
   {
-  public:
-    /**
-     * Enumeration of the sub types of methods known to COPASI.
-     */
-    enum SubType
-    {
-      unset = 0,
-      RandomSearch,
-      RandomSearchMaster,
-      SimulatedAnnealing,
-      GeneticAlgorithm,
-      EvolutionaryProgram,
-      SteepestDescent,
-      HybridGASA,
-      GeneticAlgorithmSR,
-      HookeJeeves,
-      LevenbergMarquardt,
-      NelderMead,
-      SRES,
-      Statistics,
-      ParticleSwarm,
-      Praxis,
-      TruncatedNewton,
-      Newton,
-      deterministic,
-      LSODAR,
-      stochastic,
-      hybrid,
-      hybridLSODA,
-#ifdef COPASI_TSSA
-      tssILDM,
-      tssILDMModified,
-      tssCSP,
-#endif // COPASI_TSSA
-      tauLeap,
-      mcaMethodReder,
-      scanMethod,
-      lyapWolf,
+    unset = 0,
+    RandomSearch,
+    RandomSearchMaster,
+    SimulatedAnnealing,
+    GeneticAlgorithm,
+    EvolutionaryProgram,
+    SteepestDescent,
+    HybridGASA,
+    GeneticAlgorithmSR,
+    HookeJeeves,
+    LevenbergMarquardt,
+    NelderMead,
+    SRES,
+    Statistics,
+    ParticleSwarm,
+    Praxis,
+    TruncatedNewton,
+    Newton,
+    deterministic,
+    LSODAR,
+    stochastic,
+    hybrid,
+    hybridLSODA,
+    tssILDM,
+    tssILDMModified,
+    tssCSP,
+    tauLeap,
+    mcaMethodReder,
+    scanMethod,
+    lyapWolf,
 #ifdef COPASI_TSS
-      tssMethod,
+    tssMethod,
 #endif // COPASI_TSS
-      sensMethod,
+    sensMethod,
 #ifdef COPASI_SSA
-      stoichiometricStabilityAnalysis,
+    stoichiometricStabilityAnalysis,
 #endif // COPASI_SSA
-      EFMAlgorithm,
-      Householder
-    };
-
-    /**
-     * String literals for the GUI to display sub type names of methods known
-     * to COPASI.
-     */
-    static const std::string SubTypeName[];
-
-    /**
-     * XML sub type names of methods known to COPASI.
-     */
-    static const char* XMLSubType[];
-
-    // Attributes
-  private:
-    /**
-     * The type of the method
-     */
-    CCopasiTask::Type mType;
-
-    /**
-     * The type of the method
-     */
-    CCopasiMethod::SubType mSubType;
-
-  protected:
-    /**
-     * a pointer to the callback
-     */
-    CProcessReport * mpCallBack;
-
-    /**
-     * A pointer to the report
-     */
-    //CReport * mpReport;
-
-    // Operations
-
-  private:
-    /**
-     * Default constructor
-     */
-    CCopasiMethod();
-
-  protected:
-    /**
-     * Specific constructor
-     * @param const CCopasiTask::Type & type
-     * @param const CCopasiMethod::SubType & subType
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiMethod(const CCopasiTask::Type & taskType,
-                  const SubType & subType,
-                  const CCopasiContainer * pParent = NULL);
-
-  public:
-    /**
-     * Convert a SubTypeName to the matching enum value.
-     * Returns CCopasiMethod::unset if no match is found.
-     * @param (const std::string & subTypeName)
-     * @return CCopasiMethod::SubType type
-     */
-    static
-    CCopasiMethod::SubType TypeNameToEnum(const std::string & subTypeName);
-
-    /**
-     * Copy constructor
-     * @param const CCopasiMethodr & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CCopasiMethod(const CCopasiMethod & src,
-                  const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Destructor
-     */
-    virtual ~CCopasiMethod();
-
-    /**
-     * Set the call back of the problem
-     * @param CProcessReport * pCallBack
-     * @result bool succes
-     */
-    virtual bool setCallBack(CProcessReport * pCallBack);
-
-    /**
-     * Retrieve the type of the method
-     * @return  const string & type
-     */
-    const CCopasiTask::Type & getType() const;
-
-    /**
-     * Retrieve the sub type of the method
-     * @return CCopasiMethod::SubType & subType
-     */
-    const CCopasiMethod::SubType & getSubType() const;
-
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
-
-    /**
-     * Load a list of parameters
-     * @param "CReadConfig &" configBuffer
-     * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
-     */
-    virtual void load(CReadConfig & configBuffer,
-                      CReadConfig::Mode mode = CReadConfig::SEARCH);
-
-    /**
-     * This is the output method for any object. The default implementation
-     * provided with CCopasiObject uses the ostream operator<< of the object
-     * to print the object.To overide this default behaviour one needs to
-     * reimplement the virtual print function.
-     * @param std::ostream * ostream
-     */
-    virtual void print(std::ostream * ostream) const;
-
-    /**
-     * Output stream operator
-     * @param ostream & os
-     * @param const CCopasiMethod & A
-     * @return ostream & os
-     */
-    friend std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o);
-
-    /**
-     *  This is the output method for any result of a method. The default implementation
-     *  provided with CCopasiMethod. Does only print "Not implmented." To overide this
-     *  default behaviour one needs to reimplement the virtual printResult function.
-     *  @param std::ostream * ostream
-     **/
-
-    virtual void printResult(std::ostream * ostream) const;
+    EFMAlgorithm,
+    Householder
   };
+
+  /**
+   * String literals for the GUI to display sub type names of methods known
+   * to COPASI.
+   */
+  static const std::string SubTypeName[];
+
+  /**
+   * XML sub type names of methods known to COPASI.
+   */
+  static const char* XMLSubType[];
+
+  // Attributes
+private:
+  /**
+   * The type of the method
+   */
+  CCopasiTask::Type mType;
+
+  /**
+   * The type of the method
+   */
+  CCopasiMethod::SubType mSubType;
+
+protected:
+  /**
+   * a pointer to the callback
+   */
+  CProcessReport * mpCallBack;
+
+  /**
+   * A pointer to the report
+   */
+  //CReport * mpReport;
+
+  // Operations
+
+private:
+  /**
+   * Default constructor
+   */
+  CCopasiMethod();
+
+protected:
+  /**
+   * Specific constructor
+   * @param const CCopasiTask::Type & type
+   * @param const CCopasiMethod::SubType & subType
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CCopasiMethod(const CCopasiTask::Type & taskType,
+                const SubType & subType,
+                const CCopasiContainer * pParent = NULL);
+
+public:
+  /**
+   * Convert a SubTypeName to the matching enum value.
+   * Returns CCopasiMethod::unset if no match is found.
+   * @param (const std::string & subTypeName)
+   * @return CCopasiMethod::SubType type
+   */
+  static
+  CCopasiMethod::SubType TypeNameToEnum(const std::string & subTypeName);
+
+  /**
+   * Copy constructor
+   * @param const CCopasiMethodr & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
+  CCopasiMethod(const CCopasiMethod & src,
+                const CCopasiContainer * pParent = NULL);
+
+  /**
+   * Destructor
+   */
+  virtual ~CCopasiMethod();
+
+  /**
+   * Set the call back of the problem
+   * @param CProcessReport * pCallBack
+   * @result bool succes
+   */
+  virtual bool setCallBack(CProcessReport * pCallBack);
+
+  /**
+   * Retrieve the type of the method
+   * @return  const string & type
+   */
+  const CCopasiTask::Type & getType() const;
+
+  /**
+   * Retrieve the sub type of the method
+   * @return CCopasiMethod::SubType & subType
+   */
+  const CCopasiMethod::SubType & getSubType() const;
+
+  /**
+   * Check if the method is suitable for this problem
+   * @return bool suitability of the method
+   */
+  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  /**
+   * Load a list of parameters
+   * @param "CReadConfig &" configBuffer
+   * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
+   */
+  virtual void load(CReadConfig & configBuffer,
+                    CReadConfig::Mode mode = CReadConfig::SEARCH);
+
+  /**
+   * This is the output method for any object. The default implementation
+   * provided with CCopasiObject uses the ostream operator<< of the object
+   * to print the object.To overide this default behaviour one needs to
+   * reimplement the virtual print function.
+   * @param std::ostream * ostream
+   */
+  virtual void print(std::ostream * ostream) const;
+
+  /**
+   * Output stream operator
+   * @param ostream & os
+   * @param const CCopasiMethod & A
+   * @return ostream & os
+   */
+  friend std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o);
+
+  /**
+   *  This is the output method for any result of a method. The default implementation
+   *  provided with CCopasiMethod. Does only print "Not implmented." To overide this
+   *  default behaviour one needs to reimplement the virtual printResult function.
+   *  @param std::ostream * ostream
+   **/
+
+  virtual void printResult(std::ostream * ostream) const;
+};
 
 #endif // COPASI_CCopasiMethod

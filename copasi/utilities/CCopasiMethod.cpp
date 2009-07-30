@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/21 15:25:15 $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,11 +55,9 @@ const std::string CCopasiMethod::SubTypeName[] =
   "Stochastic (Gibson + Bruck)",
   "Hybrid (Runge-Kutta)",
   "Hybrid (LSODA)",
-#ifdef COPASI_TSSA
   "ILDM (LSODA,Deuflhard)",
   "ILDM (LSODA,Modified)",
   "CSP (LSODA)",
-#endif // COPASI_TSSA
   "Stochastic (\xcf\x84-Leap)",
   "MCA Method (Reder)",
   "Scan Framework",
@@ -101,11 +99,9 @@ const char* CCopasiMethod::XMLSubType[] =
   "Stochastic",
   "Hybrid",
   "Hybrid (LSODA)",
-#ifdef COPASI_TSSA
   "TimeScaleSeparation(ILDM,Deuflhard)",
   "TimeScaleSeparation(ILDM,Modified)",
   "TimeScaleSeparation(CSP)",
-#endif // COPASI_DEBUG
   "TauLeap",
   "MCAMethod(Reder)",
   "ScanFramework",
@@ -217,15 +213,11 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
 
-#ifdef COPASI_TSSA
-
       if (mType == CCopasiTask::tssAnalysis)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
           return false;
         }
-
-#endif // COPASI_TSSA
     }
 
   return true;

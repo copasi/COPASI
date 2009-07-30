@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/06/29 10:50:38 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,10 +35,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "trajectory/CTrajectoryTask.h"
-
-#ifdef COPASI_TSSA
 #include "tssanalysis/CTSSATask.h"
-#endif // COPASI_TSSA
 
 #ifdef COPASI_TSS
 #include "tss/CTSSTask.h"
@@ -87,16 +84,12 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(25)->setObjectKey((*pDataModel->getTaskList())["Time Scale Separation"]->getKey());
 #endif
 
-#ifdef COPASI_TSSA
   mTree.findNodeFromId(27)->setObjectKey((*pDataModel->getTaskList())["Time Scale Separation Analysis"]->getKey());
-#endif // COPASI_TSSA
-
   mTree.findNodeFromId(26)->setObjectKey((*pDataModel->getTaskList())["Lyapunov Exponents"]->getKey());
 
   mTree.findNodeFromId(31)->setObjectKey((*pDataModel->getTaskList())["Scan"]->getKey());
   mTree.findNodeFromId(32)->setObjectKey((*pDataModel->getTaskList())["Optimization"]->getKey());
   mTree.findNodeFromId(33)->setObjectKey((*pDataModel->getTaskList())["Parameter Estimation"]->getKey());
-
   mTree.findNodeFromId(34)->setObjectKey((*pDataModel->getTaskList())["Sensitivities"]->getKey());
 
   mTree.findNodeFromId(117)->setObjectKey(pDataModel->getModel()->getKey()); //parameters

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/03/02 21:02:17 $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,56 +39,53 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 const std::string CCopasiTask::TypeName[] =
-  {
-    "Steady-State",
-    "Time-Course",
-    "Scan",
-    "Elementary Flux Modes",
-    "Optimization",
-    "Parameter Estimation",
-    "Metabolic Control Analysis",
-    "Lyapunov Exponents",
-#ifdef COPASI_TSSA
-    "Time Scale Separation Analysis",
-#endif // COPASI_TSSA
+{
+  "Steady-State",
+  "Time-Course",
+  "Scan",
+  "Elementary Flux Modes",
+  "Optimization",
+  "Parameter Estimation",
+  "Metabolic Control Analysis",
+  "Lyapunov Exponents",
+  "Time Scale Separation Analysis",
 #ifdef COPASI_TSS
-    "Time Scale Separation",
+  "Time Scale Separation",
 #endif // COPASI_TSS
-    "Sensitivities",
-    "Moieties",
-    ""
-  };
+  "Sensitivities",
+  "Moieties",
+  ""
+};
 
 const char* CCopasiTask::XMLType[] =
-  {
-    "steadyState",
-    "timeCourse",
-    "scan",
-    "fluxMode",
-    "optimization",
-    "parameterFitting",
-    "metabolicControlAnalysis",
-    "lyapunovExponents",
-#ifdef COPASI_TSSA
-    "timeScaleSeparationAnalysis",
-#endif // COPASI_TSSA
+{
+  "steadyState",
+  "timeCourse",
+  "scan",
+  "fluxMode",
+  "optimization",
+  "parameterFitting",
+  "metabolicControlAnalysis",
+  "lyapunovExponents",
+  "timeScaleSeparationAnalysis",
 #ifdef COPASI_TSS
-    "timeScaleSeparation",
+  "timeScaleSeparation",
 #endif // COPASI_TSS
-    "sensitivities",
-    "moieties",
-    NULL
-  };
+  "sensitivities",
+  "moieties",
+  NULL
+};
 
 const unsigned C_INT32 CCopasiTask::ValidMethods[] =
-  {
-    CCopasiMethod::unset
-  };
+{
+  CCopasiMethod::unset
+};
 
 bool CCopasiTask::isValidMethod(const unsigned C_INT32 & method,
                                 const unsigned C_INT32 * validMethods)
 {
   unsigned C_INT32 i;
+
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
     if (method == validMethods[i]) return true;
 
@@ -99,6 +96,7 @@ bool CCopasiTask::isValidMethod(const unsigned C_INT32 & method,
 CCopasiTask::Type CCopasiTask::XMLNameToEnum(const char * xmlTypeName)
 {
   unsigned C_INT32 i = 0;
+
   while (XMLType[i] && strcmp(xmlTypeName, XMLType[i])) i++;
 
   if (XMLType[i]) return (CCopasiTask::Type) i;
@@ -202,9 +200,9 @@ bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 }
 
 CProcessReport * CCopasiTask::getCallBack() const
-  {
-    return mpCallBack;
-  }
+{
+  return mpCallBack;
+}
 
 bool CCopasiTask::initialize(const OutputFlag & of,
                              COutputHandler * pOutputHandler,
@@ -217,11 +215,13 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 1, getObjectName().c_str());
       return false;
     }
+
   if (!mpProblem->getModel())
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 2, getObjectName().c_str());
       return false;
     }
+
   if (!mpMethod)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 3, getObjectName().c_str());
@@ -261,6 +261,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
+
   if (!mpOutputHandler->compile(ListOfContainer, pDataModel))
     {
       // Warning
@@ -307,10 +308,10 @@ const CCopasiMethod * CCopasiTask::getMethod() const {return mpMethod;}
 CReport & CCopasiTask::getReport() {return mReport;}
 
 const CCopasiTask::CDescription & CCopasiTask::getDescription() const
-  {return mDescription;}
+{return mDescription;}
 
 const CCopasiTask::CResult & CCopasiTask::getResult() const
-  {return mResult;}
+{return mResult;}
 
 void CCopasiTask::cleanup() {}
 
@@ -324,16 +325,20 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
   if (mpOutputHandler != NULL)
     switch (activity)
       {
-      case COutputInterface::DURING:
+        case COutputInterface::DURING:
+
           if (mDoOutput != NO_OUTPUT)
             mpOutputHandler->output(activity);
-        break;
 
-      case COutputInterface::BEFORE:
-      case COutputInterface::AFTER:
-        if (mDoOutput == OUTPUT_COMPLETE)
-          mpOutputHandler->output(activity);
-        break;
+          break;
+
+        case COutputInterface::BEFORE:
+        case COutputInterface::AFTER:
+
+          if (mDoOutput == OUTPUT_COMPLETE)
+            mpOutputHandler->output(activity);
+
+          break;
       }
 }
 
@@ -342,16 +347,20 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
   if (mpOutputHandler != NULL)
     switch (activity)
       {
-      case COutputInterface::DURING:
-        if (mDoOutput)
-          mpOutputHandler->separate(activity);
-        break;
+        case COutputInterface::DURING:
 
-      case COutputInterface::BEFORE:
-      case COutputInterface::AFTER:
-        if (mDoOutput == OUTPUT_COMPLETE)
-          mpOutputHandler->separate(activity);
-        break;
+          if (mDoOutput)
+            mpOutputHandler->separate(activity);
+
+          break;
+
+        case COutputInterface::BEFORE:
+        case COutputInterface::AFTER:
+
+          if (mDoOutput == OUTPUT_COMPLETE)
+            mpOutputHandler->separate(activity);
+
+          break;
       }
 }
 
@@ -374,7 +383,7 @@ CCopasiTask::CDescription::CDescription(const CCopasiTask::CDescription & src,
 CCopasiTask::CDescription::~CDescription() {}
 
 void CCopasiTask::CDescription::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 std::ostream &operator<<(std::ostream &os,
                          const CCopasiTask::CDescription & o)
@@ -414,7 +423,7 @@ CCopasiTask::CResult::CResult(const CCopasiTask::CResult & src,
 CCopasiTask::CResult::~CResult() {}
 
 void CCopasiTask::CResult::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 std::ostream &operator<<(std::ostream &os,
                          const CCopasiTask::CResult & o)

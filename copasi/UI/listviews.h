@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.157 $
+//   $Revision: 1.158 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/27 16:50:57 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,17 +62,19 @@ class CQSensResultWidget;
 class StateWidget;
 class CQTrajectoryWidget;
 class CQReportsWidget;
+
 #ifdef COPASI_TSS
 class TSSWidget;
 #endif // COPASI_TSS
-#ifdef COPASI_TSSA
+
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
-#endif
+
 #ifdef COPASI_DEBUG
 class CQUpdatesWidget;
 #endif
+
 class CQOptimizationWidget;
 class CQOptimizationResult;
 class CopasiWidget;
@@ -259,18 +261,20 @@ private:
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
   CQReportDefinition *tableDefinition1;
+
 #ifdef COPASI_TSS
   TSSWidget *tssWidget;
 #endif // COPASI_TSS
+
   TimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;
-#ifdef COPASI_TSSA
   CQTSSAWidget *tssaWidget;
   CQTSSAResultWidget *tssaResultWidget;
-#endif // COPASI_DEBUG
+
 #ifdef COPASI_DEBUG
   CQUpdatesWidget *mpUpdatesWidget;
 #endif // COPASI_DEBUG
+
   CQLayoutsWidget * mpLayoutsWidget;
   CQMathMatrixWidget * mpMathMatrixWidget;
 };

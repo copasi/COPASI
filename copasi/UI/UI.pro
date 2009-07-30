@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.207 $
+#   $Revision: 1.208 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/07/27 16:50:57 $
+#   $Author: shoops $
+#   $Date: 2009/07/30 16:26:54 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.207 $ $Author: aekamal $ $Date: 2009/07/27 16:50:57 $
+# $Revision: 1.208 $ $Author: shoops $ $Date: 2009/07/30 16:26:54 $
 ######################################################################
 
 LIB = UI
@@ -78,6 +78,7 @@ HEADERS	+= \
 	CQSpecieDM.h \
 	CQSpeciesWidget.h \
 	CQSpinBoxDelegate.h \
+	CQTSSAWidget.h \
 	CQUpdatesWidget.h \
 	CQValidator.h \
 	CScanContainerWidget.h \
@@ -156,6 +157,7 @@ SOURCES	+= \
 	CQSpecieDM.cpp \
 	CQSpeciesWidget.cpp \
 	CQSpinBoxDelegate.cpp \
+	CQTSSAWidget.cpp \
 	CQUpdatesWidget.cpp \
 	CQValidator.cpp \
 	CScanContainerWidget.cpp \
@@ -194,30 +196,30 @@ SOURCES	+= \
 
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
+FORMS += CQDifferentialEquations.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
 FORMS += CQFittingItemWidget.ui
 FORMS += CQFittingWidget.ui
 FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
+FORMS += CQLyapWidget.ui
+FORMS += CQMCAWidget.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
 FORMS += CQReportsWidget.ui
+FORMS += CQSpeciesWidget.ui
+FORMS += CQTrajectoryWidget.ui
+FORMS += CQTSSAWidget.ui
 FORMS += CScanWidgetRandom.ui
 FORMS += CScanWidgetRepeat.ui
 FORMS += CScanWidgetScan.ui
 FORMS += CScanWidgetTask.ui
 FORMS += SensitivitiesWidget.ui
+FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
-FORMS += CQSpeciesWidget.ui
-FORMS += CQTrajectoryWidget.ui
-FORMS += CQLyapWidget.ui
-FORMS += CQMCAWidget.ui
-
-FORMS += CQDifferentialEquations.ui
-FORMS += SliderSettingsDialog.ui
 
 # FORMS3 += CMCAResultSubwidget.ui
 # FORMS3 += CQDifferentialEquations.ui
@@ -243,6 +245,7 @@ FORMS3 += CQOptimizationResult.ui
 # FORMS3 += CQTaskBtnWidget.ui
 # FORMS3 += CQTaskHeaderWidget.ui
 # FORMS3 += CQTextDialog.ui
+FORMS3 += CQTSSAResultSubWidget.ui
 # FORMS3 += CScanWidgetBreak.ui
 # FORMS3 += CUpDownSubwidget.ui
 # FORMS3 += DefaultplotDialog.ui
@@ -376,21 +379,13 @@ SOURCES += \
   SOURCES -= CQDifferentialEquations.cpp
 }
 
-contains(DEFINES, COPASI_TSSA) {
-  HEADERS += CQTSSAResultWidget.h
-  SOURCES += CQTSSAResultWidget.cpp
 
-FORMS3 += CQTSSAResultSubWidget.ui
-
-FORMS += CQTSSAWidget.ui
-
-  HEADERS += CQTSSAWidget.h \
+  HEADERS += CQTSSAResultWidget.h \
              CQTSSAResultSubWidget.ui.h \
              CQTSSATimeScaleWidget.h
 
-  SOURCES += CQTSSAWidget.cpp \
+  SOURCES += CQTSSAResultWidget.cpp \
              CQTSSATimeScaleWidget.cpp
-}
 
 #ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {

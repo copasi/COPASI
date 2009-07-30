@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/27 16:35:33 $
+//   $Author: shoops $
+//   $Date: 2009/07/30 16:26:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,10 +52,8 @@ static char DataModeltxt[] =
 #endif
   "2:26:Lyapunov Exponents\n"
   "26:261:Result\n"
-#ifdef COPASI_TSSA
   "2:27:Time Scale Separation Analysis\n"
   "27:271:Result\n"
-#endif // COPASI_TSSA
   //  "0:3:Multiple Task\n"
   "2:31:Parameter Scan\n"
   "2:32:Optimization\n"
