@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/28 13:52:59 $
+//   $Date: 2009/08/01 00:31:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,8 +83,8 @@ bool CMathModel::compile(CModel * pModel)
   // The context in which this model is compiled.
   // TODO When the math model is the only thing required for simulation this should be changed
   // to this.
-  std::vector< CCopasiContainer * > Context(1);
-  Context[0] = mpModel;
+  std::vector< CCopasiContainer * > Context;
+  Context.push_back(mpModel);
 
   CCopasiVectorN< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
   CCopasiVectorN< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
