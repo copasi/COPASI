@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/07 01:45:24 $
+//   $Date: 2009/08/01 00:32:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -128,14 +128,16 @@ C_FLOAT64 * CMathTrigger::CRootFinder::getRootValuePtr()
 CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
     CCopasiContainer("MathTrigger", pParent, "MathTrigger"),
     mTrueExpression("TrueExpression", this),
-    mRootFinders("ListOfRoots", this)
+    mRootFinders("ListOfRoots", this),
+    mFunctionVariableMap()
 {}
 
 CMathTrigger::CMathTrigger(const CMathTrigger & src,
                            const CCopasiContainer * pParent) :
     CCopasiContainer(src, pParent),
     mTrueExpression(src.mTrueExpression, this),
-    mRootFinders(src.mRootFinders, this)
+    mRootFinders(src.mRootFinders, this),
+    mFunctionVariableMap()
 {}
 
 CMathTrigger::~CMathTrigger()
@@ -170,8 +172,7 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression,
     return false;
 
   // This is a boolean expression thus the root node must be a logical operator.
-  if (CEvaluationNode::type(pRoot->getType()) != CEvaluationNode::LOGICAL &&
-      pRoot->getType() != (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT))
+  if (!pRoot->isBoolean())
     return false;
 
   mTrueExpression.setRoot(NULL);
@@ -193,6 +194,8 @@ bool CMathTrigger::compile(const CExpression * pTriggerExpression,
     {
       success &= (*it)->compile(listOfContainer);
     }
+
+  assert(mFunctionVariableMap.empty());
 
   return success;
 }
@@ -272,6 +275,40 @@ bool CMathTrigger::compile(const CEvaluationNode * pNode,
 
         break;
 
+      case CEvaluationNode::CALL:
+
+        switch ((int) CEvaluationNode::subType(Type))
+          {
+            case CEvaluationNodeCall::FUNCTION:
+              success = compileFUNCTION(pNode, pTrueExpression);
+              break;
+
+            case CEvaluationNodeCall::EXPRESSION:
+              success = compileEXPRESSION(pNode, pTrueExpression);
+              break;
+
+            default:
+              success = false;
+              break;
+          }
+
+        break;
+
+      case CEvaluationNode::VARIABLE:
+
+        switch ((int) CEvaluationNode::subType(Type))
+          {
+            case CEvaluationNodeVariable::ANY:
+              success = compileVARIABLE(pNode, pTrueExpression);
+              break;
+
+            default:
+              success = false;
+              break;
+          }
+
+        break;
+
       default:
         success = false;
         break;
@@ -297,12 +334,8 @@ bool CMathTrigger::compileAND(const CEvaluationNode * pSource,
   success &= compile(pRight, pRightTrueExpression);
 
   pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
-  pTrueExpression->addChild(pLeftTrueExpression->copyBranch());
-  pTrueExpression->addChild(pRightTrueExpression->copyBranch());
-
-  // We used copyBranch thus we need to delete the expressions.
-  pdelete(pLeftTrueExpression);
-  pdelete(pRightTrueExpression);
+  pTrueExpression->addChild(pLeftTrueExpression);
+  pTrueExpression->addChild(pRightTrueExpression);
 
   return success;
 }
@@ -324,12 +357,8 @@ bool CMathTrigger::compileOR(const CEvaluationNode * pSource,
   success &= compile(pRight, pRightTrueExpression);
 
   pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
-  pTrueExpression->addChild(pLeftTrueExpression->copyBranch());
-  pTrueExpression->addChild(pRightTrueExpression->copyBranch());
-
-  // We used copyBranch thus we need to delete the expressions.
-  pdelete(pLeftTrueExpression);
-  pdelete(pRightTrueExpression);
+  pTrueExpression->addChild(pLeftTrueExpression);
+  pTrueExpression->addChild(pRightTrueExpression);
 
   return success;
 }
@@ -351,12 +380,8 @@ bool CMathTrigger::compileXOR(const CEvaluationNode * pSource,
   success &= compile(pRight, pRightTrueExpression);
 
   pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
-  pTrueExpression->addChild(pLeftTrueExpression->copyBranch());
-  pTrueExpression->addChild(pRightTrueExpression->copyBranch());
-
-  // We used copyBranch thus we need to delete the expressions.
-  pdelete(pLeftTrueExpression);
-  pdelete(pRightTrueExpression);
+  pTrueExpression->addChild(pLeftTrueExpression);
+  pTrueExpression->addChild(pRightTrueExpression);
 
   return success;
 }
@@ -377,13 +402,13 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource,
       // Create a temporary expression and compile it.
       CEvaluationNode * pEQ = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
       CEvaluationNode * pGE = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-      pGE->addChild(pLeft->copyBranch());
-      pGE->addChild(pRight->copyBranch());
+      pGE->addChild(copyBranch(pLeft));
+      pGE->addChild(copyBranch(pRight));
       pEQ->addChild(pGE);
 
       pGE = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-      pGE->addChild(pRight->copyBranch());
-      pGE->addChild(pLeft->copyBranch());
+      pGE->addChild(copyBranch(pRight));
+      pGE->addChild(copyBranch(pLeft));
       pEQ->addChild(pGE);
 
       success &= compileEQ(pEQ, pTrueExpression);
@@ -402,12 +427,8 @@ bool CMathTrigger::compileEQ(const CEvaluationNode * pSource,
       success &= compile(pRight, pRightTrueExpression);
 
       pTrueExpression = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
-      pTrueExpression->addChild(pLeftTrueExpression->copyBranch());
-      pTrueExpression->addChild(pRightTrueExpression->copyBranch());
-
-      // We used copyBranch thus we need to delete the expressions.
-      pdelete(pLeftTrueExpression);
-      pdelete(pRightTrueExpression);
+      pTrueExpression->addChild(pLeftTrueExpression);
+      pTrueExpression->addChild(pRightTrueExpression);
     }
 
   return success;
@@ -450,8 +471,8 @@ bool CMathTrigger::compileLE(const CEvaluationNode * pSource,
 
   // We need to create a root finding structures
   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-  pNode->addChild(pRight->copyBranch());
-  pNode->addChild(pLeft->copyBranch());
+  pNode->addChild(copyBranch(pRight));
+  pNode->addChild(copyBranch(pLeft));
 
   CRootFinder * pRootFinder = new CRootFinder();
   pRootFinder->mRoot.setRoot(pNode);
@@ -475,8 +496,8 @@ bool CMathTrigger::compileLT(const CEvaluationNode * pSource,
 
   // We need to create a root finding structures
   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-  pNode->addChild(pRight->copyBranch());
-  pNode->addChild(pLeft->copyBranch());
+  pNode->addChild(copyBranch(pRight));
+  pNode->addChild(copyBranch(pLeft));
 
   CRootFinder * pRootFinder = new CRootFinder();
   pRootFinder->mRoot.setRoot(pNode);
@@ -500,8 +521,8 @@ bool CMathTrigger::compileGE(const CEvaluationNode * pSource,
 
   // We need to create a root finding structures
   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-  pNode->addChild(pLeft->copyBranch());
-  pNode->addChild(pRight->copyBranch());
+  pNode->addChild(copyBranch(pLeft));
+  pNode->addChild(copyBranch(pRight));
 
   CRootFinder * pRootFinder = new CRootFinder();
   pRootFinder->mRoot.setRoot(pNode);
@@ -525,8 +546,8 @@ bool CMathTrigger::compileGT(const CEvaluationNode * pSource,
 
   // We need to create a root finding structures
   pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-  pNode->addChild(pLeft->copyBranch());
-  pNode->addChild(pRight->copyBranch());
+  pNode->addChild(copyBranch(pLeft));
+  pNode->addChild(copyBranch(pRight));
 
   CRootFinder * pRootFinder = new CRootFinder();
   pRootFinder->mRoot.setRoot(pNode);
@@ -550,10 +571,81 @@ bool CMathTrigger::compileNOT(const CEvaluationNode * pSource,
   success &= compile(pLeft, pLeftTrueExpression);
 
   pTrueExpression = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
-  pTrueExpression->addChild(pLeftTrueExpression->copyBranch());
-
-  // We used copyBranch thus we need to delete the expressions.
-  pdelete(pLeftTrueExpression);
+  pTrueExpression->addChild(pLeftTrueExpression);
 
   return success;
+}
+
+bool CMathTrigger::compileFUNCTION(const CEvaluationNode * pSource,
+                                   CEvaluationNode * & pTrueExpression)
+{
+  if (!pSource->isBoolean())
+    return false;
+
+  const CEvaluationNodeCall * pSrc =
+    static_cast< const CEvaluationNodeCall * >(pSource);
+
+  std::vector< const CEvaluationNode * > Variables;
+
+  const CEvaluationNode * pChild =
+    static_cast< const CEvaluationNode * >(pSrc->getChild());
+
+  while (pChild != NULL)
+    {
+      Variables.push_back(pChild);
+      pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+    }
+
+  mFunctionVariableMap.push(Variables);
+
+  const CEvaluationNode * pNode = pSrc->getCalledTree()->getRoot();
+
+  bool success = compile(pNode, pTrueExpression);
+
+  mFunctionVariableMap.pop();
+
+  return success;
+}
+
+bool CMathTrigger::compileEXPRESSION(const CEvaluationNode * pSource,
+                                     CEvaluationNode * & pTrueExpression)
+{
+  if (!pSource->isBoolean())
+    return false;
+
+  const CEvaluationNode * pNode =
+    static_cast< const CEvaluationNodeCall * >(pSource)->getCalledTree()->getRoot();
+
+  return compile(pNode, pTrueExpression);
+}
+
+bool CMathTrigger::compileVARIABLE(const CEvaluationNode * pSource,
+                                   CEvaluationNode * & pTrueExpression)
+{
+  assert(!mFunctionVariableMap.empty());
+
+  unsigned C_INT32 Index =
+    static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
+
+  const CEvaluationNode * pNode = mFunctionVariableMap.top()[Index];
+
+  if (!pNode->isBoolean())
+    return false;
+
+  return compile(pNode, pTrueExpression);
+}
+
+CEvaluationNode * CMathTrigger::copyBranch(const CEvaluationNode * pSource)
+{
+  if (pSource->getType() == CEvaluationNode::VARIABLE)
+    {
+      assert(!mFunctionVariableMap.empty());
+
+      unsigned C_INT32 Index =
+        static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
+
+      return mFunctionVariableMap.top()[Index]->copyBranch();
+    }
+
+  return pSource->copyBranch();
 }

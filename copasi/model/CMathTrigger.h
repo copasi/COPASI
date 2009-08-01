@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CMathTrigger.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/07 01:45:24 $
+//   $Date: 2009/08/01 00:32:25 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,6 +206,14 @@ private:
                  CEvaluationNode * & pTrueExpression);
   bool compileNOT(const CEvaluationNode * pSource,
                   CEvaluationNode * & pTrueExpression);
+  bool compileFUNCTION(const CEvaluationNode * pSource,
+                       CEvaluationNode * & pTrueExpression);
+  bool compileEXPRESSION(const CEvaluationNode * pSource,
+                         CEvaluationNode * & pTrueExpression);
+  bool compileVARIABLE(const CEvaluationNode * pSource,
+                       CEvaluationNode * & pTrueExpression);
+
+  CEvaluationNode * copyBranch(const CEvaluationNode * pSource);
 
   // Attributes
 private:
@@ -219,6 +227,12 @@ private:
    * A vector containing the root expression.
    */
   CCopasiVector< CRootFinder > mRootFinders;
+
+  /**
+   * A stack to map variable nodes to the value nodes provided
+   * in the function call
+   */
+  std::stack< std::vector< const CEvaluationNode * > > mFunctionVariableMap;
 };
 
 #endif // COPASI_CMathTrigger
