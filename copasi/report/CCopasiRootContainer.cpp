@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/20 11:50:04 $
+//   $Author: shoops $
+//   $Date: 2009/08/01 00:30:25 $
 // End CVS Header
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -44,8 +44,11 @@ CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
 CCopasiRootContainer::~CCopasiRootContainer()
 {
   // save and delete the configuration
-  if (mpConfiguration != NULL)
-    mpConfiguration->save();
+  if (mpConfiguration != NULL &&
+      mWithGUI)
+    {
+      mpConfiguration->save();
+    }
 
   pdelete(mpConfiguration);
   // delete the function list
@@ -88,10 +91,11 @@ void CCopasiRootContainer::destroy()
 void CCopasiRootContainer::initializeChildren()
 {
   mpFunctionList = new CFunctionDB("FunctionDB", this);
-  mpConfiguration = new CConfigurationFile;
+  mpFunctionList->load();
+
   mpDataModelList = new CCopasiVector<CCopasiDataModel>("ModelList", this);
 
-  mpFunctionList->load();
+  mpConfiguration = new CConfigurationFile;
   mpConfiguration->load();
 
   mpUndefined = new CFunction("undefined");
