@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
+//   $Date: 2009/08/03 19:09:00 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,62 +25,62 @@
 
 //static
 const std::string CObjectLists::ListTypeName[] =
-  {
-    "Not Set", // EMPTY_LIST = 0
-    "Single Object", // SINGLE_OBJECT
+{
+  "Not Set", // EMPTY_LIST = 0
+  "Single Object", // SINGLE_OBJECT
 
-    "Species", // METABS
-    "Initial Concentrations", // METAB_INITIAL_CONCENTRATIONS
-    "Initial Numbers", // METAB_INITIAL_NUMBERS
-    "Concentrations of Species", // METAB_CONCENTRATIONS
-    "Numbers of Species", // METAB_NUMBERS
-    "Non-Constant Concentrations of Species", // NON_CONST_METAB_CONCENTRATIONS
-    "Non-Constant Numbers of Species", // NON_CONST_METAB_NUMBERS,
-    "Constant Concentrations of Species", // CONST_METAB_CONCENTRATIONS,
-    "Constant Numbers of Species", // CONST_METAB_NUMBERS,
-    "Concentrations of Species with ODE", // ODE_METAB_CONCENTRATIONS,
-    "Numbers of Species with ODE", // ODE_METAB_NUMBERS,
-    "Concentrations of Species determined by Reactions", // REACTION_METAB_CONCENTRATIONS,
-    "Numbers of Species determined by Reactions", // REACTION_METAB_NUMBERS,
-    "Concentrations of Species with Assignment", // ASS_METAB_CONCENTRATIONS,
-    "Numbers of Species with Assignment", // ASS_METAB_NUMBERS,
-    "Concentration Rates", // METAB_CONC_RATES
-    "Particle Rates", // METAB_PART_RATES
-    "Transition Time", // METAB_TRANSITION_TIME,
+  "Species", // METABS
+  "Initial Concentrations", // METAB_INITIAL_CONCENTRATIONS
+  "Initial Numbers", // METAB_INITIAL_NUMBERS
+  "Concentrations of Species", // METAB_CONCENTRATIONS
+  "Numbers of Species", // METAB_NUMBERS
+  "Non-Constant Concentrations of Species", // NON_CONST_METAB_CONCENTRATIONS
+  "Non-Constant Numbers of Species", // NON_CONST_METAB_NUMBERS,
+  "Constant Concentrations of Species", // CONST_METAB_CONCENTRATIONS,
+  "Constant Numbers of Species", // CONST_METAB_NUMBERS,
+  "Concentrations of Species with ODE", // ODE_METAB_CONCENTRATIONS,
+  "Numbers of Species with ODE", // ODE_METAB_NUMBERS,
+  "Concentrations of Species determined by Reactions", // REACTION_METAB_CONCENTRATIONS,
+  "Numbers of Species determined by Reactions", // REACTION_METAB_NUMBERS,
+  "Concentrations of Species with Assignment", // ASS_METAB_CONCENTRATIONS,
+  "Numbers of Species with Assignment", // ASS_METAB_NUMBERS,
+  "Concentration Rates", // METAB_CONC_RATES
+  "Particle Rates", // METAB_PART_RATES
+  "Transition Time", // METAB_TRANSITION_TIME,
 
-    "Reactions", // REACTIONS
-    "Concentration Fluxes of Reactions", // REACTION_CONC_FLUXES
-    "Particle Fluxes of Reactions", // REACTION_PART_FLUXES,
+  "Reactions", // REACTIONS
+  "Concentration Fluxes of Reactions", // REACTION_CONC_FLUXES
+  "Particle Fluxes of Reactions", // REACTION_PART_FLUXES,
 
-    "Global Quantity", // GLOBAL_PARAMETERS
-    "Global Quantity Initial Values", // GLOBAL_PARAMETER_INITIAL_VALUES
-    "Global Quantity Values", // GLOBAL_PARAMETER_VALUES
-    "Non-Constant Global Quantity Values", // NON_CONST_GLOBAL_PARAMETER_VALUES
-    "Constant Global Quantity Values", // CONST_GLOBAL_PARAMETER_VALUES
-    "Values of Global Quantities with ODE", // ODE_GLOBAL_PARAMETER_VALUES
-    "Values of Global Quantities with Assignment", // ASS_GLOBAL_PARAMETER_VALUES
-    "Global Quantity Rates", // GLOBAL_PARAMETER_RATES
+  "Global Quantity", // GLOBAL_PARAMETERS
+  "Global Quantity Initial Values", // GLOBAL_PARAMETER_INITIAL_VALUES
+  "Global Quantity Values", // GLOBAL_PARAMETER_VALUES
+  "Non-Constant Global Quantity Values", // NON_CONST_GLOBAL_PARAMETER_VALUES
+  "Constant Global Quantity Values", // CONST_GLOBAL_PARAMETER_VALUES
+  "Values of Global Quantities with ODE", // ODE_GLOBAL_PARAMETER_VALUES
+  "Values of Global Quantities with Assignment", // ASS_GLOBAL_PARAMETER_VALUES
+  "Global Quantity Rates", // GLOBAL_PARAMETER_RATES
 
-    "Compartments", // COMPARTMENTS
-    "Compartment Initial Volumes", // COMPARTMENT_INITIAL_VOLUMES
-    "Compartment Volumes", // COMPARTMENT_VOLUMES
-    "Non-Constant Compartment Volumes", // NON_CONST_COMPARTMENT_VOLUMES
-    "Constant Compartment Volumes", // CONST_COMPARTMENT_VOLUMES
-    "Values of Compartment Volumes with ODE", // ODE_COMPARTMENT_VOLUMES
-    "Values of Compartment Volumes with Assignment", // ASS_COMPARTMENT_VOLUMES
-    "Compartment Volume Rates", // COMPARTMENT_RATES
+  "Compartments", // COMPARTMENTS
+  "Compartment Initial Volumes", // COMPARTMENT_INITIAL_VOLUMES
+  "Compartment Volumes", // COMPARTMENT_VOLUMES
+  "Non-Constant Compartment Volumes", // NON_CONST_COMPARTMENT_VOLUMES
+  "Constant Compartment Volumes", // CONST_COMPARTMENT_VOLUMES
+  "Values of Compartment Volumes with ODE", // ODE_COMPARTMENT_VOLUMES
+  "Values of Compartment Volumes with Assignment", // ASS_COMPARTMENT_VOLUMES
+  "Compartment Volume Rates", // COMPARTMENT_RATES
 
-    "All initial Values", // ALL_INITIAL_VALUES
-    "Local Parameter Values", // ALL_LOCAL_PARAMETER_VALUES
+  "All initial Values", // ALL_INITIAL_VALUES
+  "Local Parameter Values", // ALL_LOCAL_PARAMETER_VALUES
 
-    "All Parameter Values", // ALL_PARAMETER_VALUES
-    "All Parameter and Initial Values", // ALL_PARAMETER_AND_INITIAL_VALUES
+  "All Parameter Values", // ALL_PARAMETER_VALUES
+  "All Parameter and Initial Values", // ALL_PARAMETER_AND_INITIAL_VALUES
 
-    "All Variables of the model", // ALL_VARIABLES
-    "All independent Variables of the model", //  ALL_ODE_VARIABLES
+  "All Variables of the model", // ALL_VARIABLES
+  "All independent Variables of the model", //  ALL_ODE_VARIABLES
 
-    "" // End of the list do not remove!
-  };
+  "" // End of the list do not remove!
+};
 
 //static
 std::vector<CCopasiObject*>
@@ -120,232 +120,312 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
   CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
 
+  std::set< const CModelEntity * > EventTargets = getEventTargets(pModel);
+
   switch (t)
     {
-    case EMPTY_LIST:
-    case SINGLE_OBJECT:
-      break;
+      case EMPTY_LIST:
+      case SINGLE_OBJECT:
+        break;
 
-      // Metabolites
-    case METABS:
-      for (; itMetab != endMetab; ++itMetab)
-        ret.push_back(*itMetab);
-      break;
+        // Metabolites
+      case METABS:
 
-    case METAB_INITIAL_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() != CModelEntity::ASSIGNMENT)
-          ret.push_back((*itMetab)->getInitialConcentrationReference());
-      break;
+        for (; itMetab != endMetab; ++itMetab)
+          ret.push_back(*itMetab);
 
-    case METAB_INITIAL_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() != CModelEntity::ASSIGNMENT)
-          ret.push_back((*itMetab)->getInitialValueReference());
-      break;
+        break;
 
-    case METAB_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        ret.push_back((*itMetab)->getConcentrationReference());
-      break;
+      case METAB_INITIAL_CONCENTRATIONS:
 
-    case METAB_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        ret.push_back((*itMetab)->getValueReference());
-      break;
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back((*itMetab)->getInitialConcentrationReference());
 
-    case NON_CONST_METAB_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() != CModelEntity::FIXED)
+        break;
+
+      case METAB_INITIAL_NUMBERS:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back((*itMetab)->getInitialValueReference());
+
+        break;
+
+      case METAB_CONCENTRATIONS:
+
+        for (; itMetab != endMetab; ++itMetab)
           ret.push_back((*itMetab)->getConcentrationReference());
-      break;
 
-    case NON_CONST_METAB_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() != CModelEntity::FIXED)
+        break;
+
+      case METAB_NUMBERS:
+
+        for (; itMetab != endMetab; ++itMetab)
           ret.push_back((*itMetab)->getValueReference());
-      break;
 
-    case CONST_METAB_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::FIXED)
-          ret.push_back((*itMetab)->getConcentrationReference());
-      break;
+        break;
 
-    case CONST_METAB_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::FIXED)
-          ret.push_back((*itMetab)->getValueReference());
-      break;
+      case NON_CONST_METAB_CONCENTRATIONS:
 
-    case ODE_METAB_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ODE)
-          ret.push_back((*itMetab)->getConcentrationReference());
-      break;
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(*itMetab) > 0)
+            ret.push_back((*itMetab)->getConcentrationReference());
 
-    case ODE_METAB_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ODE)
-          ret.push_back((*itMetab)->getValueReference());
-      break;
+        break;
 
-    case REACTION_METAB_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::REACTIONS)
-          ret.push_back((*itMetab)->getConcentrationReference());
-      break;
+      case NON_CONST_METAB_NUMBERS:
 
-    case REACTION_METAB_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::REACTIONS)
-          ret.push_back((*itMetab)->getValueReference());
-      break;
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(*itMetab) > 0)
+            ret.push_back((*itMetab)->getValueReference());
 
-    case ASS_METAB_CONCENTRATIONS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ASSIGNMENT)
-          ret.push_back((*itMetab)->getConcentrationReference());
-      break;
+        break;
 
-    case ASS_METAB_NUMBERS:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ASSIGNMENT)
-          ret.push_back((*itMetab)->getValueReference());
-      break;
+      case CONST_METAB_CONCENTRATIONS:
 
-    case METAB_CONC_RATES:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ODE ||
-            (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-          ret.push_back((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
-      break; //not possible at the moment
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::FIXED)
+            ret.push_back((*itMetab)->getConcentrationReference());
 
-    case METAB_PART_RATES:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ODE ||
-            (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-          ret.push_back((*itMetab)->getRateReference());
-      break;
+        break;
 
-    case METAB_TRANSITION_TIME:
-      for (; itMetab != endMetab; ++itMetab)
-        if ((*itMetab)->getStatus() == CModelEntity::ODE ||
-            (*itMetab)->getStatus() == CModelEntity::REACTIONS)
-          ret.push_back((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
-      break;
+      case CONST_METAB_NUMBERS:
 
-      // reactions
-    case REACTIONS:
-      for (; itReaction != endReaction; ++itReaction)
-        ret.push_back(*itReaction);
-      break;
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::FIXED)
+            ret.push_back((*itMetab)->getValueReference());
 
-    case REACTION_CONC_FLUXES:
-      for (; itReaction != endReaction; ++itReaction)
-        ret.push_back((*itReaction)->getObject(CCopasiObjectName("Reference=Flux")));
-      break;
+        break;
 
-    case REACTION_PART_FLUXES:
-      for (; itReaction != endReaction; ++itReaction)
-        ret.push_back((*itReaction)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
-      break;
+      case ODE_METAB_CONCENTRATIONS:
 
-      // global quantities
-    case GLOBAL_PARAMETERS:
-      for (;itValue != endValue; ++itValue)
-        ret.push_back(*itValue);
-      break;
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ODE)
+            ret.push_back((*itMetab)->getConcentrationReference());
 
-    case GLOBAL_PARAMETER_INITIAL_VALUES:
-      for (;itValue != endValue; ++itValue)
-        if ((*itValue)->getStatus() != CModelEntity::ASSIGNMENT)
-          ret.push_back((*itValue)->getInitialValueReference());
-      break;
+        break;
 
-    case GLOBAL_PARAMETER_VALUES:
-      for (;itValue != endValue; ++itValue)
-        ret.push_back((*itValue)->getValueReference());
-      break;
+      case ODE_METAB_NUMBERS:
 
-    case NON_CONST_GLOBAL_PARAMETER_VALUES:
-      for (;itValue != endValue; ++itValue)
-        if ((*itValue)->getStatus() != CModelEntity::FIXED)
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ODE)
+            ret.push_back((*itMetab)->getValueReference());
+
+        break;
+
+      case REACTION_METAB_CONCENTRATIONS:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back((*itMetab)->getConcentrationReference());
+
+        break;
+
+      case REACTION_METAB_NUMBERS:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back((*itMetab)->getValueReference());
+
+        break;
+
+      case ASS_METAB_CONCENTRATIONS:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back((*itMetab)->getConcentrationReference());
+
+        break;
+
+      case ASS_METAB_NUMBERS:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back((*itMetab)->getValueReference());
+
+        break;
+
+      case METAB_CONC_RATES:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ODE ||
+              (*itMetab)->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back((*itMetab)->getObject(CCopasiObjectName("Reference=Rate")));
+
+        break; //not possible at the moment
+
+      case METAB_PART_RATES:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ODE ||
+              (*itMetab)->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back((*itMetab)->getRateReference());
+
+        break;
+
+      case METAB_TRANSITION_TIME:
+
+        for (; itMetab != endMetab; ++itMetab)
+          if ((*itMetab)->getStatus() == CModelEntity::ODE ||
+              (*itMetab)->getStatus() == CModelEntity::REACTIONS)
+            ret.push_back((*itMetab)->getObject(CCopasiObjectName("Reference=TransitionTime")));
+
+        break;
+
+        // reactions
+      case REACTIONS:
+
+        for (; itReaction != endReaction; ++itReaction)
+          ret.push_back(*itReaction);
+
+        break;
+
+      case REACTION_CONC_FLUXES:
+
+        for (; itReaction != endReaction; ++itReaction)
+          ret.push_back((*itReaction)->getObject(CCopasiObjectName("Reference=Flux")));
+
+        break;
+
+      case REACTION_PART_FLUXES:
+
+        for (; itReaction != endReaction; ++itReaction)
+          ret.push_back((*itReaction)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+
+        break;
+
+        // global quantities
+      case GLOBAL_PARAMETERS:
+
+        for (; itValue != endValue; ++itValue)
+          ret.push_back(*itValue);
+
+        break;
+
+      case GLOBAL_PARAMETER_INITIAL_VALUES:
+
+        for (; itValue != endValue; ++itValue)
+          if ((*itValue)->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back((*itValue)->getInitialValueReference());
+
+        break;
+
+      case GLOBAL_PARAMETER_VALUES:
+
+        for (; itValue != endValue; ++itValue)
           ret.push_back((*itValue)->getValueReference());
-      break;
 
-    case CONST_GLOBAL_PARAMETER_INITIAL_VALUES:
-      for (;itValue != endValue; ++itValue)
-        if ((*itValue)->getStatus() == CModelEntity::FIXED)
-          ret.push_back((*itValue)->getInitialValueReference());
-      break;
+        break;
 
-    case ODE_GLOBAL_PARAMETER_VALUES:
-      for (;itValue != endValue; ++itValue)
-        if ((*itValue)->getStatus() == CModelEntity::ODE)
-          ret.push_back((*itValue)->getValueReference());
-      break;
+      case NON_CONST_GLOBAL_PARAMETER_VALUES:
 
-    case ASS_GLOBAL_PARAMETER_VALUES:
-      for (;itValue != endValue; ++itValue)
-        if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
-          ret.push_back((*itValue)->getValueReference());
-      break;
+        for (; itValue != endValue; ++itValue)
+          if ((*itValue)->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(*itValue) > 0)
+            ret.push_back((*itValue)->getValueReference());
 
-    case GLOBAL_PARAMETER_RATES:
-      for (;itValue != endValue; ++itValue)
-        if ((*itValue)->getStatus() == CModelEntity::ODE)
-          ret.push_back((*itValue)->getRateReference());
-      break;
+        break;
 
-      // compartments
-    case COMPARTMENTS:
-      for (;itComp != endComp; ++itComp)
-        ret.push_back(*itComp);
-      break;
+      case CONST_GLOBAL_PARAMETER_INITIAL_VALUES:
 
-    case COMPARTMENT_INITIAL_VOLUMES:
-      for (;itComp != endComp; ++itComp)
-        if ((*itComp)->getStatus() != CModelEntity::ASSIGNMENT)
-          ret.push_back((*itComp)->getInitialValueReference());
-      break;
+        for (; itValue != endValue; ++itValue)
+          if ((*itValue)->getStatus() == CModelEntity::FIXED)
+            ret.push_back((*itValue)->getInitialValueReference());
 
-    case COMPARTMENT_VOLUMES:
-      for (;itComp != endComp; ++itComp)
-        ret.push_back((*itComp)->getValueReference());
-      break;
+        break;
 
-    case NON_CONST_COMPARTMENT_VOLUMES:
-      for (;itComp != endComp; ++itComp)
-        if ((*itComp)->getStatus() != CModelEntity::FIXED)
+      case ODE_GLOBAL_PARAMETER_VALUES:
+
+        for (; itValue != endValue; ++itValue)
+          if ((*itValue)->getStatus() == CModelEntity::ODE)
+            ret.push_back((*itValue)->getValueReference());
+
+        break;
+
+      case ASS_GLOBAL_PARAMETER_VALUES:
+
+        for (; itValue != endValue; ++itValue)
+          if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back((*itValue)->getValueReference());
+
+        break;
+
+      case GLOBAL_PARAMETER_RATES:
+
+        for (; itValue != endValue; ++itValue)
+          if ((*itValue)->getStatus() == CModelEntity::ODE)
+            ret.push_back((*itValue)->getRateReference());
+
+        break;
+
+        // compartments
+      case COMPARTMENTS:
+
+        for (; itComp != endComp; ++itComp)
+          ret.push_back(*itComp);
+
+        break;
+
+      case COMPARTMENT_INITIAL_VOLUMES:
+
+        for (; itComp != endComp; ++itComp)
+          if ((*itComp)->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back((*itComp)->getInitialValueReference());
+
+        break;
+
+      case COMPARTMENT_VOLUMES:
+
+        for (; itComp != endComp; ++itComp)
           ret.push_back((*itComp)->getValueReference());
-      break;
 
-    case CONST_COMPARTMENT_VOLUMES:
-      for (;itComp != endComp; ++itComp)
-        if ((*itComp)->getStatus() == CModelEntity::FIXED)
-          ret.push_back((*itComp)->getValueReference());
-      break;
+        break;
 
-    case ODE_COMPARTMENT_VOLUMES:
-      for (;itComp != endComp; ++itComp)
-        if ((*itComp)->getStatus() == CModelEntity::ODE)
-          ret.push_back((*itComp)->getValueReference());
-      break;
+      case NON_CONST_COMPARTMENT_VOLUMES:
 
-    case ASS_COMPARTMENT_VOLUMES:
-      for (;itComp != endComp; ++itComp)
-        if ((*itComp)->getStatus() == CModelEntity::ASSIGNMENT)
-          ret.push_back((*itComp)->getValueReference());
-      break;
+        for (; itComp != endComp; ++itComp)
+          if ((*itComp)->getStatus() != CModelEntity::FIXED ||
+              EventTargets.count(*itComp) > 0)
+            ret.push_back((*itComp)->getValueReference());
 
-    case COMPARTMENT_RATES:
-      for (;itComp != endComp; ++itComp)
-        if ((*itComp)->getStatus() == CModelEntity::ODE)
-          ret.push_back((*itComp)->getRateReference());
-      break;
+        break;
 
-    case ALL_INITIAL_VALUES:
+      case CONST_COMPARTMENT_VOLUMES:
+
+        for (; itComp != endComp; ++itComp)
+          if ((*itComp)->getStatus() == CModelEntity::FIXED)
+            ret.push_back((*itComp)->getValueReference());
+
+        break;
+
+      case ODE_COMPARTMENT_VOLUMES:
+
+        for (; itComp != endComp; ++itComp)
+          if ((*itComp)->getStatus() == CModelEntity::ODE)
+            ret.push_back((*itComp)->getValueReference());
+
+        break;
+
+      case ASS_COMPARTMENT_VOLUMES:
+
+        for (; itComp != endComp; ++itComp)
+          if ((*itComp)->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back((*itComp)->getValueReference());
+
+        break;
+
+      case COMPARTMENT_RATES:
+
+        for (; itComp != endComp; ++itComp)
+          if ((*itComp)->getStatus() == CModelEntity::ODE)
+            ret.push_back((*itComp)->getRateReference());
+
+        break;
+
+      case ALL_INITIAL_VALUES:
       {
         ret = getListOfConstObjects(METAB_INITIAL_CONCENTRATIONS, pModel);
 
@@ -357,12 +437,13 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       }
       break;
 
-    case ALL_LOCAL_PARAMETER_VALUES:
+      case ALL_LOCAL_PARAMETER_VALUES:
       {
         for (; itReaction != endReaction; ++itReaction)
           {
             const CFunctionParameters & params = (*itReaction)->getFunctionParameters();
             unsigned C_INT32 j, jmax = params.size();
+
             for (j = 0; j < jmax; ++j)
               if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
                 if ((*itReaction)->isLocalParameter(j))
@@ -370,6 +451,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
                     CCopasiParameter * par =
                       dynamic_cast<CCopasiParameter*>
                       (CCopasiRootContainer::getKeyFactory()->get((*itReaction)->getParameterMappings()[j][0]));
+
                     if (par)
                       ret.push_back(par->getObject(CCopasiObjectName("Reference=Value")));
                   }
@@ -377,7 +459,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       }
       break;
 
-    case ALL_PARAMETER_VALUES:
+      case ALL_PARAMETER_VALUES:
       {
         ret = getListOfConstObjects(CONST_GLOBAL_PARAMETER_INITIAL_VALUES, pModel);
 
@@ -386,7 +468,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       }
       break;
 
-    case ALL_PARAMETER_AND_INITIAL_VALUES:
+      case ALL_PARAMETER_AND_INITIAL_VALUES:
       {
         ret = getListOfConstObjects(ALL_PARAMETER_VALUES, pModel);
 
@@ -395,7 +477,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       }
       break;
 
-    case ALL_VARIABLES:
+      case ALL_VARIABLES:
       {
         ret = getListOfConstObjects(NON_CONST_METAB_CONCENTRATIONS, pModel);
 
@@ -407,8 +489,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       }
       break;
 
-    default:
-      break;
+      default:
+        break;
     }
 
   //debug output
@@ -428,8 +510,42 @@ bool CObjectLists::existsFixedMetab(const CModel* pModel)
   bool fixedMetab = false;
   const CCopasiVector< CMetab > & metabs = pModel->getMetabolites();
   C_INT32 i, imax = metabs.size();
+
   for (i = 0; i < imax; ++i)
     if (metabs[i]->getStatus() == CModelEntity::FIXED)
-    {fixedMetab = true; break;}
+      {fixedMetab = true; break;}
+
   return fixedMetab;
+}
+
+// static
+std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel * pModel)
+{
+  std::set< const CModelEntity * > EventTargets;
+
+  CKeyFactory * pKeyFactory = CCopasiRootContainer::getKeyFactory();
+
+  CCopasiVectorN< CEvent >::const_iterator itEvent = pModel->getEvents().begin();
+  CCopasiVectorN< CEvent >::const_iterator endEvent = pModel->getEvents().end();
+
+  for (; itEvent != endEvent; ++itEvent)
+    {
+      CCopasiVectorN< CEventAssignment >::const_iterator itAssignment =
+        (*itEvent)->getAssignments().begin();
+      CCopasiVectorN< CEventAssignment >::const_iterator endAssignment =
+        (*itEvent)->getAssignments().end();
+
+      for (; itAssignment != endAssignment; ++itAssignment)
+        {
+          const CModelEntity * pModelEntity =
+            dynamic_cast< const CModelEntity * >(pKeyFactory->get((*itAssignment)->getObjectName()));
+
+          if (pModelEntity != NULL)
+            {
+              EventTargets.insert(pModelEntity);
+            }
+        }
+    }
+
+  return EventTargets;
 }
