@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:21 $
+//   $Date: 2009/08/03 17:50:09 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,11 +58,6 @@ bool CopasiWidget::enter(const std::string & key)
         {
           mpDataModel = NULL;
         }
-    }
-
-  if (mKey == "")
-    {
-      mKey == "unknown";
     }
 
   return enterProtected();
