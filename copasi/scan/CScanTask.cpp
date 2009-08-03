@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:18 $
+//   $Date: 2009/08/03 19:55:01 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@ CScanTask::CScanTask(const CScanTask & src,
                      const CCopasiContainer * pParent):
     CCopasiTask(src, pParent)
 {
-  mpProblem = new CScanProblem(* (CScanProblem *) src.mpProblem, this);
+  mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
   mpMethod = CScanMethod::createMethod();
   this->add(mpMethod, true);
   ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
@@ -77,11 +77,10 @@ bool CScanTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
-  initSubtask(pOutputHandler);
-
   CCopasiMessage::clearDeque();
 
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  success &= initSubtask(pOutputHandler);
+  success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   return success;
 }
@@ -92,14 +91,17 @@ void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
 bool CScanTask::process(const bool & useInitialValues)
 {
   if (!mpProblem) fatalError();
+
   if (!mpMethod) fatalError();
 
   //mpMethod->isValidProblem(mpProblem);
 
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
+
   if (!pProblem) fatalError();
 
   CScanMethod * pMethod = dynamic_cast<CScanMethod *>(mpMethod);
+
   if (!pMethod) fatalError();
 
   bool success = true;
@@ -115,6 +117,7 @@ bool CScanTask::process(const bool & useInitialValues)
 
   //initialize the method (parsing the ScanItems)
   pMethod->setProblem(pProblem);
+
   if (!pMethod->init()) return false;
 
   //init progress bar
@@ -129,6 +132,7 @@ bool CScanTask::process(const bool & useInitialValues)
                           CCopasiParameter::UINT,
                           &mProgress,
                           &totalSteps);
+
       if (mpSubtask)
         mpSubtask->setCallBack(mpCallBack);
     }
@@ -160,6 +164,7 @@ bool CScanTask::processCallback()
 
   //do progress bar
   ++mProgress;
+
   if (mpCallBack) return mpCallBack->progress();
 
   return true;
@@ -176,52 +181,55 @@ bool CScanTask::outputSeparatorCallback(bool isLast)
 bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
 {
   if (!mpProblem) fatalError();
+
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
+
   if (!pProblem) fatalError();
 
   //get the parameters from the problem
   CCopasiTask::Type type = *(CCopasiTask::Type*) pProblem->getValue("Subtask").pUINT;
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
+
   switch (type)
     {
-    case CCopasiTask::steadyState:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Steady-State"]);
-      break;
+      case CCopasiTask::steadyState:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Steady-State"]);
+        break;
 
-    case CCopasiTask::timeCourse:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Time-Course"]);
-      break;
+      case CCopasiTask::timeCourse:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Time-Course"]);
+        break;
 
-    case CCopasiTask::mca:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Metabolic Control Analysis"]);
-      break;
+      case CCopasiTask::mca:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Metabolic Control Analysis"]);
+        break;
 
-    case CCopasiTask::lyap:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
-      break;
+      case CCopasiTask::lyap:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
+        break;
 
-    case CCopasiTask::optimization:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Optimization"]);
-      break;
+      case CCopasiTask::optimization:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Optimization"]);
+        break;
 
-    case CCopasiTask::parameterFitting:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Parameter Estimation"]);
-      break;
+      case CCopasiTask::parameterFitting:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Parameter Estimation"]);
+        break;
 
-    case CCopasiTask::sens:
-      mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Sensitivities"]);
-      break;
+      case CCopasiTask::sens:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Sensitivities"]);
+        break;
 
-    default:
-      mpSubtask = NULL;
+      default:
+        mpSubtask = NULL;
     }
 
   mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
@@ -236,9 +244,9 @@ bool CScanTask::initSubtask(COutputHandler * pOutputHandler)
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    mpSubtask->initialize(OUTPUT, pOutputHandler, NULL);
+    return mpSubtask->initialize(OUTPUT, pOutputHandler, NULL);
   else
-    mpSubtask->initialize(NO_OUTPUT, pOutputHandler, NULL);
+    return mpSubtask->initialize(NO_OUTPUT, pOutputHandler, NULL);
 
   return true;
 }
