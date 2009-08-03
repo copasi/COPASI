@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.379 $
+//   $Revision: 1.380 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/27 16:15:37 $
+//   $Date: 2009/08/03 17:43:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,7 +142,7 @@ CModel::CModel(CCopasiContainer* pParent):
   setUsed(true);
 
   *mpIValue = 0.0;
-  *mpValueAccess = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  *mpValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   unsigned C_INT32 i, imax = mSteps.size();
 
@@ -219,7 +219,7 @@ CModel::CModel(CCopasiContainer* pParent):
 CModel::~CModel()
 {
   mpIValue = NULL;
-  mpValueData = NULL;
+  mpValue = NULL;
 
   pdelete(mpStoiAnnotation);
   pdelete(mpRedStoiAnnotation);
@@ -1048,10 +1048,10 @@ const C_FLOAT64 & CModel::getInitialTime() const
 {return *mpIValue;}
 
 void CModel::setTime(const C_FLOAT64 & time)
-{*mpValueAccess = time;}
+{*mpValue = time;}
 
 const C_FLOAT64 & CModel::getTime() const
-{return *mpValueAccess;}
+{return *mpValue;}
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
 {CCHECK return mRowLU;}
@@ -3128,12 +3128,12 @@ void CModel::initObjects()
   // The regular CModelEntity mechanism does not work since
   // CModel is created before mStateTemplate :(
   C_FLOAT64 InitialValue = *mpIValue;
-  C_FLOAT64 Value = *mpValueAccess;
+  C_FLOAT64 Value = *mpValue;
   pdelete(mpIValue);
-  pdelete(mpValueData);
+  pdelete(mpValue);
   mStateTemplate.add(this);
   *mpIValue = InitialValue;
-  *mpValueAccess = Value;
+  *mpValue = Value;
 
   mpIValueReference->setObjectName("Initial Time");
   mpValueReference->setObjectName("Time");

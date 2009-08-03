@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/05/04 14:51:12 $
+//   $Author: shoops $
+//   $Date: 2009/08/03 17:43:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,7 +186,7 @@ void CCompartment::initObjects()
 
 std::ostream & operator<<(std::ostream &os, const CCompartment & d)
 {
-  os << "++++CCompartment: " << d.getObjectName() << " mValue " << *d.mpValueAccess;
+  os << "++++CCompartment: " << d.getObjectName() << " mValue " << *d.mpValue;
   os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
   os << "----CCompartment " << std::endl;
 

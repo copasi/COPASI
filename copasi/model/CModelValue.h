@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 21:14:24 $
+//   $Date: 2009/08/03 17:43:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,13 +331,7 @@ protected:
   /**
    * Pointer to the value of the model entity.
    */
-  C_FLOAT64 * mpValueData;
-
-  /**
-   * Pointer to access the data value of the model entity..
-   * This is mpIValue for fixed and mpValueData otherwise.
-   */
-  C_FLOAT64 * mpValueAccess;
+  C_FLOAT64 * mpValue;
 
   /**
    * Pointer to the initial value of the model entity.

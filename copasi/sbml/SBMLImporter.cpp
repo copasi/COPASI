@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.243 $
+//   $Revision: 1.244 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 13:41:34 $
+//   $Date: 2009/08/03 17:43:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -6781,7 +6781,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<CCopasiObject*, SBase
        * Removed because this no longer works for variable volumes
        this->replaceSubstanceOnlySpeciesNodes(pNode, this->mSubstanceOnlySpecies);
        */
-      this->replaceObjectNames(pNode, copasi2sbmlmap);
+      this->replaceObjectNames(pNode, copasi2sbmlmap, true);
       CExpression* pExpr = new CExpression("", mpDataModel);
       pExpr->setTree(*pNode);
       pExpr->compile(listOfContainers);

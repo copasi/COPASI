@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.72 $
+//   $Revision: 1.73 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 21:14:24 $
+//   $Date: 2009/08/03 17:43:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,8 +69,7 @@ CModelEntity::CModelEntity(const std::string & name,
                            const unsigned C_INT32 & flag):
     CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
     mKey(""),
-    mpValueData(NULL),
-    mpValueAccess(NULL),
+    mpValue(NULL),
     mpIValue(NULL),
     mRate(0.0),
     mpExpression(NULL),
@@ -83,7 +82,7 @@ CModelEntity::CModelEntity(const std::string & name,
   initObjects();
 
   *mpIValue = 1.0;
-  *mpValueData = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  *mpValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   CONSTRUCTOR_TRACE;
 }
@@ -92,8 +91,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(""),
-    mpValueData(NULL),
-    mpValueAccess(NULL),
+    mpValue(NULL),
     mpIValue(NULL),
     mRate(src.mRate),
     mpExpression(new CExpression(*src.mpExpression)),
@@ -111,7 +109,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
 
   setStatus(src.mStatus);
 
-  *mpValueData = *src.mpValueData;
+  *mpValue = *src.mpValue;
   *mpIValue = *src.mpIValue;
 
   setMiriamAnnotation(src.mMiriamAnnotation, src.mKey);
@@ -125,7 +123,7 @@ CModelEntity::~CModelEntity()
   // After the above call we definitely own the data and
   // therefore must destroy them.
 
-  pdelete(mpValueData);
+  pdelete(mpValue);
   pdelete(mpIValue);
   // since the expressions now have the model entity as parent, they should
   // automatically be destroyed be the destructor of CCopasiContainer
@@ -137,7 +135,7 @@ CModelEntity::~CModelEntity()
 
 const std::string & CModelEntity::getKey() const {return mKey;}
 
-const C_FLOAT64 & CModelEntity::getValue() const {return *mpValueAccess;}
+const C_FLOAT64 & CModelEntity::getValue() const {return *mpValue;}
 
 const C_FLOAT64 & CModelEntity::getInitialValue() const
 {return *mpIValue;}
@@ -202,7 +200,7 @@ void CModelEntity::calculate()
   switch (mStatus)
     {
       case ASSIGNMENT:
-        *mpValueData = mpExpression->calcValue();
+        *mpValue = mpExpression->calcValue();
         break;
 
       case ODE:
@@ -352,7 +350,7 @@ void CModelEntity::setValue(const C_FLOAT64 & value)
 {
   if (mStatus == FIXED) return;
 
-  *mpValueData = value;
+  *mpValue = value;
 
 #ifdef COPASI_DEBUG
   //if (mStatus == FIXED)
@@ -386,7 +384,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
         pdelete(mpInitialExpression);
 
       mStatus = status;
-      this->setValuePtr(mpValueData);
+      this->setValuePtr(mpValue);
 
       if (mpModel != NULL)
         mpModel->setCompileFlag(true);
@@ -469,7 +467,7 @@ const CCopasiObject * CModelEntity::getValueObject() const
 // virtual
 void * CModelEntity::getValuePointer() const
 {
-  return const_cast<C_FLOAT64 *>(mpValueAccess);
+  return const_cast<C_FLOAT64 *>(mpValue);
 }
 
 void CModelEntity::initObjects()
@@ -519,16 +517,11 @@ void CModelEntity::setInitialValuePtr(C_FLOAT64 * pInitialValue)
 
 void CModelEntity::setValuePtr(C_FLOAT64 * pValue)
 {
-  mpValueData = pValue;
+  mpValue = pValue;
 
-  if (!mpValueData) mpValueData = new C_FLOAT64;
+  if (!mpValue) mpValue = new C_FLOAT64;
 
-  if (mStatus == FIXED)
-    mpValueAccess = mpIValue;
-  else
-    mpValueAccess = mpValueData;
-
-  mpValueReference->setReference(*mpValueAccess);
+  mpValueReference->setReference(*mpValue);
 }
 
 bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
@@ -539,7 +532,7 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
   if (mpModel == pNewModel) return true;
 
   C_FLOAT64 InitialValue = *mpIValue;
-  C_FLOAT64 Value = *mpValueData;
+  C_FLOAT64 Value = *mpValue;
 
   if (mpModel)
     {
@@ -550,7 +543,7 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
   // We can safely remove the currently allocated objects as they
   // are not part of an CStateTemplate
   pdelete(mpIValue);
-  pdelete(mpValueData);
+  pdelete(mpValue);
 
   if (pNewModel)
     {
@@ -558,13 +551,13 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
     }
   else
     {
-      mpValueData = new C_FLOAT64;
+      mpValue = new C_FLOAT64;
       mpIValue = new C_FLOAT64;
     }
 
   mpModel = pNewModel;
   *mpIValue = InitialValue;
-  *mpValueData = Value;
+  *mpValue = Value;
 
   return true;
 }
@@ -641,7 +634,7 @@ void CModelValue::initObjects()
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
   os << "    ++++CModelValue: " << d.getObjectName() << std::endl;
-  os << "        mValue " << *d.mpValueAccess << " mIValue " << *d.mpIValue << std::endl;
+  os << "        mValue " << *d.mpValue << " mIValue " << *d.mpIValue << std::endl;
   os << "        mRate " << d.mRate << " mStatus " << d.getStatus() << std::endl;
   os << "    ----CModelValue " << std::endl;
 

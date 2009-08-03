@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.148 $
+//   $Revision: 1.149 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/08/03 17:43:27 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,12 +214,12 @@ void CMetab::refreshInitialConcentration()
 
 void CMetab::refreshConcentration()
 {
-  mConc = *mpValueAccess / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
+  mConc = *mpValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
 }
 
 void CMetab::refreshNumber()
 {
-  *mpValueAccess = mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
+  *mpValue = mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
 }
 
 void CMetab::setStatus(const CModelEntity::Status & status)
@@ -616,7 +616,7 @@ void CMetab::calculate()
       case REACTIONS:
 
         if (isDependent())
-          *mpValueData = mpMoiety->getDependentNumber();
+          *mpValue = mpMoiety->getDependentNumber();
 
         break;
 
@@ -668,7 +668,7 @@ void CMetab::refreshTransitionTime()
         break;
 
       case ODE:
-        mTT = *mpValueData / fabs(mRate);
+        mTT = *mpValue / fabs(mRate);
         break;
 
       case REACTIONS:
@@ -697,7 +697,7 @@ void CMetab::refreshTransitionTime()
         if (Flux == 0.0)
           mTT = std::numeric_limits<C_FLOAT64>::infinity();
         else
-          mTT = *mpValueData / Flux;
+          mTT = *mpValue / Flux;
       }
       break;
 
@@ -784,7 +784,7 @@ std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {
   os << "    ++++CMetab: " << d.getObjectName() << std::endl;
   os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
-  os << "        mValue (particle number) " << *d.mpValueAccess << " mIValue " << *d.mpIValue << std::endl;
+  os << "        mValue (particle number) " << *d.mpValue << " mIValue " << *d.mpIValue << std::endl;
   os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.getStatus() << std::endl;
 
   if (d.mpCompartment)
