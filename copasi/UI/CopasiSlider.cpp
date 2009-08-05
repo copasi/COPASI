@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/28 07:33:35 $
+//   $Author: ssahle $
+//   $Date: 2009/08/05 09:27:43 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,13 +36,13 @@
 
 CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QFrame(parent), mpCSlider(pSlider) , mpQSlider(NULL), mpLabel(NULL), mpCloseButton(NULL), mpEditButton(NULL), mValueOutOfRange(false)
 {
-  this->setLayout(new QHBoxLayout(NULL));
+  this->setLayout(new QHBoxLayout);
   this->setFrameShape(QFrame::Box);
   this->layout()->setContentsMargins(2, 2, 2, 2);
   //this->layout()->setSpacing(0);
   //this->layout()->setMargin(0);
   QFrame* pFrame = new QFrame(NULL);
-  pFrame->setLayout(new QVBoxLayout(NULL));
+  pFrame->setLayout(new QVBoxLayout);
   pFrame->layout()->setContentsMargins(2, 2, 2, 2);
   this->mpLabel = new QLabel(NULL);
   this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -53,7 +53,7 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, QWidget* parent): QFrame(parent), m
   this->layout()->addWidget(pFrame);
 
   pFrame = new QFrame(NULL);
-  pFrame->setLayout(new QVBoxLayout(NULL));
+  pFrame->setLayout(new QVBoxLayout);
   pFrame->layout()->setContentsMargins(2, 2, 2, 2);
   //pFrame->layout()->setSpacing(0);
   QPixmap icons[2] = {closeSlider, editSlider};
