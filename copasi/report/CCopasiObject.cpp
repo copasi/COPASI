@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.87 $
+//   $Revision: 1.88 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/06/30 15:46:05 $
+//   $Author: shoops $
+//   $Date: 2009/08/06 14:59:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,6 +218,13 @@ const std::string & CCopasiObject::getObjectType() const {return mObjectType;}
 
 bool CCopasiObject::setObjectParent(const CCopasiContainer * pParent)
 {
+  if (pParent == mpObjectParent)
+    return true;
+
+  if (mpObjectParent != NULL &&
+      pParent != NULL)
+    mpObjectParent->remove(this);
+
   mpObjectParent = const_cast<CCopasiContainer *>(pParent);
 
   return true;
