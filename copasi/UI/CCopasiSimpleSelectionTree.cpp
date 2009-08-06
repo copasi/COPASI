@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:20:31 $
+//   $Date: 2009/08/06 15:01:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -750,6 +750,8 @@ void CCopasiSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject 
 
       setSelected(item, true);
     }
+
+  removeEmptySubTree(&mpExpertSubtree);
 }
 
 void CCopasiSimpleSelectionTree::commitClicked()
