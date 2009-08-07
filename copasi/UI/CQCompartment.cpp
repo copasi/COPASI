@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/08/07 14:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,21 +11,20 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "CQExpressionWidget.h"
-#include "CQExpressionMmlWidget.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CCompartment.h"
-#include "model/CChemEqInterface.h"
-#include "function/CExpression.h"
-#include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
-
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
+// #include "CQExpressionWidget.h"
+// #include "CQExpressionMmlWidget.h"
+// #include "CopasiDataModel/CCopasiDataModel.h"
+// #include "model/CMetab.h"
+// #include "model/CChemEqInterface.h"
+// #include "function/CExpression.h"
+// #include "report/CKeyFactory.h"
 
 #include "CQCompartment.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+
+#include "model/CModel.h"
+#include "report/CCopasiRootContainer.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
@@ -47,8 +46,6 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
 
-  mpMetaboliteTable->header()->hide();
-
   mExpressionValid = false;
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
@@ -62,6 +59,11 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name)
   mpLblDim->hide();
   mpComboBoxDim->hide();
 #endif
+
+  mpMetaboliteTable->verticalHeader()->hide();
+  mpMetaboliteTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpMetaboliteTable->horizontalHeader()->hide();
+  mpMetaboliteTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 }
 
 /*
@@ -99,12 +101,19 @@ void CQCompartment::slotBtnNew()
 {
   save();
 
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  CModel * pModel = pDataModel->getModel();
+
+  if (pModel == NULL)
+    return;
+
   std::string name = "compartment";
   int i = 0;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
+  while (!(mpCompartment = pModel->createCompartment(name)))
     {
       i++;
       name = "compartment_";
@@ -117,14 +126,13 @@ void CQCompartment::slotBtnNew()
 
 void CQCompartment::slotBtnDelete()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  if (mpCompartment == NULL)
+    return;
 
-  if (pModel == NULL) return;
+  CModel * pModel = static_cast< CModel * >(mpCompartment->getObjectAncestor("Model"));
 
-  if (mpCompartment == NULL) return;
+  if (pModel == NULL)
+    return;
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, pModel, "compartment",
@@ -136,14 +144,14 @@ void CQCompartment::slotBtnDelete()
       case QMessageBox::Ok:
       {
         unsigned C_INT32 Index =
-          pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
-        pDataModel->getModel()->removeCompartment(mKey);
+          pModel->getCompartments().getIndex(mpCompartment->getObjectName());
+        pModel->removeCompartment(mKey);
 
         unsigned C_INT32 Size =
-          pDataModel->getModel()->getCompartments().size();
+          pModel->getCompartments().size();
 
         if (Size > 0)
-          enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
+          enter(pModel->getCompartments()[std::min(Index, Size - 1)]->getKey());
         else
           enter("");
 
@@ -328,15 +336,13 @@ bool CQCompartment::update(ListViews::ObjectType objectType,
 
 void CQCompartment::load()
 {
-  if (mpCompartment == NULL) return;
+  if (mpCompartment == NULL)
+    return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  //CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  CModel * pModel = static_cast< CModel * >(mpCompartment->getObjectAncestor("Model"));
 
-  const CModel * pModel = NULL;
-
-  if (mpCompartment != NULL)
-    pModel = dynamic_cast<const CModel *>(mpCompartment->getObjectAncestor("Model"));
+  if (pModel == NULL)
+    return;
 
   // Update the labels to reflect the model units
   QString ValueUnits;
@@ -487,8 +493,9 @@ void CQCompartment::save()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+      if (mpDataModel)
+        mpDataModel->changed();
+
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
     }
 
@@ -498,43 +505,39 @@ void CQCompartment::save()
 void CQCompartment::destroy()
 {}
 
-void CQCompartment::slotMetaboliteTableCurrentChanged(Q3ListViewItem * pItem)
+void CQCompartment::slotSwitchToSpecies(int row, int /* column */)
 {
   if (mpCompartment == NULL) return;
 
-  std::string s1, s2;
-  s1 = TO_UTF8(pItem->text(0));
+  std::string s1;
+  s1 = TO_UTF8(mpMetaboliteTable->item(row, 0)->text());
 
-  std::multimap< const std::string, CCopasiObject * >::const_iterator it =
-    mpCompartment->getMetabolites().getObjects().begin();
-  std::multimap< const std::string, CCopasiObject * >::const_iterator end =
-    mpCompartment->getMetabolites().getObjects().end();
+  CCopasiVector< CMetab >::const_iterator it = mpCompartment->getMetabolites().begin();
+  CCopasiVector< CMetab >::const_iterator end = mpCompartment->getMetabolites().end();
 
   for (; it != end; ++it)
-    if (dynamic_cast< CMetab * >(it->second) != NULL)
-      {
-        s2 = it->second->getObjectName();
-
-        if (s1 == s2)
-          mpListView->switchToOtherWidget(0, it->second->getKey());
-      }
+    {
+      if (s1 == (*it)->getObjectName())
+        {
+          mpListView->switchToOtherWidget(0, (*it)->getKey());
+        }
+    }
 }
 
 void CQCompartment::loadMetaboliteTable()
 {
   if (mpCompartment == NULL) return;
 
-  mpMetaboliteTable->clear();
-  mpMetaboliteTable->setColumnWidth(0, 10);
+  const CCopasiVector< CMetab > & Species = mpCompartment->getMetabolites();
+  mpMetaboliteTable->setRowCount(Species.size());
 
-  std::multimap< const std::string, CCopasiObject * >::const_iterator it =
-    mpCompartment->getMetabolites().getObjects().begin();
-  std::multimap< const std::string, CCopasiObject * >::const_iterator end =
-    mpCompartment->getMetabolites().getObjects().end();
+  CCopasiVector< CMetab >::const_iterator it = Species.begin();
+  CCopasiVector< CMetab >::const_iterator end = Species.end();
 
-  for (; it != end; ++it)
-    if (dynamic_cast< CMetab * >(it->second) != NULL)
-      new Q3ListViewItem(mpMetaboliteTable, FROM_UTF8(it->second->getObjectName()));
+  for (int row = 0; it != end; ++it, ++row)
+    {
+      mpMetaboliteTable->setItem(row, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
+    }
 
   return;
 }

@@ -1,6 +1,6 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.13 $
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.h,v $
+//   $Revision: 1.1 $
 //   $Name:  $
 //   $Author: shoops $
 //   $Date: 2009/08/07 14:12:33 $
@@ -11,27 +11,27 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#ifndef CQCOMPARTMENT_H
-#define CQCOMPARTMENT_H
+#ifndef CQSpeciesDetail_h
+#define CQSpeciesDetail_h
 
 #include <qvariant.h>
 
-#include "ui_CQCompartment.h"
+#include "ui_CQSpeciesDetail.h"
 
-class CQExpressionWidget;
+class CMetab;
 class CCompartment;
-class CExpression;
 
-class CQCompartment : public CopasiWidget, public Ui::CQCompartment
+class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 {
   Q_OBJECT
 
 public:
-  CQCompartment(QWidget* parent = 0, const char* name = 0);
-  ~CQCompartment();
+  CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
+  virtual ~CQSpeciesDetail();
 
   virtual bool leave();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual void setFramework(int framework);
 
 protected:
   virtual bool enterProtected();
@@ -40,29 +40,33 @@ protected slots:
   virtual void languageChange();
 
 private:
-  std::vector< int > mItemToType;
-  CCompartment * mpCompartment;
   bool mChanged;
+  bool mInitialNumberLastChanged;
+  CMetab * mpMetab;
+  const CCompartment * mpCurrentCompartment;
+  std::vector< int > mItemToType;
+  double mInitialNumber;
+  double mInitialConcentration;
   bool mExpressionValid;
   bool mInitialExpressionValid;
 
-  void init();
   void load();
   void save();
-  void destroy();
-  void loadMetaboliteTable();
+  void loadReactionTable();
 
 private slots:
   void slotBtnCommit();
   void slotBtnRevert();
   void slotBtnNew();
   void slotBtnDelete();
+  void slotCompartmentChanged(int compartment);
   void slotTypeChanged(int type);
-  void slotInitialTypeChanged(bool useInitialAssignment);
+  void slotInitialTypeChanged(bool useInitialExpression);
   void slotNameLostFocus();
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
-  void slotSwitchToSpecies(int row, int column);
+  void slotSwitchToReaction(int row, int column);
+  void slotInitialValueLostFocus();
 };
 
-#endif // CQCOMPARTMENT_H
+#endif // CQSpeciesDetail_h

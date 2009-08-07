@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.208 $
+#   $Revision: 1.209 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2009/07/30 16:26:54 $
+#   $Date: 2009/08/07 14:12:33 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.208 $ $Author: shoops $ $Date: 2009/07/30 16:26:54 $
+# $Revision: 1.209 $ $Author: shoops $ $Date: 2009/08/07 14:12:33 $
 ######################################################################
 
 LIB = UI
@@ -75,6 +75,7 @@ HEADERS	+= \
 	CQSBMLFileDialog.h \
 	CQSensResultWidget.h \
 	CQSortFilterProxyModel.h \
+	CQSpeciesDetail.h \
 	CQSpecieDM.h \
 	CQSpeciesWidget.h \
 	CQSpinBoxDelegate.h \
@@ -154,6 +155,7 @@ SOURCES	+= \
 	CQSBMLFileDialog.cpp \
 	CQSensResultWidget.cpp \
 	CQSortFilterProxyModel.cpp \
+	CQSpeciesDetail.cpp \
 	CQSpecieDM.cpp \
 	CQSpeciesWidget.cpp \
 	CQSpinBoxDelegate.cpp \
@@ -209,6 +211,7 @@ FORMS += CQOptimizationWidget.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
 FORMS += CQReportsWidget.ui
+FORMS += CQSpeciesDetail.ui
 FORMS += CQSpeciesWidget.ui
 FORMS += CQTrajectoryWidget.ui
 FORMS += CQTSSAWidget.ui
@@ -230,7 +233,6 @@ FORMS3 += CQEFMWidget.ui
 # FORMS3 += CQFileDialogBtnGrp.ui
 # FORMS3 += CQFittingResult.ui
 # FORMS3 += CQFittingResultTab1.ui
-# FORMS3 += CQMetabolite.ui
 # FORMS3 += CQModelValue.ui
 # FORMS3 += CQMoietiesTaskResult.ui
 # FORMS3 += CQMoietiesTaskWidget.ui
@@ -276,8 +278,6 @@ HEADERS += \
            CQFittingWidget.h \
            CQLyapWidget.h \
            CQMCAWidget.h \
-           CQMetabolite.h \
-           CQMetabolite.ui.h \
            CQModelValue.h \
            CQModelValue.ui.h \
            CQMoietiesTaskResult.h \
@@ -343,7 +343,6 @@ SOURCES += \
            CQFittingWidget.cpp \
            CQLyapWidget.cpp \
            CQMCAWidget.cpp \
-           CQMetabolite.cpp \
            CQModelValue.cpp \
            CQMoietiesTaskResult.cpp \
            CQMoietiesTaskWidget.cpp \

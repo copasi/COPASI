@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.158 $
+//   $Revision: 1.159 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2009/08/07 14:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@ class CQEventWidget1;
 class FunctionWidget1;
 class CQFunctionsWidget;
 class CMathModel;
-class CQMetabolite;
+class CQSpeciesDetail;
 class CQSpeciesWidget;
 class CQEFMWidget;
 //class ModelWidget;

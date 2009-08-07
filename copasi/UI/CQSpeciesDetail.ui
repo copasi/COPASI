@@ -1,7 +1,7 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.ui,v $ </comment>
-<comment>   $Revision: 1.13 $ </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
 <comment>   $Date: 2009/08/07 14:12:33 $ </comment>
@@ -13,14 +13,14 @@
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
- <class>CQCompartment</class>
- <widget class="CopasiWidget" name="CQCompartment" >
+ <class>CQSpeciesDetail</class>
+ <widget class="CopasiWidget" name="CQSpeciesDetail" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>468</width>
-    <height>454</height>
+    <width>448</width>
+    <height>486</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -30,10 +30,10 @@
    </sizepolicy>
   </property>
   <property name="caption" stdset="0" >
-   <string>Compartment</string>
+   <string>Metabolite</string>
   </property>
   <layout class="QGridLayout" >
-   <item row="12" column="0" colspan="3" >
+   <item row="15" column="0" colspan="3" >
     <layout class="QHBoxLayout" name="mpBtnLayout" >
      <item>
       <widget class="QPushButton" name="mpBtnCommit" >
@@ -78,13 +78,22 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="1" >
-    <widget class="QComboBox" name="mpComboBoxType" >
+   <item row="2" column="0" >
+    <widget class="QLabel" name="mpLblType" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Simulation Type</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -98,57 +107,28 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="mpLblDim" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Dimensionality</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" >
-    <widget class="QComboBox" name="mpComboBoxDim" >
+   <item row="1" column="1" colspan="2" >
+    <widget class="QComboBox" name="mpComboBoxCompartment" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text" >
-       <string>0 - dimensionless</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>1D - Length</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>2D - Area</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>3D - Volume</string>
-      </property>
-     </item>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="mpLblType" >
+   <item row="2" column="1" >
+    <widget class="QComboBox" name="mpComboBoxType" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="mpLblCompartment" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
        <horstretch>0</horstretch>
@@ -156,7 +136,7 @@
       </sizepolicy>
      </property>
      <property name="text" >
-      <string>Simulation Type</string>
+      <string>Compartment</string>
      </property>
      <property name="alignment" >
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -185,108 +165,6 @@
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="9" column="0" >
-    <widget class="QLabel" name="mpLblMetabolites" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Contained Metabolites</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-     </property>
-     <property name="wordWrap" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" >
-    <widget class="QLabel" name="mpLblRate" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Rate</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1" >
-    <widget class="QLineEdit" name="mpEditRate" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="readOnly" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" >
-    <widget class="QLabel" name="mpLblVolume" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Volume</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1" >
-    <widget class="QLineEdit" name="mpEditCurrentVolume" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="readOnly" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="mpLblExpression" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Expression</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-     </property>
-     <property name="wordWrap" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
    <item row="6" column="0" colspan="3" >
     <widget class="Line" name="mpLine1" >
      <property name="frameShape" >
@@ -297,39 +175,13 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="mpLblInitialValue" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Initial Volume</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight</set>
-     </property>
-     <property name="wordWrap" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="1" >
-    <widget class="QLineEdit" name="mpEditInitialVolume" >
+    <widget class="QLineEdit" name="mpEditInitialValue" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" >
-    <widget class="QCheckBox" name="mpBoxUseInitialExpression" >
-     <property name="text" >
-      <string>Use Initial Expression</string>
      </property>
     </widget>
    </item>
@@ -352,16 +204,170 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="2" >
-    <widget class="CQExpressionMmlWidget" native="1" name="mpInitialExpressionEMW" >
-     <property name="minimumSize" >
+   <item row="4" column="2" >
+    <widget class="QCheckBox" name="mpBoxUseInitialExpression" >
+     <property name="text" >
+      <string>Use Initial Expression</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QLabel" name="mpLblInitialValue" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Initial Value</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="mpLblExpression" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Expression</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" >
+    <widget class="QLineEdit" name="mpEditCurrentValue" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1" >
+    <widget class="QLineEdit" name="mpEditRate" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1" >
+    <widget class="QLineEdit" name="mpEditTransitionTime" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" >
+    <widget class="QLabel" name="mpLblValue" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Concentration</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" >
+    <widget class="QLabel" name="mpLblTransitionTime" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Transition Time</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" >
+    <widget class="QLabel" name="mpLblRate" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Rate</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1" >
+    <spacer name="mpSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
       <size>
-       <width>300</width>
-       <height>30</height>
+       <width>20</width>
+       <height>16</height>
       </size>
      </property>
-     <property name="focusPolicy" >
-      <enum>Qt::TabFocus</enum>
+    </spacer>
+   </item>
+   <item row="14" column="0" colspan="3" >
+    <widget class="Line" name="mpLine2" >
+     <property name="frameShape" >
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
      </property>
     </widget>
    </item>
@@ -378,42 +384,62 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="0" colspan="3" >
-    <widget class="Line" name="mpLine2" >
-     <property name="frameShape" >
-      <enum>QFrame::HLine</enum>
+   <item row="5" column="1" colspan="2" >
+    <widget class="CQExpressionMmlWidget" native="1" name="mpInitialExpressionEMW" >
+     <property name="minimumSize" >
+      <size>
+       <width>300</width>
+       <height>30</height>
+      </size>
      </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
+     <property name="focusPolicy" >
+      <enum>Qt::TabFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="10" column="1" >
-    <spacer name="mpSpacer" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+   <item row="10" column="1" colspan="2" >
+    <widget class="QTableWidget" name="mpReactionTable" >
+     <property name="selectionBehavior" >
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="9" column="1" colspan="2" >
-    <widget class="QTableWidget" name="mpMetaboliteTable" >
      <property name="showGrid" >
       <bool>false</bool>
+     </property>
+     <property name="columnCount" >
+      <number>2</number>
      </property>
      <column>
       <property name="text" >
        <string>Name</string>
       </property>
      </column>
+     <column>
+      <property name="text" >
+       <string>Reaction</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="10" column="0" >
+    <widget class="QLabel" name="mpLblReactions" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Involved in Reactions</string>
+     </property>
+     <property name="textFormat" >
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
@@ -434,15 +460,15 @@
  </customwidgets>
  <tabstops>
   <tabstop>mpEditName</tabstop>
-  <tabstop>mpComboBoxDim</tabstop>
+  <tabstop>mpComboBoxCompartment</tabstop>
   <tabstop>mpComboBoxType</tabstop>
   <tabstop>mpExpressionEMW</tabstop>
-  <tabstop>mpEditInitialVolume</tabstop>
+  <tabstop>mpEditInitialValue</tabstop>
   <tabstop>mpBoxUseInitialExpression</tabstop>
   <tabstop>mpInitialExpressionEMW</tabstop>
-  <tabstop>mpEditCurrentVolume</tabstop>
+  <tabstop>mpEditCurrentValue</tabstop>
   <tabstop>mpEditRate</tabstop>
-  <tabstop>mpMetaboliteTable</tabstop>
+  <tabstop>mpEditTransitionTime</tabstop>
   <tabstop>mpBtnCommit</tabstop>
   <tabstop>mpBtnRevert</tabstop>
   <tabstop>mpBtnNew</tabstop>
@@ -452,19 +478,18 @@
   <include location="global" >string</include>
   <include location="local" >copasiWidget.h</include>
   <include location="local" >CQExpressionMmlWidget.h</include>
-  <include location="local" >CQExpressionMmlWidget.h</include>
  </includes>
  <resources/>
  <connections>
   <connection>
    <sender>mpBtnCommit</sender>
    <signal>clicked()</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotBtnCommit()</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>32</x>
-     <y>430</y>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel" >
      <x>20</x>
@@ -475,12 +500,12 @@
   <connection>
    <sender>mpBtnDelete</sender>
    <signal>clicked()</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotBtnDelete()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>392</x>
-     <y>430</y>
+     <x>400</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel" >
      <x>20</x>
@@ -491,12 +516,12 @@
   <connection>
    <sender>mpBtnNew</sender>
    <signal>clicked()</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotBtnNew()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>272</x>
-     <y>430</y>
+     <x>331</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel" >
      <x>20</x>
@@ -507,12 +532,28 @@
   <connection>
    <sender>mpBtnRevert</sender>
    <signal>clicked()</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotBtnRevert()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>152</x>
-     <y>430</y>
+     <x>124</x>
+     <y>462</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpComboBoxCompartment</sender>
+   <signal>activated(int)</signal>
+   <receiver>CQSpeciesDetail</receiver>
+   <slot>slotCompartmentChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>173</x>
+     <y>62</y>
     </hint>
     <hint type="destinationlabel" >
      <x>20</x>
@@ -523,12 +564,28 @@
   <connection>
    <sender>mpComboBoxType</sender>
    <signal>activated(int)</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotTypeChanged(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>179</x>
+     <x>173</x>
      <y>92</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpEditInitialValue</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQSpeciesDetail</receiver>
+   <slot>slotInitialValueLostFocus()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>176</x>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel" >
      <x>20</x>
@@ -539,11 +596,11 @@
   <connection>
    <sender>mpBoxUseInitialExpression</sender>
    <signal>toggled(bool)</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotInitialTypeChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>360</x>
+     <x>330</x>
      <y>165</y>
     </hint>
     <hint type="destinationlabel" >
@@ -555,11 +612,11 @@
   <connection>
    <sender>mpEditName</sender>
    <signal>editingFinished()</signal>
-   <receiver>CQCompartment</receiver>
+   <receiver>CQSpeciesDetail</receiver>
    <slot>slotNameLostFocus()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>182</x>
+     <x>176</x>
      <y>32</y>
     </hint>
     <hint type="destinationlabel" >
@@ -569,18 +626,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>mpMetaboliteTable</sender>
+   <sender>mpReactionTable</sender>
    <signal>cellDoubleClicked(int,int)</signal>
-   <receiver>CQCompartment</receiver>
-   <slot>slotSwitchToSpecies(int,int)</slot>
+   <receiver>CQSpeciesDetail</receiver>
+   <slot>slotSwitchToReaction(int,int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>326</x>
-     <y>334</y>
+     <x>282</x>
+     <y>366</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>251</x>
-     <y>226</y>
+     <x>223</x>
+     <y>242</y>
     </hint>
    </hints>
   </connection>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.272 $
+//   $Revision: 1.273 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2009/08/07 14:12:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@
 #include "CQLyapWidget.h"
 #include "CQLyapResultWidget.h"
 #include "CQSpeciesWidget.h"
-#include "CQMetabolite.h"
+#include "CQSpeciesDetail.h"
 #include "ModelWidget.h"
 #include "CQGlobalQuantitiesWidget.h"
 #include "CQModelValue.h"
@@ -395,7 +395,7 @@ void ListViews::ConstructNodeWidgets()
   mpSpeciesWidget->hide();
 
   if (!metabolitesWidget1)
-    metabolitesWidget1 = new CTabWidget(QString("Metabolite"), new CQMetabolite(this), this);
+    metabolitesWidget1 = new CTabWidget(QString("Species"), new CQSpeciesDetail(this), this);
 
   metabolitesWidget1->hide();
 
