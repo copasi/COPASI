@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/08/07 14:18:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,6 +79,17 @@ bool CTabWidget::enterProtected()
 
   for (; it != end; ++it)
     (*it)->enter(mKey);
+
+  return true;
+}
+
+bool CTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  std::vector< CopasiWidget * >::iterator it = mPages.begin();
+  std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+  for (; it != end; ++it)
+    (*it)->update(objectType, action, key);
 
   return true;
 }

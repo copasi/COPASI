@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/08/07 14:18:07 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@ public:
 
   ~CTabWidget();
 
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
 protected:
