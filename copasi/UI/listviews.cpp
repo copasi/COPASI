@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.273 $
+//   $Revision: 1.274 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/07 14:12:33 $
+//   $Author: aekamal $
+//   $Date: 2009/08/10 15:15:26 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@
 #include "CQMCAWidget.h"
 #include "CMCAResultWidget.h"
 #include "CQReportDefinition.h"
-#include "PlotWidget.h"
+#include "CQPlotsWidget.h"
 #include "CQMathMatrixWidget.h"
 #include "MIRIAMUI/CQMiriamWidget.h"
 
@@ -240,7 +240,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     paramFittingWidget(NULL),
     mpFittingResultWidget(NULL),
     parametersWidget(NULL),
-    plotWidget(NULL),
+    mpPlotsWidget(NULL),
     plotWidget1(NULL),
     mpReactionsWidget(NULL),
     reactionsWidget1(NULL),
@@ -455,9 +455,9 @@ void ListViews::ConstructNodeWidgets()
 
   mpFittingResultWidget->hide();
 
-  if (!plotWidget) plotWidget = new PlotWidget(this);
+  if (!mpPlotsWidget) mpPlotsWidget = new CQPlotsWidget(this);
 
-  plotWidget->hide();
+  mpPlotsWidget->hide();
 
   if (!plotWidget1) plotWidget1 = new PlotWidget1(this);
 
@@ -712,7 +712,7 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return mpReportsWidget;
         break;
       case 42:
-        return plotWidget;
+        return mpPlotsWidget;
         break;
       case 5:
         return mpFunctionsWidget;

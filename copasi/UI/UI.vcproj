@@ -414,6 +414,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQPlotDM.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQPlotsWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CQPreferenceDialog.cpp"
 				>
 			</File>
@@ -766,10 +774,6 @@
 				>
 			</File>
 			<File
-				RelativePath="PlotWidget.cpp"
-				>
-			</File>
-			<File
 				RelativePath="qtUtilities.cpp"
 				>
 			</File>
@@ -1071,6 +1075,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQPlotDM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQPlotsWidget.h"
+				>
+			</File>
+			<File
 				RelativePath="CQPreferenceDialog.h"
 				>
 			</File>
@@ -1303,10 +1315,6 @@
 				>
 			</File>
 			<File
-				RelativePath="PlotWidget.h"
-				>
-			</File>
-			<File
 				RelativePath="qtUtilities.h"
 				>
 			</File>
@@ -1502,6 +1510,10 @@
 		</File>
 		<File
 			RelativePath="CQOptimizationWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQPlotsWidget.ui"
 			>
 		</File>
 		<File
