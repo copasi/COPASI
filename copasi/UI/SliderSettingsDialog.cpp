@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/27 13:33:34 $
+//   $Author: aekamal $
+//   $Date: 2009/08/10 15:17:14 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -334,8 +334,7 @@ void SliderSettingsDialog::init()
   mScaling = CSlider::linear;
   mpExtendedOptionsButton->setText("Advanced >>");
   mpExtendedOptionsFrame->hide();
-  QSize size = this->size() - QSize(0, 110);
-  this->resize(size);
+  this->resize(minimumSizeHint());
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpOriginalValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
@@ -473,14 +472,14 @@ void SliderSettingsDialog::extendedOptionsClicked()
     {
       mpExtendedOptionsButton->setText("Advanced <<");
       mpExtendedOptionsFrame->show();
-      QSize size = this->size() + QSize(0, 110);
-      this->resize(size);
+      this->resize(minimumSizeHint());
     }
   else
     {
       mpExtendedOptionsButton->setText("Advanced >>");
       mpExtendedOptionsFrame->hide();
-      QSize size = this->size() - QSize(0, 110);
+      QSize size = this->size() - QSize(0, mpExtendedOptionsFrame->minimumSizeHint().height());
+      this->setMinimumSize(size);
       this->resize(size);
     }
 }
