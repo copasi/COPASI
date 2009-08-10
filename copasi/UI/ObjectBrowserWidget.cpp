@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/07 14:18:27 $
+//   $Author: aekamal $
+//   $Date: 2009/08/10 15:14:44 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -497,7 +497,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
           fieldChild->setObjectType(FIELDATTR);
           fieldChild->setText(0, "Select by attribute");
           fieldChild->setSelectable(false);
-          loadField(fieldChild, static_cast< const CCopasiVector < CCopasiObject > * >(copaParent));
+          loadField(fieldChild, const_cast<CCopasiVector < CCopasiObject > *>(static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)));
           fieldChild->attachKey();
           last = fieldChild;
         }
