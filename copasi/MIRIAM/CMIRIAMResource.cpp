@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/04/21 16:16:41 $
+//   $Date: 2009/08/11 14:11:10 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,7 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
     }
   else
     CCopasiMessage(CCopasiMessage::ERROR,
-                   "Connection to MIRIRAM Web Services failed.\n%s\n%s",
+                   MCMiriam + 3,
                    pProxy->soap_fault_string(),
                    pProxy->soap_fault_detail());
 
