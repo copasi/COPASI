@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/01 09:52:06 $
+//   $Author: shoops $
+//   $Date: 2009/08/11 15:49:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,17 +65,6 @@ private:
    * This calls updateLineeditEnable() for all three combo boxes
    */
   void updateAllLineditEnable();
-
-  /**
-   * if the combo box is set to "single object" check if the lineedit
-   * contains a valid CN. Returns false if invalid
-   */
-  bool checkSingleObject(const SensWidgetComboBox* box, const CCopasiObject * object);
-
-  /**
-   * enables the run button if the contents of the widget is valid
-   */
-  void updateRunButton();
 
   /**
    * updates the variable and target function boxes

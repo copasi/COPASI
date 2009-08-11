@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
+//   $Date: 2009/08/11 15:49:24 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,8 +142,8 @@ void SensitivitiesWidget::init()
 {
   mpHeaderWidget->setTaskName("Sensitivities");
 
-  vboxLayout->insertWidget(0, mpHeaderWidget);  // header
-  vboxLayout->addWidget(mpBtnWidget);     // 'footer'
+  verticalLayout->insertWidget(0, mpHeaderWidget);  // header
+  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   addMethodParameterTable(0);
 
@@ -369,7 +369,6 @@ bool SensitivitiesWidget::loadTask()
   mChanged = false;
 
   updateAllLineditEnable();
-  updateRunButton();
   return true;
 }
 
@@ -400,38 +399,6 @@ void SensitivitiesWidget::updateAllLineditEnable()
   updateLineeditEnable(VariableChooser, VariableLineEdit, SingleVariableChooser);
   updateLineeditEnable(Variable2Chooser, Variable2LineEdit, SingleVariable2Chooser);
 }
-
-bool SensitivitiesWidget::checkSingleObject(const SensWidgetComboBox* box, const CCopasiObject * object)
-{
-  if (box->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)
-    return true;
-
-  if (object) return true;
-
-  return false;
-}
-
-void SensitivitiesWidget::updateRunButton()
-{
-  bool enable = true;
-
-  if (VariableChooser->currentText() == FROM_UTF8(CObjectLists::ListTypeName[CObjectLists::EMPTY_LIST]))
-    enable = false;
-
-  //single object case
-  if (!checkSingleObject(FunctionChooser, mpSingleFunction))
-    enable = false;
-
-  if (!checkSingleObject(VariableChooser, mpSingleVariable))
-    enable = false;
-
-  if (!checkSingleObject(Variable2Chooser, mpSingleVariable2))
-    enable = false;
-
-  mpBtnWidget->mpBtnRun->setEnabled(enable);
-}
-
-//************************************************************************
 
 void
 SensitivitiesWidget::initCombos()
@@ -471,7 +438,6 @@ SensitivitiesWidget::slotChooseSubTask(int)
   updateComboBoxes(subTaskType);
 
   updateAllLineditEnable();
-  updateRunButton();
 }
 
 void
@@ -479,7 +445,6 @@ void
 SensitivitiesWidget::slotChooseFunction(int)
 {
   updateAllLineditEnable();
-  updateRunButton();
 }
 
 void
@@ -487,7 +452,6 @@ void
 SensitivitiesWidget::slotChooseVariable(int)
 {
   updateAllLineditEnable();
-  updateRunButton();
 }
 
 void
@@ -495,7 +459,6 @@ void
 SensitivitiesWidget::slotChooseVariable2(int)
 {
   updateAllLineditEnable();
-  updateRunButton();
 }
 
 void
@@ -514,8 +477,6 @@ SensitivitiesWidget::slotChooseSingleFunction()
       mpSingleFunction = pObject;
       FunctionChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
     }
-
-  updateRunButton();
 }
 
 void
@@ -533,8 +494,6 @@ SensitivitiesWidget::slotChooseSingleVariable()
       mpSingleVariable = pObject;
       VariableChooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
     }
-
-  updateRunButton();
 }
 
 void
@@ -552,6 +511,4 @@ SensitivitiesWidget::slotChooseSingleVariable2()
       mpSingleVariable2 = pObject;
       Variable2Chooser->setCurrentObjectList(CObjectLists::SINGLE_OBJECT);
     }
-
-  updateRunButton();
 }
