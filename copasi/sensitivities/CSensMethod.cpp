@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/02/23 16:20:15 $
+//   $Date: 2009/08/11 15:14:18 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,13 +38,13 @@ CSensMethod::createSensMethod(CCopasiMethod::SubType subType)
 
   switch (subType)
     {
-    case unset:
-    case sensMethod:
-      pMethod = new CSensMethod(subType);
-      break;
+      case unset:
+      case sensMethod:
+        pMethod = new CSensMethod(subType);
+        break;
 
-    default:
-      fatalError();
+      default:
+        fatalError();
     }
 
   return pMethod;
@@ -92,6 +92,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   //perform the necessary updates
   std::vector< Refresh * >::iterator it = mInitialRefreshes.begin();
   std::vector< Refresh * >::iterator end = mInitialRefreshes.end();
+
   while (it != end)
     (**it++)();
 
@@ -102,6 +103,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
         mpSubTask->process(first);
       else
         mpSubTask->process(true);
+
       // for steady state calculation only the first calculation is done from
       //initial state, the remaining from the current state
     }
@@ -111,6 +113,7 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
       //mpProblem->getModel()->updateSimulatedValues();
       //mpProblem->getModel()->updateNonSimulatedValues();
     }
+
   mpProblem->getModel()->updateSimulatedValues(true);
   mpProblem->getModel()->updateNonSimulatedValues();
 
@@ -119,8 +122,10 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
   //resize results array
   CCopasiArray::index_type resultindex;
   C_INT32 i, imax = mTargetfunctionPointers.size();
+
   if (imax > 1)
     resultindex.push_back(imax);
+
   result.resize(resultindex);
 
   //copy result
@@ -129,13 +134,16 @@ bool CSensMethod::do_target_calculation(CCopasiArray & result, bool first)
     {
       if (imax > 1)
         resultindex[0] = i;
+
       result[resultindex] = *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer();
       //std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << "  ";
     }
+
   //std::cout << std::endl;
 
   //progress bar
   ++mProgress;
+
   if (mpProgressBar)
     {
       bool tmp = mpProgressBar->progress(mProgressHandler);
@@ -153,6 +161,7 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   value = *(C_FLOAT64*)variable->getValuePointer();
   C_FLOAT64 delta;
   delta = fabs(value) * *mpDeltaFactor;
+
   if (delta < *mpMinDelta) delta = *mpMinDelta;
 
   setValue(variable, delta + value);
@@ -183,6 +192,7 @@ void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
     {
       //std::cout << "Concentration" << std::endl;
       CMetab* pMetab = dynamic_cast<CMetab*>(variable->getObjectAncestor("Metabolite"));
+
       if (pMetab)
         {
           pMetab->setConcentration(value);
@@ -194,16 +204,17 @@ void CSensMethod::setValue(CCopasiObject* variable, C_FLOAT64 value)
 void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 & delta,
                                        CCopasiArray & result, CCopasiArray::index_type & resultindex)
 {
-  assert (delta != 0.0);
-  assert (mLocalData[level].tmp1.size() == mLocalData[level].tmp2.size());
+  assert(delta != 0.0);
+  assert(mLocalData[level].tmp1.size() == mLocalData[level].tmp2.size());
   unsigned C_INT32 dim = mLocalData[level].tmp1.dimensionality();
-  assert (resultindex.size() >= dim);
+  assert(resultindex.size() >= dim);
 
   CCopasiArray::index_type indexmax = mLocalData[level].tmp1.size();
 
   //init index with zero
   CCopasiArray::index_type indexit; indexit.resize(dim);
   unsigned C_INT32 i;
+
   for (i = 0; i < dim; ++i)
     indexit[i] = 0;
 
@@ -228,11 +239,13 @@ void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 &
 
       //check overflow
       C_INT32 j;
+
       for (j = dim - 1; j >= 0; --j)
         {
           if (indexit[j] >= indexmax[j])
             {
               indexit[j] = 0;
+
               if (j > 0)
                 ++indexit[j - 1];
               else
@@ -258,12 +271,15 @@ bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
 
   //resize results array
   CCopasiArray::index_type resultindex; resultindex = mLocalData[level].tmp1.size();
+
   if (mLocalData[level].variables.size() > 1)
     resultindex.push_back(mLocalData[level].variables.size());
+
   result.resize(resultindex);
 
   //loop over all variables
   C_INT32 i, imax = mLocalData[level].variables.size();
+
   for (i = 0; i < imax; ++i)
     {
       //store variable value
@@ -289,8 +305,10 @@ bool CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
       //calculate derivative
       if (imax > 1)
         resultindex[resultindex.size() - 1] = i;
+
       calculate_difference(level, delta, result, resultindex);
     }
+
   return true;
 }
 
@@ -300,12 +318,13 @@ void CSensMethod::scaling_targetfunction(const C_FLOAT64 & factor,
     CCopasiArray::index_type & resultindex)
 {
   unsigned C_INT32 dim = mLocalData[0].tmp1.dimensionality();
-  assert (resultindex.size() >= dim);
+  assert(resultindex.size() >= dim);
 
   CCopasiArray::index_type indexmax = mLocalData[0].tmp1.size();
   //init index with zero
   CCopasiArray::index_type indexit; indexit.resize(dim);
   unsigned C_INT32 i;
+
   for (i = 0; i < dim; ++i)
     indexit[i] = 0;
 
@@ -329,11 +348,13 @@ void CSensMethod::scaling_targetfunction(const C_FLOAT64 & factor,
 
       //check overflow
       C_INT32 j;
+
       for (j = dim - 1; j >= 0; --j)
         {
           if (indexit[j] >= indexmax[j])
             {
               indexit[j] = 0;
+
               if (j > 0)
                 ++indexit[j - 1];
               else
@@ -350,6 +371,7 @@ void CSensMethod::scaling_variables(C_INT32 level, const C_FLOAT64 & factor,
 {
   //loop over all variables
   C_INT32 i, imax = mLocalData[level].variables.size();
+
   for (i = 0; i < imax; ++i)
     {
       //get Value
@@ -387,14 +409,19 @@ C_FLOAT64 CSensMethod::do_collapsing_innerloop(CCopasiArray::index_type & fullin
   //assumes the sum is to be taken over the first dim of the scaled result array
   C_FLOAT64 tmpFloat, tmpSum = 0;
   unsigned C_INT32 i, imax = mpProblem->getScaledResult().size()[0];
+
   for (i = 0; i < imax; ++i)
     {
       fullindex[0] = i;
       tmpFloat = mpProblem->getScaledResult()[fullindex];
+
       if (tmpFloat != tmpFloat) continue;
+
       if (fabs(tmpFloat) >= DBL_MAX) continue;
+
       tmpSum += tmpFloat * tmpFloat;
     }
+
   return sqrt(tmpSum);
 }
 
@@ -406,6 +433,7 @@ void CSensMethod::do_collapsing()
       CCopasiArray::index_type collapsedresultindex = mpProblem->getCollapsedResult().size();
 
       C_INT32 shift = fullresultindex.size() - collapsedresultindex.size();
+
       if (shift != 1) return; //only supported if target functions list is 1D
 
       //***** skalar ********
@@ -426,6 +454,7 @@ void CSensMethod::do_collapsing()
       for (;;)
         {
           fullresultindex[0] = 0;
+
           for (i = 0; i < dim; ++i)
             fullresultindex[i + shift] = collapsedresultindex[i];
 
@@ -437,11 +466,13 @@ void CSensMethod::do_collapsing()
 
           //check overflow
           C_INT32 j;
+
           for (j = dim - 1; j >= 0; --j)
             {
               if (collapsedresultindex[j] >= indexmax[j])
                 {
                   collapsedresultindex[j] = 0;
+
                   if (j > 0)
                     ++collapsedresultindex[j - 1];
                   else
@@ -459,7 +490,10 @@ void CSensMethod::do_collapsing()
 
 bool CSensMethod::initialize(CSensProblem* problem)
 {
-  mpProblem = problem; assert(mpProblem);
+  bool success = true;
+
+  mpProblem = problem;
+  assert(mpProblem);
 
   //initialize the target calculation
   mpSubTask = NULL;
@@ -468,37 +502,38 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   switch (mpProblem->getSubTaskType())
     {
-    case CSensProblem::Evaluation:
-      mpSubTask = NULL;
-      break;
+      case CSensProblem::Evaluation:
+        mpSubTask = NULL;
+        break;
 
-    case CSensProblem::SteadyState:
-      mpSubTask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Steady-State"]);
-      break;
+      case CSensProblem::SteadyState:
+        mpSubTask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Steady-State"]);
+        break;
 
-    case CSensProblem::TimeSeries:
-      mpSubTask = dynamic_cast<CCopasiTask*>
-                  ((*pDataModel->getTaskList())["Time-Course"]);
-      break;
+      case CSensProblem::TimeSeries:
+        mpSubTask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Time-Course"]);
+        break;
 
-      /*    case CSensProblem::LyapunovExp:
-            mpSubTask = dynamic_cast<CCopasiTask*>
-                        ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
-            break;*/
+        /*    case CSensProblem::LyapunovExp:
+              mpSubTask = dynamic_cast<CCopasiTask*>
+                          ((*pDataModel->getTaskList())["Lyapunov Exponents"]);
+              break;*/
     }
 
   if (mpSubTask)
     {
       mpSubTask->getProblem()->setModel(mpProblem->getModel());
       mpSubTask->setCallBack(NULL);
-      mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      success &= mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
 
   //initialize the variables pointers
   std::set< const CCopasiObject * > ObjectSet;
   C_INT32 i, imax = mpProblem->getNumberOfVariables();
   mLocalData.resize(imax);
+
   for (i = 0; i < imax; ++i)
     {
       mLocalData[i].variables = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
@@ -519,10 +554,12 @@ bool CSensMethod::initialize(CSensProblem* problem)
   //determine dimensions of result
   CCopasiArray::index_type s;
   CCopasiArray::index_type sc; //size of collapsed result
+
   if (mTargetfunctionPointers.size() > 1)
     {
       s.push_back(mTargetfunctionPointers.size());
     }
+
   for (i = 0; i < imax; ++i)
     {
       if (mLocalData[i].variables.size() > 1)
@@ -553,6 +590,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   unsigned C_INT32 dim = 0;
   unsigned C_INT32 j;
+
   //target function annotations //TODO: only implemented for scalar and vector
   if (mTargetfunctionPointers.size() > 1)
     {
@@ -560,16 +598,19 @@ bool CSensMethod::initialize(CSensProblem* problem)
       tmp << "Target functions, " << mpProblem->getTargetFunctions().getListTypeDisplayName();
       mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
       mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
+
       for (j = 0; j < mTargetfunctionPointers.size(); ++j)
         {
           mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, mTargetfunctionPointers[j]->getCN());
           mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, mTargetfunctionPointers[j]->getCN());
         }
+
       ++dim;
     }
 
   //variables annotiation
   unsigned C_INT32 dim2 = 0; //for collapsed result
+
   for (i = 0; i < imax; ++i)
     {
       if (mLocalData[i].variables.size() > 1)
@@ -578,27 +619,32 @@ bool CSensMethod::initialize(CSensProblem* problem)
           tmp << "Variables " << i + 1 << ", " << mpProblem->getVariables(i).getListTypeDisplayName();
           mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
           mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
+
           if (mpProblem->collapsRequested())
             mpProblem->getCollapsedResultAnnotated()->setDimensionDescription(dim2, tmp.str());
+
           for (j = 0; j < mLocalData[i].variables.size(); ++j)
             {
               mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, mLocalData[i].variables[j]->getCN());
               mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, mLocalData[i].variables[j]->getCN());
+
               if (mpProblem->collapsRequested())
                 mpProblem->getCollapsedResultAnnotated()->setAnnotationCN(dim2, j, mLocalData[i].variables[j]->getCN());
             }
+
           ++dim;
           ++dim2;
         }
     }
 
-  return true;
+  return success;
 }
 
 C_INT32 CSensMethod::getNumberOfSubtaskCalculations()
 {
   C_INT32 ret = 1;
   unsigned C_INT32 i;
+
   for (i = 0; i < mLocalData.size(); ++i)
     {
       ret *= mLocalData[i].variables.size() + 1;
@@ -613,6 +659,7 @@ bool CSensMethod::process(CProcessReport * handler)
 
   //initialize progress bar
   mpProgressBar = handler;
+
   if (mpProgressBar)
     {
       mpProgressBar->setName("performing sensitivities calculation...");
@@ -621,6 +668,7 @@ bool CSensMethod::process(CProcessReport * handler)
       mProgressHandler = mpProgressBar->addItem("Completion",
                          CCopasiParameter::INT,
                          &mProgress, &max);
+
       if (mpSubTask)
         mpSubTask->setCallBack(mpProgressBar);
     }
@@ -642,6 +690,7 @@ bool CSensMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CSensProblem * pP = dynamic_cast<const CSensProblem *>(pProblem);
+
   if (!pP)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a sensitivities problem.");
