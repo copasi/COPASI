@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/10 15:15:26 $
+//   $Author: ssahle $
+//   $Date: 2009/08/11 13:18:05 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pPS->getObjectName())));
 
               case COL_CURVES_PLOTS:
-                return QVariant(pPS->getItems().size());
+                return QVariant((unsigned int)pPS->getItems().size());
 
               case COL_ACTIVE_PLOTS:
                 return QVariant(pPS->isActive());
