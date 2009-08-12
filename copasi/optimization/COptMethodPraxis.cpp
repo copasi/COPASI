@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/08/12 20:21:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ bool COptMethodPraxis::cleanup()
 }
 
 // evaluate the value of the objective function
-C_FLOAT64 COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
+const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
 {
   C_INT i;
 

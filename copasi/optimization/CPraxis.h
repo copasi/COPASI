@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/22 16:51:09 $
+//   $Date: 2009/08/12 20:21:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,14 +27,14 @@ class FPraxis
 public:
   virtual ~FPraxis() {};
 
-  virtual C_FLOAT64 operator()(C_FLOAT64 * C_UNUSED(value), C_INT * C_UNUSED(n))
+  virtual const C_FLOAT64 & operator()(C_FLOAT64 * C_UNUSED(value), C_INT * C_UNUSED(n))
   {return std::numeric_limits<C_FLOAT64>::quiet_NaN();}
 };
 
 template <class CType> class FPraxisTemplate : public FPraxis
 {
 private:
-  C_FLOAT64(CType::*mMethod)(C_FLOAT64 *, C_INT *);  // pointer to member function
+  const C_FLOAT64 &(CType::*mMethod)(C_FLOAT64 *, C_INT *);  // pointer to member function
   CType * mpType;                                            // pointer to object
 
 public:
@@ -42,7 +42,7 @@ public:
   // constructor - takes pointer to an object and pointer to a member and stores
   // them in two private variables
   FPraxisTemplate(CType * pType,
-                  C_FLOAT64(CType::*method)(C_FLOAT64 *, C_INT*))
+                  const C_FLOAT64 &(CType::*method)(C_FLOAT64 *, C_INT*))
   {
     mpType = pType;
     mMethod = method;
@@ -51,7 +51,7 @@ public:
   virtual ~FPraxisTemplate() {};
 
   // override operator "()"
-  virtual C_FLOAT64 operator()(C_FLOAT64 *value, C_INT *n)
+  virtual const C_FLOAT64 & operator()(C_FLOAT64 *value, C_INT *n)
   {return (*mpType.*mMethod)(value, n);}    ;              // execute member function
 };
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPraxis.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:47:32 $
+//   $Author: shoops $
+//   $Date: 2009/08/12 20:21:40 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,7 +137,7 @@ private:
    */
   CPraxis * mpCPraxis;
 
-  C_FLOAT64 evaluateFunction(C_FLOAT64 *, C_INT *);
+  const C_FLOAT64 & evaluateFunction(C_FLOAT64 *, C_INT *);
 
   /**
    * Evaluate the objective function
