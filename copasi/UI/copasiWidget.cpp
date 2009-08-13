@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 17:50:09 $
+//   $Date: 2009/08/13 20:24:04 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,19 +45,16 @@ bool CopasiWidget::leave()
 
 bool CopasiWidget::enter(const std::string & key)
 {
-  if (mKey != key)
-    {
-      mKey = key;
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+  mKey = key;
+  mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
 
-      if (mpObject != NULL)
-        {
-          mpDataModel = mpObject->getObjectDataModel();
-        }
-      else
-        {
-          mpDataModel = NULL;
-        }
+  if (mpObject != NULL)
+    {
+      mpDataModel = mpObject->getObjectDataModel();
+    }
+  else
+    {
+      mpDataModel = NULL;
     }
 
   return enterProtected();
