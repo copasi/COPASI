@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/11 14:11:10 $
+//   $Date: 2009/08/13 01:06:54 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -268,7 +268,17 @@ void CMIRIAMResources::createURIMap()
       CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
 
       for (; itDeprecated != endDeprecated; ++itDeprecated)
-        {mURI2Resource[*(*itDeprecated)->getValue().pSTRING + ":"] = Index;}
+        {
+          std::string Deprecated = *(*itDeprecated)->getValue().pSTRING;
+
+          //Deprecated URL style URIs do not use the ':' separator.
+          if (Deprecated[Deprecated.length() - 1] != '/')
+            {
+              Deprecated += ":";
+            }
+
+          mURI2Resource[Deprecated] = Index;
+        }
 
       Index++;
     }
@@ -299,7 +309,7 @@ unsigned C_INT32 CMIRIAMResources::getMIRIAMResourceIndex(const std::string & UR
       const CMIRIAMResource * pResource = &getMIRIAMResource(it->second);
 
       // Check whether the URI base of the candidate matches.
-      if (URI.substr(0, pResource->getMIRIAMURI().length()) == pResource->getMIRIAMURI())
+      if (URI.compare(0, it->first.length(), it->first) == 0)
         {
           index =  it->second;
           break;
