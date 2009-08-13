@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAProblem.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2009/07/29 16:08:44 $
+//   $Author: shoops $
+//   $Date: 2009/08/13 20:20:33 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,7 +78,6 @@ CTSSAProblem::~CTSSAProblem()
 
 void CTSSAProblem::initializeParameter()
 {
-
   mpStepNumber =
     assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100)->getValue().pUINT;
   mpStepSize =
@@ -97,6 +96,8 @@ bool CTSSAProblem::elevateChildren()
   // but we can fix that.
   if (*mpDuration == 1.0) // the default
     setDuration(*mpStepSize *(C_FLOAT64) *mpStepNumber);
+
+  removeParameter("Deuflhard Tolerance");
 
   return true;
 }
