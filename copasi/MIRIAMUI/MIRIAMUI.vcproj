@@ -81,10 +81,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQRDFListViewWidget.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\CQRDFTreeView.cpp"
 				>
 			</File>
@@ -94,14 +90,6 @@
 			</File>
 			<File
 				RelativePath=".\CQReferenceDM.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CRDFListView.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CRDFListViewItem.cpp"
 				>
 			</File>
 		</Filter>
@@ -127,14 +115,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CQRDFListViewWidget.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CQRDFListViewWidget.ui.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CQRDFTreeView.h"
 				>
 			</File>
@@ -144,14 +124,6 @@
 			</File>
 			<File
 				RelativePath=".\CQReferenceDM.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CRDFListView.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CRDFListViewItem.h"
 				>
 			</File>
 			<File
