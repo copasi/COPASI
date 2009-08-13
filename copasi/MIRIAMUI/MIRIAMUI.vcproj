@@ -85,6 +85,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQRDFTreeView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CQRDFTreeViewItem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CQReferenceDM.cpp"
 				>
 			</File>
@@ -127,6 +135,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CQRDFTreeView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CQRDFTreeViewItem.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CQReferenceDM.h"
 				>
 			</File>
@@ -155,6 +171,10 @@
 		</File>
 		<File
 			RelativePath=".\CQRDFListViewWidget.ui"
+			>
+		</File>
+		<File
+			RelativePath=".\CQRDFTreeView.ui"
 			>
 		</File>
 		<File

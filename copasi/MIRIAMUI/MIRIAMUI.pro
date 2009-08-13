@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/MIRIAMUI.pro,v $
-#   $Revision: 1.18 $
+#   $Revision: 1.19 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/05/04 15:19:36 $
+#   $Author: shoops $
+#   $Date: 2009/08/13 01:40:02 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,34 +18,29 @@ include(../common.pri)
 
 CONFIG += qt
 
-HEADERS += \
-		CQMiriamWidget.h \
-		CQCreatorDM.h \
-		CQReferenceDM.h \
-		CQBiologicalDescriptionDM.h \		
-		CQModifiedDM.h \
-		CRDFListView.h \
-		CRDFListViewItem.h
+HEADERS += CQMiriamWidget.h
+HEADERS += CQCreatorDM.h
+HEADERS += CQReferenceDM.h
+HEADERS += CQBiologicalDescriptionDM.h
+HEADERS += CQModifiedDM.h
+HEADERS += CQRDFTreeView.h
+HEADERS += CQRDFTreeViewItem.h
 
 
-SOURCES += \
-		CQMiriamWidget.cpp \
-		CQCreatorDM.cpp \
-		CQReferenceDM.cpp \
-		CQBiologicalDescriptionDM.cpp \
-		CQModifiedDM.cpp \
-		CRDFListView.cpp \
-		CRDFListViewItem.cpp
+SOURCES += CQMiriamWidget.cpp
+SOURCES += CQCreatorDM.cpp
+SOURCES += CQReferenceDM.cpp
+SOURCES += CQBiologicalDescriptionDM.cpp
+SOURCES += CQModifiedDM.cpp
+SOURCES += CQRDFTreeView.cpp
+SOURCES += CQRDFTreeViewItem.cpp
 		
 FORMS   += CQMiriamWidget.ui
-
-#The following line was changed from FORMS to FORMS3 by qt3to4
-FORMS3    = CQRDFListViewWidget.ui
+FORMS   += CQRDFTreeView.ui
 
 DISTFILES += MIRIAMUI.vcproj
+
 #The following line was inserted by qt3to4
 QT +=  opengl qt3support 
-#The following line was inserted by qt3to4
-CONFIG += uic3
 
 

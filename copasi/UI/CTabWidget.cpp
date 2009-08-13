@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTabWidget.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/07 14:18:07 $
+//   $Date: 2009/08/13 01:40:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 #include "CTabWidget.h"
 #include "ModelWidget.h"
 #include "MIRIAMUI/CQMiriamWidget.h"
-#include "MIRIAMUI/CQRDFListViewWidget.h"
+#include "MIRIAMUI/CQRDFTreeView.h"
 
 /*
  *  Constructs a CTabWidget as a child of 'parent', with the
@@ -48,8 +48,8 @@ CTabWidget::CTabWidget(const QString & label, CopasiWidget * pCopasiWidget,
   mPages.push_back(pMIRIAMWidget);
   mTabWidget->addTab(mPages[1], "Annotation");
 
-  CQRDFListViewWidget* pRDFListViewWidget = new CQRDFListViewWidget(mTabWidget);
-  mPages.push_back(pRDFListViewWidget);
+  CQRDFTreeView* pRDFTreeView = new CQRDFTreeView(mTabWidget);
+  mPages.push_back(pRDFTreeView);
   mTabWidget->addTab(mPages[2], "RDF Browser");
 }
 
