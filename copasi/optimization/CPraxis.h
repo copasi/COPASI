@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/12 20:21:40 $
+//   $Date: 2009/08/14 13:49:28 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,10 @@ public:
   virtual ~FPraxis() {};
 
   virtual const C_FLOAT64 & operator()(C_FLOAT64 * C_UNUSED(value), C_INT * C_UNUSED(n))
-  {return std::numeric_limits<C_FLOAT64>::quiet_NaN();}
+  {
+    static C_FLOAT64 NaN = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    return NaN;
+  }
 };
 
 template <class CType> class FPraxisTemplate : public FPraxis
