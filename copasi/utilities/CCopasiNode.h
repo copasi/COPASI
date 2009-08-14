@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/08/14 13:42:46 $
+   $Date: 2009/08/14 13:49:50 $
    End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,6 +123,8 @@ public:
   virtual bool setData(const Data & data)
   {
     mData = data;
+
+    return true;
   }
 
   /**
