@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Date: 2009/08/14 13:42:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,19 +117,17 @@ CEvaluationNode::Type CEvaluationNode::type(const Type & type)
 {return (Type)(type & 0xFF000000);}
 
 CEvaluationNode::CEvaluationNode():
-    CCopasiNode<Data>(),
+    CCopasiNode<Data>(""),
     mType(CEvaluationNode::INVALID),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mData(""),
     mPrecedence(PRECEDENCE_DEFAULT)
 {}
 
 CEvaluationNode::CEvaluationNode(const Type & type,
                                  const Data & data):
-    CCopasiNode<Data>(),
+    CCopasiNode<Data>(data),
     mType(type),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mData(data),
     mPrecedence(PRECEDENCE_DEFAULT)
 {assert(mData != "");}
 
@@ -137,7 +135,6 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
     CCopasiNode<Data>(src),
     mType(src.mType),
     mValue(src.mValue),
-    mData(src.mData),
     mPrecedence(src.mPrecedence)
 {assert(mData != "");}
 
@@ -145,15 +142,6 @@ CEvaluationNode::~CEvaluationNode() {}
 
 bool CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
 {return true;}
-
-CEvaluationNode::Data CEvaluationNode::getData() const
-{return mData;}
-
-bool CEvaluationNode::setData(const Data & data)
-{
-  mData = data;
-  return true;
-}
 
 std::string CEvaluationNode::getInfix() const
 {return mData;}

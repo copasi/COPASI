@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/10 21:13:14 $
+//   $Date: 2009/08/14 13:42:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,7 +124,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   return (getChild() == NULL); // We must not have any children.
 }
 
-CEvaluationNode::Data CEvaluationNodeObject::getData() const
+const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 {
   switch ((int) subType(mType))
     {

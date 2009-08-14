@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.17 $
+  $Revision: 1.18 $
   $Name:  $
   $Author: shoops $
-  $Date: 2009/06/04 19:33:18 $
+  $Date: 2009/08/14 13:42:47 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ public:
    * by value() which will perform faster.
    * @return const Data & value
    */
-  virtual Data getData() const;
+  virtual const Data & getData() const;
 
   /**
    * Set the data of the Node.

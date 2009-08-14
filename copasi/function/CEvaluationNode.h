@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 21:08:33 $
+//   $Date: 2009/08/14 13:42:47 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,20 +153,6 @@ public:
   virtual bool compile(const CEvaluationTree * pTree);
 
   /**
-   * Retrieve the value of the node. This method is superseded
-   * value() which will perform faster.
-   * @return const Data value
-   */
-  virtual Data getData() const;
-
-  /**
-   * Set the data of the Node.
-   * @param const Data & data
-   * @return bool success
-   */
-  virtual bool setData(const Data & data);
-
-  /**
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
@@ -298,11 +284,6 @@ protected:
    * The numerical value of the node
    */
   C_FLOAT64 mValue;
-
-  /**
-   * The data of the node
-   */
-  Data mData;
 
   /**
    * Structure holding the precedence information
