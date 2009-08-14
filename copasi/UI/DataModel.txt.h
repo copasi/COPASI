@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/30 16:26:54 $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,8 +39,9 @@ static char DataModeltxt[] =
   "0:2:Tasks\n"
   "2:21:Steady-State\n"
   "21:211:Result\n"
-  "2:22:Stoichiometry\n"
+  "2:22:Stoichiometric Analysis\n"
   "22:221:Elementary Modes\n"
+  "221:2211:Result\n"
   "22:222:Mass Conservation\n"
   "222:2221:Result\n"
   "2:23:Time Course\n"

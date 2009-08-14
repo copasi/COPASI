@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2009/08/14 13:41:37 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,12 +32,12 @@
 CFluxMode::CFluxMode() {CONSTRUCTOR_TRACE;}
 
 CFluxMode::CFluxMode(const CFluxMode & src) :
-    mReactions(src.mReactions), mReversible(src.mReversible)
-{CONSTRUCTOR_TRACE;}
+    mReactions(src.mReactions),
+    mReversible(src.mReversible)
+{}
 
 CFluxMode::CFluxMode(const CTableauLine * line)
 {
-  CONSTRUCTOR_TRACE;
   const std::vector< C_FLOAT64 > & FluxMode = line->getFluxMode();
   unsigned C_INT32 i, imax = FluxMode.size();
 
@@ -48,36 +53,36 @@ CFluxMode::CFluxMode(const CTableauLine * line)
 
   mReversible = line->isReversible();
 }
-CFluxMode::~CFluxMode() {DESTRUCTOR_TRACE;}
+
+CFluxMode::~CFluxMode()
+{}
 
 unsigned C_INT32 CFluxMode::getReactionIndex(unsigned C_INT32 index) const
-  {
-    return mReactions[index].first;
-  }
+{
+  return mReactions[index].first;
+}
 
 const C_FLOAT64 & CFluxMode::getMultiplier(unsigned C_INT32 index) const
-  {
-    return mReactions[index].second;
-  }
+{
+  return mReactions[index].second;
+}
 
 bool CFluxMode::isReversible() const
-  {
-    return mReversible;
-  }
+{
+  return mReversible;
+}
 
 unsigned C_INT32 CFluxMode::size() const
-  {
-    return mReactions.size();
-  }
+{
+  return mReactions.size();
+}
 
 /*
 const CReaction * CFluxMode::getReaction(unsigned C_INT32 index, const CModel * model) const
   {return model->getReactions()[mReactions[index].first];}
 
-
 std::string CFluxMode::getReactionName(unsigned C_INT32 index, const CModel * model) const
   {return getReaction(index, model)->getObjectName();}
-
 
 std::string CFluxMode::getReactionEquation(unsigned C_INT32 index, const CModel * model) const
   {

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.210 $
+#   $Revision: 1.211 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2009/08/10 15:15:26 $
+#   $Author: shoops $
+#   $Date: 2009/08/14 13:41:37 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.210 $ $Author: aekamal $ $Date: 2009/08/10 15:15:26 $
+# $Revision: 1.211 $ $Author: shoops $ $Date: 2009/08/14 13:41:37 $
 ######################################################################
 
 LIB = UI
@@ -56,6 +56,7 @@ HEADERS	+= \
 	CQCompartmentsWidget.h \		
 	CQDateTimeEditDelegate.h \
 	CQDateTimeEditTableItem.h \
+	CQEFMResultWidget.h \
 	CQEventsWidget.h \
 	CQEventDM.h \
 	CQExpressionWidget.h \
@@ -137,6 +138,7 @@ SOURCES	+= \
 	CQCompartmentsWidget.cpp \			
 	CQDateTimeEditDelegate.cpp \
 	CQDateTimeEditTableItem.cpp \
+	CQEFMResultWidget.cpp \
 	CQEventsWidget.cpp \
 	CQEventDM.cpp \
 	CQExpressionWidget.cpp \
@@ -201,6 +203,7 @@ SOURCES	+= \
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQDifferentialEquations.ui
+FORMS += CQEFMResultWidget.ui
 FORMS += CQEventsWidget.ui
 FORMS += CQEventWidget1.ui
 FORMS += CQFittingItemWidget.ui

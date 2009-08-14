@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.160 $
+//   $Revision: 1.161 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/10 15:15:26 $
+//   $Author: shoops $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ class CMathModel;
 class CQSpeciesDetail;
 class CQSpeciesWidget;
 class CQEFMWidget;
-//class ModelWidget;
+class CQEFMResultWidget;
 class CQGlobalQuantitiesWidget;
 class CQMoietiesTaskResult;
 class CQMoietiesTaskWidget;
@@ -242,7 +242,8 @@ private:
   CTabWidget *modelWidget;
   CQGlobalQuantitiesWidget *mpGlobalQuantitiesWidget;
   CTabWidget *mpModelValueWidget;
-  CQEFMWidget *modesWidget;
+  CQEFMWidget *mpEFMWidget;
+  CQEFMResultWidget *mpEFMResultWidget;
   CQMoietiesTaskResult *mpMoietiesTaskResult;
   CQMoietiesTaskWidget *mpMoietiesTaskWidget;
   CQOptimizationWidget *optimizationWidget;

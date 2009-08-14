@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/24 16:43:11 $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,8 +123,8 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
 
   const std::vector< CFluxMode > & FluxModes =
     static_cast<CEFMMethod *>(mpMethod)->getFluxModes();
-  const CVector< unsigned C_INT32 > & Index =
-    static_cast<CEFMMethod *>(mpMethod)->getIndex();
+  const CVector< const CReaction * > & ReorderedReactions =
+    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
 
   unsigned C_INT32 j, jmax = FluxModes[index].size();
   const CCopasiVectorNS< CReaction > & Reactions = mpProblem->getModel()->getReactions();
@@ -141,7 +141,7 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
 
           std::string addstrng = "";
 
-          if (Reactions[Index[FluxModes[index].getReactionIndex(j)]]->isReversible())
+          if (ReorderedReactions[FluxModes[index].getReactionIndex(j)]->isReversible())
             {
               addstrng = " (Forward)";
 
@@ -150,7 +150,7 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
             }
 
           tmp << FluxModes[index].getMultiplier(j) << " * "
-          << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName()
+          << ReorderedReactions[FluxModes[index].getReactionIndex(j)]->getObjectName()
           << addstrng;
         }
     }
@@ -161,7 +161,7 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
         if (j) tmp << "\n";
 
         tmp << FluxModes[index].getMultiplier(j) << " * "
-        << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName();
+        << ReorderedReactions[FluxModes[index].getReactionIndex(j)]->getObjectName();
       }
 
   return tmp.str();
@@ -175,20 +175,22 @@ unsigned C_INT32 CEFMTask::getFluxModeSize(unsigned C_INT32 index) const
 
 std::string CEFMTask::getReactionEquation(unsigned C_INT32 index1, unsigned C_INT32 index2) const
 {
-  const CCopasiVectorNS < CReaction > & Reactions = mpProblem->getModel()->getReactions();
-  CReaction Reaction = *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]];
+  CEFMMethod * pMethod = static_cast<CEFMMethod *>(mpMethod);
+
+  const CReaction * pReaction =
+    pMethod->getReorderedReactions()[pMethod->getFluxModes()[index1].getReactionIndex(index2)];
 
 #ifdef COPASI_SSA
 
   if (mpMethod->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis)
     {
-      CSSAMethod * method = dynamic_cast<CSSAMethod *>(mpMethod);
+      CSSAMethod * method = static_cast<CSSAMethod *>(mpMethod);
 
       std::string retstring = getReactionEquationForward(index1, index2);
 
-      if (Reaction.isReversible())
+      if (pReaction->isReversible())
         {
-          if (method->isReactionReversed(static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)))
+          if (method->isReactionReversed(pMethod->getFluxModes()[index1].getReactionIndex(index2)))
             retstring = getReactionEquationBackward(index1, index2);
         }
 
@@ -196,22 +198,20 @@ std::string CEFMTask::getReactionEquation(unsigned C_INT32 index1, unsigned C_IN
     }
   else
 #endif //COPASI_SSA
-    return CChemEqInterface::getChemEqString(mpProblem->getModel(),
-           *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]],
-           false);
+    return CChemEqInterface::getChemEqString(mpProblem->getModel(), *pReaction, false);
 }
 
 #ifdef COPASI_SSA
 std::string CEFMTask::getReactionEquationForward(unsigned C_INT32 index1, unsigned C_INT32 index2) const
 {
-  const CCopasiVectorNS < CReaction > & Reactions = mpProblem->getModel()->getReactions();
-  CReaction Reaction = *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]];
+  const CReaction *pReaction =
+    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)];
 
   std::string equation = CChemEqInterface::getChemEqString(mpProblem->getModel(),
-                         Reaction,
+                         *pReaction,
                          false);
 
-  if (Reaction.isReversible())
+  if (pReaction->isReversible())
     {
       int i = equation.find("=", 0);
       equation.replace(i, 1, "->");
@@ -222,14 +222,14 @@ std::string CEFMTask::getReactionEquationForward(unsigned C_INT32 index1, unsign
 
 std::string CEFMTask::getReactionEquationBackward(unsigned C_INT32 index1, unsigned C_INT32 index2) const
 {
-  const CCopasiVectorNS < CReaction > & Reactions = mpProblem->getModel()->getReactions();
-  CReaction Reaction = *Reactions[static_cast<CEFMMethod *>(mpMethod)->getIndex()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)]];
+  const CReaction *pReaction =
+    static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions()[static_cast<CEFMMethod *>(mpMethod)->getFluxModes()[index1].getReactionIndex(index2)];
 
   std::string equation = CChemEqInterface::getChemEqString(mpProblem->getModel(),
-                         Reaction,
+                         *pReaction,
                          false);
 
-  if (Reaction.isReversible())
+  if (pReaction->isReversible())
     {
       int i = equation.find("=", 0);
       std::string lhs = equation.substr(0, i - 1);

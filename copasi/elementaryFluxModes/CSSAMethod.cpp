@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:44:06 $
+//   $Author: shoops $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,9 +91,9 @@ bool CSSAMethod::initialize()
   for (; it != end; ++it)
     it->resize(numCols);
 
-  /* Vector to keep track of the rearangements neccessary to put the */
-  /* reversible reactions to the top of Stoi */
-  mIndex.resize(numRows);
+  /* Vector to keep track of the rearrangements necessary to put the */
+  /* reversible reactions to the top of stoichiometry matrix */
+  mReorderedReactions.resize(numRows);
   mIsBackwardReaction.resize(numRows);
 
   unsigned C_INT32 Insert;
@@ -112,15 +112,17 @@ bool CSSAMethod::initialize()
       if (Reaction[row]->isReversible())
         {
           Insert = InsertReversible++;
-          mIndex[InsertReversible] = row;
-          mIsBackwardReaction[InsertReversible] = true;
-          ++InsertReversible;
+          mIsBackwardReaction[Insert] = true;
+
+          mReversible++;
         }
       else
-        Insert = InsertIrreversible--;
+        {
+          Insert = InsertIrreversible--;
+          mIsBackwardReaction[Insert] = false;
+        }
 
-      mIndex[Insert] = row;
-      mIsBackwardReaction[Insert] = false;
+      mReorderedReactions[Insert] = Reaction[row];
 
       for (col = 0; col < numCols; col++)
         {
@@ -242,9 +244,6 @@ CSSAMethod::testForMixingStability()
       // set the state to 'stable' (1 - stable; 0 - unknown; -1 - not mixing stable)
       TriLogic state = TriTrue;
 
-      // get the reactions for looking at their kinetic law in the following
-      CCopasiVectorNS < CReaction > & Reaction = mpModel->getReactions();
-
       int partMetabs[ijmax];
       memset(&partMetabs, 0, ijmax*sizeof(int));
 
@@ -255,7 +254,7 @@ CSSAMethod::testForMixingStability()
               // if one reaction's kinetic function is not Mass Action Law,
               //  this method is not valid and we can say nothing definite
               //  about the stability of this EC.
-              std::string type = Reaction[mIndex[j]]->getFunction()->getObjectName();
+              std::string type = mReorderedReactions[j]->getFunction()->getObjectName();
               // std::cout << "Reaction type: " << type << std::endl;
 
               if (type.find("Mass action") == std::string::npos &&
@@ -427,8 +426,6 @@ CSSAMethod::buildKineticMatrix()
 {
   if (!mpModel) return false;
 
-  CCopasiVectorNS< CReaction > & reactions = mpModel->getReactions();
-
   C_FLOAT64 num_metabolites = mpModel->getNumIndependentReactionMetabs();
 
   C_FLOAT64 num_reactions = mNumReactions;
@@ -443,9 +440,9 @@ CSSAMethod::buildKineticMatrix()
       CCopasiVector< CChemEqElement > substrates;
 
       if (mIsBackwardReaction[ireac])
-        substrates = reactions[ mIndex[ireac] ]->getChemEq().getProducts();
+        substrates = mReorderedReactions[ireac]->getChemEq().getProducts();
       else
-        substrates = reactions[ mIndex[ireac] ]->getChemEq().getSubstrates();
+        substrates = mReorderedReactions[ireac]->getChemEq().getSubstrates();
 
       for (int jsubst = 0; jsubst < substrates.size(); ++jsubst)
         {

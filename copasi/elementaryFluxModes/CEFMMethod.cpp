@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-  $Revision: 1.5 $
+  $Revision: 1.6 $
   $Name:  $
-  $Author: tjohann $
-  $Date: 2008/07/02 08:06:12 $
+  $Author: shoops $
+  $Date: 2009/08/14 13:41:37 $
   End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,17 +41,17 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 
   switch (subType)
     {
-    case EFMAlgorithm:
-      pMethod = new CEFMAlgorithm();
-      break;
+      case EFMAlgorithm:
+        pMethod = new CEFMAlgorithm();
+        break;
 #ifdef COPASI_SSA
-    case stoichiometricStabilityAnalysis:
-      pMethod = new CSSAMethod();
-      break;
+      case stoichiometricStabilityAnalysis:
+        pMethod = new CSSAMethod();
+        break;
 #endif
-    default:
-      pMethod = new CEFMAlgorithm();
-      break;
+      default:
+        pMethod = new CEFMAlgorithm();
+        break;
     }
 
   return pMethod;
@@ -59,18 +59,21 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 
 // Default constructor
 CEFMMethod::CEFMMethod():
-    CCopasiMethod(CCopasiTask::fluxMode, CCopasiMethod::unset)
+    CCopasiMethod(CCopasiTask::fluxMode, CCopasiMethod::unset),
+    mReorderedReactions()
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CCopasiTask::Type & taskType,
                        const CEFMMethod::SubType & subType,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(taskType, subType, pParent)
+    CCopasiMethod(taskType, subType, pParent),
+    mReorderedReactions()
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CEFMMethod & src,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent)
+    CCopasiMethod(src, pParent),
+    mReorderedReactions(src.mReorderedReactions)
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::~CEFMMethod()
@@ -96,5 +99,5 @@ bool CEFMMethod::isValidProblem(const CCopasiProblem * pProblem)
 const std::vector< CFluxMode > & CEFMMethod::getFluxModes() const
 {return mFluxModes;}
 
-const CVector< unsigned C_INT32 > & CEFMMethod::getIndex() const
-  {return mIndex;}
+const CVector< const CReaction * > & CEFMMethod::getReorderedReactions() const
+{return mReorderedReactions;}

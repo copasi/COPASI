@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/02/15 17:27:11 $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,83 +30,95 @@
 #include "elementaryFluxModes/CTableauLine.h"
 
 class CTableauMatrix
-  {
-    // Attributes
+{
+  // Attributes
 
-  private:
-    /**
-     *  Vector containing the lines of the Matrix
-     *  @associates <{CTableauLine}>
-     *  @supplierCardinality 0..*
-     */
-    std::list< const CTableauLine * > mLine;
+private:
+  /**
+   *  Vector containing the lines of the Matrix
+   *  @associates <{CTableauLine}>
+   *  @supplierCardinality 0..*
+   */
+  std::list< const CTableauLine * > mLine;
 
-    /**
-     *  Iterator pointing to the first irreversible reaction
-     */
-    std::list< const CTableauLine * >::iterator mFirstIrreversible;
+  /**
+   *  Iterator pointing to the first irreversible reaction
+   */
+  std::list< const CTableauLine * >::iterator mFirstIrreversible;
 
-    // Operations
+  // Operations
 
-  public:
-    /**
-     *  Default constructor
-     */
-    CTableauMatrix();
+public:
+  /**
+   *  Default constructor
+   */
+  CTableauMatrix();
 
-    /**
-     *  Specific constructor
-     *  The first reversibleNumber lines of stoi must be reversible reactions.
-     *  Note: stoi is actually the transpose of the stoichiometry matrix
-     *  @param "const vector < vector < double > >" & stoi
-     *  @param "C_INT32 " reversibleNumber
-     */
-    CTableauMatrix(const std::vector < std::vector < double > > & stoi,
-                   C_INT32 reversibleNumber);
+  /**
+   *  Specific constructor
+   *  The first reversibleNumber lines of stoi must be reversible reactions.
+   *  Note: stoi is actually the transpose of the stoichiometry matrix
+   *  @param "const vector < vector < double > >" & stoi
+   *  @param "C_INT32 " reversibleNumber
+   */
+  CTableauMatrix(const std::vector < std::vector < double > > & stoi,
+                 C_INT32 reversibleNumber);
 
-    /**
-     *  Destructor
-     */
-    ~CTableauMatrix();
+  /**
+   *  Destructor
+   */
+  ~CTableauMatrix();
 
-    /**
-     * Retreive the number of tableau lines
-     * @return unsigned C_INT32 size
-     */
-    unsigned C_INT32 size() const;
+  /**
+   * Retrieve the number of tableau lines
+   * @return unsigned C_INT32 size
+   */
+  unsigned C_INT32 size() const;
 
-    /**
-     *  Retrieves the first line from the matrix
-     *  @return "list< const CTableauLine * >::iterator" iterator
-     */
-    std::list< const CTableauLine * >::iterator getFirst();
+  /**
+   *  Retrieves the first line from the matrix
+  *  @return list< const CTableauLine * >::iterator begin
+   */
+  std::list< const CTableauLine * >::iterator begin();
 
-    /**
-     *  Retrieves the last line from the matrix
-     *  @return "list< const CTableauLine * >::iterator" iterator
-     */
-    std::list< const CTableauLine * >::iterator getEnd();
+  /**
+   *  Retrieves the first line from the matrix
+   *  @return list< const CTableauLine * >::const_iterator begin
+   */
+  std::list< const CTableauLine * >::const_iterator begin() const;
 
-    /**
-     *  Add a line to the matrix
-     *  @param const CTableauLine * src
-     *  @param const bool & check (Default: true)
-     */
-    void addLine(const CTableauLine * src,
-                 const bool & check = true);
+  /**
+   *  Retrieves the last line from the matrix
+   *  @return list< const CTableauLine * >::iterator end
+   */
+  std::list< const CTableauLine * >::iterator end();
 
-    /**
-     *  Remove the indexed line of the matrix
-     *  @param "list< const CTableauLine * >::const_iterator" line
-     */
-    void removeLine(const std::list< const CTableauLine * >::iterator line);
+  /**
+   *  Retrieves the last line from the matrix
+   *  @return list< const CTableauLine * >::const_iterator end
+   */
+  std::list< const CTableauLine * >::const_iterator end() const;
 
-  private:
-    /**
-     *  Check whether the new line fullfills the constraints
-     *  @param "const CTableauLine *" src
-     */
-    bool isValid(const CTableauLine * src);
-  };
+  /**
+   *  Add a line to the matrix
+   *  @param const CTableauLine * src
+   *  @param const bool & check (Default: true)
+   */
+  void addLine(const CTableauLine * src,
+               const bool & check = true);
+
+  /**
+   *  Remove the indexed line of the matrix
+   *  @param "list< const CTableauLine * >::const_iterator" line
+   */
+  void removeLine(const std::list< const CTableauLine * >::iterator line);
+
+private:
+  /**
+   *  Check whether the new line fullfills the constraints
+   *  @param "const CTableauLine *" src
+   */
+  bool isValid(const CTableauLine * src);
+};
 
 #endif // COPASI_CTableauMatrix

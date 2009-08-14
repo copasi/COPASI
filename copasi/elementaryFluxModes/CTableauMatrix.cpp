@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/06/24 12:13:10 $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,14 +68,22 @@ CTableauMatrix::~CTableauMatrix()
 unsigned C_INT32 CTableauMatrix::size() const
 {return mLine.size();}
 
-std::list< const CTableauLine * >::iterator
-CTableauMatrix::getFirst()
+std::list< const CTableauLine * >::iterator CTableauMatrix::begin()
 {
   return mLine.begin();
 }
 
-std::list< const CTableauLine * >::iterator
-CTableauMatrix::getEnd()
+std::list< const CTableauLine * >::const_iterator CTableauMatrix::begin() const
+{
+  return mLine.begin();
+}
+
+std::list< const CTableauLine * >::iterator CTableauMatrix::end()
+{
+  return mLine.end();
+}
+
+std::list< const CTableauLine * >::const_iterator CTableauMatrix::end() const
 {
   return mLine.end();
 }
@@ -83,11 +91,6 @@ CTableauMatrix::getEnd()
 void CTableauMatrix::addLine(const CTableauLine * src,
                              const bool & check)
 {
-  /* The first element in reaction is always 0 so we can remove it */
-  /* This really breaks the "const" but it is the only place tableau */
-  /* lines are changed */
-  const_cast <CTableauLine *>(src)->truncate();
-
   /* First we check whether we have a valid new flux mode */
   if (!check || isValid(src))
     {

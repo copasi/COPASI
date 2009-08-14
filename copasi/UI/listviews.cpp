@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.274 $
+//   $Revision: 1.275 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/08/10 15:15:26 $
+//   $Author: shoops $
+//   $Date: 2009/08/14 13:41:37 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@
 #include "CQGlobalQuantitiesWidget.h"
 #include "CQModelValue.h"
 #include "CQEFMWidget.h"
+#include "CQEFMResultWidget.h"
 #include "CQMoietiesTaskResult.h"
 #include "CQMoietiesTaskWidget.h"
 #include "ParametersWidget.h"
@@ -232,7 +233,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
     modelWidget(NULL),
     mpGlobalQuantitiesWidget(NULL),
     mpModelValueWidget(NULL),
-    modesWidget(NULL),
+    mpEFMWidget(NULL),
+    mpEFMResultWidget(NULL),
     mpMoietiesTaskResult(NULL),
     mpMoietiesTaskWidget(NULL),
     optimizationWidget(NULL),
@@ -413,9 +415,13 @@ void ListViews::ConstructNodeWidgets()
 
   mpGlobalQuantitiesWidget->hide();
 
-  if (!modesWidget) modesWidget = new CQEFMWidget(this);
+  if (!mpEFMWidget) mpEFMWidget = new CQEFMWidget(this);
 
-  modesWidget->hide();
+  mpEFMWidget->hide();
+
+  if (!mpEFMResultWidget) mpEFMResultWidget = new CQEFMResultWidget(this);
+
+  mpEFMResultWidget->hide();
 
   if (!mpMoietiesTaskResult)
     mpMoietiesTaskResult = new CQMoietiesTaskResult(this);
@@ -650,7 +656,10 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
         return stateWidget;
         break;
       case 221:
-        return modesWidget;
+        return mpEFMWidget;
+        break;
+      case 2211:
+        return mpEFMResultWidget;
         break;
       case 222:
         return mpMoietiesTaskWidget;
