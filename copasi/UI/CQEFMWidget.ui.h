@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQEFMWidget.ui.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/07/03 10:11:38 $
+//   $Author: shoops $
+//   $Date: 2009/08/14 13:40:02 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ void CQEFMWidget::loadFluxModes()
       bool ssatask = pTask->getMethod()->getSubType() == CCopasiMethod::stoichiometricStabilityAnalysis;
 
       if (ssatask)
-        mpListView->setColumnText(0, "Stability");
+        Ui::CQEFMWidget::mpListView->setColumnText(0, "Stability");
 
 #endif
       unsigned C_INT32 j;
@@ -83,8 +83,6 @@ void CQEFMWidget::loadFluxModes()
 
           if (ssatask)
             {
-              item = new Q3ListViewItem(mpListView, "");
-
               std::string title;
 
               switch (dynamic_cast<CSSAMethod *>(pTask->getMethod())->isMixingStable(j))
@@ -101,7 +99,7 @@ void CQEFMWidget::loadFluxModes()
                     title = "Unknown";
                 }
 
-              item->setText(0, title);
+              item = new Q3ListViewItem(Ui::CQEFMWidget::mpListView, "title");
             }
           else
             {
