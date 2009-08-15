@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/24 14:30:48 $
+//   $Date: 2009/08/15 04:30:56 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,7 +246,7 @@ bool COptMethodPS::create(const unsigned C_INT32 & index)
               else
                 {
                   C_FLOAT64 mean = (mx + mn) * 0.5;
-                  C_FLOAT64 sigma = mean * 0.01;
+                  C_FLOAT64 sigma = std::min(DBL_MAX, mx - mn) / 3.0;
 
                   do
                     {
