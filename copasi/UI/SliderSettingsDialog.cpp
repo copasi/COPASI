@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: aekamal $
-//   $Date: 2009/08/10 15:17:14 $
+//   $Date: 2009/08/17 15:43:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -333,7 +333,7 @@ void SliderSettingsDialog::init()
   mChanged = NONE;
   mScaling = CSlider::linear;
   mpExtendedOptionsButton->setText("Advanced >>");
-  mpExtendedOptionsFrame->hide();
+  hideOptionsControls();
   this->resize(minimumSizeHint());
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpOriginalValueEdit->setValidator(new QDoubleValidator(this));
@@ -468,19 +468,15 @@ void SliderSettingsDialog::updateSlider()
 
 void SliderSettingsDialog::extendedOptionsClicked()
 {
-  if (mpExtendedOptionsFrame->isHidden())
+  if (mpExtendedOptionsButton->text() == "Advanced >>")
     {
       mpExtendedOptionsButton->setText("Advanced <<");
-      mpExtendedOptionsFrame->show();
-      this->resize(minimumSizeHint());
+      showOptionsControls();
     }
   else
     {
       mpExtendedOptionsButton->setText("Advanced >>");
-      mpExtendedOptionsFrame->hide();
-      QSize size = this->size() - QSize(0, mpExtendedOptionsFrame->minimumSizeHint().height());
-      this->setMinimumSize(size);
-      this->resize(size);
+      hideOptionsControls();
     }
 }
 
@@ -600,4 +596,45 @@ void SliderSettingsDialog::origValueTextChanged()
 void SliderSettingsDialog::valueTextChanged()
 {
   mChanged = VALUE;
+}
+
+void SliderSettingsDialog::showOptionsControls()
+{
+  mpNumMinorTicksLabel->show();
+  mpNumMinorTicksEdit->show();
+  mpMinorTickSizeLabel->show();
+  mpMinorTickSizeEdit->show();
+
+  mpMinorMajorFactorLabel->show();
+  mpMinorMajorFactorEdit->show();
+  mpOriginalValueLabel->show();
+  mpOriginalValueEdit->show();
+
+  mpObjectValueLabel->show();
+  mpObjectValueEdit->show();
+
+  mpVerticalLayout->insertLayout(4, mpOptionsGridLayout);
+}
+
+void SliderSettingsDialog::hideOptionsControls()
+{
+  mpNumMinorTicksLabel->hide();
+  mpNumMinorTicksEdit->hide();
+  mpMinorTickSizeLabel->hide();
+  mpMinorTickSizeEdit->hide();
+
+  mpMinorMajorFactorLabel->hide();
+  mpMinorMajorFactorEdit->hide();
+  mpOriginalValueLabel->hide();
+  mpOriginalValueEdit->hide();
+
+  mpObjectValueLabel->hide();
+  mpObjectValueEdit->hide();
+
+  mpVerticalLayout->removeItem(mpOptionsGridLayout);
+
+  this->updateGeometry();
+  int heightChange = mpOptionsGridLayout->geometry().height();
+  QSize size = this->size() - QSize(0, heightChange);
+  this->resize(size);
 }

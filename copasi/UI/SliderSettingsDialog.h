@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/27 13:33:34 $
+//   $Author: aekamal $
+//   $Date: 2009/08/17 15:43:34 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,6 +60,8 @@ protected:
   int mCurrentTaskId;
   CModel* mpModel;
   int mScaling;
+  void showOptionsControls();
+  void hideOptionsControls();
 
 protected slots:
   virtual void okButtonPressed();
