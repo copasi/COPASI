@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/14 13:42:47 $
+//   $Date: 2009/08/17 19:56:11 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,10 +126,12 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
 const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 {
+  static std::string data;
+
   switch ((int) subType(mType))
     {
       case CN:
-        return "<" + mRegisteredObjectCN + ">";
+        return data = "<" + mRegisteredObjectCN + ">";
         break;
 
       case POINTER:
