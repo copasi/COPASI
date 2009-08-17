@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.265 $
+//   $Revision: 1.266 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/27 13:33:34 $
+//   $Author: ssahle $
+//   $Date: 2009/08/17 20:22:52 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -535,7 +535,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if (success = dataModel->saveModel(TO_UTF8(tmp), true))
+      if ((success = dataModel->saveModel(TO_UTF8(tmp), true)))
         {
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
           (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
@@ -926,7 +926,7 @@ bool CopasiUI3Window::slotFileSave()
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
 
-      if (success = dataModel->saveModel(FileName, true))
+      if ((success = dataModel->saveModel(FileName, true)))
         {
           (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
         }
