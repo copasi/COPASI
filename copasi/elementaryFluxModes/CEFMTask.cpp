@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/14 13:41:37 $
+//   $Date: 2009/08/17 19:56:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,7 +127,6 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
     static_cast<CEFMMethod *>(mpMethod)->getReorderedReactions();
 
   unsigned C_INT32 j, jmax = FluxModes[index].size();
-  const CCopasiVectorNS< CReaction > & Reactions = mpProblem->getModel()->getReactions();
 
 #ifdef COPASI_SSA
 

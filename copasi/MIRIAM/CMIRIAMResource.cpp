@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/13 01:06:54 $
+//   $Date: 2009/08/17 19:56:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -306,8 +306,6 @@ unsigned C_INT32 CMIRIAMResources::getMIRIAMResourceIndex(const std::string & UR
 
   for (; it != end; ++it)
     {
-      const CMIRIAMResource * pResource = &getMIRIAMResource(it->second);
-
       // Check whether the URI base of the candidate matches.
       if (URI.compare(0, it->first.length(), it->first) == 0)
         {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/14 13:41:37 $
+//   $Date: 2009/08/17 19:56:49 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -362,10 +362,6 @@ CSSAMethod::decomposeJacobian()
 
   CMatrix< C_FLOAT64 > product;
   product.resize(m, m);
-
-#ifdef COPASI_DEBUG
-  int i = 0;
-#endif
 
   std::vector< CVector<C_FLOAT64> >::iterator iter;
 
