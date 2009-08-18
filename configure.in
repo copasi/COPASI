@@ -381,6 +381,20 @@ dnl to prevent calling aclocal, automake and configure again
  echo "	touch Makefile" >> Makefile && \
  cd ..
 
+ cd steady_state_test_wrapper && \
+ echo executing in `pwd`: && \
+ echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
+ rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
+ cat Makefile | \
+ sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
+     -e 's!QMAKE.*=.*qmake!QMAKE = '$QMAKE'!'> $$.tmp && \
+ mv $$.tmp Makefile && \
+ echo depend:  >> Makefile && \
+ echo "	touch Makefile" >> Makefile && \
+ cd ..
+
 cd sbml-testsuite && \
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
