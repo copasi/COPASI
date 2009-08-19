@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/elementaryFluxModes.pro,v $
-#   $Revision: 1.11 $
+#   $Revision: 1.12 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2008/12/18 17:30:00 $
+#   $Date: 2009/08/19 01:44:12 $
 # End CVS Header
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,31 +21,38 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
-HEADERS += CEFMAlgorithm.h \
-           CEFMMethod.h \
-           CEFMProblem.h \
-           CEFMTask.h \
-           CFluxMode.h \
-           CFluxScore.h \
-           CTableauLine.h \
-           CTableauMatrix.h
+HEADERS += CEFMAlgorithm.h
+SOURCES += CEFMAlgorithm.cpp
+
+HEADERS += CEFMMethod.h
+SOURCES += CEFMMethod.cpp
+
+HEADERS += CEFMProblem.h
+SOURCES += CEFMProblem.cpp
+
+HEADERS += CEFMTask.h
+SOURCES += CEFMTask.cpp
+
+HEADERS += CFluxMode.h
+SOURCES += CFluxMode.cpp
+
+HEADERS += CFluxScore.h
+SOURCES += CFluxScore.cpp
 
 contains(DEFINES, COPASI_SSA) {
    HEADERS += CSSAMethod.h
-}
-
-SOURCES += CEFMAlgorithm.cpp \
-           CEFMMethod.cpp \
-           CEFMProblem.cpp \
-           CEFMTask.cpp \
-           CFluxMode.cpp \
-           CFluxScore.cpp \
-           CTableauLine.cpp \
-           CTableauMatrix.cpp
-
-contains(DEFINES, COPASI_SSA) {
    SOURCES += CSSAMethod.cpp
 }
+
+HEADERS += CTableauLine.h
+SOURCES += CTableauLine.cpp
+
+HEADERS += CTableauMatrix.h
+SOURCES += CTableauMatrix.cpp
+
+HEADERS += CZeroSet.h
+SOURCES += CZeroSet.cpp
+
 
 DISTFILES += elementaryFluxModes.vcproj
 #The following line was inserted by qt3to4

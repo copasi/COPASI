@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="elementaryFluxModes"
 	ProjectGUID="{337C220D-A94D-478F-A261-3C5ABA670A8D}"
+	RootNamespace="elementaryFluxModes"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -69,6 +70,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CBitPatternTreeNode.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CEFMAlgorithm.cpp"
 				>
 			</File>
@@ -108,11 +113,19 @@
 				RelativePath="CTableauMatrix.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\CZeroSet.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\CBitPatternTreeNode.h"
+				>
+			</File>
 			<File
 				RelativePath="CEFMAlgorithm.h"
 				>
@@ -151,6 +164,10 @@
 			</File>
 			<File
 				RelativePath="CTableauMatrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CZeroSet.h"
 				>
 			</File>
 		</Filter>
