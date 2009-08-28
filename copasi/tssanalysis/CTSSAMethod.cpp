@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2009/07/29 16:07:57 $
+//   $Date: 2009/08/28 12:38:45 $
 // End CVS Header
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,15 +149,52 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pTP->getModel()->getCompartments().size() != 1)
+  CModel * pModel = pTP->getModel();
+
+  if (pModel == NULL)
+    return false;
+
+  if (pModel->getCompartments().size() != 1)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 13);
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "TSSA is not applicable for a system with more than one volume.");
       return false;
     }
 
-  if (pTP->getModel()->getNumODEMetabs() != 0 || pTP->getModel()->getNumAssignmentMetabs() != 0)
+// Check if the model has a species with an assigments or an ODE
+  if (pModel->getNumODEMetabs() != 0 || pModel->getNumAssignmentMetabs() != 0)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 14);
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "TSSA is not applicable for a system with species determined by assigments or ODE.");
+      return false;
+    }
+
+// Check if the model has a compartment with an ODE
+  CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
+  CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+
+  for (; it != end; ++it)
+    if ((*it)->getStatus() == CModelEntity::ODE)
+      {
+        CCopasiMessage(CCopasiMessage::EXCEPTION, "TSSA is not applicable for a system with a volume defined by ODE.");
+        return false;
+      }
+
+// Check if the model has a model parameter  with an ODE
+
+  unsigned C_INT32 i;
+
+  for (i = 0; i < pModel->getModelValues().size(); i++)
+    {
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "TSSA is not applicable for a system with parameters defined by ODE.");
+          return false;
+        }
+    }
+
+// Check if the model contains events
+  if (pModel->getEvents().size() != 0)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "TSSA is not applicable for a system with events");
       return false;
     }
 
